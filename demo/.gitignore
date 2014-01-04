@@ -13,4 +13,4 @@ composer.lock
 # cache folders
 cache/data/
 cache/page/
-cache/twig//nbproject/private/
+cache/twig/
