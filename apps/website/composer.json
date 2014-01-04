@@ -1,0 +1,9 @@
+{
+    "name": "getherbie/website",
+    "type": "project",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "getherbie/herbie": "dev-master",
+    }
+}

@@ -1,0 +1,38 @@
+{% include 'includes/head.html' %}
+
+<div class="header">
+    <div class="container">
+        <div class="pure-g-r">
+            <div class="pure-u-1">
+                <h1 class="brand-title">{{ link('', 'Herbie') }}</h1>
+                <h2 class="brand-tagline"><strong>Herbie</strong> ist ein einfaches CMS- und Blogsystem, das auf simplen Textdateien basiert. Keine komplizierte Installation, keine Datenbank, nur Textdateien.</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/menu.html' %}
+
+<div class="content-container">
+<div class="container">
+
+    {% block content %}{% endblock %}
+
+    <div class="breadcrumb">
+        {{ breadcrumb({homeLink:['','Home']}) }}
+    </div>
+
+</div>
+</div>
+
+<div class="footer">
+    <div class="pure-menu pure-menu-horizontal pure-menu-open">
+        <ul>
+            <li>{{ link('', 'Home') }}</li>
+            <li>{{ link('sitemap', 'Sitemap') }}</li>
+            <li>{{ link('blog', 'Blog') }}</li>
+        </ul>
+    </div>
+</div>
+
+{% include 'includes/footer.html' %}

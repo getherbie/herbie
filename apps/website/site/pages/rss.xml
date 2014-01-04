@@ -1,0 +1,14 @@
+---
+layout: rss.xml
+---
+
+{% for item in site.menu %}
+<item>
+<title>{{ item.title }}</title>
+<link>{{ absurl(item.route) }}</link>
+{% if item.abstract %}<description>{{ item.abstract }}</description>{% endif %}
+{% if item.author %}<author>{{ item.author }}</author>{% endif %}
+{% if item.id %}<guid>{{ item.id }}</guid>{% endif %}
+{% if item.modified %}<pubDate>{{ item.modified|date('r') }}</pubDate>{% endif %}
+</item>
+{% endfor %}

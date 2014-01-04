@@ -1,0 +1,102 @@
+---
+title: Variablen
+layout: documentation.html
+---
+
+<h1>Variablen</h1>
+
+<p>Herbie durchläuft deine ganze Website und arbeitet Textdateien mit einem YAML Front-Matter Block ab. Für jede dieser Datei erzeugt Herbie verschiedene Daten und macht diese über das Twig Templating System verfügbar. Nachfolgend siehst du eine Übersicht dieser Daten.
+
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+        <tr>
+            <th width="35%">Variable</th>
+            <th width="65%">Beschreibung</th>
+        </tr>
+    </thead>
+    <tr>
+        <td><code>route</code></td>
+        <td>Die angefragte Seite, z.B. `doku/vars`.</td>
+    </tr>
+    <tr>
+        <td><code>site</code></td>
+        <td>Projektweite Variablen.</td>
+    </tr>
+    <tr>
+        <td><code>page</code></td>
+        <td>Variablen, die der aktuellen Seite zugeordnet werden.</td>
+    </tr>
+    <tr>
+        <td><code>paginator</code></td>
+        <td>Ein Paginatorobjekt zum Erzeugen einer Pagination.</td>
+    </tr>
+</table>
+
+
+<h2>Site-Variablen</h2>
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+        <tr>
+            <th width="35%">Variable</th>
+            <th width="65%">Beschreibung</th>
+        </tr>
+    </thead>
+    <tr>
+        <td><code>site.time</code></td>
+        <td>Die aktuelle Zeit im ISO 8601 Format (2004-02-12T15:19:21+00:00).</td>
+    </tr>
+    <tr>
+        <td><code>site.lastCreated</code></td>
+        <td>Die Zeit der zuletzt erstellten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00).</td>
+    </tr>
+    <tr>
+        <td><code>site.lastModified</code></td>
+        <td>Die Zeit der zuletzt geänderten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00).</td>
+    </tr>
+    <tr>
+        <td><code>site.menu</code></td>
+        <td>Ein Menu als Liste aller vorhandenen Seiten.</td>
+    </tr>
+    <tr>
+        <td><code>site.tree</code></td>
+        <td>Ein Menu als Baumstruktur aller vorhandenen Seiten.</td>
+    </tr>
+    <tr>
+        <td><code>site.rootPath</code></td>
+        <td>Ein Menu als Liste aller Seiten von der Wurzel bis zur aktuellen Seite.</td>
+    </tr>
+</table>
+
+
+<h2>Page-Variablen</h2>
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+        <tr>
+            <th width="35%">Variable</th>
+            <th width="65%">Beschreibung</th>
+        </tr>
+    </thead>
+    <tr>
+        <td><code>page.title</code></td>
+        <td>Der Titel der Seite.</td>
+    </tr>
+    <tr>
+        <td><code>page.layout</code></td>
+        <td>Das Layout der Seite.</td>
+    </tr>
+    <tr>
+        <td><code>page.type</code></td>
+        <td>Der Typ der Seite (definiert den Formatierer, z.B. Markdown oder Textile).</td>
+    </tr>
+    <tr>
+        <td><code>page.date</code></td>
+        <td>Das Datum der Seite.</td>
+    </tr>
+    <tr>
+        <td><code>page.[DATEN]</code></td>
+        <td>Jede weitere Seitenvariable, welche im Front-Matter Block definiert wurde, ist nutzbar (z.B. page.css, page.keywords, etc.)</td>
+    </tr>
+</table>
+
+
+<p class="pagination">{{ link('dokumentation/inhalte/daten-dateien', 'Daten-Dateien<i class="fa fa-arrow-right"></i>', {class:'pure-button'}) }}</p>

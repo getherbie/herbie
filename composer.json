@@ -1,0 +1,13 @@
+{
+    "name": "getherbie/herbie",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+    },
+    "autoload": {
+        "psr-0": {
+            "Herbie": ""
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+    <div class="pure-g-r">
+        <div class="pure-u-2-3 content">
+            {{ content(0) }}
+        </div>
+        <div class="pure-u-1-3 sidebar">
+            {{menu({route:'dokumentation'})}}
+        </div>
+    </div>
+
+{% endblock %}

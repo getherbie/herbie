@@ -1,0 +1,7 @@
+---
+title: Sitemap
+---
+
+# Sitemap
+
+{{ sitemap() }}

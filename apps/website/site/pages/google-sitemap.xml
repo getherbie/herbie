@@ -1,0 +1,15 @@
+---
+layout: google.xml
+---
+{% for item in site.posts %}
+<url>
+<loc>{{ absurl(item.route) }}</loc>
+<lastmod>{{ item.modified }}</lastmod>
+</url>
+{% endfor %}
+{% for item in site.menu %}
+<url>
+<loc>{{ absurl(item.route) }}</loc>
+<lastmod>{{ item.modified }}</lastmod>
+</url>
+{% endfor %}

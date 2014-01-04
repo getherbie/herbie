@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+    <div class="pure-g-r">
+        <div class="pure-u-1 content">
+            {% if error.code == 404 %}
+                <h1>Seite nicht gefunden</h1>
+                <p>Uups, da ist was schief gelaufen. Die aufgerufene Seite oder Resource wurde nicht gefunden.</p>
+            {% else %}
+                <h1>Fehler</h1>
+                <p>Es ist ein Fehler aufgetreten.</p>
+                <table class="pure-table pure-table-horizontal" width="100%">
+                    <tr>
+                        <td>Code</td>
+                        <td>{{ error.code }}</td>
+                    </tr>
+                    <tr>
+                        <td>Message</td>
+                        <td>{{ error.message }}</td>
+                    </tr>
+                    <tr>
+                        <td>Datei</td>
+                        <td>{{ error.file }}</td>
+                    </tr>
+                    <tr>
+                        <td>Zeile</td>
+                        <td>{{ error.line }}</td>
+                    </tr>
+                    <tr>
+                        <td>Trace</td>
+                        <td>{{ error.getTraceAsString|nl2br }}</td>
+                    </tr>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

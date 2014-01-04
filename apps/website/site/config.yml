@@ -1,0 +1,34 @@
+app:
+  path: APP_PATH
+
+site:
+  path: SITE_PATH
+
+data:
+  path: SITE_PATH/data
+  extensions: [yml, yaml]
+
+layouts:
+  path: SITE_PATH/layouts
+
+pages:
+  path: SITE_PATH/pages
+
+posts:
+  path: SITE_PATH/posts
+
+nice_urls: true
+
+twig:
+  debug: true
+  cache: false  #SITE_PATH/cache/twig
+
+cache:
+  page:
+    enable: false
+    dir: SITE_PATH/cache/page
+    expire: 18000
+  data:
+    enable: false
+    dir: SITE_PATH/cache/data
+    expire: 18000
