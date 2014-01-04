@@ -4,6 +4,16 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
+        "easybook/geshi": "1.0.8.12",
+        "leafo/lessphp": "0.4.*",
+        "michelf/php-markdown": "1.4.*",
+        "mustangostang/spyc": "0.5.*",
+        "netcarver/textile": "3.5.*",
+        "phpunit/phpunit": "3.7.*",
+        "pimple/pimple": "1.1.*",
+        "symfony/http-foundation": "2.1.*",
+        "symfony/yaml": "2.4.*",
+        "twig/twig": "1.14.*"
     },
     "autoload": {
         "psr-0": {
