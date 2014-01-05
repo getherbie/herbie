@@ -3,6 +3,6 @@
     "require": {
         "php": ">=5.4.0",
         "phpunit/phpunit": "3.7.*",
-        "getherbie/herbie": "dev-master"
+        "xgetherbie/herbie": "dev-master"
     }
 }
