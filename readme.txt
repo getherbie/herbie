@@ -1,2 +1,5 @@
-cd /web/www/herbie/herbie
-php vendor/phpunit/phpunit/phpunit.php --bootstrap tests/Herbie/bootstrap.php tests
+# Change directory
+cd /web/www/getherbie/tests
+
+# Execute all tests
+php vendor/phpunit/phpunit/phpunit.php --bootstrap tests/bootstrap.php tests
