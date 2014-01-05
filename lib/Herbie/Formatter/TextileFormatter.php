@@ -4,13 +4,11 @@ namespace Herbie\Formatter;
 
 class TextileFormatter implements FormatterInterface
 {
-    protected $parser;
 
-    public function __construct()
-    {
-        $this->parser = new \Netcarver\Textile\Parser();
-    }
-
+    /**
+     * @param string $value
+     * @return string
+     */
     public function transform($value)
     {
         $parser = new \Netcarver\Textile\Parser();

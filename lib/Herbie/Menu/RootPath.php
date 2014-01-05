@@ -9,17 +9,35 @@ use ArrayIterator;
 class RootPath implements IteratorAggregate, Countable
 {
 
+    /**
+     * @var MenuCollection
+     */
     protected $collection;
+
+    /**
+     * @var string
+     */
     protected $route;
+
+    /**
+     * @var array
+     */
     protected $items;
 
-    public function __construct($collection, $route)
+    /**
+     * @param MenuCollection $collection
+     * @param string $route
+     */
+    public function __construct(MenuCollection $collection, $route)
     {
         $this->collection = $collection;
         $this->route = $route;
         $this->items = $this->buildRootPath();
     }
 
+    /**
+     * @return array
+     */
     protected function buildRootPath()
     {
         $items = [];

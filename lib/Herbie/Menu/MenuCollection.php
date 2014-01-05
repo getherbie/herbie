@@ -34,7 +34,7 @@ class MenuCollection implements IteratorAggregate, Countable
 
     /**
      * @param type $route
-     * @return MenuItem
+     * @return MenuItem|null
      */
     public function getItem($route)
     {

@@ -6,6 +6,10 @@ namespace Herbie\Formatter;
 class FormatterFactory
 {
 
+    /**
+     * @param string $type
+     * @return \Herbie\Formatter\FormatterInterface
+     */
     public static function create($type)
     {
         if (in_array($type, ['md', 'markdown'])) {

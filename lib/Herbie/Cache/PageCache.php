@@ -43,7 +43,7 @@ class PageCache implements CacheInterface
 
     /**
      * @param string $id
-     * @return string|boolean
+     * @return mixed|boolean
      */
     public function get($id)
     {
@@ -57,7 +57,7 @@ class PageCache implements CacheInterface
 
     /**
      * @param string $id
-     * @param string $value
+     * @param mixed $value
      * @return boolean
      * @throws \Exception
      */

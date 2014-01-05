@@ -55,21 +55,4 @@ class UrlGenerator
         return $baseurl . $this->generate($route);
     }
 
-    /**
-     * @param string $route
-     * @return string
-     */
-    /*protected function getAbsoluteRoute($route)
-    {
-        if(substr($route, 0, 1) === '/') {
-            return substr($route, 1);
-        }
-        $pathInfo = trim($this->request->getPathInfo(), '/');
-
-        $segments = explode('/', $pathInfo);
-        array_pop($segments);
-        array_push($segments, $route);
-        return implode('/', $segments);
-    }*/
-
 }

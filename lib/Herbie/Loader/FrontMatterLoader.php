@@ -21,7 +21,7 @@ class FrontMatterLoader
 
     /**
      * @param string $path
-     * @return string
+     * @return array
      */
     public function load($path)
     {

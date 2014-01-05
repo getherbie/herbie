@@ -23,13 +23,13 @@ class PageLoader
 
     /**
      * @param string $path
+     * @param Parser $parser
      */
     public function __construct($path, \Symfony\Component\Yaml\Parser $parser)
     {
         $this->fileInfo = new \SplFileInfo($path);
         $this->parser = $parser;
     }
-
 
     /**
      * @return string
@@ -39,6 +39,10 @@ class PageLoader
         return $this->fileInfo->getExtension();
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function load()
     {
         $fileObj = $this->fileInfo->openFile('r');

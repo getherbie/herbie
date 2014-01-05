@@ -17,7 +17,7 @@ class DummyCache implements CacheInterface
 
     /**
      * @param string $id
-     * @param string $value
+     * @param mixed $value
      * @return boolean
      */
     public function set($id, $value)

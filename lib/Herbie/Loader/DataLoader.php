@@ -9,16 +9,36 @@ namespace Herbie\Loader;
  */
 class DataLoader
 {
+    /**
+     * @var string
+     */
     protected $path;
+
+    /**
+     * @var Parser
+     */
     protected $parser;
+
+    /**
+     * @var array
+     */
     protected $extensions;
 
-    public function __construct($path, $parser, array $extensions = [])
+    /**
+     * @param string $path
+     * @param Parser $parser
+     * @param array $extensions
+     */
+    public function __construct($path, Parser $parser, array $extensions = [])
     {
         $this->path = $path;
         $this->parser = $parser;
+        $this->extensions = $extension;
     }
 
+    /**
+     * @return array
+     */
     public function load()
     {
         $data = [];

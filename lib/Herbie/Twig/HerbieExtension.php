@@ -45,11 +45,11 @@ class HerbieExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        return array(
+        return [
             'site' => new \Herbie\Site($this->app),
             'page' => $this->app['page'],
             'text' => new Text()
-        );
+        ];
     }
 
     /**
@@ -57,9 +57,9 @@ class HerbieExtension extends \Twig_Extension
      */
     public function getTokenParsers()
     {
-        return array(
+        return [
             new HighlightTokenParser()
-        );
+        ];
     }
 
     /**
@@ -111,14 +111,14 @@ class HerbieExtension extends \Twig_Extension
 
         include(__DIR__.'/Functions/test3.php');
 
-        return array(
+        return [
             new \Twig_SimpleFunction('test1', include(__DIR__.'/Functions/test1.php'), ['is_safe' => ['html']]),
 
             include("{$dir}/Functions/Test2.php"),
 
             new \Twig_SimpleFunction('test3', $test3, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('link', function ($route, $label, $attributes = array()) {
+            new \Twig_SimpleFunction('link', function ($route, $label, $attributes = []) {
                 return $this->createLink($route, $label, $attributes);
             }, ['is_safe' => ['html']]),
 
@@ -253,7 +253,7 @@ class HerbieExtension extends \Twig_Extension
                 $class = sprintf('page-%s layout-%s', $route, $layout);
                 return str_replace(['/', '.'], '-', $class);
 			}, ['is_safe' => ['html']]),
-        );
+        ];
     }
 
     public function traversTree($tree, $showHidden)

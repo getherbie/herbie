@@ -26,6 +26,7 @@ class Application extends \Pimple
     }
 
     /**
+     * @param string $sitePath
      * @param array $values
      */
     public function __construct($sitePath, array $values = array())
@@ -260,6 +261,7 @@ class Application extends \Pimple
     }
 
     /**
+     * @param Request $request
      * @return string
      */
     public function getRoute(Request $request = null)
@@ -301,7 +303,7 @@ class Application extends \Pimple
 
     /**
      *
-     * @return type
+     * @return array
      */
     protected function loadConfiguration()
     {
@@ -309,8 +311,8 @@ class Application extends \Pimple
         if(is_file($this['webPath'] . '/site/config.yml')) {
             $content = file_get_contents($this['webPath'] . '/site/config.yml');
             $content = str_replace(
-                array('APP_PATH', 'WEB_PATH', 'SITE_PATH'),
-                array($this['appPath'], $this['webPath'], $this['sitePath']),
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
+                [$this['appPath'], $this['webPath'], $this['sitePath']],
                 $content
             );
             $userConfig = $this['parser']->parse($content);

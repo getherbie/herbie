@@ -4,46 +4,46 @@ if (is_null($this) || ('Herbie\Application' != get_class($this))) {
     die('Not allowed to access this file.');
 }
 
-return array(
-    'app' => array(
+return [
+    'app' => [
         'path' => $this['appPath']
-    ),
-    'site' => array(
+    ],
+    'site' => [
         'path' => $this['sitePath']
-    ),
-    'layouts' => array(
+    ],
+    'layouts' => [
         'path' => $this['sitePath'] . '/layouts'
-    ),
-    'pages' => array(
+    ],
+    'pages' => [
         'path' => $this['sitePath'] . '/pages'
-    ),
-    'posts' => array(
+    ],
+    'posts' => [
         'path' => $this['sitePath'] . '/posts'
-    ),
-    'data' => array(
+    ],
+    'data' => [
         'path' => $this['sitePath'] . '/data',
-        'extensions' => array('yml', 'yaml')
-    ),
+        'extensions' => ['yml', 'yaml']
+    ],
     'nice_urls' => true,
-    'twig' => array(
+    'twig' => [
         'debug' => false,
         'cache' => $this['sitePath'] . '/cache/twig',
-        'extend' => array(
+        'extend' => [
             'functions' => $this['sitePath'] . '/plugins/twig/functions',
             'filters' => $this['sitePath'] . '/plugins/twig/filters',
             'tests' => $this['sitePath'] . '/plugins/twig/tests',
-        )
-    ),
-    'cache' => array(
-        'page' => array(
+        ]
+    ],
+    'cache' => [
+        'page' => [
             'enable' => false,
             'dir' => $this['sitePath'] . '/cache/page',
             'expire' => 18000
-        ),
-        'data' => array(
+        ],
+        'data' => [
             'enable' => false,
             'dir' => $this['sitePath'] . '/cache/data',
             'expire' => 18000
-        )
-    )
-);
+        ]
+    ]
+];

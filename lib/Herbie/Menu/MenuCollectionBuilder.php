@@ -108,7 +108,7 @@ class MenuCollectionBuilder
         }
         $imploded = implode('/', $segments);
 
-        // Endung entfernen
+        // trim extension
         $pos = strrpos($imploded, '.');
         if ($pos !== false) {
             $imploded = substr($imploded, 0, $pos);

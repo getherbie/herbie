@@ -5,11 +5,10 @@ namespace Herbie\Formatter;
 class MarkdownFormatter implements FormatterInterface
 {
 
-    public function getContent()
-    {
-
-    }
-
+    /**
+     * @param string $value
+     * @return string
+     */
     public function transform($value)
     {
         return \Michelf\Markdown::defaultTransform($value);

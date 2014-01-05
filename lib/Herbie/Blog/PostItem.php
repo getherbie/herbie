@@ -106,6 +106,9 @@ class PostItem
         return $this->getRoute() == $route;
     }
 
+    /**
+     * @param string $date
+     */
     public function setDate($date)
     {
         $this->date = is_numeric($date) ? date('c', $date) : $date;

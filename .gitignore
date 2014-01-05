@@ -17,3 +17,6 @@ composer.lock
 cache/data/
 cache/page/
 cache/twig/
+
+# applications
+/apps

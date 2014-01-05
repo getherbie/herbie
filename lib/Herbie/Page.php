@@ -61,16 +61,27 @@ class Page
         return $this->layout;
     }
 
+    /**
+     * @return string
+     */
     public function getDate()
     {
         return $this->date;
     }
 
+    /**
+     * @return array
+     */
     public function getSegments()
     {
         return $this->segments;
     }
 
+    /**
+     *
+     * @param string $id
+     * @return null|string
+     */
     public function getSegment($id)
     {
         if(array_key_exists($id, $this->segments)) {
@@ -79,11 +90,17 @@ class Page
         return null;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
@@ -117,26 +134,41 @@ class Page
         }
     }
 
+    /**
+     * @param string|int $date
+     */
     public function setDate($date)
     {
         $this->date = is_numeric($date) ? date('c', $date) : $date;
     }
 
+    /**
+     * @param string $layout
+     */
     public function setLayout($layout)
     {
         $this->layout = $layout;
     }
 
+    /**
+     * @param array $segments
+     */
     public function setSegments(array $segments = [])
     {
         $this->segments = $segments;
     }
 
+    /**
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * @param string $type
+     */
     public function setType($type)
     {
         $this->type = $type;

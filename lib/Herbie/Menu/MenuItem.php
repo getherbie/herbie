@@ -73,6 +73,9 @@ class MenuItem
         }
     }
 
+    /**
+     * @return string
+     */
     public function getDate()
     {
         return $this->date;
@@ -102,6 +105,9 @@ class MenuItem
         return $this->depth;
     }
 
+    /**
+     * @return boolean
+     */
     public function getHidden()
     {
         return $this->hidden;
@@ -123,6 +129,9 @@ class MenuItem
         return $this->path;
     }
 
+    /**
+     * @return boolean
+     */
     public function getVisible()
     {
         return false === $this->getHidden();
@@ -184,31 +193,49 @@ class MenuItem
         return $this->items;
     }
 
+    /**
+     * @param int|string $date
+     */
     public function setDate($date)
     {
         $this->date = is_numeric($date) ? date('c', $date) : $date;
     }
 
+    /**
+     * @param boolean $hidden
+     */
     public function setHidden($hidden)
     {
         $this->hidden = $hidden;
     }
 
+    /**
+     * @param string $route
+     */
     public function setRoute($route)
     {
         $this->route = $route;
     }
 
+    /**
+     * @param int $depth
+     */
     public function setDepth($depth)
     {
         $this->depth = $depth;
     }
 
+    /**
+     * @param string $path
+     */
     public function setPath($path)
     {
         $this->path = $path;
     }
 
+    /**
+     * @param string $type
+     */
     public function setType($type)
     {
         $this->type = $type;
@@ -217,11 +244,14 @@ class MenuItem
     /**
      * @param array $items
      */
-    public function setItems($items)
+    public function setItems(array $items)
     {
         $this->items = $items;
     }
 
+    /**
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
