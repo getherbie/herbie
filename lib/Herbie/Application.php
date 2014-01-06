@@ -119,42 +119,7 @@ class Application extends \Pimple
                 $twig->addExtension(new \Twig_Extension_Debug());
             }
             $twig->addExtension(new Twig\HerbieExtension($app));
-
-            // Functions
-            if(!empty($config['twig']['extend']['functions'])) {
-                $dir = $config['twig']['extend']['functions'];
-                if(is_dir($dir)) {
-                    foreach (scandir($dir) as $file) {
-                        if(substr($file, 0, 1) == '.') continue;
-                        $function = include($dir . '/' . $file);
-                        $twig->addFunction($function);
-                    }
-                }
-            }
-
-            // Filters
-            if(!empty($config['twig']['extend']['filters'])) {
-                $dir = $config['twig']['extend']['filters'];
-                if(is_dir($dir)) {
-                    foreach (scandir($dir) as $file) {
-                        if(substr($file, 0, 1) == '.') continue;
-                        $filter = include($dir . '/' . $file);
-                        $twig->addFilter($filter);
-                    }
-                }
-            }
-
-            // Tests
-            if(!empty($config['twig']['extend']['tests'])) {
-                $dir = $config['twig']['extend']['tests'];
-                if(is_dir($dir)) {
-                    foreach (scandir($dir) as $file) {
-                        if(substr($file, 0, 1) == '.') continue;
-                        $test = include($dir . '/' . $file);
-                        $twig->addTest($test);
-                    }
-                }
-            }
+            $this->addTwigPlugins($twig, $config);
 
             return $twig;
 
@@ -173,6 +138,7 @@ class Application extends \Pimple
             }
 
             $twig->addExtension(new Twig\HerbieExtension($app));
+            $this->addTwigPlugins($twig, $config);
 
             return $twig;
 
@@ -182,6 +148,51 @@ class Application extends \Pimple
             $this[$key] = $value;
         }
 
+    }
+
+    /**
+     * @param \Twig_Environment $twig
+     * @param array $config
+     */
+    public function addTwigPlugins(\Twig_Environment $twig, array $config)
+    {
+        $app = $this;
+        
+        // Functions
+        if(!empty($config['twig']['extend']['functions'])) {
+            $dir = $config['twig']['extend']['functions'];
+            if(is_dir($dir)) {
+                foreach (scandir($dir) as $file) {
+                    if(substr($file, 0, 1) == '.') continue;
+                    $function = include($dir . '/' . $file);
+                    $twig->addFunction($function);
+                }
+            }
+        }
+
+        // Filters
+        if(!empty($config['twig']['extend']['filters'])) {
+            $dir = $config['twig']['extend']['filters'];
+            if(is_dir($dir)) {
+                foreach (scandir($dir) as $file) {
+                    if(substr($file, 0, 1) == '.') continue;
+                    $filter = include($dir . '/' . $file);
+                    $twig->addFilter($filter);
+                }
+            }
+        }
+
+        // Tests
+        if(!empty($config['twig']['extend']['tests'])) {
+            $dir = $config['twig']['extend']['tests'];
+            if(is_dir($dir)) {
+                foreach (scandir($dir) as $file) {
+                    if(substr($file, 0, 1) == '.') continue;
+                    $test = include($dir . '/' . $file);
+                    $twig->addTest($test);
+                }
+            }
+        }
     }
 
     /**
