@@ -157,7 +157,7 @@ class Application extends \Pimple
     public function addTwigPlugins(\Twig_Environment $twig, array $config)
     {
         $app = $this;
-        
+
         // Functions
         if(!empty($config['twig']['extend']['functions'])) {
             $dir = $config['twig']['extend']['functions'];
@@ -319,11 +319,11 @@ class Application extends \Pimple
     protected function loadConfiguration()
     {
         $config = require(__DIR__ . '/config.php');
-        if(is_file($this['webPath'] . '/site/config.yml')) {
-            $content = file_get_contents($this['webPath'] . '/site/config.yml');
+        if(is_file($this['sitePath'] . '/config.yml')) {
+            $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
                 ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-                [$this['appPath'], $this['webPath'], $this['sitePath']],
+                [$this['appPath'], $this['sitePath'], $this['sitePath']],
                 $content
             );
             $userConfig = $this['parser']->parse($content);
