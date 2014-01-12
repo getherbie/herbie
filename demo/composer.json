@@ -4,6 +4,23 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
-        "getherbie/herbie": "dev-master"
+        "getherbie/herbie": "dev-master",
+        "getherbie/composer": "dev-master"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "herbie\\composer\\Installer::setPermission"
+        ]
+    },
+    "extra": {
+        "writable": [
+            "site/cache/data",
+            "site/cache/page",
+            "site/cache/twig"
+        ],
+        "executable": []
     }
 }
