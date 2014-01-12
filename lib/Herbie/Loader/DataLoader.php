@@ -2,6 +2,8 @@
 
 namespace Herbie\Loader;
 
+use Symfony\Component\Yaml\Parser;
+
 /**
  * Loads site data.
  *
@@ -33,7 +35,7 @@ class DataLoader
     {
         $this->path = $path;
         $this->parser = $parser;
-        $this->extensions = $extension;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -53,7 +55,7 @@ class DataLoader
             }
             $key = $info['filename'];
             $content = file_get_contents($this->path.'/'.$file);
-            $data[$key] = $parser->parse($content);
+            $data[$key] = $this->parser->parse($content);
         }
 
         return $data;
