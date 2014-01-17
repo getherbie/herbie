@@ -25,7 +25,7 @@ class MenuCollectionBuilder
      */
     public function __construct($path, CacheInterface $cache)
     {
-        $this->path = $path;
+        $this->path = realpath($path);
         $this->cache = $cache;
     }
 
@@ -37,16 +37,15 @@ class MenuCollectionBuilder
         $items = $this->cache->get(__CLASS__);
         if ($items === false) {
 
-            $realpath = realpath($this->path);
             $collection = new MenuCollection();
 
-            if (is_dir($realpath)) {
+            if (is_dir($this->path)) {
 
                 $objects = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($realpath), RecursiveIteratorIterator::SELF_FIRST
+                    new RecursiveDirectoryIterator($this->path), RecursiveIteratorIterator::SELF_FIRST
                 );
 
-                foreach ($objects AS $this->path => $splFileInfo) {
+                foreach ($objects AS $path => $splFileInfo) {
 
                     if (substr($splFileInfo->getFileName(), 0, 1) == '.') {
                         continue;
@@ -55,22 +54,23 @@ class MenuCollectionBuilder
                     if ($splFileInfo->isFile()) {
 
                         $loader = new \Herbie\Loader\FrontMatterLoader();
-                        $data = $loader->load($this->path);
+                        $data = $loader->load($path);
                         $data['type'] = 'file';
-                        $data['path'] = $this->path;
-                        $data['route'] = $this->createRoute($realpath);
+                        $data['path'] = $path;
+                        $data['route'] = $this->createRoute($path);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
+
                     } else {
 
                         $data = [];
                         $data['type'] = 'folder';
-                        $data['path'] = $this->path;
-                        $data['route'] = $this->createRoute($realpath);
+                        $data['path'] = $path;
+                        $data['route'] = $this->createRoute($path);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
-                        $configPath = $this->path . '/config.yml';
+                        $configPath = $path . '/config.yml';
                         if (is_file($configPath)) {
                             $parser = new \Symfony\Component\Yaml\Parser();
                             $folderConf = $parser->parse(file_get_contents($configPath));
@@ -79,6 +79,7 @@ class MenuCollectionBuilder
                             $title = preg_replace('/^[0-9]+-/', '', $splFileInfo->getBasename());
                             $item->title = ucfirst($title);
                         }
+
                     }
 
                     if (empty($item->date)) {
@@ -92,16 +93,19 @@ class MenuCollectionBuilder
             $this->cache->set(__CLASS__, $items);
         }
 
+        // Sort
+        $collection->sort(function ($a, $b) { return strcmp($a->path, $b->path); });
+
         return $collection;
     }
 
     /**
-     * @param string $realpath
+     * @param string $path
      * @return string
      */
-    protected function createRoute($realpath)
+    protected function createRoute($path)
     {
-        $route = str_replace($realpath, '', $this->path);
+        $route = str_replace($this->path, '', $path);
         $segments = explode('/', $route);
         foreach ($segments AS $i => $segment) {
             $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);

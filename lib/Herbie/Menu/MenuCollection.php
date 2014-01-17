@@ -2,9 +2,10 @@
 
 namespace Herbie\Menu;
 
-use IteratorAggregate;
-use Countable;
 use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
 
 class MenuCollection implements IteratorAggregate, Countable
 {
@@ -55,6 +56,18 @@ class MenuCollection implements IteratorAggregate, Countable
     public function count()
     {
         return count($this->items);
+    }
+
+    /**
+     * @param callable $callback
+     * @throws InvalidArgumentException
+     */
+    public function sort(callable $callback)
+    {
+        if (!is_callable($callback)) {
+            throw new InvalidArgumentException('Given callback is not callable.');
+        }
+        uasort($this->items, $callback);
     }
 
     /**
