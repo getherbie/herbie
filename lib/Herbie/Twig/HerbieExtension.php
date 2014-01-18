@@ -213,6 +213,16 @@ class HerbieExtension extends \Twig_Extension
 
                 $page = $app['page'];
                 $segment = $page->getSegment($segmentId);
+
+                if(isset($app['config']['pseudo_html'])) {
+                    $pseudoHtml = $app['config']['pseudo_html'];
+                    $segment = str_replace(
+                        explode('|', $pseudoHtml['from']),
+                        explode('|', $pseudoHtml['to']),
+                        $segment
+                    );
+                }
+
                 $twigged = $app->renderString($segment);
 
                 $formatter = \Herbie\Formatter\FormatterFactory::create($page->getType());

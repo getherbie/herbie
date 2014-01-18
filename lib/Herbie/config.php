@@ -45,5 +45,9 @@ return [
             'dir' => $this['sitePath'] . '/cache/data',
             'expire' => 18000
         ]
+    ],
+    'pseudo_html' => [
+        'from' => '<box>|</box>|<box:info></box:info>',
+        'to'   => '<div class="box" markdown="1">|</div>|<div class="box box-info" markdown="1">|</div>',
     ]
 ];
