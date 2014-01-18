@@ -2,12 +2,14 @@
 
 namespace Herbie\Loader;
 
+use SplFileInfo;
+use Symfony\Component\Yaml\Parser;
 
 class FrontMatterLoader
 {
 
     /**
-     * @var \Symfony\Component\Yaml\Parser
+     * @var Parser
      */
     protected $parser;
 
@@ -16,7 +18,7 @@ class FrontMatterLoader
      */
     public function __construct()
     {
-        $this->parser = new \Symfony\Component\Yaml\Parser();
+        $this->parser = new Parser();
     }
 
     /**
@@ -27,7 +29,7 @@ class FrontMatterLoader
     {
         $data = '';
 
-        $fileInfo = new \SplFileInfo($path);
+        $fileInfo = new SplFileInfo($path);
         $fileObject = $fileInfo->openFile('r');
 
         $i = 0;

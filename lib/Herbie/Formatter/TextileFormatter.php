@@ -2,6 +2,8 @@
 
 namespace Herbie\Formatter;
 
+use Netcarver\Textile\Parser;
+
 class TextileFormatter implements FormatterInterface
 {
 
@@ -11,7 +13,7 @@ class TextileFormatter implements FormatterInterface
      */
     public function transform($value)
     {
-        $parser = new \Netcarver\Textile\Parser();
+        $parser = new Parser();
         return $parser->textileThis($value);
     }
 

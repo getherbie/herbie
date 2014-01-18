@@ -3,8 +3,10 @@
 namespace Herbie\Twig;
 
 use Twig;
+use Twig_Token;
+use Twig_TokenParser;
 
-class HighlightTokenParser extends \Twig_TokenParser
+class HighlightTokenParser extends Twig_TokenParser
 {
     /**
      * Parses a token and returns a node.
@@ -13,23 +15,23 @@ class HighlightTokenParser extends \Twig_TokenParser
      *
      * @return Twig_NodeInterface A Twig_NodeInterface instance
      */
-    public function parse(\Twig_Token $token)
+    public function parse(Twig_Token $token)
     {
         $lineno = $token->getLine();
 
-        $name = $this->parser->getStream()->expect(\Twig_Token::NAME_TYPE)->getValue();
-        $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
+        $name = $this->parser->getStream()->expect(Twig_Token::NAME_TYPE)->getValue();
+        $this->parser->getStream()->expect(Twig_Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideSpacelessEnd'], true);
-        $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
+        $this->parser->getStream()->expect(Twig_Token::BLOCK_END_TYPE);
 
         return new HighlightNode($name, $body, $lineno, $this->getTag());
     }
 
     /**
-     * @param \Twig_Token $token
+     * @param Twig_Token $token
      * @return bool
      */
-    public function decideSpacelessEnd(\Twig_Token $token)
+    public function decideSpacelessEnd(Twig_Token $token)
     {
         return $token->test('endcode');
     }

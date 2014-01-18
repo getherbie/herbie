@@ -2,6 +2,11 @@
 
 namespace Herbie\Loader;
 
+use Exception;
+use SplFileInfo;
+use Symfony\Component\Yaml\Parser;
+
+
 /**
  * Loads the whole page.
  *
@@ -25,9 +30,9 @@ class PageLoader
      * @param string $path
      * @param Parser $parser
      */
-    public function __construct($path, \Symfony\Component\Yaml\Parser $parser)
+    public function __construct($path, Parser $parser)
     {
-        $this->fileInfo = new \SplFileInfo($path);
+        $this->fileInfo = new SplFileInfo($path);
         $this->parser = $parser;
     }
 
@@ -41,7 +46,7 @@ class PageLoader
 
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function load()
     {
@@ -78,7 +83,7 @@ class PageLoader
         }
 
         if($i<2) {
-            throw new \Exception("Invalid Front-Matter Block in file {$path}.");
+            throw new Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
         unset($fileObj);

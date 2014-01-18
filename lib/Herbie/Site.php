@@ -2,6 +2,7 @@
 
 namespace Herbie;
 
+
 /**
  * Stores the site.
  *
@@ -16,7 +17,7 @@ class Site
     protected $app;
 
     /**
-     * @param \Herbie\Application $app
+     * @param $app
      */
     public function __construct(Application $app)
     {

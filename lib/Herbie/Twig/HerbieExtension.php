@@ -2,9 +2,15 @@
 
 namespace Herbie\Twig;
 
+use Herbie\Formatter\FormatterFactory;
+use Herbie\Site;
 use Twig;
+use Twig_Environment;
+use Twig_Extension;
+use Twig_Loader_String;
+use Twig_SimpleFunction;
 
-class HerbieExtension extends \Twig_Extension
+class HerbieExtension extends Twig_Extension
 {
     /**
      * @var Application
@@ -12,7 +18,7 @@ class HerbieExtension extends \Twig_Extension
     protected $app;
 
     /**
-     * @var \Twig_Environment
+     * @var Twig_Environment
      */
     private $environment;
 
@@ -25,9 +31,9 @@ class HerbieExtension extends \Twig_Extension
     }
 
     /**
-     * @param \Twig_Environment $environment
+     * @param Twig_Environment $environment
      */
-    public function initRuntime(\Twig_Environment $environment)
+    public function initRuntime(Twig_Environment $environment)
     {
         $this->environment = $environment;
     }
@@ -46,7 +52,7 @@ class HerbieExtension extends \Twig_Extension
     public function getGlobals()
     {
         return [
-            'site' => new \Herbie\Site($this->app),
+            'site' => new Site($this->app),
             'page' => $this->app['page'],
             'text' => new Text()
         ];
@@ -112,25 +118,25 @@ class HerbieExtension extends \Twig_Extension
         include(__DIR__.'/Functions/test3.php');
 
         return [
-            new \Twig_SimpleFunction('test1', include(__DIR__.'/Functions/test1.php'), ['is_safe' => ['html']]),
+            new Twig_SimpleFunction('test1', include(__DIR__.'/Functions/test1.php'), ['is_safe' => ['html']]),
 
             include("{$dir}/Functions/Test2.php"),
 
-            new \Twig_SimpleFunction('test3', $test3, ['is_safe' => ['html']]),
+            new Twig_SimpleFunction('test3', $test3, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('link', function ($route, $label, $attributes = []) {
+            new Twig_SimpleFunction('link', function ($route, $label, $attributes = []) {
                 return $this->createLink($route, $label, $attributes);
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('url', function ($route) {
+            new Twig_SimpleFunction('url', function ($route) {
                 return $this->app['urlGenerator']->generate($route);
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('absurl', function ($route) {
+            new Twig_SimpleFunction('absurl', function ($route) {
                 return $this->app['urlGenerator']->generateAbsolute($route);
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('breadcrumb', function (array $options=[]) use ($app) {
+            new Twig_SimpleFunction('breadcrumb', function (array $options=[]) use ($app) {
 
                 // Options
                 extract($options);
@@ -169,7 +175,7 @@ class HerbieExtension extends \Twig_Extension
 
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('pagetitle', function (array $options=[]) use ($app) {
+            new Twig_SimpleFunction('pagetitle', function (array $options=[]) use ($app) {
 
                 extract($options); // delim, siteTite, rootTitle, reverse
 
@@ -201,13 +207,13 @@ class HerbieExtension extends \Twig_Extension
 
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('image', function ($src, $width = '', $height = '', $alt = '', $class = "") {
+            new Twig_SimpleFunction('image', function ($src, $width = '', $height = '', $alt = '', $class = "") {
                 return sprintf('<img src="%s" width="%d" height="%d" alt="%s" class="%s">', $src, $width, $height, $alt, $class);
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('content', function ($segmentId = 0) use ($app) {
+            new Twig_SimpleFunction('content', function ($segmentId = 0) use ($app) {
 
-                if($this->environment->getLoader() instanceof \Twig_Loader_String) {
+                if($this->environment->getLoader() instanceof Twig_Loader_String) {
                     return $this->renderError('You can not use {{ content() }} in page files.');
                 }
 
@@ -225,14 +231,14 @@ class HerbieExtension extends \Twig_Extension
 
                 $twigged = $app->renderString($segment);
 
-                $formatter = \Herbie\Formatter\FormatterFactory::create($page->getType());
+                $formatter = FormatterFactory::create($page->getType());
                 $transformed = $formatter->transform($twigged);
 
                 return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $transformed);
 
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('menu', function (array $options=[]) use ($app, $ext) {
+            new Twig_SimpleFunction('menu', function (array $options=[]) use ($app, $ext) {
 
                 extract($options); // showHidden
                 $showHidden = isset($showHidden) ? (bool)$showHidden : false;
@@ -244,7 +250,7 @@ class HerbieExtension extends \Twig_Extension
                 return sprintf('<div class="menu">%s</div>', $html);
             }, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('sitemap', function (array $options=[]) use ($app, $ext) {
+            new Twig_SimpleFunction('sitemap', function (array $options=[]) use ($app, $ext) {
 
                 extract($options); // showHidden
                 $showHidden = isset($showHidden) ? (bool)$showHidden : false;
@@ -254,7 +260,7 @@ class HerbieExtension extends \Twig_Extension
                 return sprintf('<div class="sitemap">%s</div>', $html);
 			}, ['is_safe' => ['html']]),
 
-            new \Twig_SimpleFunction('bodyClass', function () use ($app) {
+            new Twig_SimpleFunction('bodyClass', function () use ($app) {
                 $route = trim($app->getRoute(), '/');
                 if(empty($route)) {
                 	$route = 'index';

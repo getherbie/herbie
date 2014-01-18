@@ -2,16 +2,23 @@
 
 namespace Herbie;
 
+use ErrorException;
 use Exception;
+use Pimple;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Yaml\Parser;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
+use Twig_Extension_Debug;
+use Twig_Loader_String;
 
 /**
  * The application using Pimple as dependency injection container.
  *
  * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
-class Application extends \Pimple
+class Application extends Pimple
 {
 
     /**
@@ -19,10 +26,10 @@ class Application extends \Pimple
      * @param string $errstr
      * @param string $errfile
      * @param int $errline
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function exception_error_handler($errno, $errstr, $errfile, $errline ) {
-        throw new \ErrorException($errstr, 500, $errno, $errfile, $errline);
+        throw new ErrorException($errstr, 500, $errno, $errfile, $errline);
     }
 
     /**
@@ -42,7 +49,7 @@ class Application extends \Pimple
         $this['sitePath'] = realpath($sitePath);
 
         $this['parser'] = $this->share(function () {
-            return new \Symfony\Component\Yaml\Parser();
+            return new Parser();
         });
 
         $config = $this->loadConfiguration();
@@ -109,14 +116,14 @@ class Application extends \Pimple
 
         $this['twigFilesystem'] = $this->share(function () use ($app, $config) {
 
-            $loader = new \Twig_Loader_Filesystem($config['layouts']['path']);
-            $twig = new \Twig_Environment($loader, [
+            $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
+            $twig = new Twig_Environment($loader, [
                 'debug' => $config['twig']['debug'],
                 'cache' => $config['twig']['cache']
             ]);
 
             if(!empty($config['twig']['debug'])) {
-                $twig->addExtension(new \Twig_Extension_Debug());
+                $twig->addExtension(new Twig_Extension_Debug());
             }
             $twig->addExtension(new Twig\HerbieExtension($app));
             $this->addTwigPlugins($twig, $config);
@@ -127,14 +134,14 @@ class Application extends \Pimple
 
         $this['twigString'] = $this->share(function () use ($app, $config) {
 
-            $loader = new \Twig_Loader_String();
-            $twig = new \Twig_Environment($loader, [
+            $loader = new Twig_Loader_String();
+            $twig = new Twig_Environment($loader, [
                 'debug' => $config['twig']['debug'],
                 'cache' => $config['twig']['cache']
             ]);
 
             if(!empty($config['twig']['debug'])) {
-                $twig->addExtension(new \Twig_Extension_Debug());
+                $twig->addExtension(new Twig_Extension_Debug());
             }
 
             $twig->addExtension(new Twig\HerbieExtension($app));
@@ -151,10 +158,10 @@ class Application extends \Pimple
     }
 
     /**
-     * @param \Twig_Environment $twig
+     * @param Twig_Environment $twig
      * @param array $config
      */
-    public function addTwigPlugins(\Twig_Environment $twig, array $config)
+    public function addTwigPlugins(Twig_Environment $twig, array $config)
     {
         $app = $this;
 
@@ -207,7 +214,7 @@ class Application extends \Pimple
             $content = $this->handle($request);
             $response = new Response($content);
 
-        } catch (\Herbie\Exception\ResourceNotFoundException $e) {
+        } catch (Exception\ResourceNotFoundException $e) {
 
             $content = $this->renderFile('error.html', ['error' => $e]);
             $response = new Response($content, 404);

@@ -3,8 +3,7 @@
 namespace Herbie\Blog;
 
 use Herbie\Cache\CacheInterface;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
+use Herbie\Loader\FrontMatterLoader;
 
 class PostCollectionBuilder
 {
@@ -39,7 +38,7 @@ class PostCollectionBuilder
             $collection = new PostCollection();
             if(is_dir($this->path)) {
 
-                $loader = new \Herbie\Loader\FrontMatterLoader();
+                $loader = new FrontMatterLoader();
                 foreach(scandir($this->path, 1) AS $filename) {
                     if (substr($filename, 0, 1) == '.') {
                         continue;

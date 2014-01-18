@@ -3,6 +3,7 @@
 namespace Herbie\Blog;
 
 use Exception;
+use LogicException;
 
 class PostItem
 {
@@ -116,11 +117,12 @@ class PostItem
 
     /**
      * @param array $data
+     * @throws LogicException
      */
     public function setData(array $data)
     {
         if (array_key_exists('_data_', $data)) {
-            throw new \LogicException("Field _data_ is not allowed.");
+            throw new LogicException("Field _data_ is not allowed.");
         }
         foreach ($data AS $key => $value) {
             $this->__set($key, $value);
@@ -153,7 +155,7 @@ class PostItem
 
     /**
      * @param $name
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function __get($name)
     {
@@ -163,7 +165,7 @@ class PostItem
         } elseif (array_key_exists($name, $this->_data_)) {
             return $this->_data_[$name];
         } else {
-            throw new \LogicException("Field {$name} does not exist.");
+            throw new LogicException("Field {$name} does not exist.");
         }
     }
 
@@ -186,7 +188,6 @@ class PostItem
     /**
      * @param string $name
      * @param mixed $value
-     * @throws \LogicException
      */
     public function __set($name, $value)
     {

@@ -2,8 +2,9 @@
 
 namespace Herbie\Menu;
 
+use Iterator;
 
-class MenuTree implements \Iterator
+class MenuTree implements Iterator
 {
 
     /**

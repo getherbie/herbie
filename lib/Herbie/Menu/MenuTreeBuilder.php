@@ -3,7 +3,7 @@
 namespace Herbie\Menu;
 
 use Herbie\Menu\MenuCollection;
-
+use Herbie\Menu\MenuTree;
 
 class MenuTreeBuilder
 {
@@ -22,7 +22,7 @@ class MenuTreeBuilder
     }
 
     /**
-     * @return \Herbie\Menu\MenuTree
+     * @return MenuTree
      */
     public function build() {
 

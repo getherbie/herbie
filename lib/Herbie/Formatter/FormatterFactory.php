@@ -8,7 +8,7 @@ class FormatterFactory
 
     /**
      * @param string $type
-     * @return \Herbie\Formatter\FormatterInterface
+     * @return FormatterInterface
      */
     public static function create($type)
     {

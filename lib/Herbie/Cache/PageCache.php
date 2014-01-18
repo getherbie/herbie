@@ -2,6 +2,8 @@
 
 namespace Herbie\Cache;
 
+use Exception;
+use LogicException;
 
 class PageCache implements CacheInterface
 {
@@ -59,14 +61,14 @@ class PageCache implements CacheInterface
      * @param string $id
      * @param mixed $value
      * @return boolean
-     * @throws \Exception
+     * @throws Exception
      */
     public function set($id, $value)
     {
         $filename = $this->makeFilename($id);
         $written = file_put_contents($filename, $value);
         if($written === false) {
-            throw new \Exception('Could not write to page cache file', 500);
+            throw new Exception('Could not write to page cache file', 500);
         }
         return true;
     }
@@ -84,12 +86,12 @@ class PageCache implements CacheInterface
     /**
      * @param string $name
      * @param mixed $value
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function __set($name, $value)
     {
         $message = sprintf('Property "%s" does not exist in class %s.', $name, __CLASS__);
-        throw new \LogicException($message);
+        throw new LogicException($message);
     }
 
 }

@@ -3,8 +3,10 @@
 namespace Herbie\Menu;
 
 use Herbie\Cache\CacheInterface;
+use Herbie\Loader\FrontMatterLoader;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Symfony\Component\Yaml\Parser;
 
 class MenuCollectionBuilder
 {
@@ -53,7 +55,7 @@ class MenuCollectionBuilder
 
                     if ($splFileInfo->isFile()) {
 
-                        $loader = new \Herbie\Loader\FrontMatterLoader();
+                        $loader = new FrontMatterLoader();
                         $data = $loader->load($path);
                         $data['type'] = 'file';
                         $data['path'] = $path;
@@ -72,7 +74,7 @@ class MenuCollectionBuilder
 
                         $configPath = $path . '/config.yml';
                         if (is_file($configPath)) {
-                            $parser = new \Symfony\Component\Yaml\Parser();
+                            $parser = new Parser();
                             $folderConf = $parser->parse(file_get_contents($configPath));
                             $item->setData($folderConf);
                         } else {
