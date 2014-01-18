@@ -2,11 +2,10 @@
 
 namespace Herbie\Twig;
 
+use GeSHi;
+use Twig_Compiler;
 use Twig_Node;
 use Twig_NodeInterface;
-
-include_once(__DIR__ . '/../../../vendor/easybook/geshi/geshi.php');
-
 
 class HighlightNode extends Twig_Node
 {
