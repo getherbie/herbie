@@ -11,9 +11,9 @@
 
 namespace Herbie\Menu;
 
-use IteratorAggregate;
-use Countable;
 use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 
 class RootPath implements IteratorAggregate, Countable
 {

@@ -11,9 +11,9 @@
 
 namespace Herbie\Blog;
 
-use IteratorAggregate;
-use Countable;
 use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 
 class PostCollection implements IteratorAggregate, Countable
 {

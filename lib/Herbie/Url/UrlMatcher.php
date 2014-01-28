@@ -11,9 +11,9 @@
 
 namespace Herbie\Url;
 
-use Herbie\Menu\MenuCollection;
 use Herbie\Blog\PostCollection;
 use Herbie\Exception\ResourceNotFoundException;
+use Herbie\Menu\MenuCollection;
 
 /**
  * The url matcher.

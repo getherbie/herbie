@@ -17,9 +17,9 @@ use Pimple;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Parser;
-use Twig_Loader_Filesystem;
 use Twig_Environment;
 use Twig_Extension_Debug;
+use Twig_Loader_Filesystem;
 use Twig_Loader_String;
 
 /**
