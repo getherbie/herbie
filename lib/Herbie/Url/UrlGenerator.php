@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The URL generator.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class UrlGenerator
 {

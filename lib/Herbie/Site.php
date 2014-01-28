@@ -14,8 +14,6 @@ namespace Herbie;
 
 /**
  * Stores the site.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class Site
 {

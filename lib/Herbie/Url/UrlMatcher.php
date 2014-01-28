@@ -17,8 +17,6 @@ use Herbie\Exception\ResourceNotFoundException;
 
 /**
  * The url matcher.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class UrlMatcher
 {

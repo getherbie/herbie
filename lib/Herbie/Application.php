@@ -24,8 +24,6 @@ use Twig_Loader_String;
 
 /**
  * The application using Pimple as dependency injection container.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class Application extends Pimple
 {

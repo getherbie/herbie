@@ -18,8 +18,6 @@ use Symfony\Component\Yaml\Parser;
 
 /**
  * Loads the whole page.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class PageLoader
 {

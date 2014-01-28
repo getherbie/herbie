@@ -15,8 +15,6 @@ use Symfony\Component\Yaml\Parser;
 
 /**
  * Loads site data.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class DataLoader
 {

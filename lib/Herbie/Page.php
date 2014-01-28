@@ -16,8 +16,6 @@ use LogicException;
 
 /**
  * Stores the page.
- *
- * @author Thomas Breuss <thomas.breuss@zephir.ch>
  */
 class Page
 {
