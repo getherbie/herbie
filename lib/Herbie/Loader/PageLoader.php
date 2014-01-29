@@ -81,11 +81,10 @@ class PageLoader
                     $segmentId = $matches[1];
                     continue;
                 }
-                if(array_key_exists($segmentId, $segments)) {
-                    $segments[$segmentId] .= $line;
-                } else {
+                if(!array_key_exists($segmentId, $segments)) {
                     $segments[$segmentId] = '';
                 }
+                $segments[$segmentId] .= $line;
             }
         }
 
