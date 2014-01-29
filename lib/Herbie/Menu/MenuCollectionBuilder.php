@@ -66,9 +66,12 @@ class MenuCollectionBuilder
 
                         $loader = new FrontMatterLoader();
                         $data = $loader->load($path);
+
+                        $trimExtension = empty($data['preserveExtension']);
+
                         $data['type'] = 'file';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path);
+                        $data['route'] = $this->createRoute($path, $trimExtension);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
@@ -77,11 +80,11 @@ class MenuCollectionBuilder
                         $data = [];
                         $data['type'] = 'folder';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path);
+                        $data['route'] = $this->createRoute($path, $trimExtension);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
-                        $configPath = $path . '/config.yml';
+                        $configPath = $path . '/folder.yml';
                         if (is_file($configPath)) {
                             $parser = new Parser();
                             $folderConf = $parser->parse(file_get_contents($configPath));
@@ -112,9 +115,10 @@ class MenuCollectionBuilder
 
     /**
      * @param string $path
+     * @param bool $trimExtension
      * @return string
      */
-    protected function createRoute($path)
+    protected function createRoute($path, $trimExtension=false)
     {
         $route = str_replace($this->path, '', $path);
         $segments = explode('/', $route);
@@ -125,7 +129,7 @@ class MenuCollectionBuilder
 
         // trim extension
         $pos = strrpos($imploded, '.');
-        if ($pos !== false) {
+        if ($trimExtension && ($pos !== false)) {
             $imploded = substr($imploded, 0, $pos);
         }
 

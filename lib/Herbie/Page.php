@@ -40,6 +40,11 @@ class Page
     protected $date;
 
     /**
+     * @var boolean
+     */
+    protected $preserveExtension;
+
+    /**
      * @var array
      */
     protected $_data_ = [];
@@ -75,6 +80,14 @@ class Page
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPreserveExtension()
+    {
+        return $this->preserveExtension;
     }
 
     /**
@@ -149,6 +162,14 @@ class Page
     public function setDate($date)
     {
         $this->date = is_numeric($date) ? date('c', $date) : $date;
+    }
+
+    /**
+     * @param bool $preserveExtension
+     */
+    public function setPreserveExtension($preserveExtension)
+    {
+        $this->preserveExtension = (bool)$preserveExtension;
     }
 
     /**
