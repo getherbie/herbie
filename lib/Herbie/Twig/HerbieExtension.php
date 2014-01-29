@@ -163,7 +163,8 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionAbsurl($route) {
+    public function functionAbsurl($route)
+    {
         return $this->app['urlGenerator']->generateAbsolute($route);
     }
 
@@ -185,8 +186,8 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionBreadcrumb(array $options=[]){
-
+    public function functionBreadcrumb(array $options=[])
+    {
         // Options
         extract($options);
         $delim      = isset($delim) ? $delim : '';
@@ -228,31 +229,13 @@ class HerbieExtension extends Twig_Extension
      * @param string|int $segmentId
      * @return string
      */
-    public function functionContent($segmentId = 0) {
-
+    public function functionContent($segmentId = 0)
+    {
         if($this->environment->getLoader() instanceof Twig_Loader_String) {
             return $this->renderError('You can not use {{ content() }} in page files.');
         }
-
-        $page = $this->app['page'];
-        $segment = $page->getSegment($segmentId);
-
-        if(isset($this->app['config']['pseudo_html'])) {
-            $pseudoHtml = $this->app['config']['pseudo_html'];
-            $segment = str_replace(
-                explode('|', $pseudoHtml['from']),
-                explode('|', $pseudoHtml['to']),
-                $segment
-            );
-        }
-
-        $twigged = $this->app->renderString($segment);
-
-        $formatter = FormatterFactory::create($page->getType());
-        $transformed = $formatter->transform($twigged);
-
-        return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $transformed);
-
+        $content = $this->app->renderContentSegment($segmentId);
+        return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
     }
 
     /**
@@ -263,7 +246,8 @@ class HerbieExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    public function functionImage($src, $width = '', $height = '', $alt = '', $class = "") {
+    public function functionImage($src, $width = '', $height = '', $alt = '', $class = "")
+    {
         return sprintf('<img src="%s" width="%d" height="%d" alt="%s" class="%s">', $src, $width, $height, $alt, $class);
     }
 
@@ -273,7 +257,8 @@ class HerbieExtension extends Twig_Extension
      * @param array $attributes
      * @return string
      */
-    public function functionLink($route, $label, $attributes = []) {
+    public function functionLink($route, $label, $attributes = [])
+    {
         return $this->createLink($route, $label, $attributes);
     }
 
@@ -299,7 +284,6 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionPagetitle (array $options=[])
     {
-
         extract($options); // delim, siteTite, rootTitle, reverse
 
         $delim      = isset($delim) ? $delim : ' / ';
@@ -334,7 +318,8 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionSitemap(array $options=[]) {
+    public function functionSitemap(array $options=[])
+    {
 
         extract($options); // showHidden
         $showHidden = isset($showHidden) ? (bool)$showHidden : false;
@@ -348,7 +333,8 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionUrl($route) {
+    public function functionUrl($route)
+    {
         return $this->app['urlGenerator']->generate($route);
     }
 

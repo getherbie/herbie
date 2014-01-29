@@ -223,12 +223,12 @@ class Application extends Pimple
 
         } catch (Exception\ResourceNotFoundException $e) {
 
-            $content = $this->renderFile('error.html', ['error' => $e]);
+            $content = $this->renderLayout('error.html', ['error' => $e]);
             $response = new Response($content, 404);
 
         } catch (Exception $e) {
 
-            $content = $this->renderFile('error.html', ['error' => $e]);
+            $content = $this->renderLayout('error.html', ['error' => $e]);
             $response = new Response($content, 500);
         }
 
@@ -253,8 +253,13 @@ class Application extends Pimple
             $page = $this['page'];
             $page->load($pageLoader);
 
-            $template = $page->getLayout();
-            $content = $this->renderFile($template);
+            $layout = $page->getLayout();
+            if(empty($layout)) {
+                $content = $this->renderContentSegment(0);
+            } else {
+                $content = $this->renderLayout($layout);
+            }
+
             $cache->set($path, $content);
             return $content;
         }
@@ -262,17 +267,17 @@ class Application extends Pimple
     }
 
     /**
-     * @param string $template
+     * @param string $layout
      * @param array $arguments
      * @return string
      */
-    public function renderFile($template, array $arguments = array())
+    public function renderLayout($layout, array $arguments = array())
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
             'baseUrl' => $this['request']->getBaseUrl()
         ]);
-        return $this['twigFilesystem']->render($template, $arguments);
+        return $this['twigFilesystem']->render($layout, $arguments);
     }
 
     /**
@@ -283,6 +288,30 @@ class Application extends Pimple
     public function renderString($string, array $arguments = array())
     {
         return $this['twigString']->render($string, $arguments);
+    }
+
+    /**
+     * @param string|int $segmentId
+     * @return string
+     */
+    public function renderContentSegment($segmentId)
+    {
+        $page = $this['page'];
+        $segment = $page->getSegment($segmentId);
+
+        if(isset($this['config']['pseudo_html'])) {
+            $pseudoHtml = $this['config']['pseudo_html'];
+            $segment = str_replace(
+                explode('|', $pseudoHtml['from']),
+                explode('|', $pseudoHtml['to']),
+                $segment
+            );
+        }
+
+        $twigged = $this->renderString($segment);
+
+        $formatter = Formatter\FormatterFactory::create($page->getType());
+        return $formatter->transform($twigged);
     }
 
     /**
