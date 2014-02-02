@@ -2,6 +2,7 @@
     "name": "getherbie/herbie",
     "type": "library",
     "minimum-stability": "dev",
+    "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
         "easybook/geshi": "1.0.8.12",
