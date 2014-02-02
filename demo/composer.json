@@ -2,6 +2,7 @@
     "name": "getherbie/demo",
     "type": "project",
     "minimum-stability": "dev",
+    "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
         "getherbie/herbie": "dev-master",
