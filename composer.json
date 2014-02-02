@@ -1,5 +1,6 @@
 {
     "name": "getherbie/herbie",
+	"description": "Herbie is a file based CMS & blog system and not ready for production use yet.",
     "type": "library",
     "minimum-stability": "dev",
     "license":"BSD-3-Clause",
