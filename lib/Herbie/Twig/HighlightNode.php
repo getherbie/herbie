@@ -40,7 +40,7 @@ class HighlightNode extends Twig_Node
         $name = $this->getAttribute('name');
 
         $geshi = new GeSHi($source, $name);
-        $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
+        #$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
 
         $parsedCode = sprintf('<div class="highlight highlight-%s">%s</div>',
             $name,
