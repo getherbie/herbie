@@ -128,6 +128,21 @@ class Page
     }
 
     /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        switch($this->type) {
+            case 'rss';
+                return 'text/xml';
+                #return 'application/rss+xml';
+            case 'xml':
+                return 'text/xml';
+        }
+        return 'text/html';
+    }
+
+    /**
      * @param PageLoader $loader
      */
     public function load(PageLoader $loader)

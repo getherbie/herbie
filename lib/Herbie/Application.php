@@ -218,8 +218,7 @@ class Application extends Pimple
 
         try {
 
-            $content = $this->handle($request);
-            $response = new Response($content);
+            $response = $this->handle($request);
 
         } catch (Exception\ResourceNotFoundException $e) {
 
@@ -237,7 +236,7 @@ class Application extends Pimple
 
     /**
      * @param Request $request
-     * @return string
+     * @return Response
      */
     public function handle(Request $request)
     {
@@ -245,25 +244,24 @@ class Application extends Pimple
         $path = $this['urlMatcher']->match($route);
         $cache = $this['cache.page'];
 
-        $cached = $cache->get($path);
-        if($cached === false) {
+        $pageLoader = new Loader\PageLoader($path, $this['parser']);
+        $page = $this['page'];
+        $page->load($pageLoader);
 
-            $pageLoader = new Loader\PageLoader($path, $this['parser']);
-
-            $page = $this['page'];
-            $page->load($pageLoader);
-
+        $content = $cache->get($path);
+        if($content === false) {
             $layout = $page->getLayout();
             if(empty($layout)) {
                 $content = $this->renderContentSegment(0);
             } else {
                 $content = $this->renderLayout($layout);
             }
-
             $cache->set($path, $content);
-            return $content;
         }
-        return $cached;
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', $page->getContentType());
+        return $response;
     }
 
     /**
