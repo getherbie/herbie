@@ -11,12 +11,14 @@
 
 namespace Herbie\Twig;
 
+use DateTime;
 use Herbie\Formatter\FormatterFactory;
 use Herbie\Site;
 use Twig;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
+use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 
 class HerbieExtension extends Twig_Extension
@@ -117,6 +119,16 @@ class HerbieExtension extends Twig_Extension
     /**
      * @return array
      */
+    public function getFilters()
+    {
+        return [
+            new Twig_SimpleFilter('strftime', array($this, 'filterStrftime'))
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         $options = ['is_safe' => ['html']];
@@ -157,6 +169,17 @@ class HerbieExtension extends Twig_Extension
         }
         $html .= '</ul>';
         return $html;
+    }
+
+    /**
+     * @param string $format
+     * @param string $date
+     * @return string
+     */
+    public function filterStrftime($date, $format)
+    {
+        $dateTime = new DateTime($date);
+        return strftime($format, $dateTime->getTimestamp());
     }
 
     /**
