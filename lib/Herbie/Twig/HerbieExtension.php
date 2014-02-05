@@ -250,14 +250,18 @@ class HerbieExtension extends Twig_Extension
 
     /**
      * @param string|int $segmentId
+     * @param bool $wrap
      * @return string
      */
-    public function functionContent($segmentId = 0)
+    public function functionContent($segmentId = 0, $wrap=false)
     {
         if($this->environment->getLoader() instanceof Twig_Loader_String) {
             return $this->renderError('You can not use {{ content() }} in page files.');
         }
         $content = $this->app->renderContentSegment($segmentId);
+        if(empty($wrap)) {
+            return $content;
+        }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
     }
 
