@@ -48,13 +48,13 @@ class UrlMatcher
      */
     public function match($route)
     {
-        // Folder
+        // File
         $item = $this->collection->getItem($route);
         if(isset($item) && $item->isFile()) {
             return $item->getPath();
         }
 
-        // File
+        // Folder
         $item = $this->collection->getItem($route . '/index');
         if(isset($item) && $item->isFile()) {
             return $item->getPath();
