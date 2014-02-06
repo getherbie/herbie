@@ -13,14 +13,14 @@ namespace Herbie\Blog;
 
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
+use Symfony\Component\Yaml\Parser;
 
 class PostCollectionBuilder
 {
-
     /**
-     * @var string
+     * @var Parser
      */
-    protected $path;
+    protected $parser;
 
     /**
      * @var CacheInterface
@@ -28,32 +28,34 @@ class PostCollectionBuilder
     protected $cache;
 
     /**
-     * @param string $path
+     * @param Parser $parser
      * @param CacheInterface $cache
      */
-    public function __construct($path, CacheInterface $cache)
+    public function __construct(Parser $parser, CacheInterface $cache)
     {
-        $this->path = realpath($path);
+        $this->parser = $parser;
         $this->cache = $cache;
     }
 
     /**
+     * @param string $path
      * @return PostCollection
      */
-    public function build()
+    public function build($path)
     {
+        $realpath = realpath($path);
         $collection = $this->cache->get(__CLASS__);
         if($collection === false) {
             $collection = new PostCollection();
-            if(is_dir($this->path)) {
+            if(is_dir($realpath)) {
 
-                $loader = new FrontMatterLoader();
-                foreach(scandir($this->path, 1) AS $filename) {
+                $loader = new FrontMatterLoader($this->parser);
+                foreach(scandir($realpath, 1) AS $filename) {
                     if (substr($filename, 0, 1) == '.') {
                         continue;
                     }
-                    $data = $loader->load($this->path.'/'.$filename);
-                    $data['path'] = $this->path.'/'.$filename;
+                    $data = $loader->load($realpath.'/'.$filename);
+                    $data['path'] = $realpath.'/'.$filename;
                     $item = new PostItem($data);
                     $collection->addItem($item);
                 }

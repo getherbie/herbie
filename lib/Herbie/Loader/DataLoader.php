@@ -19,11 +19,6 @@ use Symfony\Component\Yaml\Parser;
 class DataLoader
 {
     /**
-     * @var string
-     */
-    protected $path;
-
-    /**
      * @var Parser
      */
     protected $parser;
@@ -34,24 +29,23 @@ class DataLoader
     protected $extensions;
 
     /**
-     * @param string $path
      * @param Parser $parser
      * @param array $extensions
      */
-    public function __construct($path, Parser $parser, array $extensions = [])
+    public function __construct(Parser $parser, array $extensions = [])
     {
-        $this->path = $path;
         $this->parser = $parser;
         $this->extensions = $extensions;
     }
 
     /**
+     * @param string $path
      * @return array
      */
-    public function load()
+    public function load($path)
     {
         $data = [];
-        $files = scandir($this->path);
+        $files = scandir($path);
         foreach($files AS $file) {
             if(substr($file, 0, 1) === '.') {
                 continue;
@@ -61,8 +55,8 @@ class DataLoader
                 continue;
             }
             $key = $info['filename'];
-            $content = file_get_contents($this->path.'/'.$file);
-            $data[$key] = $this->parser->parse($content);
+            $yaml = file_get_contents($path.'/'.$file);
+            $data[$key] = $this->parser->parse($yaml);
         }
 
         return $data;

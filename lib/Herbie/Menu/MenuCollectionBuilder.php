@@ -19,11 +19,10 @@ use Symfony\Component\Yaml\Parser;
 
 class MenuCollectionBuilder
 {
-
     /**
-     * @var string
+     * @var Parser
      */
-    protected $path;
+    protected $parser;
 
     /**
      * @var CacheInterface
@@ -31,29 +30,31 @@ class MenuCollectionBuilder
     protected $cache;
 
     /**
-     * @param string $path
+     * @param Parser $parser
      * @param CacheInterface $cache
      */
-    public function __construct($path, CacheInterface $cache)
+    public function __construct(Parser $parser, CacheInterface $cache)
     {
-        $this->path = realpath($path);
+        $this->parser = $parser;
         $this->cache = $cache;
     }
 
     /**
+     * @param string $path
      * @return MenuCollection
      */
-    public function build()
+    public function build($path)
     {
+        $realpath = realpath($path);
         $items = $this->cache->get(__CLASS__);
         if ($items === false) {
 
             $collection = new MenuCollection();
 
-            if (is_dir($this->path)) {
+            if (is_dir($realpath)) {
 
                 $objects = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($this->path), RecursiveIteratorIterator::SELF_FIRST
+                    new RecursiveDirectoryIterator($realpath), RecursiveIteratorIterator::SELF_FIRST
                 );
 
                 foreach ($objects AS $path => $splFileInfo) {
@@ -64,14 +65,14 @@ class MenuCollectionBuilder
 
                     if ($splFileInfo->isFile()) {
 
-                        $loader = new FrontMatterLoader();
+                        $loader = new FrontMatterLoader($this->parser);
                         $data = $loader->load($path);
 
                         $trimExtension = empty($data['preserveExtension']);
 
                         $data['type'] = 'file';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path, $trimExtension);
+                        $data['route'] = $this->createRoute($path, $realpath, $trimExtension);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
@@ -80,14 +81,13 @@ class MenuCollectionBuilder
                         $data = [];
                         $data['type'] = 'folder';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path, $trimExtension);
+                        $data['route'] = $this->createRoute($path, $realpath, $trimExtension);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
                         $configPath = $path . '/folder.yml';
                         if (is_file($configPath)) {
-                            $parser = new Parser();
-                            $folderConf = $parser->parse(file_get_contents($configPath));
+                            $folderConf = $this->parser->parse(file_get_contents($configPath));
                             $item->setData($folderConf);
                         } else {
                             $title = preg_replace('/^[0-9]+-/', '', $splFileInfo->getBasename());
@@ -115,12 +115,13 @@ class MenuCollectionBuilder
 
     /**
      * @param string $path
+     * @param string $realpath
      * @param bool $trimExtension
      * @return string
      */
-    protected function createRoute($path, $trimExtension=false)
+    protected function createRoute($path, $realpath, $trimExtension=false)
     {
-        $route = str_replace($this->path, '', $path);
+        $route = str_replace($realpath, '', $path);
         $segments = explode('/', $route);
         foreach ($segments AS $i => $segment) {
             $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);

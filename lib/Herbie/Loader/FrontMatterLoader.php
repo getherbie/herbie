@@ -23,11 +23,11 @@ class FrontMatterLoader
     protected $parser;
 
     /**
-     * Constructor
+     * @param Parser $parser
      */
-    public function __construct()
+    public function __construct(Parser $parser)
     {
-        $this->parser = new Parser();
+        $this->parser = $parser;
     }
 
     /**
@@ -36,7 +36,7 @@ class FrontMatterLoader
      */
     public function load($path)
     {
-        $data = '';
+        $yaml = '';
 
         $fileInfo = new SplFileInfo($path);
         $fileObject = $fileInfo->openFile('r');
@@ -50,7 +50,7 @@ class FrontMatterLoader
                 continue;
             }
             if ($i == 1) {
-                $data .= $line;
+                $yaml .= $line;
             }
             if ($i > 1) {
                 break;
@@ -60,7 +60,7 @@ class FrontMatterLoader
         // Close file handler?
         unset($fileObject);
 
-        return (array)$this->parser->parse($data);
-   }
+        return (array) $this->parser->parse($yaml);
+    }
 
 }

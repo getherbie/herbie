@@ -83,19 +83,21 @@ class Application extends Pimple
 
         $this['menu'] = $this->share(function () use ($app, $config) {
             $cache = $app['cache.data'];
-            $builder = new Menu\MenuCollectionBuilder($config['pages']['path'], $cache);
-            return $builder->build();
+            $path = $config['pages']['path'];
+            $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache);
+            return $builder->build($path);
         });
 
         $this['tree'] = $this->share(function () use ($app, $config) {
-            $builder = new Menu\MenuTreeBuilder($app['menu']);
-            return $builder->build();
+            $builder = new Menu\MenuTreeBuilder();
+            return $builder->build($app['menu']);
         });
 
         $this['posts'] = $this->share(function () use ($app, $config) {
             $cache = $app['cache.data'];
-            $builder = new Blog\PostCollectionBuilder($config['posts']['path'], $cache);
-            return $builder->build();
+            $path = $config['posts']['path'];
+            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache);
+            return $builder->build($path);
         });
 
         $this['rootPath'] = $this->share(function () use ($app) {
@@ -105,8 +107,8 @@ class Application extends Pimple
 
         $this['data'] = $this->share(function() use ($app, $config) {
             $parser = $app['parser'];
-            $loader = new Loader\DataLoader($config['data']['path'], $parser, $config['data']['extensions']);
-            return $loader->load();
+            $loader = new Loader\DataLoader($parser, $config['data']['extensions']);
+            return $loader->load($config['data']['path']);
         });
 
         $this['urlMatcher'] = $this->share(function () use ($app) {
@@ -244,9 +246,8 @@ class Application extends Pimple
         $path = $this['urlMatcher']->match($route);
         $cache = $this['cache.page'];
 
-        $pageLoader = new Loader\PageLoader($path, $this['parser']);
-        $page = $this['page'];
-        $page->load($pageLoader);
+        $pageLoader = new Loader\PageLoader($this['parser']);
+        $this['page'] = $page = $pageLoader->load($path);
 
         $content = $cache->get($path);
         if($content === false) {

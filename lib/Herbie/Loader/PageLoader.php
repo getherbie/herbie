@@ -14,6 +14,7 @@ namespace Herbie\Loader;
 use Exception;
 use SplFileInfo;
 use Symfony\Component\Yaml\Parser;
+use Herbie\Page;
 
 
 /**
@@ -21,45 +22,30 @@ use Symfony\Component\Yaml\Parser;
  */
 class PageLoader
 {
-
     /**
-     * @var SplFileInfo
-     */
-    protected $fileInfo;
-
-    /**
-     *
      * @var Parser
      */
     protected $parser;
 
     /**
-     * @param string $path
      * @param Parser $parser
      */
-    public function __construct($path, Parser $parser)
+    public function __construct(Parser $parser)
     {
-        $this->fileInfo = new SplFileInfo($path);
         $this->parser = $parser;
     }
 
     /**
-     * @return string
-     */
-    public function getExtension()
-    {
-        return $this->fileInfo->getExtension();
-    }
-
-    /**
+     * @param string $path
      * @return array
      * @throws Exception
      */
-    public function load()
+    public function load($path)
     {
-        $fileObj = $this->fileInfo->openFile('r');
+        $fileInfo = new SplFileInfo($path);
+        $fileObj = $fileInfo->openFile('r');
 
-        $data = '';
+        $yaml = '';
         $segments = [];
         $segmentId = 0;
 
@@ -72,7 +58,7 @@ class PageLoader
             }
             // data
             if ($i == 1) {
-                $data .= $line;
+                $yaml .= $line;
             }
             // segments
             if ($i > 1) {
@@ -94,10 +80,16 @@ class PageLoader
 
         unset($fileObj);
 
-        return [
-            'data' => (array)$this->parser->parse($data),
-            'segments' => $segments
-        ];
+        $data = array_merge(
+            ['type' => $fileInfo->getExtension()],
+            (array)$this->parser->parse($yaml)
+        );
+
+        $page = new Page();
+        $page->setData($data);
+        $page->setSegments($segments);
+        
+        return $page;
     }
 
 }

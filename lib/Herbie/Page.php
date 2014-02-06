@@ -11,7 +11,6 @@
 
 namespace Herbie;
 
-use Herbie\Loader\PageLoader;
 use LogicException;
 
 /**
@@ -140,21 +139,6 @@ class Page
                 return 'text/xml';
         }
         return 'text/html';
-    }
-
-    /**
-     * @param PageLoader $loader
-     */
-    public function load(PageLoader $loader)
-    {
-        $data = $loader->load();
-        $this->type = $loader->getExtension();
-        if(array_key_exists('data', $data)) {
-            $this->setData($data['data']);
-        }
-        if(array_key_exists('segments', $data)) {
-            $this->setSegments($data['segments']);
-        }
     }
 
     /**
