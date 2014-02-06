@@ -23,6 +23,7 @@ use Twig_SimpleFunction;
 
 class HerbieExtension extends Twig_Extension
 {
+
     /**
      * @var Application
      */
@@ -95,13 +96,13 @@ class HerbieExtension extends Twig_Extension
     /**
      * @param string $route
      * @param string $label
-     * @param array $attributes
+     * @param array $htmlAttributes
      * @return string
      */
-    public function createLink($route, $label, $attributes = [])
+    public function createLink($route, $label, $htmlAttributes = [])
     {
         $url = $this->app['urlGenerator']->generate($route);
-        $attributesAsString = $this->buildHtmlAttributes($attributes);
+        $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
         return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
     }
 
@@ -133,14 +134,14 @@ class HerbieExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_SimpleFunction('absurl', array($this, 'functionAbsurl'), $options),
+            new Twig_SimpleFunction('absUrl', array($this, 'functionAbsUrl'), $options),
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
             new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
-            new Twig_SimpleFunction('pagetitle', array($this, 'functionPageTitle'), $options),
+            new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
             new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
             new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options),
         ];
@@ -160,7 +161,7 @@ class HerbieExtension extends Twig_Extension
             }
             $html .= '<li>';
             $html .= $this->createLink($item->getRoute(), $item->getTitle());
-            if($showHidden && $item->hasItems()) {
+            if ($showHidden && $item->hasItems()) {
                 $html .= $this->traversTree($item->getItems(), $showHidden);
             } elseif ($item->hasVisibleItems()) {
                 $html .= $this->traversTree($item->getItems(), $showHidden);
@@ -186,7 +187,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionAbsurl($route)
+    public function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
     }
@@ -197,7 +198,7 @@ class HerbieExtension extends Twig_Extension
     public function functionBodyClass()
     {
         $route = trim($this->app->getRoute(), '/');
-        if(empty($route)) {
+        if (empty($route)) {
             $route = 'index';
         }
         $layout = $this->app['page']->getLayout(false);
@@ -209,18 +210,18 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionBreadcrumb(array $options=[])
+    public function functionBreadcrumb(array $options = [])
     {
         // Options
         extract($options);
-        $delim      = isset($delim) ? $delim : '';
-        $homeLink   = isset($homeLink) ? $homeLink : null;
-        $reverse    = isset($reverse) ? (bool)$reverse : false;
+        $delim = isset($delim) ? $delim : '';
+        $homeLink = isset($homeLink) ? $homeLink : null;
+        $reverse = isset($reverse) ? (bool) $reverse : false;
 
         $links = [];
 
-        if(!empty($homeLink)) {
-            if(is_array($homeLink)) {
+        if (!empty($homeLink)) {
+            if (is_array($homeLink)) {
                 $route = reset($homeLink);
                 $label = isset($homeLink[1]) ? $homeLink[1] : 'Home';
             } else {
@@ -230,22 +231,21 @@ class HerbieExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach($this->app['rootPath'] AS $item) {
+        foreach ($this->app['rootPath'] AS $item) {
             $links[] = $this->createLink($item->getRoute(), $item->getTitle());
         }
 
-        if(!empty($reverse)) {
+        if (!empty($reverse)) {
             $links = array_reverse($links);
         }
 
         $html = '<ul class="breadcrumb">';
-        foreach($links AS $link) {
+        foreach ($links AS $link) {
             $html .= '<li>' . $link . '</li>';
         }
         $html .= '</ul>';
 
         return $html;
-
     }
 
     /**
@@ -253,13 +253,13 @@ class HerbieExtension extends Twig_Extension
      * @param bool $wrap
      * @return string
      */
-    public function functionContent($segmentId = 0, $wrap=false)
+    public function functionContent($segmentId = 0, $wrap = false)
     {
-        if($this->environment->getLoader() instanceof Twig_Loader_String) {
+        if ($this->environment->getLoader() instanceof Twig_Loader_String) {
             return $this->renderError('You can not use {{ content() }} in page files.');
         }
         $content = $this->app->renderContentSegment($segmentId);
-        if(empty($wrap)) {
+        if (empty($wrap)) {
             return $content;
         }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
@@ -281,23 +281,23 @@ class HerbieExtension extends Twig_Extension
     /**
      * @param string $route
      * @param string $label
-     * @param array $attributes
+     * @param array $htmlAttributes
      * @return string
      */
-    public function functionLink($route, $label, $attributes = [])
+    public function functionLink($route, $label, $htmlAttributes = [])
     {
-        return $this->createLink($route, $label, $attributes);
+        return $this->createLink($route, $label, $htmlAttributes);
     }
 
     /**
      * @param array $options
      * @return string
      */
-    public function functionMenu(array $options=[])
+    public function functionMenu(array $options = [])
     {
         extract($options); // showHidden
-        $showHidden = isset($showHidden) ? (bool)$showHidden : false;
-        $route      = isset($route) ? $route : null;
+        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
+        $route = isset($route) ? $route : null;
 
         $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
 
@@ -309,47 +309,45 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionPagetitle (array $options=[])
+    public function functionPagetitle(array $options = [])
     {
         extract($options); // delim, siteTite, rootTitle, reverse
 
-        $delim      = isset($delim) ? $delim : ' / ';
-        $siteTitle  = isset($siteTitle) ? $siteTitle : NULL;
-        $rootTitle  = isset($rootTitle) ? $rootTitle : NULL;
-        $reverse    = isset($reverse) ? (bool)$reverse : false;
+        $delim = isset($delim) ? $delim : ' / ';
+        $siteTitle = isset($siteTitle) ? $siteTitle : NULL;
+        $rootTitle = isset($rootTitle) ? $rootTitle : NULL;
+        $reverse = isset($reverse) ? (bool) $reverse : false;
 
         $count = count($this->app['rootPath']);
 
         $titles = [];
 
-        if(!empty($siteTitle)) {
+        if (!empty($siteTitle)) {
             $titles[] = $siteTitle;
         }
 
-        foreach($this->app['rootPath'] AS $item) {
-            if((1==$count) && $item->isStartPage() && !empty($rootTitle)) {
+        foreach ($this->app['rootPath'] AS $item) {
+            if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
             $titles[] = $item->getTitle();
         }
 
-        if(!empty($reverse)) {
+        if (!empty($reverse)) {
             $titles = array_reverse($titles);
         }
 
         return implode($delim, $titles);
-
     }
 
     /**
      * @param array $options
      * @return string
      */
-    public function functionSitemap(array $options=[])
+    public function functionSitemap(array $options = [])
     {
-
         extract($options); // showHidden
-        $showHidden = isset($showHidden) ? (bool)$showHidden : false;
+        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
 
         $html = $this->traversTree($this->app['tree'], $showHidden);
 
