@@ -1,7 +1,9 @@
 {
     "name": "getherbie/demo",
+    "description": "Demo application for the Herbie CMS. Herbie is a file based CMS & blog system and not ready for production use yet.",
     "type": "project",
     "minimum-stability": "dev",
+    "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
         "getherbie/herbie": "dev-master",
