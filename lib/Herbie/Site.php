@@ -109,5 +109,28 @@ class Site
         return date('c', $lastModified);
     }
 
+    /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->app->language;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->app->locale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset()
+    {
+        return $this->app->charset;
+    }
 
 }

@@ -27,6 +27,21 @@ use Twig_Loader_String;
  */
 class Application extends Pimple
 {
+    /**
+     * @var string
+     */
+    public $charset;
+
+    /**
+     * @var string
+     */
+    public $language;
+
+    /**
+     * LC_ALL
+     * @var string
+     */
+    public $locale;
 
     /**
      * @param int $errno
@@ -60,6 +75,11 @@ class Application extends Pimple
         });
 
         $config = $this->loadConfiguration();
+
+        setlocale(LC_ALL, $config['locale']);
+        $this->charset = $config['charset'];
+        $this->language = $config['language'];
+        $this->locale = $config['locale'];
 
         $this['config'] = $config;
 
