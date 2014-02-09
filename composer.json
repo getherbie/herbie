@@ -1,6 +1,7 @@
 {
     "name": "getherbie/herbie",
-	"description": "Herbie is a file based CMS & blog system and not ready for production use yet.",
+    "description": "Herbie is a flat-file based CMS & blog system. Not ready for production use yet.",
+    "keywords": ["herbie", "flat-file", "cms", "blog"],
     "type": "library",
     "minimum-stability": "dev",
     "license":"BSD-3-Clause",
