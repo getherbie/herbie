@@ -46,10 +46,11 @@ class UrlGenerator
     public function generate($route)
     {
         if ($this->niceUrls) {
-            return $this->request->getBaseUrl() . '/' . $route;
+            $url = $this->request->getBaseUrl() . '/' . $route;
         } else {
-            return $this->request->getScriptName() . '/' . $route;
+            $url = $this->request->getScriptName() . '/' . $route;
         }
+        return $this->filterUrl($url);
     }
 
     /**
@@ -60,6 +61,19 @@ class UrlGenerator
     {
         $baseurl = $this->request->getScheme() . '://' . $this->request->getHttpHost();
         return $baseurl . $this->generate($route);
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected function filterUrl($url)
+    {
+        $rpos = strrpos($url, '/index');
+        if($rpos !== false) {
+            $url = substr($url, 0, $rpos);
+        }
+        return $url;
     }
 
 }
