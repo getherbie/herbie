@@ -81,14 +81,14 @@ class PageLoader
         unset($fileObj);
 
         $data = array_merge(
-            ['type' => $fileInfo->getExtension()],
+            ['format' => $fileInfo->getExtension()],
             (array)$this->parser->parse($yaml)
         );
 
         $page = new Page();
         $page->setData($data);
         $page->setSegments($segments);
-        
+
         return $page;
     }
 

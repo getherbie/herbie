@@ -331,7 +331,7 @@ class Application extends Pimple
 
         $twigged = $this->renderString($segment);
 
-        $formatter = Formatter\FormatterFactory::create($page->getType());
+        $formatter = Formatter\FormatterFactory::create($page->getFormat());
         return $formatter->transform($twigged);
     }
 

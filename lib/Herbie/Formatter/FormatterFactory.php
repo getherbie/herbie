@@ -16,14 +16,14 @@ class FormatterFactory
 {
 
     /**
-     * @param string $type
+     * @param string $format
      * @return FormatterInterface
      */
-    public static function create($type)
+    public static function create($format)
     {
-        if (in_array($type, ['md', 'markdown'])) {
+        if (in_array($format, ['md', 'markdown'])) {
             $formatter = new MarkdownFormatter();
-        } elseif (in_array($type, ['textile'])) {
+        } elseif (in_array($format, ['textile'])) {
             $formatter = new TextileFormatter();
         } else {
             $formatter = new RawFormatter();

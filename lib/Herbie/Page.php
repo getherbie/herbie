@@ -26,7 +26,7 @@ class Page
     /**
      * @var string
      */
-    protected $type;
+    protected $format;
 
     /**
      * @var string
@@ -121,9 +121,9 @@ class Page
     /**
      * @return string
      */
-    public function getType()
+    public function getFormat()
     {
-        return $this->type;
+        return $this->format;
     }
 
     /**
@@ -131,7 +131,7 @@ class Page
      */
     public function getContentType()
     {
-        switch($this->type) {
+        switch($this->format) {
             case 'rss';
                 return 'text/xml';
                 #return 'application/rss+xml';
@@ -196,11 +196,22 @@ class Page
     }
 
     /**
-     * @param string $type
+     * @param string $format
      */
-    public function setType($type)
+    public function setFormat($format)
     {
-        $this->type = $type;
+        switch($format) {
+            case 'md':
+            case 'markdown':
+                $format = 'markdown';
+                break;
+            case 'textile':
+                $format = 'textile';
+                break;
+            default:
+                $format = 'raw';
+        }
+        $this->format = $format;
     }
 
     /**
@@ -210,7 +221,7 @@ class Page
     {
         $members = [
             'layout' => $this->layout,
-            'type' => $this->type,
+            'format' => $this->format,
             'title' => $this->title,
             'date' => $this->date
         ];
