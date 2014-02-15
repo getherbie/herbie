@@ -44,6 +44,11 @@ class Page
     protected $preserveExtension;
 
     /**
+     * @var string
+     */
+    protected $contentType;
+
+    /**
      * @var array
      */
     protected $_data_ = [];
@@ -62,6 +67,33 @@ class Page
     }
 
     /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        if(empty($this->contentType)) {
+            return 'text/html';
+        }
+        return $this->contentType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
+    /**
      * @param bool $trimExtension
      * @return string
      */
@@ -71,14 +103,6 @@ class Page
             return preg_replace("/\\.[^.\\s]{3,4}$/", "", $this->layout);
         }
         return $this->layout;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->date;
     }
 
     /**
@@ -119,26 +143,11 @@ class Page
     }
 
     /**
-     * @return string
+     * @param string $contentType
      */
-    public function getFormat()
+    public function setContentType($contentType)
     {
-        return $this->format;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        switch($this->format) {
-            case 'rss';
-                return 'text/xml';
-                #return 'application/rss+xml';
-            case 'xml':
-                return 'text/xml';
-        }
-        return 'text/html';
+        $this->contentType = $contentType;
     }
 
     /**
@@ -164,38 +173,6 @@ class Page
     }
 
     /**
-     * @param bool $preserveExtension
-     */
-    public function setPreserveExtension($preserveExtension)
-    {
-        $this->preserveExtension = (bool)$preserveExtension;
-    }
-
-    /**
-     * @param string $layout
-     */
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
-    }
-
-    /**
-     * @param array $segments
-     */
-    public function setSegments(array $segments = [])
-    {
-        $this->segments = $segments;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
      * @param string $format
      */
     public function setFormat($format)
@@ -212,6 +189,38 @@ class Page
                 $format = 'raw';
         }
         $this->format = $format;
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
+    }
+
+    /**
+     * @param bool $preserveExtension
+     */
+    public function setPreserveExtension($preserveExtension)
+    {
+        $this->preserveExtension = (bool)$preserveExtension;
+    }
+
+    /**
+     * @param array $segments
+     */
+    public function setSegments(array $segments = [])
+    {
+        $this->segments = $segments;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
     /**
