@@ -25,6 +25,14 @@ class MenuCollection implements IteratorAggregate, Countable
     protected $items;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->items = array();
+    }
+
+    /**
      * @param string $route
      * @param MenuItem $item
      */

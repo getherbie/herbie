@@ -104,7 +104,8 @@ class Application extends Pimple
         $this['menu'] = $this->share(function () use ($app, $config) {
             $cache = $app['cache.data'];
             $path = $config['pages']['path'];
-            $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache);
+            $extensions = $config['pages']['extensions'];
+            $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache, $extensions);
             return $builder->build($path);
         });
 
@@ -116,7 +117,8 @@ class Application extends Pimple
         $this['posts'] = $this->share(function () use ($app, $config) {
             $cache = $app['cache.data'];
             $path = $config['posts']['path'];
-            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache);
+            $extensions = $config['posts']['extensions'];
+            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache, $extensions);
             return $builder->build($path);
         });
 

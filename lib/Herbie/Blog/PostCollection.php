@@ -24,6 +24,14 @@ class PostCollection implements IteratorAggregate, Countable
     protected $items;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->items = array();
+    }
+
+    /**
      * @param PostItem $item
      */
     public function addItem(PostItem $item)

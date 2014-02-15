@@ -28,13 +28,20 @@ class PostCollectionBuilder
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $extensions;
+
+    /**
      * @param Parser $parser
      * @param CacheInterface $cache
+     * @param array $extensions
      */
-    public function __construct(Parser $parser, CacheInterface $cache)
+    public function __construct(Parser $parser, CacheInterface $cache, array $extensions = [])
     {
         $this->parser = $parser;
         $this->cache = $cache;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -52,6 +59,10 @@ class PostCollectionBuilder
                 $loader = new FrontMatterLoader($this->parser);
                 foreach(scandir($realpath, 1) AS $filename) {
                     if (substr($filename, 0, 1) == '.') {
+                        continue;
+                    }
+                    $pathinfo = pathinfo($filename);
+                    if(!in_array($pathinfo['extension'], $this->extensions)) {
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);

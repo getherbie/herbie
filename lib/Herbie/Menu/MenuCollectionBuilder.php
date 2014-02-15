@@ -30,13 +30,20 @@ class MenuCollectionBuilder
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $extensions;
+
+    /**
      * @param Parser $parser
      * @param CacheInterface $cache
+     * @param array $extensions
      */
-    public function __construct(Parser $parser, CacheInterface $cache)
+    public function __construct(Parser $parser, CacheInterface $cache, array $extensions = [])
     {
         $this->parser = $parser;
         $this->cache = $cache;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -64,6 +71,10 @@ class MenuCollectionBuilder
                     }
 
                     if ($splFileInfo->isFile()) {
+
+                        if(!in_array($splFileInfo->getExtension(), $this->extensions)) {
+                            continue;
+                        }
 
                         $loader = new FrontMatterLoader($this->parser);
                         $data = $loader->load($path);

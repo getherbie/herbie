@@ -24,10 +24,12 @@ return [
         'path' => $this['sitePath'] . '/layouts'
     ],
     'pages' => [
-        'path' => $this['sitePath'] . '/pages'
+        'path' => $this['sitePath'] . '/pages',
+        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
     ],
     'posts' => [
-        'path' => $this['sitePath'] . '/posts'
+        'path' => $this['sitePath'] . '/posts',
+        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
     ],
     'data' => [
         'path' => $this['sitePath'] . '/data',
