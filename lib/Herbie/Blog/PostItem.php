@@ -51,6 +51,17 @@ class PostItem
     }
 
     /**
+     * @param string $path
+     * @return string
+     */
+    protected function extractDateFromPath($path)
+    {
+        $filename = basename($path);
+        preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
+        return $matches[1];
+    }
+
+    /**
      * @return string
      */
     public function getDate()
@@ -132,6 +143,9 @@ class PostItem
     {
         if (array_key_exists('_data_', $data)) {
             throw new LogicException("Field _data_ is not allowed.");
+        }
+        if(empty($data['date'])) {
+            $data['date'] = $this->extractDateFromPath($data['path']);
         }
         foreach ($data AS $key => $value) {
             $this->__set($key, $value);
