@@ -31,9 +31,9 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="{{ url('') }}">Home</a>
-          <a class="blog-nav-item" href="{{ url('features') }}">Features</a>
-          <a class="blog-nav-item" href="{{ url('ueber-herbie') }}">Über Herbie</a>
+          <a class="blog-nav-item {% if route == 'index' %}active{% endif %}" href="{{ url('') }}">Home</a>
+          <a class="blog-nav-item {% if route == 'features' %}active{% endif %}" href="{{ url('features') }}">Features</a>
+          <a class="blog-nav-item {% if route == 'ueber-herbie' %}active{% endif %}" href="{{ url('ueber-herbie') }}">Über Herbie</a>
         </nav>
       </div>
     </div>
