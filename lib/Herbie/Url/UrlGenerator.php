@@ -73,7 +73,7 @@ class UrlGenerator
         if($rpos !== false) {
             $url = substr($url, 0, $rpos);
         }
-        return $url;
+        return empty($url) ? '/' : $url;
     }
 
 }
