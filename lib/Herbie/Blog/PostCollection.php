@@ -41,6 +41,14 @@ class PostCollection implements IteratorAggregate, Countable
     }
 
     /**
+     * @return array
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
      * @param string $route
      * @return PostItem
      */
