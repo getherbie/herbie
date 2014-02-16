@@ -173,11 +173,11 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param string $format
      * @param string $date
+     * @param string $format
      * @return string
      */
-    public function filterStrftime($date, $format)
+    public function filterStrftime($date, $format = '%x')
     {
         $dateTime = new DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
