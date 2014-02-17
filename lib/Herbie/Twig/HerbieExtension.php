@@ -273,9 +273,21 @@ class HerbieExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    public function functionImage($src, $width = '', $height = '', $alt = '', $class = "")
+    public function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
     {
-        return sprintf('<img src="%s" width="%d" height="%d" alt="%s" class="%s">', $src, $width, $height, $alt, $class);
+        $attribs = array();
+        $attribs['src'] = $src;
+        $attribs['alt'] = $alt;
+        if(!empty($width)) {
+            $attribs['width'] = $width;
+        }
+        if(!empty($height)) {
+            $attribs['height'] = $height;
+        }
+        if(!empty($class)) {
+            $attribs['class'] = $class;
+        }
+        return sprintf('<img %s>', $this->buildHtmlAttributes($attribs));
     }
 
     /**
