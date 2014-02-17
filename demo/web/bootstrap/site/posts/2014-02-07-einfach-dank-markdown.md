@@ -1,6 +1,5 @@
 ---
 title: Einfach dank Markdown
-date: 2014-02-07
 excerpt: Herbie ist einfach dank Markdown, einer vereinfachten Auszeichnunssprache, die ohne weitere Konvertierung leicht lesbar ist.
 ---
 

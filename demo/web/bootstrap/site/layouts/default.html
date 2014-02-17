@@ -70,18 +70,11 @@
           <div class="sidebar-module">
             <h4>Archiv</h4>
             <ol class="list-unstyled">
-              <li><a href="#">Januar 2014</a></li>
-              <li><a href="#">Dezember 2013</a></li>
-              <li><a href="#">November 2013</a></li>
-              <li><a href="#">Oktober 2013</a></li>
-              <li><a href="#">September 2013</a></li>
-              <li><a href="#">August 2013</a></li>
-              <li><a href="#">Juli 2013</a></li>
-              <li><a href="#">Juni 2013</a></li>
-              <li><a href="#">Mai 2013</a></li>
-              <li><a href="#">April 2013</a></li>
-              <li><a href="#">März 2013</a></li>
-              <li><a href="#">Februar 2013</a></li>
+              {% for item in site.posts.months %}
+                {% set route = item.year ~ '/' ~ item.month %}
+                {% set label = item.date|strftime('%B %Y') %}
+                <li>{{ link(route, label) }}</li>
+              {% endfor %}
             </ol>
           </div>
           <div class="sidebar-module">

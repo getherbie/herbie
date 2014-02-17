@@ -1,6 +1,5 @@
 ---
 title: Flexibel und erweiterbar dank Twig
-date: 2014-02-11
 excerpt: Dank TWIG ist Herbie flexibel und einfach erweiterbar. Mit ein paar Zeilen PHP-Code schreibst Du Deine eigenen Funktionen.
 ---
 

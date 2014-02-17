@@ -16,6 +16,7 @@ pages:
 
 posts:
   path: SITE_PATH/posts
+  blogRoute: 
 
 nice_urls: true
 
