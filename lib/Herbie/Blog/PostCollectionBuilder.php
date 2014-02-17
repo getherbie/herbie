@@ -33,15 +33,22 @@ class PostCollectionBuilder
     protected $extensions;
 
     /**
+     * @var string
+     */
+    protected $blogRoute;
+
+    /**
      * @param Parser $parser
      * @param CacheInterface $cache
      * @param array $extensions
      */
-    public function __construct(Parser $parser, CacheInterface $cache, array $extensions = [])
+    public function __construct(Parser $parser, CacheInterface $cache, array $options = [])
     {
         $this->parser = $parser;
         $this->cache = $cache;
-        $this->extensions = $extensions;
+        foreach($options AS $key=>$value) {
+            $this->$key = $value;
+        }
     }
 
     /**
@@ -53,7 +60,7 @@ class PostCollectionBuilder
         $realpath = realpath($path);
         $collection = $this->cache->get(__CLASS__);
         if($collection === false) {
-            $collection = new PostCollection();
+            $collection = new PostCollection($this->blogRoute);
             if(is_dir($realpath)) {
 
                 $loader = new FrontMatterLoader($this->parser);
@@ -67,6 +74,7 @@ class PostCollectionBuilder
                     }
                     $data = $loader->load($realpath.'/'.$filename);
                     $data['path'] = $realpath.'/'.$filename;
+                    $data['blogRoute'] = $this->blogRoute;
                     $item = new PostItem($data);
                     $collection->addItem($item);
                 }
@@ -74,6 +82,7 @@ class PostCollectionBuilder
             }
             $this->cache->set(__CLASS__, $collection);
         }
+        #echo"<pre>";print_r($collection);echo"</pre>";
         return $collection;
     }
 

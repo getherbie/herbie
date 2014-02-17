@@ -29,7 +29,8 @@ return [
     ],
     'posts' => [
         'path' => $this['sitePath'] . '/posts',
-        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
+        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+        'blogRoute' => 'blog'
     ],
     'data' => [
         'path' => $this['sitePath'] . '/data',

@@ -56,6 +56,14 @@ class Site
     }
 
     /**
+     * @return Paginator
+     */
+    public function getPaginator()
+    {
+        return $this->app['paginator'];
+    }
+
+    /**
      * @return MenuTree
      */
     public function getTree()

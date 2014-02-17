@@ -66,7 +66,26 @@ class UrlMatcher
             return $item->getPath();
         }
 
+        // Blog main page
+        $blogRoute = $this->getBlogRoute();
+        $item = $this->collection->getItem($blogRoute);
+        if(isset($item) && $item->isFile()) {
+            $filteredItems = $this->posts->filterItems();
+            if(!empty($filteredItems)) {
+                return $item->getPath();
+            }
+        }
+
         throw new ResourceNotFoundException('Page "' . $route . '" not found.', 404);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBlogRoute()
+    {
+        $blogRoute = $this->posts->getBlogRoute();
+        return empty($blogRoute) ? 'index' : $blogRoute;
     }
 
 }

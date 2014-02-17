@@ -117,9 +117,18 @@ class Application extends Pimple
         $this['posts'] = $this->share(function () use ($app, $config) {
             $cache = $app['cache.data'];
             $path = $config['posts']['path'];
-            $extensions = $config['posts']['extensions'];
-            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache, $extensions);
+            #$extensions = $config['posts']['extensions'];
+            #$blogRoute = $config['posts']['blogRoute'];
+            $options = [
+                'extensions' => $config['posts']['extensions'],
+                'blogRoute' => $config['posts']['blogRoute']
+            ];
+            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache, $options);
             return $builder->build($path);
+        });
+
+        $this['paginator'] = $this->share(function () use ($app) {
+            return new Paginator($app['posts'], $this['request']);
         });
 
         $this['rootPath'] = $this->share(function () use ($app) {

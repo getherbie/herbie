@@ -14,6 +14,7 @@ namespace Herbie\Blog;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use Symfony\Component\HttpFoundation\Request;
 
 class PostCollection implements IteratorAggregate, Countable
 {
@@ -24,11 +25,17 @@ class PostCollection implements IteratorAggregate, Countable
     protected $items;
 
     /**
-     * Constructor
+     * @var string
      */
-    public function __construct()
+    protected $blogRoute;
+
+    /**
+     * @param string $blogRoute
+     */
+    public function __construct($blogRoute)
     {
         $this->items = array();
+        $this->blogRoute = $blogRoute;
     }
 
     /**
@@ -38,6 +45,14 @@ class PostCollection implements IteratorAggregate, Countable
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlogRoute()
+    {
+        return $this->blogRoute;
     }
 
     /**
@@ -55,6 +70,37 @@ class PostCollection implements IteratorAggregate, Countable
     public function getItem($route)
     {
         return isset($this->items[$route]) ? $this->items[$route] : NULL;
+    }
+
+    /**
+     * @return array
+     */
+    public function getYears()
+    {
+        $years = [];
+        foreach($this->items AS $item) {
+            $years[] = substr($item->date, 0, 4);
+        }
+        return array_unique($years);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMonths()
+    {
+        $items = [];
+        foreach($this->items AS $item) {
+            $year = substr($item->date, 0, 4);
+            $month = substr($item->date, 5, 2);
+            $key = $year . '-' . $month;
+            $items[$key] = array(
+                'year' => $year,
+                'month' => $month,
+                'date' => $item->date
+            );
+        }
+        return $items;
     }
 
     /**
@@ -79,6 +125,46 @@ class PostCollection implements IteratorAggregate, Countable
     public function __toString()
     {
         return 'MenuCollection could not be converted to string.';
+    }
+
+    /**
+     * @return array
+     */
+    public function filterItems()
+    {
+        $request = Request::createFromGlobals();
+        $pathInfo = rtrim($request->getPathInfo(), '/');
+
+        if(empty($pathInfo)) {
+            // No filtering, return all
+            return $this->items;
+        }
+
+        $date = null;
+
+        // filter by year and month
+        if(preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {
+            $date = $matches[1] . '-' . $matches[2];
+        // filter by year
+        } elseif(preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
+            $date = $matches[1];
+        } else {
+
+            // Invalid filter setting, return empty array
+            return [];
+        }
+
+        $items = array();
+
+        foreach($this->items AS $item) {
+            if(0 === strpos($item->date, $date.'-')) {
+                $items[] = $item;
+                continue;
+            }
+        }
+
+        // Return filtered items
+        return $items;
     }
 
 }

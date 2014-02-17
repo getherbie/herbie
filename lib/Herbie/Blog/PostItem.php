@@ -99,7 +99,10 @@ class PostItem
             $route = substr($route, 0, $pos);
         }
 
-        return $route;
+        if(empty($this->blogRoute)) {
+            return $route;
+        }
+        return $this->blogRoute . '/' . $route;
     }
 
     /**
