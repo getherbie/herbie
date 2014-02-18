@@ -2,7 +2,7 @@
 title: Features
 ---
 
-# Features
+## Features
 
 **Einfach**:
 Keine Datenbank, keine Moderation von Kommentaren, keine mühselige Installation

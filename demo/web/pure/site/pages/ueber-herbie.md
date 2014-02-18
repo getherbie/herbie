@@ -2,7 +2,7 @@
 title: Über Herbie
 ---
 
-# Über Herbie
+## Über Herbie
 
 Herbie ist ein einfaches dateibasiertes CMS- und Blogsystem. Es durchläuft ein Verzeichnis mit Textdateien (Markdown, Textile), wandelt diese Dateien entsprechend ihrer Dateiendung um und gibt sie - eingebettet in ein Layout - als vollständige Website aus.
 

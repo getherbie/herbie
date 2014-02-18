@@ -1,15 +1,13 @@
-{% extends "main.html" %}
+{% extends "default.html" %}
 
 {% block content %}
 
-    <section class="post">
-        <header class="post-header">
-            <h2 class="post-title">{{ page.title }}</h2>
-            <p class="post-meta">{{ page.date|strftime("%e. %B %Y") }}</p>
-        </header>
-        <div class="post-description" markdown="1">{{ content(0) }}</div>
-    </section>
+    <header class="post-header">
+        <h2 class="post-title">{{ page.title }}</h2>
+        <p class="post-meta">{{ page.date|strftime("%e. %B %Y") }}</p>
+    </header>
+    <div class="post-description" markdown="1">{{ content(0) }}</div>
 
-    {{ link('', 'Zurück') }}
+    <p>{{ link('', 'Zurück') }}</p>
 
 {% endblock %}

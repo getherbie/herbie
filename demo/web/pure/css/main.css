@@ -1011,6 +1011,17 @@ h3 {
     background: none;
 }
 
+h2 {
+    font-size: 2em;
+    color: #222;
+    margin-bottom: 0.2em;
+}
+p {
+font-family: Georgia, "Cambria", serif;
+color: #444;
+line-height: 1.8em;
+}
+
 @media (min-width: 48em) {
     .content {
         padding: 2em 3em 0;
