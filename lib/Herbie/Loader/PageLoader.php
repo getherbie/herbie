@@ -16,12 +16,12 @@ use SplFileInfo;
 use Symfony\Component\Yaml\Parser;
 use Herbie\Page;
 
-
 /**
  * Loads the whole page.
  */
 class PageLoader
 {
+
     /**
      * @var Parser
      */
@@ -43,53 +43,63 @@ class PageLoader
     public function load($path)
     {
         $fileInfo = new SplFileInfo($path);
-        $fileObj = $fileInfo->openFile('r');
+        $fileObject = $fileInfo->openFile('r');
 
         $yaml = '';
         $segments = [];
         $segmentId = 0;
 
         $i = 0;
-        while (!$fileObj->eof()) {
-            $line = $fileObj->fgets();
+        while (!$fileObject->eof()) {
+            $line = $fileObject->fgets();
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
             }
-            // data
             if ($i == 1) {
                 $yaml .= $line;
             }
-            // segments
             if ($i > 1) {
-                // segments
                 if (preg_match('/^--- ([A-Za-z0-9_]+) ---$/', $line, $matches)) {
                     $segmentId = $matches[1];
                     continue;
                 }
-                if(!array_key_exists($segmentId, $segments)) {
+                if (!array_key_exists($segmentId, $segments)) {
                     $segments[$segmentId] = '';
                 }
                 $segments[$segmentId] .= $line;
             }
         }
 
-        if($i<2) {
+        if ($i < 2) {
             throw new Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
-        unset($fileObj);
+        unset($fileObject);
 
-        $data = array_merge(
-            ['format' => $fileInfo->getExtension()],
-            (array)$this->parser->parse($yaml)
-        );
+        $format = $fileInfo->getExtension();
+        $date = $this->extractDateFrom($fileInfo->getFilename());
+        $data = (array) $this->parser->parse($yaml);
 
         $page = new Page();
+        $page->setFormat($format);
+        $page->setDate($date);
         $page->setData($data);
         $page->setSegments($segments);
 
         return $page;
+    }
+
+    /**
+     * @param string $filename
+     * @return string
+     */
+    protected function extractDateFrom($filename)
+    {
+        if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 
 }
