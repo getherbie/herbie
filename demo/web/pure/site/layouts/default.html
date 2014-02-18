@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
-    <meta name="description" content="Herbie Flat-File CMS & Blog - Demo Website">
+    <meta name="description" content="Herbie Flat-File CMS & Blog - Demo Website basierend auf dem offiziellen Blog-Layout von Pure.">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.4.2/pure-min.css">
-
+    <title>{{ pageTitle({delim:' / ', siteTitle:'Herbie Demo Blog', rootTitle: 'Herbie Flat-File CMS & Blog - Demo Website', reverse:false}) }}</title>
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="/combo/1.11.2?/css/main-grid-old-ie.css&/css/layouts/blog-old-ie.css">
     <![endif]-->
+
     <!--[if gt IE 8]><!-->
     <!-- Custom styles for this template -->
         <link href="{{ baseUrl }}/css/main.css" rel="stylesheet">
@@ -18,6 +18,7 @@
     <!--[if lt IE 9]>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
     <![endif]-->
+
 </head>
 <body>
 <div id="layout" class="pure-g">
@@ -62,17 +63,6 @@
         </div>
     </div>
 </div>
-
-<script src="http://yui.yahooapis.com/3.14.1/build/yui/yui-min.js"></script>
-<script>
-YUI().use('node-base', 'node-event-delegate', function (Y) {
-    // This just makes sure that the href="#" attached to the <a> elements
-    // don't scroll you back up the page.
-    Y.one('body').delegate('click', function (e) {
-        e.preventDefault();
-    }, 'a[href="#"]');
-});
-</script>
 
 </body>
 </html>
