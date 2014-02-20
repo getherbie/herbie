@@ -317,6 +317,10 @@ class Application extends Pimple
      */
     public function renderString($string, array $arguments = array())
     {
+        $arguments = array_merge($arguments, [
+            'route' => $this->getRoute(),
+            'baseUrl' => $this['request']->getBaseUrl()
+        ]);
         return $this['twigString']->render($string, $arguments);
     }
 
