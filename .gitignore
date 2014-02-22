@@ -1,6 +1,9 @@
 # netbeans project files
 nbproject
 
+# apigen docs dir
+/docs
+
 # composer vendor dir
 /vendor
 
