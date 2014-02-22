@@ -99,7 +99,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    public function createLink($route, $label, $htmlAttributes = [])
+    protected function createLink($route, $label, $htmlAttributes = [])
     {
         $url = $this->app['urlGenerator']->generate($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
@@ -152,7 +152,7 @@ class HerbieExtension extends Twig_Extension
      * @param bool $showHidden
      * @return string
      */
-    public function traversTree($tree, $showHidden)
+    protected function traversTree($tree, $showHidden)
     {
         $html = '<ul>';
         foreach ($tree AS $item) {
@@ -177,7 +177,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $format
      * @return string
      */
-    public function filterStrftime($date, $format = '%x')
+    protected function filterStrftime($date, $format = '%x')
     {
         $dateTime = new DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
@@ -187,7 +187,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionAbsUrl($route)
+    protected function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
     }
@@ -195,7 +195,7 @@ class HerbieExtension extends Twig_Extension
     /**
      * @return string
      */
-    public function functionBodyClass()
+    protected function functionBodyClass()
     {
         $route = trim($this->app->getRoute(), '/');
         if (empty($route)) {
@@ -210,7 +210,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionBreadcrumb(array $options = [])
+    protected function functionBreadcrumb(array $options = [])
     {
         // Options
         extract($options);
@@ -253,7 +253,7 @@ class HerbieExtension extends Twig_Extension
      * @param bool $wrap
      * @return string
      */
-    public function functionContent($segmentId = 0, $wrap = false)
+    protected function functionContent($segmentId = 0, $wrap = false)
     {
         if ($this->environment->getLoader() instanceof Twig_Loader_String) {
             return $this->renderError('You can not use {{ content() }} in page files.');
@@ -273,7 +273,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    public function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
+    protected function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
     {
         $attribs = array();
         $attribs['src'] = $src;
@@ -296,7 +296,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    public function functionLink($route, $label, $htmlAttributes = [])
+    protected function functionLink($route, $label, $htmlAttributes = [])
     {
         return $this->createLink($route, $label, $htmlAttributes);
     }
@@ -305,7 +305,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionMenu(array $options = [])
+    protected function functionMenu(array $options = [])
     {
         extract($options); // showHidden
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
@@ -321,7 +321,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionPagetitle(array $options = [])
+    protected function functionPagetitle(array $options = [])
     {
         extract($options); // delim, siteTite, rootTitle, reverse
 
@@ -356,7 +356,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    public function functionSitemap(array $options = [])
+    protected function functionSitemap(array $options = [])
     {
         extract($options); // showHidden
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
@@ -370,7 +370,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionUrl($route)
+    protected function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
     }
