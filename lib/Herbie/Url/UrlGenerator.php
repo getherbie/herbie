@@ -14,7 +14,7 @@ namespace Herbie\Url;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * The URL generator.
+ * The URLGenerator creates URLs based on the given route.
  */
 class UrlGenerator
 {
@@ -30,8 +30,9 @@ class UrlGenerator
     protected $niceUrls;
 
     /**
-     * @param Request $request
-     * @param bool $niceUrls
+     * Constructor
+     * @param Request $request The request object.
+     * @param bool $niceUrls Whether to generate nice URLs.
      */
     public function __construct(Request $request, $niceUrls)
     {
@@ -40,8 +41,9 @@ class UrlGenerator
     }
 
     /**
-     * @param string $route
-     * @return string
+     * Generates a relative URL based on the given route.
+     * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
+     * @return string The generated relative URL.
      */
     public function generate($route)
     {
@@ -54,8 +56,9 @@ class UrlGenerator
     }
 
     /**
-     * @param string $route
-     * @return string
+     * Generates an absolute URL based on the given route.
+     * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
+     * @return string The generated absolute URL.
      */
     public function generateAbsolute($route)
     {
@@ -64,8 +67,9 @@ class UrlGenerator
     }
 
     /**
-     * @param string $url
-     * @return string
+     * Filters a generated URL.
+     * @param string $url The URL.
+     * @return string The filtered URL.
      */
     protected function filterUrl($url)
     {

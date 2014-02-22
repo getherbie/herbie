@@ -16,62 +16,65 @@ use Herbie\Exception\ResourceNotFoundException;
 use Herbie\Menu\MenuCollection;
 
 /**
- * The url matcher.
+ * The URLMatcher matches a given route and returns the path to a valid page
+ * or post file.
  */
 class UrlMatcher
 {
 
     /**
-     * @var MenuCollection
+     * @var MenuCollection Collection of all pages.
      */
-    protected $collection;
+    protected $pages;
 
     /**
-     * @var PostCollection
+     * @var PostCollection Collection of all posts.
      */
     protected $posts;
 
     /**
-     * @param MenuCollection $collection
-     * @param PostCollection $posts
+     * Constructor
+     * @param MenuCollection $collection Collection of all pages
+     * @param PostCollection $posts Collection of all posts
      */
-    public function __construct(MenuCollection $collection, PostCollection $posts)
+    public function __construct(MenuCollection $pages, PostCollection $posts)
     {
-        $this->collection = $collection;
+        $this->pages = $pages;
         $this->posts = $posts;
     }
 
     /**
-     * @param string $route
-     * @return string
+     * Returns a path to a valid page or post file.
+     * @param string $route The route of the current request.
+     * @return string The path to a page or post file.
      * @throws ResourceNotFoundException
      */
     public function match($route)
     {
         // File
-        $item = $this->collection->getItem($route);
-        if(isset($item) && $item->isFile()) {
+        $item = $this->pages->getItem($route);
+        if (isset($item) && $item->isFile()) {
             return $item->getPath();
         }
 
         // Folder
-        $item = $this->collection->getItem($route . '/index');
-        if(isset($item) && $item->isFile()) {
+        $item = $this->pages->getItem($route . '/index');
+        if (isset($item) && $item->isFile()) {
             return $item->getPath();
         }
 
         // Post
         $item = $this->posts->getItem($route);
-        if(isset($item)) {
+        if (isset($item)) {
             return $item->getPath();
         }
 
         // Blog main page
         $blogRoute = $this->getBlogRoute();
-        $item = $this->collection->getItem($blogRoute);
-        if(isset($item) && $item->isFile()) {
+        $item = $this->pages->getItem($blogRoute);
+        if (isset($item) && $item->isFile()) {
             $filteredItems = $this->posts->filterItems();
-            if(!empty($filteredItems)) {
+            if (!empty($filteredItems)) {
                 return $item->getPath();
             }
         }
@@ -80,7 +83,8 @@ class UrlMatcher
     }
 
     /**
-     * @return string
+     * Returns the route to the website blog.
+     * @return string The route to the blog.
      */
     protected function getBlogRoute()
     {
