@@ -177,7 +177,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $format
      * @return string
      */
-    protected function filterStrftime($date, $format = '%x')
+    public function filterStrftime($date, $format = '%x')
     {
         $dateTime = new DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
@@ -187,7 +187,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    protected function functionAbsUrl($route)
+    public function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
     }
@@ -195,7 +195,7 @@ class HerbieExtension extends Twig_Extension
     /**
      * @return string
      */
-    protected function functionBodyClass()
+    public function functionBodyClass()
     {
         $route = trim($this->app->getRoute(), '/');
         if (empty($route)) {
@@ -210,7 +210,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    protected function functionBreadcrumb(array $options = [])
+    public function functionBreadcrumb(array $options = [])
     {
         // Options
         extract($options);
@@ -253,7 +253,7 @@ class HerbieExtension extends Twig_Extension
      * @param bool $wrap
      * @return string
      */
-    protected function functionContent($segmentId = 0, $wrap = false)
+    public function functionContent($segmentId = 0, $wrap = false)
     {
         if ($this->environment->getLoader() instanceof Twig_Loader_String) {
             return $this->renderError('You can not use {{ content() }} in page files.');
@@ -273,7 +273,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    protected function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
+    public function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
     {
         $attribs = array();
         $attribs['src'] = $src;
@@ -296,7 +296,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    protected function functionLink($route, $label, $htmlAttributes = [])
+    public function functionLink($route, $label, $htmlAttributes = [])
     {
         return $this->createLink($route, $label, $htmlAttributes);
     }
@@ -305,7 +305,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    protected function functionMenu(array $options = [])
+    public function functionMenu(array $options = [])
     {
         extract($options); // showHidden
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
@@ -321,7 +321,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    protected function functionPagetitle(array $options = [])
+    public function functionPagetitle(array $options = [])
     {
         extract($options); // delim, siteTite, rootTitle, reverse
 
@@ -356,7 +356,7 @@ class HerbieExtension extends Twig_Extension
      * @param array $options
      * @return string
      */
-    protected function functionSitemap(array $options = [])
+    public function functionSitemap(array $options = [])
     {
         extract($options); // showHidden
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
@@ -370,7 +370,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    protected function functionUrl($route)
+    public function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
     }
