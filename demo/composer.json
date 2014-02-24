@@ -1,13 +1,14 @@
 {
     "name": "getherbie/demo",
     "description": "Demo application for Herbie. Herbie is a flat-file CMS & blog system and not ready for production use yet.",
-    "keywords": ["herbie", "flat-file", "cms", "blog", "demo"],    
+    "keywords": ["herbie", "flat-file", "cms", "blog", "demo"],
     "type": "project",
     "minimum-stability": "dev",
     "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
         "getherbie/herbie": "dev-master",
-        "getherbie/composer": "dev-master"
+        "getherbie/composer": "dev-master",
+        "getherbie/yii-module": "dev-master"
     }
 }
