@@ -27,6 +27,7 @@ use Twig_Loader_String;
  */
 class Application extends Pimple
 {
+
     /**
      * @var string
      */
@@ -50,7 +51,10 @@ class Application extends Pimple
      * @param int $errline
      * @throws ErrorException
      */
-    public function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+    public function exception_error_handler($errno, $errstr, $errfile, $errline)
+    {
+        // disable error capturing to avoid recursive errors
+        restore_error_handler();
         throw new ErrorException($errstr, 500, $errno, $errfile, $errline);
     }
 
@@ -60,7 +64,7 @@ class Application extends Pimple
      */
     public function __construct($sitePath, array $values = array())
     {
-        set_error_handler(array($this, 'exception_error_handler'));
+        set_error_handler(array($this, 'exception_error_handler'), error_reporting());
 
         parent::__construct();
 
@@ -88,14 +92,14 @@ class Application extends Pimple
         });
 
         $this['cache.page'] = $this->share(function () use ($config) {
-            if(empty($config['cache']['page']['enable'])) {
+            if (empty($config['cache']['page']['enable'])) {
                 return new Cache\DummyCache();
             }
             return new Cache\PageCache($config['cache']['page']);
         });
 
         $this['cache.data'] = $this->share(function () use ($config) {
-            if(empty($config['cache']['data']['enable'])) {
+            if (empty($config['cache']['data']['enable'])) {
                 return new Cache\DummyCache();
             }
             return new Cache\DataCache($config['cache']['data']);
@@ -162,14 +166,13 @@ class Application extends Pimple
                 'cache' => $config['twig']['cache']
             ]);
 
-            if(!empty($config['twig']['debug'])) {
+            if (!empty($config['twig']['debug'])) {
                 $twig->addExtension(new Twig_Extension_Debug());
             }
             $twig->addExtension(new Twig\HerbieExtension($app));
             $this->addTwigPlugins($twig, $config);
 
             return $twig;
-
         });
 
         $this['twigString'] = $this->share(function () use ($app, $config) {
@@ -180,7 +183,7 @@ class Application extends Pimple
                 'cache' => $config['twig']['cache']
             ]);
 
-            if(!empty($config['twig']['debug'])) {
+            if (!empty($config['twig']['debug'])) {
                 $twig->addExtension(new Twig_Extension_Debug());
             }
 
@@ -188,13 +191,11 @@ class Application extends Pimple
             $this->addTwigPlugins($twig, $config);
 
             return $twig;
-
         });
 
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
-
     }
 
     /**
@@ -206,11 +207,12 @@ class Application extends Pimple
         $app = $this;
 
         // Functions
-        if(!empty($config['twig']['extend']['functions'])) {
+        if (!empty($config['twig']['extend']['functions'])) {
             $dir = $config['twig']['extend']['functions'];
-            if(is_dir($dir)) {
+            if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if(substr($file, 0, 1) == '.') continue;
+                    if (substr($file, 0, 1) == '.')
+                        continue;
                     $function = include($dir . '/' . $file);
                     $twig->addFunction($function);
                 }
@@ -218,11 +220,12 @@ class Application extends Pimple
         }
 
         // Filters
-        if(!empty($config['twig']['extend']['filters'])) {
+        if (!empty($config['twig']['extend']['filters'])) {
             $dir = $config['twig']['extend']['filters'];
-            if(is_dir($dir)) {
+            if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if(substr($file, 0, 1) == '.') continue;
+                    if (substr($file, 0, 1) == '.')
+                        continue;
                     $filter = include($dir . '/' . $file);
                     $twig->addFilter($filter);
                 }
@@ -230,11 +233,12 @@ class Application extends Pimple
         }
 
         // Tests
-        if(!empty($config['twig']['extend']['tests'])) {
+        if (!empty($config['twig']['extend']['tests'])) {
             $dir = $config['twig']['extend']['tests'];
-            if(is_dir($dir)) {
+            if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if(substr($file, 0, 1) == '.') continue;
+                    if (substr($file, 0, 1) == '.')
+                        continue;
                     $test = include($dir . '/' . $file);
                     $twig->addTest($test);
                 }
@@ -252,12 +256,10 @@ class Application extends Pimple
         try {
 
             $response = $this->handle($request);
-
         } catch (Exception\ResourceNotFoundException $e) {
 
             $content = $this->renderLayout('error.html', ['error' => $e]);
             $response = new Response($content, 404);
-
         } catch (Exception $e) {
 
             $content = $this->renderLayout('error.html', ['error' => $e]);
@@ -281,9 +283,9 @@ class Application extends Pimple
         $this['page'] = $page = $pageLoader->load($path);
 
         $content = $cache->get($path);
-        if($content === false) {
+        if ($content === false) {
             $layout = $page->getLayout();
-            if(empty($layout)) {
+            if (empty($layout)) {
                 $content = $this->renderContentSegment(0);
             } else {
                 $content = $this->renderLayout($layout);
@@ -333,12 +335,10 @@ class Application extends Pimple
         $page = $this['page'];
         $segment = $page->getSegment($segmentId);
 
-        if(isset($this['config']['pseudo_html'])) {
+        if (isset($this['config']['pseudo_html'])) {
             $pseudoHtml = $this['config']['pseudo_html'];
             $segment = str_replace(
-                explode('|', $pseudoHtml['from']),
-                explode('|', $pseudoHtml['to']),
-                $segment
+                explode('|', $pseudoHtml['from']), explode('|', $pseudoHtml['to']), $segment
             );
         }
 
@@ -354,11 +354,11 @@ class Application extends Pimple
      */
     public function getRoute(Request $request = null)
     {
-        if(is_null($request)) {
+        if (is_null($request)) {
             $request = $this['request'];
         }
         $route = trim($request->getPathInfo(), '/');
-        if(empty($route)) {
+        if (empty($route)) {
             $route = 'index';
         }
         return $route;
@@ -372,21 +372,19 @@ class Application extends Pimple
      */
     protected function mergeConfigArrays($default, $override)
     {
-      foreach($override as $key => $value)
-      {
-        if(array_key_exists($key, $default)) {
-            if(is_array($value)) {
-                $default[$key] = $this->mergeConfigArrays($default[$key], $override[$key]);
+        foreach ($override as $key => $value) {
+            if (array_key_exists($key, $default)) {
+                if (is_array($value)) {
+                    $default[$key] = $this->mergeConfigArrays($default[$key], $override[$key]);
+                } else {
+                    $default[$key] = $value;
+                }
             } else {
-                $default[$key] = $value;
+                throw new Exception("Config setting $key is not allowed.");
             }
-        } else {
-            throw new Exception("Config setting $key is not allowed.");
         }
-      }
 
-      return $default;
-
+        return $default;
     }
 
     /**
@@ -396,12 +394,10 @@ class Application extends Pimple
     protected function loadConfiguration()
     {
         $config = require(__DIR__ . '/config.php');
-        if(is_file($this['sitePath'] . '/config.yml')) {
+        if (is_file($this['sitePath'] . '/config.yml')) {
             $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-                [$this['appPath'], $this['sitePath'], $this['sitePath']],
-                $content
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
             );
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
