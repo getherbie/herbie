@@ -1,8 +1,6 @@
-<?php
+<?php $this->renderPartial('//_before'); ?>
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+<?php foreach($items AS $id => $item): ?>
+    <h1><?php echo CHtml::link($item['title'], array('/news/detail', 'id' => $id)) ?></h1>
+    <p><?php echo $item['abstract'] ?></p>
+<?php endforeach; ?>

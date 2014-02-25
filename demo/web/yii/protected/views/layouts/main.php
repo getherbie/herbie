@@ -34,6 +34,7 @@
                         <a class="blog-nav-item {% if route == 'blog' %}active{% endif %}" href="{{ url('blog') }}">Home</a>
                         <a class="blog-nav-item {% if route == 'features' %}active{% endif %}" href="{{ url('features') }}">Features</a>
                         <a class="blog-nav-item {% if route == 'ueber-herbie' %}active{% endif %}" href="{{ url('ueber-herbie') }}">Über Herbie</a>
+                        <a class="blog-nav-item {% if route == 'news' %}active{% endif %}" href="{{ url('news') }}">News</a>
                     <?php $this->endWidget() ?>
                 </nav>
             </div>
