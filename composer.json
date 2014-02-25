@@ -1,5 +1,6 @@
 {
     "name": "getherbie/herbie",
+    "homepage": "http://www.getherbie.org",
     "description": "Herbie is a flat-file based CMS & blog system. Not ready for production use yet.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
     "type": "library",
