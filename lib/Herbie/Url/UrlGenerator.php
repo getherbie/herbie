@@ -48,7 +48,7 @@ class UrlGenerator
     public function generate($route)
     {
         if ($this->niceUrls) {
-            $url = $this->request->getBaseUrl() . '/' . $route;
+            $url = $this->request->getBasePath() . '/' . $route;
         } else {
             $url = $this->request->getScriptName() . '/' . $route;
         }
@@ -73,11 +73,8 @@ class UrlGenerator
      */
     protected function filterUrl($url)
     {
-        $rpos = strrpos($url, '/index');
-        if($rpos !== false) {
-            $url = substr($url, 0, $rpos);
-        }
-        return empty($url) ? '/' : $url;
+        $url = preg_replace('/\/index$/', '', $url);
+        return empty($url) ? '/' : rtrim($url, '/');
     }
 
 }
