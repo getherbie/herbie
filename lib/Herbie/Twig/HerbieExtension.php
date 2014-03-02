@@ -276,7 +276,7 @@ class HerbieExtension extends Twig_Extension
     public function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
     {
         $attribs = array();
-        $attribs['src'] = $src;
+        $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if(!empty($width)) {
             $attribs['width'] = $width;
