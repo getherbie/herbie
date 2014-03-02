@@ -308,7 +308,7 @@ class Application extends Pimple
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBaseUrl()
+            'baseUrl' => $this['request']->getBasePath()
         ]);
         return $this['twigFilesystem']->render($layout, $arguments);
     }
@@ -322,7 +322,7 @@ class Application extends Pimple
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBaseUrl()
+            'baseUrl' => $this['request']->getBasePath()
         ]);
         return $this['twigString']->render($string, $arguments);
     }
