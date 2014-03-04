@@ -39,7 +39,7 @@ return [
     'nice_urls' => false,
     'twig' => [
         'debug' => false,
-        'cache' => $this['sitePath'] . '/cache/twig',
+        'cache' => false, //$this['sitePath'] . '/cache/twig',
         'extend' => [
             'functions' => $this['sitePath'] . '/plugins/twig/functions',
             'filters' => $this['sitePath'] . '/plugins/twig/filters',
