@@ -40,6 +40,16 @@ class PostItem
     /**
      * @var array
      */
+    protected $categories = [];
+
+    /**
+     * @var array
+     */
+    protected $tags = [];
+
+    /**
+     * @var array
+     */
     protected $_data_ = [];
 
     /**
@@ -59,6 +69,14 @@ class PostItem
         $filename = basename($path);
         preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
         return $matches[1];
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 
     /**
@@ -99,10 +117,18 @@ class PostItem
             $route = substr($route, 0, $pos);
         }
 
-        if(empty($this->blogRoute)) {
+        if (empty($this->blogRoute)) {
             return $route;
         }
         return $this->blogRoute . '/' . $route;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -131,6 +157,36 @@ class PostItem
     }
 
     /**
+     * @param string $category
+     * @return boolean
+     */
+    public function hasCategory($category)
+    {
+        foreach($this->categories AS $c) {
+            if(strtolower($c) == strtolower($category)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = array_unique($categories);
+    }
+
+    /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->categories[] = $category;
+    }
+
+    /**
      * @param string $date
      */
     public function setDate($date)
@@ -147,7 +203,7 @@ class PostItem
         if (array_key_exists('_data_', $data)) {
             throw new LogicException("Field _data_ is not allowed.");
         }
-        if(empty($data['date'])) {
+        if (empty($data['date'])) {
             $data['date'] = $this->extractDateFromPath($data['path']);
         }
         foreach ($data AS $key => $value) {
@@ -169,6 +225,36 @@ class PostItem
     public function setPath($path)
     {
         $this->path = $path;
+    }
+
+    /**
+     * @param string $tag
+     * @return boolean
+     */
+    public function hasTag($tag)
+    {
+        foreach($this->tags AS $t) {
+            if(strtolower($t) == strtolower($tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param array $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = array_unique($tags);
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function setTag($tag)
+    {
+        $this->tags[] = $tag;
     }
 
     /**
