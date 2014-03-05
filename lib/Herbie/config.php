@@ -63,6 +63,6 @@ return [
         'to'   => '<div class="box" markdown="1">|</div>|<div class="box box-info" markdown="1">|</div>',
     ],
     'language' => 'de',
-    'locale' => 'de_DE',
+    'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
 ];
