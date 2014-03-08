@@ -50,6 +50,11 @@ class PostItem
     /**
      * @var array
      */
+    protected $authors = [];
+
+    /**
+     * @var array
+     */
     protected $_data_ = [];
 
     /**
@@ -69,6 +74,14 @@ class PostItem
         $filename = basename($path);
         preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
         return $matches[1];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAuthors()
+    {
+        return $this->authors;
     }
 
     /**
@@ -157,6 +170,36 @@ class PostItem
     }
 
     /**
+     * @param array $authors
+     */
+    public function setAuthors($authors)
+    {
+        $this->authors = array_unique($authors);
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthor($author)
+    {
+        $this->authors[] = $author;
+    }
+
+    /**
+     * @param string $author
+     * @return boolean
+     */
+    public function hasAuthor($author)
+    {
+        foreach($this->authors AS $c) {
+            if(strtolower($c) == strtolower($author)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @param string $category
      * @return boolean
      */
@@ -164,6 +207,20 @@ class PostItem
     {
         foreach($this->categories AS $c) {
             if(strtolower($c) == strtolower($category)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param string $tag
+     * @return boolean
+     */
+    public function hasTag($tag)
+    {
+        foreach($this->tags AS $t) {
+            if(strtolower($t) == strtolower($tag)) {
                 return true;
             }
         }
@@ -225,20 +282,6 @@ class PostItem
     public function setPath($path)
     {
         $this->path = $path;
-    }
-
-    /**
-     * @param string $tag
-     * @return boolean
-     */
-    public function hasTag($tag)
-    {
-        foreach($this->tags AS $t) {
-            if(strtolower($t) == strtolower($tag)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
