@@ -86,7 +86,8 @@ class PageLoader
         $page->setDate($date);
         $page->setData($data);
         $page->setSegments($segments);
-
+        $page->setPath($path);
+        
         return $page;
     }
 
