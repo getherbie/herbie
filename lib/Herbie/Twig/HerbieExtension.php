@@ -12,9 +12,7 @@
 namespace Herbie\Twig;
 
 use DateTime;
-use Herbie\Formatter\FormatterFactory;
 use Herbie\Site;
-use Twig;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
@@ -139,12 +137,41 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
+            new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
+            new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
             new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
             new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
             new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
             new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
             new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options),
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getTests()
+    {
+        return [];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function functionIsPost()
+    {
+        $postsPath = $this->app['config']['posts']['path'];
+        $pagePath = $this->app['page']->getPath();
+        $pos = strpos($pagePath, $postsPath);
+        return $pos === 0;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function functionIsPage()
+    {
+        return !$this->functionIsPost();
     }
 
     /**
