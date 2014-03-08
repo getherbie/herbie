@@ -75,6 +75,26 @@ class PostCollection implements IteratorAggregate, Countable
     /**
      * @return array
      */
+    public function getAuthors()
+    {
+        $authors = [];
+        foreach($this->items AS $item) {
+            foreach($item->authors AS $author) {
+                if(array_key_exists($author, $authors)) {
+                    $count = $authors[$author] + 1;
+                } else {
+                    $count = 1;
+                }
+                $authors[$author] = $count;
+            }
+        }
+        ksort($authors);
+        return $authors;
+    }
+
+    /**
+     * @return array
+     */
     public function getCategories()
     {
         $categories = [];
@@ -212,19 +232,23 @@ class PostCollection implements IteratorAggregate, Countable
         $date = null;
         $category = null;
         $tag = null;
+        $author = null;
 
         // filter by year and month
         if(preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {
-            $date = $matches[1] . '-' . $matches[2];
+            $date = urldecode($matches[1] . '-' . $matches[2]);
         // filter by year
         } elseif(preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
-            $date = $matches[1];
+            $date = urldecode($matches[1]);
         // filter by category
         } elseif(preg_match('/^category\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
-            $category = $matches[1];
+            $category = urldecode($matches[1]);
         // filter by tag
         } elseif(preg_match('/^tag\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
-            $tag = $matches[1];
+            $tag = urldecode($matches[1]);
+        // filter by author
+        } elseif(preg_match('/^author\/([A-Za-z0-9%]+)$/', $pathInfo, $matches)) {
+            $author = urldecode($matches[1]);
         } else {
             // Invalid filter setting, return empty array
             return [];
@@ -242,6 +266,10 @@ class PostCollection implements IteratorAggregate, Countable
                 continue;
             }
             if($item->hasTag($tag)) {
+                $items[] = $item;
+                continue;
+            }
+            if($item->hasAuthor($author)) {
                 $items[] = $item;
                 continue;
             }
