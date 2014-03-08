@@ -51,6 +51,26 @@ class Page
     /**
      * @var array
      */
+    protected $authors = [];
+
+    /**
+     * @var array
+     */
+    protected $categories = [];
+
+    /**
+     * @var array
+     */
+    protected $tags = [];
+
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var array
+     */
     protected $_data_ = [];
 
     /**
@@ -67,11 +87,27 @@ class Page
     }
 
     /**
+     * @return array
+     */
+    public function getAuthors()
+    {
+        return $this->authors;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
      * @return string
      */
     public function getContentType()
     {
-        if(empty($this->contentType)) {
+        if (empty($this->contentType)) {
             return 'text/html';
         }
         return $this->contentType;
@@ -97,12 +133,20 @@ class Page
      * @param bool $trimExtension
      * @return string
      */
-    public function getLayout($trimExtension=false)
+    public function getLayout($trimExtension = false)
     {
-        if($trimExtension) {
+        if ($trimExtension) {
             return preg_replace("/\\.[^.\\s]{3,4}$/", "", $this->layout);
         }
         return $this->layout;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -128,10 +172,18 @@ class Page
      */
     public function getSegment($id)
     {
-        if(array_key_exists($id, $this->segments)) {
+        if (array_key_exists($id, $this->segments)) {
             return $this->segments[$id];
         }
         return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -140,6 +192,38 @@ class Page
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @param array $authors
+     */
+    public function setAuthors($authors)
+    {
+        $this->authors = (array) $authors;
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthor($author)
+    {
+        $this->authors[] = $author;
+    }
+
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = (array) $categories;
+    }
+
+    /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->categories[] = $category;
     }
 
     /**
@@ -159,7 +243,7 @@ class Page
         if (array_key_exists('segments', $data)) {
             throw new LogicException("Field segments is not allowed.");
         }
-        foreach($data AS $key=>$value) {
+        foreach ($data AS $key => $value) {
             $this->__set($key, $value);
         }
     }
@@ -177,7 +261,7 @@ class Page
      */
     public function setFormat($format)
     {
-        switch($format) {
+        switch ($format) {
             case 'md':
             case 'markdown':
                 $format = 'markdown';
@@ -200,11 +284,19 @@ class Page
     }
 
     /**
+     * @param string $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
      * @param bool $preserveExtension
      */
     public function setPreserveExtension($preserveExtension)
     {
-        $this->preserveExtension = (bool)$preserveExtension;
+        $this->preserveExtension = (bool) $preserveExtension;
     }
 
     /**
@@ -213,6 +305,22 @@ class Page
     public function setSegments(array $segments = [])
     {
         $this->segments = $segments;
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function setTag($tag)
+    {
+        $this->tags[] = $tag;
+    }
+
+    /**
+     * @param array $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = (array) $tags;
     }
 
     /**
