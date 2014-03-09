@@ -59,8 +59,8 @@ return [
         ]
     ],
     'pseudo_html' => [
-        'from' => '<box>|</box>|<box:info></box:info>',
-        'to'   => '<div class="box" markdown="1">|</div>|<div class="box box-info" markdown="1">|</div>',
+        'from' => '<box>|</box>',
+        'to'   => '<div class="box" markdown="1">|</div>',
     ],
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',

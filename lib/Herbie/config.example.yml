@@ -13,15 +13,23 @@ layouts:
 
 pages:
   path: SITE_PATH/pages
+  extensions: [md, markdown, textile, htm, html, rss, xml]
 
 posts:
   path: SITE_PATH/posts
+  extensions: [md, markdown, textile, htm, html, rss, xml]
+  blogRoute: blog
 
 nice_urls: false
 
 twig:
-  debug: false
+  debug: true
+  #cache: SITE_PATH/cache/twig
   cache: false
+  extend:
+    functions: SITE_PATH/plugins/twig/functions
+    filters: SITE_PATH/plugins/twig/filters
+    tests: SITE_PATH/plugins/twig/tests
 
 cache:
   page:
@@ -34,9 +42,9 @@ cache:
     expire: 18000
 
 pseudo_html:
-  from: <box>|</box>|<box:info>|</box:info>
-  to: <div class="pure-u-1-2 box box-1"><div markdown="1">|</div></div>|<div class="box box-info" markdown="1">|</div>
+    from: <box>|</box>
+    to: <div class="box" markdown="1">|</div>
 
-charset: utf-8
 language: de
-locale: de_DE
+locale: de_DE.UTF-8
+charset: UTF-8
