@@ -77,11 +77,39 @@ class PostItem
     }
 
     /**
+     * @param string $author
+     * @return string
+     */
+    public function getAuthor($author)
+    {
+        foreach ($this->authors AS $a) {
+            if (strtolower($a) == strtolower($author)) {
+                return $a;
+            }
+        }
+        return '';
+    }
+
+    /**
      * @return array
      */
     public function getAuthors()
     {
         return $this->authors;
+    }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getCategory($category)
+    {
+        foreach ($this->categories AS $c) {
+            if (strtolower($c) == strtolower($category)) {
+                return $c;
+            }
+        }
+        return '';
     }
 
     /**
@@ -134,6 +162,20 @@ class PostItem
             return $route;
         }
         return $this->blogRoute . '/' . $route;
+    }
+
+    /**
+     * @param string $tag
+     * @return string
+     */
+    public function getTag($tag)
+    {
+        foreach ($this->tags AS $t) {
+            if (strtolower($t) == strtolower($tag)) {
+                return $t;
+            }
+        }
+        return '';
     }
 
     /**
@@ -191,8 +233,8 @@ class PostItem
      */
     public function hasAuthor($author)
     {
-        foreach($this->authors AS $c) {
-            if(strtolower($c) == strtolower($author)) {
+        foreach ($this->authors AS $c) {
+            if (strtolower($c) == strtolower($author)) {
                 return true;
             }
         }
@@ -205,8 +247,8 @@ class PostItem
      */
     public function hasCategory($category)
     {
-        foreach($this->categories AS $c) {
-            if(strtolower($c) == strtolower($category)) {
+        foreach ($this->categories AS $c) {
+            if (strtolower($c) == strtolower($category)) {
                 return true;
             }
         }
@@ -219,8 +261,8 @@ class PostItem
      */
     public function hasTag($tag)
     {
-        foreach($this->tags AS $t) {
-            if(strtolower($t) == strtolower($tag)) {
+        foreach ($this->tags AS $t) {
+            if (strtolower($t) == strtolower($tag)) {
                 return true;
             }
         }
