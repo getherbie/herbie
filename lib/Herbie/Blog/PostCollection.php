@@ -30,6 +30,11 @@ class PostCollection implements IteratorAggregate, Countable
     protected $blogRoute;
 
     /**
+     * @var string
+     */
+    protected $filteredBy;
+
+    /**
      * @param string $blogRoute
      */
     public function __construct($blogRoute)
@@ -58,6 +63,14 @@ class PostCollection implements IteratorAggregate, Countable
     /**
      * @return array
      */
+    public function getFilteredBy()
+    {
+        return $this->filteredBy;
+    }
+
+    /**
+     * @return array
+     */
     public function getItems()
     {
         return $this->items;
@@ -78,9 +91,9 @@ class PostCollection implements IteratorAggregate, Countable
     public function getAuthors()
     {
         $authors = [];
-        foreach($this->items AS $item) {
-            foreach($item->authors AS $author) {
-                if(array_key_exists($author, $authors)) {
+        foreach ($this->items AS $item) {
+            foreach ($item->authors AS $author) {
+                if (array_key_exists($author, $authors)) {
                     $count = $authors[$author] + 1;
                 } else {
                     $count = 1;
@@ -98,9 +111,9 @@ class PostCollection implements IteratorAggregate, Countable
     public function getCategories()
     {
         $categories = [];
-        foreach($this->items AS $item) {
-            foreach($item->categories AS $category) {
-                if(array_key_exists($category, $categories)) {
+        foreach ($this->items AS $item) {
+            foreach ($item->categories AS $category) {
+                if (array_key_exists($category, $categories)) {
                     $count = $categories[$category] + 1;
                 } else {
                     $count = 1;
@@ -121,8 +134,8 @@ class PostCollection implements IteratorAggregate, Countable
         $limit = intval($limit);
         $items = [];
         $i = 0;
-        foreach($this->items AS $item) {
-            if($i>=$limit) {
+        foreach ($this->items AS $item) {
+            if ($i >= $limit) {
                 break;
             }
             $items[] = $item;
@@ -137,9 +150,9 @@ class PostCollection implements IteratorAggregate, Countable
     public function getTags()
     {
         $tags = [];
-        foreach($this->items AS $item) {
-            foreach($item->tags AS $tag) {
-                if(array_key_exists($tag, $tags)) {
+        foreach ($this->items AS $item) {
+            foreach ($item->tags AS $tag) {
+                if (array_key_exists($tag, $tags)) {
                     $count = $tags[$tag] + 1;
                 } else {
                     $count = 1;
@@ -157,9 +170,9 @@ class PostCollection implements IteratorAggregate, Countable
     public function getYears()
     {
         $years = [];
-        foreach($this->items AS $item) {
+        foreach ($this->items AS $item) {
             $key = substr($item->date, 0, 4);
-            if(array_key_exists($key, $years)) {
+            if (array_key_exists($key, $years)) {
                 $count = $years[$key] + 1;
             } else {
                 $count = 1;
@@ -175,11 +188,11 @@ class PostCollection implements IteratorAggregate, Countable
     public function getMonths()
     {
         $items = [];
-        foreach($this->items AS $item) {
+        foreach ($this->items AS $item) {
             $year = substr($item->date, 0, 4);
             $month = substr($item->date, 5, 2);
             $key = $year . '-' . $month;
-            if(array_key_exists($key, $items)) {
+            if (array_key_exists($key, $items)) {
                 $count = $items[$key]['count'] + 1;
             } else {
                 $count = 1;
@@ -224,7 +237,7 @@ class PostCollection implements IteratorAggregate, Countable
     public function filterItems()
     {
         $pathInfo = $this->getBlogPathInfo();
-        if(empty($pathInfo)) {
+        if (empty($pathInfo)) {
             // No filtering, return all
             return $this->items;
         }
@@ -235,19 +248,21 @@ class PostCollection implements IteratorAggregate, Countable
         $author = null;
 
         // filter by year and month
-        if(preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {
+        if (preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {
             $date = urldecode($matches[1] . '-' . $matches[2]);
-        // filter by year
-        } elseif(preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
+            $filteredByLabel = 'Archiv für den Monat';
+            // filter by year
+        } elseif (preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
             $date = urldecode($matches[1]);
-        // filter by category
-        } elseif(preg_match('/^category\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
+            $filteredByLabel = 'Archiv für den Jahr';
+            // filter by category
+        } elseif (preg_match('/^category\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
             $category = urldecode($matches[1]);
-        // filter by tag
-        } elseif(preg_match('/^tag\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
+            // filter by tag
+        } elseif (preg_match('/^tag\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
             $tag = urldecode($matches[1]);
-        // filter by author
-        } elseif(preg_match('/^author\/([A-Za-z0-9%]+)$/', $pathInfo, $matches)) {
+            // filter by author
+        } elseif (preg_match('/^author\/([A-Za-z0-9%]+)$/', $pathInfo, $matches)) {
             $author = urldecode($matches[1]);
         } else {
             // Invalid filter setting, return empty array
@@ -256,21 +271,37 @@ class PostCollection implements IteratorAggregate, Countable
 
         $items = array();
 
-        foreach($this->items AS $item) {
-            if(0 === strpos($item->date, $date.'-')) {
+        foreach ($this->items AS $item) {
+            if (0 === strpos($item->date, $date . '-')) {
+                $this->filteredBy = array(
+                    'label' => $filteredByLabel,
+                    'value' => $date
+                );
                 $items[] = $item;
                 continue;
             }
-            if($item->hasCategory($category)) {
+            if ($item->hasCategory($category)) {
                 $items[] = $item;
+                $this->filteredBy = array(
+                    'label' => 'Archiv für die Kategorie',
+                    'value' => $item->getCategory($category)
+                );
                 continue;
             }
-            if($item->hasTag($tag)) {
+            if ($item->hasTag($tag)) {
                 $items[] = $item;
+                $this->filteredBy = array(
+                    'label' => 'Archiv für das Schlagwort',
+                    'value' => $item->getTag($tag)
+                );
                 continue;
             }
-            if($item->hasAuthor($author)) {
+            if ($item->hasAuthor($author)) {
                 $items[] = $item;
+                $this->filteredBy = array(
+                    'label' => 'Archiv für den Author',
+                    'value' => $item->getAuthor($author)
+                );
                 continue;
             }
         }
@@ -288,12 +319,12 @@ class PostCollection implements IteratorAggregate, Countable
         $pathInfo = trim($request->getPathInfo(), '/');
 
         $segments = explode('/', $pathInfo);
-        if(empty($segments)) {
+        if (empty($segments)) {
             return '';
         }
 
         $blogRoute = trim($this->blogRoute, '/');
-        if($segments[0] == $blogRoute) {
+        if ($segments[0] == $blogRoute) {
             array_shift($segments);
         }
 
