@@ -181,12 +181,22 @@ class HerbieExtension extends Twig_Extension
      */
     protected function traversTree($tree, $showHidden)
     {
+        static $route = null;
+
+        if(is_null($route)) {
+            $route = trim($this->app->getRoute(), '/');
+        }
+
         $html = '<ul>';
         foreach ($tree AS $item) {
             if (!$showHidden && $item->hidden) {
                 continue;
             }
-            $html .= '<li>';
+            if(($item->getRoute()==$route) || ($item->getRoute()==$route.'/index')) {
+                $html .= '<li class="active">';
+            } else {
+                $html .= '<li>';
+            }
             $html .= $this->createLink($item->getRoute(), $item->getTitle());
             if ($showHidden && $item->hasItems()) {
                 $html .= $this->traversTree($item->getItems(), $showHidden);
