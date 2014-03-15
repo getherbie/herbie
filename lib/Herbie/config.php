@@ -25,11 +25,11 @@ return [
     ],
     'pages' => [
         'path' => $this['sitePath'] . '/pages',
-        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
+        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
     ],
     'posts' => [
         'path' => $this['sitePath'] . '/posts',
-        'extensions' => ['md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
         'blogRoute' => 'blog'
     ],
     'data' => [
