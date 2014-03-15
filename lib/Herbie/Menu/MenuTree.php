@@ -96,12 +96,4 @@ class MenuTree implements Iterator
         return key($this->tree) !== null;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'MenuTree could not be converted to string.';
-    }
-
 }

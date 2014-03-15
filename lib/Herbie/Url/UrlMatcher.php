@@ -11,9 +11,9 @@
 
 namespace Herbie\Url;
 
-use Herbie\Blog\PostCollection;
 use Herbie\Exception\ResourceNotFoundException;
 use Herbie\Menu\MenuCollection;
+use Herbie\Menu\PostCollection;
 
 /**
  * The URLMatcher matches a given route and returns the path to a valid page

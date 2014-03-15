@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Blog;
+namespace Herbie\Menu;
 
 use ArrayIterator;
 use Countable;
@@ -221,14 +221,6 @@ class PostCollection implements IteratorAggregate, Countable
     public function count()
     {
         return count($this->items);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'MenuCollection could not be converted to string.';
     }
 
     /**

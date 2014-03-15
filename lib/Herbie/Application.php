@@ -127,7 +127,7 @@ class Application extends Pimple
                 'extensions' => $config['posts']['extensions'],
                 'blogRoute' => $config['posts']['blogRoute']
             ];
-            $builder = new Blog\PostCollectionBuilder($this['parser'], $cache, $options);
+            $builder = new Menu\PostCollectionBuilder($this['parser'], $cache, $options);
             return $builder->build($path);
         });
 

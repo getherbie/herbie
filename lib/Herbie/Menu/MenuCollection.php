@@ -87,12 +87,4 @@ class MenuCollection implements IteratorAggregate, Countable
         uasort($this->items, $callback);
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'MenuCollection could not be converted to string.';
-    }
-
 }

@@ -83,12 +83,4 @@ class RootPath implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'RootPath could not be converted to string.';
-    }
-
 }
