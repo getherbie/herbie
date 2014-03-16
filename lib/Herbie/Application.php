@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Parser;
 use Twig_Environment;
 use Twig_Extension_Debug;
+use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
 
@@ -178,8 +179,10 @@ class Application extends Pimple
 
         $this['twigString'] = $this->share(function () use ($app, $config) {
 
-            $loader = new Twig_Loader_String();
-            $twig = new Twig_Environment($loader, [
+            $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
+            $loader2 = new Twig_Loader_String();
+            $loaderChain = new Twig_Loader_Chain(array($loader1, $loader2));
+            $twig = new Twig_Environment($loaderChain, [
                 'debug' => $config['twig']['debug'],
                 'cache' => $config['twig']['cache']
             ]);
