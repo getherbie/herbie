@@ -1,6 +1,3 @@
-# phing build
-build
-
 # netbeans project files
 nbproject
 
