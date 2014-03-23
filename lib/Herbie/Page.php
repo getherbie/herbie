@@ -243,7 +243,7 @@ class Page
         if (array_key_exists('segments', $data)) {
             throw new LogicException("Field segments is not allowed.");
         }
-        foreach ($data AS $key => $value) {
+        foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
     }
@@ -398,5 +398,4 @@ class Page
     {
         return $this->title;
     }
-
 }

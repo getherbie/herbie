@@ -46,7 +46,7 @@ class PostCollectionBuilder
     {
         $this->parser = $parser;
         $this->cache = $cache;
-        foreach($options AS $key=>$value) {
+        foreach ($options as $key => $value) {
             $this->$key = $value;
         }
     }
@@ -59,17 +59,17 @@ class PostCollectionBuilder
     {
         $realpath = realpath($path);
         $collection = $this->cache->get(__CLASS__);
-        if($collection === false) {
+        if ($collection === false) {
             $collection = new PostCollection($this->blogRoute);
-            if(is_dir($realpath)) {
+            if (is_dir($realpath)) {
 
                 $loader = new FrontMatterLoader($this->parser);
-                foreach(scandir($realpath, 1) AS $filename) {
+                foreach (scandir($realpath, 1) as $filename) {
                     if (substr($filename, 0, 1) == '.') {
                         continue;
                     }
                     $pathinfo = pathinfo($filename);
-                    if(!in_array($pathinfo['extension'], $this->extensions)) {
+                    if (!in_array($pathinfo['extension'], $this->extensions)) {
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);
@@ -85,5 +85,4 @@ class PostCollectionBuilder
         #echo"<pre>";print_r($collection);echo"</pre>";
         return $collection;
     }
-
 }

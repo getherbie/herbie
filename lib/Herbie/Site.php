@@ -93,9 +93,9 @@ class Site
     public function getLastCreated()
     {
         $lastCreated = 0;
-        foreach($this->app['menu'] AS $item) {
+        foreach ($this->app['menu'] as $item) {
             $modified = strtotime($item->getCreated());
-            if($modified > $lastCreated) {
+            if ($modified > $lastCreated) {
                 $lastCreated = $modified;
             }
         }
@@ -108,9 +108,9 @@ class Site
     public function getLastModified()
     {
         $lastModified = 0;
-        foreach($this->app['menu'] AS $item) {
+        foreach ($this->app['menu'] as $item) {
             $modified = strtotime($item->getModified());
-            if($modified > $lastModified) {
+            if ($modified > $lastModified) {
                 $lastModified = $modified;
             }
         }
@@ -140,5 +140,4 @@ class Site
     {
         return $this->app->charset;
     }
-
 }

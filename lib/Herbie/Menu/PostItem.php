@@ -16,7 +16,6 @@ use LogicException;
 
 class PostItem
 {
-
     /**
      * @var string
      */
@@ -82,7 +81,7 @@ class PostItem
      */
     public function getAuthor($author)
     {
-        foreach ($this->authors AS $a) {
+        foreach ($this->authors as $a) {
             if (strtolower($a) == strtolower($author)) {
                 return $a;
             }
@@ -104,7 +103,7 @@ class PostItem
      */
     public function getCategory($category)
     {
-        foreach ($this->categories AS $c) {
+        foreach ($this->categories as $c) {
             if (strtolower($c) == strtolower($category)) {
                 return $c;
             }
@@ -170,7 +169,7 @@ class PostItem
      */
     public function getTag($tag)
     {
-        foreach ($this->tags AS $t) {
+        foreach ($this->tags as $t) {
             if (strtolower($t) == strtolower($tag)) {
                 return $t;
             }
@@ -233,7 +232,7 @@ class PostItem
      */
     public function hasAuthor($author)
     {
-        foreach ($this->authors AS $c) {
+        foreach ($this->authors as $c) {
             if (strtolower($c) == strtolower($author)) {
                 return true;
             }
@@ -247,7 +246,7 @@ class PostItem
      */
     public function hasCategory($category)
     {
-        foreach ($this->categories AS $c) {
+        foreach ($this->categories as $c) {
             if (strtolower($c) == strtolower($category)) {
                 return true;
             }
@@ -261,7 +260,7 @@ class PostItem
      */
     public function hasTag($tag)
     {
-        foreach ($this->tags AS $t) {
+        foreach ($this->tags as $t) {
             if (strtolower($t) == strtolower($tag)) {
                 return true;
             }
@@ -305,7 +304,7 @@ class PostItem
         if (empty($data['date'])) {
             $data['date'] = $this->extractDateFromPath($data['path']);
         }
-        foreach ($data AS $key => $value) {
+        foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
     }
@@ -403,5 +402,4 @@ class PostItem
     {
         return $this->title;
     }
-
 }

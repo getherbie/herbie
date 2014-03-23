@@ -15,7 +15,6 @@ use Michelf\MarkdownExtra;
 
 class MarkdownFormatter implements FormatterInterface
 {
-
     /**
      * @param string $value
      * @return string
@@ -25,5 +24,4 @@ class MarkdownFormatter implements FormatterInterface
         $parser = new MarkdownExtra();
         return $parser->transform($value);
     }
-
 }

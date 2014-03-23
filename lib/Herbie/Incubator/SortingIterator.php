@@ -21,7 +21,6 @@ use Traversable;
  */
 class SortingIterator implements IteratorAggregate
 {
-
     /**
      * @var Traversable
      */
@@ -50,5 +49,4 @@ class SortingIterator implements IteratorAggregate
     {
         return $this->iterator;
     }
-
 }

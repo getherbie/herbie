@@ -46,20 +46,19 @@ class DataLoader
     {
         $data = [];
         $files = scandir($path);
-        foreach($files AS $file) {
-            if(substr($file, 0, 1) === '.') {
+        foreach ($files as $file) {
+            if (substr($file, 0, 1) === '.') {
                 continue;
             }
             $info = pathinfo($file);
-            if(!in_array($info['extension'], $this->extensions)) {
+            if (!in_array($info['extension'], $this->extensions)) {
                 continue;
             }
             $key = $info['filename'];
-            $yaml = file_get_contents($path.'/'.$file);
+            $yaml = file_get_contents($path . '/' . $file);
             $data[$key] = $this->parser->parse($yaml);
         }
 
         return $data;
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Herbie.
  *
@@ -19,6 +18,7 @@ use Symfony\Component\Yaml\Parser;
 
 class MenuCollectionBuilder
 {
+
     /**
      * @var Parser
      */
@@ -61,10 +61,11 @@ class MenuCollectionBuilder
             if (is_dir($realpath)) {
 
                 $objects = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($realpath), RecursiveIteratorIterator::SELF_FIRST
+                    new RecursiveDirectoryIterator($realpath),
+                    RecursiveIteratorIterator::SELF_FIRST
                 );
 
-                foreach ($objects AS $path => $splFileInfo) {
+                foreach ($objects as $path => $splFileInfo) {
 
                     if (substr($splFileInfo->getFileName(), 0, 1) == '.') {
                         continue;
@@ -72,7 +73,7 @@ class MenuCollectionBuilder
 
                     if ($splFileInfo->isFile()) {
 
-                        if(!in_array($splFileInfo->getExtension(), $this->extensions)) {
+                        if (!in_array($splFileInfo->getExtension(), $this->extensions)) {
                             continue;
                         }
 
@@ -86,7 +87,6 @@ class MenuCollectionBuilder
                         $data['route'] = $this->createRoute($path, $realpath, $trimExtension);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
-
                     } else {
 
                         $data = [];
@@ -104,7 +104,6 @@ class MenuCollectionBuilder
                             $title = preg_replace('/^[0-9]+-/', '', $splFileInfo->getBasename());
                             $item->title = ucfirst($title);
                         }
-
                     }
 
                     if (empty($item->date)) {
@@ -119,7 +118,9 @@ class MenuCollectionBuilder
         }
 
         // Sort
-        $collection->sort(function ($a, $b) { return strcmp($a->path, $b->path); });
+        $collection->sort(function ($a, $b) {
+            return strcmp($a->path, $b->path);
+        });
 
         return $collection;
     }
@@ -130,11 +131,11 @@ class MenuCollectionBuilder
      * @param bool $trimExtension
      * @return string
      */
-    protected function createRoute($path, $realpath, $trimExtension=false)
+    protected function createRoute($path, $realpath, $trimExtension = false)
     {
         $route = str_replace($realpath, '', $path);
         $segments = explode('/', $route);
-        foreach ($segments AS $i => $segment) {
+        foreach ($segments as $i => $segment) {
             $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
         }
         $imploded = implode('/', $segments);
@@ -147,5 +148,4 @@ class MenuCollectionBuilder
 
         return trim($imploded, '/');
     }
-
 }

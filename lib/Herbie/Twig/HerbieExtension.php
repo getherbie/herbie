@@ -21,7 +21,6 @@ use Twig_SimpleFunction;
 
 class HerbieExtension extends Twig_Extension
 {
-
     /**
      * @var Application
      */
@@ -85,7 +84,7 @@ class HerbieExtension extends Twig_Extension
     protected function buildHtmlAttributes($htmlOptions = [])
     {
         $attributes = '';
-        foreach ($htmlOptions AS $key => $value) {
+        foreach ($htmlOptions as $key => $value) {
             $attributes .= $key . '="' . $value . '" ';
         }
         return trim($attributes);
@@ -183,16 +182,16 @@ class HerbieExtension extends Twig_Extension
     {
         static $route = null;
 
-        if(is_null($route)) {
+        if (is_null($route)) {
             $route = trim($this->app->getRoute(), '/');
         }
 
         $html = '<ul>';
-        foreach ($tree AS $item) {
+        foreach ($tree as $item) {
             if (!$showHidden && $item->hidden) {
                 continue;
             }
-            if(($item->getRoute()==$route) || ($item->getRoute()==$route.'/index')) {
+            if (($item->getRoute() == $route) || ($item->getRoute() == $route.'/index')) {
                 $html .= '<li class="active">';
             } else {
                 $html .= '<li>';
@@ -268,7 +267,7 @@ class HerbieExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->app['rootPath'] AS $item) {
+        foreach ($this->app['rootPath'] as $item) {
             $links[] = $this->createLink($item->getRoute(), $item->getTitle());
         }
 
@@ -277,7 +276,7 @@ class HerbieExtension extends Twig_Extension
         }
 
         $html = '<ul class="breadcrumb">';
-        foreach ($links AS $link) {
+        foreach ($links as $link) {
             $html .= '<li>' . $link . '</li>';
         }
         $html .= '</ul>';
@@ -315,13 +314,13 @@ class HerbieExtension extends Twig_Extension
         $attribs = array();
         $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
-        if(!empty($width)) {
+        if (!empty($width)) {
             $attribs['width'] = $width;
         }
-        if(!empty($height)) {
+        if (!empty($height)) {
             $attribs['height'] = $height;
         }
-        if(!empty($class)) {
+        if (!empty($class)) {
             $attribs['class'] = $class;
         }
         return sprintf('<img %s>', $this->buildHtmlAttributes($attribs));
@@ -363,8 +362,8 @@ class HerbieExtension extends Twig_Extension
         extract($options); // delim, siteTite, rootTitle, reverse
 
         $delim = isset($delim) ? $delim : ' / ';
-        $siteTitle = isset($siteTitle) ? $siteTitle : NULL;
-        $rootTitle = isset($rootTitle) ? $rootTitle : NULL;
+        $siteTitle = isset($siteTitle) ? $siteTitle : null;
+        $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
         $count = count($this->app['rootPath']);
@@ -375,7 +374,7 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $siteTitle;
         }
 
-        foreach ($this->app['rootPath'] AS $item) {
+        foreach ($this->app['rootPath'] as $item) {
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
@@ -411,5 +410,4 @@ class HerbieExtension extends Twig_Extension
     {
         return $this->app['urlGenerator']->generate($route);
     }
-
 }

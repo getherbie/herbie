@@ -15,7 +15,6 @@ use Netcarver\Textile\Parser;
 
 class TextileFormatter implements FormatterInterface
 {
-
     /**
      * @param string $value
      * @return string
@@ -25,5 +24,4 @@ class TextileFormatter implements FormatterInterface
         $parser = new Parser();
         return $parser->textileThis($value);
     }
-
 }

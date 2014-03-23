@@ -11,10 +11,8 @@
 
 namespace Herbie\Formatter;
 
-
 class FormatterFactory
 {
-
     /**
      * @param string $format
      * @return FormatterInterface
@@ -30,5 +28,4 @@ class FormatterFactory
         }
         return $formatter;
     }
-
 }

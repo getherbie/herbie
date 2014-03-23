@@ -28,7 +28,6 @@ use Twig_Loader_String;
  */
 class Application extends Pimple
 {
-
     /**
      * @var string
      */
@@ -52,7 +51,7 @@ class Application extends Pimple
      * @param int $errline
      * @throws ErrorException
      */
-    public function exception_error_handler($errno, $errstr, $errfile, $errline)
+    public function errorHandler($errno, $errstr, $errfile, $errline)
     {
         // disable error capturing to avoid recursive errors
         restore_error_handler();
@@ -65,7 +64,7 @@ class Application extends Pimple
      */
     public function __construct($sitePath, array $values = array())
     {
-        set_error_handler(array($this, 'exception_error_handler'), error_reporting());
+        set_error_handler(array($this, 'errorHandler'), error_reporting());
 
         parent::__construct();
 
@@ -141,7 +140,7 @@ class Application extends Pimple
             return new Menu\RootPath($app['menu'], $route);
         });
 
-        $this['data'] = $this->share(function() use ($app, $config) {
+        $this['data'] = $this->share(function () use ($app, $config) {
             $parser = $app['parser'];
             $loader = new Loader\DataLoader($parser, $config['data']['extensions']);
             return $loader->load($config['data']['path']);
@@ -215,8 +214,9 @@ class Application extends Pimple
             $dir = $config['twig']['extend']['functions'];
             if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.')
+                    if (substr($file, 0, 1) == '.') {
                         continue;
+                    }
                     $function = include($dir . '/' . $file);
                     $twig->addFunction($function);
                 }
@@ -228,8 +228,9 @@ class Application extends Pimple
             $dir = $config['twig']['extend']['filters'];
             if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.')
+                    if (substr($file, 0, 1) == '.') {
                         continue;
+                    }
                     $filter = include($dir . '/' . $file);
                     $twig->addFilter($filter);
                 }
@@ -241,8 +242,9 @@ class Application extends Pimple
             $dir = $config['twig']['extend']['tests'];
             if (is_dir($dir)) {
                 foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.')
+                    if (substr($file, 0, 1) == '.') {
                         continue;
+                    }
                     $test = include($dir . '/' . $file);
                     $twig->addTest($test);
                 }
@@ -342,7 +344,9 @@ class Application extends Pimple
         if (isset($this['config']['pseudo_html'])) {
             $pseudoHtml = $this['config']['pseudo_html'];
             $segment = str_replace(
-                explode('|', $pseudoHtml['from']), explode('|', $pseudoHtml['to']), $segment
+                explode('|', $pseudoHtml['from']),
+                explode('|', $pseudoHtml['to']),
+                $segment
             );
         }
 
@@ -401,12 +405,13 @@ class Application extends Pimple
         if (is_file($this['sitePath'] . '/config.yml')) {
             $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
+                [$this['appPath'], $this['sitePath'], $this['sitePath']],
+                $content
             );
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
         }
         return $config;
     }
-
 }

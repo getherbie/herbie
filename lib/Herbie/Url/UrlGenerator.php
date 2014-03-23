@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UrlGenerator
 {
-
     /**
      * @var Request
      */
@@ -76,5 +75,4 @@ class UrlGenerator
         $url = preg_replace('/\/index$/', '', $url);
         return empty($url) ? '/' : rtrim($url, '/');
     }
-
 }

@@ -13,7 +13,6 @@ namespace Herbie\Formatter;
 
 class RawFormatter implements FormatterInterface
 {
-
     /**
      * @param string $value
      * @return string
@@ -22,5 +21,4 @@ class RawFormatter implements FormatterInterface
     {
         return $value;
     }
-
 }

@@ -21,7 +21,6 @@ use Herbie\Menu\PostCollection;
  */
 class UrlMatcher
 {
-
     /**
      * @var MenuCollection Collection of all pages.
      */
@@ -91,5 +90,4 @@ class UrlMatcher
         $blogRoute = $this->posts->getBlogRoute();
         return empty($blogRoute) ? 'index' : $blogRoute;
     }
-
 }

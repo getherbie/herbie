@@ -17,7 +17,6 @@ use IteratorAggregate;
 
 class Paginator implements IteratorAggregate, Countable
 {
-
     /**
      * @var array
      */
@@ -55,5 +54,4 @@ class Paginator implements IteratorAggregate, Countable
     {
         return count($this->items);
     }
-
 }

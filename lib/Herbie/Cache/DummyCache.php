@@ -11,10 +11,8 @@
 
 namespace Herbie\Cache;
 
-
 class DummyCache implements CacheInterface
 {
-
     /**
      * @param string $id
      * @return boolean
@@ -33,5 +31,4 @@ class DummyCache implements CacheInterface
     {
         return false;
     }
-
 }

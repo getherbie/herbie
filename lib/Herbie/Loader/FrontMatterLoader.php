@@ -16,7 +16,6 @@ use Symfony\Component\Yaml\Parser;
 
 class FrontMatterLoader
 {
-
     /**
      * @var Parser
      */
@@ -62,5 +61,4 @@ class FrontMatterLoader
 
         return (array) $this->parser->parse($yaml);
     }
-
 }

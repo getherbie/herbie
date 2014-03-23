@@ -54,5 +54,4 @@ class HighlightTokenParser extends Twig_TokenParser
     {
         return 'code';
     }
-
 }

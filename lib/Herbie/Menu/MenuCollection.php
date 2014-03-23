@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Herbie.
  *
@@ -18,7 +17,6 @@ use IteratorAggregate;
 
 class MenuCollection implements IteratorAggregate, Countable
 {
-
     /**
      * @var array
      */
@@ -56,7 +54,7 @@ class MenuCollection implements IteratorAggregate, Countable
      */
     public function getItem($route)
     {
-        return isset($this->items[$route]) ? $this->items[$route] : NULL;
+        return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 
     /**
@@ -86,5 +84,4 @@ class MenuCollection implements IteratorAggregate, Countable
         }
         uasort($this->items, $callback);
     }
-
 }

@@ -15,7 +15,6 @@ use Iterator;
 
 class MenuTree implements Iterator
 {
-
     /**
      * @var array
      */
@@ -45,11 +44,11 @@ class MenuTree implements Iterator
      */
     protected function doFindByRoute($tree, $route)
     {
-        foreach($tree AS $item) {
-            if($item->getRoute() == $route) {
+        foreach ($tree as $item) {
+            if ($item->getRoute() == $route) {
                 return $item->getItems();
             }
-            if($item->hasItems()) {
+            if ($item->hasItems()) {
                 $this->doFindByRoute($item->getItems(), $route);
             }
         }
@@ -95,5 +94,4 @@ class MenuTree implements Iterator
     {
         return key($this->tree) !== null;
     }
-
 }

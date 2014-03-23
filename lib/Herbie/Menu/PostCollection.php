@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PostCollection implements IteratorAggregate, Countable
 {
-
     /**
      * @var array
      */
@@ -82,7 +81,7 @@ class PostCollection implements IteratorAggregate, Countable
      */
     public function getItem($route)
     {
-        return isset($this->items[$route]) ? $this->items[$route] : NULL;
+        return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 
     /**
@@ -91,8 +90,8 @@ class PostCollection implements IteratorAggregate, Countable
     public function getAuthors()
     {
         $authors = [];
-        foreach ($this->items AS $item) {
-            foreach ($item->authors AS $author) {
+        foreach ($this->items as $item) {
+            foreach ($item->authors as $author) {
                 if (array_key_exists($author, $authors)) {
                     $count = $authors[$author] + 1;
                 } else {
@@ -111,8 +110,8 @@ class PostCollection implements IteratorAggregate, Countable
     public function getCategories()
     {
         $categories = [];
-        foreach ($this->items AS $item) {
-            foreach ($item->categories AS $category) {
+        foreach ($this->items as $item) {
+            foreach ($item->categories as $category) {
                 if (array_key_exists($category, $categories)) {
                     $count = $categories[$category] + 1;
                 } else {
@@ -134,7 +133,7 @@ class PostCollection implements IteratorAggregate, Countable
         $limit = intval($limit);
         $items = [];
         $i = 0;
-        foreach ($this->items AS $item) {
+        foreach ($this->items as $item) {
             if ($i >= $limit) {
                 break;
             }
@@ -150,8 +149,8 @@ class PostCollection implements IteratorAggregate, Countable
     public function getTags()
     {
         $tags = [];
-        foreach ($this->items AS $item) {
-            foreach ($item->tags AS $tag) {
+        foreach ($this->items as $item) {
+            foreach ($item->tags as $tag) {
                 if (array_key_exists($tag, $tags)) {
                     $count = $tags[$tag] + 1;
                 } else {
@@ -170,7 +169,7 @@ class PostCollection implements IteratorAggregate, Countable
     public function getYears()
     {
         $years = [];
-        foreach ($this->items AS $item) {
+        foreach ($this->items as $item) {
             $key = substr($item->date, 0, 4);
             if (array_key_exists($key, $years)) {
                 $count = $years[$key] + 1;
@@ -188,7 +187,7 @@ class PostCollection implements IteratorAggregate, Countable
     public function getMonths()
     {
         $items = [];
-        foreach ($this->items AS $item) {
+        foreach ($this->items as $item) {
             $year = substr($item->date, 0, 4);
             $month = substr($item->date, 5, 2);
             $key = $year . '-' . $month;
@@ -263,7 +262,7 @@ class PostCollection implements IteratorAggregate, Countable
 
         $items = array();
 
-        foreach ($this->items AS $item) {
+        foreach ($this->items as $item) {
             if (0 === strpos($item->date, $date . '-')) {
                 $this->filteredBy = array(
                     'label' => $filteredByLabel,
@@ -322,5 +321,4 @@ class PostCollection implements IteratorAggregate, Countable
 
         return implode('/', $segments);
     }
-
 }

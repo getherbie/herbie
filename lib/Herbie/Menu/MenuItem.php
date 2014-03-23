@@ -16,7 +16,6 @@ use LogicException;
 
 class MenuItem
 {
-
     /**
      * @var string
      */
@@ -79,7 +78,7 @@ class MenuItem
         if (array_key_exists('_data_', $data)) {
             throw new LogicException("Field _data_ is not allowed.");
         }
-        foreach ($data AS $key => $value) {
+        foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
     }
@@ -276,7 +275,7 @@ class MenuItem
         if (!$this->hasItems()) {
             return false;
         }
-        foreach ($this->getItems() AS $item) {
+        foreach ($this->getItems() as $item) {
             if ($item->visible) {
                 return true;
             }
@@ -357,5 +356,4 @@ class MenuItem
         $pos = strpos($route, $realRoute);
         return 0 === $pos;
     }
-
 }

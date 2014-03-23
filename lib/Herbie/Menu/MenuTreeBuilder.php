@@ -20,7 +20,8 @@ class MenuTreeBuilder
      * @param MenuCollection $collection
      * @return MenuTree
      */
-    public function build($collection) {
+    public function build($collection)
+    {
 
         $flat = $collection->getItems();
 
@@ -34,5 +35,4 @@ class MenuTreeBuilder
 
         return new MenuTree($flat['']->items);
     }
-
 }

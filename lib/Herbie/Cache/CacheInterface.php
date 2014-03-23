@@ -16,7 +16,6 @@ namespace Herbie\Cache;
  */
 interface CacheInterface
 {
-
     /**
      * Retrieves a value from cache with a specified key.
      * @param string $id A key identifying the cached value.
@@ -29,5 +28,4 @@ interface CacheInterface
      * @param mixed $value The value to be cached.
      */
     public function set($id, $value);
-
 }

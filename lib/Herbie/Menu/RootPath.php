@@ -17,7 +17,6 @@ use IteratorAggregate;
 
 class RootPath implements IteratorAggregate, Countable
 {
-
     /**
      * @var MenuCollection
      */
@@ -54,12 +53,12 @@ class RootPath implements IteratorAggregate, Countable
         $segments = explode('/', rtrim($this->route, '/'));
         $route = '';
         $delim = '';
-        foreach($segments AS $segment) {
+        foreach ($segments as $segment) {
             $route .= $delim . $segment;
             $delim = '/';
 
             $item = $this->collection->getItem($route);
-            if(isset($item)) {
+            if (isset($item)) {
                 $items[] = $item;
             }
         }
@@ -82,5 +81,4 @@ class RootPath implements IteratorAggregate, Countable
     {
         return count($this->items);
     }
-
 }
