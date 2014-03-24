@@ -30,12 +30,11 @@ class NewsController extends CController
 
     public function actionDetail($id)
     {
-        if(empty($this->items[$id])) {
+        if (empty($this->items[$id])) {
             throw new CHttpException(404, 'News nicht gefunden');
         }
         $this->render('detail', array(
             'item' => $this->items[$id]
         ));
     }
-
 }
