@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Herbie.
  *
@@ -16,6 +15,7 @@ use LogicException;
 
 class MenuItem
 {
+
     /**
      * @var string
      */
@@ -59,7 +59,7 @@ class MenuItem
     /**
      * @var array
      */
-    protected $_data_ = [];
+    protected $data = [];
 
     /**
      * @param array $data
@@ -75,8 +75,8 @@ class MenuItem
      */
     public function setData(array $data)
     {
-        if (array_key_exists('_data_', $data)) {
-            throw new LogicException("Field _data_ is not allowed.");
+        if (array_key_exists('data', $data)) {
+            throw new LogicException("Field data is not allowed.");
         }
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
@@ -292,8 +292,8 @@ class MenuItem
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name];
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         } else {
             throw new LogicException("Field {$name} does not exist.");
         }
@@ -308,8 +308,8 @@ class MenuItem
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name] !== null;
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name] !== null;
         } else {
             return false;
         }
@@ -325,7 +325,7 @@ class MenuItem
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } else {
-            $this->_data_[$name] = $value;
+            $this->data[$name] = $value;
         }
     }
 

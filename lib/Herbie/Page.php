@@ -71,7 +71,7 @@ class Page
     /**
      * @var array
      */
-    protected $_data_ = [];
+    protected $data = [];
 
     /**
      * @var array
@@ -342,7 +342,7 @@ class Page
             'title' => $this->title,
             'date' => $this->date
         ];
-        return array_merge($members, $this->_data_);
+        return array_merge($members, $this->data);
     }
 
     /**
@@ -354,8 +354,8 @@ class Page
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name];
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         } else {
             throw new LogicException("Field {$name} does not exist.");
         }
@@ -370,8 +370,8 @@ class Page
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name] !== null;
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name] !== null;
         } else {
             return false;
         }
@@ -387,7 +387,7 @@ class Page
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } else {
-            $this->_data_[$name] = $value;
+            $this->data[$name] = $value;
         }
     }
 

@@ -54,7 +54,7 @@ class PostItem
     /**
      * @var array
      */
-    protected $_data_ = [];
+    protected $data = [];
 
     /**
      * @param array $data
@@ -298,8 +298,8 @@ class PostItem
      */
     public function setData(array $data)
     {
-        if (array_key_exists('_data_', $data)) {
-            throw new LogicException("Field _data_ is not allowed.");
+        if (array_key_exists('data', $data)) {
+            throw new LogicException("Field data is not allowed.");
         }
         if (empty($data['date'])) {
             $data['date'] = $this->extractDateFromPath($data['path']);
@@ -358,8 +358,8 @@ class PostItem
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name];
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         } else {
             throw new LogicException("Field {$name} does not exist.");
         }
@@ -374,8 +374,8 @@ class PostItem
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->_data_)) {
-            return $this->_data_[$name] !== null;
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name] !== null;
         } else {
             return false;
         }
@@ -391,7 +391,7 @@ class PostItem
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } else {
-            $this->_data_[$name] = $value;
+            $this->data[$name] = $value;
         }
     }
 
