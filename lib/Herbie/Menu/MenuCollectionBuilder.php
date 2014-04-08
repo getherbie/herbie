@@ -92,7 +92,7 @@ class MenuCollectionBuilder
                         $data = [];
                         $data['type'] = 'folder';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path, $realpath, $trimExtension);
+                        $data['route'] = $this->createRoute($path, $realpath, false);
                         $data['depth'] = $objects->getDepth() + 1;
                         $item = new MenuItem($data);
 
