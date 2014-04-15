@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * This file is part of Herbie.
  *
  * (c) Thomas Breuss <www.tebe.ch>

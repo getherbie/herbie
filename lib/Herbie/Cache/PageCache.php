@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * This file is part of Herbie.
  *
  * (c) Thomas Breuss <www.tebe.ch>
@@ -15,6 +16,7 @@ use LogicException;
 
 class PageCache implements CacheInterface
 {
+
     /**
      * @var boolean
      */
@@ -60,7 +62,7 @@ class PageCache implements CacheInterface
         $filename = $this->makeFilename($id);
         if (file_exists($filename) && (time() - $this->expire < filemtime($filename))) {
             return file_get_contents($filename) .
-                "<!-- Cache file generated " . date('c', filemtime($filename)) . " -->\n";
+                    "<!-- Cache file generated " . date('c', filemtime($filename)) . " -->\n";
         }
         return false;
     }
@@ -101,4 +103,5 @@ class PageCache implements CacheInterface
         $message = sprintf('Property "%s" does not exist in class %s.', $name, __CLASS__);
         throw new LogicException($message);
     }
+
 }
