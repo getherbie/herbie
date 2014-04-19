@@ -65,4 +65,39 @@ return [
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
+    'imagine' => [
+        'filter_sets' => [
+            'thumb' => [
+                'quality' => 75,
+                'filters' => [
+                    'thumbnail' => [
+                        'size' => [120, 90],
+                        'mode' => 'outbound'
+                    ]
+                ]
+            ],
+            'crop' => [
+                'quality' => 75,
+                'filters' => [
+                    'crop' => [
+                        'start' => [0, 0],
+                        'size' => [400, 400]
+                    ]
+                ]
+            ],
+            'cropthumb' => [
+                'quality' => 75,
+                'filters' => [
+                    'crop' => [
+                        'start' => [0, 0],
+                        'size' => [400, 400]
+                    ],
+                    'thumbnail' => [
+                        'size' => [120, 120],
+                        'mode' => 'outbound'
+                    ]
+                ]
+            ]
+        ]
+    ]
 ];

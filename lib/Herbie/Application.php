@@ -170,6 +170,9 @@ class Application extends Pimple
                 $twig->addExtension(new Twig_Extension_Debug());
             }
             $twig->addExtension(new Twig\HerbieExtension($app));
+            if (!empty($config['imagine'])) {
+                $twig->addExtension(new Twig\ImagineExtension($app));
+            }
             $this->addTwigPlugins($twig, $config);
             $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
@@ -191,6 +194,9 @@ class Application extends Pimple
             }
 
             $twig->addExtension(new Twig\HerbieExtension($app));
+            if (!empty($config['imagine'])) {
+                $twig->addExtension(new Twig\ImagineExtension($app));
+            }
             $this->addTwigPlugins($twig, $config);
 
             return $twig;
@@ -412,6 +418,7 @@ class Application extends Pimple
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
         }
+        #echo"<pre>";print_r($config);echo"</pre>";
         return $config;
     }
 }
