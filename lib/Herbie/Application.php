@@ -387,17 +387,13 @@ class Application extends Pimple
     protected function mergeConfigArrays($default, $override)
     {
         foreach ($override as $key => $value) {
-            if (array_key_exists($key, $default)) {
-                if (is_array($value)) {
-                    $default[$key] = $this->mergeConfigArrays($default[$key], $override[$key]);
-                } else {
-                    $default[$key] = $value;
-                }
+            if (is_array($value)) {
+                $array = isset($default[$key]) ? $default[$key] : array();
+                $default[$key] = $this->mergeConfigArrays($array, $override[$key]);
             } else {
-                throw new Exception("Config setting $key is not allowed.");
+                $default[$key] = $value;
             }
         }
-
         return $default;
     }
 
@@ -418,7 +414,6 @@ class Application extends Pimple
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
         }
-        #echo"<pre>";print_r($config);echo"</pre>";
         return $config;
     }
 }
