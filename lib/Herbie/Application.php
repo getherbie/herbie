@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of Herbie.
  *
@@ -28,6 +27,7 @@ use Twig_Loader_String;
  */
 class Application extends Pimple
 {
+
     /**
      * @var string
      */
@@ -74,9 +74,9 @@ class Application extends Pimple
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['sitePath'] = realpath($sitePath);
 
-        $this['parser'] = $this->share(function () {
+        $this['parser'] = function () {
             return new Parser();
-        });
+        };
 
         $config = $this->loadConfiguration();
 
@@ -87,38 +87,38 @@ class Application extends Pimple
 
         $this['config'] = $config;
 
-        $this['request'] = $this->share(function () use ($app) {
+        $this['request'] = function () use ($app) {
             return Request::createFromGlobals();
-        });
+        };
 
-        $this['cache.page'] = $this->share(function () use ($config) {
+        $this['cache.page'] = function () use ($config) {
             if (empty($config['cache']['page']['enable'])) {
                 return new Cache\DummyCache();
             }
             return new Cache\PageCache($config['cache']['page']);
-        });
+        };
 
-        $this['cache.data'] = $this->share(function () use ($config) {
+        $this['cache.data'] = function () use ($config) {
             if (empty($config['cache']['data']['enable'])) {
                 return new Cache\DummyCache();
             }
             return new Cache\DataCache($config['cache']['data']);
-        });
+        };
 
-        $this['menu'] = $this->share(function () use ($app, $config) {
+        $this['menu'] = function () use ($app, $config) {
             $cache = $app['cache.data'];
             $path = $config['pages']['path'];
             $extensions = $config['pages']['extensions'];
             $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache, $extensions);
             return $builder->build($path);
-        });
+        };
 
-        $this['tree'] = $this->share(function () use ($app, $config) {
+        $this['tree'] = function () use ($app, $config) {
             $builder = new Menu\MenuTreeBuilder();
             return $builder->build($app['menu']);
-        });
+        };
 
-        $this['posts'] = $this->share(function () use ($app, $config) {
+        $this['posts'] = function () use ($app, $config) {
             $cache = $app['cache.data'];
             $path = $config['posts']['path'];
             #$extensions = $config['posts']['extensions'];
@@ -129,36 +129,36 @@ class Application extends Pimple
             ];
             $builder = new Menu\PostCollectionBuilder($this['parser'], $cache, $options);
             return $builder->build($path);
-        });
+        };
 
-        $this['paginator'] = $this->share(function () use ($app) {
+        $this['paginator'] = function () use ($app) {
             return new Paginator($app['posts'], $this['request']);
-        });
+        };
 
-        $this['rootPath'] = $this->share(function () use ($app) {
+        $this['rootPath'] = function () use ($app) {
             $route = $this->getRoute();
             return new Menu\RootPath($app['menu'], $route);
-        });
+        };
 
-        $this['data'] = $this->share(function () use ($app, $config) {
+        $this['data'] = function () use ($app, $config) {
             $parser = $app['parser'];
             $loader = new Loader\DataLoader($parser, $config['data']['extensions']);
             return $loader->load($config['data']['path']);
-        });
+        };
 
-        $this['urlMatcher'] = $this->share(function () use ($app) {
+        $this['urlMatcher'] = function () use ($app) {
             return new Url\UrlMatcher($app['menu'], $app['posts']);
-        });
+        };
 
-        $this['urlGenerator'] = $this->share(function () use ($app, $config) {
+        $this['urlGenerator'] = function () use ($app, $config) {
             return new Url\UrlGenerator($app['request'], $config['nice_urls']);
-        });
+        };
 
-        $this['page'] = $this->share(function () use ($app) {
+        $this['page'] = function () use ($app) {
             return new Page(); // be sure that we always have a Page object
-        });
+        };
 
-        $this['twigFilesystem'] = $this->share(function () use ($app, $config) {
+        $this['twigFilesystem'] = function () use ($app, $config) {
 
             $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
             $twig = new Twig_Environment($loader, [
@@ -177,9 +177,9 @@ class Application extends Pimple
             $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
             return $twig;
-        });
+        };
 
-        $this['twigString'] = $this->share(function () use ($app, $config) {
+        $this['twigString'] = function () use ($app, $config) {
 
             $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
             $loader2 = new Twig_Loader_String();
@@ -200,7 +200,7 @@ class Application extends Pimple
             $this->addTwigPlugins($twig, $config);
 
             return $twig;
-        });
+        };
 
         foreach ($values as $key => $value) {
             $this[$key] = $value;
@@ -407,9 +407,7 @@ class Application extends Pimple
         if (is_file($this['sitePath'] . '/config.yml')) {
             $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-                [$this['appPath'], $this['sitePath'], $this['sitePath']],
-                $content
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
             );
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
