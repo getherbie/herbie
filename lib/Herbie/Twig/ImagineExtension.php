@@ -15,7 +15,10 @@ use Twig_Extension;
 use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
+use Imagine\Image\Color;
 use Imagine\Image\Point;
+use Imagine\Filter\Advanced\RelativeResize;
+use Imagine\Filter\Basic\Resize;
 
 class ImagineExtension extends Twig_Extension
 {
@@ -60,7 +63,7 @@ class ImagineExtension extends Twig_Extension
     }
 
     /**
-     * {@inheritDoc}
+     * @return string
      */
     public function getName()
     {
@@ -74,16 +77,24 @@ class ImagineExtension extends Twig_Extension
      */
     protected function applyFilter($path, $filter)
     {
-        $cachePath = str_replace('media/', 'media/cache/' . $filter . '-', $path);
-        if (is_file($cachePath)) {
-            return $cachePath;
-        }
+        $basePath = $this->app['request']->getBasePath() . '/';
 
         if (empty($this->app['config']['imagine']['filter_sets'][$filter])) {
-            return $path;
+            return $basePath . $path;
         }
 
         $filterConfig = $this->app['config']['imagine']['filter_sets'][$filter];
+        $cachePath = str_replace('media/', 'media/cache/' . $filter . '-', $path);
+
+        if (!empty($filterConfig['test'])) {
+            if (is_file($cachePath)) {
+                unlink($cachePath);
+            }
+        }
+
+        if (is_file($cachePath)) {
+            return $basePath . $cachePath;
+        }
 
         $imagine = new Imagine();
         $image = $imagine->open($path);
@@ -101,7 +112,25 @@ class ImagineExtension extends Twig_Extension
         }
 
         $image->save($cachePath, $options);
-        return $cachePath;
+        return $basePath . $cachePath;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyResizeFilter(ImageInterface $image, $options)
+    {
+        // Defaults
+        $size = new Box(120, 120);
+
+        if (isset($options['size']) && (count($options['size']) == 2)) {
+            list($width, $height) = $options['size'];
+            $size = new Box($width, $height);
+        }
+
+        return $image->resize($size);
     }
 
     /**
@@ -149,5 +178,166 @@ class ImagineExtension extends Twig_Extension
         }
 
         return $image->crop($start, $size);
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyGrayscaleFilter(ImageInterface $image, $options)
+    {
+        $image->effects()->grayscale();
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyNegativeFilter(ImageInterface $image, $options)
+    {
+        $image->effects()->negative();
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applySharpenFilter(ImageInterface $image, $options)
+    {
+        $image->effects()->sharpen();
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyBlurFilter(ImageInterface $image, $options)
+    {
+        $sigma = 1;
+        if (isset($options['sigma'])) {
+            $sigma = $options['sigma'];
+        }
+        $image->effects()->blur($sigma);
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyGammaFilter(ImageInterface $image, $options)
+    {
+        $correction = 0.5;
+        if (isset($options['correction'])) {
+            $correction = $options['correction'];
+        }
+        $image->effects()->gamma($correction);
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyColorizeFilter(ImageInterface $image, $options)
+    {
+        if (isset($options['color'])) {
+            $color = new Color($options['color']);
+            $image->effects()->colorize($color);
+        }
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyRotateFilter(ImageInterface $image, $options)
+    {
+        if (isset($options['angle'])) {
+            $angle = (int) $options['angle'];
+            $image->rotate($angle);
+        }
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyFlipHorizontallyFilter(ImageInterface $image, $options)
+    {
+        $image->flipHorizontally();
+        return $image;
+    }
+
+    /**
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyFlipVerticallyFilter(ImageInterface $image, $options)
+    {
+        $image->flipVertically();
+        return $image;
+    }
+
+    /**
+     * @see https://github.com/liip/LiipImagineBundle/blob/master/Imagine/Filter/Loader/UpscaleFilterLoader.php
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     * @throws \InvalidArgumentException
+     */
+    protected function applyUpscaleFilter(ImageInterface $image, $options)
+    {
+        if (!isset($options['min'])) {
+            throw new \InvalidArgumentException('Missing min option.');
+        }
+
+        list($width, $height) = $options['min'];
+
+        $size = $image->getSize();
+        $origWidth = $size->getWidth();
+        $origHeight = $size->getHeight();
+
+        if ($origWidth < $width || $origHeight < $height) {
+
+            $widthRatio = $width / $origWidth;
+            $heightRatio = $height / $origHeight;
+
+            $ratio = $widthRatio > $heightRatio ? $widthRatio : $heightRatio;
+
+            $filter = new Resize(new Box($origWidth * $ratio, $origHeight * $ratio));
+
+            return $filter->apply($image);
+        }
+
+        return $image;
+    }
+
+    /**
+     *
+     * @param \Imagine\Image\ImageInterface $image
+     * @param array $options
+     * @return \Imagine\Image\ImageInterface
+     */
+    protected function applyRelativeResizeFilter(ImageInterface $image, $options)
+    {
+        $method = $options['method'];
+        $parameter = $options['parameter'];
+        $filter = new RelativeResize($method, $parameter);
+        return $filter->apply($image);
     }
 }
