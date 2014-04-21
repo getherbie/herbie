@@ -29,11 +29,19 @@ class ImagineExtension extends Twig_Extension
     protected $app;
 
     /**
+     * @var string
+     */
+    private $cachePath = 'cache';
+
+    /**
      * @param Application $app
      */
     public function __construct($app)
     {
         $this->app = $app;
+        if (isset($this->app['config']['imagine']['cachePath'])) {
+            $this->cachePath = $this->app['config']['imagine']['cachePath'];
+        }
     }
 
     /**
@@ -84,7 +92,7 @@ class ImagineExtension extends Twig_Extension
         }
 
         $filterConfig = $this->app['config']['imagine']['filter_sets'][$filter];
-        $cachePath = str_replace('media/', 'media/cache/' . $filter . '-', $path);
+        $cachePath = $this->resolveCachePath($path, $filter);
 
         if (!empty($filterConfig['test'])) {
             if (is_file($cachePath)) {
@@ -111,8 +119,32 @@ class ImagineExtension extends Twig_Extension
             $options['quality'] = $filterConfig['quality'];
         }
 
+        $cacheDir = dirname($cachePath);
+        if (!is_dir($cacheDir)) {
+            mkdir($cacheDir, 0755, true);
+        }
+
         $image->save($cachePath, $options);
         return $basePath . $cachePath;
+    }
+
+    /**
+     * @param string $path
+     * @param string $filter
+     * @return string
+     */
+    private function resolveCachePath($path, $filter)
+    {
+        $info = pathinfo($path);
+        extract($info); // $dirname, $filename, $extension
+        return sprintf(
+            '%s/%s/%s-%s.%s',
+            $this->cachePath,
+            $dirname,
+            $filename,
+            $filter,
+            $extension
+        );
     }
 
     /**
