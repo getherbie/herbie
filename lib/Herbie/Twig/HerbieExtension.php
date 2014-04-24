@@ -381,6 +381,10 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $item->getTitle();
         }
 
+        if($this->functionIsPost()) {
+            $titles[] = $this->app['page']->getTitle();
+        }
+
         if (!empty($reverse)) {
             $titles = array_reverse($titles);
         }
