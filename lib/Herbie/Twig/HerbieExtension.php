@@ -20,7 +20,6 @@ use Twig_SimpleFunction;
 
 class HerbieExtension extends Twig_Extension
 {
-
     /**
      * @var Application
      */
