@@ -343,7 +343,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionMenu(array $options = [])
     {
-        extract($options); // showHidden
+        extract($options); // showHidden, route
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
         $route = isset($route) ? $route : null;
 
@@ -398,11 +398,13 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionSitemap(array $options = [])
     {
-        extract($options); // showHidden
+        extract($options); // showHidden, route
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
+        $route = isset($route) ? $route : null;
 
-        $html = $this->traversTree($this->app['tree'], $showHidden);
+        $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
 
+        $html = $this->traversTree($tree, $showHidden);
         return sprintf('<div class="sitemap">%s</div>', $html);
     }
 
