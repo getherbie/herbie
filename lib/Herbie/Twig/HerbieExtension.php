@@ -309,7 +309,7 @@ class HerbieExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    public function functionImage($src, $width = '', $height = '', $alt = '', $class = '')
+    public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
     {
         $attribs = array();
         $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
