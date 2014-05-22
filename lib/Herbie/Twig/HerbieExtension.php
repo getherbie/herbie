@@ -142,6 +142,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
             new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
             new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options),
+            new Twig_SimpleFunction('vimeo', array($this, 'functionVimeo'), $options),
             new Twig_SimpleFunction('youTube', array($this, 'functionYouTube'), $options),
         ];
     }
@@ -415,6 +416,36 @@ class HerbieExtension extends Twig_Extension
     public function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
+    }
+
+    /**
+     * @param string $id
+     * @param int $width
+     * @param int $height
+     * @param int $responsive
+     * @return string
+     * @see http://embedresponsively.com/
+     */
+    public function functionVimeo($id, $width = 480, $height = 320, $responsive = 1)
+    {
+        $attribs = array(
+            'src' => sprintf('//player.vimeo.com/video/%s', $id),
+            'width' => $width,
+            'height' => $height,
+            'frameborder' => 0
+        );
+        $style = '';
+        $class = '';
+        if(!empty($responsive)) {
+            $style = '<style>.video-vimeo-responsive { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-vimeo-responsive iframe, .video-vimeo-responsive object, .video-vimeo-responsive embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
+            $class = 'video-vimeo-responsive';
+        }
+        return sprintf(
+            '%s<div class="video video-vimeo %s"><iframe %s webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>',
+            $style,
+            $class,
+            $this->buildHtmlAttributes($attribs)
+        );
     }
 
     /**
