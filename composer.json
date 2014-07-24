@@ -15,7 +15,8 @@
         "symfony/http-foundation": "2.1.*",
         "symfony/yaml": "2.4.*",
         "twig/twig": "1.15.*",
-        "imagine/imagine": "~0.5.0"
+        "imagine/imagine": "~0.5.0",
+        "ntzwbr/markdown": "dev-master"
     },
     "autoload": {
         "psr-0": {
