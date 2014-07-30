@@ -9,7 +9,7 @@ data:
   extensions: [yml, yaml]
 
 layouts:
-  path: SITE_PATH/layouts
+  path: [SITE_PATH/layouts/default, SITE_PATH/layouts/custom, SITE_PATH/layouts]
 
 pages:
   path: SITE_PATH/pages
