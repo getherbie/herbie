@@ -177,43 +177,36 @@ class HerbieExtension extends Twig_Extension
     /**
      * @param MenuTree $tree
      * @param bool $showHidden
-     * @return array
+     * @return string
      */
     protected function traversTree($tree, $showHidden)
     {
         static $route = null;
-        $navigation = array();
 
         if (is_null($route)) {
             $route = trim($this->app->getRoute(), '/');
         }
 
+        $html = '<ul>';
         foreach ($tree as $item) {
-
-            $nav_item = array();
-            $nav_item['title'] = $item->getTitle();
-            $nav_item['depth'] = $item->getDepth();
-
             if (!$showHidden && $item->hidden) {
                 continue;
             }
             if (($item->getRoute() == $route) || ($item->getRoute() == $route . '/index')) {
-                $nav_item['active'] = true;
+                $html .= '<li class="active">';
             } else {
-                $nav_item['active'] = false;
+                $html .= '<li>';
             }
-            $nav_item['route'] = $item->getRoute();
-            $nav_item['url'] = $this->app['urlGenerator']->generate($nav_item['route']);
-
+            $html .= $this->createLink($item->getRoute(), $item->getTitle());
             if ($showHidden && $item->hasItems()) {
-                $nav_item['children'] = $this->traversTree($item->getItems(), $showHidden);
+                $html .= $this->traversTree($item->getItems(), $showHidden);
             } elseif ($item->hasVisibleItems()) {
-                $nav_item['children'] = $this->traversTree($item->getItems(), $showHidden);
+                $html .= $this->traversTree($item->getItems(), $showHidden);
             }
-
-            $navigation[] = $nav_item;
+            $html .= '</li>';
         }
-        return $navigation;
+        $html .= '</ul>';
+        return $html;
     }
 
     /**
@@ -347,7 +340,7 @@ class HerbieExtension extends Twig_Extension
 
     /**
      * @param array $options
-     * @return array
+     * @return string
      */
     public function functionMenu(array $options = [])
     {
@@ -357,7 +350,8 @@ class HerbieExtension extends Twig_Extension
 
         $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
 
-        return $this->traversTree($tree, $showHidden);
+        $html = $this->traversTree($tree, $showHidden);
+        return sprintf('<div class="menu">%s</div>', $html);
     }
 
     /**
