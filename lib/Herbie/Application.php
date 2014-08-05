@@ -404,13 +404,17 @@ class Application extends Pimple
     protected function loadConfiguration()
     {
         $config = require(__DIR__ . '/config.php');
+        if (is_file($this['sitePath'] . '/config.php')) {
+            $userConfig = require($this['sitePath'] . '/config.php');
+            return $this->mergeConfigArrays($config, $userConfig);
+        }
         if (is_file($this['sitePath'] . '/config.yml')) {
             $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
                 ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
             );
             $userConfig = $this['parser']->parse($content);
-            $config = $this->mergeConfigArrays($config, $userConfig);
+            return $this->mergeConfigArrays($config, $userConfig);
         }
         return $config;
     }
