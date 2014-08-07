@@ -158,6 +158,14 @@ class Application extends Pimple
             return new Page(); // be sure that we always have a Page object
         };
 
+        $this['shortcode'] = function () use ($config) {
+            $shortcode = new Shortcode();
+            if(!empty($config['shortcodes'])) {
+                $shortcode->tags = $config['shortcodes'];
+            }
+            return $shortcode;
+        };
+
         $this['twigFilesystem'] = function () use ($app, $config) {
 
             $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
@@ -347,14 +355,7 @@ class Application extends Pimple
         $page = $this['page'];
         $segment = $page->getSegment($segmentId);
 
-        if (isset($this['config']['pseudo_html'])) {
-            $pseudoHtml = $this['config']['pseudo_html'];
-            $segment = str_replace(
-                explode('|', $pseudoHtml['from']),
-                explode('|', $pseudoHtml['to']),
-                $segment
-            );
-        }
+        $segment = $this['shortcode']->parse($segment);
 
         $twigged = $this->renderString($segment);
 

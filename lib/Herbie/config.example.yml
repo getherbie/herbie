@@ -41,10 +41,6 @@ cache:
     dir: SITE_PATH/cache/data
     expire: 18000
 
-pseudo_html:
-    from: <box>|</box>
-    to: <div class="box" markdown="1">|</div>
-
 language: de
 locale: de_DE.UTF-8
 charset: UTF-8
