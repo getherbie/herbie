@@ -159,11 +159,8 @@ class Application extends Pimple
         };
 
         $this['shortcode'] = function () use ($config) {
-            $shortcode = new Shortcode();
-            if(!empty($config['shortcodes'])) {
-                $shortcode->tags = $config['shortcodes'];
-            }
-            return $shortcode;
+            $tags = isset($config['shortcodes']) ? $config['shortcodes'] : [];
+            return new Shortcode($tags);
         };
 
         $this['twigFilesystem'] = function () use ($app, $config) {
