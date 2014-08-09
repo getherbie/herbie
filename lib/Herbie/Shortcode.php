@@ -19,6 +19,14 @@ class Shortcode
     private $tags = array();
 
     /**
+     * @param array $tags
+     */
+    public function __construct(array $tags = [])
+    {
+        $this->tags = $tags;
+    }
+
+    /**
      * @param string $tag
      * @param callable $callable
      */
