@@ -12,6 +12,7 @@ namespace Herbie\Twig;
 
 use DateTime;
 use Herbie\Site;
+use Herbie\Formatter;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
@@ -119,7 +120,9 @@ class HerbieExtension extends Twig_Extension
     public function getFilters()
     {
         return [
-            new Twig_SimpleFilter('strftime', array($this, 'filterStrftime'))
+            new Twig_SimpleFilter('markup', array($this, 'filterMarkup'), ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('strftime', array($this, 'filterStrftime')),
+            new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']])
         ];
     }
 
@@ -191,6 +194,16 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
+     * @param string $content
+     * @return string
+     */
+    public function filterMarkup($content)
+    {
+        $formatter = Formatter\FormatterFactory::create('markup');
+        return $formatter->transform($content);
+    }
+
+    /**
      * @param string $date
      * @param string $format
      * @return string
@@ -199,6 +212,16 @@ class HerbieExtension extends Twig_Extension
     {
         $dateTime = new DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    public function filterTextile($content)
+    {
+        $formatter = Formatter\FormatterFactory::create('textile');
+        return $formatter->transform($content);
     }
 
     /**
@@ -315,7 +338,7 @@ class HerbieExtension extends Twig_Extension
     {
         return !$this->functionIsPost();
     }
-    
+
     /**
      * @return boolean
      */
