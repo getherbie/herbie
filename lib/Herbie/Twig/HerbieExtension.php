@@ -137,6 +137,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
+            new Twig_SimpleFunction('disqus', array($this, 'functionDisqus'), $options),
             new Twig_SimpleFunction('googleMaps', array($this, 'functionGoogleMaps'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
@@ -305,6 +306,17 @@ class HerbieExtension extends Twig_Extension
             return $content;
         }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
+    }
+
+    /**
+     * @param string $shortname
+     * @return string
+     */
+    public function functionDisqus($shortname)
+    {
+        return $this->app['twigFilesystem']->render('extension/herbie/disqus.html', array(
+           'shortname' => $shortname
+        ));
     }
 
     /**
