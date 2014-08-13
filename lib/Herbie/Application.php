@@ -166,6 +166,10 @@ class Application extends Pimple
         $this['twigFilesystem'] = function () use ($app, $config) {
 
             $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
+            $loader->addPath(__DIR__ . '/layouts');
+            $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
+            $loader->addPath(__DIR__ . '/Twig/macros', 'macros');
+
             $twig = new Twig_Environment($loader, [
                 'debug' => $config['twig']['debug'],
                 'cache' => $config['twig']['cache']
@@ -179,14 +183,14 @@ class Application extends Pimple
                 $twig->addExtension(new Twig\ImagineExtension($app));
             }
             $this->addTwigPlugins($twig, $config);
-            $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
-
             return $twig;
         };
 
         $this['twigString'] = function () use ($app, $config) {
 
             $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
+            $loader1->addPath(__DIR__ . '/layouts');
+            $loader1->addPath(__DIR__ . '/Twig/macros', 'macros');
             $loader2 = new Twig_Loader_String();
             $loaderChain = new Twig_Loader_Chain(array($loader1, $loader2));
             $twig = new Twig_Environment($loaderChain, [
