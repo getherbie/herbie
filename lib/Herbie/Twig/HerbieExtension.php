@@ -137,6 +137,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
+            new Twig_SimpleFunction('googleMaps', array($this, 'functionGoogleMaps'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
             new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
@@ -304,6 +305,32 @@ class HerbieExtension extends Twig_Extension
             return $content;
         }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
+    }
+
+    /**
+     * @param string $id
+     * @param int $width
+     * @param int $height
+     * @param string $type
+     * @param string $class
+     * @param int $zoom
+     * @param string $address
+     * @return string
+     */
+    public function functionGoogleMaps($id = 'gmap', $width = 600, $height = 450, $type = 'roadmap', $class = 'gmap', $zoom = 15, $address = '')
+    {
+        static $instances = 0;
+        $instances++;
+        return $this->app['twigFilesystem']->render('extension/herbie/google_maps.html', array(
+            'id' => $id . '-' . $instances,
+            'width' => $width,
+            'height' => $height,
+            'type' => $type,
+            'class' => $class,
+            'zoom' => $zoom,
+            'address' => $address,
+            'instances' => $instances
+        ));
     }
 
     /**
