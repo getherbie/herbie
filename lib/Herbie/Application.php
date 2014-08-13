@@ -168,7 +168,6 @@ class Application extends Container
             $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
             $loader->addPath(__DIR__ . '/layouts');
             $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
-            $loader->addPath(__DIR__ . '/Twig/macros', 'macros');
 
             $twig = new Twig_Environment($loader, [
                 'debug' => $config['twig']['debug'],
@@ -190,7 +189,6 @@ class Application extends Container
 
             $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
             $loader1->addPath(__DIR__ . '/layouts');
-            $loader1->addPath(__DIR__ . '/Twig/macros', 'macros');
             $loader2 = new Twig_Loader_String();
             $loaderChain = new Twig_Loader_Chain(array($loader1, $loader2));
             $twig = new Twig_Environment($loaderChain, [
