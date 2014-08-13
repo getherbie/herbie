@@ -11,11 +11,11 @@
         "easybook/geshi": "1.0.8.12",
         "michelf/php-markdown": "1.4.*",
         "netcarver/textile": "3.5.*",
-        "pimple/pimple": "2.*",
-        "symfony/http-foundation": "2.1.*",
-        "symfony/yaml": "2.4.*",
-        "twig/twig": "1.15.*",
-        "imagine/imagine": "~0.5.0"
+        "pimple/pimple": "3.*",
+        "symfony/http-foundation": "2.5.*",
+        "symfony/yaml": "2.5.*",
+        "twig/twig": "1.16.*",
+        "imagine/imagine": "~0.6.1"
     },
     "autoload": {
         "psr-0": {

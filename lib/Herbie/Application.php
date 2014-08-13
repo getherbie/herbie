@@ -12,7 +12,7 @@ namespace Herbie;
 
 use ErrorException;
 use Exception;
-use Pimple;
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Parser;
@@ -25,7 +25,7 @@ use Twig_Loader_String;
 /**
  * The application using Pimple as dependency injection container.
  */
-class Application extends Pimple
+class Application extends Container
 {
 
     /**
