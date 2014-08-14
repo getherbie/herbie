@@ -223,8 +223,10 @@ class Application extends Container
         if(empty($config['twig']['extend'])) {
             return;
         }
-        
+
         extract($config['twig']['extend']); // functions, filters, tests
+
+        $app = $this; // Global $app var used by plugins
 
         // Functions
         if (isset($functions)) {
