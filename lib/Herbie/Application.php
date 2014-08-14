@@ -226,28 +226,39 @@ class Application extends Container
 
         extract($config['twig']['extend']); // functions, filters, tests
 
-        $app = $this; // Global $app var used by plugins
-
         // Functions
         if (isset($functions)) {
             foreach($this->readPhpFiles($functions) as $file) {
-                $twig->addFunction(include($file));
+                $included = $this->includePhpFile($file);
+                $twig->addFunction($included);
             }
         }
 
         // Filters
         if (isset($filters)) {
             foreach($this->readPhpFiles($filters) as $file) {
-                $twig->addFilter(include($file));
+                $included = $this->includePhpFile($file);
+                $twig->addFilter($included);
             }
         }
 
         // Tests
         if (isset($tests)) {
             foreach($this->readPhpFiles($tests) as $file) {
-                $twig->addTest(include($file));
+                $included = $this->includePhpFile($file);
+                $twig->addTest($included);
             }
         }
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     */
+    private function includePhpFile($file)
+    {
+        $app = $this; // Global $app var used by plugins
+        return include($file);
     }
 
     /**
