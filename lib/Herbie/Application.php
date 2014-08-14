@@ -62,9 +62,9 @@ class Application extends Container
      * @param string $sitePath
      * @param array $values
      */
-    public function __construct($sitePath, array $values = array())
+    public function __construct($sitePath, array $values = [])
     {
-        set_error_handler(array($this, 'errorHandler'), error_reporting());
+        set_error_handler([$this, 'errorHandler'], error_reporting());
 
         parent::__construct();
 
@@ -190,7 +190,7 @@ class Application extends Container
             $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
             $loader1->addPath(__DIR__ . '/layouts');
             $loader2 = new Twig_Loader_String();
-            $loaderChain = new Twig_Loader_Chain(array($loader1, $loader2));
+            $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
             $twig = new Twig_Environment($loaderChain, [
                 'debug' => $config['twig']['debug'],
                 'cache' => $config['twig']['cache']
@@ -220,49 +220,46 @@ class Application extends Container
      */
     public function addTwigPlugins(Twig_Environment $twig, array $config)
     {
-        $app = $this;
+        if(empty($config['twig']['extend'])) {
+            return;
+        }
+        
+        extract($config['twig']['extend']); // functions, filters, tests
 
         // Functions
-        if (!empty($config['twig']['extend']['functions'])) {
-            $dir = $config['twig']['extend']['functions'];
-            if (is_dir($dir)) {
-                foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.') {
-                        continue;
-                    }
-                    $function = include($dir . '/' . $file);
-                    $twig->addFunction($function);
-                }
+        if (isset($functions)) {
+            foreach($this->readPhpFiles($functions) as $file) {
+                $twig->addFunction(include($file));
             }
         }
 
         // Filters
-        if (!empty($config['twig']['extend']['filters'])) {
-            $dir = $config['twig']['extend']['filters'];
-            if (is_dir($dir)) {
-                foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.') {
-                        continue;
-                    }
-                    $filter = include($dir . '/' . $file);
-                    $twig->addFilter($filter);
-                }
+        if (isset($filters)) {
+            foreach($this->readPhpFiles($filters) as $file) {
+                $twig->addFilter(include($file));
             }
         }
 
         // Tests
-        if (!empty($config['twig']['extend']['tests'])) {
-            $dir = $config['twig']['extend']['tests'];
-            if (is_dir($dir)) {
-                foreach (scandir($dir) as $file) {
-                    if (substr($file, 0, 1) == '.') {
-                        continue;
-                    }
-                    $test = include($dir . '/' . $file);
-                    $twig->addTest($test);
-                }
+        if (isset($tests)) {
+            foreach($this->readPhpFiles($tests) as $file) {
+                $twig->addTest(include($file));
             }
         }
+    }
+
+    /**
+     * @param string $dir
+     * @return array
+     */
+    private function readPhpFiles($dir)
+    {
+        $dir = rtrim($dir, '/');
+        if(empty($dir) || !is_dir($dir)) {
+            return [];
+        }
+        $pattern = $dir . '/*.php';
+        return glob($pattern);
     }
 
     /**
@@ -322,7 +319,7 @@ class Application extends Container
      * @param array $arguments
      * @return string
      */
-    public function renderLayout($layout, array $arguments = array())
+    public function renderLayout($layout, array $arguments = [])
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
@@ -336,7 +333,7 @@ class Application extends Container
      * @param array $arguments
      * @return string
      */
-    public function renderString($string, array $arguments = array())
+    public function renderString($string, array $arguments = [])
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
@@ -388,7 +385,7 @@ class Application extends Container
     {
         foreach ($override as $key => $value) {
             if (is_array($value)) {
-                $array = isset($default[$key]) ? $default[$key] : array();
+                $array = isset($default[$key]) ? $default[$key] : [];
                 $default[$key] = $this->mergeConfigArrays($array, $override[$key]);
             } else {
                 $default[$key] = $value;
