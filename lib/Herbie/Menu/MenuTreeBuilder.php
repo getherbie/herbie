@@ -22,8 +22,10 @@ class MenuTreeBuilder
      */
     public function build($collection)
     {
-
-        $flat = $collection->getItems();
+        $flat = [];
+        foreach($collection->getItems() as $key => $item) {
+            $flat[$key] = clone $item;
+        }
 
         $root = '';
         foreach ($flat as $id => $row) {
