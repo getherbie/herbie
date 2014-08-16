@@ -16,7 +16,7 @@ class Shortcode
     /**
      * @var array
      */
-    private $tags = array();
+    private $tags = [];
 
     /**
      * @param array $tags
@@ -52,7 +52,7 @@ class Shortcode
      */
     public function removeAll()
     {
-        $this->tags = array();
+        $this->tags = [];
     }
 
     /**
@@ -103,7 +103,7 @@ class Shortcode
         }
 
         $pattern = $this->getRegex();
-        return preg_replace_callback("/$pattern/s", array($this, 'parseShortcode'), $content);
+        return preg_replace_callback("/$pattern/s", [$this, 'parseShortcode'], $content);
     }
 
     /**
@@ -190,7 +190,7 @@ class Shortcode
      */
     private function parseAttributes($text)
     {
-        $atts = array();
+        $atts = [];
         $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
         $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
         if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
@@ -222,7 +222,7 @@ class Shortcode
     private function shortcodeAtts($pairs, $atts, $shortcode = '')
     {
         $atts = (array) $atts;
-        $out = array();
+        $out = [];
         foreach ($pairs as $name => $default) {
             if (array_key_exists($name, $atts)) {
                 $out[$name] = $atts[$name];
@@ -251,7 +251,7 @@ class Shortcode
         }
         $pattern = $this->getRegex();
 
-        return preg_replace_callback("/$pattern/s", array($this, 'stripShortcode'), $content);
+        return preg_replace_callback("/$pattern/s", [$this, 'stripShortcode'], $content);
     }
 
     /**

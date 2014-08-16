@@ -38,7 +38,7 @@ class PostCollection implements IteratorAggregate, Countable
      */
     public function __construct($blogRoute)
     {
-        $this->items = array();
+        $this->items = [];
         $this->blogRoute = $blogRoute;
     }
 
@@ -196,12 +196,12 @@ class PostCollection implements IteratorAggregate, Countable
             } else {
                 $count = 1;
             }
-            $items[$key] = array(
+            $items[$key] = [
                 'year' => $year,
                 'month' => $month,
                 'date' => $item->date,
                 'count' => $count
-            );
+            ];
         }
         return $items;
     }
@@ -260,39 +260,39 @@ class PostCollection implements IteratorAggregate, Countable
             return [];
         }
 
-        $items = array();
+        $items = [];
 
         foreach ($this->items as $item) {
             if (0 === strpos($item->date, $date . '-')) {
-                $this->filteredBy = array(
+                $this->filteredBy = [
                     'label' => $filteredByLabel,
                     'value' => $date
-                );
+                ];
                 $items[] = $item;
                 continue;
             }
             if ($item->hasCategory($category)) {
                 $items[] = $item;
-                $this->filteredBy = array(
+                $this->filteredBy = [
                     'label' => 'Archiv für die Kategorie',
                     'value' => $item->getCategory($category)
-                );
+                ];
                 continue;
             }
             if ($item->hasTag($tag)) {
                 $items[] = $item;
-                $this->filteredBy = array(
+                $this->filteredBy = [
                     'label' => 'Archiv für das Schlagwort',
                     'value' => $item->getTag($tag)
-                );
+                ];
                 continue;
             }
             if ($item->hasAuthor($author)) {
                 $items[] = $item;
-                $this->filteredBy = array(
+                $this->filteredBy = [
                     'label' => 'Archiv für den Author',
                     'value' => $item->getAuthor($author)
-                );
+                ];
                 continue;
             }
         }

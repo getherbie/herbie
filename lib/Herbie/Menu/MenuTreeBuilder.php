@@ -29,13 +29,13 @@ class MenuTreeBuilder
         }
 
         // @see http://www.tommylacroix.com/2008/09/10/php-design-pattern-building-a-tree/
-        $tree = array();
+        $tree = [];
         foreach ($flat as $id => &$node) {
             if (empty($node->parentRoute)) { // root node
                 $tree[$id] = $node;
             } else { // sub node
                 if (!isset($flat[$node->parentRoute]->items)) {
-                    $flat[$node->parentRoute]->items = array();
+                    $flat[$node->parentRoute]->items = [];
                 }
                 $flat[$node->parentRoute]->items[$id] = $node;
             }
