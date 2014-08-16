@@ -46,6 +46,7 @@ class UrlGenerator
      */
     public function generate($route)
     {
+        $route = ltrim($route, '/');
         if ($this->niceUrls) {
             $url = $this->request->getBasePath() . '/' . $route;
         } else {

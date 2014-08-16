@@ -13,6 +13,7 @@ namespace Herbie\Twig;
 use DateTime;
 use Herbie\Site;
 use Herbie\Formatter;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
@@ -145,6 +146,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
             new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
             new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
+            new Twig_SimpleFunction('redirect', array($this, 'functionRedirect'), $options),
             new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
             new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options),
             new Twig_SimpleFunction('vimeo', array($this, 'functionVimeo'), $options),
@@ -453,6 +455,18 @@ class HerbieExtension extends Twig_Extension
         }
 
         return implode($delim, $titles);
+    }
+
+    /**
+     * @param string $route
+     * @param int $status
+     * @return void
+     */
+    public function functionRedirect($route, $status = 302)
+    {
+        $url = $this->app['urlGenerator']->generateAbsolute($route);
+        $response = new RedirectResponse($url, $status);
+        $response->send();
     }
 
     /**
