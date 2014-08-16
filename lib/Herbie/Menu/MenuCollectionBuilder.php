@@ -82,37 +82,21 @@ class MenuCollectionBuilder
                         $data = $loader->load($path);
 
                         $trimExtension = empty($data['preserveExtension']);
+                        $route = $this->createRoute($path, $realpath, $trimExtension);
 
-                        $data['type'] = 'file';
                         $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path, $realpath, $trimExtension);
-                        $data['depth'] = $objects->getDepth() + 1;
-                        $item = new MenuItem($data);
-                    } else {
-
-                        $data = [];
-                        $data['type'] = 'folder';
-                        $data['path'] = $path;
-                        $data['route'] = $this->createRoute($path, $realpath, false);
-                        $data['depth'] = $objects->getDepth() + 1;
+                        $data['route'] = $route;
+                        $data['depth'] = substr_count($route, '/') + 1;
                         $item = new MenuItem($data);
 
-                        $configPath = $path . '/folder.yml';
-                        if (is_file($configPath)) {
-                            $folderConf = $this->parser->parse(file_get_contents($configPath));
-                            $item->setData($folderConf);
-                        } else {
-                            $title = preg_replace('/^[0-9]+-/', '', $splFileInfo->getBasename());
-                            $item->title = ucfirst($title);
+                        if (empty($item->date)) {
+                            $item->date = date('c', $splFileInfo->getCTime());
                         }
-                    }
+                        $item->hidden = !preg_match('/^[0-9]+-/', $splFileInfo->getBasename());
 
-                    if (empty($item->date)) {
-                        $item->date = date('c', $splFileInfo->getCTime());
-                    }
-                    $item->hidden = !preg_match('/^[0-9]+-/', $splFileInfo->getBasename());
+                        $collection->addItem($item);
 
-                    $collection->addItem($item);
+                    }
                 }
             }
             $this->cache->set(__CLASS__, $items);
@@ -146,7 +130,8 @@ class MenuCollectionBuilder
         if ($trimExtension && ($pos !== false)) {
             $imploded = substr($imploded, 0, $pos);
         }
-
-        return trim($imploded, '/');
+        #return trim($imploded, '/');
+        $route = preg_replace('#\/index$#', '', trim($imploded, '/'));
+        return ($route == 'index') ? '' : $route;
     }
 }

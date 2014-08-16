@@ -16,12 +16,6 @@ use LogicException;
 
 class MenuItem
 {
-
-    /**
-     * @var string
-     */
-    protected $type;
-
     /**
      * @var string
      */
@@ -167,25 +161,9 @@ class MenuItem
     /**
      * @return bool
      */
-    public function isFile()
-    {
-        return $this->type == 'file';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFolder()
-    {
-        return $this->type == 'folder';
-    }
-
-    /**
-     * @return bool
-     */
     public function isStartPage()
     {
-        return (1 == $this->depth) && ('index' == $this->route);
+        return trim($this->route) == '';
     }
 
     /**
@@ -242,14 +220,6 @@ class MenuItem
     public function setPath($path)
     {
         $this->path = $path;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     /**
@@ -353,8 +323,9 @@ class MenuItem
      */
     public function routeInRootPath($route)
     {
-        $realRoute = $this->isFile() ? $this->route : substr($this->route, 0, -6);
-        $pos = strpos($route, $realRoute);
-        return 0 === $pos;
+        if(empty($route) || empty($this->route)) {
+            return false;
+        }
+        return 0 === strpos($route, $this->route);
     }
 }

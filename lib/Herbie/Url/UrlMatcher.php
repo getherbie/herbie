@@ -50,15 +50,9 @@ class UrlMatcher
      */
     public function match($route)
     {
-        // File
+        // Page
         $item = $this->pages->getItem($route);
-        if (isset($item) && $item->isFile()) {
-            return $item->getPath();
-        }
-
-        // Folder
-        $item = $this->pages->getItem($route . '/index');
-        if (isset($item) && $item->isFile()) {
+        if (isset($item)) {
             return $item->getPath();
         }
 
@@ -70,14 +64,15 @@ class UrlMatcher
 
         // Blog main page
         $blogRoute = $this->getBlogRoute();
-        $item = $this->pages->getItem($blogRoute);
-        if (isset($item) && $item->isFile()) {
-            $filteredItems = $this->posts->filterItems();
-            if (!empty($filteredItems)) {
-                return $item->getPath();
+        if($blogRoute == $route) {
+            $item = $this->pages->getItem($blogRoute);
+            if (isset($item)) {
+                $filteredItems = $this->posts->filterItems();
+                if (!empty($filteredItems)) {
+                    return $item->getPath();
+                }
             }
         }
-
         throw new ResourceNotFoundException('Page "' . $route . '" not found.', 404);
     }
 
@@ -87,7 +82,6 @@ class UrlMatcher
      */
     protected function getBlogRoute()
     {
-        $blogRoute = $this->posts->getBlogRoute();
-        return empty($blogRoute) ? 'index' : $blogRoute;
+        return $this->posts->getBlogRoute();
     }
 }

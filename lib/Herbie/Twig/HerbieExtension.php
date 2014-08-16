@@ -178,7 +178,7 @@ class HerbieExtension extends Twig_Extension
             if (!$showHidden && $item->hidden) {
                 continue;
             }
-            if (($item->getRoute() == $route) || ($item->getRoute() == $route . '/index')) {
+            if ($item->getRoute() == $route) {
                 $html .= '<li class="active">';
             } else {
                 $html .= '<li>';

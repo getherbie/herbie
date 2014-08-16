@@ -381,11 +381,7 @@ class Application extends Container
         if (is_null($request)) {
             $request = $this['request'];
         }
-        $route = trim($request->getPathInfo(), '/');
-        if (empty($route)) {
-            $route = 'index';
-        }
-        return $route;
+        return trim($request->getPathInfo(), '/');
     }
 
     /**

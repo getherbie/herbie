@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of Herbie.
  *
@@ -16,6 +15,7 @@ use Herbie\Menu\MenuTree;
 
 class MenuTreeBuilder
 {
+
     /**
      * @param MenuCollection $collection
      * @return MenuTree
@@ -23,18 +23,24 @@ class MenuTreeBuilder
     public function build($collection)
     {
         $flat = [];
-        foreach($collection->getItems() as $key => $item) {
+        foreach ($collection->getItems() as $key => $item) {
             $flat[$key] = clone $item;
+            $flat[$key]->items = [];
         }
 
-        $root = '';
-        foreach ($flat as $id => $row) {
-            $flat[$row->parentRoute]->items[$id] =& $flat[$id];
-            if (!$row->parentRoute) {
-                $root = $id;
+        // @see http://www.tommylacroix.com/2008/09/10/php-design-pattern-building-a-tree/
+        $tree = array();
+        foreach ($flat as $id => &$node) {
+            if (empty($node->parentRoute)) { // root node
+                $tree[$id] = $node;
+            } else { // sub node
+                if (!isset($flat[$node->parentRoute]->items)) {
+                    $flat[$node->parentRoute]->items = array();
+                }
+                $flat[$node->parentRoute]->items[$id] = $node;
             }
         }
 
-        return new MenuTree($flat['']->items);
+        return new MenuTree($tree);
     }
 }
