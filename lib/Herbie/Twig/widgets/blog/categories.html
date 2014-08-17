@@ -3,6 +3,7 @@
 {# @todo: option dropdown (Display as dropdown) #}
 {# @todo: option hierarchical (Show hierarchy) #}
 
+{% if site.posts.categories|length > 0 %}
 <div class="widget-blog widget-blog-categories">
     <h4>{{ title }}</h4>
     <ul>
@@ -12,3 +13,4 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}

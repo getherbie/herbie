@@ -2,6 +2,7 @@
 {% set showCount = showCount ? showCount : false %}
 {# @todo: option dropdown (Display as dropdown) #}
 
+{% if site.posts.months|length > 0 %}
 <div class="widget-blog widget-blog-archives">
     <h4>{{ title }}</h4>
     <ul>
@@ -12,3 +13,4 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}
