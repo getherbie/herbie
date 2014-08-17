@@ -12,6 +12,7 @@ namespace Herbie;
 
 use ErrorException;
 use Exception;
+use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -285,7 +286,7 @@ class Application extends Container
         try {
 
             $response = $this->handle($request);
-        } catch (Exception\ResourceNotFoundException $e) {
+        } catch (ResourceNotFoundException $e) {
 
             $content = $this->renderLayout('error.html', ['error' => $e]);
             $response = new Response($content, 404);
@@ -388,7 +389,6 @@ class Application extends Container
      * @param array $default
      * @param array $override
      * @return array
-     * @throws Exception
      */
     protected function mergeConfigArrays($default, $override)
     {
