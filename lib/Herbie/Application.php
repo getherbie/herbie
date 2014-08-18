@@ -166,9 +166,7 @@ class Application extends Container
 
         $this['twigFilesystem'] = function () use ($app, $config) {
 
-            $loader = new Twig_Loader_Filesystem($config['layouts']['path']);
-            $loader->addPath(__DIR__ . '/layouts');
-            $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
+            $loader = $this->getTwigFilesystemLoader($config);
 
             $twig = new Twig_Environment($loader, [
                 'debug' => $config['twig']['debug'],
@@ -188,8 +186,7 @@ class Application extends Container
 
         $this['twigString'] = function () use ($app, $config) {
 
-            $loader1 = new Twig_Loader_Filesystem($config['layouts']['path']);
-            $loader1->addPath(__DIR__ . '/layouts');
+            $loader1 = $this->getTwigFilesystemLoader($config);
             $loader2 = new Twig_Loader_String();
             $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
             $twig = new Twig_Environment($loaderChain, [
@@ -213,6 +210,28 @@ class Application extends Container
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
+    }
+
+    /**
+     * @param array $config
+     * @return Twig_Loader_Filesystem
+     */
+    private function getTwigFilesystemLoader($config)
+    {
+        $paths = [];
+        if(empty($config['theme'])) {
+            $paths[] = $config['layouts']['path'];
+        } elseif($config['theme'] == 'default') {
+            $paths[] = $config['layouts']['path'] . '/default';
+        } else {
+            $paths[] = $config['layouts']['path'] . '/' . $config['theme'];
+            $paths[] = $config['layouts']['path'] . '/default';
+        }
+        $paths[] = __DIR__ . '/layouts'; // Fallback
+
+        $loader = new Twig_Loader_Filesystem($paths);
+        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
+        return $loader;
     }
 
     /**
@@ -337,7 +356,8 @@ class Application extends Container
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBasePath()
+            'baseUrl' => $this['request']->getBasePath(),
+            'theme' => $this['config']['theme']
         ]);
         return $this['twigFilesystem']->render($layout, $arguments);
     }
@@ -351,7 +371,8 @@ class Application extends Container
     {
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBasePath()
+            'baseUrl' => $this['request']->getBasePath(),
+            'theme' => $this['config']['theme']
         ]);
         return $this['twigString']->render($string, $arguments);
     }

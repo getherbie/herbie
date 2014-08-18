@@ -23,6 +23,7 @@ return [
     'layouts' => [
         'path' => $this['sitePath'] . '/layouts'
     ],
+    'theme' => 'default',
     'pages' => [
         'path' => $this['sitePath'] . '/pages',
         'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']

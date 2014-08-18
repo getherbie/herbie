@@ -11,6 +11,8 @@ data:
 layouts:
   path: SITE_PATH/layouts
 
+theme: default
+
 pages:
   path: SITE_PATH/pages
   extensions: [txt, md, markdown, textile, htm, html, rss, xml]
