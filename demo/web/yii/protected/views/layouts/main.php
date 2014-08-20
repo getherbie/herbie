@@ -60,7 +60,7 @@
                         <ol class="list-unstyled">
                             <?php $this->beginWidget('Twigify') ?>
                                 {% for item in site.posts.months %}
-                                    {% set route = item.year ~ '/' ~ item.month %}
+                                    {% set route = 'blog/' ~ item.year ~ '/' ~ item.month %}
                                     {% set label = item.date|strftime('%B %Y') %}
                                     <li>{{ link(route, label) }}</li>
                                 {% endfor %}
