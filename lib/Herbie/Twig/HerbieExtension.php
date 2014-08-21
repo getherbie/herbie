@@ -121,7 +121,7 @@ class HerbieExtension extends Twig_Extension
     public function getFilters()
     {
         return [
-            new Twig_SimpleFilter('markup', array($this, 'filterMarkup'), ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('markdown', array($this, 'filterMarkdown'), ['is_safe' => ['html']]),
             new Twig_SimpleFilter('strftime', array($this, 'filterStrftime')),
             new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']])
         ];
@@ -201,9 +201,9 @@ class HerbieExtension extends Twig_Extension
      * @param string $content
      * @return string
      */
-    public function filterMarkup($content)
+    public function filterMarkdown($content)
     {
-        $formatter = Formatter\FormatterFactory::create('markup');
+        $formatter = Formatter\FormatterFactory::create('markdown');
         return $formatter->transform($content);
     }
 
