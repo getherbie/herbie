@@ -17,6 +17,7 @@ use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
@@ -44,6 +45,11 @@ class Application extends Container
      * @var string
      */
     public $locale;
+
+    /**
+     * @var Response
+     */
+    public $response;
 
     /**
      * @param int $errno
@@ -88,121 +94,132 @@ class Application extends Container
 
         $this['config'] = $config;
 
-        $this['request'] = function () use ($app) {
+        $this['request'] = function ($app) {
             return Request::createFromGlobals();
         };
 
-        $this['cache.page'] = function () use ($config) {
-            if (empty($config['cache']['page']['enable'])) {
+        $this['cache.page'] = function ($app) {
+            if (empty($app['config']['cache']['page']['enable'])) {
                 return new Cache\DummyCache();
             }
-            return new Cache\PageCache($config['cache']['page']);
+            return new Cache\PageCache($app['config']['cache']['page']);
         };
 
-        $this['cache.data'] = function () use ($config) {
-            if (empty($config['cache']['data']['enable'])) {
+        $this['cache.data'] = function ($app) {
+            if (empty($app['config']['cache']['data']['enable'])) {
                 return new Cache\DummyCache();
             }
-            return new Cache\DataCache($config['cache']['data']);
+            return new Cache\DataCache($app['config']['cache']['data']);
         };
 
-        $this['menu'] = function () use ($app, $config) {
+        $this['events'] = function ($app) {
+            return new EventDispatcher();
+        };
+
+        $this['plugins'] = function ($app) {
+            return new Plugins($app);
+        };
+
+        $this['menu'] = function ($app) {
             $cache = $app['cache.data'];
-            $path = $config['pages']['path'];
-            $extensions = $config['pages']['extensions'];
+            $path = $app['config']['pages']['path'];
+            $extensions = $app['config']['pages']['extensions'];
             $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache, $extensions);
-            return $builder->build($path);
+            $menu = $builder->build($path);
+            $this->fireEvent('onPagesInitialized', new \Symfony\Component\EventDispatcher\Event());
+            return $menu;
         };
 
-        $this['tree'] = function () use ($app, $config) {
+        $this['tree'] = function ($app) {
             $builder = new Menu\MenuTreeBuilder();
             return $builder->build($app['menu']);
         };
 
-        $this['posts'] = function () use ($app, $config) {
+        $this['posts'] = function ($app) {
             $cache = $app['cache.data'];
-            $path = $config['posts']['path'];
-            #$extensions = $config['posts']['extensions'];
-            #$blogRoute = $config['posts']['blogRoute'];
+            $path = $app['config']['posts']['path'];
+            #$extensions = $app['config']['posts']['extensions'];
+            #$blogRoute = $app['config']['posts']['blogRoute'];
             $options = [
-                'extensions' => $config['posts']['extensions'],
-                'blogRoute' => $config['posts']['blogRoute']
+                'extensions' => $app['config']['posts']['extensions'],
+                'blogRoute' => $app['config']['posts']['blogRoute']
             ];
             $builder = new Menu\PostCollectionBuilder($this['parser'], $cache, $options);
             return $builder->build($path);
         };
 
-        $this['paginator'] = function () use ($app) {
-            return new Paginator($app['posts'], $this['request']);
+        $this['paginator'] = function ($app) {
+            return new Paginator($app['posts'], $app['request']);
         };
 
-        $this['rootPath'] = function () use ($app) {
+        $this['rootPath'] = function ($app) {
             $route = $this->getRoute();
             return new Menu\RootPath($app['menu'], $route);
         };
 
-        $this['data'] = function () use ($app, $config) {
+        $this['data'] = function ($app) {
             $parser = $app['parser'];
-            $loader = new Loader\DataLoader($parser, $config['data']['extensions']);
-            return $loader->load($config['data']['path']);
+            $loader = new Loader\DataLoader($parser, $app['config']['data']['extensions']);
+            return $loader->load($app['config']['data']['path']);
         };
 
-        $this['urlMatcher'] = function () use ($app) {
+        $this['urlMatcher'] = function ($app) {
             return new Url\UrlMatcher($app['menu'], $app['posts']);
         };
 
-        $this['urlGenerator'] = function () use ($app, $config) {
-            return new Url\UrlGenerator($app['request'], $config['nice_urls']);
+        $this['urlGenerator'] = function ($app) {
+            return new Url\UrlGenerator($app['request'], $app['config']['nice_urls']);
         };
 
-        $this['page'] = function () use ($app) {
+        $this['page'] = function ($app) {
             return new Page(); // be sure that we always have a Page object
         };
 
-        $this['shortcode'] = function () use ($config) {
-            $tags = isset($config['shortcodes']) ? $config['shortcodes'] : [];
+        $this['shortcode'] = function ($app) {
+            $tags = isset($app['config']['shortcodes']) ? $app['config']['shortcodes'] : [];
             return new Shortcode($tags);
         };
 
-        $this['twigFilesystem'] = function () use ($app, $config) {
+        $this['twigFilesystem'] = function ($app) {
 
-            $loader = $this->getTwigFilesystemLoader($config);
+            $loader = $this->getTwigFilesystemLoader($app['config']);
 
             $twig = new Twig_Environment($loader, [
-                'debug' => $config['twig']['debug'],
-                'cache' => $config['twig']['cache']
+                'debug' => $app['config']['twig']['debug'],
+                'cache' => $app['config']['twig']['cache']
             ]);
 
-            if (!empty($config['twig']['debug'])) {
+            if (!empty($app['config']['twig']['debug'])) {
                 $twig->addExtension(new Twig_Extension_Debug());
             }
             $twig->addExtension(new Twig\HerbieExtension($app));
-            if (!empty($config['imagine'])) {
+            if (!empty($app['config']['imagine'])) {
                 $twig->addExtension(new Twig\ImagineExtension($app));
             }
-            $this->addTwigPlugins($twig, $config);
+            $this->addTwigPlugins($twig, $app['config']);
+
             return $twig;
         };
 
-        $this['twigString'] = function () use ($app, $config) {
+        $this['twigString'] = function ($app) {
 
-            $loader1 = $this->getTwigFilesystemLoader($config);
+            $loader1 = $this->getTwigFilesystemLoader($app['config']);
             $loader2 = new Twig_Loader_String();
             $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
             $twig = new Twig_Environment($loaderChain, [
-                'debug' => $config['twig']['debug'],
-                'cache' => $config['twig']['cache']
+                'debug' => $app['config']['twig']['debug'],
+                'cache' => $app['config']['twig']['cache']
             ]);
 
-            if (!empty($config['twig']['debug'])) {
+            if (!empty($app['config']['twig']['debug'])) {
                 $twig->addExtension(new Twig_Extension_Debug());
             }
 
             $twig->addExtension(new Twig\HerbieExtension($app));
-            if (!empty($config['imagine'])) {
+            if (!empty($app['config']['imagine'])) {
                 $twig->addExtension(new Twig\ImagineExtension($app));
             }
-            $this->addTwigPlugins($twig, $config);
+            $this->addTwigPlugins($twig, $app['config']);
 
             return $twig;
         };
@@ -300,22 +317,30 @@ class Application extends Container
      */
     public function run()
     {
+        $this['plugins']->init();
+
+        $this->fireEvent('onPluginsInitialized');
+
         $request = Request::createFromGlobals();
 
         try {
 
-            $response = $this->handle($request);
+            $this->response = $this->handle($request);
         } catch (ResourceNotFoundException $e) {
 
             $content = $this->renderLayout('error.html', ['error' => $e]);
-            $response = new Response($content, 404);
+            $this->response = new Response($content, 404);
         } catch (Exception $e) {
 
             $content = $this->renderLayout('error.html', ['error' => $e]);
-            $response = new Response($content, 500);
+            $this->response = new Response($content, 500);
         }
 
-        $response->send();
+        $this->fireEvent('onOutputGenerated');
+
+        $this->response->send();
+
+        $this->fireEvent('onOutputRendered');
     }
 
     /**
@@ -445,4 +470,15 @@ class Application extends Container
         }
         return $config;
     }
+
+    /**
+     * @param  string $eventName
+     * @param  Event  $event
+     * @return Event
+     */
+    public function fireEvent($eventName, \Symfony\Component\EventDispatcher\Event $event = null)
+    {
+        return $this['events']->dispatch($eventName, $event);
+    }
+
 }
