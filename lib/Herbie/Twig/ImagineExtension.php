@@ -283,7 +283,7 @@ class ImagineExtension extends Twig_Extension
     protected function applyColorizeFilter(ImageInterface $image, $options)
     {
         if (isset($options['color'])) {
-            $color = new Color($options['color']);
+            $color = $image->palette()->color($options['color']);
             $image->effects()->colorize($color);
         }
         return $image;
