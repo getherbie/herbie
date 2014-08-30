@@ -301,46 +301,6 @@ class Application extends Container
     }
 
     /**
-     * @param array $default
-     * @param array $override
-     * @return array
-     */
-    protected function mergeConfigArrays($default, $override)
-    {
-        foreach ($override as $key => $value) {
-            if (is_array($value)) {
-                $array = isset($default[$key]) ? $default[$key] : [];
-                $default[$key] = $this->mergeConfigArrays($array, $override[$key]);
-            } else {
-                $default[$key] = $value;
-            }
-        }
-        return $default;
-    }
-
-    /**
-     *
-     * @return array
-     */
-    protected function loadConfiguration()
-    {
-        $config = require(__DIR__ . '/config.php');
-        if (is_file($this['sitePath'] . '/config.php')) {
-            $userConfig = require($this['sitePath'] . '/config.php');
-            return $this->mergeConfigArrays($config, $userConfig);
-        }
-        if (is_file($this['sitePath'] . '/config.yml')) {
-            $content = file_get_contents($this['sitePath'] . '/config.yml');
-            $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
-            );
-            $userConfig = Yaml::parse($content);
-            return $this->mergeConfigArrays($config, $userConfig);
-        }
-        return $config;
-    }
-
-    /**
      * @param  string $eventName
      * @param  Event  $event
      * @return Event
