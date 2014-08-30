@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * This file is part of Herbie.
+ *
+ * (c) Thomas Breuss <www.tebe.ch>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Herbie;
+
+use Symfony\Component\Yaml\Yaml;
+
+class Config
+{
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    /**
+     * @var array
+     */
+    private $items;
+
+    /**
+     * Constructor
+     *
+     * @param \Herbie\Application $app
+     */
+    public function __construct(\Herbie\Application $app)
+    {
+        $this->app = $app;
+        $this->items = $this->loadFiles();
+    }
+
+    /**
+     * Get value by using dot notation for nested arrays.
+     *
+     * @example $value = $config->get('twig.extend.functions');
+     *
+     * @param string  $name
+     * @param mixed   $default
+     * @return mixed  Value.
+     */
+    public function get($name, $default = null)
+    {
+        $path = explode('.', $name);
+        $current = $this->items;
+        foreach ($path as $field) {
+            if (isset($current) && isset($current[$field])) {
+                $current = $current[$field];
+            } elseif (is_array($current) && isset($current[$field])) {
+                $current = $current[$field];
+            } else {
+                return $default;
+            }
+        }
+
+        return $current;
+    }
+
+    /**
+     * @param string $name
+     * @return boolean
+     */
+    public function isEmpty($name)
+    {
+        $value = $this->get($name);
+        return empty($value);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param array $default
+     * @param array $override
+     * @return array
+     */
+    private function merge($default, $override)
+    {
+        foreach ($override as $key => $value) {
+            if (is_array($value)) {
+                $array = isset($default[$key]) ? $default[$key] : [];
+                $default[$key] = $this->merge($array, $override[$key]);
+            } else {
+                $default[$key] = $value;
+            }
+        }
+        return $default;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    private function loadFiles()
+    {
+        $app = $this->app;
+        $defaults = require($app['appPath'] . '/lib/Herbie/defaults.php');
+        if (is_file($app['sitePath'] . '/config.php')) {
+            $userConfig = require($app['sitePath'] . '/config.php');
+            return $this->merge($defaults, $userConfig);
+        }
+        if (is_file($app['sitePath'] . '/config.yml')) {
+            $content = file_get_contents($app['sitePath'] . '/config.yml');
+            $content = str_replace(
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$app['appPath'], $app['sitePath'], $app['sitePath']], $content
+            );
+            $userConfig = Yaml::parse($content);
+            return $this->merge($defaults, $userConfig);
+        }
+        return $defaults;
+    }
+}

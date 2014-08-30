@@ -76,12 +76,12 @@ class Application extends Container
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['sitePath'] = realpath($sitePath);
 
-        $config = $this->loadConfiguration();
+        $config = new Config($app);
 
-        setlocale(LC_ALL, $config['locale']);
-        $this->charset = $config['charset'];
-        $this->language = $config['language'];
-        $this->locale = $config['locale'];
+        setlocale(LC_ALL, $config->get('locale'));
+        $this->charset = $config->get('charset');
+        $this->language = $config->get('language');
+        $this->locale = $config->get('locale');
 
         $this['config'] = $config;
 
@@ -90,17 +90,17 @@ class Application extends Container
         };
 
         $this['cache.page'] = function ($app) {
-            if (empty($app['config']['cache']['page']['enable'])) {
+            if ($app['config']->isEmpty('cache.page.enable')) {
                 return new Cache\DummyCache();
             }
-            return new Cache\PageCache($app['config']['cache']['page']);
+            return new Cache\PageCache($app['config']->get('cache.page'));
         };
 
         $this['cache.data'] = function ($app) {
-            if (empty($app['config']['cache']['data']['enable'])) {
+            if ($app['config']->isEmpty('cache.data.enable')) {
                 return new Cache\DummyCache();
             }
-            return new Cache\DataCache($app['config']['cache']['data']);
+            return new Cache\DataCache($app['config']->get('cache.data'));
         };
 
         $this['events'] = function ($app) {
@@ -117,8 +117,8 @@ class Application extends Container
 
         $this['menu'] = function ($app) {
             $cache = $app['cache.data'];
-            $path = $app['config']['pages']['path'];
-            $extensions = $app['config']['pages']['extensions'];
+            $path = $app['config']->get('pages.path');
+            $extensions = $app['config']->get('pages.extensions');
             $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
             $this->fireEvent('onPagesInitialized', new \Symfony\Component\EventDispatcher\Event());
@@ -132,12 +132,10 @@ class Application extends Container
 
         $this['posts'] = function ($app) {
             $cache = $app['cache.data'];
-            $path = $app['config']['posts']['path'];
-            #$extensions = $app['config']['posts']['extensions'];
-            #$blogRoute = $app['config']['posts']['blogRoute'];
+            $path = $app['config']->get('posts.path');
             $options = [
-                'extensions' => $app['config']['posts']['extensions'],
-                'blogRoute' => $app['config']['posts']['blogRoute']
+                'extensions' => $app['config']->get('posts.extensions'),
+                'blogRoute' => $app['config']->get('posts.blogRoute')
             ];
             $builder = new Menu\PostCollectionBuilder($cache, $options);
             return $builder->build($path);
@@ -153,8 +151,8 @@ class Application extends Container
         };
 
         $this['data'] = function ($app) {
-            $loader = new Loader\DataLoader($app['config']['data']['extensions']);
-            return $loader->load($app['config']['data']['path']);
+            $loader = new Loader\DataLoader($app['config']->get('data.extensions'));
+            return $loader->load($app['config']->get('data.path'));
         };
 
         $this['urlMatcher'] = function ($app) {
@@ -162,7 +160,7 @@ class Application extends Container
         };
 
         $this['urlGenerator'] = function ($app) {
-            return new Url\UrlGenerator($app['request'], $app['config']['nice_urls']);
+            return new Url\UrlGenerator($app['request'], $app['config']->get('nice_urls', false));
         };
 
         $this['page'] = function ($app) {
@@ -170,7 +168,7 @@ class Application extends Container
         };
 
         $this['shortcode'] = function ($app) {
-            $tags = isset($app['config']['shortcodes']) ? $app['config']['shortcodes'] : [];
+            $tags = $app['config']->get('shortcodes', []);
             return new Shortcode($tags);
         };
 
@@ -253,7 +251,7 @@ class Application extends Container
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
             'baseUrl' => $this['request']->getBasePath(),
-            'theme' => $this['config']['theme']
+            'theme' => $this['config']->get('theme')
         ]);
         return $this['twig']->render($layout, $arguments);
     }
@@ -268,7 +266,7 @@ class Application extends Container
         $arguments = array_merge($arguments, [
             'route' => $this->getRoute(),
             'baseUrl' => $this['request']->getBasePath(),
-            'theme' => $this['config']['theme']
+            'theme' => $this['config']->get('theme')
         ]);
         return $this['twig']->render($string, $arguments);
     }

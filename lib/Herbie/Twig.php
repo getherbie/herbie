@@ -26,6 +26,11 @@ class Twig
     public $app;
 
     /**
+     * @var type \Herbie\Config
+     */
+    public $config;
+
+    /**
      * @var \Twig_Environment
      */
     public $environment;
@@ -38,29 +43,28 @@ class Twig
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->config = $app['config'];
     }
 
     public function init()
     {
-        $config = $this->app['config'];
-
-        $loader1 = $this->getTwigFilesystemLoader($config);
+        $loader1 = $this->getTwigFilesystemLoader();
         $loader2 = new Twig_Loader_String();
         $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
 
         $this->environment = new Twig_Environment($loaderChain, [
-            'debug' => $config['twig']['debug'],
-            'cache' => $config['twig']['cache']
+            'debug' => $this->config->get('twig.debug'),
+            'cache' => $this->config->get('twig.cache')
         ]);
 
-        if (!empty($config['twig']['debug'])) {
+        if (!$this->config->isEmpty('twig.debug')) {
             $this->environment->addExtension(new Twig_Extension_Debug());
         }
         $this->environment->addExtension(new Twig\HerbieExtension($this->app));
-        if (!empty($config['imagine'])) {
+        if (!$this->config->isEmpty('imagine')) {
             $this->environment->addExtension(new Twig\ImagineExtension($this->app));
         }
-        $this->addTwigPlugins($config);
+        $this->addTwigPlugins();
     }
 
     /**
@@ -74,17 +78,17 @@ class Twig
     }
 
     /**
-     * @param array $config
+     * @return void
      */
-    public function addTwigPlugins(array $config)
+    public function addTwigPlugins()
     {
-        if (empty($config['twig']['extend'])) {
+        if ($this->config->isEmpty('twig.extend')) {
             return;
         }
 
         $app = $this->app; // Global $app var used by plugins
 
-        extract($config['twig']['extend']); // functions, filters, tests
+        extract($this->config->get('twig.extend')); // functions, filters, tests
         // Functions
         if (isset($functions)) {
             foreach ($this->readPhpFiles($functions) as $file) {
@@ -111,19 +115,18 @@ class Twig
     }
 
     /**
-     * @param array $config
      * @return Twig_Loader_Filesystem
      */
-    private function getTwigFilesystemLoader($config)
+    private function getTwigFilesystemLoader()
     {
         $paths = [];
-        if (empty($config['theme'])) {
-            $paths[] = $config['layouts']['path'];
-        } elseif ($config['theme'] == 'default') {
-            $paths[] = $config['layouts']['path'] . '/default';
+        if ($this->config->isEmpty('theme')) {
+            $paths[] = $this->config->get('layouts.path');
+        } elseif ($this->config->get('theme') == 'default') {
+            $paths[] = $this->config->get('layouts.path') . '/default';
         } else {
-            $paths[] = $config['layouts']['path'] . '/' . $config['theme'];
-            $paths[] = $config['layouts']['path'] . '/default';
+            $paths[] = $this->config->get('layouts.path') . '/' . $this->config->get('theme');
+            $paths[] = $this->config->get('layouts.path') . '/default';
         }
         $paths[] = __DIR__ . '/layouts'; // Fallback
 

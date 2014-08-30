@@ -9,53 +9,53 @@
  * file that was distributed with this source code.
  */
 
-if (is_null($this) || ('Herbie\Application' != get_class($this))) {
+if (is_null($app) || ('Herbie\Application' != get_class($app))) {
     die('Not allowed to access this file.');
 }
 
 return [
     'app' => [
-        'path' => $this['appPath']
+        'path' => $app['appPath']
     ],
     'site' => [
-        'path' => $this['sitePath']
+        'path' => $app['sitePath']
     ],
     'layouts' => [
-        'path' => $this['sitePath'] . '/layouts'
+        'path' => $app['sitePath'] . '/layouts'
     ],
     'theme' => 'default',
     'pages' => [
-        'path' => $this['sitePath'] . '/pages',
+        'path' => $app['sitePath'] . '/pages',
         'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
     ],
     'posts' => [
-        'path' => $this['sitePath'] . '/posts',
+        'path' => $app['sitePath'] . '/posts',
         'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
         'blogRoute' => 'blog'
     ],
     'data' => [
-        'path' => $this['sitePath'] . '/data',
+        'path' => $app['sitePath'] . '/data',
         'extensions' => ['yml', 'yaml']
     ],
     'nice_urls' => false,
     'twig' => [
         'debug' => false,
-        'cache' => false, //$this['sitePath'] . '/cache/twig',
+        'cache' => false, //$app['sitePath'] . '/cache/twig',
         'extend' => [
-            'functions' => $this['sitePath'] . '/plugins/twig/functions',
-            'filters' => $this['sitePath'] . '/plugins/twig/filters',
-            'tests' => $this['sitePath'] . '/plugins/twig/tests',
+            'functions' => $app['sitePath'] . '/plugins/twig/functions',
+            'filters' => $app['sitePath'] . '/plugins/twig/filters',
+            'tests' => $app['sitePath'] . '/plugins/twig/tests',
         ]
     ],
     'cache' => [
         'page' => [
             'enable' => false,
-            'dir' => $this['sitePath'] . '/cache/page',
+            'dir' => $app['sitePath'] . '/cache/page',
             'expire' => 18000
         ],
         'data' => [
             'enable' => false,
-            'dir' => $this['sitePath'] . '/cache/data',
+            'dir' => $app['sitePath'] . '/cache/data',
             'expire' => 18000
         ]
     ],

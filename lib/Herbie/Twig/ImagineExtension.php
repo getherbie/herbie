@@ -39,9 +39,7 @@ class ImagineExtension extends Twig_Extension
     public function __construct($app)
     {
         $this->app = $app;
-        if (isset($this->app['config']['imagine']['cachePath'])) {
-            $this->cachePath = $this->app['config']['imagine']['cachePath'];
-        }
+        $this->cachPath = $app['config']->get('imagine.cachePath', 'cache');
     }
 
     /**
@@ -87,11 +85,11 @@ class ImagineExtension extends Twig_Extension
     {
         $basePath = $this->app['request']->getBasePath() . '/';
 
-        if (empty($this->app['config']['imagine']['filter_sets'][$filter])) {
+        if ($this->app['config']->isEmpty("imagine.filter_sets.{$filter}")) {
             return $basePath . $path;
         }
 
-        $filterConfig = $this->app['config']['imagine']['filter_sets'][$filter];
+        $filterConfig = $this->app['config']->get("imagine.filter_sets.{$filter}");
         $cachePath = $this->resolveCachePath($path, $filter);
 
         if (!empty($filterConfig['test'])) {

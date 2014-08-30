@@ -385,7 +385,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionIsPost()
     {
-        $postsPath = $this->app['config']['posts']['path'];
+        $postsPath = $this->app['config']->get('posts.path');
         $pagePath = $this->app['page']->getPath();
         $pos = strpos($pagePath, $postsPath);
         return $pos === 0;
