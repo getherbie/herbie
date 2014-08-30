@@ -16,7 +16,7 @@ use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -76,10 +76,6 @@ class Application extends Container
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['sitePath'] = realpath($sitePath);
 
-        $this['parser'] = function () {
-            return new Parser();
-        };
-
         $config = $this->loadConfiguration();
 
         setlocale(LC_ALL, $config['locale']);
@@ -123,7 +119,7 @@ class Application extends Container
             $cache = $app['cache.data'];
             $path = $app['config']['pages']['path'];
             $extensions = $app['config']['pages']['extensions'];
-            $builder = new Menu\MenuCollectionBuilder($this['parser'], $cache, $extensions);
+            $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
             $this->fireEvent('onPagesInitialized', new \Symfony\Component\EventDispatcher\Event());
             return $menu;
@@ -143,7 +139,7 @@ class Application extends Container
                 'extensions' => $app['config']['posts']['extensions'],
                 'blogRoute' => $app['config']['posts']['blogRoute']
             ];
-            $builder = new Menu\PostCollectionBuilder($this['parser'], $cache, $options);
+            $builder = new Menu\PostCollectionBuilder($cache, $options);
             return $builder->build($path);
         };
 
@@ -157,8 +153,7 @@ class Application extends Container
         };
 
         $this['data'] = function ($app) {
-            $parser = $app['parser'];
-            $loader = new Loader\DataLoader($parser, $app['config']['data']['extensions']);
+            $loader = new Loader\DataLoader($app['config']['data']['extensions']);
             return $loader->load($app['config']['data']['path']);
         };
 
@@ -229,7 +224,7 @@ class Application extends Container
         $path = $this['urlMatcher']->match($route);
         $cache = $this['cache.page'];
 
-        $pageLoader = new Loader\PageLoader($this['parser']);
+        $pageLoader = new Loader\PageLoader();
         $this['page'] = $page = $pageLoader->load($path);
 
         $content = $cache->get($path);
@@ -341,7 +336,7 @@ class Application extends Container
             $content = str_replace(
                 ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
             );
-            $userConfig = $this['parser']->parse($content);
+            $userConfig = Yaml::parse($content);
             return $this->mergeConfigArrays($config, $userConfig);
         }
         return $config;

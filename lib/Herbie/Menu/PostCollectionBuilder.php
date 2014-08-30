@@ -13,14 +13,9 @@ namespace Herbie\Menu;
 
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
-use Symfony\Component\Yaml\Parser;
 
 class PostCollectionBuilder
 {
-    /**
-     * @var Parser
-     */
-    protected $parser;
 
     /**
      * @var CacheInterface
@@ -38,13 +33,11 @@ class PostCollectionBuilder
     protected $blogRoute;
 
     /**
-     * @param Parser $parser
      * @param CacheInterface $cache
      * @param array $extensions
      */
-    public function __construct(Parser $parser, CacheInterface $cache, array $options = [])
+    public function __construct(CacheInterface $cache, array $options = [])
     {
-        $this->parser = $parser;
         $this->cache = $cache;
         foreach ($options as $key => $value) {
             $this->$key = $value;
@@ -63,7 +56,7 @@ class PostCollectionBuilder
             $collection = new PostCollection($this->blogRoute);
             if (is_dir($realpath)) {
 
-                $loader = new FrontMatterLoader($this->parser);
+                $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
                     if (substr($filename, 0, 1) == '.') {
                         continue;

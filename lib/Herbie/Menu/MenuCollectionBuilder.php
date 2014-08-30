@@ -15,15 +15,9 @@ use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Symfony\Component\Yaml\Parser;
 
 class MenuCollectionBuilder
 {
-
-    /**
-     * @var Parser
-     */
-    protected $parser;
 
     /**
      * @var CacheInterface
@@ -36,13 +30,11 @@ class MenuCollectionBuilder
     protected $extensions;
 
     /**
-     * @param Parser $parser
      * @param CacheInterface $cache
      * @param array $extensions
      */
-    public function __construct(Parser $parser, CacheInterface $cache, array $extensions = [])
+    public function __construct(CacheInterface $cache, array $extensions = [])
     {
-        $this->parser = $parser;
         $this->cache = $cache;
         $this->extensions = $extensions;
     }
@@ -78,7 +70,7 @@ class MenuCollectionBuilder
                             continue;
                         }
 
-                        $loader = new FrontMatterLoader($this->parser);
+                        $loader = new FrontMatterLoader();
                         $data = $loader->load($path);
 
                         $trimExtension = empty($data['preserveExtension']);

@@ -11,17 +11,11 @@
 
 namespace Herbie\Loader;
 
-use Symfony\Component\Yaml\Parser;
-
 /**
  * Loads site data.
  */
 class DataLoader
 {
-    /**
-     * @var Parser
-     */
-    protected $parser;
 
     /**
      * @var array
@@ -29,12 +23,10 @@ class DataLoader
     protected $extensions;
 
     /**
-     * @param Parser $parser
      * @param array $extensions
      */
-    public function __construct(Parser $parser, array $extensions = [])
+    public function __construct(array $extensions = [])
     {
-        $this->parser = $parser;
         $this->extensions = $extensions;
     }
 
@@ -56,7 +48,7 @@ class DataLoader
             }
             $key = $info['filename'];
             $yaml = file_get_contents($path . '/' . $file);
-            $data[$key] = $this->parser->parse($yaml);
+            $data[$key] = Yaml::parse($yaml);
         }
 
         return $data;

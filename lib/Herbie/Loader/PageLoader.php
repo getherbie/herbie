@@ -12,28 +12,15 @@
 namespace Herbie\Loader;
 
 use Exception;
-use SplFileInfo;
-use Symfony\Component\Yaml\Parser;
 use Herbie\Page;
+use Symfony\Component\Yaml\Yaml;
+use SplFileInfo;
 
 /**
  * Loads the whole page.
  */
 class PageLoader
 {
-
-    /**
-     * @var Parser
-     */
-    protected $parser;
-
-    /**
-     * @param Parser $parser
-     */
-    public function __construct(Parser $parser)
-    {
-        $this->parser = $parser;
-    }
 
     /**
      * @param string $path
@@ -79,7 +66,7 @@ class PageLoader
 
         $format = $fileInfo->getExtension();
         $date = $this->extractDateFrom($fileInfo->getFilename());
-        $data = (array) $this->parser->parse($yaml);
+        $data = (array) Yaml::parse($yaml);
 
         $page = new Page();
         $page->setFormat($format);

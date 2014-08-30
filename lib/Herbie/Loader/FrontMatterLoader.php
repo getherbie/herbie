@@ -11,23 +11,11 @@
 
 namespace Herbie\Loader;
 
+use Symfony\Component\Yaml\Yaml;
 use SplFileInfo;
-use Symfony\Component\Yaml\Parser;
 
 class FrontMatterLoader
 {
-    /**
-     * @var Parser
-     */
-    protected $parser;
-
-    /**
-     * @param Parser $parser
-     */
-    public function __construct(Parser $parser)
-    {
-        $this->parser = $parser;
-    }
 
     /**
      * @param string $path
@@ -59,6 +47,6 @@ class FrontMatterLoader
         // Close file handler?
         unset($fileObject);
 
-        return (array) $this->parser->parse($yaml);
+        return (array) Yaml::parse($yaml);
     }
 }
