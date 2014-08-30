@@ -316,7 +316,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionDisqus($shortname)
     {
-        return $this->app['twigFilesystem']->render('extension/herbie/disqus.html', array(
+        return $this->app['twig']->render('extension/herbie/disqus.html', array(
            'shortname' => $shortname
         ));
     }
@@ -335,7 +335,7 @@ class HerbieExtension extends Twig_Extension
     {
         static $instances = 0;
         $instances++;
-        return $this->app['twigFilesystem']->render('extension/herbie/google_maps.html', array(
+        return $this->app['twig']->render('extension/herbie/google_maps.html', array(
             'id' => $id . '-' . $instances,
             'width' => $width,
             'height' => $height,

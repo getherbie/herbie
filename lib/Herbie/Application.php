@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Twig_Environment;
-use Twig_Extension_Debug;
-use Twig_Loader_Chain;
-use Twig_Loader_Filesystem;
-use Twig_Loader_String;
 
 /**
  * The application using Pimple as dependency injection container.
@@ -120,6 +115,10 @@ class Application extends Container
             return new Plugins($app);
         };
 
+        $this['twig'] = function ($app) {
+            return new Twig($app);
+        };
+
         $this['menu'] = function ($app) {
             $cache = $app['cache.data'];
             $path = $app['config']['pages']['path'];
@@ -180,136 +179,9 @@ class Application extends Container
             return new Shortcode($tags);
         };
 
-        $this['twigFilesystem'] = function ($app) {
-
-            $loader = $this->getTwigFilesystemLoader($app['config']);
-
-            $twig = new Twig_Environment($loader, [
-                'debug' => $app['config']['twig']['debug'],
-                'cache' => $app['config']['twig']['cache']
-            ]);
-
-            if (!empty($app['config']['twig']['debug'])) {
-                $twig->addExtension(new Twig_Extension_Debug());
-            }
-            $twig->addExtension(new Twig\HerbieExtension($app));
-            if (!empty($app['config']['imagine'])) {
-                $twig->addExtension(new Twig\ImagineExtension($app));
-            }
-            $this->addTwigPlugins($twig, $app['config']);
-
-            return $twig;
-        };
-
-        $this['twigString'] = function ($app) {
-
-            $loader1 = $this->getTwigFilesystemLoader($app['config']);
-            $loader2 = new Twig_Loader_String();
-            $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
-            $twig = new Twig_Environment($loaderChain, [
-                'debug' => $app['config']['twig']['debug'],
-                'cache' => $app['config']['twig']['cache']
-            ]);
-
-            if (!empty($app['config']['twig']['debug'])) {
-                $twig->addExtension(new Twig_Extension_Debug());
-            }
-
-            $twig->addExtension(new Twig\HerbieExtension($app));
-            if (!empty($app['config']['imagine'])) {
-                $twig->addExtension(new Twig\ImagineExtension($app));
-            }
-            $this->addTwigPlugins($twig, $app['config']);
-
-            return $twig;
-        };
-
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
-    }
-
-    /**
-     * @param array $config
-     * @return Twig_Loader_Filesystem
-     */
-    private function getTwigFilesystemLoader($config)
-    {
-        $paths = [];
-        if(empty($config['theme'])) {
-            $paths[] = $config['layouts']['path'];
-        } elseif($config['theme'] == 'default') {
-            $paths[] = $config['layouts']['path'] . '/default';
-        } else {
-            $paths[] = $config['layouts']['path'] . '/' . $config['theme'];
-            $paths[] = $config['layouts']['path'] . '/default';
-        }
-        $paths[] = __DIR__ . '/layouts'; // Fallback
-
-        $loader = new Twig_Loader_Filesystem($paths);
-        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
-        return $loader;
-    }
-
-    /**
-     * @param Twig_Environment $twig
-     * @param array $config
-     */
-    public function addTwigPlugins(Twig_Environment $twig, array $config)
-    {
-        if(empty($config['twig']['extend'])) {
-            return;
-        }
-
-        extract($config['twig']['extend']); // functions, filters, tests
-
-        // Functions
-        if (isset($functions)) {
-            foreach($this->readPhpFiles($functions) as $file) {
-                $included = $this->includePhpFile($file);
-                $twig->addFunction($included);
-            }
-        }
-
-        // Filters
-        if (isset($filters)) {
-            foreach($this->readPhpFiles($filters) as $file) {
-                $included = $this->includePhpFile($file);
-                $twig->addFilter($included);
-            }
-        }
-
-        // Tests
-        if (isset($tests)) {
-            foreach($this->readPhpFiles($tests) as $file) {
-                $included = $this->includePhpFile($file);
-                $twig->addTest($included);
-            }
-        }
-    }
-
-    /**
-     * @param string $file
-     * @return string
-     */
-    private function includePhpFile($file)
-    {
-        $app = $this; // Global $app var used by plugins
-        return include($file);
-    }
-
-    /**
-     * @param string $dir
-     * @return array
-     */
-    private function readPhpFiles($dir)
-    {
-        $dir = rtrim($dir, '/');
-        if(empty($dir) || !is_dir($dir)) {
-            return [];
-        }
-        $pattern = $dir . '/*.php';
-        return glob($pattern);
     }
 
     /**
@@ -320,6 +192,10 @@ class Application extends Container
         $this['plugins']->init();
 
         $this->fireEvent('onPluginsInitialized');
+
+        $this['twig']->init();
+
+        $this->fireEvent('onTwigInitialized');
 
         $request = Request::createFromGlobals();
 
@@ -384,7 +260,7 @@ class Application extends Container
             'baseUrl' => $this['request']->getBasePath(),
             'theme' => $this['config']['theme']
         ]);
-        return $this['twigFilesystem']->render($layout, $arguments);
+        return $this['twig']->render($layout, $arguments);
     }
 
     /**
@@ -399,7 +275,7 @@ class Application extends Container
             'baseUrl' => $this['request']->getBasePath(),
             'theme' => $this['config']['theme']
         ]);
-        return $this['twigString']->render($string, $arguments);
+        return $this['twig']->render($string, $arguments);
     }
 
     /**

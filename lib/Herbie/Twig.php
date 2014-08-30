@@ -21,7 +21,7 @@ class Twig
 {
 
     /**
-     * @var Application
+     * @var \Herbie\Application
      */
     public $app;
 
@@ -30,6 +30,11 @@ class Twig
      */
     public $environment;
 
+    /**
+     * Constructor
+     *
+     * @param \Herbie\Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -37,11 +42,13 @@ class Twig
 
     public function init()
     {
-        $config = $app['config'];
+        $config = $this->app['config'];
 
-        $loader = $this->getTwigFilesystemLoader($config);
+        $loader1 = $this->getTwigFilesystemLoader($config);
+        $loader2 = new Twig_Loader_String();
+        $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
 
-        $this->environment = new Twig_Environment($loader, [
+        $this->environment = new Twig_Environment($loaderChain, [
             'debug' => $config['twig']['debug'],
             'cache' => $config['twig']['cache']
         ]);
@@ -49,9 +56,9 @@ class Twig
         if (!empty($config['twig']['debug'])) {
             $this->environment->addExtension(new Twig_Extension_Debug());
         }
-        $this->environment->addExtension(new Twig\HerbieExtension($app));
+        $this->environment->addExtension(new Twig\HerbieExtension($this->app));
         if (!empty($config['imagine'])) {
-            $this->environment->addExtension(new Twig\ImagineExtension($app));
+            $this->environment->addExtension(new Twig\ImagineExtension($this->app));
         }
         $this->addTwigPlugins($config);
     }
@@ -74,6 +81,8 @@ class Twig
         if (empty($config['twig']['extend'])) {
             return;
         }
+
+        $app = $this->app; // Global $app var used by plugins
 
         extract($config['twig']['extend']); // functions, filters, tests
         // Functions
@@ -129,7 +138,7 @@ class Twig
      */
     private function includePhpFile($file)
     {
-        $app = $this; // Global $app var used by plugins
+        $app = $this->app; // Global $app var used by plugins
         return include($file);
     }
 
