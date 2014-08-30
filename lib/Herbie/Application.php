@@ -85,9 +85,7 @@ class Application extends Container
 
         $this['config'] = $config;
 
-        $this['request'] = function ($app) {
-            return Request::createFromGlobals();
-        };
+        $this['request'] = Request::createFromGlobals();
 
         $this['cache.page'] = function ($app) {
             if ($app['config']->isEmpty('cache.page.enable')) {
@@ -121,7 +119,7 @@ class Application extends Container
             $extensions = $app['config']->get('pages.extensions');
             $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
-            $this->fireEvent('onPagesInitialized', new \Symfony\Component\EventDispatcher\Event());
+            $this->fireEvent('onPageMenuInitialized');
             return $menu;
         };
 
@@ -138,6 +136,7 @@ class Application extends Container
                 'blogRoute' => $app['config']->get('posts.blogRoute')
             ];
             $builder = new Menu\PostCollectionBuilder($cache, $options);
+            $this->fireEvent('onPostMenuInitialized');
             return $builder->build($path);
         };
 
@@ -190,19 +189,20 @@ class Application extends Container
 
         $this->fireEvent('onTwigInitialized');
 
-        $request = Request::createFromGlobals();
-
         try {
 
-            $this->response = $this->handle($request);
+            $this->response = $this->handle();
+
         } catch (ResourceNotFoundException $e) {
 
-            $content = $this->renderLayout('error.html', ['error' => $e]);
+            $content = $this['twig']->render('error.html', ['error' => $e]);
             $this->response = new Response($content, 404);
+
         } catch (Exception $e) {
 
-            $content = $this->renderLayout('error.html', ['error' => $e]);
+            $content = $this['twig']->render('error.html', ['error' => $e]);
             $this->response = new Response($content, 500);
+
         }
 
         $this->fireEvent('onOutputGenerated');
@@ -213,62 +213,32 @@ class Application extends Container
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function handle(Request $request)
+    public function handle()
     {
-        $route = $this->getRoute($request);
+        $route = $this->getRoute();
         $path = $this['urlMatcher']->match($route);
-        $cache = $this['cache.page'];
 
         $pageLoader = new Loader\PageLoader();
-        $this['page'] = $page = $pageLoader->load($path);
+        $this['page'] = $pageLoader->load($path);
 
-        $content = $cache->get($path);
+        $this->fireEvent('onPageLoaded');
+
+        $content = $this['cache.page']->get($path);
         if ($content === false) {
-            $layout = $page->getLayout();
+            $layout = $this['page']->getLayout();
             if (empty($layout)) {
                 $content = $this->renderContentSegment(0);
             } else {
-                $content = $this->renderLayout($layout);
+                $content = $this['twig']->render($layout);
             }
-            $cache->set($path, $content);
+            $this['cache.page']->set($path, $content);
         }
 
         $response = new Response($content);
-        $response->headers->set('Content-Type', $page->getContentType());
+        $response->headers->set('Content-Type', $this['page']->getContentType());
         return $response;
-    }
-
-    /**
-     * @param string $layout
-     * @param array $arguments
-     * @return string
-     */
-    public function renderLayout($layout, array $arguments = [])
-    {
-        $arguments = array_merge($arguments, [
-            'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBasePath(),
-            'theme' => $this['config']->get('theme')
-        ]);
-        return $this['twig']->render($layout, $arguments);
-    }
-
-    /**
-     * @param string $string
-     * @param array $arguments
-     * @return string
-     */
-    public function renderString($string, array $arguments = [])
-    {
-        $arguments = array_merge($arguments, [
-            'route' => $this->getRoute(),
-            'baseUrl' => $this['request']->getBasePath(),
-            'theme' => $this['config']->get('theme')
-        ]);
-        return $this['twig']->render($string, $arguments);
     }
 
     /**
@@ -277,27 +247,22 @@ class Application extends Container
      */
     public function renderContentSegment($segmentId)
     {
-        $page = $this['page'];
-        $segment = $page->getSegment($segmentId);
+        $segment = $this['page']->getSegment($segmentId);
 
         $segment = $this['shortcode']->parse($segment);
 
-        $twigged = $this->renderString($segment);
+        $twigged = $this['twig']->render($segment);
 
-        $formatter = Formatter\FormatterFactory::create($page->getFormat());
+        $formatter = Formatter\FormatterFactory::create($this['page']->getFormat());
         return $formatter->transform($twigged);
     }
 
     /**
-     * @param Request $request
      * @return string
      */
-    public function getRoute(Request $request = null)
+    public function getRoute()
     {
-        if (is_null($request)) {
-            $request = $this['request'];
-        }
-        return trim($request->getPathInfo(), '/');
+        return trim($this['request']->getPathInfo(), '/');
     }
 
     /**
