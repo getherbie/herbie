@@ -15,12 +15,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
-
-    /**
-     * @var Application
-     */
-    private $app;
-
     /**
      * @var array
      */
@@ -33,8 +27,7 @@ class Config
      */
     public function __construct(\Herbie\Application $app)
     {
-        $this->app = $app;
-        $this->items = $this->loadFiles();
+        $this->items = $this->loadFiles($app);
     }
 
     /**
@@ -42,9 +35,9 @@ class Config
      *
      * @example $value = $config->get('twig.extend.functions');
      *
-     * @param string  $name
-     * @param mixed   $default
-     * @return mixed  Value.
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
      */
     public function get($name, $default = null)
     {
@@ -61,6 +54,39 @@ class Config
         }
 
         return $current;
+    }
+
+    /**
+     * Sey value by using dot notation for nested arrays.
+     *
+     * @example $value = $config->set('twig.cache', false);
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function set($name, $value)
+    {
+        $path = explode('.', $name);
+        $current = &$this->items;
+        foreach ($path as $field) {
+            if (is_array($current)) {
+                // Handle objects.
+                if (!isset($current[$field])) {
+                    $current[$field] = array();
+                }
+                $current = &$current[$field];
+            } else {
+                // Handle arrays and scalars.
+                if (!is_array($current)) {
+                    $current = array($field => array());
+                } elseif (!isset($current[$field])) {
+                    $current[$field] = array();
+                }
+                $current = &$current[$field];
+            }
+        }
+
+        $current = $value;
     }
 
     /**
@@ -100,12 +126,11 @@ class Config
     }
 
     /**
-     *
+     * @param Application $app
      * @return array
      */
-    private function loadFiles()
+    private function loadFiles(Application $app)
     {
-        $app = $this->app;
         $defaults = require($app['appPath'] . '/lib/Herbie/defaults.php');
         if (is_file($app['sitePath'] . '/config.php')) {
             $userConfig = require($app['sitePath'] . '/config.php');
