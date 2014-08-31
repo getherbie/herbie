@@ -51,15 +51,17 @@ return [
         'page' => [
             'enable' => false,
             'dir' => $app['sitePath'] . '/cache/page',
-            'expire' => 18000
+            'expire' => 86400
         ],
         'data' => [
             'enable' => false,
             'dir' => $app['sitePath'] . '/cache/data',
-            'expire' => 18000
+            'expire' => 86400
         ]
     ],
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
-    'charset' => 'UTF-8'
+    'charset' => 'UTF-8',
+    'plugins_path' => $app['sitePath'] . '/plugins/herbie',
+    'plugins' => []
 ];
