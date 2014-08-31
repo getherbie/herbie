@@ -16,21 +16,6 @@ class Plugin implements EventSubscriberInterface
 {
 
     /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * Constructor.
-     *
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
      * @return array
      */
     public static function getSubscribedEvents()

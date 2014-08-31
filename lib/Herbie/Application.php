@@ -87,6 +87,10 @@ class Application extends Container
 
         $this['request'] = Request::createFromGlobals();
 
+        $this['route'] = function ($app) {
+            return trim($app['request']->getPathInfo(), '/');
+        };
+
         $this['cache.page'] = function ($app) {
             if ($app['config']->isEmpty('cache.page.enable')) {
                 return new Cache\DummyCache();
@@ -119,7 +123,6 @@ class Application extends Container
             $extensions = $app['config']->get('pages.extensions');
             $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
-            $this->fireEvent('onPageMenuInitialized');
             return $menu;
         };
 
@@ -136,7 +139,6 @@ class Application extends Container
                 'blogRoute' => $app['config']->get('posts.blogRoute')
             ];
             $builder = new Menu\PostCollectionBuilder($cache, $options);
-            $this->fireEvent('onPostMenuInitialized');
             return $builder->build($path);
         };
 
@@ -145,8 +147,7 @@ class Application extends Container
         };
 
         $this['rootPath'] = function ($app) {
-            $route = $this->getRoute();
-            return new Menu\RootPath($app['menu'], $route);
+            return new Menu\RootPath($app['menu'], $app['route']);
         };
 
         $this['data'] = function ($app) {
@@ -183,11 +184,11 @@ class Application extends Container
     {
         $this['plugins']->init();
 
-        $this->fireEvent('onPluginsInitialized');
+        $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
 
         $this['twig']->init();
 
-        $this->fireEvent('onTwigInitialized');
+        $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
 
         try {
 
@@ -205,7 +206,7 @@ class Application extends Container
 
         }
 
-        $this->fireEvent('onOutputGenerated');
+        $this->fireEvent('onOutputGenerated', ['response' => $this->response]);
 
         $this->response->send();
 
@@ -217,13 +218,12 @@ class Application extends Container
      */
     public function handle()
     {
-        $route = $this->getRoute();
-        $path = $this['urlMatcher']->match($route);
+        $path = $this['urlMatcher']->match($this['route']);
 
         $pageLoader = new Loader\PageLoader();
         $this['page'] = $pageLoader->load($path);
 
-        $this->fireEvent('onPageLoaded');
+        $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
         $content = $this['cache.page']->get($path);
         if ($content === false) {
@@ -249,9 +249,13 @@ class Application extends Container
     {
         $segment = $this['page']->getSegment($segmentId);
 
+        $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
+
         $segment = $this['shortcode']->parse($segment);
 
         $twigged = $this['twig']->render($segment);
+
+        $this->fireEvent('onContentSegmentRendered', ['segment' => &$twigged]);
 
         $formatter = Formatter\FormatterFactory::create($this['page']->getFormat());
         return $formatter->transform($twigged);
@@ -262,17 +266,17 @@ class Application extends Container
      */
     public function getRoute()
     {
-        return trim($this['request']->getPathInfo(), '/');
+        return $this['route'];
     }
 
     /**
      * @param  string $eventName
-     * @param  Event  $event
+     * @param  array  $attributes
      * @return Event
      */
-    public function fireEvent($eventName, \Symfony\Component\EventDispatcher\Event $event = null)
+    public function fireEvent($eventName, array $attributes = [])
     {
-        return $this['events']->dispatch($eventName, $event);
+        return $this['events']->dispatch($eventName, new Event($attributes));
     }
 
 }
