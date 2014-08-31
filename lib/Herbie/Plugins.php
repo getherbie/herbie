@@ -42,6 +42,12 @@ class Plugins
         /** @var EventDispatcher $events */
         $events = $this->app['events'];
 
+        $path = $this->app['sitePath'] . '/plugins/herbie';
+
+        if(!is_dir($path)) {
+            return;
+        }
+
         foreach (new \DirectoryIterator($this->app['sitePath'] . '/plugins/herbie') as $fileInfo) {
             if ($fileInfo->isDot())
                 continue;
