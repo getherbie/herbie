@@ -1,0 +1,87 @@
+<div id="{{ id }}"></div>
+
+{% if instances <= 1 %}
+
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+
+var kmap = {
+    init: function(options) {
+
+        var img = document.getElementById(options.element);
+        if (!img)
+            return false;
+
+        var elem = document.createElement('div');
+        elem.setAttribute('id', options.element);
+        elem.setAttribute('class', options.uclass);
+        elem.style.width = options.width + 'px';
+        elem.style.height = options.height + 'px';
+
+        img.parentNode.replaceChild(elem, img);
+
+        var geocoder, map;
+
+        if (!options.zoom) {
+            options.zoom = 12;
+        }
+        if (!options.type) {
+            options.type = 'roadmap';
+        }
+
+        options.type = options.type.toUpperCase();
+
+        switch (options.type) {
+            case 'ROADMAP':
+            case 'SATELLITE':
+            case 'HYBRID':
+            case 'TERRAIN':
+                break;
+            default:
+                options.type = 'ROADMAP';
+        }
+
+        map = new google.maps.Map(elem, {
+            zoom: options.zoom,
+            //center: new google.maps.LatLng(49.46097, 8.49042),
+            mapTypeId: google.maps.MapTypeId[ options.type ]
+        });
+
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'address': options.address}, function(results, status) {
+            if (status != google.maps.GeocoderStatus.OK)
+                return;
+            map.setCenter(results[0].geometry.location);
+            new google.maps.Marker({map: map, position: results[0].geometry.location});
+        });
+
+    },
+    load: function(options) {
+        var onload = window.onload;
+        window.onload = function() {
+            if (typeof onload == 'function')
+                onload();
+            kmap.init(options);
+        };
+    }
+
+};
+</script>
+
+{% endif %}
+
+<script type="text/javascript">
+    kmap.load({
+        address: '{{ address }}',
+        zoom: {{ zoom }},
+        element: '{{ id }}',
+        type: '{{ type }}',
+        width: '{{ width }}',
+        height: '{{ height }}',
+        uclass: '{{ class }}'
+    });
+</script>
+
+<noscript id="{{ id }}" class="{{ class }}">
+    <img src="http://maps.google.com/maps/api/staticmap?center={{ address|e }}&zoom={{ zoom }}&size={{ width }}x{{ height }}&maptype={{ type }}&markers=color:red|color:red|{{ address|e }}&sensor=false" width="{{ width }}" height="{{ height }}" class="{{ class }}" alt="{{ address }}" />
+</noscript>

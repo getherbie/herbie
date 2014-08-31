@@ -1,0 +1,7 @@
+{
+    "name": "getherbie/plugin-googlemaps",
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master"
+    }
+}

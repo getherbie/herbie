@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-imagine",
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master",
+        "imagine/imagine": "~0.6.1"
+    }
+}

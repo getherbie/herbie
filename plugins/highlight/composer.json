@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-highlight",
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master",
+        "easybook/geshi": "1.0.8.12"
+    }
+}
