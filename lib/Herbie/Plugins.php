@@ -39,33 +39,28 @@ class Plugins
      */
     public function init()
     {
-        /** @var EventDispatcher $events */
-        $events = $this->app['events'];
-
-        $path = $this->app['sitePath'] . '/plugins/herbie';
-
-        if(!is_dir($path)) {
+        $path = $this->app['config']->get('plugins_path');
+        if(empty($path) || !is_dir($path)) {
             return;
         }
 
-        foreach (new \DirectoryIterator($this->app['sitePath'] . '/plugins/herbie') as $fileInfo) {
-            if ($fileInfo->isDot())
-                continue;
+        /** @var EventDispatcher $events */
+        $events = $this->app['events'];
+        
+        $pluginKeys = array_keys($this->app['config']->get('plugins', []));
+        foreach ($pluginKeys as $pluginKey) {
 
-            $baseName = basename($fileInfo->getPathname());
-            $filePath = sprintf('%s/%s.php', $fileInfo->getPathname(), $baseName);
+            $filePath = sprintf('%s/%s/%s.php', $path, $pluginKey, $pluginKey);
             if (!is_file($filePath)) {
                 throw new \RuntimeException(sprintf("Plugin '%s' not found!", $filePath));
             }
 
             require_once $filePath;
 
-            $pluginClass = '\\' . ucfirst($baseName) . 'Plugin';
+            $pluginClass = '\\' . ucfirst($pluginKey) . 'Plugin';
 
             $instance = new $pluginClass($this->app);
-            if ($instance instanceof EventSubscriberInterface) {
-                $events->addSubscriber($instance);
-            }
+            $events->addSubscriber($instance);
         }
     }
 }

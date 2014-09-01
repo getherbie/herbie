@@ -42,11 +42,6 @@ class Application extends Container
     public $locale;
 
     /**
-     * @var Response
-     */
-    public $response;
-
-    /**
      * @param int $errno
      * @param string $errstr
      * @param string $errfile
@@ -92,17 +87,11 @@ class Application extends Container
         };
 
         $this['cache.page'] = function ($app) {
-            if ($app['config']->isEmpty('cache.page.enable')) {
-                return new Cache\DummyCache();
-            }
-            return new Cache\PageCache($app['config']->get('cache.page'));
+            return Cache\CacheFactory::create('page', $app['config']);
         };
 
         $this['cache.data'] = function ($app) {
-            if ($app['config']->isEmpty('cache.data.enable')) {
-                return new Cache\DummyCache();
-            }
-            return new Cache\DataCache($app['config']->get('cache.data'));
+            return Cache\CacheFactory::create('data', $app['config']);
         };
 
         $this['events'] = function ($app) {
@@ -167,11 +156,6 @@ class Application extends Container
             return new Page(); // be sure that we always have a Page object
         };
 
-        $this['shortcode'] = function ($app) {
-            $tags = $app['config']->get('shortcodes', []);
-            return new Shortcode($tags);
-        };
-
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
@@ -192,23 +176,23 @@ class Application extends Container
 
         try {
 
-            $this->response = $this->handle();
+            $response = $this->handle();
 
         } catch (ResourceNotFoundException $e) {
 
             $content = $this['twig']->render('error.html', ['error' => $e]);
-            $this->response = new Response($content, 404);
+            $response = new Response($content, 404);
 
         } catch (Exception $e) {
 
             $content = $this['twig']->render('error.html', ['error' => $e]);
-            $this->response = new Response($content, 500);
+            $response = new Response($content, 500);
 
         }
 
-        $this->fireEvent('onOutputGenerated', ['response' => $this->response]);
+        $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
-        $this->response->send();
+        $response->send();
 
         $this->fireEvent('onOutputRendered');
     }
@@ -216,7 +200,7 @@ class Application extends Container
     /**
      * @return Response
      */
-    public function handle()
+    protected function handle()
     {
         $path = $this['urlMatcher']->match($this['route']);
 
@@ -251,8 +235,6 @@ class Application extends Container
 
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
-        $segment = $this['shortcode']->parse($segment);
-
         $twigged = $this['twig']->render($segment);
 
         $this->fireEvent('onContentSegmentRendered', ['segment' => &$twigged]);
@@ -274,8 +256,11 @@ class Application extends Container
      * @param  array  $attributes
      * @return Event
      */
-    public function fireEvent($eventName, array $attributes = [])
+    protected function fireEvent($eventName, array $attributes = [])
     {
+        if(!isset($attributes['app'])) {
+            $attributes['app'] = $this;
+        }
         return $this['events']->dispatch($eventName, new Event($attributes));
     }
 
