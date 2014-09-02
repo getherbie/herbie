@@ -23,9 +23,9 @@ class Config
     /**
      * Constructor
      *
-     * @param \Herbie\Application $app
+     * @param Application $app
      */
-    public function __construct(\Herbie\Application $app)
+    public function __construct(Application $app)
     {
         $this->items = $this->loadFiles($app);
     }

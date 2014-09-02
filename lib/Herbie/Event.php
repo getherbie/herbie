@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -10,7 +11,9 @@
 
 namespace Herbie;
 
-class Event extends \Symfony\Component\EventDispatcher\Event implements \ArrayAccess
+use Symfony\Component\EventDispatcher\Event AS SymfonyEvent;
+
+class Event extends SymfonyEvent implements \ArrayAccess
 {
 
     /**
