@@ -63,8 +63,7 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             'site' => new Site($this->app),
-            'page' => $this->app['page'],
-            'text' => new Text()
+            'page' => $this->app['page']
         ];
     }
 
