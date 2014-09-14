@@ -11,10 +11,9 @@
 
 namespace Herbie\Menu;
 
-use Iterator;
-
-class PageMenuTree implements Iterator
+class PageMenuTree implements \Iterator
 {
+
     /**
      * @var array
      */
