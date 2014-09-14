@@ -131,7 +131,7 @@ class Config
      */
     private function loadFiles(Application $app)
     {
-        $defaults = require($app['appPath'] . '/lib/Herbie/defaults.php');
+        $defaults = require(__DIR__ . '/defaults.php');
         if (is_file($app['sitePath'] . '/config.php')) {
             $userConfig = require($app['sitePath'] . '/config.php');
             return $this->merge($defaults, $userConfig);
