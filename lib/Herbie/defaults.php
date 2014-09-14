@@ -31,7 +31,7 @@ return [
     'posts' => [
         'path' => $app['sitePath'] . '/posts',
         'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
-        'blogRoute' => 'blog'
+        'blog_route' => 'blog'
     ],
     'data' => [
         'path' => $app['sitePath'] . '/data',

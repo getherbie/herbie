@@ -123,7 +123,7 @@ class Application extends Container
             $path = $app['config']->get('posts.path');
             $options = [
                 'extensions' => $app['config']->get('posts.extensions'),
-                'blogRoute' => $app['config']->get('posts.blogRoute')
+                'blogRoute' => $app['config']->get('posts.blog_route')
             ];
             $builder = new Menu\PostMenuCollectionBuilder($cache, $options);
             return $builder->build($path);
