@@ -84,11 +84,11 @@ class Application extends Container
             return trim($app['request']->getPathInfo(), '/');
         };
 
-        $this['cache.page'] = function ($app) {
+        $this['pageCache'] = function ($app) {
             return Cache\CacheFactory::create('page', $app['config']);
         };
 
-        $this['cache.data'] = function ($app) {
+        $this['dataCache'] = function ($app) {
             return Cache\CacheFactory::create('data', $app['config']);
         };
 
@@ -105,7 +105,7 @@ class Application extends Container
         };
 
         $this['menu'] = function ($app) {
-            $cache = $app['cache.data'];
+            $cache = $app['dataCache'];
             $path = $app['config']->get('pages.path');
             $extensions = $app['config']->get('pages.extensions');
             $builder = new Menu\PageMenuCollectionBuilder($cache, $extensions);
@@ -119,7 +119,7 @@ class Application extends Container
         };
 
         $this['posts'] = function ($app) {
-            $cache = $app['cache.data'];
+            $cache = $app['dataCache'];
             $path = $app['config']->get('posts.path');
             $options = [
                 'extensions' => $app['config']->get('posts.extensions'),
@@ -207,7 +207,7 @@ class Application extends Container
 
         $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
-        $content = $this['cache.page']->get($path);
+        $content = $this['pageCache']->get($path);
         if ($content === false) {
             $layout = $this['page']->getLayout();
             if (empty($layout)) {
@@ -215,7 +215,7 @@ class Application extends Container
             } else {
                 $content = $this['twig']->render($layout);
             }
-            $this['cache.page']->set($path, $content);
+            $this['pageCache']->set($path, $content);
         }
 
         $response = new Response($content);
