@@ -11,11 +11,9 @@
 
 namespace Herbie\Cache;
 
-use Exception;
-use LogicException;
-
 class DataCache implements CacheInterface
 {
+
     /**
      * @var boolean
      */
@@ -70,14 +68,14 @@ class DataCache implements CacheInterface
      * @param string $id
      * @param mixed $value
      * @return boolean
-     * @throws Exception
+     * @throws \Exception
      */
     public function set($id, $value)
     {
         $filename = $this->makeFilename($id);
         $written = file_put_contents($filename, serialize($value));
         if ($written === false) {
-            throw new Exception('Could not write to data cache file', 500);
+            throw new \Exception('Could not write to data cache file', 500);
         }
         return true;
     }
@@ -95,11 +93,11 @@ class DataCache implements CacheInterface
     /**
      * @param string $name
      * @param mixed $value
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function __set($name, $value)
     {
         $message = sprintf('Property "%s" does not exist in class %s.', $name, __CLASS__);
-        throw new LogicException($message);
+        throw new \LogicException($message);
     }
 }

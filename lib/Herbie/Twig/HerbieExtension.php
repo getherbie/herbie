@@ -10,7 +10,6 @@
 
 namespace Herbie\Twig;
 
-use DateTime;
 use Herbie\Site;
 use Herbie\Formatter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -209,7 +208,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function filterStrftime($date, $format = '%x')
     {
-        $dateTime = new DateTime($date);
+        $dateTime = new \DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
     }
 

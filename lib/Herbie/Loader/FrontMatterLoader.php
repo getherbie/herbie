@@ -12,7 +12,6 @@
 namespace Herbie\Loader;
 
 use Symfony\Component\Yaml\Yaml;
-use SplFileInfo;
 
 class FrontMatterLoader
 {
@@ -25,7 +24,7 @@ class FrontMatterLoader
     {
         $yaml = '';
 
-        $fileInfo = new SplFileInfo($path);
+        $fileInfo = new \SplFileInfo($path);
         $fileObject = $fileInfo->openFile('r');
 
         $i = 0;

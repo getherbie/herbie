@@ -11,25 +11,13 @@
 
 namespace Herbie\Menu;
 
-use ArrayIterator;
-use Countable;
-use InvalidArgumentException;
-use IteratorAggregate;
-
-class PageMenuCollection implements IteratorAggregate, Countable
+class PageMenuCollection implements \IteratorAggregate, \Countable
 {
+
     /**
      * @var array
      */
-    protected $items;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->items = [];
-    }
+    protected $items = [];
 
     /**
      * @param string $route
@@ -59,11 +47,11 @@ class PageMenuCollection implements IteratorAggregate, Countable
     }
 
     /**
-     * @return ArrayIterator|Traversable
+     * @return \ArrayIterator|Traversable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->items);
+        return new \ArrayIterator($this->items);
     }
 
     /**
@@ -76,12 +64,12 @@ class PageMenuCollection implements IteratorAggregate, Countable
 
     /**
      * @param callable $callback
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function sort(callable $callback)
     {
         if (!is_callable($callback)) {
-            throw new InvalidArgumentException('Given callback is not callable.');
+            throw new \InvalidArgumentException('Given callback is not callable.');
         }
         uasort($this->items, $callback);
     }

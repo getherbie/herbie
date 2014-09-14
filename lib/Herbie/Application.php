@@ -10,8 +10,6 @@
 
 namespace Herbie;
 
-use ErrorException;
-use Exception;
 use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,13 +44,13 @@ class Application extends Container
      * @param string $errstr
      * @param string $errfile
      * @param int $errline
-     * @throws ErrorException
+     * @throws \ErrorException
      */
     public function errorHandler($errno, $errstr, $errfile, $errline)
     {
         // disable error capturing to avoid recursive errors
         restore_error_handler();
-        throw new ErrorException($errstr, 500, $errno, $errfile, $errline);
+        throw new \ErrorException($errstr, 500, $errno, $errfile, $errline);
     }
 
     /**
@@ -183,7 +181,7 @@ class Application extends Container
             $content = $this['twig']->render('error.html', ['error' => $e]);
             $response = new Response($content, 404);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $content = $this['twig']->render('error.html', ['error' => $e]);
             $response = new Response($content, 500);

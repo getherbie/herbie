@@ -11,13 +11,11 @@
 
 namespace Herbie\Menu;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
 use Symfony\Component\HttpFoundation\Request;
 
-class PostMenuCollection implements IteratorAggregate, Countable
+class PostMenuCollection implements \IteratorAggregate, \Countable
 {
+
     /**
      * @var array
      */
@@ -207,11 +205,11 @@ class PostMenuCollection implements IteratorAggregate, Countable
     }
 
     /**
-     * @return ArrayIterator|Traversable
+     * @return \ArrayIterator|Traversable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->items);
+        return new \ArrayIterator($this->items);
     }
 
     /**
