@@ -13,8 +13,6 @@ namespace Herbie\Menu;
 
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 
 class PageMenuCollectionBuilder
 {
@@ -53,9 +51,9 @@ class PageMenuCollectionBuilder
 
             if (is_dir($realpath)) {
 
-                $objects = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($realpath),
-                    RecursiveIteratorIterator::SELF_FIRST
+                $objects = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($realpath),
+                    \RecursiveIteratorIterator::SELF_FIRST
                 );
 
                 foreach ($objects as $path => $splFileInfo) {
