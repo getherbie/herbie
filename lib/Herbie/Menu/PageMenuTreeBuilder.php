@@ -23,7 +23,7 @@ class PageMenuTreeBuilder
     public function build($collection)
     {
         $flat = [];
-        foreach ($collection->getItems() as $key => $item) {
+        foreach ($collection as $key => $item) {
             $flat[$key] = clone $item;
             $flat[$key]->items = [];
         }
