@@ -4,6 +4,10 @@ Subtree Split
 Thanks to https://github.com/dflydev/git-subsplit for automating and simplifying
 the process of managing one-way read-only subtree splits.
 
+    git subsplit init https://github.com/getherbie/plugins.git
+
+    git subsplit update
+
     git subsplit publish "
         disqus/:git@github.com:getherbie/plugin-disqus.git
         googlemaps/:git@github.com:getherbie/plugin-googlemaps.git
