@@ -1,4 +1,4 @@
 theme: false
 posts:
-  blogRoute: blog
+  blog_route: blog
 nice_urls: true
