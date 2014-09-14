@@ -16,7 +16,7 @@ use Herbie\Loader\FrontMatterLoader;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
-class MenuCollectionBuilder
+class PageMenuCollectionBuilder
 {
 
     /**
@@ -41,7 +41,7 @@ class MenuCollectionBuilder
 
     /**
      * @param string $path
-     * @return MenuCollection
+     * @return PageMenuCollection
      */
     public function build($path)
     {
@@ -49,7 +49,7 @@ class MenuCollectionBuilder
         $items = $this->cache->get(__CLASS__);
         if ($items === false) {
 
-            $collection = new MenuCollection();
+            $collection = new PageMenuCollection();
 
             if (is_dir($realpath)) {
 
@@ -79,7 +79,7 @@ class MenuCollectionBuilder
                         $data['path'] = $path;
                         $data['route'] = $route;
                         $data['depth'] = substr_count($route, '/') + 1;
-                        $item = new MenuItem($data);
+                        $item = new PageMenuItem($data);
 
                         if (empty($item->date)) {
                             $item->date = date('c', $splFileInfo->getCTime());

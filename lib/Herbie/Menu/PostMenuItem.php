@@ -14,7 +14,7 @@ namespace Herbie\Menu;
 use Exception;
 use LogicException;
 
-class PostItem
+class PostMenuItem
 {
     /**
      * @var string

@@ -16,7 +16,7 @@ use Countable;
 use IteratorAggregate;
 use Symfony\Component\HttpFoundation\Request;
 
-class PostCollection implements IteratorAggregate, Countable
+class PostMenuCollection implements IteratorAggregate, Countable
 {
     /**
      * @var array
@@ -43,9 +43,9 @@ class PostCollection implements IteratorAggregate, Countable
     }
 
     /**
-     * @param PostItem $item
+     * @param PostMenuItem $item
      */
-    public function addItem(PostItem $item)
+    public function addItem(PostMenuItem $item)
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -77,7 +77,7 @@ class PostCollection implements IteratorAggregate, Countable
 
     /**
      * @param string $route
-     * @return PostItem
+     * @return PostMenuItem
      */
     public function getItem($route)
     {

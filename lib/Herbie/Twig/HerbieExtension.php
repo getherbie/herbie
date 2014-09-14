@@ -158,7 +158,7 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param MenuTree $tree
+     * @param PageMenuTree $tree
      * @param bool $showHidden
      * @return string
      */

@@ -110,13 +110,13 @@ class Application extends Container
             $cache = $app['cache.data'];
             $path = $app['config']->get('pages.path');
             $extensions = $app['config']->get('pages.extensions');
-            $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
+            $builder = new Menu\PageMenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
             return $menu;
         };
 
         $this['tree'] = function ($app) {
-            $builder = new Menu\MenuTreeBuilder();
+            $builder = new Menu\PageMenuTreeBuilder();
             return $builder->build($app['menu']);
         };
 
@@ -127,7 +127,7 @@ class Application extends Container
                 'extensions' => $app['config']->get('posts.extensions'),
                 'blogRoute' => $app['config']->get('posts.blogRoute')
             ];
-            $builder = new Menu\PostCollectionBuilder($cache, $options);
+            $builder = new Menu\PostMenuCollectionBuilder($cache, $options);
             return $builder->build($path);
         };
 
@@ -136,7 +136,7 @@ class Application extends Container
         };
 
         $this['rootPath'] = function ($app) {
-            return new Menu\RootPath($app['menu'], $app['route']);
+            return new Menu\PageRootPath($app['menu'], $app['route']);
         };
 
         $this['data'] = function ($app) {

@@ -16,7 +16,7 @@ use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 
-class MenuCollection implements IteratorAggregate, Countable
+class PageMenuCollection implements IteratorAggregate, Countable
 {
     /**
      * @var array
@@ -33,9 +33,9 @@ class MenuCollection implements IteratorAggregate, Countable
 
     /**
      * @param string $route
-     * @param MenuItem $item
+     * @param PageMenuItem $item
      */
-    public function addItem(MenuItem $item)
+    public function addItem(PageMenuItem $item)
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -51,7 +51,7 @@ class MenuCollection implements IteratorAggregate, Countable
 
     /**
      * @param string $route
-     * @return MenuItem|null
+     * @return PageMenuItem|null
      */
     public function getItem($route)
     {
