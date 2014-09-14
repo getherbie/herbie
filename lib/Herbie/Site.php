@@ -11,7 +11,6 @@
 
 namespace Herbie;
 
-
 /**
  * Stores the site.
  */
