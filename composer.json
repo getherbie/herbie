@@ -19,8 +19,8 @@
         "imagine/imagine": "~0.6.1"
     },
     "autoload": {
-        "psr-0": {
-            "Herbie": "lib"
+        "psr-4": {
+            "Herbie\\": "src"
         }
     }
 }
