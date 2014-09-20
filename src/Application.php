@@ -105,12 +105,8 @@ class Application extends Container
         };
 
         $this['menu'] = function ($app) {
-            $cache = $app['dataCache'];
-            $path = $app['config']->get('pages.path');
-            $extensions = $app['config']->get('pages.extensions');
-            $builder = new Menu\PageMenuCollectionBuilder($cache, $extensions);
-            $menu = $builder->build($path);
-            return $menu;
+            $builder = new Menu\PageMenuCollectionBuilder($app);
+            return $builder->build();
         };
 
         $this['tree'] = function ($app) {
@@ -119,14 +115,8 @@ class Application extends Container
         };
 
         $this['posts'] = function ($app) {
-            $cache = $app['dataCache'];
-            $path = $app['config']->get('posts.path');
-            $options = [
-                'extensions' => $app['config']->get('posts.extensions'),
-                'blogRoute' => $app['config']->get('posts.blog_route')
-            ];
-            $builder = new Menu\PostMenuCollectionBuilder($cache, $options);
-            return $builder->build($path);
+            $builder = new Menu\PostMenuCollectionBuilder($app);
+            return $builder->build();
         };
 
         $this['paginator'] = function ($app) {

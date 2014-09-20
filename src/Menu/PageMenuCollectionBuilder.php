@@ -11,6 +11,7 @@
 
 namespace Herbie\Menu;
 
+use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 
@@ -23,32 +24,39 @@ class PageMenuCollectionBuilder
     protected $cache;
 
     /**
+     * @var string
+     */
+    protected $path;
+    
+    /**
      * @var array
      */
     protected $extensions;
 
     /**
-     * @param CacheInterface $cache
-     * @param array $extensions
+     * @param Application $app
      */
-    public function __construct(CacheInterface $cache, array $extensions = [])
+    public function __construct(Application $app)
     {
-        $this->cache = $cache;
-        $this->extensions = $extensions;
+        $this->cache = $app['dataCache'];
+        $this->path = $app['config']->get('pages.path');
+        $this->extensions = $app['config']->get('pages.extensions');
     }
 
     /**
      * @param string $path
      * @return PageMenuCollection
      */
-    public function build($path)
+    public function build($path = null)
     {
-        $realpath = realpath($path);
+        if(is_null($path)) {
+            $path = $this->path;
+        }
         $items = $this->cache->get(__CLASS__);
         if ($items === false) {
 
             $collection = new PageMenuCollection();
-
+            $realpath = realpath($path);
             if (is_dir($realpath)) {
 
                 $objects = new \RecursiveIteratorIterator(

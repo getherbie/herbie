@@ -11,6 +11,7 @@
 
 namespace Herbie\Menu;
 
+use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 
@@ -23,6 +24,11 @@ class PostMenuCollectionBuilder
     protected $cache;
 
     /**
+     * @var string
+     */
+    protected $path;
+    
+    /**
      * @var array
      */
     protected $extensions;
@@ -33,26 +39,28 @@ class PostMenuCollectionBuilder
     protected $blogRoute;
 
     /**
-     * @param CacheInterface $cache
-     * @param array $extensions
+     * @param Application $app
      */
-    public function __construct(CacheInterface $cache, array $options = [])
+    public function __construct(Application $app)
     {
-        $this->cache = $cache;
-        foreach ($options as $key => $value) {
-            $this->$key = $value;
-        }
+        $this->cache = $app['dataCache'];
+        $this->path = $app['config']->get('posts.path');
+        $this->extensions = $app['config']->get('posts.extensions');
+        $this->blogRoute = $app['config']->get('posts.blog_route');
     }
 
     /**
      * @param string $path
      * @return PostMenuCollection
      */
-    public function build($path)
+    public function build($path = null)
     {
-        $realpath = realpath($path);
+        if(is_null($path)) {
+            $path = $this->path;
+        }
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
+            $realpath = realpath($path);
             $collection = new PostMenuCollection($this->blogRoute);
             if (is_dir($realpath)) {
 
