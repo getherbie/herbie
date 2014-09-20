@@ -64,7 +64,7 @@ class UrlMatcher
 
         // Blog main page
         $blogRoute = $this->getBlogRoute();
-        if(0 === strpos($route, $blogRoute)) {
+        if (0 === strpos($route, $blogRoute)) {
             $item = $this->pages->getItem($blogRoute);
             if (isset($item)) {
                 $filteredItems = $this->posts->filterItems();

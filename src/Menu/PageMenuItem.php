@@ -320,7 +320,7 @@ class PageMenuItem
      */
     public function routeInRootPath($route)
     {
-        if(empty($route) || empty($this->route)) {
+        if (empty($route) || empty($this->route)) {
             return false;
         }
         return 0 === strpos($route, $this->route);

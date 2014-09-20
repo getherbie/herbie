@@ -139,7 +139,9 @@ class Config
         if (is_file($app['sitePath'] . '/config.yml')) {
             $content = file_get_contents($app['sitePath'] . '/config.yml');
             $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$app['appPath'], $app['sitePath'], $app['sitePath']], $content
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
+                [$app['appPath'], $app['sitePath'], $app['sitePath']],
+                $content
             );
             $userConfig = Yaml::parse($content);
             return $this->merge($defaults, $userConfig);

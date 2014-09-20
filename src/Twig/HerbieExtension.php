@@ -450,5 +450,4 @@ class HerbieExtension extends Twig_Extension
     {
         return $this->app['urlGenerator']->generate($route);
     }
-
 }

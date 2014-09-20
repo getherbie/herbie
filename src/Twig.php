@@ -166,5 +166,4 @@ class Twig
         $pattern = $dir . '/*.php';
         return glob($pattern);
     }
-
 }

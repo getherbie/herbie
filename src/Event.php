@@ -11,7 +11,7 @@
 
 namespace Herbie;
 
-use Symfony\Component\EventDispatcher\Event AS SymfonyEvent;
+use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
 
 class Event extends SymfonyEvent implements \ArrayAccess
 {
