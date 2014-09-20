@@ -10,8 +10,6 @@
 
 namespace Herbie;
 
-use ErrorException;
-use Exception;
 use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,22 +40,17 @@ class Application extends Container
     public $locale;
 
     /**
-     * @var Response
-     */
-    public $response;
-
-    /**
      * @param int $errno
      * @param string $errstr
      * @param string $errfile
      * @param int $errline
-     * @throws ErrorException
+     * @throws \ErrorException
      */
     public function errorHandler($errno, $errstr, $errfile, $errline)
     {
         // disable error capturing to avoid recursive errors
         restore_error_handler();
-        throw new ErrorException($errstr, 500, $errno, $errfile, $errline);
+        throw new \ErrorException($errstr, 500, $errno, $errfile, $errline);
     }
 
     /**
@@ -91,18 +84,12 @@ class Application extends Container
             return trim($app['request']->getPathInfo(), '/');
         };
 
-        $this['cache.page'] = function ($app) {
-            if ($app['config']->isEmpty('cache.page.enable')) {
-                return new Cache\DummyCache();
-            }
-            return new Cache\PageCache($app['config']->get('cache.page'));
+        $this['pageCache'] = function ($app) {
+            return Cache\CacheFactory::create('page', $app['config']);
         };
 
-        $this['cache.data'] = function ($app) {
-            if ($app['config']->isEmpty('cache.data.enable')) {
-                return new Cache\DummyCache();
-            }
-            return new Cache\DataCache($app['config']->get('cache.data'));
+        $this['dataCache'] = function ($app) {
+            return Cache\CacheFactory::create('data', $app['config']);
         };
 
         $this['events'] = function ($app) {
@@ -118,27 +105,27 @@ class Application extends Container
         };
 
         $this['menu'] = function ($app) {
-            $cache = $app['cache.data'];
+            $cache = $app['dataCache'];
             $path = $app['config']->get('pages.path');
             $extensions = $app['config']->get('pages.extensions');
-            $builder = new Menu\MenuCollectionBuilder($cache, $extensions);
+            $builder = new Menu\PageMenuCollectionBuilder($cache, $extensions);
             $menu = $builder->build($path);
             return $menu;
         };
 
         $this['tree'] = function ($app) {
-            $builder = new Menu\MenuTreeBuilder();
+            $builder = new Menu\PageMenuTreeBuilder();
             return $builder->build($app['menu']);
         };
 
         $this['posts'] = function ($app) {
-            $cache = $app['cache.data'];
+            $cache = $app['dataCache'];
             $path = $app['config']->get('posts.path');
             $options = [
                 'extensions' => $app['config']->get('posts.extensions'),
-                'blogRoute' => $app['config']->get('posts.blogRoute')
+                'blogRoute' => $app['config']->get('posts.blog_route')
             ];
-            $builder = new Menu\PostCollectionBuilder($cache, $options);
+            $builder = new Menu\PostMenuCollectionBuilder($cache, $options);
             return $builder->build($path);
         };
 
@@ -147,7 +134,7 @@ class Application extends Container
         };
 
         $this['rootPath'] = function ($app) {
-            return new Menu\RootPath($app['menu'], $app['route']);
+            return new Menu\PageRootPath($app['menu'], $app['route']);
         };
 
         $this['data'] = function ($app) {
@@ -165,11 +152,6 @@ class Application extends Container
 
         $this['page'] = function ($app) {
             return new Page(); // be sure that we always have a Page object
-        };
-
-        $this['shortcode'] = function ($app) {
-            $tags = $app['config']->get('shortcodes', []);
-            return new Shortcode($tags);
         };
 
         foreach ($values as $key => $value) {
@@ -192,23 +174,23 @@ class Application extends Container
 
         try {
 
-            $this->response = $this->handle();
+            $response = $this->handle();
 
         } catch (ResourceNotFoundException $e) {
 
             $content = $this['twig']->render('error.html', ['error' => $e]);
-            $this->response = new Response($content, 404);
+            $response = new Response($content, 404);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $content = $this['twig']->render('error.html', ['error' => $e]);
-            $this->response = new Response($content, 500);
+            $response = new Response($content, 500);
 
         }
 
-        $this->fireEvent('onOutputGenerated', ['response' => $this->response]);
+        $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
-        $this->response->send();
+        $response->send();
 
         $this->fireEvent('onOutputRendered');
     }
@@ -216,7 +198,7 @@ class Application extends Container
     /**
      * @return Response
      */
-    public function handle()
+    protected function handle()
     {
         $path = $this['urlMatcher']->match($this['route']);
 
@@ -225,7 +207,7 @@ class Application extends Container
 
         $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
-        $content = $this['cache.page']->get($path);
+        $content = $this['pageCache']->get($path);
         if ($content === false) {
             $layout = $this['page']->getLayout();
             if (empty($layout)) {
@@ -233,7 +215,7 @@ class Application extends Container
             } else {
                 $content = $this['twig']->render($layout);
             }
-            $this['cache.page']->set($path, $content);
+            $this['pageCache']->set($path, $content);
         }
 
         $response = new Response($content);
@@ -250,8 +232,6 @@ class Application extends Container
         $segment = $this['page']->getSegment($segmentId);
 
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
-
-        $segment = $this['shortcode']->parse($segment);
 
         $twigged = $this['twig']->render($segment);
 
@@ -274,8 +254,11 @@ class Application extends Container
      * @param  array  $attributes
      * @return Event
      */
-    public function fireEvent($eventName, array $attributes = [])
+    protected function fireEvent($eventName, array $attributes = [])
     {
+        if(!isset($attributes['app'])) {
+            $attributes['app'] = $this;
+        }
         return $this['events']->dispatch($eventName, new Event($attributes));
     }
 

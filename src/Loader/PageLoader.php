@@ -11,10 +11,8 @@
 
 namespace Herbie\Loader;
 
-use Exception;
 use Herbie\Page;
 use Symfony\Component\Yaml\Yaml;
-use SplFileInfo;
 
 /**
  * Loads the whole page.
@@ -25,11 +23,11 @@ class PageLoader
     /**
      * @param string $path
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function load($path)
     {
-        $fileInfo = new SplFileInfo($path);
+        $fileInfo = new \SplFileInfo($path);
         $fileObject = $fileInfo->openFile('r');
 
         $yaml = '';
@@ -59,7 +57,7 @@ class PageLoader
         }
 
         if ($i < 2) {
-            throw new Exception("Invalid Front-Matter Block in file {$path}.");
+            throw new \Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
         unset($fileObject);

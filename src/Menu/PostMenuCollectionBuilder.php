@@ -14,7 +14,7 @@ namespace Herbie\Menu;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 
-class PostCollectionBuilder
+class PostMenuCollectionBuilder
 {
 
     /**
@@ -46,14 +46,14 @@ class PostCollectionBuilder
 
     /**
      * @param string $path
-     * @return PostCollection
+     * @return PostMenuCollection
      */
     public function build($path)
     {
         $realpath = realpath($path);
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
-            $collection = new PostCollection($this->blogRoute);
+            $collection = new PostMenuCollection($this->blogRoute);
             if (is_dir($realpath)) {
 
                 $loader = new FrontMatterLoader();
@@ -68,7 +68,7 @@ class PostCollectionBuilder
                     $data = $loader->load($realpath.'/'.$filename);
                     $data['path'] = $realpath.'/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
-                    $item = new PostItem($data);
+                    $item = new PostMenuItem($data);
                     $collection->addItem($item);
                 }
 

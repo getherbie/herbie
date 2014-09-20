@@ -10,20 +10,20 @@
 
 namespace Herbie\Menu;
 
-use Herbie\Menu\MenuCollection;
-use Herbie\Menu\MenuTree;
+use Herbie\Menu\PageMenuCollection;
+use Herbie\Menu\PageMenuTree;
 
-class MenuTreeBuilder
+class PageMenuTreeBuilder
 {
 
     /**
-     * @param MenuCollection $collection
-     * @return MenuTree
+     * @param PageMenuCollection $collection
+     * @return PageMenuTree
      */
     public function build($collection)
     {
         $flat = [];
-        foreach ($collection->getItems() as $key => $item) {
+        foreach ($collection as $key => $item) {
             $flat[$key] = clone $item;
             $flat[$key]->items = [];
         }
@@ -41,6 +41,6 @@ class MenuTreeBuilder
             }
         }
 
-        return new MenuTree($tree);
+        return new PageMenuTree($tree);
     }
 }

@@ -11,14 +11,11 @@
 
 namespace Herbie\Menu;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
-
-class RootPath implements IteratorAggregate, Countable
+class PageRootPath implements \IteratorAggregate, \Countable
 {
+
     /**
-     * @var MenuCollection
+     * @var PageMenuCollection
      */
     protected $collection;
 
@@ -33,10 +30,10 @@ class RootPath implements IteratorAggregate, Countable
     protected $items;
 
     /**
-     * @param MenuCollection $collection
+     * @param PageMenuCollection $collection
      * @param string $route
      */
-    public function __construct(MenuCollection $collection, $route)
+    public function __construct(PageMenuCollection $collection, $route)
     {
         $this->collection = $collection;
         $this->route = $route;
@@ -67,11 +64,11 @@ class RootPath implements IteratorAggregate, Countable
     }
 
     /**
-     * @return ArrayIterator|Traversable
+     * @return \ArrayIterator|Traversable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->items);
+        return new \ArrayIterator($this->items);
     }
 
     /**

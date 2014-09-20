@@ -11,7 +11,6 @@
 
 namespace Herbie;
 
-
 /**
  * Stores the site.
  */
@@ -48,7 +47,7 @@ class Site
     }
 
     /**
-     * @return MenuCollection
+     * @return PageMenuCollection
      */
     public function getMenu()
     {
@@ -64,7 +63,7 @@ class Site
     }
 
     /**
-     * @return MenuTree
+     * @return PageMenuTree
      */
     public function getTree()
     {
@@ -72,7 +71,7 @@ class Site
     }
 
     /**
-     * @return PostCollection
+     * @return PostMenuCollection
      */
     public function getPosts()
     {

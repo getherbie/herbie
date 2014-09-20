@@ -11,10 +11,9 @@
 
 namespace Herbie\Menu;
 
-use Iterator;
-
-class MenuTree implements Iterator
+class PageMenuTree implements \Iterator
 {
+
     /**
      * @var array
      */
@@ -64,7 +63,7 @@ class MenuTree implements Iterator
     }
 
     /**
-     * @return MenuItem
+     * @return PageMenuItem
      */
     public function current()
     {

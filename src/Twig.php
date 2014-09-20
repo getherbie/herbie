@@ -62,7 +62,7 @@ class Twig
         }
         $this->environment->addExtension(new Twig\HerbieExtension($this->app));
         if (!$this->config->isEmpty('imagine')) {
-            $this->environment->addExtension(new Twig\ImagineExtension($this->app));
+            #$this->environment->addExtension(new Twig\ImagineExtension($this->app));
         }
         $this->addTwigPlugins();
     }
@@ -137,6 +137,9 @@ class Twig
 
         $loader = new Twig_Loader_Filesystem($paths);
         $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
+        if(!$this->config->isEmpty('plugins_path')) {
+            $loader->addPath($this->config->get('plugins_path'), 'plugins');
+        }
         return $loader;
     }
 
@@ -163,5 +166,4 @@ class Twig
         $pattern = $dir . '/*.php';
         return glob($pattern);
     }
-
 }

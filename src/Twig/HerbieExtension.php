@@ -10,7 +10,6 @@
 
 namespace Herbie\Twig;
 
-use DateTime;
 use Herbie\Site;
 use Herbie\Formatter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -63,20 +62,19 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             'site' => new Site($this->app),
-            'page' => $this->app['page'],
-            'text' => new Text()
+            'page' => $this->app['page']
         ];
     }
 
     /**
      * @return array
      */
-    public function getTokenParsers()
+    /*public function getTokenParsers()
     {
         return [
             new HighlightTokenParser()
         ];
-    }
+    }*/
 
     /**
      * @param array $htmlOptions
@@ -138,8 +136,6 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
-            new Twig_SimpleFunction('disqus', array($this, 'functionDisqus'), $options),
-            new Twig_SimpleFunction('googleMaps', array($this, 'functionGoogleMaps'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
             new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
@@ -148,9 +144,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
             new Twig_SimpleFunction('redirect', array($this, 'functionRedirect'), $options),
             new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
-            new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options),
-            new Twig_SimpleFunction('vimeo', array($this, 'functionVimeo'), $options),
-            new Twig_SimpleFunction('youTube', array($this, 'functionYouTube'), $options),
+            new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options)
         ];
     }
 
@@ -163,7 +157,7 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param MenuTree $tree
+     * @param PageMenuTree $tree
      * @param bool $showHidden
      * @return string
      */
@@ -214,7 +208,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function filterStrftime($date, $format = '%x')
     {
-        $dateTime = new DateTime($date);
+        $dateTime = new \DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
     }
 
@@ -308,43 +302,6 @@ class HerbieExtension extends Twig_Extension
             return $content;
         }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
-    }
-
-    /**
-     * @param string $shortname
-     * @return string
-     */
-    public function functionDisqus($shortname)
-    {
-        return $this->app['twig']->render('extension/herbie/disqus.html', array(
-           'shortname' => $shortname
-        ));
-    }
-
-    /**
-     * @param string $id
-     * @param int $width
-     * @param int $height
-     * @param string $type
-     * @param string $class
-     * @param int $zoom
-     * @param string $address
-     * @return string
-     */
-    public function functionGoogleMaps($id = 'gmap', $width = 600, $height = 450, $type = 'roadmap', $class = 'gmap', $zoom = 15, $address = '')
-    {
-        static $instances = 0;
-        $instances++;
-        return $this->app['twig']->render('extension/herbie/google_maps.html', array(
-            'id' => $id . '-' . $instances,
-            'width' => $width,
-            'height' => $height,
-            'type' => $type,
-            'class' => $class,
-            'zoom' => $zoom,
-            'address' => $address,
-            'instances' => $instances
-        ));
     }
 
     /**
@@ -492,59 +449,5 @@ class HerbieExtension extends Twig_Extension
     public function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
-    }
-
-    /**
-     * @param string $id
-     * @param int $width
-     * @param int $height
-     * @param int $responsive
-     * @return string
-     * @see http://embedresponsively.com/
-     */
-    public function functionVimeo($id, $width = 480, $height = 320, $responsive = 1)
-    {
-        $attribs = array(
-            'src' => sprintf('//player.vimeo.com/video/%s', $id),
-            'width' => $width,
-            'height' => $height,
-            'frameborder' => 0
-        );
-        $style = '';
-        $class = '';
-        if(!empty($responsive)) {
-            $style = '<style>.video-vimeo-responsive { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-vimeo-responsive iframe, .video-vimeo-responsive object, .video-vimeo-responsive embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
-            $class = 'video-vimeo-responsive';
-        }
-        return sprintf(
-            '%s<div class="video video-vimeo %s"><iframe %s webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>',
-            $style,
-            $class,
-            $this->buildHtmlAttributes($attribs)
-        );
-    }
-
-    /**
-     * @param string $id
-     * @param int $width
-     * @param int $height
-     * @param int $responsive
-     * @return string
-     * @see http://embedresponsively.com/
-     */
-    public function functionYouTube($id, $width = 480, $height = 320, $responsive = 1)
-    {
-        $attribs = array(
-            'src' => sprintf('//www.youtube.com/embed/%s?rel=0', $id),
-            'width' => $width,
-            'height' => $height,
-            'frameborder' => 0
-        );
-        $style = empty($responsive) ? '' : '<style>.video-youtube { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-youtube iframe, .video-youtube object, .video-youtube embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
-        return sprintf(
-            '%s<div class="video video-youtube"><iframe %s allowfullscreen></iframe></div>',
-            $style,
-            $this->buildHtmlAttributes($attribs)
-        );
     }
 }

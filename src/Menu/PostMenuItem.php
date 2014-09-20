@@ -11,11 +11,9 @@
 
 namespace Herbie\Menu;
 
-use Exception;
-use LogicException;
-
-class PostItem
+class PostMenuItem
 {
+
     /**
      * @var string
      */
@@ -294,12 +292,12 @@ class PostItem
 
     /**
      * @param array $data
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function setData(array $data)
     {
         if (array_key_exists('data', $data)) {
-            throw new LogicException("Field data is not allowed.");
+            throw new \LogicException("Field data is not allowed.");
         }
         if (empty($data['date'])) {
             $data['date'] = $this->extractDateFromPath($data['path']);
@@ -351,7 +349,7 @@ class PostItem
 
     /**
      * @param $name
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function __get($name)
     {
@@ -361,7 +359,7 @@ class PostItem
         } elseif (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         } else {
-            throw new LogicException("Field {$name} does not exist.");
+            throw new \LogicException("Field {$name} does not exist.");
         }
     }
 

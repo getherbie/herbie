@@ -11,10 +11,7 @@
 
 namespace Herbie\Menu;
 
-use Exception;
-use LogicException;
-
-class MenuItem
+class PageMenuItem
 {
     /**
      * @var string
@@ -66,12 +63,12 @@ class MenuItem
 
     /**
      * @param array $data
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function setData(array $data)
     {
         if (array_key_exists('data', $data)) {
-            throw new LogicException("Field data is not allowed.");
+            throw new \LogicException("Field data is not allowed.");
         }
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
@@ -256,7 +253,7 @@ class MenuItem
 
     /**
      * @param $name
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function __get($name)
     {
@@ -266,7 +263,7 @@ class MenuItem
         } elseif (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         } else {
-            throw new LogicException("Field {$name} does not exist.");
+            throw new \LogicException("Field {$name} does not exist.");
         }
     }
 
@@ -323,7 +320,7 @@ class MenuItem
      */
     public function routeInRootPath($route)
     {
-        if(empty($route) || empty($this->route)) {
+        if (empty($route) || empty($this->route)) {
             return false;
         }
         return 0 === strpos($route, $this->route);

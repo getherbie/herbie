@@ -11,11 +11,7 @@
 
 namespace Herbie;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
-
-class Paginator implements IteratorAggregate, Countable
+class Paginator implements \IteratorAggregate, \Countable
 {
     /**
      * @var array
@@ -40,11 +36,11 @@ class Paginator implements IteratorAggregate, Countable
     }
 
     /**
-     * @return ArrayIterator|Traversable
+     * @return \ArrayIterator|Traversable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->items);
+        return new \ArrayIterator($this->items);
     }
 
     /**

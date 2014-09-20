@@ -11,8 +11,7 @@
 
 namespace Herbie\Exception;
 
-use Exception;
-
-class ResourceNotFoundException extends Exception
+class ResourceNotFoundException extends \Exception
 {
+
 }
