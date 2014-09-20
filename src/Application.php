@@ -256,10 +256,9 @@ class Application extends Container
      */
     protected function fireEvent($eventName, array $attributes = [])
     {
-        if(!isset($attributes['app'])) {
+        if (!isset($attributes['app'])) {
             $attributes['app'] = $this;
         }
         return $this['events']->dispatch($eventName, new Event($attributes));
     }
-
 }

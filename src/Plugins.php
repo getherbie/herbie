@@ -40,7 +40,7 @@ class Plugins
     public function init()
     {
         $path = $this->app['config']->get('plugins_path');
-        if(empty($path) || !is_dir($path)) {
+        if (empty($path) || !is_dir($path)) {
             return;
         }
 
