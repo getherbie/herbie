@@ -1,8 +1,9 @@
 <?php
 
-class TestExtension extends Twig_Extension
-{
+namespace herbie\plugin\test\classes;
 
+class TestExtension extends \Twig_Extension
+{
     public function getName()
     {
         return 'test';
@@ -15,10 +16,9 @@ class TestExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_SimpleFunction('test', function() {
+            new \Twig_SimpleFunction('test', function() {
                 echo "XXX-YYY-ZZZ";
             }, $options),
         ];
     }
-
 }

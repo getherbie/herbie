@@ -9,6 +9,11 @@
  * file that was distributed with this source code.
  */
 
+namespace herbie\plugin\disqus;
+
+use Herbie;
+use Twig_SimpleFunction;
+
 class DisqusPlugin extends Herbie\Plugin
 {
 

@@ -9,6 +9,11 @@
  * file that was distributed with this source code.
  */
 
+namespace herbie\plugin\youtube;
+
+use Herbie;
+use Twig_SimpleFunction;
+
 class YoutubePlugin extends Herbie\Plugin
 {
 

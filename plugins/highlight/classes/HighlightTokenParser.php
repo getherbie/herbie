@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/HighlightNode.php';
+namespace herbie\plugin\highlight\classes;
 
-class HighlightTokenParser extends Twig_TokenParser
+use Twig_Token;
+
+class HighlightTokenParser extends \Twig_TokenParser
 {
     /**
      * Parses a token and returns a node.

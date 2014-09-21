@@ -9,6 +9,11 @@
  * file that was distributed with this source code.
  */
 
+namespace herbie\plugin\vimeo;
+
+use Herbie;
+use Twig_SimpleFunction;
+
 class VimeoPlugin extends Herbie\Plugin
 {
 

@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/classes/Shortcode.php';
+namespace herbie\plugin\shortcode;
 
-class ShortcodePlugin extends Herbie\Plugin
+use herbie\plugin\shortcode\classes\Shortcode;
+
+class ShortcodePlugin extends \Herbie\Plugin
 {
-
-    public function onContentSegmentLoaded(Herbie\Event $event)
+    public function onContentSegmentLoaded(\Herbie\Event $event)
     {
         $tags = $event['app']['config']->get('plugins.shortcode', []);
         $shortcode = new Shortcode($tags);

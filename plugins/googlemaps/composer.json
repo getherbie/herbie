@@ -6,5 +6,10 @@
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"
-    }
+    },
+    "autoload": {
+        "psr-4": {
+            "herbie\\plugin\\googlemaps\\": "",
+        }
+    } 
 }

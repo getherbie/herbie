@@ -9,7 +9,11 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/classes/Lipsum.php';
+namespace herbie\plugin\lipsum;
+
+use herbie\plugin\lipsum\classes\Lipsum;
+
+use Herbie;
 
 class LipsumPlugin extends Herbie\Plugin
 {

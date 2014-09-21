@@ -7,5 +7,10 @@
     "require": {
         "getherbie/herbie": "dev-master",
         "imagine/imagine": "~0.6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "herbie\\plugin\\imagine\\": "",
+        }
     }
 }

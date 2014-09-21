@@ -8,7 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-#require_once __DIR__ . '/classes/HighlightExtension.php';
+
+namespace herbie\plugin\googlemaps;
+
+use Herbie;
+use Twig_SimpleFunction;
 
 class GooglemapsPlugin extends Herbie\Plugin
 {

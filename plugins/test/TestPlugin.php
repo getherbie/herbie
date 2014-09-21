@@ -9,7 +9,10 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/classes/TestExtension.php';
+namespace herbie\plugin\test;
+
+use herbie\plugin\test\classes\TestExtension;
+use Herbie;
 
 class TestPlugin extends Herbie\Plugin
 {

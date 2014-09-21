@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
+namespace herbie\plugin\highlight\classes;
 
-class HighlightNode extends Twig_Node
+class HighlightNode extends \Twig_Node
 {
     /**
      * @param array $name
-     * @param Twig_NodeInterface $body
+     * @param \Twig_NodeInterface $body
      * @param int $lineno
      * @param string $tag
      */
-    public function __construct($name, Twig_NodeInterface $body, $lineno, $tag = 'spaceless')
+    public function __construct($name, \Twig_NodeInterface $body, $lineno, $tag = 'spaceless')
     {
         parent::__construct(['body' => $body], ['name' => $name], $lineno, $tag);
     }
@@ -26,14 +27,14 @@ class HighlightNode extends Twig_Node
     /**
      * Compiles the node to PHP.
      *
-     * @param Twig_Compiler A Twig_Compiler instance
+     * @param \Twig_Compiler A Twig_Compiler instance
      */
-    public function compile(Twig_Compiler $compiler)
+    public function compile(\Twig_Compiler $compiler)
     {
         $source = trim($this->getNode('body')->getAttribute('data'));
         $name = $this->getAttribute('name');
 
-        $geshi = new GeSHi($source, $name);
+        $geshi = new \GeSHi($source, $name);
         #$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
 
         $parsedCode = sprintf(

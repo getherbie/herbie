@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-#namespace Herbie\Twig;
+namespace herbie\plugin\imagine\classes;
 
-#use Twig_Extension;
 use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
@@ -20,7 +19,7 @@ use Imagine\Image\Point;
 use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
 
-class ImagineExtension extends Twig_Extension
+class ImagineExtension extends \Twig_Extension
 {
 
     /**
@@ -64,7 +63,7 @@ class ImagineExtension extends Twig_Extension
     public function getFunctions()
     {
         return [
-            new Twig_SimpleFunction('imagine', array($this, 'imagineFunction'), ['is_safe' => ['html']])
+            new \Twig_SimpleFunction('imagine', array($this, 'imagineFunction'), ['is_safe' => ['html']])
         ];
     }
 

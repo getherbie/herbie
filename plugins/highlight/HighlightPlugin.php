@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/classes/HighlightExtension.php';
+namespace herbie\plugin\highlight;
 
-class HighlightPlugin extends Herbie\Plugin
+use herbie\plugin\highlight\classes\HighlightExtension;
+
+class HighlightPlugin extends \Herbie\Plugin
 {
 
-    public function onTwigInitialized(Herbie\Event $event)
+    public function onTwigInitialized(\Herbie\Event $event)
     {
         $event['twig']->addExtension(new HighlightExtension());
     }

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+namespace herbie\plugin\lipsum\classes;
+
 class Lipsum
 {
     public function text($words = 100)

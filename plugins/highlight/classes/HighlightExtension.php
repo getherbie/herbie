@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/HighlightTokenParser.php';
-
-class HighlightExtension extends Twig_Extension
+namespace herbie\plugin\highlight\classes;
+    
+class HighlightExtension extends \Twig_Extension
 {
 
     /**
