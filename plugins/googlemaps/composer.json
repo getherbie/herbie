@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-googlemaps",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Google Maps.",
+    "keywords": ["herbie", "plugin", "googlemaps"],    
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

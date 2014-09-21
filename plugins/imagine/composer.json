@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-imagine",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Imagine",
+    "keywords": ["herbie", "plugin", "imagine"],    
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master",

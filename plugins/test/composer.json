@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-test",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Test",
+    "keywords": ["herbie", "plugin", "test"],        
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

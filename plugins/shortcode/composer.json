@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-shortcode",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Shortcode",
+    "keywords": ["herbie", "plugin", "shortcode"],
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

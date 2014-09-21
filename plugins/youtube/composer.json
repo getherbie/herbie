@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-youtube",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin YouTube",
+    "keywords": ["herbie", "plugin", "youtube"],        
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

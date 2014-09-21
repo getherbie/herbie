@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-lipsum",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Lipsum",
+    "keywords": ["herbie", "plugin", "lipsum"],        
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

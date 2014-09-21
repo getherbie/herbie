@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-vimeo",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Vimeo",
+    "keywords": ["herbie", "plugin", "vimeo"],        
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"

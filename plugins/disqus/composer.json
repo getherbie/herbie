@@ -1,5 +1,8 @@
 {
     "name": "getherbie/plugin-disqus",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Disqus.",
+    "keywords": ["herbie", "plugin", "disqus"],
     "type": "herbie-plugin",
     "require": {
         "getherbie/herbie": "dev-master"
