@@ -39,14 +39,9 @@ class Plugins
      */
     public function init()
     {
-        $path = $this->app['config']->get('plugins_path');
-        if (empty($path) || !is_dir($path)) {
-            return;
-        }
-
         /** @var EventDispatcher $events */
         $events = $this->app['events'];
-        
+
         $pluginKeys = array_keys($this->app['config']->get('plugins', []));
         foreach ($pluginKeys as $pluginKey) {
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
