@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "herbie\\plugin\\disqus\\": "",
+            "herbie\\plugin\\disqus\\": ""
         }
     }    
 }
