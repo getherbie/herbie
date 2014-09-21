@@ -42,13 +42,11 @@ class TestPlugin extends Herbie\Plugin
     public function onContentSegmentLoaded(Herbie\Event $event)
     {
         // $event['segment'];
-        $event['segment'] = str_replace('Herbie', 'H3RBIE', $event['segment']);
     }
 
     public function onContentSegmentRendered(Herbie\Event $event)
     {
         // $event['segment'];
-        $event['segment'] = str_replace('H3RBIE', 'HERBIE', $event['segment']);
     }
 
 }
