@@ -31,7 +31,12 @@ class ImagineExtension extends Twig_Extension
     /**
      * @var string
      */
-    private $cachePath = 'cache';
+    protected $basePath;
+
+    /**
+     * @var string
+     */
+    protected $cachePath = 'cache';
 
     /**
      * @param Application $app
@@ -39,7 +44,8 @@ class ImagineExtension extends Twig_Extension
     public function __construct($app)
     {
         $this->app = $app;
-        $this->cachPath = $app['config']->get('imagine.cachePath', 'cache');
+        $this->basePath = $app['request']->getBasePath() . '/';
+        $this->cachePath = $app['config']->get('imagine.cachePath', 'cache');
     }
 
     /**
@@ -48,7 +54,64 @@ class ImagineExtension extends Twig_Extension
     public function getFilters()
     {
         return array(
-            'imagine' => new \Twig_Filter_Method($this, 'filter'),
+            'imagine' => new \Twig_Filter_Method($this, 'imagineFilter'),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getFunctions()
+    {
+        return [
+            new Twig_SimpleFunction('imagine', array($this, 'imagineFunction'), ['is_safe' => ['html']])
+        ];
+    }
+
+    /**
+     * @param string $path
+     * @param string $filter
+     * @param array $attributes
+     * @param string $alt
+     * @param string $class
+     * @param string $id
+     * @param string $style
+     * @param string $title
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    public function imagineFunction($path, $filter, $attributes = [], $alt = '', $class = '', $id = '', $style= '', $title = '', $width = 0, $height = 0)
+    {
+        $cachePath = $this->applyFilter($path, $filter);
+
+        $htmlAttributes = [];
+
+        if(!empty($attributes)) {
+            $htmlAttributes = $attributes;
+        }
+
+        $htmlAttributes['alt'] = $alt;
+
+        if(!empty($class)) {
+            $htmlAttributes['class'] = $class;
+        }
+        if(!empty($title)) {
+            $htmlAttributes['title'] = $title;
+        }
+        if($width > 0 && $height > 0) {
+            $htmlAttributes['width'] = $width;
+            $htmlAttributes['height'] = $height;
+        } else {
+            $size = getimagesize($cachePath);
+            $htmlAttributes['width'] = $size[0];
+            $htmlAttributes['height'] = $size[1];
+        }
+
+        return sprintf(
+            '<img src="%s"%s>',
+            $this->basePath . $cachePath,
+            $this->buildHtmlAttributes($htmlAttributes)
         );
     }
 
@@ -60,10 +123,10 @@ class ImagineExtension extends Twig_Extension
      *
      * @return \Twig_Markup
      */
-    public function filter($path, $filter)
+    public function imagineFilter($path, $filter)
     {
         return new \Twig_Markup(
-            $this->applyFilter($path, $filter),
+            $this->basePath . $this->applyFilter($path, $filter),
             'utf8'
         );
     }
@@ -83,10 +146,8 @@ class ImagineExtension extends Twig_Extension
      */
     protected function applyFilter($path, $filter)
     {
-        $basePath = $this->app['request']->getBasePath() . '/';
-
         if ($this->app['config']->isEmpty("plugins.imagine.filter_sets.{$filter}")) {
-            return $basePath . $path;
+            return $path;
         }
 
         $filterConfig = $this->app['config']->get("plugins.imagine.filter_sets.{$filter}");
@@ -99,7 +160,7 @@ class ImagineExtension extends Twig_Extension
         }
 
         if (is_file($cachePath)) {
-            return $basePath . $cachePath;
+            return $cachePath;
         }
 
         $imagine = new Imagine();
@@ -123,7 +184,7 @@ class ImagineExtension extends Twig_Extension
         }
 
         $image->save($cachePath, $options);
-        return $basePath . $cachePath;
+        return $cachePath;
     }
 
     /**
@@ -131,7 +192,7 @@ class ImagineExtension extends Twig_Extension
      * @param string $filter
      * @return string
      */
-    private function resolveCachePath($path, $filter)
+    protected function resolveCachePath($path, $filter)
     {
         $info = pathinfo($path);
         extract($info); // $dirname, $filename, $extension
@@ -212,10 +273,9 @@ class ImagineExtension extends Twig_Extension
 
     /**
      * @param \Imagine\Image\ImageInterface $image
-     * @param array $options
      * @return \Imagine\Image\ImageInterface
      */
-    protected function applyGrayscaleFilter(ImageInterface $image, $options)
+    protected function applyGrayscaleFilter(ImageInterface $image)
     {
         $image->effects()->grayscale();
         return $image;
@@ -223,10 +283,9 @@ class ImagineExtension extends Twig_Extension
 
     /**
      * @param \Imagine\Image\ImageInterface $image
-     * @param array $options
      * @return \Imagine\Image\ImageInterface
      */
-    protected function applyNegativeFilter(ImageInterface $image, $options)
+    protected function applyNegativeFilter(ImageInterface $image)
     {
         $image->effects()->negative();
         return $image;
@@ -234,10 +293,9 @@ class ImagineExtension extends Twig_Extension
 
     /**
      * @param \Imagine\Image\ImageInterface $image
-     * @param array $options
      * @return \Imagine\Image\ImageInterface
      */
-    protected function applySharpenFilter(ImageInterface $image, $options)
+    protected function applySharpenFilter(ImageInterface $image)
     {
         $image->effects()->sharpen();
         return $image;
@@ -303,10 +361,9 @@ class ImagineExtension extends Twig_Extension
 
     /**
      * @param \Imagine\Image\ImageInterface $image
-     * @param array $options
      * @return \Imagine\Image\ImageInterface
      */
-    protected function applyFlipHorizontallyFilter(ImageInterface $image, $options)
+    protected function applyFlipHorizontallyFilter(ImageInterface $image)
     {
         $image->flipHorizontally();
         return $image;
@@ -314,10 +371,9 @@ class ImagineExtension extends Twig_Extension
 
     /**
      * @param \Imagine\Image\ImageInterface $image
-     * @param array $options
      * @return \Imagine\Image\ImageInterface
      */
-    protected function applyFlipVerticallyFilter(ImageInterface $image, $options)
+    protected function applyFlipVerticallyFilter(ImageInterface $image)
     {
         $image->flipVertically();
         return $image;
@@ -369,5 +425,18 @@ class ImagineExtension extends Twig_Extension
         $parameter = $options['parameter'];
         $filter = new RelativeResize($method, $parameter);
         return $filter->apply($image);
+    }
+
+    /**
+     * @param array $htmlOptions
+     * @return string
+     */
+    protected function buildHtmlAttributes($htmlOptions = [])
+    {
+        $attributes = '';
+        foreach ($htmlOptions as $key => $value) {
+            $attributes .= ' ' . $key . '="' . $value . '"';
+        }
+        return rtrim($attributes);
     }
 }
