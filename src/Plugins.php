@@ -49,16 +49,7 @@ class Plugins
         
         $pluginKeys = array_keys($this->app['config']->get('plugins', []));
         foreach ($pluginKeys as $pluginKey) {
-
-            $filePath = sprintf('%s/%s/%s.php', $path, $pluginKey, $pluginKey);
-            if (!is_file($filePath)) {
-                throw new \RuntimeException(sprintf("Plugin '%s' not found!", $filePath));
-            }
-
-            require_once $filePath;
-
-            $pluginClass = '\\' . ucfirst($pluginKey) . 'Plugin';
-
+            $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
             $instance = new $pluginClass($this->app);
             $events->addSubscriber($instance);
         }
