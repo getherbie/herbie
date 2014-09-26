@@ -137,6 +137,12 @@ class Twig
 
         $loader = new Twig_Loader_Filesystem($paths);
         $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
+
+        $pluginPath = $this->config->get('plugins_path');
+        if(is_dir($pluginPath)) {
+            $loader->addPath($pluginPath, 'plugins');
+        }
+
         return $loader;
     }
 

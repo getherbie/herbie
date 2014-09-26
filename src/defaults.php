@@ -42,9 +42,9 @@ return [
         'debug' => false,
         'cache' => false, //$app['sitePath'] . '/cache/twig',
         'extend' => [
-            'functions' => $app['sitePath'] . '/plugins/twig/functions',
-            'filters' => $app['sitePath'] . '/plugins/twig/filters',
-            'tests' => $app['sitePath'] . '/plugins/twig/tests',
+            'functions' => $app['sitePath'] . '/twig/functions',
+            'filters' => $app['sitePath'] . '/twig/filters',
+            'tests' => $app['sitePath'] . '/twig/tests',
         ]
     ],
     'cache' => [
@@ -62,5 +62,6 @@ return [
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
+    'plugins_path' => $app['sitePath'] . '/plugins',
     'plugins' => []
 ];

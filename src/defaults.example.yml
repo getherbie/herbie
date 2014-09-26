@@ -29,9 +29,9 @@ twig:
   #cache: SITE_PATH/cache/twig
   cache: false
   extend:
-    functions: SITE_PATH/plugins/twig/functions
-    filters: SITE_PATH/plugins/twig/filters
-    tests: SITE_PATH/plugins/twig/tests
+    functions: SITE_PATH/twig/functions
+    filters: SITE_PATH/twig/filters
+    tests: SITE_PATH/twig/tests
 
 cache:
   page:
@@ -46,3 +46,6 @@ cache:
 language: de
 locale: de_DE.UTF-8
 charset: UTF-8
+
+plugins_path: SITE_PATH/plugins
+plugins: []
