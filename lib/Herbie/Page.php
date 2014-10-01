@@ -234,6 +234,10 @@ class Page
         $this->contentType = $contentType;
     }
 
+    public function getData(){
+        return $this->data;
+    }
+
     /**
      * @param array $data
      * @throws LogicException

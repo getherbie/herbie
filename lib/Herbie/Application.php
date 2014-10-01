@@ -73,6 +73,7 @@ class Application extends Pimple
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['sitePath'] = realpath($sitePath);
+        $this['pagePath'] = rtrim($this['webPath'].'/site/pages'.$_SERVER['REQUEST_URI'], '/');
 
         $this['parser'] = function () {
             return new Parser();
@@ -84,6 +85,7 @@ class Application extends Pimple
         $this->charset = $config['charset'];
         $this->language = $config['language'];
         $this->locale = $config['locale'];
+        $this->pagePath = $this['pagePath'];
 
         $this['config'] = $config;
 
@@ -310,6 +312,69 @@ class Application extends Pimple
         return $response;
     }
 
+    public function renderWidget($route) {
+
+        # Enable configuration of hidden custom-template-containers in the pagetree
+        $path_subtemplate = false;
+        if(is_array($this['config']['layouts']['path'])) {
+
+            foreach( $this['config']['layouts']['path'] as $layoutDir){
+
+                if(strpos($layoutDir, 'pages') !== false ) {
+                    $_dirName = $route;
+                    $_dirParent = $layoutDir;
+
+                    if(is_dir($_dirParent)) {
+                        $_siblings = scandir($_dirParent);
+                        $i = 0;
+                        $found = false;
+                        while($i < count($_siblings) && !$found){
+                            if(strpos($_siblings[$i],$_dirName)!==false){
+                                $found = true;
+                                $path_subtemplate = $_dirParent.DIRECTORY_SEPARATOR.$_siblings[$i].DIRECTORY_SEPARATOR.'.layouts';
+                                if(!is_dir($path_subtemplate)){
+                                    $path_subtemplate = false;
+                                }
+                            }
+                            $i++;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(!$path_subtemplate) return null;
+
+        $pageLoader = new Loader\PageLoader($this['parser']);
+        $page = $pageLoader->load(dirname($path_subtemplate).DIRECTORY_SEPARATOR.'index.md');
+
+        $widgetLoader = new Twig_Loader_Filesystem($path_subtemplate);
+        $twiggedWidget = new Twig_Environment($widgetLoader, [
+            'debug' => false,
+            'cache' => false
+        ]);
+        $arguments = array();
+
+        $twiggedWidget->addExtension(new Twig\HerbieExtension($this));
+        if (!empty($this['config']['imagine'])) {
+            $twiggedWidget->addExtension(new Twig\ImagineExtension($this));
+        }
+        $this->addTwigPlugins($twiggedWidget, $this['config']);
+
+        $arguments = $page->getData();
+        foreach($page->getSegments() as $k => $widgetSegment){
+            $arguments['widget'.$k] = $this->renderContentSegment($k, $page);
+        }
+
+        $ret = html_entity_decode($twiggedWidget->render('widget.html', $arguments));
+        $ret = strtr($ret, array(
+            # recalculate relative paths
+            'src="./' => 'src="/site/pages/'.$route.'/',
+            'href="./' => 'href="/site/pages/'.$route.'/'
+        ));
+        return $ret;
+    }
+
     /**
      * @param string $layout
      * @param array $arguments
@@ -342,9 +407,9 @@ class Application extends Pimple
      * @param string|int $segmentId
      * @return string
      */
-    public function renderContentSegment($segmentId)
+    public function renderContentSegment($segmentId, $page = null)
     {
-        $page = $this['page'];
+        $page = $page ? $page : $this['page'];
         $segment = $page->getSegment($segmentId);
 
         if (isset($this['config']['pseudo_html'])) {
@@ -407,11 +472,45 @@ class Application extends Pimple
         if (is_file($this['sitePath'] . '/config.yml')) {
             $content = file_get_contents($this['sitePath'] . '/config.yml');
             $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'], [$this['appPath'], $this['sitePath'], $this['sitePath']], $content
+                ['APP_PATH', 'WEB_PATH', 'SITE_PATH', 'PAGE_PATH'], [$this['appPath'], $this['webPath'], $this['sitePath'], $this['pagePath']], $content
             );
             $userConfig = $this['parser']->parse($content);
             $config = $this->mergeConfigArrays($config, $userConfig);
         }
+
+        # Enable configuration of hidden custom-template-containers in the pagetree
+        if(is_array($config['layouts']['path'])) {
+            foreach( $config['layouts']['path'] as $layoutDir){
+
+                if(is_dir($layoutDir)) {
+                    $custom['layouts']['path'][] = $layoutDir;
+                } elseif(strpos($layoutDir, '.layouts') !== false ) {
+                    $_path = dirname($layoutDir);
+                    $_pathAtoms = explode(DIRECTORY_SEPARATOR, $_path);
+                    $_dirName = end($_pathAtoms);
+                    $_dirParent = dirname($_path);
+
+                    if(is_dir($_dirParent)) {
+                        $_siblings = scandir($_dirParent);
+                        $i = 0;
+                        $found = false;
+                        while($i < count($_siblings) && !$found){
+                            if(strpos($_siblings[$i],$_dirName)!==false){
+                                $found = true;
+                                $path_subtemplate = $_dirParent.DIRECTORY_SEPARATOR.$_siblings[$i].DIRECTORY_SEPARATOR.'.layouts';
+                                if(is_dir($path_subtemplate)){
+                                    $custom['layouts']['path'][] = $path_subtemplate;
+                                }
+                            }
+                            $i++;
+                        }
+                    }
+                }
+            }
+
+//            $config['layouts']['path'] = $custom['layouts']['path'];
+        }
+
         return $config;
     }
 }
