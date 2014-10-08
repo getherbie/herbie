@@ -1,0 +1,15 @@
+{
+    "name": "nzwbr/herbie-widgets",
+    "homepage": "http://www.netzweberei.de",
+    "description": "Herbie Plugin Widgets",
+    "keywords": ["herbie", "plugin", "widgets"],
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master",
+    },
+    "autoload": {
+        "psr-4": {
+            "herbie\\plugin\\widgets\\": ""
+        }
+    } 
+}
