@@ -6,15 +6,15 @@ Um das Plugin zu installieren, einfach die ZIP-Version dieses Repositories herun
 
 Widgets werden als Unterordner innerhalb von 'pages' angelegt, z.B. ein Zweispalter:
 
-site/pages
-    |-- index.md
-    |-- _zweispalter
-    |   ├── .htaccess       # Ggf. hier den Zugang zu bestimmten Dateien erlauben (*.jpg)
-    |   ├── index.md        # Widget-Inhalte
-    |   ├── image.jpg
-    |   └── .layout
-    |       └── widget.html # Twig-Subtemplate
-    └── 02-seite.md
+    site/pages 
+        |-- index.md
+        |-- _zweispalter        # Widget-Unterverzeichnis
+        |   ├── .htaccess       # Ggf. den Zugang zu best. Dateien erlauben (*.jpg)
+        |   ├── index.md        # Widget-Inhalte
+        |   ├── image.jpg       # optionale Dateien zur Verwendung im Subtemplate
+        |   └── .layout
+        |       └── widget.html # Twig-Subtemplate
+        └── 02-seite.md
 
 
 Im Subtemplate können die Inhalte des Widgets wie gewohnt per {{ content() }} eingebunden werden.
