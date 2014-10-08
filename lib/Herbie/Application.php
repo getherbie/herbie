@@ -312,65 +312,44 @@ class Application extends Pimple
         return $response;
     }
 
-    public function renderWidget($route) {
+    public function renderWidget($widgetName) {
 
         # Enable configuration of hidden custom-template-containers in the pagetree
-        $path_subtemplate = false;
-        if(is_array($this['config']['layouts']['path'])) {
+        $_subtemplateDir = false;
+        $_curDir = dirname($this['page']->path);
+        $_widgetDir = '_'.strtolower($widgetName);
 
-            foreach( $this['config']['layouts']['path'] as $layoutDir){
 
-                if(strpos($layoutDir, 'pages') !== false ) {
-                    $_dirName = $route;
-                    $_dirParent = $layoutDir;
-
-                    if(is_dir($_dirParent)) {
-                        $_siblings = scandir($_dirParent);
-                        $i = 0;
-                        $found = false;
-                        while($i < count($_siblings) && !$found){
-                            if(strpos($_siblings[$i],$_dirName)!==false){
-                                $found = true;
-                                $path_subtemplate = $_dirParent.DIRECTORY_SEPARATOR.$_siblings[$i].DIRECTORY_SEPARATOR.'.layouts';
-                                if(!is_dir($path_subtemplate)){
-                                    $path_subtemplate = false;
-                                }
-                            }
-                            $i++;
-                        }
-                    }
-                }
+        if(is_dir($_curDir.DIRECTORY_SEPARATOR.$_widgetDir)) {
+            $_subtemplateDir = $_curDir.DIRECTORY_SEPARATOR.$_widgetDir.DIRECTORY_SEPARATOR.'.layouts';
+            if(!is_dir($_subtemplateDir)){
+                $_subtemplateDir = false;
             }
         }
 
-        if(!$path_subtemplate) return null;
+        if(!$_subtemplateDir) return null;
 
         $pageLoader = new Loader\PageLoader($this['parser']);
-        $page = $pageLoader->load(dirname($path_subtemplate).DIRECTORY_SEPARATOR.'index.md');
+        $this['page'] = $page = $pageLoader->load(dirname($_subtemplateDir).DIRECTORY_SEPARATOR.'index.md');
 
-        $widgetLoader = new Twig_Loader_Filesystem($path_subtemplate);
+        $widgetLoader = new Twig_Loader_Filesystem($_subtemplateDir);
         $twiggedWidget = new Twig_Environment($widgetLoader, [
             'debug' => false,
             'cache' => false
         ]);
-        $arguments = array();
 
         $twiggedWidget->addExtension(new Twig\HerbieExtension($this));
+
         if (!empty($this['config']['imagine'])) {
             $twiggedWidget->addExtension(new Twig\ImagineExtension($this));
         }
-        $this->addTwigPlugins($twiggedWidget, $this['config']);
 
-        $arguments = $page->getData();
-        foreach($page->getSegments() as $k => $widgetSegment){
-            $arguments['widget'.$k] = $this->renderContentSegment($k, $page);
-        }
+//        $this->addTwigPlugins($twiggedWidget, $this['config']);
 
-        $ret = html_entity_decode($twiggedWidget->render('widget.html', $arguments));
-        $ret = strtr($ret, array(
-            # recalculate relative paths
-            'src="./' => 'src="/site/pages/'.$route.'/',
-            'href="./' => 'href="/site/pages/'.$route.'/'
+        $ret = strtr($twiggedWidget->render('widget.html', array(
+            'abspath' => dirname($_subtemplateDir).'/'
+        ) ), array(
+            './' => substr(dirname($_subtemplateDir), strlen($this['webPath'])).'/'
         ));
         return $ret;
     }
@@ -407,7 +386,7 @@ class Application extends Pimple
      * @param string|int $segmentId
      * @return string
      */
-    public function renderContentSegment($segmentId, $page = null)
+    public function renderContentSegment($segmentId, $page = null, $route = null)
     {
         $page = $page ? $page : $this['page'];
         $segment = $page->getSegment($segmentId);
@@ -419,6 +398,15 @@ class Application extends Pimple
                 explode('|', $pseudoHtml['to']),
                 $segment
             );
+        }
+        if(!empty($route)){
+            $segment = strtr($segment, array(
+                # recalculate relative paths
+//            'src="./' => 'src="/site/pages/'.$route.'/',
+//            'href="./' => 'href="/site/pages/'.$route.'/',
+//            'data-thumb="./' => 'data-thumb="/site/pages/'.$route.'/',
+                './' => $route.'/'
+            ));
         }
 
         $twigged = $this->renderString($segment);
