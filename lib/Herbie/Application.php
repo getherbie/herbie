@@ -319,7 +319,6 @@ class Application extends Pimple
         $_curDir = dirname($this['page']->path);
         $_widgetDir = '_'.strtolower($widgetName);
 
-
         if(is_dir($_curDir.DIRECTORY_SEPARATOR.$_widgetDir)) {
             $_subtemplateDir = $_curDir.DIRECTORY_SEPARATOR.$_widgetDir.DIRECTORY_SEPARATOR.'.layouts';
             if(!is_dir($_subtemplateDir)){
@@ -330,6 +329,7 @@ class Application extends Pimple
         if(!$_subtemplateDir) return null;
 
         $pageLoader = new Loader\PageLoader($this['parser']);
+        $origPage = $this['page'];
         $this['page'] = $page = $pageLoader->load(dirname($_subtemplateDir).DIRECTORY_SEPARATOR.'index.md');
 
         $widgetLoader = new Twig_Loader_Filesystem($_subtemplateDir);
@@ -344,13 +344,16 @@ class Application extends Pimple
             $twiggedWidget->addExtension(new Twig\ImagineExtension($this));
         }
 
-//        $this->addTwigPlugins($twiggedWidget, $this['config']);
+        $this->addTwigPlugins($twiggedWidget, $this['config']);
 
         $ret = strtr($twiggedWidget->render('widget.html', array(
             'abspath' => dirname($_subtemplateDir).'/'
         ) ), array(
             './' => substr(dirname($_subtemplateDir), strlen($this['webPath'])).'/'
         ));
+
+        $this['page'] = $origPage;
+
         return $ret;
     }
 
