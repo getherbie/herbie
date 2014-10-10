@@ -1,5 +1,5 @@
 {
-    "name": "getherbie/herbie",
+    "name": "ntzwbr/herbie",
     "homepage": "http://www.getherbie.org",
     "description": "Herbie is a flat-file based CMS & blog system. Not ready for production use yet.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
@@ -16,7 +16,8 @@
         "symfony/yaml": "2.4.*",
         "twig/twig": "1.15.*",
         "imagine/imagine": "~0.5.0",
-        "ntzwbr/markdown": "dev-master"
+        "ntzwbr/markdown": "dev-master",,
+        "swiftmailer/swiftmailer": "5.3.*@dev"
     },
     "autoload": {
         "psr-0": {
