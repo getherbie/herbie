@@ -134,6 +134,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
+            new Twig_SimpleFunction('widget', array($this, 'functionWidget'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
             new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
@@ -189,7 +190,7 @@ class HerbieExtension extends Twig_Extension
 
         $html = '<ul>';
         foreach ($tree as $item) {
-            if (!$showHidden && $item->hidden) {
+        if (!$showHidden && $item->hidden) {
                 continue;
             }
             if (($item->getRoute() == $route) || ($item->getRoute() == $route . '/index')) {
@@ -300,6 +301,20 @@ class HerbieExtension extends Twig_Extension
             return $content;
         }
         return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
+    }
+
+    /**
+     * @param string|int $segmentId
+     * @param bool $wrap
+     * @return string
+     */
+    public function functionWidget($path = null, $wrap = false)
+    {
+        $content = $this->app->renderWidget($path);
+        if (empty($wrap)) {
+            return $content;
+        }
+        return sprintf('<div class="widget-%s">%s</div>', $path, $content);
     }
 
     /**
