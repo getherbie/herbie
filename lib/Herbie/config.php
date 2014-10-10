@@ -21,7 +21,7 @@ return [
         'path' => $this['sitePath']
     ],
     'layouts' => [
-        'path' => [$this['sitePath'] . '/layouts/default', $this['sitePath'] . '/layouts/custom,', $this['sitePath'] . '/layouts']
+        'path' => [$this['sitePath'] . '/layouts/default', $this['sitePath'] . '/layouts/custom', $this['sitePath'] . '/layouts']
     ],
     'pages' => [
         'path' => $this['sitePath'] . '/pages',
