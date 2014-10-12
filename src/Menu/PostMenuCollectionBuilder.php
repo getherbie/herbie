@@ -27,7 +27,7 @@ class PostMenuCollectionBuilder
      * @var string
      */
     protected $path;
-    
+
     /**
      * @var array
      */
@@ -66,7 +66,7 @@ class PostMenuCollectionBuilder
 
                 $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
-                    if (substr($filename, 0, 1) == '.') {
+                    if (in_array(substr($filename, 0, 1), array('.', '_'))) {
                         continue;
                     }
                     $pathinfo = pathinfo($filename);

@@ -14,6 +14,7 @@ namespace Herbie\Menu;
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
+use Herbie\Menu\RecursiveFilterIterator;
 
 class PageMenuCollectionBuilder
 {
@@ -27,7 +28,7 @@ class PageMenuCollectionBuilder
      * @var string
      */
     protected $path;
-    
+
     /**
      * @var array
      */
@@ -59,16 +60,12 @@ class PageMenuCollectionBuilder
             $realpath = realpath($path);
             if (is_dir($realpath)) {
 
-                $objects = new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($realpath),
-                    \RecursiveIteratorIterator::SELF_FIRST
-                );
+                $dirItr = new \RecursiveDirectoryIterator($realpath);
+                $filterItr = new RecursiveFilterIterator($dirItr);
+                $mode = \RecursiveIteratorIterator::SELF_FIRST;
+                $objects = new \RecursiveIteratorIterator($filterItr, $mode);
 
                 foreach ($objects as $path => $splFileInfo) {
-
-                    if (substr($splFileInfo->getFileName(), 0, 1) == '.') {
-                        continue;
-                    }
 
                     if ($splFileInfo->isFile()) {
 
