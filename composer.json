@@ -17,7 +17,8 @@
         "twig/twig": "1.15.*",
         "imagine/imagine": "~0.5.0",
         "ntzwbr/markdown": "dev-master",
-        "swiftmailer/swiftmailer": "5.3.*@dev"
+        "swiftmailer/swiftmailer": "5.3.*@dev",
+        "symfony/form": "~2.3"
     },
     "autoload": {
         "psr-0": {
