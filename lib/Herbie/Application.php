@@ -22,6 +22,20 @@ use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
 
+use Symfony\Component\Validator\Validation;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Form\Forms;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\DefaultCsrfProvider;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Component\Validator\Constraints\MinLength;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 /**
  * The application using Pimple as dependency injection container.
  */
@@ -355,6 +369,86 @@ class Application extends Pimple
         $this['page'] = $origPage;
 
         return $ret;
+    }
+
+    public function renderForm($form){
+
+        if(!$this['page']->data[$form]) return;
+        else $defForm = $this['page']->data[$form];
+
+        // Overwrite this with your own secret
+        if(!defined('CSRF_SECRET_'.$form)) define('CSRF_SECRET_'.$form, 'c2ioeEU1n48QF2WsHGWd2HmiuUUT6dxr');
+        if(!defined('DEFAULT_FORM_THEME')) define('DEFAULT_FORM_THEME', 'form_div_layout.html.twig');
+
+        if(!defined('VENDOR_DIR')) define('VENDOR_DIR', realpath(__DIR__ . '/../../../../'));
+        if(!defined('VENDOR_FORM_DIR')) define('VENDOR_FORM_DIR', VENDOR_DIR . '/symfony/form/Symfony/Component/Form');
+        if(!defined('VENDOR_VALIDATOR_DIR')) define('VENDOR_VALIDATOR_DIR', VENDOR_DIR . '/symfony/validator/Symfony/Component/Validator');
+        if(!defined('VENDOR_TWIG_BRIDGE_DIR')) define('VENDOR_TWIG_BRIDGE_DIR', VENDOR_DIR . '/symfony/twig-bridge/Symfony/Bridge/Twig');
+        if(!defined('VIEWS_DIR')) define('VIEWS_DIR', $this['sitePath'].'/layouts/views');
+
+        require VENDOR_DIR . '/autoload.php';
+
+        // Set up the CSRF provider
+        $csrfProvider = new DefaultCsrfProvider(constant('CSRF_SECRET_'.$form));
+
+        // Set up the Validator component
+        $validator = Validation::createValidator();
+
+        // Set up the Translation component
+        $translator = new Translator('en');
+        $translator->addLoader('xlf', new XliffFileLoader());
+        $translator->addResource('xlf', VENDOR_FORM_DIR . '/Resources/translations/validators.de.xlf', 'en', 'validators');
+        $translator->addResource('xlf', VENDOR_VALIDATOR_DIR . '/Resources/translations/validators.de.xlf', 'en', 'validators');
+
+        // Set up Twig
+        $twig = new Twig_Environment(new Twig_Loader_Filesystem(array(
+            VIEWS_DIR,
+            VENDOR_TWIG_BRIDGE_DIR . '/Resources/views/Form',
+        )));
+        $formEngine = new TwigRendererEngine(array(DEFAULT_FORM_THEME));
+        $formEngine->setEnvironment($twig);
+        $twig->addExtension(new TranslationExtension($translator));
+        $twig->addExtension(new FormExtension(new TwigRenderer($formEngine, $csrfProvider)));
+
+        // Set up the Form component
+        $formFactory = Forms::createFormFactoryBuilder()
+            ->addExtension(new CsrfExtension($csrfProvider))
+            ->addExtension(new ValidatorExtension($validator))
+            ->getFormFactory();
+
+        // Create our first form!
+        $formBuilder = $formFactory->createNamedBuilder($form);
+        foreach($defForm['elements'] as $label => $elem){
+            $options = array_key_exists('options', $elem) ? $elem['options'] : array();
+            $constraints = array();
+            if(array_key_exists('constraints', $options)) {
+                foreach($options['constraints'] as $constraint){
+                    preg_match('/(.+)\((.+)?\)/', $constraint, $catom);
+                    $constraintstring = "Symfony\\Component\\Validator\\Constraints\\{$catom[1]}";
+                    if(count($catom)>2)
+                        $constraints[] = new $constraintstring($catom[2]);
+                    else
+                        $constraints[] = new $constraintstring();
+                }
+                $options['constraints'] = $constraints;
+            }
+            $formBuilder->add($label, $elem['type'], $options );
+        }
+        $form = $formBuilder->getForm();
+
+        if (isset($_POST[$form->getName()])) {
+            $form->bind($_POST[$form->getName()]);
+
+            if ($form->isValid()) {
+//                var_dump('VALID', $form->getData());
+//                var_dump($this->absUrl($this->getRoute().'/'.'Webdesign'));
+                return $this->renderWidget('Danke');
+            }
+        }
+
+        return $twig->render('form.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**

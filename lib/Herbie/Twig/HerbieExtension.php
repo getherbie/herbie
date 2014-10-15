@@ -135,6 +135,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
             new Twig_SimpleFunction('widget', array($this, 'functionWidget'), $options),
+            new Twig_SimpleFunction('form', array($this, 'functionForm'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
             new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
             new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
@@ -315,6 +316,20 @@ class HerbieExtension extends Twig_Extension
             return $content;
         }
         return sprintf('<div class="widget-%s">%s</div>', $path, $content);
+    }
+
+    /**
+     * @param string|int $segmentId
+     * @param bool $wrap
+     * @return string
+     */
+    public function functionForm($form = null, $wrap = false)
+    {
+        $content = $this->app->renderForm($form);
+        if (empty($wrap)) {
+            return $content;
+        }
+        return sprintf('<div class="form-%s">%s</div>', $path, $content);
     }
 
     /**
