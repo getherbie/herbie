@@ -1,5 +1,5 @@
 {
-    "name": "ntzwbr/herbie",
+    "name": "getherbie/herbie",
     "homepage": "http://www.getherbie.org",
     "description": "Herbie is a flat-file based CMS & blog system. Not ready for production use yet.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
@@ -8,24 +8,23 @@
     "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
-        "easybook/geshi": "1.0.8.12",
         "michelf/php-markdown": "1.4.*",
         "netcarver/textile": "3.5.*",
-        "pimple/pimple": "2.*",
-        "symfony/http-foundation": "2.1.*",
-        "symfony/yaml": "2.4.*",
+        "pimple/pimple": "3.*",
+        "symfony/http-foundation": "2.5.*",
+        "symfony/yaml": "2.5.*",
         "symfony/form": "2.1.*",
         "symfony/validator": "2.1.*",
         "symfony/config": "2.1.*",
         "symfony/translation": "2.1.*",
         "symfony/twig-bridge": "2.1.*",
-        "twig/twig": "1.15.*",
+        "twig/twig": "1.16.*",
         "imagine/imagine": "~0.5.0",
         "ntzwbr/markdown": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Herbie": "lib"
+        "psr-4": {
+            "Herbie\\": "src"
         }
     }
 }

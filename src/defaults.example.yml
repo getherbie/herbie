@@ -1,0 +1,51 @@
+app:
+  path: APP_PATH
+
+site:
+  path: SITE_PATH
+
+data:
+  path: SITE_PATH/data
+  extensions: [yml, yaml]
+
+layouts:
+  path: [SITE_PATH/layouts/default, SITE_PATH/layouts/custom, SITE_PATH/layouts]
+
+theme: default
+
+pages:
+  path: SITE_PATH/pages
+  extensions: [txt, md, markdown, textile, htm, html, rss, xml]
+
+posts:
+  path: SITE_PATH/posts
+  extensions: [txt, md, markdown, textile, htm, html, rss, xml]
+  blog_route: blog
+
+nice_urls: false
+
+twig:
+  debug: true
+  #cache: SITE_PATH/cache/twig
+  cache: false
+  extend:
+    functions: SITE_PATH/twig/functions
+    filters: SITE_PATH/twig/filters
+    tests: SITE_PATH/twig/tests
+
+cache:
+  page:
+    enable: false
+    dir: SITE_PATH/cache/page
+    expire: 86400
+  data:
+    enable: false
+    dir: SITE_PATH/cache/data
+    expire: 86400
+
+language: de
+locale: de_DE.UTF-8
+charset: UTF-8
+
+plugins_path: SITE_PATH/plugins
+plugins: []

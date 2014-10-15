@@ -1,0 +1,16 @@
+{% set title = title ? title : 'Tags' %}
+{% set showCount = showCount ? showCount : false %}
+{# @todo: option dropdown (Display as dropdown) #}
+{# @todo: option hierarchical (Show hierarchy) #}
+
+{% if site.posts.tags|length > 0 %}
+<div class="widget-blog widget-blog-tags">
+    <h4>{{ title }}</h4>
+    <ul>
+        {% for tag, count in site.posts.tags %}
+        {% set route = 'blog/tag/' ~ tag|lower %}
+        <li>{{ link(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

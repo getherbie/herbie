@@ -1,0 +1,18 @@
+{% set title = title ? title : 'Recent posts' %}
+{% set showDate = showDate ? showDate : false %}
+{% set limit = limit ? limit : 5 %}
+{% set dateFormat = dateFormat ? dateFormat : '%e. %B %Y' %}
+
+{% if site.posts.recent(limit)|length > 0 %}
+<div class="widget-blog widget-blog-recent-posts">
+    <h4>{{ title }}</h4>
+    <ul>
+        {% for post in site.posts.recent(limit) %}
+        <li>
+            {{ link(post.route, post.title) }}
+            {% if showDate %}<br>{{ post.date|strftime(dateFormat) }}{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
