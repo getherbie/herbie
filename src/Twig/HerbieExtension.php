@@ -10,14 +10,16 @@
 
 namespace Herbie\Twig;
 
-use Herbie\Site;
 use Herbie\Formatter;
+use Herbie\Page;
+use Herbie\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
+use Twig_SimpleTest;
 
 class HerbieExtension extends Twig_Extension
 {
@@ -137,8 +139,6 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
             new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
-            new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
-            new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
             new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
             new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
             new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
@@ -153,7 +153,10 @@ class HerbieExtension extends Twig_Extension
      */
     public function getTests()
     {
-        return [];
+        return [
+            new Twig_SimpleTest('page', [$this, 'testIsPage']),
+            new Twig_SimpleTest('post', [$this, 'testIsPost'])
+        ];
     }
 
     /**
@@ -330,25 +333,6 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @return boolean
-     */
-    public function functionIsPage()
-    {
-        return !$this->functionIsPost();
-    }
-
-    /**
-     * @return boolean
-     */
-    public function functionIsPost()
-    {
-        $postsPath = $this->app['config']->get('posts.path');
-        $pagePath = $this->app['page']->getPath();
-        $pos = strpos($pagePath, $postsPath);
-        return $pos === 0;
-    }
-
-    /**
      * @param string $route
      * @param string $label
      * @param array $htmlAttributes
@@ -403,7 +387,7 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $item->getTitle();
         }
 
-        if ($this->functionIsPost()) {
+        if ($this->testIsPost($this->app['page'])) {
             $titles[] = $this->app['page']->getTitle();
         }
 
@@ -450,4 +434,24 @@ class HerbieExtension extends Twig_Extension
     {
         return $this->app['urlGenerator']->generate($route);
     }
+
+    /**
+     * @return boolean
+     */
+    public function testIsPage(Page $page)
+    {
+        return !$this->testIsPost($page);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function testIsPost(Page $page)
+    {
+        $postsPath = $this->app['config']->get('posts.path');
+        $pagePath = $page->getPath();
+        $pos = strpos($pagePath, $postsPath);
+        return $pos === 0;
+    }
+
 }
