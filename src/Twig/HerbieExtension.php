@@ -122,10 +122,10 @@ class HerbieExtension extends Twig_Extension
     public function getFilters()
     {
         return [
-            new Twig_SimpleFilter('markdown', array($this, 'filterMarkdown'), ['is_safe' => ['html']]),
-            new Twig_SimpleFilter('strftime', array($this, 'filterStrftime')),
-            new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']]),
-            new Twig_SimpleFilter('visible', array($this, 'filterVisible'), ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('markdown', [$this, 'filterMarkdown'], ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('strftime', [$this, 'filterStrftime']),
+            new Twig_SimpleFilter('textile', [$this, 'filterTextile'], ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -136,18 +136,18 @@ class HerbieExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_SimpleFunction('absUrl', array($this, 'functionAbsUrl'), $options),
-            new Twig_SimpleFunction('asciiTree', array($this, 'functionAsciiTree'), $options),
-            new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
-            new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
-            new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
-            new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
-            new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
-            new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
-            new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
-            new Twig_SimpleFunction('redirect', array($this, 'functionRedirect'), $options),
-            new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
-            new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options)
+            new Twig_SimpleFunction('absUrl', [$this, 'functionAbsUrl'], $options),
+            new Twig_SimpleFunction('asciiTree', [$this, 'functionAsciiTree'], $options),
+            new Twig_SimpleFunction('bodyClass', [$this, 'functionBodyClass'], $options),
+            new Twig_SimpleFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new Twig_SimpleFunction('content', [$this, 'functionContent'], $options),
+            new Twig_SimpleFunction('image', [$this, 'functionImage'], $options),
+            new Twig_SimpleFunction('link', [$this, 'functionLink'], $options),
+            new Twig_SimpleFunction('menu', [$this, 'functionMenu'], $options),
+            new Twig_SimpleFunction('pageTitle', [$this, 'functionPageTitle'], $options),
+            new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
+            new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
+            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options)
         ];
     }
 
@@ -352,7 +352,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
     {
-        $attribs = array();
+        $attribs = [];
         $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {

@@ -66,7 +66,7 @@ class PostMenuCollectionBuilder
 
                 $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
-                    if (in_array(substr($filename, 0, 1), array('.', '_'))) {
+                    if (in_array(substr($filename, 0, 1), ['.', '_'])) {
                         continue;
                     }
                     $pathinfo = pathinfo($filename);

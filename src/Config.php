@@ -72,15 +72,15 @@ class Config
             if (is_array($current)) {
                 // Handle objects.
                 if (!isset($current[$field])) {
-                    $current[$field] = array();
+                    $current[$field] = [];
                 }
                 $current = &$current[$field];
             } else {
                 // Handle arrays and scalars.
                 if (!is_array($current)) {
-                    $current = array($field => array());
+                    $current = [$field => []];
                 } elseif (!isset($current[$field])) {
-                    $current[$field] = array();
+                    $current[$field] = [];
                 }
                 $current = &$current[$field];
             }

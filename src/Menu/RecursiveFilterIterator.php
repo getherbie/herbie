@@ -17,7 +17,7 @@ class RecursiveFilterIterator extends \RecursiveFilterIterator
     public function accept()
     {
         $firstChar = substr($this->current()->getFileName(), 0, 1);
-        return !in_array($firstChar, array('.', '_'));
+        return !in_array($firstChar, ['.', '_']);
     }
 
 }
