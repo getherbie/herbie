@@ -71,6 +71,14 @@ class Site
     }
 
     /**
+     * @return PageMenuTree
+     */
+    public function getPageTree()
+    {
+        return $this->app['pageTree'];
+    }
+
+    /**
      * @return PostMenuCollection
      */
     public function getPosts()

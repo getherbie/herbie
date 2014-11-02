@@ -11,6 +11,7 @@
 namespace Herbie\Twig;
 
 use Herbie\Formatter;
+use Herbie\Menu;
 use Herbie\Page;
 use Herbie\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -123,7 +124,8 @@ class HerbieExtension extends Twig_Extension
         return [
             new Twig_SimpleFilter('markdown', array($this, 'filterMarkdown'), ['is_safe' => ['html']]),
             new Twig_SimpleFilter('strftime', array($this, 'filterStrftime')),
-            new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']])
+            new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('visible', array($this, 'filterVisible'), ['is_safe' => ['html']]),
         ];
     }
 
@@ -135,6 +137,7 @@ class HerbieExtension extends Twig_Extension
         $options = ['is_safe' => ['html']];
         return [
             new Twig_SimpleFunction('absUrl', array($this, 'functionAbsUrl'), $options),
+            new Twig_SimpleFunction('asciiTree', array($this, 'functionAsciiTree'), $options),
             new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
             new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
             new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
@@ -226,12 +229,44 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
+     * @param Menu\Page\Node $tree
+     * @return Menu\Page\Iterator\FilterIterator
+     */
+    public function filterVisible($tree)
+    {
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($tree);
+        return new Menu\Page\Iterator\FilterIterator($treeIterator);
+    }
+
+    /**
      * @param string $route
      * @return string
      */
     public function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
+    }
+
+    /**
+     * @param array $options
+     * @return string
+     */
+    public function functionAsciiTree(array $options = [])
+    {
+        extract($options); // showHidden, route, maxDepth, class
+        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
+        $route = isset($route) ? (string)$route : '';
+        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
+        $class = isset($class) ? (string)$class : 'sitemap';
+
+        $branch = $this->app['pageTree']->findByRoute($route);
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator->setEnabled(!$showHidden);
+
+        $asciiTree = new Menu\Page\Renderer\AsciiTree($filterIterator);
+        $asciiTree->setMaxDepth($maxDepth);
+        return $asciiTree->render();
     }
 
     /**
@@ -416,14 +451,25 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionSitemap(array $options = [])
     {
-        extract($options); // showHidden, route
+        extract($options); // showHidden, route, maxDepth, class
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
-        $route = isset($route) ? $route : null;
+        $route = isset($route) ? (string)$route : '';
+        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
+        $class = isset($class) ? (string)$class : 'sitemap';
 
-        $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
+        $branch = $this->app['pageTree']->findByRoute($route);
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator->setEnabled(!$showHidden);
 
-        $html = $this->traversTree($tree, $showHidden);
-        return sprintf('<div class="sitemap">%s</div>', $html);
+        $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator, $class);
+        $htmlTree->setMaxDepth($maxDepth);
+        $htmlTree->itemCallback = function($node) {
+            $menuItem = $node->getMenuItem();
+            $href = $this->app['urlGenerator']->generate($menuItem->route);
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
+        };
+        return $htmlTree->render();
     }
 
     /**
