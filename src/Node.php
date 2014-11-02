@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of Herbie.
  *
@@ -13,6 +12,7 @@ namespace Herbie;
 
 class Node implements \IteratorAggregate
 {
+
     /**
      * @var mixed
      */
@@ -28,6 +28,9 @@ class Node implements \IteratorAggregate
      */
     private $children;
 
+    /**
+     * @param mixed $value
+     */
     public function __construct($value = null)
     {
         $this->value = $value;
@@ -35,12 +38,13 @@ class Node implements \IteratorAggregate
         $this->children = [];
     }
 
-    public function getIterator() {
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
         return new \ArrayIterator($this->children);
     }
-
-    public function __destruct()
-    {}
 
     /**
      * @param mixed $value
@@ -126,70 +130,4 @@ class Node implements \IteratorAggregate
             return $this->parent->root();
         }
     }
-
-    /*
-     * JUST FOR TESTING PURPOSES!
-     */
-
-    /**
-     * @param string $sval
-     * @param string $skey
-     * @return boolean|\Herbie\Node
-     */
-    public function find($sval, $skey)
-    {
-        if ($this->$skey == $sval) {
-            return $this;
-        }
-        foreach ($this->getChildren() as $child) {
-            $node = $child->find($sval, $skey);
-            if ($node) {
-                return $node;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param string $pre
-     * @param string $outfunc
-     */
-    public function render($pre = '', $outfunc = 'renderItem')
-    {
-        $this->$outfunc($pre);
-
-        $pre = strtr($pre, '+-/\\', '|   ');
-
-        $numChildren = count($this->children);
-
-        for ($i = 0; $i < $numChildren; $i++) {
-            switch ($i) {
-                # Der erste Knoten
-                case 0:
-                    echo $pre . "|\n";
-                    # Der erste und letzte Knoten
-                    if ($i == ($numChildren - 1)) {
-                        $this->children[$i]->render($pre . '\\--', $outfunc);
-                        echo $pre . "\n";
-                    } else {
-                        $this->children[$i]->render($pre . '+--', $outfunc);
-                    }
-                    break;
-                # Der letzte Knoten
-                case ($numChildren - 1):
-                    $this->children[$i]->render($pre . '\\--', $outfunc);
-                    echo $pre . "\n";
-                    $pre = strtr($pre, '|', ' ');
-                    break;
-                default:
-                    $this->children[$i]->render($pre . '+--', $outfunc);
-            }
-        }
-    }
-
-    public function renderItem($pstr = '')
-    {
-
-    }
-
 }
