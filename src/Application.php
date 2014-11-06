@@ -197,19 +197,22 @@ class Application extends Container
         $path = $this['urlMatcher']->match($this['route']);
 
         $pageLoader = new Loader\PageLoader();
-        $this['page'] = $pageLoader->load($path);
-
-        $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
         $content = $this['pageCache']->get($path);
         if ($content === false) {
+
+            $this['page'] = $pageLoader->load($path);
+            $this->fireEvent('onPageContentLoaded', ['page' => $this['page']]);
+
             $layout = $this['page']->getLayout();
             if (empty($layout)) {
                 $content = $this->renderContentSegment(0);
             } else {
                 $content = $this['twig']->render($layout);
             }
-            $this['pageCache']->set($path, $content);
+            if(!isset($this['page']->data['no_cache'])) {
+                $this['pageCache']->set($path, $content);
+            }
         }
 
         $response = new Response($content);
