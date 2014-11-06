@@ -72,7 +72,7 @@ class Twig
      * @param array $context
      * @return string
      */
-    public function render($name, array $context = array())
+    public function render($name, array $context = [])
     {
         $context = array_merge($context, [
             'route' => $this->app->getRoute(),

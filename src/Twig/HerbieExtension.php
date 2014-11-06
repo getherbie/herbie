@@ -10,14 +10,17 @@
 
 namespace Herbie\Twig;
 
-use Herbie\Site;
 use Herbie\Formatter;
+use Herbie\Menu;
+use Herbie\Page;
+use Herbie\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_Loader_String;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
+use Twig_SimpleTest;
 
 class HerbieExtension extends Twig_Extension
 {
@@ -119,9 +122,10 @@ class HerbieExtension extends Twig_Extension
     public function getFilters()
     {
         return [
-            new Twig_SimpleFilter('markdown', array($this, 'filterMarkdown'), ['is_safe' => ['html']]),
-            new Twig_SimpleFilter('strftime', array($this, 'filterStrftime')),
-            new Twig_SimpleFilter('textile', array($this, 'filterTextile'), ['is_safe' => ['html']])
+            new Twig_SimpleFilter('markdown', [$this, 'filterMarkdown'], ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('strftime', [$this, 'filterStrftime']),
+            new Twig_SimpleFilter('textile', [$this, 'filterTextile'], ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -132,21 +136,18 @@ class HerbieExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_SimpleFunction('absUrl', array($this, 'functionAbsUrl'), $options),
-            new Twig_SimpleFunction('bodyClass', array($this, 'functionBodyClass'), $options),
-            new Twig_SimpleFunction('breadcrumb', array($this, 'functionBreadcrumb'), $options),
-            new Twig_SimpleFunction('content', array($this, 'functionContent'), $options),
-            new Twig_SimpleFunction('widget', array($this, 'functionWidget'), $options),
-            new Twig_SimpleFunction('form', array($this, 'functionForm'), $options),
-            new Twig_SimpleFunction('image', array($this, 'functionImage'), $options),
-            new Twig_SimpleFunction('isPage', array($this, 'functionIsPage'), $options),
-            new Twig_SimpleFunction('isPost', array($this, 'functionIsPost'), $options),
-            new Twig_SimpleFunction('link', array($this, 'functionLink'), $options),
-            new Twig_SimpleFunction('menu', array($this, 'functionMenu'), $options),
-            new Twig_SimpleFunction('pageTitle', array($this, 'functionPageTitle'), $options),
-            new Twig_SimpleFunction('redirect', array($this, 'functionRedirect'), $options),
-            new Twig_SimpleFunction('sitemap', array($this, 'functionSitemap'), $options),
-            new Twig_SimpleFunction('url', array($this, 'functionUrl'), $options)
+            new Twig_SimpleFunction('absUrl', [$this, 'functionAbsUrl'], $options),
+            new Twig_SimpleFunction('asciiTree', [$this, 'functionAsciiTree'], $options),
+            new Twig_SimpleFunction('bodyClass', [$this, 'functionBodyClass'], $options),
+            new Twig_SimpleFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new Twig_SimpleFunction('content', [$this, 'functionContent'], $options),
+            new Twig_SimpleFunction('image', [$this, 'functionImage'], $options),
+            new Twig_SimpleFunction('link', [$this, 'functionLink'], $options),
+            new Twig_SimpleFunction('menu', [$this, 'functionMenu'], $options),
+            new Twig_SimpleFunction('pageTitle', [$this, 'functionPageTitle'], $options),
+            new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
+            new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
+            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options)
         ];
     }
 
@@ -155,7 +156,10 @@ class HerbieExtension extends Twig_Extension
      */
     public function getTests()
     {
-        return [];
+        return [
+            new Twig_SimpleTest('page', [$this, 'testIsPage']),
+            new Twig_SimpleTest('post', [$this, 'testIsPost'])
+        ];
     }
 
     /**
@@ -173,7 +177,7 @@ class HerbieExtension extends Twig_Extension
 
         $html = '<ul>';
         foreach ($tree as $item) {
-        if (!$showHidden && $item->hidden) {
+            if (!$showHidden && $item->hidden) {
                 continue;
             }
             if ($item->getRoute() == $route) {
@@ -225,12 +229,44 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
+     * @param Menu\Page\Node $tree
+     * @return Menu\Page\Iterator\FilterIterator
+     */
+    public function filterVisible($tree)
+    {
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($tree);
+        return new Menu\Page\Iterator\FilterIterator($treeIterator);
+    }
+
+    /**
      * @param string $route
      * @return string
      */
     public function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
+    }
+
+    /**
+     * @param array $options
+     * @return string
+     */
+    public function functionAsciiTree(array $options = [])
+    {
+        extract($options); // showHidden, route, maxDepth, class
+        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
+        $route = isset($route) ? (string)$route : '';
+        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
+        $class = isset($class) ? (string)$class : 'sitemap';
+
+        $branch = $this->app['pageTree']->findByRoute($route);
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator->setEnabled(!$showHidden);
+
+        $asciiTree = new Menu\Page\Renderer\AsciiTree($filterIterator);
+        $asciiTree->setMaxDepth($maxDepth);
+        return $asciiTree->render();
     }
 
     /**
@@ -307,34 +343,6 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param string|int $segmentId
-     * @param bool $wrap
-     * @return string
-     */
-    public function functionWidget($path = null, $wrap = false)
-    {
-        $content = $this->app->renderWidget($path);
-        if (empty($wrap)) {
-            return $content;
-        }
-        return sprintf('<div class="widget-%s">%s</div>', $path, $content);
-    }
-
-    /**
-     * @param string|int $segmentId
-     * @param bool $wrap
-     * @return string
-     */
-    public function functionForm($form = null, $wrap = false)
-    {
-        $content = $this->app->renderForm($form);
-        if (empty($wrap)) {
-            return $content;
-        }
-        return sprintf('<div class="form-%s">%s</div>', $path, $content);
-    }
-
-    /**
      * @param string $src
      * @param int $width
      * @param int $height
@@ -344,7 +352,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
     {
-        $attribs = array();
+        $attribs = [];
         $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
@@ -357,25 +365,6 @@ class HerbieExtension extends Twig_Extension
             $attribs['class'] = $class;
         }
         return sprintf('<img %s>', $this->buildHtmlAttributes($attribs));
-    }
-
-    /**
-     * @return boolean
-     */
-    public function functionIsPage()
-    {
-        return !$this->functionIsPost();
-    }
-
-    /**
-     * @return boolean
-     */
-    public function functionIsPost()
-    {
-        $postsPath = $this->app['config']->get('posts.path');
-        $pagePath = $this->app['page']->getPath();
-        $pos = strpos($pagePath, $postsPath);
-        return $pos === 0;
     }
 
     /**
@@ -433,7 +422,7 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $item->getTitle();
         }
 
-        if ($this->functionIsPost()) {
+        if ($this->testIsPost($this->app['page'])) {
             $titles[] = $this->app['page']->getTitle();
         }
 
@@ -462,14 +451,25 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionSitemap(array $options = [])
     {
-        extract($options); // showHidden, route
+        extract($options); // showHidden, route, maxDepth, class
         $showHidden = isset($showHidden) ? (bool) $showHidden : false;
-        $route = isset($route) ? $route : null;
+        $route = isset($route) ? (string)$route : '';
+        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
+        $class = isset($class) ? (string)$class : 'sitemap';
 
-        $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
+        $branch = $this->app['pageTree']->findByRoute($route);
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator->setEnabled(!$showHidden);
 
-        $html = $this->traversTree($tree, $showHidden);
-        return sprintf('<div class="sitemap">%s</div>', $html);
+        $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator, $class);
+        $htmlTree->setMaxDepth($maxDepth);
+        $htmlTree->itemCallback = function($node) {
+            $menuItem = $node->getMenuItem();
+            $href = $this->app['urlGenerator']->generate($menuItem->route);
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
+        };
+        return $htmlTree->render();
     }
 
     /**
@@ -480,4 +480,24 @@ class HerbieExtension extends Twig_Extension
     {
         return $this->app['urlGenerator']->generate($route);
     }
+
+    /**
+     * @return boolean
+     */
+    public function testIsPage(Page $page)
+    {
+        return !$this->testIsPost($page);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function testIsPost(Page $page)
+    {
+        $postsPath = $this->app['config']->get('posts.path');
+        $pagePath = $page->getPath();
+        $pos = strpos($pagePath, $postsPath);
+        return $pos === 0;
+    }
+
 }

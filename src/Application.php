@@ -114,6 +114,10 @@ class Application extends Container
             return $builder->build($app['menu']);
         };
 
+        $this['pageTree'] = function ($app) {
+            return Menu\Page\Node::buildTree($app['menu']);
+        };
+
         $this['posts'] = function ($app) {
             $builder = new Menu\PostMenuCollectionBuilder($app);
             return $builder->build();

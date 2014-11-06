@@ -23,7 +23,7 @@ class Plugin implements EventSubscriberInterface
     {
         $methods = get_class_methods(get_called_class());
 
-        $list = array();
+        $list = [];
         foreach ($methods as $method) {
             if (strpos($method, 'on') === 0) {
                 $list[$method] = [$method, 0];

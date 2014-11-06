@@ -23,3 +23,6 @@ cache/twig/
 
 # applications
 /apps
+
+# Tests
+/src/Tests
