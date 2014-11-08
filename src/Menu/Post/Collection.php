@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Post;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class PostMenuCollection implements \IteratorAggregate, \Countable
+class Collection implements \IteratorAggregate, \Countable
 {
 
     /**
@@ -41,9 +41,9 @@ class PostMenuCollection implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param PostMenuItem $item
+     * @param Item $item
      */
-    public function addItem(PostMenuItem $item)
+    public function addItem(Item $item)
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -75,7 +75,7 @@ class PostMenuCollection implements \IteratorAggregate, \Countable
 
     /**
      * @param string $route
-     * @return PostMenuItem
+     * @return Item
      */
     public function getItem($route)
     {

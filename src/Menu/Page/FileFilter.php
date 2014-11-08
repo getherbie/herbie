@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Page;
 
-class RecursiveFilterIterator extends \RecursiveFilterIterator
+class FileFilter extends \RecursiveFilterIterator
 {
 
     public function accept()

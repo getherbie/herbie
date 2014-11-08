@@ -163,41 +163,6 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param PageMenuTree $tree
-     * @param bool $showHidden
-     * @return string
-     */
-    protected function traversTree($tree, $showHidden)
-    {
-        static $route = null;
-
-        if (is_null($route)) {
-            $route = trim($this->app->getRoute(), '/');
-        }
-
-        $html = '<ul>';
-        foreach ($tree as $item) {
-            if (!$showHidden && $item->hidden) {
-                continue;
-            }
-            if ($item->getRoute() == $route) {
-                $html .= '<li class="active">';
-            } else {
-                $html .= '<li>';
-            }
-            $html .= $this->createLink($item->getRoute(), $item->getTitle());
-            if ($showHidden && $item->hasItems()) {
-                $html .= $this->traversTree($item->getItems(), $showHidden);
-            } elseif ($item->hasVisibleItems()) {
-                $html .= $this->traversTree($item->getItems(), $showHidden);
-            }
-            $html .= '</li>';
-        }
-        $html .= '</ul>';
-        return $html;
-    }
-
-    /**
      * @param string $content
      * @return string
      */
@@ -384,14 +349,27 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionMenu(array $options = [])
     {
-        extract($options); // showHidden, route
-        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
-        $route = isset($route) ? $route : null;
+        extract($options); // showHidden, route, maxDepth, class
+        $showHidden = isset($showHidden) ? (bool)$showHidden : false;
+        $route = isset($route) ? (string)$route : '';
+        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
+        $class = isset($class) ? (string)$class : 'menu';
 
-        $tree = empty($route) ? $this->app['tree'] : $this->app['tree']->findByRoute($route);
+        $branch = $this->app['pageTree']->findByRoute($route);
+        $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
 
-        $html = $this->traversTree($tree, $showHidden);
-        return sprintf('<div class="menu">%s</div>', $html);
+        $callback = [new Menu\Page\Iterator\FilterCallback($this->app), 'call'];
+        $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
+
+        $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
+        $htmlTree->setMaxDepth($maxDepth);
+        $htmlTree->setClass($class);
+        $htmlTree->itemCallback = function($node) {
+            $menuItem = $node->getMenuItem();
+            $href = $this->app['urlGenerator']->generate($menuItem->route);
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
+        };
+        return $htmlTree->render($this->app->getRoute());
     }
 
     /**
@@ -462,8 +440,9 @@ class HerbieExtension extends Twig_Extension
         $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator, $class);
+        $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
+        $htmlTree->setClass($class);
         $htmlTree->itemCallback = function($node) {
             $menuItem = $node->getMenuItem();
             $href = $this->app['urlGenerator']->generate($menuItem->route);

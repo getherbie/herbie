@@ -12,8 +12,8 @@
 namespace Herbie\Url;
 
 use Herbie\Exception\ResourceNotFoundException;
-use Herbie\Menu\PageMenuCollection;
-use Herbie\Menu\PostMenuCollection;
+use Herbie\Menu\Page;
+use Herbie\Menu\Post;
 
 /**
  * The URLMatcher matches a given route and returns the path to a valid page
@@ -27,16 +27,16 @@ class UrlMatcher
     protected $pages;
 
     /**
-     * @var PostMenuCollection Collection of all posts.
+     * @var Post\Collection Collection of all posts.
      */
     protected $posts;
 
     /**
      * Constructor
-     * @param PageMenuCollection $collection Collection of all pages
-     * @param PostMenuCollection $posts Collection of all posts
+     * @param Page\Collection $collection Collection of all pages
+     * @param Post\Collection $posts Collection of all posts
      */
-    public function __construct(PageMenuCollection $pages, PostMenuCollection $posts)
+    public function __construct(Page\Collection $pages, Post\Collection $posts)
     {
         $this->pages = $pages;
         $this->posts = $posts;

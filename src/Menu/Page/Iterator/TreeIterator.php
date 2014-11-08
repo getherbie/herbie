@@ -91,7 +91,7 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return Herbie\Menu\PageMenuItem
+     * @return Item
      */
     public function getMenuItem()
     {

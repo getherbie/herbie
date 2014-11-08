@@ -37,16 +37,24 @@ class HtmlTree extends \RecursiveIteratorIterator
 
     /**
      * @param \RecursiveIterator $iterator
-     * @param string $class
-     * @param array $template
+     * @param int $mode
+     * @param int $flags
      */
-    public function __construct(\RecursiveIterator $iterator, $class, $template = [])
+    public function __construct(\RecursiveIterator $iterator, $mode = \RecursiveIteratorIterator::SELF_FIRST, $flags = 0)
+    {
+        parent::__construct($iterator, $mode, $flags);
+    }
+
+    public function setClass($class)
     {
         $this->class = $class;
-        foreach($template as $key => $value) {
+    }
+
+    public function setTemplate($options = [])
+    {
+        foreach($options as $key => $value) {
             $this->template[$key] = $value;
         }
-        parent::__construct($iterator, \RecursiveIteratorIterator::SELF_FIRST);
     }
 
     /**

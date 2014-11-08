@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Post;
 
-class PostMenuItem
+class Item
 {
 
     /**

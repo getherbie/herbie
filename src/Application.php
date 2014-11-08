@@ -105,13 +105,8 @@ class Application extends Container
         };
 
         $this['menu'] = function ($app) {
-            $builder = new Menu\PageMenuCollectionBuilder($app);
-            return $builder->build();
-        };
-
-        $this['tree'] = function ($app) {
-            $builder = new Menu\PageMenuTreeBuilder();
-            return $builder->build($app['menu']);
+            $builder = new Menu\Page\Builder($app);
+            return $builder->buildCollection();
         };
 
         $this['pageTree'] = function ($app) {
@@ -119,7 +114,7 @@ class Application extends Container
         };
 
         $this['posts'] = function ($app) {
-            $builder = new Menu\PostMenuCollectionBuilder($app);
+            $builder = new Menu\Post\Builder($app);
             return $builder->build();
         };
 
@@ -128,7 +123,7 @@ class Application extends Container
         };
 
         $this['rootPath'] = function ($app) {
-            return new Menu\PageRootPath($app['menu'], $app['route']);
+            return new Menu\Page\RootPath($app['menu'], $app['route']);
         };
 
         $this['data'] = function ($app) {

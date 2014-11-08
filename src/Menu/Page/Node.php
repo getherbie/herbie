@@ -22,7 +22,7 @@ class Node extends \Herbie\Node
     }
 
     /**
-     * @param PageMenuCollection $menuCollection
+     * @param Collection $menuCollection
      * @return PageMenuNode
      */
     public static function buildTree($menuCollection)

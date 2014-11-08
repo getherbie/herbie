@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Page;
 
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\RecursiveFilterIterator;
 
-class PageMenuCollectionBuilder
+class Builder
 {
 
     /**
@@ -46,9 +46,9 @@ class PageMenuCollectionBuilder
 
     /**
      * @param string $path
-     * @return PageMenuCollection
+     * @return Collection
      */
-    public function build($path = null)
+    public function buildCollection($path = null)
     {
         if(is_null($path)) {
             $path = $this->path;
@@ -56,12 +56,12 @@ class PageMenuCollectionBuilder
         $items = $this->cache->get(__CLASS__);
         if ($items === false) {
 
-            $collection = new PageMenuCollection();
+            $collection = new Collection();
             $realpath = realpath($path);
             if (is_dir($realpath)) {
 
                 $dirItr = new \RecursiveDirectoryIterator($realpath);
-                $filterItr = new RecursiveFilterIterator($dirItr);
+                $filterItr = new FileFilter($dirItr);
                 $mode = \RecursiveIteratorIterator::SELF_FIRST;
                 $objects = new \RecursiveIteratorIterator($filterItr, $mode);
 
@@ -82,7 +82,7 @@ class PageMenuCollectionBuilder
                         $data['path'] = $path;
                         $data['route'] = $route;
                         $data['depth'] = substr_count($route, '/') + 1;
-                        $item = new PageMenuItem($data);
+                        $item = new Item($data);
 
                         if (empty($item->date)) {
                             $item->date = date('c', $splFileInfo->getCTime());

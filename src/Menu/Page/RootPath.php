@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Page;
 
-class PageRootPath implements \IteratorAggregate, \Countable
+class RootPath implements \IteratorAggregate, \Countable
 {
 
     /**
-     * @var PageMenuCollection
+     * @var Collection
      */
     protected $collection;
 
@@ -30,10 +30,10 @@ class PageRootPath implements \IteratorAggregate, \Countable
     protected $items;
 
     /**
-     * @param PageMenuCollection $collection
+     * @param Collection $collection
      * @param string $route
      */
-    public function __construct(PageMenuCollection $collection, $route)
+    public function __construct(Collection $collection, $route)
     {
         $this->collection = $collection;
         $this->route = $route;
