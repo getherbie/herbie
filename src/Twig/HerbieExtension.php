@@ -145,6 +145,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('link', [$this, 'functionLink'], $options),
             new Twig_SimpleFunction('menu', [$this, 'functionMenu'], $options),
             new Twig_SimpleFunction('pageTitle', [$this, 'functionPageTitle'], $options),
+            new Twig_SimpleFunction('pager', [$this, 'functionPager'], $options),
             new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
             new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
             new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options)
@@ -409,6 +410,75 @@ class HerbieExtension extends Twig_Extension
         }
 
         return implode($delim, $titles);
+    }
+
+    /**
+     * @param string $limit
+     * @param string $template
+     * @param string $linkClass
+     * @param string $nextPageLabel
+     * @param string $prevPageLabel
+     * @param string $prevPageIcon
+     * @param string $nextPageIcon
+     * @return string
+     */
+    public function functionPager($limit = '', $template = '{prev}{next}', $linkClass='',
+        $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='') {
+
+        $route = $this->app['route'];
+        $iterator = $this->app['menu']->getIterator();
+
+        $prev = null;
+        $cur = null;
+        $next = null;
+        $keys = [];
+        foreach($iterator as $i => $item) {
+            if(empty($limit) || (strpos($item->route, $limit) === 0)) {
+                if(isset($cur)) {
+                    $next = $item;
+                    break;
+                }
+                if($route == $item->route) {
+                    $cur = $item;
+                }
+                $keys[] = $i;
+            }
+        }
+
+        $position = count($keys)-2;
+        if($position >= 0) {
+            $iterator->seek($position);
+            $prev = $iterator->current();
+        }
+
+        $replacements = [
+            '{prev}' => '',
+            '{next}' => ''
+        ];
+        $attribs = [];
+        if(!empty($linkClass)) {
+            $attribs['class'] = $linkClass;
+        }
+        if(isset($prev)) {
+            $label = empty($prevPageLabel) ? $prev->title : $prevPageLabel;
+            if($prevPageIcon) {
+                $label = $prevPageIcon . $label;
+            }
+            $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
+        }
+        /*if(isset($cur)) {
+            $label = empty($curPageLabel) ? $cur->title : $curPageLabel;
+            $replacements['{cur}'] = $this->createLink($cur->route, $label, $attribs);
+        }*/
+        if(isset($next)) {
+            $label = empty($nextPageLabel) ? $next->title : $nextPageLabel;
+            if($nextPageIcon) {
+                $label = $label . $nextPageIcon;
+            }
+            $replacements['{next}'] = $this->createLink($next->route, $label, $attribs);
+        }
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
     }
 
     /**

@@ -91,10 +91,11 @@ class HtmlTree extends \RecursiveIteratorIterator
     /**
      * @return string
      */
-    public function render()
+    public function render($route = '')
     {
         foreach($this as $item) {
-            $this->output .= $this->getTemplate('beginCurrent');
+            $beginCurrent = $this->getTemplate('beginCurrent');
+            $this->output .= $this->addCssClasses($beginCurrent, $route);
             if(is_callable($this->itemCallback)) {
                 $this->output .= call_user_func($this->itemCallback, $item);
             } else {
@@ -122,6 +123,27 @@ class HtmlTree extends \RecursiveIteratorIterator
             array_values($replacements),
             $this->template[$key]
         );
+    }
+
+    /**
+     * @param string $beginCurrent
+     * @param string $route
+     * @return string
+     */
+    private function addCssClasses($beginCurrent, $route)
+    {
+        $cssClasses = [];
+        if($route == $this->getMenuItem()->route) {
+            $cssClasses[] = 'current';
+        }
+        if(strpos($route, $this->getMenuItem()->route) === 0) {
+            $cssClasses[] = 'active';
+        }
+        if(!empty($cssClasses)) {
+            $classString = sprintf(' class="%s"', implode(' ', $cssClasses));
+            $beginCurrent = str_replace('>', $classString . '>', $beginCurrent);
+        }
+        return $beginCurrent;
     }
 
 }

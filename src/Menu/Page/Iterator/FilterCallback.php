@@ -18,19 +18,7 @@ class FilterCallback
 
     public function __construct($app)
     {
-
-        // ParentRoutes erstellen
-        $parts = empty($app['route']) ? [] : explode('/', $app['route']);
-        $route = '';
-        $delim = '';
-        $parentRoutes[] = ''; // root
-        foreach($parts as $part) {
-            $route .= $delim . $part;
-            $parentRoutes[] = $route;
-            $delim = '/';
-        }
-
-        $this->parentRoutes = $parentRoutes;
+        $this->parentRoutes = $app['parentRoutes'];
     }
 
     public function call($current, $key, $iterator)

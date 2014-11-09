@@ -84,6 +84,19 @@ class Application extends Container
             return trim($app['request']->getPathInfo(), '/');
         };
 
+        $this['parentRoutes'] = function ($app) {
+            $parts = empty($app['route']) ? [] : explode('/', $app['route']);
+            $route = '';
+            $delim = '';
+            $parentRoutes[] = ''; // root
+            foreach($parts as $part) {
+                $route .= $delim . $part;
+                $parentRoutes[] = $route;
+                $delim = '/';
+            }
+            return $parentRoutes;
+        };
+
         $this['pageCache'] = function ($app) {
             return Cache\CacheFactory::create('page', $app['config']);
         };
