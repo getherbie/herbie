@@ -24,6 +24,8 @@ posts:
 
 nice_urls: false
 
+display_load_time: false
+
 twig:
   debug: true
   #cache: SITE_PATH/cache/twig
