@@ -24,8 +24,7 @@ class FrontMatterLoader
     {
         $yaml = '';
 
-        $fileInfo = new \SplFileInfo($path);
-        $fileObject = $fileInfo->openFile('r');
+        $fileObject = new \SplFileObject($path);
 
         $i = 0;
         while (!$fileObject->eof()) {
