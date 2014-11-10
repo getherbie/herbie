@@ -27,16 +27,14 @@ class PageLoader
      */
     public function load($path)
     {
-        $fileInfo = new \SplFileInfo($path);
-        $fileObject = $fileInfo->openFile('r');
-
         $yaml = '';
         $segments = [];
         $segmentId = 0;
 
+        $fileObject = new \SplFileObject($path);
+
         $i = 0;
-        while (!$fileObject->eof()) {
-            $line = $fileObject->fgets();
+        foreach($fileObject as $line) {
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
@@ -60,18 +58,17 @@ class PageLoader
             throw new \Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
-        unset($fileObject);
-
-        $format = $fileInfo->getExtension();
-        $date = $this->extractDateFrom($fileInfo->getFilename());
+        $date = $this->extractDateFrom($fileObject->getFilename());
         $data = (array) Yaml::parse($yaml);
 
         $page = new Page();
-        $page->setFormat($format);
+        $page->setFormat($fileObject->getExtension());
         $page->setDate($date);
         $page->setData($data);
         $page->setSegments($segments);
         $page->setPath($path);
+
+        unset($fileObject);
 
         return $page;
     }

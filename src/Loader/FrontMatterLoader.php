@@ -27,22 +27,19 @@ class FrontMatterLoader
         $fileObject = new \SplFileObject($path);
 
         $i = 0;
-        while (!$fileObject->eof()) {
-            $line = $fileObject->fgets();
-            // head
+        foreach ($fileObject as $line) {
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
             }
-            if ($i == 1) {
-                $yaml .= $line;
-            }
             if ($i > 1) {
                 break;
             }
+            if ($i == 1) {
+                $yaml .= $line;
+            }
         }
-
-        // Close file handler?
+        
         unset($fileObject);
 
         return (array) Yaml::parse($yaml);
