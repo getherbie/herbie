@@ -11,7 +11,9 @@
 
 namespace Herbie\Menu\Post;
 
-class Item
+use Herbie\Menu\ItemInterface;
+
+class Item implements ItemInterface
 {
 
     /**

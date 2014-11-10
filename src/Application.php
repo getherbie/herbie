@@ -209,22 +209,26 @@ class Application extends Container
      */
     protected function handle()
     {
-        $path = $this['urlMatcher']->match($this['route']);
+        $menuItem = $this['urlMatcher']->match($this['route']);
 
-        $pageLoader = new Loader\PageLoader();
-        $this['page'] = $pageLoader->load($path);
-
-        $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
-
-        $content = $this['pageCache']->get($path);
+        $content = $this['pageCache']->get($menuItem->getPath());
         if ($content === false) {
+
+            $pageLoader = new Loader\PageLoader();
+            $this['page'] = $pageLoader->load($menuItem->getPath());
+
+            $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
+
             $layout = $this['page']->getLayout();
             if (empty($layout)) {
                 $content = $this->renderContentSegment(0);
             } else {
                 $content = $this['twig']->render($layout);
             }
-            $this['pageCache']->set($path, $content);
+
+            if(empty($this['page']->noCache)) {
+                $this['pageCache']->set($menuItem->getPath(), $content);
+            }
         }
 
         $response = new Response($content);

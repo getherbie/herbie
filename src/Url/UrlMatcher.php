@@ -45,7 +45,7 @@ class UrlMatcher
     /**
      * Returns a path to a valid page or post file.
      * @param string $route The route of the current request.
-     * @return string The path to a page or post file.
+     * @return ItemInferface The path to a page or post file.
      * @throws ResourceNotFoundException
      */
     public function match($route)
@@ -53,13 +53,13 @@ class UrlMatcher
         // Page
         $item = $this->pages->getItem($route);
         if (isset($item)) {
-            return $item->getPath();
+            return $item;
         }
 
         // Post
         $item = $this->posts->getItem($route);
         if (isset($item)) {
-            return $item->getPath();
+            return $item;
         }
 
         // Blog main page
@@ -69,7 +69,7 @@ class UrlMatcher
             if (isset($item)) {
                 $filteredItems = $this->posts->filterItems();
                 if (!empty($filteredItems)) {
-                    return $item->getPath();
+                    return $item;
                 }
             }
         }
