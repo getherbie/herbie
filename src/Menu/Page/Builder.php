@@ -35,13 +35,19 @@ class Builder
     protected $extensions;
 
     /**
+     * @var array
+     */
+    protected $indexFiles;
+
+    /**
      * @param Application $app
      */
     public function __construct(Application $app)
     {
         $this->cache = $app['dataCache'];
-        $this->path = $app['config']->get('pages.path');
-        $this->extensions = $app['config']->get('pages.extensions');
+        $this->path = realpath($app['config']->get('pages.path'));
+        $this->extensions = (array) $app['config']->get('pages.extensions');
+        $this->indexFiles = [];
     }
 
     /**
@@ -50,70 +56,100 @@ class Builder
      */
     public function buildCollection($path = null)
     {
-        if(is_null($path)) {
-            $path = $this->path;
+        if (isset($path)) {
+            $this->path = realpath($path);
         }
-        $items = $this->cache->get(__CLASS__);
-        if ($items === false) {
+
+        $collection = $this->cache->get(__CLASS__);
+        if ($collection === false) {
 
             $collection = new Collection();
-            $realpath = realpath($path);
-            if (is_dir($realpath)) {
+            if (is_dir($this->path)) {
 
-                $dirItr = new \RecursiveDirectoryIterator($realpath);
-                $filterItr = new FileFilter($dirItr);
+                $this->indexFiles = [];
+
+                // recursive iterators
+                $directoryIterator = new \RecursiveDirectoryIterator($this->path);
+                $callback = [new FileFilterCallback($this->extensions), 'call'];
+                $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
                 $mode = \RecursiveIteratorIterator::SELF_FIRST;
-                $objects = new \RecursiveIteratorIterator($filterItr, $mode);
+                $iteratorIterator = new \RecursiveIteratorIterator($filterIterator, $mode);
 
-                foreach ($objects as $path => $splFileInfo) {
-
-                    if ($splFileInfo->isFile()) {
-
-                        if (!in_array($splFileInfo->getExtension(), $this->extensions)) {
+                foreach ($iteratorIterator as $path => $fileInfo) {
+                    // index file as describer for parent folder
+                    if ($fileInfo->isDir()) {
+                        // get first index file only
+                        foreach (glob($path . '/*index.*') as $indexFile) {
+                            $this->indexFiles[] = $indexFile;
+                            $item = $this->createItem($indexFile);
+                            $collection->addItem($item);
+                            break;
+                        }
+                    // other files
+                    } else {
+                        if (!$this->isValid($path, $fileInfo->getExtension())) {
                             continue;
                         }
-
-                        $loader = new FrontMatterLoader();
-                        $data = $loader->load($path);
-
-                        $trimExtension = empty($data['preserveExtension']);
-                        $route = $this->createRoute($path, $realpath, $trimExtension);
-
-                        $data['path'] = $path;
-                        $data['route'] = $route;
-                        $data['depth'] = substr_count($route, '/') + 1;
-                        $item = new Item($data);
-
-                        if (empty($item->date)) {
-                            $item->date = date('c', $splFileInfo->getCTime());
-                        }
-                        $item->hidden = !preg_match('/^[0-9]+-/', $splFileInfo->getBasename());
-
+                        $item = $this->createItem($path);
                         $collection->addItem($item);
-
                     }
                 }
             }
-            $this->cache->set(__CLASS__, $items);
+            $this->cache->set(__CLASS__, $collection);
         }
-
-        // Sort
-        $collection->sort(function ($a, $b) {
-            return strcmp($a->path, $b->path);
-        });
 
         return $collection;
     }
 
     /**
      * @param string $path
-     * @param string $realpath
+     * @param string $extension
+     * @return boolean
+     */
+    protected function isValid($path, $extension)
+    {
+        if (!in_array($extension, $this->extensions)) {
+            return false;
+        }
+        if (in_array($path, $this->indexFiles)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param string $path
+     * @return \Herbie\Menu\Page\Item
+     */
+    protected function createItem($path)
+    {
+        $loader = new FrontMatterLoader();
+        $data = $loader->load($path);
+
+        $trimExtension = empty($data['preserveExtension']);
+        $route = $this->createRoute($path, $trimExtension);
+
+        $data['path'] = $path;
+        $data['route'] = $route;
+        $data['depth'] = substr_count($route, '/') + 1;
+        $item = new Item($data);
+
+        if (empty($item->date)) {
+            $item->date = date('c', filectime($path));
+        }
+        $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
+        return $item;
+    }
+
+    /**
+     * @param string $path
      * @param bool $trimExtension
      * @return string
      */
-    protected function createRoute($path, $realpath, $trimExtension = false)
+    protected function createRoute($path, $trimExtension = false)
     {
-        $route = str_replace($realpath, '', $path);
+        $route = str_replace($this->path, '', $path);
         $segments = explode('/', $route);
         foreach ($segments as $i => $segment) {
             $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
