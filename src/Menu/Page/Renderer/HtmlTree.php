@@ -132,12 +132,15 @@ class HtmlTree extends \RecursiveIteratorIterator
      */
     private function addCssClasses($beginCurrent, $route)
     {
+        $menuItem = $this->getMenuItem();
         $cssClasses = [];
-        if($route == $this->getMenuItem()->route) {
+        if($route == $menuItem->route) {
             $cssClasses[] = 'current';
         }
-        if(strpos($route, $this->getMenuItem()->route) === 0) {
-            $cssClasses[] = 'active';
+        if(!empty($menuItem->route)) {
+            if(strpos($route, $menuItem->route) === 0) {
+                $cssClasses[] = 'active';
+            }
         }
         if(!empty($cssClasses)) {
             $classString = sprintf(' class="%s"', implode(' ', $cssClasses));
