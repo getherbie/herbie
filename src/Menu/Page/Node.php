@@ -31,7 +31,9 @@ class Node extends \Herbie\Node
         foreach ($menuCollection as $menuItem) {
             $route = $menuItem->getParentRoute();
             $node = $tree->findByRoute($route);
-            $node->addChild(new self($menuItem));
+            if($node) {
+                $node->addChild(new self($menuItem));
+            }
         }
         return $tree;
     }
