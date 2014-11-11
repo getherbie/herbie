@@ -22,8 +22,6 @@ class Plugins
     protected $app;
 
     /**
-     * Constructor
-     *
      * @param \Herbie\Application $app
      */
     public function __construct(Application $app)
@@ -32,9 +30,6 @@ class Plugins
     }
 
     /**
-     * Recurses through the plugins directory creating Plugin objects for each plugin it finds.
-     *
-     * @return array|Plugin[] array of Plugin objects
      * @throws \RuntimeException
      */
     public function init()
@@ -44,6 +39,15 @@ class Plugins
 
         $pluginKeys = array_keys($this->app['config']->get('plugins', []));
         foreach ($pluginKeys as $pluginKey) {
+
+            $filePath = sprintf(
+                '%s/%s/%sPlugin.php', rtrim($this->app['config']->get('plugins_path'), '/'), $pluginKey, ucfirst($pluginKey)
+            );
+
+            if (!is_file($filePath)) {
+                throw new \RuntimeException(sprintf("Plugin '%s' enabled but not found!", $pluginKey));
+            }
+
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
             $instance = new $pluginClass($this->app);
             $events->addSubscriber($instance);
