@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Post;
 
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
 
-class PostMenuCollectionBuilder
+class Builder
 {
 
     /**
@@ -51,7 +51,7 @@ class PostMenuCollectionBuilder
 
     /**
      * @param string $path
-     * @return PostMenuCollection
+     * @return Collection
      */
     public function build($path = null)
     {
@@ -61,7 +61,7 @@ class PostMenuCollectionBuilder
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
             $realpath = realpath($path);
-            $collection = new PostMenuCollection($this->blogRoute);
+            $collection = new Collection($this->blogRoute);
             if (is_dir($realpath)) {
 
                 $loader = new FrontMatterLoader();
@@ -76,7 +76,7 @@ class PostMenuCollectionBuilder
                     $data = $loader->load($realpath.'/'.$filename);
                     $data['path'] = $realpath.'/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
-                    $item = new PostMenuItem($data);
+                    $item = new Item($data);
                     $collection->addItem($item);
                 }
 

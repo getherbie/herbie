@@ -38,6 +38,7 @@ return [
         'extensions' => ['yml', 'yaml']
     ],
     'nice_urls' => false,
+    'display_load_time' => false,
     'twig' => [
         'debug' => false,
         'cache' => false, //$app['sitePath'] . '/cache/twig',

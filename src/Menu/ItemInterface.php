@@ -11,13 +11,9 @@
 
 namespace Herbie\Menu;
 
-class RecursiveFilterIterator extends \RecursiveFilterIterator
+interface ItemInterface
 {
 
-    public function accept()
-    {
-        $firstChar = substr($this->current()->getFileName(), 0, 1);
-        return !in_array($firstChar, ['.', '_']);
-    }
+    public function getPath();
 
 }

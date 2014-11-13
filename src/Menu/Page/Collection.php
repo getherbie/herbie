@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Page;
 
-class PageMenuCollection implements \IteratorAggregate, \Countable
+class Collection implements \IteratorAggregate, \Countable
 {
 
     /**
@@ -21,9 +21,9 @@ class PageMenuCollection implements \IteratorAggregate, \Countable
 
     /**
      * @param string $route
-     * @param PageMenuItem $item
+     * @param Item $item
      */
-    public function addItem(PageMenuItem $item)
+    public function addItem(Item $item)
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -39,7 +39,7 @@ class PageMenuCollection implements \IteratorAggregate, \Countable
 
     /**
      * @param string $route
-     * @return PageMenuItem|null
+     * @return Item|null
      */
     public function getItem($route)
     {

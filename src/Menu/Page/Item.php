@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Page;
 
-class PageMenuItem
+use Herbie\Menu\ItemInterface;
+
+class Item implements ItemInterface
 {
     /**
      * @var string
@@ -42,11 +44,6 @@ class PageMenuItem
      * @var string
      */
     protected $hidden;
-
-    /**
-     * @var array
-     */
-    public $items;
 
     /**
      * @var array
@@ -164,22 +161,6 @@ class PageMenuItem
     }
 
     /**
-     * @return bool
-     */
-    public function hasItems()
-    {
-        return !empty($this->items);
-    }
-
-    /**
-     * @return array
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
      * @param int|string $date
      */
     public function setDate($date)
@@ -220,35 +201,11 @@ class PageMenuItem
     }
 
     /**
-     * @param array $items
-     */
-    public function setItems(array $items)
-    {
-        $this->items = $items;
-    }
-
-    /**
      * @param string $title
      */
     public function setTitle($title)
     {
         $this->title = $title;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasVisibleItems()
-    {
-        if (!$this->hasItems()) {
-            return false;
-        }
-        foreach ($this->getItems() as $item) {
-            if ($item->visible) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

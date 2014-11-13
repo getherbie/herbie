@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Menu;
+namespace Herbie\Menu\Post;
 
-class PostMenuItem
+use Herbie\Menu\ItemInterface;
+
+class Item implements ItemInterface
 {
 
     /**

@@ -47,7 +47,7 @@ class Site
     }
 
     /**
-     * @return PageMenuCollection
+     * @return \Herbie\Menu\Page\Collection
      */
     public function getMenu()
     {
@@ -67,7 +67,7 @@ class Site
      */
     public function getTree()
     {
-        return $this->app['tree'];
+        return $this->app['pageTree'];
     }
 
     /**
@@ -79,7 +79,7 @@ class Site
     }
 
     /**
-     * @return PostMenuCollection
+     * @return \Herbie\Menu\Post\Collection
      */
     public function getPosts()
     {
