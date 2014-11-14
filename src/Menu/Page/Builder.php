@@ -132,7 +132,6 @@ class Builder
 
         $data['path'] = $path;
         $data['route'] = $route;
-        $data['depth'] = substr_count($route, '/') + 1;
         $item = new Item($data);
 
         if (empty($item->date)) {
