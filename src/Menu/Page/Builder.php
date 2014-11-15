@@ -14,6 +14,7 @@ namespace Herbie\Menu\Page;
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
+use Herbie\Menu\Page\Iterator\SortableIterator;
 use Herbie\Menu\RecursiveFilterIterator;
 
 class Builder
@@ -74,8 +75,9 @@ class Builder
                 $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
                 $mode = \RecursiveIteratorIterator::SELF_FIRST;
                 $iteratorIterator = new \RecursiveIteratorIterator($filterIterator, $mode);
+                $sit = new SortableIterator($iteratorIterator, Iterator\SortableIterator::SORT_BY_NAME);
 
-                foreach ($iteratorIterator as $path => $fileInfo) {
+                foreach ($sit as $path => $fileInfo) {
                     // index file as describer for parent folder
                     if ($fileInfo->isDir()) {
                         // get first index file only
