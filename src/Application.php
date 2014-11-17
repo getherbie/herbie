@@ -40,6 +40,11 @@ class Application extends Container
     public $locale;
 
     /**
+     * @var array
+     */
+    public $aliases;
+
+    /**
      * @param int $errno
      * @param string $errstr
      * @param string $errfile
@@ -72,6 +77,15 @@ class Application extends Container
         $this['sitePath'] = realpath($sitePath);
 
         $config = new Config($app);
+
+        $this->aliases = [
+            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@site' => rtrim($this['sitePath'], '/'),
+            '@page' => rtrim($config->get('pages.path'), '/'),
+            '@post' => rtrim($config->get('posts.path'), '/'),
+            '@app' => rtrim($this['appPath'], '/'),
+            '@web' => rtrim($this['webPath'], '/')
+        ];
 
         setlocale(LC_ALL, $config->get('locale'));
         $this->charset = $config->get('charset');
@@ -214,8 +228,8 @@ class Application extends Container
         $content = $this['pageCache']->get($menuItem->getPath());
         if ($content === false) {
 
-            $pageLoader = new Loader\PageLoader();
-            $this['page'] = $pageLoader->load($menuItem->getPath());
+            $loader = new Loader\PageLoader($this['twig'], $this['page']);
+            $loader->load($menuItem->getPath());
 
             $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
@@ -246,12 +260,8 @@ class Application extends Container
 
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
-        $twigged = $this['twig']->render($segment);
-
-        $this->fireEvent('onContentSegmentRendered', ['segment' => &$twigged]);
-
         $formatter = Formatter\FormatterFactory::create($this['page']->getFormat());
-        return $formatter->transform($twigged);
+        return $formatter->transform($segment);
     }
 
     /**
@@ -290,5 +300,29 @@ class Application extends Container
             return number_format(0, 4);
         }
         return number_format(microtime(true) - $start, 4);
+    }
+
+    /**
+     * @param string $alias
+     * @param string $path
+     */
+    public function setAlias($alias, $path)
+    {
+        $this->aliases[$alias] = rtrim($path, '/');
+        uksort($this->aliases, function($a, $b) {
+            return strlen($a) < strlen($b);
+        });
+    }
+
+    /**
+     * @param string $alias
+     * @return string
+     */
+    public function getAlias($alias)
+    {
+        if (strncmp($alias, '@', 1)) {
+            return $alias;
+        }
+        return str_replace(array_keys($this->aliases), array_values($this->aliases), $alias);
     }
 }

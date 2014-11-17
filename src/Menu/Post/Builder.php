@@ -74,7 +74,7 @@ class Builder
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);
-                    $data['path'] = $realpath.'/'.$filename;
+                    $data['path'] = '@post/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
                     $item = new Item($data);
                     $collection->addItem($item);

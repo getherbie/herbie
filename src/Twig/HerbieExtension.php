@@ -17,7 +17,6 @@ use Herbie\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
-use Twig_Loader_String;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 use Twig_SimpleTest;
@@ -298,9 +297,6 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionContent($segmentId = 0, $wrap = false)
     {
-        if ($this->environment->getLoader() instanceof Twig_Loader_String) {
-            return $this->renderError('You can not use {{ content() }} in page files.');
-        }
         $content = $this->app->renderContentSegment($segmentId);
         if (empty($wrap)) {
             return $content;
@@ -543,10 +539,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function testIsPost(Page $page)
     {
-        $postsPath = $this->app['config']->get('posts.path');
-        $pagePath = $page->getPath();
-        $pos = strpos($pagePath, $postsPath);
-        return $pos === 0;
+        return 0 === strpos($page->getPath(), '@post');
     }
 
 }

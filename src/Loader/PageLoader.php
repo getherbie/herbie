@@ -19,6 +19,14 @@ use Symfony\Component\Yaml\Yaml;
  */
 class PageLoader
 {
+    protected $twig;
+    protected $page;
+
+    public function __construct($twig, $page)
+    {
+        $this->twig = $twig;
+        $this->page = $page;
+    }
 
     /**
      * @param string $path
@@ -31,10 +39,11 @@ class PageLoader
         $segments = [];
         $segmentId = 0;
 
-        $fileObject = new \SplFileObject($path);
+        $rendered = $this->twig->render($path);
 
         $i = 0;
-        foreach($fileObject as $line) {
+        foreach(explode("\n", $rendered) as $line) {
+            $line .= "\n";
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
@@ -58,19 +67,16 @@ class PageLoader
             throw new \Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
-        $date = $this->extractDateFrom($fileObject->getFilename());
+        $date = $this->extractDateFrom($path);
         $data = (array) Yaml::parse($yaml);
 
-        $page = new Page();
-        $page->setFormat($fileObject->getExtension());
-        $page->setDate($date);
-        $page->setData($data);
-        $page->setSegments($segments);
-        $page->setPath($path);
+        $this->page->setFormat(pathinfo($path, PATHINFO_EXTENSION));
+        $this->page->setDate($date);
+        $this->page->setData($data);
+        $this->page->setSegments($segments);
+        $this->page->setPath($path);
 
-        unset($fileObject);
-
-        return $page;
+        return $segments;
     }
 
     /**
