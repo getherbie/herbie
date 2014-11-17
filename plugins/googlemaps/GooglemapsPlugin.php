@@ -44,7 +44,7 @@ class GooglemapsPlugin extends Herbie\Plugin
     {
         static $instances = 0;
         $instances++;
-        return $this->twig->render('@plugins/googlemaps/templates/googlemaps.twig', array(
+        return $this->twig->render('@plugin/googlemaps/templates/googlemaps.twig', array(
                 'id' => $id . '-' . $instances,
                 'width' => $width,
                 'height' => $height,
