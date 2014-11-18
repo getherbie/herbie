@@ -457,6 +457,7 @@ class HerbieExtension extends Twig_Extension
         }
         if(isset($prev)) {
             $label = empty($prevPageLabel) ? $prev->title : $prevPageLabel;
+            $label = sprintf('<span>%s</span>', $label);
             if($prevPageIcon) {
                 $label = $prevPageIcon . $label;
             }
@@ -468,6 +469,7 @@ class HerbieExtension extends Twig_Extension
         }*/
         if(isset($next)) {
             $label = empty($nextPageLabel) ? $next->title : $nextPageLabel;
+            $label = sprintf('<span>%s</span>', $label);
             if($nextPageIcon) {
                 $label = $label . $nextPageIcon;
             }
