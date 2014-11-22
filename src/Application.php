@@ -80,6 +80,7 @@ class Application extends Container
 
         $this->aliases = [
             '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@asset' => rtrim($this['sitePath'], '/') . '/assets',
             '@site' => rtrim($this['sitePath'], '/'),
             '@page' => rtrim($config->get('pages.path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
@@ -172,6 +173,10 @@ class Application extends Container
             return new Page(); // be sure that we always have a Page object
         };
 
+        $this['assets'] = function ($app) {
+            return new Assets($app);
+        };
+
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
@@ -182,15 +187,15 @@ class Application extends Container
      */
     public function run()
     {
-        $this['plugins']->init();
-
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
-
-        $this['twig']->init();
-
-        $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
-
         try {
+
+            $this['plugins']->init();
+
+            $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
+
+            $this['twig']->init();
+
+            $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
 
             $response = $this->handle();
 
