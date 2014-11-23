@@ -83,32 +83,23 @@ class Twig
         if ($this->config->isEmpty('twig.extend')) {
             return;
         }
-
-        $app = $this->app; // Global $app var used by plugins
-
-        extract($this->config->get('twig.extend')); // functions, filters, tests
         // Functions
-        if (isset($functions)) {
-            foreach ($this->readPhpFiles($functions) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addFunction($included);
-            }
+        $dir = $this->config->get('twig.extend.functions');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addFunction($included);
         }
-
         // Filters
-        if (isset($filters)) {
-            foreach ($this->readPhpFiles($filters) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addFilter($included);
-            }
+        $dir = $this->config->get('twig.extend.filters');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addFilter($included);
         }
-
         // Tests
-        if (isset($tests)) {
-            foreach ($this->readPhpFiles($tests) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addTest($included);
-            }
+        $dir = $this->config->get('twig.extend.tests');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addTest($included);
         }
     }
 
