@@ -67,7 +67,7 @@ class PageLoader
             throw new \Exception("Invalid Front-Matter Block in file {$path}.");
         }
 
-        $date = $this->extractDateFrom($path);
+        $date = $this->extractDateFromPath($path);
         $data = (array) Yaml::parse($yaml);
 
         $this->page->setFormat(pathinfo($path, PATHINFO_EXTENSION));
@@ -80,11 +80,13 @@ class PageLoader
     }
 
     /**
-     * @param string $filename
+     * @param string $path
      * @return string
+     * @todo Duplicate code in Herbie\Menu\Post\Builder
      */
-    protected function extractDateFrom($filename)
+    protected function extractDateFromPath($path)
     {
+        $filename = basename($path);
         if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
             return $matches[1];
         }

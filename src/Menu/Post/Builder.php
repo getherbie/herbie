@@ -90,6 +90,11 @@ class Builder
         return $collection;
     }
 
+    /**
+     * @param string $path
+     * @return string
+     * @todo Duplicate code in Herbie\Loader\PageLoader
+     */
     protected function extractDateFromPath($path)
     {
         $filename = basename($path);
