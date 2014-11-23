@@ -2,6 +2,13 @@
 
 `Lipsum` ist ein [Herbie](http://github.com/getherbie/herbie) Plugin, mit dem du ganz einfach Blindtexte auf deiner Website ausgeben kannst.
 
-# Installation
+## Installation
 
-Um das Plugin zu installieren, einfach die ZIP-Version dieses Repositories herunterladen und in das Plugins-Verzeichnis entpacken.
+Das Plugin installierst du am einfachsten via Composer.
+
+	$ composer require getherbie/plugin-lipsum
+
+Danach aktivierst du das Plugin in der Konfigurationsdatei.
+
+    plugins:
+        lipsum:

@@ -2,6 +2,14 @@
 
 `YouTube` ist ein [Herbie](http://github.com/getherbie/herbie) Plugin, mit dem du Videos von [YouTube](http://www.youtube.com) in deiner Website einbinden kannst.
 
-# Installation
+## Installation
 
-Um das Plugin zu installieren, einfach die ZIP-Version dieses Repositories herunterladen und in das Plugins-Verzeichnis entpacken.
+Das Plugin installierst du am einfachsten via Composer.
+
+	$ composer require getherbie/plugin-youtube
+
+Danach aktivierst du das Plugin in der Konfigurationsdatei.
+
+    plugins:
+        youtube:
+

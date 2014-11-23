@@ -6,7 +6,7 @@ Um das Plugin zu installieren, einfach die ZIP-Version dieses Repositories herun
 
 Widgets werden als Unterordner innerhalb von 'pages' angelegt, z.B. ein Zweispalter:
 
-    site/pages 
+    site/pages
         |-- index.md
         |-- _zweispalter        # Widget-Unterverzeichnis
         |   ├── .htaccess       # Ggf. den Zugang zu best. Dateien erlauben (*.jpg)

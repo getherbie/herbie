@@ -2,6 +2,13 @@
 
 `Form` ist ein [Herbie](http://github.com/getherbie/herbie) Plugin, mit dem man einfach Formulare erstellen kann.
 
-# Installation
+## Installation
 
-Um das Plugin zu installieren, einfach die ZIP-Version dieses Repositories herunterladen und in das Plugins-Verzeichnis entpacken.
+Das Plugin installierst du am einfachsten via Composer.
+
+	$ composer require getherbie/plugin-form
+
+Danach aktivierst du das Plugin in der Konfigurationsdatei.
+
+    plugins:
+        form:
