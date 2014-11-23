@@ -74,6 +74,9 @@ class Builder
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);
+                    if(empty($data['date'])) {
+                        $data['date'] = $this->extractDateFromPath($filename);
+                    }
                     $data['path'] = '@post/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
                     $item = new Item($data);
@@ -86,4 +89,12 @@ class Builder
         #echo"<pre>";print_r($collection);echo"</pre>";
         return $collection;
     }
+
+    protected function extractDateFromPath($path)
+    {
+        $filename = basename($path);
+        preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
+        return $matches[1];
+    }
+
 }
