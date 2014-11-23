@@ -140,7 +140,7 @@ class Config
             $content = file_get_contents($app['sitePath'] . '/config.yml');
             $content = str_replace(
                 ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-                [$app['appPath'], $app['sitePath'], $app['sitePath']],
+                [$app['appPath'], $app['webPath'], $app['sitePath']],
                 $content
             );
             $userConfig = Yaml::parse($content);
