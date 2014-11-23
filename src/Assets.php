@@ -21,9 +21,9 @@ class Assets
     const TYPE_JS = 1;
 
     /**
-     * @var \Herbie\Application
+     * @var \Herbie\Alias
      */
-    protected $app;
+    protected $alias;
 
     /**
      * @var array
@@ -80,7 +80,7 @@ class Assets
      */
     public function __construct($app)
     {
-        $this->app = $app;
+        $this->alias = $app['alias'];
         $this->baseUrl = $app['request']->getBaseUrl();
         $this->assetsPath = $app['webPath'] . '/' . $this->assetsDir;
         $this->assetsUrl = $this->baseUrl . '/' . $this->assetsDir;
@@ -210,22 +210,19 @@ class Assets
         }
         foreach ($this->assets as $asset) {
 
-            extract($asset); // type, path, group, attr, raw, pos, counter
-
-            if (0 === strpos($path, '//') || 0 === strpos($path, 'http')) {
+            if (0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
                 continue;
             }
 
-            $alias = $path;
-            $source = $this->app->getAlias($alias);
-            $dest = $this->assetsPath . '/' . $this->removeAlias($alias);
-            $destDir = dirname($dest);
-            if (!is_dir($destDir)) {
-                mkdir($destDir, $this->chmode, true);
+            $srcPath = $this->alias->get($asset['path']);
+            $dstPath = $this->assetsPath . '/' . $this->removeAlias($asset['path']);
+            $dstDir = dirname($dstPath);
+            if (!is_dir($dstDir)) {
+                mkdir($dstDir, $this->chmode, true);
             }
             $copy = false;
-            if (is_file($dest)) {
-                $delta = time() - filemtime($dest);
+            if (is_file($dstPath)) {
+                $delta = time() - filemtime($dstPath);
                 if ($delta > $this->refresh) {
                     $copy = true;
                 }
@@ -233,7 +230,7 @@ class Assets
                 $copy = true;
             }
             if ($copy) {
-                copy($source, $dest);
+                copy($srcPath, $dstPath);
             }
         }
         self::$published = true;

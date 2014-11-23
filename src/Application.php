@@ -40,11 +40,6 @@ class Application extends Container
     public $locale;
 
     /**
-     * @var array
-     */
-    public $aliases;
-
-    /**
      * @param int $errno
      * @param string $errstr
      * @param string $errfile
@@ -78,15 +73,15 @@ class Application extends Container
 
         $config = new Config($app);
 
-        $this->aliases = [
-            '@plugin' => rtrim($config->get('plugins_path'), '/'),
-            '@asset' => rtrim($this['sitePath'], '/') . '/assets',
-            '@site' => rtrim($this['sitePath'], '/'),
-            '@page' => rtrim($config->get('pages.path'), '/'),
-            '@post' => rtrim($config->get('posts.path'), '/'),
+        $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
+            '@asset' => rtrim($this['sitePath'], '/') . '/assets',
+            '@page' => rtrim($config->get('pages.path'), '/'),
+            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@post' => rtrim($config->get('posts.path'), '/'),
+            '@site' => rtrim($this['sitePath'], '/'),
             '@web' => rtrim($this['webPath'], '/')
-        ];
+        ]);
 
         setlocale(LC_ALL, $config->get('locale'));
         $this->charset = $config->get('charset');
@@ -307,27 +302,4 @@ class Application extends Container
         return number_format(microtime(true) - $start, 4);
     }
 
-    /**
-     * @param string $alias
-     * @param string $path
-     */
-    public function setAlias($alias, $path)
-    {
-        $this->aliases[$alias] = rtrim($path, '/');
-        uksort($this->aliases, function($a, $b) {
-            return strlen($a) < strlen($b);
-        });
-    }
-
-    /**
-     * @param string $alias
-     * @return string
-     */
-    public function getAlias($alias)
-    {
-        if (strncmp($alias, '@', 1)) {
-            return $alias;
-        }
-        return str_replace(array_keys($this->aliases), array_values($this->aliases), $alias);
-    }
 }
