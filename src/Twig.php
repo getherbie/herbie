@@ -128,6 +128,7 @@ class Twig
         }
         $loader->addPath($this->config->get('pages.path'), 'page');
         $loader->addPath($this->config->get('posts.path'), 'post');
+        $loader->addPath($this->config->get('site.path'), 'site');
         $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
         return $loader;
