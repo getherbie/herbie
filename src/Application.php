@@ -65,13 +65,11 @@ class Application extends Container
 
         parent::__construct();
 
-        $app = $this;
-
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['sitePath'] = realpath($sitePath);
 
-        $config = new Config($app);
+        $config = new Config($this);
 
         $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
