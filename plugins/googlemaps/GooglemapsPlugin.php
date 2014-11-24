@@ -16,14 +16,27 @@ use Twig_SimpleFunction;
 
 class GooglemapsPlugin extends Herbie\Plugin
 {
+    /**
+     * @var int
+     */
+    private static $instances = 0;
 
     /**
      * @var Twig_Environment
      */
     private $twig;
 
+    /**
+     * @var \Herbie\Application
+     */
+    private $app;
+
+    /**
+     * @param Herbie\Event $event
+     */
     public function onTwigInitialized(Herbie\Event $event)
     {
+        $this->app = $event['app'];
         $this->twig = $event['twig'];
         $this->twig->addFunction(
             new Twig_SimpleFunction('googlemaps', array($this, 'googleMaps'), ['is_safe' => ['html']])
@@ -42,17 +55,20 @@ class GooglemapsPlugin extends Herbie\Plugin
      */
     public function googleMaps($id = 'gmap', $width = 600, $height = 450, $type = 'roadmap', $class = 'gmap', $zoom = 15, $address = '')
     {
-        static $instances = 0;
-        $instances++;
-        return $this->twig->render('@plugin/googlemaps/templates/googlemaps.twig', array(
-                'id' => $id . '-' . $instances,
+        self::$instances++;
+        $template = $this->app['config']->get(
+            'plugins.googlemaps.template',
+            '@plugin/googlemaps/templates/googlemaps.twig'
+        );
+        return $this->twig->render($template, array(
+                'id' => $id . '-' . self::$instances,
                 'width' => $width,
                 'height' => $height,
                 'type' => $type,
                 'class' => $class,
                 'zoom' => $zoom,
                 'address' => $address,
-                'instances' => $instances
+                'instances' => self::$instances
         ));
     }
 }
