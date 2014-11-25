@@ -26,7 +26,7 @@ class DisqusPlugin extends Herbie\Plugin
     {
         $this->twig = $event['twig'];
         $this->twig->addFunction(
-            new Twig_SimpleFunction('disqus', array($this, 'disqus'), ['is_safe' => ['html']])
+            new Twig_SimpleFunction('disqus', [$this, 'disqus'], ['is_safe' => ['html']])
         );
     }
 
@@ -36,9 +36,9 @@ class DisqusPlugin extends Herbie\Plugin
      */
     public function disqus($shortname)
     {
-        return $this->twig->render('@plugin/disqus/templates/disqus.twig', array(
+        return $this->twig->render('@plugin/disqus/templates/disqus.twig', [
            'shortname' => $shortname
-        ));
+        ]);
     }
 
 }

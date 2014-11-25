@@ -26,7 +26,7 @@ class VimeoPlugin extends Herbie\Plugin
     {
         $this->twig = $event['twig'];
         $this->twig->addFunction(
-            new Twig_SimpleFunction('vimeo', array($this, 'vimeo'), ['is_safe' => ['html']])
+            new Twig_SimpleFunction('vimeo', [$this, 'vimeo'], ['is_safe' => ['html']])
         );
     }
 
@@ -40,12 +40,12 @@ class VimeoPlugin extends Herbie\Plugin
      */
     public function vimeo($id, $width = 480, $height = 320, $responsive = 1)
     {
-        $attribs = array(
+        $attribs = [
             'src' => sprintf('//player.vimeo.com/video/%s', $id),
             'width' => $width,
             'height' => $height,
             'frameborder' => 0
-        );
+        ];
         $style = '';
         $class = '';
         if(!empty($responsive)) {

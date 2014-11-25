@@ -26,14 +26,14 @@ Shortocdes solltest du bevorzugt in der PHP-Konfigurationsdatei definieren. Eine
 einfache Konfiguration sieht wie folgt aus.
 
     <?php
-    return array(
+    return [
         ...
-        'shortcodes' => array(
+        'shortcodes' => [
             'li' => function($atts, $content) { return '<li>' . $content . '</li>'; }),
             'ul' => function($atts, $content) { return '<ul>' . $this['shortcode']->parse($content) . '</ul>'; }),
-        )
+        ]
         ...
-    );
+    ];
 
 ## Index-Bootstrapdatei
 

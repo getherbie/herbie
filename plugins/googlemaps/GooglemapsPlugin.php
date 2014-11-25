@@ -39,7 +39,7 @@ class GooglemapsPlugin extends Herbie\Plugin
         $this->app = $event['app'];
         $this->twig = $event['twig'];
         $this->twig->addFunction(
-            new Twig_SimpleFunction('googlemaps', array($this, 'googleMaps'), ['is_safe' => ['html']])
+            new Twig_SimpleFunction('googlemaps', [$this, 'googleMaps'], ['is_safe' => ['html']])
         );
     }
 
@@ -60,7 +60,7 @@ class GooglemapsPlugin extends Herbie\Plugin
             'plugins.googlemaps.template',
             '@plugin/googlemaps/templates/googlemaps.twig'
         );
-        return $this->twig->render($template, array(
+        return $this->twig->render($template, [
                 'id' => $id . '-' . self::$instances,
                 'width' => $width,
                 'height' => $height,
@@ -69,6 +69,6 @@ class GooglemapsPlugin extends Herbie\Plugin
                 'zoom' => $zoom,
                 'address' => $address,
                 'instances' => self::$instances
-        ));
+        ]);
     }
 }

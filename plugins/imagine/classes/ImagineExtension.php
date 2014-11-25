@@ -52,9 +52,7 @@ class ImagineExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
-            'imagine' => new \Twig_Filter_Method($this, 'imagineFilter'),
-        );
+        return ['imagine' => new \Twig_Filter_Method($this, 'imagineFilter')];
     }
 
     /**
@@ -63,7 +61,7 @@ class ImagineExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('imagine', array($this, 'imagineFunction'), ['is_safe' => ['html']])
+            new \Twig_SimpleFunction('imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']])
         ];
     }
 

@@ -26,10 +26,10 @@ class YoutubePlugin extends Herbie\Plugin
     {
         $this->twig = $event['twig'];
         $this->twig->addFunction(
-            new Twig_SimpleFunction('youtube', array($this, 'youtube'), ['is_safe' => ['html']])
+            new Twig_SimpleFunction('youtube', [$this, 'youtube'], ['is_safe' => ['html']])
         );
         $this->twig->addFunction(
-            new Twig_SimpleFunction('youTube', array($this, 'youtube'), ['is_safe' => ['html']])
+            new Twig_SimpleFunction('youTube', [$this, 'youtube'], ['is_safe' => ['html']])
         );
     }
 
@@ -43,12 +43,12 @@ class YoutubePlugin extends Herbie\Plugin
      */
     public function youtube($id, $width = 480, $height = 320, $responsive = 1)
     {
-        $attribs = array(
+        $attribs = [
             'src' => sprintf('//www.youtube.com/embed/%s?rel=0', $id),
             'width' => $width,
             'height' => $height,
             'frameborder' => 0
-        );
+        ];
         $style = empty($responsive) ? '' : '<style>.video-youtube { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-youtube iframe, .video-youtube object, .video-youtube embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
         return sprintf(
             '%s<div class="video video-youtube"><iframe %s allowfullscreen></iframe></div>',

@@ -22,7 +22,7 @@ use Twig_Extension_Debug;
 use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
-    
+
 class WidgetsExtension extends \Twig_Extension
 {
     /**
@@ -78,7 +78,7 @@ class WidgetsExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('widget', array($this, 'widgetFunction'), ['is_safe' => ['html']])
+            new \Twig_SimpleFunction('widget', [$this, 'widgetFunction'], ['is_safe' => ['html']])
         ];
     }
 
@@ -127,11 +127,11 @@ class WidgetsExtension extends \Twig_Extension
         }
 //        $twiggedWidget->addTwigPlugins();
 
-        $ret = strtr($twiggedWidget->render('widget.html', array(
+        $ret = strtr($twiggedWidget->render('widget.html', [
             'abspath' => dirname($_subtemplateDir).'/'
-        ) ), array(
+        ]), [
             './' => substr(dirname($_subtemplateDir), strlen($this->app['webPath'])).'/'
-        ));
+        ]);
         return $ret;
     }
 
