@@ -27,16 +27,10 @@ class GooglemapsPlugin extends Herbie\Plugin
     private $twig;
 
     /**
-     * @var \Herbie\Application
-     */
-    private $app;
-
-    /**
      * @param Herbie\Event $event
      */
     public function onTwigInitialized(Herbie\Event $event)
     {
-        $this->app = $event['app'];
         $this->twig = $event['twig'];
         $this->twig->addFunction(
             new Twig_SimpleFunction('googlemaps', [$this, 'googleMaps'], ['is_safe' => ['html']])

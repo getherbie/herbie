@@ -424,16 +424,4 @@ class ImagineExtension extends \Twig_Extension
         return $filter->apply($image);
     }
 
-    /**
-     * @param array $htmlOptions
-     * @return string
-     */
-    protected function buildHtmlAttributes($htmlOptions = [])
-    {
-        $attributes = '';
-        foreach ($htmlOptions as $key => $value) {
-            $attributes .= ' ' . $key . '="' . $value . '"';
-        }
-        return rtrim($attributes);
-    }
 }

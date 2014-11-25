@@ -57,17 +57,4 @@ class YoutubePlugin extends Herbie\Plugin
         );
     }
 
-    /**
-     * @param array $htmlOptions
-     * @return string
-     */
-    protected function buildHtmlAttributes($htmlOptions = [])
-    {
-        $attributes = '';
-        foreach ($htmlOptions as $key => $value) {
-            $attributes .= $key . '="' . $value . '" ';
-        }
-        return trim($attributes);
-    }
-
 }
