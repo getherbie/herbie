@@ -36,7 +36,11 @@ class DisqusPlugin extends Herbie\Plugin
      */
     public function disqus($shortname)
     {
-        return $this->twig->render('@plugin/disqus/templates/disqus.twig', [
+        $template = $this->app['config']->get(
+            'plugins.disqus.template',
+            '@plugin/disqus/templates/disqus.twig'
+        );
+        return $this->twig->render($template, [
            'shortname' => $shortname
         ]);
     }

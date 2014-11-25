@@ -16,6 +16,10 @@ use Twig_SimpleFunction;
 
 class VimeoPlugin extends Herbie\Plugin
 {
+    /**
+     * @var int
+     */
+    private static $instances = 0;
 
     /**
      * @var Twig_Environment
@@ -40,24 +44,19 @@ class VimeoPlugin extends Herbie\Plugin
      */
     public function vimeo($id, $width = 480, $height = 320, $responsive = 1)
     {
-        $attribs = [
+        self::$instances++;
+        $template = $this->app['config']->get(
+            'plugins.vimeo.template',
+            '@plugin/vimeo/templates/vimeo.twig'
+        );
+        return $this->twig->render($template, [
             'src' => sprintf('//player.vimeo.com/video/%s', $id),
             'width' => $width,
             'height' => $height,
-            'frameborder' => 0
-        ];
-        $style = '';
-        $class = '';
-        if(!empty($responsive)) {
-            $style = '<style>.video-vimeo-responsive { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-vimeo-responsive iframe, .video-vimeo-responsive object, .video-vimeo-responsive embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
-            $class = 'video-vimeo-responsive';
-        }
-        return sprintf(
-            '%s<div class="video video-vimeo %s"><iframe %s webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>',
-            $style,
-            $class,
-            $this->buildHtmlAttributes($attribs)
-        );
+            'responsive' => $responsive,
+            'class' => $responsive ? 'video-vimeo-responsive' : '',
+            'instances' => self::$instances
+        ]);
     }
 
 }

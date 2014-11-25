@@ -1,0 +1,5 @@
+{% if instances == 1 %}
+<style>.video-youtube-responsive { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-youtube-responsive iframe, .video-youtube-responsive object, .video-youtube-responsive embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>
+{% endif %}
+
+<div class="video video-youtube {{ class }}"><iframe src="{{ src }}" width="{{ width }}" height="{{ height }}" frameborder="0" allowfullscreen></iframe></div>

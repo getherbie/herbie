@@ -16,6 +16,10 @@ use Twig_SimpleFunction;
 
 class YoutubePlugin extends Herbie\Plugin
 {
+    /**
+     * @var int
+     */
+    private static $instances = 0;
 
     /**
      * @var Twig_Environment
@@ -43,18 +47,19 @@ class YoutubePlugin extends Herbie\Plugin
      */
     public function youtube($id, $width = 480, $height = 320, $responsive = 1)
     {
-        $attribs = [
+        self::$instances++;
+        $template = $this->app['config']->get(
+            'plugins.youtube.template',
+            '@plugin/youtube/templates/youtube.twig'
+        );
+        return $this->twig->render($template, [
             'src' => sprintf('//www.youtube.com/embed/%s?rel=0', $id),
             'width' => $width,
             'height' => $height,
-            'frameborder' => 0
-        ];
-        $style = empty($responsive) ? '' : '<style>.video-youtube { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; max-width: 100%; height: auto; } .video-youtube iframe, .video-youtube object, .video-youtube embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>';
-        return sprintf(
-            '%s<div class="video video-youtube"><iframe %s allowfullscreen></iframe></div>',
-            $style,
-            $this->buildHtmlAttributes($attribs)
-        );
+            'responsive' => $responsive,
+            'class' => $responsive ? 'video-youtube-responsive' : '',
+            'instances' => self::$instances
+        ]);
     }
 
 }
