@@ -124,8 +124,12 @@ class Assets
         $this->sort();
         $this->publish();
         foreach ($this->find(self::TYPE_CSS, $group) as $asset) {
-            $href = $this->buildUrl($asset['path']);
-            echo sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
+            if(empty($asset['raw'])) {            
+                $href = $this->buildUrl($asset['path']);
+                echo sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
+            } else {
+                echo sprintf('<style>%s</style>', $asset['path']);                
+            }
         }
     }
 
@@ -137,8 +141,12 @@ class Assets
         $this->sort();
         $this->publish();
         foreach ($this->find(self::TYPE_JS, $group) as $asset) {
-            $href = $this->buildUrl($asset['path']);
-            echo sprintf('<script src="%s"></script>', $href);
+            if(empty($asset['raw'])) {
+                $href = $this->buildUrl($asset['path']);
+                echo sprintf('<script src="%s"></script>', $href);
+            } else {
+                echo sprintf('<script>%s</script>', $asset['path']);                
+            }
         }
     }
 
@@ -210,7 +218,7 @@ class Assets
         }
         foreach ($this->assets as $asset) {
 
-            if (0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
+            if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
                 continue;
             }
 
