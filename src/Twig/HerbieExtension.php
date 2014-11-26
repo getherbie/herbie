@@ -64,8 +64,7 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             'site' => new Site($this->app),
-            'page' => $this->app['page'],
-            'assets' => $this->app['assets']
+            'page' => $this->app['page']
         ];
     }
 
@@ -137,6 +136,10 @@ class HerbieExtension extends Twig_Extension
         $options = ['is_safe' => ['html']];
         return [
             new Twig_SimpleFunction('absUrl', [$this, 'functionAbsUrl'], $options),
+            new Twig_SimpleFunction('addCss', [$this, 'functionAddCss'], $options),
+            new Twig_SimpleFunction('addJs', [$this, 'functionAddJs'], $options),
+            new Twig_SimpleFunction('outputCss', [$this, 'functionOutputCss'], $options),
+            new Twig_SimpleFunction('outputJs', [$this, 'functionOutputJs'], $options),
             new Twig_SimpleFunction('asciiTree', [$this, 'functionAsciiTree'], $options),
             new Twig_SimpleFunction('bodyClass', [$this, 'functionBodyClass'], $options),
             new Twig_SimpleFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
@@ -211,6 +214,48 @@ class HerbieExtension extends Twig_Extension
     public function functionAbsUrl($route)
     {
         return $this->app['urlGenerator']->generateAbsolute($route);
+    }
+
+    /**
+     * @param array|string $paths
+     * @param array $attr
+     * @param string $group
+     * @param bool $raw
+     * @param int $pos
+     */
+    public function functionAddCss($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    {
+        $this->app['assets']->addCss($paths, $attr, $group, $raw, $pos);
+    }
+
+    /**
+     * @param array|string $paths
+     * @param array $attr
+     * @param string $group
+     * @param bool $raw
+     * @param int $pos
+     */
+    public function functionAddJs($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    {
+        $this->app['assets']->addJs($paths, $attr, $group, $raw, $pos);
+    }
+
+    /**
+     * @param string $group
+     * @return string
+     */
+    public function functionOutputCss($group = null)
+    {
+        return $this->app['assets']->outputCss($group);
+    }
+
+    /**
+     * @param string $group
+     * @return string
+     */
+    public function functionOutputJs($group = null)
+    {
+        return $this->app['assets']->outputJs($group);
     }
 
     /**
