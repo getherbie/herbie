@@ -123,7 +123,7 @@ class Assets
     {
         $this->sort();
         $this->publish();
-        foreach ($this->find(self::TYPE_CSS, $group) as $asset) {
+        foreach ($this->collect(self::TYPE_CSS, $group) as $asset) {
             if(empty($asset['raw'])) {            
                 $href = $this->buildUrl($asset['path']);
                 echo sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
@@ -140,7 +140,7 @@ class Assets
     {
         $this->sort();
         $this->publish();
-        foreach ($this->find(self::TYPE_JS, $group) as $asset) {
+        foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
             if(empty($asset['raw'])) {
                 $href = $this->buildUrl($asset['path']);
                 echo sprintf('<script src="%s"></script>', $href);
@@ -160,6 +160,9 @@ class Assets
      */
     protected function addAsset($type, $path, $attr, $group, $raw, $pos)
     {
+        if($this->search($path)) {
+            return;
+        }
         $this->assets[] = [
             'type' => $type,
             'path' => $path,
@@ -197,7 +200,7 @@ class Assets
      * @param string $group
      * @return array
      */
-    protected function find($type, $group = null)
+    protected function collect($type, $group = null)
     {
         $assets = [];
         foreach ($this->assets as $asset) {
@@ -206,6 +209,20 @@ class Assets
             }
         }
         return $assets;
+    }
+
+    /**
+     * @param $path
+     * @return bool|int
+     */
+    protected function search($path)
+    {
+        foreach ($this->assets as $index => $asset) {
+            if($asset['path'] == $path) {
+                return $index;
+            }
+        }
+        return false;
     }
 
     /**
