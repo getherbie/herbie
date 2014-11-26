@@ -10,14 +10,14 @@ funktionsfähige Website oder einen Blog.
 
 Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
-* Markdown und Textile zur Formatierung von Inhalten
-* Twig Template Engine zur Erstellung von Layouts
-* Yaml zum Konfigurieren der Website und Verwalten von Datenstrukturen
-* Pimple als Dependency Injection Container
-* Composer und Packagist für das Dependency Management
-* die HttpFoundation-, EventDispatcher- und Yaml-Komponenten der Symfony Components
-* Imagine zur Bildmanipulation und -bearbeitung
-* GeSHi als leistungsfähgier Code Syntaxhighlighter
+* [Markdown][markdown] und [Textile][textile] zur Formatierung von Inhalten
+* [Twig][twig] Template Engine zur Erstellung von Layouts
+* [Yaml][yaml] zum Konfigurieren der Website und Verwalten von Datenstrukturen
+* [Pimple][pimple] als Dependency Injection Container
+* [Composer][composer] und [Packagist][packagist] für das Dependency Management
+* die HttpFoundation-, EventDispatcher- und Yaml-Komponenten der [Symfony Components][symfony]
+* [Imagine][imagine] zur Bildmanipulation und -bearbeitung
+* [GeSHi][geshi] als leistungsfähgier Code Syntaxhighlighter
 
 ## Installation
 
@@ -29,4 +29,17 @@ Composer erstellt im Verzeichnis `myproject` eine Demo-Applikation und installie
 
 ## Website
 
-Weitere Informationen findest du unter <www.getherbie.org>.
+Weitere Informationen findest du unter [www.getherbie.org](http://www.getherbie.org).
+
+
+[markdown]: http://daringfireball.net/projects/markdown/
+[textile]: http://txstyle.org/article/36/php-textile
+[twig]: http://twig.sensiolabs.org
+[yaml]: http://www.yaml.org
+[geshi]: http://qbnz.com/highlighter/
+[pimple]: http://pimple.sensiolabs.org
+[composer]: http://getcomposer.org
+[packagist]: https://packagist.org
+[symfony]: http://symfony.com/doc/current/components/
+[phpunit]: http://phpunit.de
+[imagine]: https://github.com/avalanche123/Imagine
