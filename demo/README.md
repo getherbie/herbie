@@ -1,6 +1,6 @@
-Herbie demo app
-===============
+Herbie Demo-Applikation
+=======================
 
-The content for a simple Herbie demo website.
+Hier findest du drei einfache Demo-Applikationen basierend auf den CSS-Frameworks Bootstrap und Pure und dem PHP-Framework Yii.
 
-**Herbie is not ready for production use yet.**
+Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert. Weitere Informationen findest du unter [http://www.getherbie.org](www.getherbie.org).
