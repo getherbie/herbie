@@ -33,8 +33,8 @@ Alternativ kannst du die Funktion auch mit benannten Argumenten aufrufen.
 Parameter
 ---------
 
-Name        | Beschreibung                          | Typ         Default
-----        | ------------                          | ---       | -------
+Name        | Beschreibung                          | Typ       | Default
+:---------- | :------------------------------------ | :-------- | :------
 id          | Die ID des YouTube-Videos             | string    |  
 width       | Die Breite des Videos in Pixel        | int       | 480
 height      | Die Höhe des Videos in Pixel          | int       | 320
