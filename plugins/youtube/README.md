@@ -21,7 +21,7 @@ Danach aktivierst du das Plugin in der Konfigurationsdatei.
 Anwendung
 ---------
 
-Nach der Installation steht dir die `youtube` Twig-Funktion zur Verfügung. Diese rufst du wie folgt auf:
+Nach der Installation steht dir die Twig-Funktion `youtube` zur Verfügung. Diese rufst du wie folgt auf:
 
     {{ youtube("_0TfPpjDkWU", 480, 320) }}
 

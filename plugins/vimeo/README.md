@@ -20,7 +20,7 @@ Danach aktivierst du das Plugin in der Konfigurationsdatei.
 Anwendung
 ---------
 
-Nach der Installation steht dir die `vimeo` Twig-Funktion zur Verfügung. Diese rufst du wie folgt auf:
+Nach der Installation steht dir die Twig-Funktion `vimeo` zur Verfügung. Diese rufst du wie folgt auf:
 
     {{ vimeo("30459532", 480, 320) }}
 
