@@ -33,10 +33,10 @@ Alternativ kannst du die Funktion auch mit benannten Argumenten aufrufen.
 Parameter
 ---------
 
-Name  | Beschreibung  | Default
-------------- | -------------
-id  | Die ID des YouTube-Videos |   
-width  | Die Breite des Videos | 480
-height  | Die Höhe des Videos | 320
-responsive  | Ob das Video responsiv sein soll | true
+Name        | Beschreibung                          | Typ         Default
+----        | ------------                          | ---       | -------
+id          | Die ID des YouTube-Videos             | string    |  
+width       | Die Breite des Videos in Pixel        | int       | 480
+height      | Die Höhe des Videos in Pixel          | int       | 320
+responsive  | Definiert ob das Video responsiv ist  | bool      | true
 
