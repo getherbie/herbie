@@ -55,9 +55,10 @@ class Application extends Container
 
     /**
      * @param string $sitePath
+     * @param string $vendorDir
      * @param array $values
      */
-    public function __construct($sitePath, array $values = [])
+    public function __construct($sitePath, $vendorDir = '../vendor', array $values = [])
     {
         $this->benchmark();
 
@@ -78,6 +79,7 @@ class Application extends Container
             '@plugin' => rtrim($config->get('plugins_path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
             '@site' => rtrim($this['sitePath'], '/'),
+            '@vendor' => realpath($vendorDir),
             '@web' => rtrim($this['webPath'], '/')
         ]);
 
