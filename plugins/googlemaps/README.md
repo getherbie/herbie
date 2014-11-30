@@ -5,7 +5,7 @@
 
 ## Installation
 
-Das Plugin installierst du am einfachsten via Composer.
+Das Plugin installierst du via Composer.
 
 	$ composer require getherbie/plugin-googlemaps
 
