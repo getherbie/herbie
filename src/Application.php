@@ -24,6 +24,15 @@ defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
  */
 class Application extends Container
 {
+    /**
+     * @var string
+     */
+    public $sitePath;
+
+    /**
+     * @var string
+     */
+    public $vendorDir;
 
     /**
      * @var string
@@ -44,20 +53,26 @@ class Application extends Container
     /**
      * @param string $sitePath
      * @param string $vendorDir
+     */
+    public function __construct($sitePath, $vendorDir = '../vendor')
+    {
+        $this->benchmark();
+        $this->sitePath = realpath($sitePath);
+        $this->vendorDir = realpath($vendorDir);
+        parent::__construct();
+    }
+
+    /**
      * @param array $values
      */
-    public function __construct($sitePath, $vendorDir = '../vendor', array $values = [])
+    public function init(array $values = [])
     {
-        parent::__construct();
-
-        $this->benchmark();
-
         $this['errorHandler'] = new ErrorHandler();
         $this['errorHandler']->register();
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
-        $this['sitePath'] = realpath($sitePath);
+        $this['sitePath'] = $this->sitePath;
 
         $config = new Config($this);
 
@@ -68,7 +83,7 @@ class Application extends Container
             '@plugin' => rtrim($config->get('plugins_path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
             '@site' => rtrim($this['sitePath'], '/'),
-            '@vendor' => realpath($vendorDir),
+            '@vendor' => $this->vendorDir,
             '@web' => rtrim($this['webPath'], '/')
         ]);
 
@@ -170,15 +185,9 @@ class Application extends Container
         };
 
         foreach ($values as $key => $value) {
-            $this[$key] = $value;
+            $this->offsetSet($key, $value);
         }
-    }
 
-    /**
-     * @return void
-     */
-    public function run()
-    {
         $this['plugins']->init();
 
         $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
@@ -187,10 +196,14 @@ class Application extends Container
 
         $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
 
-        $response = $this->handle();
+    }
 
-        #$this['pageLoader']->unsetTwig();
-        #echo"<pre>";print_r($this['page']->toArray());echo"</pre>";exit;
+    /**
+     * @return void
+     */
+    public function run()
+    {
+        $response = $this->handle();
 
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
