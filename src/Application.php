@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
+
 /**
  * The application using Pimple as dependency injection container.
  */
@@ -40,40 +42,18 @@ class Application extends Container
     public $locale;
 
     /**
-     * @param int $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int $errline
-     * @throws \ErrorException
-     */
-    public function errorHandler($errno, $errstr, $errfile, $errline)
-    {
-        // disable error capturing to avoid recursive errors
-        restore_error_handler();
-        throw new \ErrorException($errstr, 500, $errno, $errfile, $errline);
-    }
-
-    public function exceptionHandler($exception)
-    {
-        echo '<pre>';
-        echo '<b>'. $exception->getMessage() . '</b><br>';
-        echo $exception->getTraceAsString();
-        echo '</pre>';
-    }
-
-    /**
      * @param string $sitePath
      * @param string $vendorDir
      * @param array $values
      */
     public function __construct($sitePath, $vendorDir = '../vendor', array $values = [])
     {
+        parent::__construct();
+
         $this->benchmark();
 
-        set_error_handler([$this, 'errorHandler'], error_reporting());
-        set_exception_handler([$this, 'exceptionHandler']);
-
-        parent::__construct();
+        $this['errorHandler'] = new ErrorHandler();
+        $this['errorHandler']->register();
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
@@ -208,13 +188,6 @@ class Application extends Container
         $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
 
         $response = $this->handle();
-
-        /* catch (\Exception $e) {
-
-            $content = $this['twig']->render('error.html', ['error' => $e]);
-            $response = new Response($content, 500);
-
-        }*/
 
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
