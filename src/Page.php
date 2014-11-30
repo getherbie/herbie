@@ -16,6 +16,10 @@ namespace Herbie;
  */
 class Page
 {
+    /**
+     * @var PageLoader
+     */
+    private $pageLoader;
 
     /**
      * @var string
@@ -397,4 +401,23 @@ class Page
     {
         return $this->title;
     }
+
+    /**
+     * @param PageLoader $loader
+     */
+    public function setLoader(Loader\PageLoader $loader)
+    {
+        $this->pageLoader = $loader;
+    }
+
+    /**
+     * @param $alias
+     */
+    public function load($alias)
+    {
+        $data = $this->pageLoader->load($alias);
+        $this->setData($data['data']);
+        $this->setSegments($data['segments']);
+    }
+
 }
