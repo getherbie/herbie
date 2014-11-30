@@ -20,11 +20,25 @@ class Item implements ItemInterface
     use ItemTrait;
 
     /**
+     * @param array $data
+     * @throws \LogicException
+     */
+    public function setData(array $data)
+    {
+        if (array_key_exists('data', $data)) {
+            throw new \LogicException("Field data is not allowed.");
+        }
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
+    }
+
+    /**
      * @return string
      */
     public function getRoute()
     {
-        return $this->route;
+        return trim($this->data['route']);
     }
 
     /**
@@ -32,7 +46,7 @@ class Item implements ItemInterface
      */
     public function getParentRoute()
     {
-        return trim(dirname($this->route), '.');
+        return trim(dirname($this->getRoute()), '.');
     }
 
     /**
@@ -40,15 +54,7 @@ class Item implements ItemInterface
      */
     public function isStartPage()
     {
-        return trim($this->route) == '';
-    }
-
-    /**
-     * @param string $route
-     */
-    public function setRoute($route)
-    {
-        $this->route = $route;
+        return $this->getRoute() == '';
     }
 
     /**
@@ -57,7 +63,7 @@ class Item implements ItemInterface
      */
     public function routeEquals($route)
     {
-        return $this->route == $route;
+        return $this->getRoute() == $route;
     }
 
     /**
@@ -66,9 +72,10 @@ class Item implements ItemInterface
      */
     public function routeInRootPath($route)
     {
-        if (empty($route) || empty($this->route)) {
+        $current = $this->getRoute();
+        if (empty($route) || empty($current)) {
             return false;
         }
-        return 0 === strpos($route, $this->route);
+        return 0 === strpos($route, $current);
     }
 }

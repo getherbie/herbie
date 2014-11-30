@@ -13,40 +13,6 @@ namespace Herbie\Menu;
 
 trait ItemTrait
 {
-    /**
-     * @var string
-     */
-    protected $route;
-
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $hidden;
-    
-    /**
-     * @var string
-     */
-    protected $date;
-
-    /**
-     * @var string
-     */
-    protected $modified;
-
-    /**
-     * @var string
-     */
-    protected $created;
 
     /**
      * @var array
@@ -62,41 +28,11 @@ trait ItemTrait
     }
 
     /**
-     * @param array $data
-     * @throws \LogicException
-     */
-    public function setData(array $data)
-    {
-        if (array_key_exists('data', $data)) {
-            throw new \LogicException("Field data is not allowed.");
-        }
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
-        }
-    }
-
-    /**
      * @return string
      */
-    public function getModified()
+    public function getPath()
     {
-        return $this->modified;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->date;
+        return $this->data['path'];
     }
 
     /**
@@ -104,63 +40,162 @@ trait ItemTrait
      */
     public function setDate($date)
     {
-        $this->date = is_numeric($date) ? date('c', $date) : $date;
+        $this->data['date'] = is_numeric($date) ? date('c', $date) : $date;
+    }
+
+
+    /**
+     * @param string $author
+     * @return string
+     */
+    public function getAuthor($author)
+    {
+        foreach ($this->data['authors'] as $a) {
+            if (strtolower($a) == strtolower($author)) {
+                return $a;
+            }
+        }
+        return '';
     }
 
     /**
+     * @return array
+     */
+    public function getAuthors()
+    {
+        return $this->data['authors'];
+    }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getCategory($category)
+    {
+        foreach ($this->data['categories'] as $c) {
+            if (strtolower($c) == strtolower($category)) {
+                return $c;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->data['categories'];
+    }
+
+    public function getTags()
+    {
+        return isset($this->data['tags']) ? $this->data['tags'] : [];
+    }
+
+    /**
+     * @param string $tag
+     * @return string
+     */
+    public function getTag($tag)
+    {
+        foreach ($this->getTags() as $t) {
+            if (strtolower($t) == strtolower($tag)) {
+                return $t;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param array $categories
+     */
+    public function setCategories($categories)
+    {
+        $this->data['categories'] = array_unique($categories);
+    }
+
+    /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->data['categories'][] = $category;
+    }
+
+    /**
+     * @param array $tags
+     */
+    public function setTags($tags)
+    {
+        $this->data['tags'] = array_unique($tags);
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function setTag($tag)
+    {
+        $this->data['tags'][] = $tag;
+    }
+
+
+    /**
+     * @param array $authors
+     */
+    public function setAuthors($authors)
+    {
+        $this->data['authors'] = array_unique($authors);
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthor($author)
+    {
+        $this->data['authors'][] = $author;
+    }
+
+    /**
+     * @param string $author
      * @return boolean
      */
-    public function getHidden()
+    public function hasAuthor($author)
     {
-        return $this->hidden;
+        foreach ($this->data['authors'] as $c) {
+            if (strtolower($c) == strtolower($author)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * @param boolean $hidden
+     * @param string $category
+     * @return boolean
      */
-    public function setHidden($hidden)
+    public function hasCategory($category)
     {
-        $this->hidden = $hidden;
+        foreach ($this->data['categories'] as $c) {
+            if (strtolower($c) == strtolower($category)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * @return bool
+     * @param string $tag
+     * @return boolean
      */
-    public function isVisible()
+    public function hasTag($tag)
     {
-        return (bool) !$this->hidden;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
+        foreach ($this->getTags() as $t) {
+            if (strtolower($t) == strtolower($tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -209,11 +244,21 @@ trait ItemTrait
         }
     }
 
+
     /**
      * @return string
      */
     public function __toString()
     {
-        return $this->title;
+        return $this->data['title'];
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->data;
+    }
+
 }

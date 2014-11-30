@@ -189,6 +189,9 @@ class Application extends Container
 
         $response = $this->handle();
 
+        #$this['pageLoader']->unsetTwig();
+        #echo"<pre>";print_r($this['page']->toArray());echo"</pre>";exit;
+
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
         $response->send();
@@ -216,7 +219,7 @@ class Application extends Container
 
                 $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
-                $layout = $this['page']->getLayout();
+                $layout = $this['page']->layout;
                 if (empty($layout)) {
                     $content = $this->renderContentSegment(0);
                 } else {
@@ -229,7 +232,7 @@ class Application extends Container
             }
 
             $response = new Response($content);
-            $response->headers->set('Content-Type', $this['page']->getContentType());
+            $response->headers->set('Content-Type', $this['page']->contentType);
 
         } catch (ResourceNotFoundException $e) {
 
@@ -251,7 +254,7 @@ class Application extends Container
 
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
-        $formatter = Formatter\FormatterFactory::create($this['page']->getFormat());
+        $formatter = Formatter\FormatterFactory::create($this['page']->format);
         return $formatter->transform($segment);
     }
 

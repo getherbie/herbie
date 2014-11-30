@@ -289,7 +289,7 @@ class HerbieExtension extends Twig_Extension
         if (empty($route)) {
             $route = 'index';
         }
-        $layout = $this->app['page']->getLayout(false);
+        $layout = $this->app['page']->layout;
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
@@ -320,7 +320,7 @@ class HerbieExtension extends Twig_Extension
         }
 
         foreach ($this->app['rootPath'] as $item) {
-            $links[] = $this->createLink($item->getRoute(), $item->getTitle());
+            $links[] = $this->createLink($item->route, $item->title);
         }
 
         if (!empty($reverse)) {
@@ -440,11 +440,11 @@ class HerbieExtension extends Twig_Extension
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
-            $titles[] = $item->getTitle();
+            $titles[] = $item->title;
         }
 
         if ($this->testIsPost($this->app['page'])) {
-            $titles[] = $this->app['page']->getTitle();
+            $titles[] = $this->app['page']->title;
         }
 
         if (!empty($reverse)) {
