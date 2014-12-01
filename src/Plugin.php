@@ -59,4 +59,14 @@ class Plugin implements EventSubscriberInterface
         return trim($attributes);
     }
 
+    /**
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function config($name, $default = null)
+    {
+        return $this->app['config']->get($name, $default);
+    }
+
 }
