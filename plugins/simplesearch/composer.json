@@ -1,0 +1,15 @@
+{
+    "name": "getherbie/plugin-simplesearch",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Simplesearch",
+    "keywords": ["herbie", "plugin", "search", "simple"],
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "herbie\\plugin\\simplesearch\\": ""
+        }
+    }
+}

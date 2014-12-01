@@ -1,0 +1,15 @@
+{% if results|length > 0 %}
+    <div class="plugin-simplesearch-results">
+        <ul>
+        {% for item in results %}
+            <li>
+                {{ link(item.route, item.title) }}<br>
+                {{ url(item.route) }}
+                {% if item.date %}
+                    {{ item.date }}
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
