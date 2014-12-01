@@ -17,11 +17,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
+
 /**
  * The application using Pimple as dependency injection container.
  */
 class Application extends Container
 {
+    /**
+     * @var string
+     */
+    public $sitePath;
+
+    /**
+     * @var string
+     */
+    public $vendorDir;
 
     /**
      * @var string
@@ -40,38 +51,41 @@ class Application extends Container
     public $locale;
 
     /**
-     * @param int $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int $errline
-     * @throws \ErrorException
+     * @param string $sitePath
+     * @param string $vendorDir
      */
-    public function errorHandler($errno, $errstr, $errfile, $errline)
+    public function __construct($sitePath, $vendorDir = '../vendor')
     {
-        // disable error capturing to avoid recursive errors
-        restore_error_handler();
-        throw new \ErrorException($errstr, 500, $errno, $errfile, $errline);
+        $this->benchmark();
+        $this->sitePath = realpath($sitePath);
+        $this->vendorDir = realpath($vendorDir);
+        parent::__construct();
     }
 
     /**
-     * @param string $sitePath
      * @param array $values
      */
-    public function __construct($sitePath, array $values = [])
+    public function init(array $values = [])
     {
-        $this->benchmark();
-
-        set_error_handler([$this, 'errorHandler'], error_reporting());
-
-        parent::__construct();
-
-        $app = $this;
+        $this['errorHandler'] = new ErrorHandler();
+        $this['errorHandler']->register();
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
-        $this['sitePath'] = realpath($sitePath);
+        $this['sitePath'] = $this->sitePath;
 
-        $config = new Config($app);
+        $config = new Config($this);
+
+        $this['alias'] = new Alias([
+            '@app' => rtrim($this['appPath'], '/'),
+            '@asset' => rtrim($this['sitePath'], '/') . '/assets',
+            '@page' => rtrim($config->get('pages.path'), '/'),
+            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@post' => rtrim($config->get('posts.path'), '/'),
+            '@site' => rtrim($this['sitePath'], '/'),
+            '@vendor' => $this->vendorDir,
+            '@web' => rtrim($this['webPath'], '/')
+        ]);
 
         setlocale(LC_ALL, $config->get('locale'));
         $this->charset = $config->get('charset');
@@ -154,20 +168,26 @@ class Application extends Container
             return new Url\UrlGenerator($app['request'], $app['config']->get('nice_urls', false));
         };
 
+        $this['pageLoader'] = function ($app) {
+            $loader = new Loader\PageLoader($app['alias']);
+            $loader->setTwig($app['twig']->environment);
+            return $loader;
+        };
+
         $this['page'] = function ($app) {
-            return new Page(); // be sure that we always have a Page object
+            $page = new Page(); // be sure that we always have a Page object
+            $page->setLoader($app['pageLoader']);
+            return $page;
+        };
+
+        $this['assets'] = function ($app) {
+            return new Assets($app);
         };
 
         foreach ($values as $key => $value) {
-            $this[$key] = $value;
+            $this->offsetSet($key, $value);
         }
-    }
 
-    /**
-     * @return void
-     */
-    public function run()
-    {
         $this['plugins']->init();
 
         $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
@@ -176,21 +196,14 @@ class Application extends Container
 
         $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
 
-        try {
+    }
 
-            $response = $this->handle();
-
-        } catch (ResourceNotFoundException $e) {
-
-            $content = $this['twig']->render('error.html', ['error' => $e]);
-            $response = new Response($content, 404);
-
-        } catch (\Exception $e) {
-
-            $content = $this['twig']->render('error.html', ['error' => $e]);
-            $response = new Response($content, 500);
-
-        }
+    /**
+     * @return void
+     */
+    public function run()
+    {
+        $response = $this->handle();
 
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
@@ -209,30 +222,38 @@ class Application extends Container
      */
     protected function handle()
     {
-        $menuItem = $this['urlMatcher']->match($this['route']);
+        try {
+            $menuItem = $this['urlMatcher']->match($this['route']);
 
-        $content = $this['pageCache']->get($menuItem->getPath());
-        if ($content === false) {
+            $content = $this['pageCache']->get($menuItem->getPath());
+            if ($content === false) {
 
-            $pageLoader = new Loader\PageLoader();
-            $this['page'] = $pageLoader->load($menuItem->getPath());
+                $this['page']->load($menuItem->getPath());
 
-            $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
+                $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
-            $layout = $this['page']->getLayout();
-            if (empty($layout)) {
-                $content = $this->renderContentSegment(0);
-            } else {
-                $content = $this['twig']->render($layout);
+                $layout = $this['page']->layout;
+                if (empty($layout)) {
+                    $content = $this->renderContentSegment(0);
+                } else {
+                    $content = $this['twig']->render($layout);
+                }
+
+                if(empty($this['page']->noCache)) {
+                    $this['pageCache']->set($menuItem->getPath(), $content);
+                }
             }
 
-            if(empty($this['page']->noCache)) {
-                $this['pageCache']->set($menuItem->getPath(), $content);
-            }
+            $response = new Response($content);
+            $response->headers->set('Content-Type', $this['page']->contentType);
+
+        } catch (ResourceNotFoundException $e) {
+
+            $content = $this['twig']->render('error.html', ['error' => $e]);
+            $response = new Response($content, 404);
+
         }
 
-        $response = new Response($content);
-        $response->headers->set('Content-Type', $this['page']->getContentType());
         return $response;
     }
 
@@ -246,12 +267,8 @@ class Application extends Container
 
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
-        $twigged = $this['twig']->render($segment);
-
-        $this->fireEvent('onContentSegmentRendered', ['segment' => &$twigged]);
-
-        $formatter = Formatter\FormatterFactory::create($this['page']->getFormat());
-        return $formatter->transform($twigged);
+        $formatter = Formatter\FormatterFactory::create($this['page']->format);
+        return $formatter->transform($segment);
     }
 
     /**
@@ -291,4 +308,5 @@ class Application extends Container
         }
         return number_format(microtime(true) - $start, 4);
     }
+
 }

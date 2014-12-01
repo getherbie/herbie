@@ -19,22 +19,34 @@ use Symfony\Component\Yaml\Yaml;
  */
 class PageLoader
 {
+    protected $alias;
+    protected $twig;
+    protected $page;
 
     /**
-     * @param string $path
+     * @param \Herbie\Alias $alias
+     */
+    public function __construct(\Herbie\Alias $alias)
+    {
+        $this->alias = $alias;
+    }
+
+    /**
+     * @param string $alias
      * @return array
      * @throws \Exception
      */
-    public function load($path)
+    public function load($alias)
     {
         $yaml = '';
         $segments = [];
         $segmentId = 0;
 
-        $fileObject = new \SplFileObject($path);
+        $content = $this->loadContent($alias);
 
         $i = 0;
-        foreach($fileObject as $line) {
+        foreach(explode("\n", $content) as $line) {
+            $line .= "\n";
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
@@ -55,30 +67,58 @@ class PageLoader
         }
 
         if ($i < 2) {
-            throw new \Exception("Invalid Front-Matter Block in file {$path}.");
+            throw new \Exception("Invalid Front-Matter Block in file {$alias}.");
         }
 
-        $date = $this->extractDateFrom($fileObject->getFilename());
         $data = (array) Yaml::parse($yaml);
+        $data['format'] = pathinfo($alias, PATHINFO_EXTENSION);
+        $data['date'] = $this->extractDateFromPath($alias);
+        $data['path'] = $alias;
 
-        $page = new Page();
-        $page->setFormat($fileObject->getExtension());
-        $page->setDate($date);
-        $page->setData($data);
-        $page->setSegments($segments);
-        $page->setPath($path);
-
-        unset($fileObject);
-
-        return $page;
+        return [
+            'data' => $data,
+            'segments' => $segments
+        ];
     }
 
     /**
-     * @param string $filename
+     * @param \Twig_Environment $twig
+     */
+    public function setTwig(\Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
+     * @return void
+     */
+    public function unsetTwig()
+    {
+        $this->twig = null;
+    }
+
+    /**
+     * @param $alias
      * @return string
      */
-    protected function extractDateFrom($filename)
+    public function loadContent($alias)
     {
+        if(is_null($this->twig)) {
+            $path = $this->alias->get($alias);
+            return file_get_contents($path);
+        } else {
+            return $this->twig->render($alias);
+        }
+    }
+
+    /**
+     * @param string $alias
+     * @return string
+     * @todo Duplicate code in Herbie\Menu\Post\Builder
+     */
+    protected function extractDateFromPath($alias)
+    {
+        $filename = basename($alias);
         if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
             return $matches[1];
         }

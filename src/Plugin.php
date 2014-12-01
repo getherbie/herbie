@@ -17,6 +17,19 @@ class Plugin implements EventSubscriberInterface
 {
 
     /**
+     * @var Application;
+     */
+    protected $app;
+
+    /**
+     * @param Application $app
+     */
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
      * @return array
      */
     public static function getSubscribedEvents()
@@ -32,4 +45,18 @@ class Plugin implements EventSubscriberInterface
 
         return $list;
     }
+
+    /**
+     * @param array $htmlOptions
+     * @return string
+     */
+    protected function buildHtmlAttributes($htmlOptions = [])
+    {
+        $attributes = '';
+        foreach ($htmlOptions as $key => $value) {
+            $attributes .= $key . '="' . $value . '" ';
+        }
+        return trim($attributes);
+    }
+
 }

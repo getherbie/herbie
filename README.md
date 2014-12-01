@@ -1,33 +1,45 @@
 Herbie
 ======
 
-Herbie is a file based CMS &amp; blog system.
+Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
 
-**Herbie is not ready for production use yet.**
+## Was ist Herbie?
 
-This fork uses a different markdown-parser based on [cebe/markdown](https://github.com/Netzweberei/markdown) to define a simple twitter-bootstrap grid like in https://github.com/dreikanter/markdown-grid
+Mit Herbie erstellst du mit einfachen Textdateien (Markdown, Textile) in kurzer Zeit und mit wenig Aufwand eine voll
+funktionsfähige Website oder einen Blog.
 
-Menus must be defined with twig, as the menu()-function of this fork returns only a collection of menu-items, eg:
+Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
-```
-<!-- Twig Macros begin -->
-{% macro sub_navigation(navigation) %}
-{% import _self as macros %}
-{% for item in navigation %}
-    {% if item.children %}
-    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{{item.title}}<b class="caret"></b></a>
-    <ul class="dropdown-menu">
-        {{ macros.sub_navigation(item.children) }}
-    </ul>
-    </li>
-    {% else %}
-    <li><a href="{{item.url}}">{{item.title}}</a></li>
-    {% endif %}
-{% endfor %}
-{% endmacro %}
+* [Markdown][markdown] und [Textile][textile] zur Formatierung von Inhalten
+* [Twig][twig] Template Engine zur Erstellung von Layouts
+* [Yaml][yaml] zum Konfigurieren der Website und Verwalten von Datenstrukturen
+* [Pimple][pimple] als Dependency Injection Container
+* [Composer][composer] und [Packagist][packagist] für das Dependency Management
+* die HttpFoundation-, EventDispatcher- und Yaml-Komponenten der [Symfony Components][symfony]
+* [Imagine][imagine] zur Bildmanipulation und -bearbeitung
+* [GeSHi][geshi] als leistungsfähgier Code Syntaxhighlighter
 
-{% import _self as macros %}
+## Installation
 
-<!-- Twig Macros end -->
-```
+Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
 
+    $ composer create-project getherbie/demo:dev-master myproject
+
+Composer erstellt im Verzeichnis `myproject` eine Demo-Applikation und installiert alle abhängigen Bibliotheken.
+
+## Website
+
+Weitere Informationen findest du unter [www.getherbie.org](http://www.getherbie.org).
+
+
+[markdown]: http://daringfireball.net/projects/markdown/
+[textile]: http://txstyle.org/article/36/php-textile
+[twig]: http://twig.sensiolabs.org
+[yaml]: http://www.yaml.org
+[geshi]: http://qbnz.com/highlighter/
+[pimple]: http://pimple.sensiolabs.org
+[composer]: http://getcomposer.org
+[packagist]: https://packagist.org
+[symfony]: http://symfony.com/doc/current/components/
+[phpunit]: http://phpunit.de
+[imagine]: https://github.com/avalanche123/Imagine

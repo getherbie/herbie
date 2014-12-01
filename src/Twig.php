@@ -48,22 +48,15 @@ class Twig
 
     public function init()
     {
-        $loader1 = $this->getTwigFilesystemLoader();
-        $loader2 = new Twig_Loader_String();
-        $loaderChain = new Twig_Loader_Chain([$loader1, $loader2]);
-
-        $this->environment = new Twig_Environment($loaderChain, [
+        $loader = $this->getTwigFilesystemLoader();
+        $this->environment = new Twig_Environment($loader, [
             'debug' => $this->config->get('twig.debug'),
             'cache' => $this->config->get('twig.cache')
         ]);
-
         if (!$this->config->isEmpty('twig.debug')) {
             $this->environment->addExtension(new Twig_Extension_Debug());
         }
         $this->environment->addExtension(new Twig\HerbieExtension($this->app));
-        if (!$this->config->isEmpty('imagine')) {
-            #$this->environment->addExtension(new Twig\ImagineExtension($this->app));
-        }
         $this->addTwigPlugins();
     }
 
@@ -90,32 +83,23 @@ class Twig
         if ($this->config->isEmpty('twig.extend')) {
             return;
         }
-
-        $app = $this->app; // Global $app var used by plugins
-
-        extract($this->config->get('twig.extend')); // functions, filters, tests
         // Functions
-        if (isset($functions)) {
-            foreach ($this->readPhpFiles($functions) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addFunction($included);
-            }
+        $dir = $this->config->get('twig.extend.functions');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addFunction($included);
         }
-
         // Filters
-        if (isset($filters)) {
-            foreach ($this->readPhpFiles($filters) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addFilter($included);
-            }
+        $dir = $this->config->get('twig.extend.filters');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addFilter($included);
         }
-
         // Tests
-        if (isset($tests)) {
-            foreach ($this->readPhpFiles($tests) as $file) {
-                $included = $this->includePhpFile($file);
-                $this->environment->addTest($included);
-            }
+        $dir = $this->config->get('twig.extend.tests');
+        foreach ($this->readPhpFiles($dir) as $file) {
+            $included = $this->includePhpFile($file);
+            $this->environment->addTest($included);
         }
     }
 
@@ -136,12 +120,16 @@ class Twig
         $paths[] = __DIR__ . '/layouts'; // Fallback
 
         $loader = new Twig_Loader_Filesystem($paths);
-        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
+        // namespaces
         $pluginPath = $this->config->get('plugins_path');
         if(is_dir($pluginPath)) {
-            $loader->addPath($pluginPath, 'plugins');
+            $loader->addPath($pluginPath, 'plugin');
         }
+        $loader->addPath($this->config->get('pages.path'), 'page');
+        $loader->addPath($this->config->get('posts.path'), 'post');
+        $loader->addPath($this->config->get('site.path'), 'site');
+        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
         return $loader;
     }

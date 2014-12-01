@@ -17,7 +17,6 @@ use Herbie\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
-use Twig_Loader_String;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 use Twig_SimpleTest;
@@ -137,6 +136,10 @@ class HerbieExtension extends Twig_Extension
         $options = ['is_safe' => ['html']];
         return [
             new Twig_SimpleFunction('absUrl', [$this, 'functionAbsUrl'], $options),
+            new Twig_SimpleFunction('addCss', [$this, 'functionAddCss'], $options),
+            new Twig_SimpleFunction('addJs', [$this, 'functionAddJs'], $options),
+            new Twig_SimpleFunction('outputCss', [$this, 'functionOutputCss'], $options),
+            new Twig_SimpleFunction('outputJs', [$this, 'functionOutputJs'], $options),
             new Twig_SimpleFunction('asciiTree', [$this, 'functionAsciiTree'], $options),
             new Twig_SimpleFunction('bodyClass', [$this, 'functionBodyClass'], $options),
             new Twig_SimpleFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
@@ -214,6 +217,48 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
+     * @param array|string $paths
+     * @param array $attr
+     * @param string $group
+     * @param bool $raw
+     * @param int $pos
+     */
+    public function functionAddCss($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    {
+        $this->app['assets']->addCss($paths, $attr, $group, $raw, $pos);
+    }
+
+    /**
+     * @param array|string $paths
+     * @param array $attr
+     * @param string $group
+     * @param bool $raw
+     * @param int $pos
+     */
+    public function functionAddJs($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    {
+        $this->app['assets']->addJs($paths, $attr, $group, $raw, $pos);
+    }
+
+    /**
+     * @param string $group
+     * @return string
+     */
+    public function functionOutputCss($group = null)
+    {
+        return $this->app['assets']->outputCss($group);
+    }
+
+    /**
+     * @param string $group
+     * @return string
+     */
+    public function functionOutputJs($group = null)
+    {
+        return $this->app['assets']->outputJs($group);
+    }
+
+    /**
      * @param array $options
      * @return string
      */
@@ -244,7 +289,7 @@ class HerbieExtension extends Twig_Extension
         if (empty($route)) {
             $route = 'index';
         }
-        $layout = $this->app['page']->getLayout(false);
+        $layout = $this->app['page']->layout;
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
@@ -275,7 +320,7 @@ class HerbieExtension extends Twig_Extension
         }
 
         foreach ($this->app['rootPath'] as $item) {
-            $links[] = $this->createLink($item->getRoute(), $item->getTitle());
+            $links[] = $this->createLink($item->route, $item->title);
         }
 
         if (!empty($reverse)) {
@@ -298,9 +343,6 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionContent($segmentId = 0, $wrap = false)
     {
-        if ($this->environment->getLoader() instanceof Twig_Loader_String) {
-            return $this->renderError('You can not use {{ content() }} in page files.');
-        }
         $content = $this->app->renderContentSegment($segmentId);
         if (empty($wrap)) {
             return $content;
@@ -398,11 +440,11 @@ class HerbieExtension extends Twig_Extension
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
-            $titles[] = $item->getTitle();
+            $titles[] = $item->title;
         }
 
         if ($this->testIsPost($this->app['page'])) {
-            $titles[] = $this->app['page']->getTitle();
+            $titles[] = $this->app['page']->title;
         }
 
         if (!empty($reverse)) {
@@ -461,6 +503,7 @@ class HerbieExtension extends Twig_Extension
         }
         if(isset($prev)) {
             $label = empty($prevPageLabel) ? $prev->title : $prevPageLabel;
+            $label = sprintf('<span>%s</span>', $label);
             if($prevPageIcon) {
                 $label = $prevPageIcon . $label;
             }
@@ -472,6 +515,7 @@ class HerbieExtension extends Twig_Extension
         }*/
         if(isset($next)) {
             $label = empty($nextPageLabel) ? $next->title : $nextPageLabel;
+            $label = sprintf('<span>%s</span>', $label);
             if($nextPageIcon) {
                 $label = $label . $nextPageIcon;
             }
@@ -543,10 +587,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function testIsPost(Page $page)
     {
-        $postsPath = $this->app['config']->get('posts.path');
-        $pagePath = $page->getPath();
-        $pos = strpos($pagePath, $postsPath);
-        return $pos === 0;
+        return 0 === strpos($page->getPath(), '@post');
     }
 
 }

@@ -14,6 +14,7 @@ namespace Herbie\Menu\Page;
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Loader\FrontMatterLoader;
+use Herbie\Menu\Page\Iterator\SortableIterator;
 use Herbie\Menu\RecursiveFilterIterator;
 
 class Builder
@@ -69,19 +70,21 @@ class Builder
                 $this->indexFiles = [];
 
                 // recursive iterators
-                $directoryIterator = new \RecursiveDirectoryIterator($this->path);
+                $directoryIterator = new \Herbie\Iterator\RecursiveDirectoryIterator($this->path);
                 $callback = [new FileFilterCallback($this->extensions), 'call'];
                 $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
                 $mode = \RecursiveIteratorIterator::SELF_FIRST;
                 $iteratorIterator = new \RecursiveIteratorIterator($filterIterator, $mode);
+                $sit = new SortableIterator($iteratorIterator, Iterator\SortableIterator::SORT_BY_NAME);
 
-                foreach ($iteratorIterator as $path => $fileInfo) {
+                foreach ($sit as $path => $fileInfo) {
                     // index file as describer for parent folder
                     if ($fileInfo->isDir()) {
                         // get first index file only
                         foreach (glob($path . '/*index.*') as $indexFile) {
                             $this->indexFiles[] = $indexFile;
-                            $item = $this->createItem($indexFile);
+                            $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
+                            $item = $this->createItem($indexFile, $relPathname);
                             $collection->addItem($item);
                             break;
                         }
@@ -90,7 +93,7 @@ class Builder
                         if (!$this->isValid($path, $fileInfo->getExtension())) {
                             continue;
                         }
-                        $item = $this->createItem($path);
+                        $item = $this->createItem($path, $fileInfo->getRelativePathname());
                         $collection->addItem($item);
                     }
                 }
@@ -122,7 +125,7 @@ class Builder
      * @param string $path
      * @return \Herbie\Menu\Page\Item
      */
-    protected function createItem($path)
+    protected function createItem($path, $relativePath)
     {
         $loader = new FrontMatterLoader();
         $data = $loader->load($path);
@@ -130,9 +133,8 @@ class Builder
         $trimExtension = empty($data['preserveExtension']);
         $route = $this->createRoute($path, $trimExtension);
 
-        $data['path'] = $path;
+        $data['path'] = '@page/' . $relativePath;
         $data['route'] = $route;
-        $data['depth'] = substr_count($route, '/') + 1;
         $item = new Item($data);
 
         if (empty($item->date)) {

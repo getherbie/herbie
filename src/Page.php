@@ -11,66 +11,15 @@
 
 namespace Herbie;
 
+use Herbie\Menu\ItemTrait;
+
 /**
  * Stores the page.
  */
 class Page
 {
 
-    /**
-     * @var string
-     */
-    protected $layout;
-
-    /**
-     * @var string
-     */
-    protected $format;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $date;
-
-    /**
-     * @var boolean
-     */
-    protected $preserveExtension;
-
-    /**
-     * @var string
-     */
-    protected $contentType;
-
-    /**
-     * @var array
-     */
-    protected $authors = [];
-
-    /**
-     * @var array
-     */
-    protected $categories = [];
-
-    /**
-     * @var array
-     */
-    protected $tags = [];
-
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var array
-     */
-    protected $data = [];
+    use ItemTrait;
 
     /**
      * @var array
@@ -78,66 +27,19 @@ class Page
     protected $segments = [];
 
     /**
+     * @var PageLoader
+     */
+    protected $pageLoader;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->layout = 'default.html';
-    }
-
-    /**
-     * @return array
-     */
-    public function getAuthors()
-    {
-        return $this->authors;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        if (empty($this->contentType)) {
-            return 'text/html';
-        }
-        return $this->contentType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormat()
-    {
-        return $this->format;
-    }
-
-    /**
-     * @param bool $trimExtension
-     * @return string
-     */
-    public function getLayout($trimExtension = false)
-    {
-        if ($trimExtension) {
-            return preg_replace("/\\.[^.\\s]{3,4}$/", "", $this->layout);
-        }
-        return $this->layout;
+        $this->data = [
+            'layout' => 'default.html',
+            'contentType' => 'text/html'
+        ];
     }
 
     /**
@@ -145,15 +47,7 @@ class Page
      */
     public function getPath()
     {
-        return $this->path;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getPreserveExtension()
-    {
-        return $this->preserveExtension;
+        return $this->data['path'];
     }
 
     /**
@@ -178,66 +72,6 @@ class Page
     }
 
     /**
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param array $authors
-     */
-    public function setAuthors($authors)
-    {
-        $this->authors = (array) $authors;
-    }
-
-    /**
-     * @param string $author
-     */
-    public function setAuthor($author)
-    {
-        $this->authors[] = $author;
-    }
-
-    /**
-     * @param array $categories
-     */
-    public function setCategories($categories)
-    {
-        $this->categories = (array) $categories;
-    }
-
-    /**
-     * @param string $category
-     */
-    public function setCategory($category)
-    {
-        $this->categories[] = $category;
-    }
-
-    /**
-     * @param string $contentType
-     */
-    public function setContentType($contentType)
-    {
-        $this->contentType = $contentType;
-    }
-
-    public function getData(){
-        return $this->data;
-    }
-
-    /**
      * @param array $data
      * @throws \LogicException
      */
@@ -249,14 +83,6 @@ class Page
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
-    }
-
-    /**
-     * @param string|int $date
-     */
-    public function setDate($date)
-    {
-        $this->date = is_numeric($date) ? date('c', $date) : $date;
     }
 
     /**
@@ -275,31 +101,7 @@ class Page
             default:
                 $format = 'raw';
         }
-        $this->format = $format;
-    }
-
-    /**
-     * @param string $layout
-     */
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @param bool $preserveExtension
-     */
-    public function setPreserveExtension($preserveExtension)
-    {
-        $this->preserveExtension = (bool) $preserveExtension;
+        $this->data['format'] = $format;
     }
 
     /**
@@ -311,94 +113,32 @@ class Page
     }
 
     /**
-     * @param string $tag
-     */
-    public function setTag($tag)
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags($tags)
-    {
-        $this->tags = (array) $tags;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
      * @return array
      */
     public function toArray()
     {
-        $members = [
-            'layout' => $this->layout,
-            'format' => $this->format,
-            'title' => $this->title,
-            'date' => $this->date
+        return [
+            'data' => $this->data,
+            'segments' => $this->segments
         ];
-        return array_merge($members, $this->data);
     }
 
     /**
-     * @param $name
-     * @throws \LogicException
+     * @param PageLoader $loader
      */
-    public function __get($name)
+    public function setLoader(Loader\PageLoader $loader)
     {
-        $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
-            return $this->$getter();
-        } elseif (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
-        } else {
-            throw new \LogicException("Field {$name} does not exist.");
-        }
+        $this->pageLoader = $loader;
     }
 
     /**
-     * @param string $name
-     * @return boolean
+     * @param $alias
      */
-    public function __isset($name)
+    public function load($alias)
     {
-        $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
-            return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->data)) {
-            return $this->data[$name] !== null;
-        } else {
-            return false;
-        }
+        $data = $this->pageLoader->load($alias);
+        $this->setData($data['data']);
+        $this->setSegments($data['segments']);
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set($name, $value)
-    {
-        $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
-        } else {
-            $this->data[$name] = $value;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->title;
-    }
 }
