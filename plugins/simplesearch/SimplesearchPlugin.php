@@ -11,13 +11,16 @@
 
 namespace herbie\plugin\simplesearch;
 
-#use herbie\plugin\simplesearch\classes\SimplesearchExtension;
 use Herbie;
+use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\Page\Item;
 use Twig_SimpleFunction;
 
 class SimplesearchPlugin extends Herbie\Plugin
 {
+    /**
+     * @param Herbie\Event $event
+     */
     public function onTwigInitialized(Herbie\Event $event)
     {
         $event['twig']->addFunction(
@@ -28,14 +31,17 @@ class SimplesearchPlugin extends Herbie\Plugin
         );
     }
 
+    /**
+     * @return string
+     */
     public function form()
     {
-        $template = $this->app['config']->get(
+        $template = $this->config(
             'plugins.simplesearch.template.form',
             '@plugin/simplesearch/templates/form.twig'
         );
         return $this->app['twig']->render($template, [
-            'route' => 'suche',
+            'action' => 'suche',
             'query' => isset($_GET['query']) ? $_GET['query'] : '',
         ]);
     }
@@ -47,58 +53,75 @@ class SimplesearchPlugin extends Herbie\Plugin
     public function results()
     {
         $query = isset($_GET['query']) ? $_GET['query'] : '';
-
-        if(empty($query)) {
-            $results = [];
-        } else {
-            $results = $this->search($query);
-        }
-
-        $template = $this->app['config']->get(
+        $results = empty($query) ? [] : $this->search($query);
+        $template = $this->config(
             'plugins.simplesearch.template.results',
             '@plugin/simplesearch/templates/results.twig'
         );
         return $this->app['twig']->render($template, [
             'query' => $query,
-            'results' => $results
+            'results' => $results,
+            'submitted' => isset($_GET['query'])
         ]);
     }
 
+    /**
+     * @param Herbie\Event $event
+     */
     public function onPluginsInitialized(Herbie\Event $event)
     {
+        $alias = $this->config(
+            'plugins.simplesearch.pages.search',
+            '@plugin/simplesearch/pages/search.html'
+        );
+        $path = $this->app['alias']->get($alias);
+        $loader = new FrontMatterLoader();
+        $item = $loader->load($path);
+        $item['path'] = $alias;
         $event['app']['menu']->addItem(
-            new Item([
-                'route' => 'suche',
-                'title' => 'Suche',
-                'path' => '@plugin/simplesearch/pages/search.html',
-                'noCache' => 1,
-                'hidden' => 0
-            ])
+            new Item($item)
         );
     }
 
+    /**
+     * @param $query
+     * @return array
+     */
     protected function search($query)
     {
+        $i = 1;
+        $max = 100;
         $results = [];
+
         $pageLoader = clone($this->app['pageLoader']);
         $pageLoader->unsetTwig();
+
         // pages
         foreach($this->app['menu'] as $item) {
+            if($i>$max) continue;
             $page = $pageLoader->load($item->path);
             if($this->match($query, $page)) {
                 $results[] = $item;
+                $i++;
             }
         }
         // posts
         foreach($this->app['posts'] as $item) {
+            if($i>$max) continue;
             $page = $pageLoader->load($item->path);
             if($this->match($query, $page)) {
                 $results[] = $item;
+                $i++;
             }
         }
         return $results;
     }
 
+    /**
+     * @param string $query
+     * @param array $page
+     * @return bool
+     */
     protected function match($query, array $page)
     {
         if(!empty($page) && isset($page['segments']) && isset($page['data']['title'])) {

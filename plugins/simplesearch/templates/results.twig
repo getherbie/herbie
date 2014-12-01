@@ -1,15 +1,20 @@
-{% if results|length > 0 %}
+{% if submitted %}
     <div class="plugin-simplesearch-results">
-        <ul>
-        {% for item in results %}
-            <li>
-                {{ link(item.route, item.title) }}<br>
-                {{ url(item.route) }}
-                {% if item.date %}
-                    {{ item.date }}
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
+        {% if query == false %}
+            <p>Bitte geben Sie einen Suchbegriff ein.</p>
+        {% elseif results|length == 0 %}
+            <p>Keine Ergebnisse für '{{ query }}' gefunden.</p>
+        {% else %}
+            <p>{{ results|length }} Ergebnisse gefunden.</p>
+            {% for result in results %}
+                <div class="result">
+                    <div class="title">{{ link(result.route, result.title) }}</div>
+                    <div class="url">{{ url(result.route) }}</div>
+                    {% if result.date %}
+                        <div class="date">{{ result.date|strftime('%e. %B %Y') }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endif %}
