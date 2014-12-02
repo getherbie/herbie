@@ -1,7 +1,7 @@
 {
     "name": "getherbie/plugin-rssfeed",
     "homepage": "http://www.getherbie.org",
-    "description": "Herbie Plugin rssfeed",
+    "description": "Herbie Plugin RSS-Feed",
     "keywords": ["herbie", "plugin", "rss", "feed"],
     "type": "herbie-plugin",
     "require": {
