@@ -1,0 +1,10 @@
+{
+    "name": "getherbie/plugin-xmlsitemap",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin xmlsitemap",
+    "keywords": ["herbie", "plugin", "rss", "feed"],
+    "type": "herbie-plugin",
+    "require": {
+        "getherbie/herbie": "dev-master"
+    }
+}
