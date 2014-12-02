@@ -1,0 +1,30 @@
+---
+route: feed.rss
+layout: null
+contentType: text/xml
+preserveExtension: true
+hidden: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{{ config('plugins.rssfeed.channel.title') }}</title>
+    <link>{{ config('plugins.rssfeed.channel.link') }}</link>
+    <description>{{ config('plugins.rssfeed.channel.description') }}</description>
+    <language>{{ config('plugins.rssfeed.channel.language', site.language) }}</language>
+    <copyright>{{ config('plugins.rssfeed.channel.copyright') }}</copyright>
+    <pubDate>{{ "now"|date('r') }}</pubDate>
+    {% for item in site.menu %}
+    {% if item.title %}
+    <item>
+    <title>{{ item.title }}</title>
+    <link>{{ absUrl(item.route) }}</link>
+    {% if item.abstract %}<description>{{ item.abstract }}</description>{% endif %}
+    {# if item.authors %}<author>{{ item.authors }}</author>{% endif #}
+    {% if item.id %}<guid>{{ item.id }}</guid>{% endif %}
+    {% if item.date %}<pubDate>{{ item.date|date('r') }}</pubDate>{% endif %}
+    </item>
+    {% endif %}
+    {% endfor %}
+  </channel>
+</rss>
