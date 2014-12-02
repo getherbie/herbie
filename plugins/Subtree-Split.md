@@ -15,9 +15,11 @@ the process of managing one-way read-only subtree splits.
         highlight/:https://github.com/getherbie/plugin-highlight.git
         imagine/:https://github.com/getherbie/plugin-imagine.git
         lipsum/:https://github.com/getherbie/plugin-lipsum.git
+        rssfeed/:https://github.com/getherbie/plugin-rssfeed.git
         shortcode/:https://github.com/getherbie/plugin-shortcode.git
         simplesearch/:https://github.com/getherbie/plugin-simplesearch.git
         test/:https://github.com/getherbie/plugin-test.git
         vimeo/:https://github.com/getherbie/plugin-vimeo.git
         youtube/:https://github.com/getherbie/plugin-youtube.git
+        xmlsitemap/:https://github.com/getherbie/plugin-xmlsitemap.git
     " --heads=master
