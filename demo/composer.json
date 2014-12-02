@@ -1,7 +1,7 @@
 {
     "name": "getherbie/demo",
     "homepage": "http://demo.getherbie.org",
-    "description": "Demo application for Herbie. Herbie is a flat-file CMS & blog system and not ready for production use yet.",
+    "description": "Demo application for Herbie a flat-file CMS & blog system",
     "keywords": ["herbie", "flat-file", "cms", "blog", "demo"],
     "type": "project",
     "minimum-stability": "dev",
