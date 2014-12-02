@@ -138,6 +138,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('absUrl', [$this, 'functionAbsUrl'], $options),
             new Twig_SimpleFunction('addCss', [$this, 'functionAddCss'], $options),
             new Twig_SimpleFunction('addJs', [$this, 'functionAddJs'], $options),
+            new Twig_SimpleFunction('config', [$this, 'functionConfig'], $options),
             new Twig_SimpleFunction('outputCss', [$this, 'functionOutputCss'], $options),
             new Twig_SimpleFunction('outputJs', [$this, 'functionOutputJs'], $options),
             new Twig_SimpleFunction('asciiTree', [$this, 'functionAsciiTree'], $options),
@@ -334,6 +335,15 @@ class HerbieExtension extends Twig_Extension
         $html .= '</ul>';
 
         return $html;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $default
+     */
+    public function functionConfig($name, $default = null)
+    {
+        return $this->app['config']->get($name, $default);
     }
 
     /**
