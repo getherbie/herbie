@@ -7,10 +7,5 @@
     "require": {
         "getherbie/herbie": "dev-master",
         "easybook/geshi": "1.0.8.12"
-    },
-    "autoload": {
-        "psr-4": {
-            "herbie\\plugin\\highlight\\": ""
-        }
-    } 
+    }
 }
