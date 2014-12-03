@@ -1,0 +1,53 @@
+{% if sent %}
+
+    <p>{{ simplecontact.messages.success }}</p>
+
+{% else %}
+
+    {% if errors %}
+        <div class="simplecontact-errors">
+            {{ simplecontact.messages.error }}
+        </div>
+    {% endif %}
+
+
+    <form class="pure-form pure-form-stacked" action="{{ url(route) }}" method="post" id="simplecontact">
+        <div class="pure-control-group">
+            <label for="name">{{ simplecontact.fields.name.label }}</label>
+            <input class="pure-input-2-3" id="name" name="name" type="text" placeholder="" value="{{ vars.name }}">
+        </div>
+
+        <div class="pure-control-group">
+            <label for="email">{{ simplecontact.fields.email.label }}</label>
+            <input class="pure-input-2-3" id="email" name="email" type="email" placeholder="" value="{{ vars.email }}">
+        </div>
+
+        <div class="pure-control-group">
+            <label for="message">{{ simplecontact.fields.name.label }}</label>
+            <textarea class="pure-input-2-3" id="message" name="message" placeholder="{{ simplecontact.fields.message.placeholder }}" rows="5">{{ vars.message }}</textarea>
+        </div>
+
+        <div class="pure-control-group pure-control-group-antispam">
+            <label for="antispam">{{ simplecontact.fields.antispam.label }}</label>
+            <input class="pure-input-2-3" id="antispam" name="antispam" type="text" placeholder="" value="{{ vars.antispam }}">
+        </div>
+
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">{{ simplecontact.fields.submit.label }}</button>
+        </div>
+    </form>
+
+    <style>
+
+        .simplecontact-errors {
+            background: rgb(202, 60, 60); /* this is an orange */
+            color:white;
+            padding:1em;
+        }
+        .pure-control-group-antispam {
+            display:none;
+        }
+
+    </style>
+
+{% endif %}
