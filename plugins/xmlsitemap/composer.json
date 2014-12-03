@@ -4,6 +4,7 @@
     "description": "Herbie Plugin XML-Sitemap for Google & Co",
     "keywords": ["herbie", "plugin", "rss", "feed"],
     "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
     "require": {
         "getherbie/herbie": "dev-master"
     }

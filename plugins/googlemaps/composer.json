@@ -4,6 +4,7 @@
     "description": "Herbie Plugin Google Maps.",
     "keywords": ["herbie", "plugin", "googlemaps"],    
     "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
     "require": {
         "getherbie/herbie": "dev-master"
     }

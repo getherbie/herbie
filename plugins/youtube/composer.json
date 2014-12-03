@@ -4,6 +4,7 @@
     "description": "Herbie Plugin YouTube",
     "keywords": ["herbie", "plugin", "youtube"],        
     "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
     "require": {
         "getherbie/herbie": "dev-master"
     }

@@ -4,6 +4,7 @@
     "description": "Herbie Plugin Shortcode",
     "keywords": ["herbie", "plugin", "shortcode"],
     "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
     "require": {
         "getherbie/herbie": "dev-master"
     }
