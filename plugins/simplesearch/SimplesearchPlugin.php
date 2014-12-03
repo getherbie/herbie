@@ -13,7 +13,7 @@ namespace herbie\plugin\simplesearch;
 
 use Herbie;
 use Herbie\Loader\FrontMatterLoader;
-use Herbie\Menu\Page\Item;
+use Herbie\Menu;
 use Twig_SimpleFunction;
 
 class SimplesearchPlugin extends Herbie\Plugin
@@ -70,17 +70,36 @@ class SimplesearchPlugin extends Herbie\Plugin
      */
     public function onPluginsInitialized(Herbie\Event $event)
     {
-        $alias = $this->config(
-            'plugins.simplesearch.pages.search',
-            '@plugin/simplesearch/pages/search.html'
-        );
+        $alias = $this->getPathAlias();
         $path = $this->app['alias']->get($alias);
         $loader = new FrontMatterLoader();
         $item = $loader->load($path);
         $item['path'] = $alias;
         $event['app']['menu']->addItem(
-            new Item($item)
+            new Menu\Page\Item($item)
         );
+    }
+
+    /**
+     * @param Menu\ItemInterface $item
+     * @param bool $usePageCache
+     * @return array
+     */
+    protected function loadPageData(Menu\ItemInterface $item, $usePageCache)
+    {
+        if(!$usePageCache) {
+            $page = $this->app['pageLoader']->load($item->path, false);
+            $title = isset($page['data']['title']) ? $page['data']['title'] : '';
+            $content = $page['segments'] ? implode('', $page['segments']) : '';
+            return [$title, $content];
+        }
+
+        $content = $this->app['pageCache']->get($item->path);
+        if ($content !== false) {
+            return [strip_tags($content)];
+        }
+
+        return [];
     }
 
     /**
@@ -93,27 +112,25 @@ class SimplesearchPlugin extends Herbie\Plugin
         $max = 100;
         $results = [];
 
-        $pageLoader = clone($this->app['pageLoader']);
-        $pageLoader->unsetTwig();
+        $pathAlias = $this->getPathAlias();
+        $usePageCache = $this->config('cache.page.enable', false);
+        $usePageCache &= $this->config('plugins.simplesearch.use_page_cache', false);
 
-        // pages
-        foreach($this->app['menu'] as $item) {
-            if($i>$max) continue;
-            $page = $pageLoader->load($item->path);
-            if($this->match($query, $page)) {
+        $appendIterator = new \AppendIterator();
+        $appendIterator->append($this->app['menu']->getIterator());
+        $appendIterator->append($this->app['posts']->getIterator());
+
+        foreach($appendIterator as $item) {
+            if($i>$max || empty($item->title) || $item->path == $pathAlias) {
+                continue;
+            }
+            $data = $this->loadPageData($item, $usePageCache);
+            if($this->match($query, $data)) {
                 $results[] = $item;
                 $i++;
             }
         }
-        // posts
-        foreach($this->app['posts'] as $item) {
-            if($i>$max) continue;
-            $page = $pageLoader->load($item->path);
-            if($this->match($query, $page)) {
-                $results[] = $item;
-                $i++;
-            }
-        }
+
         return $results;
     }
 
@@ -122,14 +139,28 @@ class SimplesearchPlugin extends Herbie\Plugin
      * @param array $page
      * @return bool
      */
-    protected function match($query, array $page)
+    protected function match($query, array $data)
     {
-        if(!empty($page) && isset($page['segments']) && isset($page['data']['title'])) {
-            if (stripos(implode('', $page['segments']), $query) !== false || stripos($page['data']['title'], $query) !== false) {
+        foreach($data as $part) {
+            if(empty($part)) {
+                continue;
+            }
+            if (stripos($part, $query) !== false) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPathAlias()
+    {
+        return $this->config(
+            'plugins.simplesearch.page.search',
+            '@plugin/simplesearch/pages/search.html'
+        );
     }
 
 }
