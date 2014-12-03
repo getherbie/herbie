@@ -33,16 +33,17 @@ class PageLoader
 
     /**
      * @param string $alias
+     * @param bool $twigify
      * @return array
      * @throws \Exception
      */
-    public function load($alias)
+    public function load($alias, $twigify = true)
     {
         $yaml = '';
         $segments = [];
         $segmentId = 0;
 
-        $content = $this->loadContent($alias);
+        $content = $this->loadRawContent($alias, $twigify);
 
         $i = 0;
         foreach(explode("\n", $content) as $line) {
@@ -98,12 +99,13 @@ class PageLoader
     }
 
     /**
-     * @param $alias
+     * @param string $alias
+     * @param bool $twigify
      * @return string
      */
-    public function loadContent($alias)
+    public function loadRawContent($alias, $twigify = true)
     {
-        if(is_null($this->twig)) {
+        if(!$twigify || is_null($this->twig)) {
             $path = $this->alias->get($alias);
             return file_get_contents($path);
         } else {
