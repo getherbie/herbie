@@ -32,7 +32,7 @@ trait ItemTrait
      */
     public function getPath()
     {
-        return $this->data['path'];
+        return isset($this->data['path']) ? $this->data['path'] : '';
     }
 
     /**
