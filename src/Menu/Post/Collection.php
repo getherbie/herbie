@@ -11,15 +11,13 @@
 
 namespace Herbie\Menu\Post;
 
+use Herbie\Menu\CollectionTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 class Collection implements \IteratorAggregate, \Countable
 {
 
-    /**
-     * @var array
-     */
-    protected $items;
+    use CollectionTrait;
 
     /**
      * @var string
@@ -41,15 +39,6 @@ class Collection implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param Item $item
-     */
-    public function addItem(Item $item)
-    {
-        $route = $item->getRoute();
-        $this->items[$route] = $item;
-    }
-
-    /**
      * @return string
      */
     public function getBlogRoute()
@@ -63,23 +52,6 @@ class Collection implements \IteratorAggregate, \Countable
     public function getFilteredBy()
     {
         return $this->filteredBy;
-    }
-
-    /**
-     * @return array
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * @param string $route
-     * @return Item
-     */
-    public function getItem($route)
-    {
-        return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 
     /**
@@ -202,22 +174,6 @@ class Collection implements \IteratorAggregate, \Countable
             ];
         }
         return $items;
-    }
-
-    /**
-     * @return \ArrayIterator|Traversable
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->items);
-    }
-
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->items);
     }
 
     /**

@@ -1,7 +1,7 @@
 {
     "name": "ntzwbr/herbie",
     "homepage": "http://www.getherbie.org",
-    "description": "Herbie is a flat-file based CMS & blog system. Not ready for production use yet.",
+    "description": "Herbie is a flat-file CMS & blog system. Simple installation - no database - just text files.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
     "type": "library",
     "minimum-stability": "dev",
