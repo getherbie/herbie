@@ -53,7 +53,7 @@ class SimplesearchPlugin extends Herbie\Plugin
     public function results()
     {
         $query = isset($_GET['query']) ? $_GET['query'] : '';
-        $results = empty($query) ? [] : $this->search($query);
+        $results = $this->search($query);
         $template = $this->config(
             'plugins.simplesearch.template.results',
             '@plugin/simplesearch/templates/results.twig'
@@ -108,6 +108,10 @@ class SimplesearchPlugin extends Herbie\Plugin
      */
     protected function search($query)
     {
+        if(empty($query)) {
+            return [];
+        }
+
         $i = 1;
         $max = 100;
         $results = [];
