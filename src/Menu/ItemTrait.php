@@ -22,8 +22,13 @@ trait ItemTrait
     /**
      * @param array $data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
+        // defaults
+        $this->data = [
+            'layout' => 'default.html',
+            'contentType' => 'text/html'
+        ];
         $this->setData($data);
     }
 
