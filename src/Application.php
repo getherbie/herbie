@@ -76,6 +76,10 @@ class Application extends Container
 
         $config = new Config($this);
 
+        // Add custom psr4 plugin path to composer autoloader
+        $autoload = require($this->vendorDir . '/autoload.php');
+        $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins_path'));
+
         $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
