@@ -37,14 +37,12 @@ class SimplecontactPlugin extends Herbie\Plugin
      */
     public function simplecontact()
     {
-        $sent = false;
         if ( $_SERVER['REQUEST_METHOD'] == "POST") {
             if ($this->validateFormData() ) {
-
-                #$this->redirect('success');
-
                 if ($this->sendEmail() ) {
-                    $sent = true;
+                    $this->redirect('success');
+                } else {
+                    $this->redirect('fail');
                 }
             }
         }
@@ -52,8 +50,8 @@ class SimplecontactPlugin extends Herbie\Plugin
         $config =  $this->getFormConfig();
 
         switch($this->app['action']) {
-            case 'error':
-                $content = $config['messages']['error'];
+            case 'fail':
+                $content = $config['messages']['fail'];
                 break;
             case 'success':
                 $content = $config['messages']['success'];
@@ -64,8 +62,7 @@ class SimplecontactPlugin extends Herbie\Plugin
                     'page' => $this->app['page']->toArray(),
                     'errors' => $this->errors,
                     'vars' => $this->filterFormData(),
-                    'route' => $this->app['route'],
-                    'sent' => $sent
+                    'route' => $this->app['route']
                 ]);
         }
 
