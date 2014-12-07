@@ -15,7 +15,7 @@ use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
-use Twig_Loader_String;
+use Twig_Loader_Array;
 
 class Twig
 {
@@ -76,6 +76,29 @@ class Twig
     }
 
     /**
+     * @param string $string
+     * @return string
+     */
+    function renderString($string)
+    {
+        // see Twig\Extensions\Twig_Extension_StringLoader
+        $name = '__twig_string__';
+        // get current loader
+        $loader = $this->environment->getLoader();
+        // set loader chain with new array loader
+        $this->environment->setLoader(new Twig_Loader_Chain(array(
+            new Twig_Loader_Array(array($name => $string)),
+            $loader
+        )));
+        // render string
+        $rendered = $this->environment->render($name);
+        // reset current loader
+        $this->environment->setLoader($loader);
+        return $rendered;
+    }
+
+
+    /**
      * @return void
      */
     public function addTwigPlugins()
@@ -123,7 +146,7 @@ class Twig
 
         // namespaces
         $pluginPath = $this->config->get('plugins_path');
-        if(is_dir($pluginPath)) {
+        if (is_dir($pluginPath)) {
             $loader->addPath($pluginPath, 'plugin');
         }
         $loader->addPath($this->config->get('pages.path'), 'page');
