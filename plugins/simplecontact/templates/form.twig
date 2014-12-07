@@ -1,35 +1,28 @@
-{% if sent %}
-
-    <p>{{ simplecontact.messages.success }}</p>
-
-{% else %}
+<div id="simplecontact">
 
     {% if errors %}
-        <div class="simplecontact-errors">
-            {{ simplecontact.messages.error }}
-        </div>
+        <div class="simplecontact-errors">{{ simplecontact.messages.error }}</div>
     {% endif %}
 
-
-    <form class="pure-form pure-form-stacked" action="{{ url(route) }}" method="post" id="simplecontact">
+    <form class="pure-form pure-form-stacked" action="{{ url(route) }}" method="post" id="simplecontact-form">
         <div class="pure-control-group">
             <label for="name">{{ simplecontact.fields.name.label }}</label>
-            <input class="pure-input-2-3" id="name" name="name" type="text" placeholder="" value="{{ vars.name }}">
+            <input class="pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ vars.name }}">
         </div>
 
         <div class="pure-control-group">
             <label for="email">{{ simplecontact.fields.email.label }}</label>
-            <input class="pure-input-2-3" id="email" name="email" type="email" placeholder="" value="{{ vars.email }}">
+            <input class="pure-input-1" id="email" name="email" type="email" placeholder="" value="{{ vars.email }}">
         </div>
 
         <div class="pure-control-group">
-            <label for="message">{{ simplecontact.fields.name.label }}</label>
-            <textarea class="pure-input-2-3" id="message" name="message" placeholder="{{ simplecontact.fields.message.placeholder }}" rows="5">{{ vars.message }}</textarea>
+            <label for="message">{{ simplecontact.fields.message.label }}</label>
+            <textarea class="pure-input-1" id="message" name="message" placeholder="{{ simplecontact.fields.message.placeholder }}" rows="5">{{ vars.message }}</textarea>
         </div>
 
         <div class="pure-control-group pure-control-group-antispam">
             <label for="antispam">{{ simplecontact.fields.antispam.label }}</label>
-            <input class="pure-input-2-3" id="antispam" name="antispam" type="text" placeholder="" value="{{ vars.antispam }}">
+            <input class="pure-input-1" id="antispam" name="antispam" type="text" placeholder="" value="{{ vars.antispam }}">
         </div>
 
         <div class="pure-controls">
@@ -37,17 +30,21 @@
         </div>
     </form>
 
-    <style>
+</div>
 
-        .simplecontact-errors {
-            background: rgb(202, 60, 60); /* this is an orange */
-            color:white;
-            padding:1em;
-        }
-        .pure-control-group-antispam {
-            display:none;
-        }
+<style>
+    .simplecontact-errors {
+        font-size:0.9em;
+        background: rgb(232, 90, 90);
+        color:white;
+        padding:1em;
+        margin-bottom:1em;
+    }
+    .pure-control-group {
+        margin-bottom:1em;
+    }
+    .pure-control-group-antispam {
+        display:none;
+    }
+</style>
 
-    </style>
-
-{% endif %}

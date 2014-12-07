@@ -22,35 +22,60 @@ class SimplecontactPlugin extends Herbie\Plugin
 
     protected $errors = [];
 
-    public function onPageLoaded(Herbie\Event $event)
+    /**
+     * @param Herbie\Event $event
+     */
+    public function onTwigInitialized(Herbie\Event $event)
     {
-        $this->page = $event['page'];
-        if(empty($this->page->simplecontact)) {
-            return;
-        }
+        $event['twig']->addFunction(
+            new Twig_SimpleFunction('simplecontact', [$this, 'simplecontact'], ['is_safe' => ['html']])
+        );
+    }
 
+    /**
+     * @return string
+     */
+    public function simplecontact()
+    {
         $sent = false;
         if ( $_SERVER['REQUEST_METHOD'] == "POST") {
             if ($this->validateFormData() ) {
+
+                #$this->redirect('success');
+
                 if ($this->sendEmail() ) {
                     $sent = true;
                 }
             }
         }
 
-        $segments = $this->page->getSegments();
-        $segments[0] .= $event['app']['twig']->render('@plugin/simplecontact/templates/form.twig', [
-            'simplecontact' => $this->getFormConfig(),
-            'page' => $this->page->toArray(),
-            'errors' => $this->errors,
-            'vars' => $this->filterFormData(),
-            'route' => $this->app['route'],
-            'sent' => $sent
-        ]);
-        $this->page->setSegments($segments);
+        $config =  $this->getFormConfig();
+
+        switch($this->app['action']) {
+            case 'error':
+                $content = $config['messages']['error'];
+                break;
+            case 'success':
+                $content = $config['messages']['success'];
+                break;
+            default:
+                $content = $this->app['twig']->render('@plugin/simplecontact/templates/form.twig', [
+                    'simplecontact' => $config,
+                    'page' => $this->app['page']->toArray(),
+                    'errors' => $this->errors,
+                    'vars' => $this->filterFormData(),
+                    'route' => $this->app['route'],
+                    'sent' => $sent
+                ]);
+        }
+
+        return $content;
+
     }
 
-
+    /**
+     * @return bool
+     */
     protected function validateFormData()
     {
         $config = $this->getFormConfig();
@@ -72,6 +97,9 @@ class SimplecontactPlugin extends Herbie\Plugin
         return empty($this->errors);
     }
 
+    /**
+     * @return array
+     */
     protected function filterFormData()
     {
         $defaults = [
@@ -90,6 +118,9 @@ class SimplecontactPlugin extends Herbie\Plugin
         return array_merge($defaults, $filtered);
     }
 
+    /**
+     * @return bool
+     */
     protected function sendEmail()
     {
         $form = $this->filterFormData();
@@ -110,20 +141,29 @@ class SimplecontactPlugin extends Herbie\Plugin
 
         $headers = "From: {$form['name']} <{$form['email']}>";
 
-        if (mail($recipient, $subject, $message, $headers)) {
-            return true;
-        } else {
-            return false;
-        }
+        return mail($recipient, $subject, $message, $headers);
     }
 
+    /**
+     * @return array
+     */
     protected function getFormConfig()
     {
         $config = (array) $this->config('plugins.simplecontact');
-        if(isset($this->page->simplecontact) && is_array($this->page->simplecontact)) {
-            $config = (array)$this->page->simplecontact;
+        if(isset($this->app['page']->simplecontact) && is_array($this->app['page']->simplecontact)) {
+            $config = (array)$this->app['page']->simplecontact;
         }
         return $config;
+    }
+
+    /**
+     * @param string $action
+     */
+    protected function redirect($action)
+    {
+        $route = $this->app['route'] . ':' . $action;
+        $twigExt = $this->app['twig']->environment->getExtension('herbie');
+        $twigExt->functionRedirect($route);
     }
 
 }
