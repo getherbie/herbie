@@ -123,7 +123,7 @@ class SimplecontactPlugin extends Herbie\Plugin
         $form = $this->filterFormData();
 
         // Antispam
-        if('' == $form['antispam']) {
+        if(!empty($form['antispam'])) {
             return true;
         }
 
