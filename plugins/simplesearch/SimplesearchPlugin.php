@@ -42,7 +42,7 @@ class SimplesearchPlugin extends Herbie\Plugin
         );
         return $this->app['twig']->render($template, [
             'action' => 'suche',
-            'query' => isset($_GET['query']) ? $_GET['query'] : '',
+            'query' => $this->app['request']->get('query'),
         ]);
     }
 
@@ -52,7 +52,7 @@ class SimplesearchPlugin extends Herbie\Plugin
      */
     public function results()
     {
-        $query = isset($_GET['query']) ? $_GET['query'] : '';
+        $query = $this->app['request']->get('query');
         $results = $this->search($query);
         $template = $this->config(
             'plugins.simplesearch.template.results',
@@ -61,7 +61,7 @@ class SimplesearchPlugin extends Herbie\Plugin
         return $this->app['twig']->render($template, [
             'query' => $query,
             'results' => $results,
-            'submitted' => isset($_GET['query'])
+            'submitted' => isset($query)
         ]);
     }
 
