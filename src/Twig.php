@@ -81,6 +81,10 @@ class Twig
      */
     function renderString($string)
     {
+        // no rendering if empty
+        if(empty($string)) {
+            return $string;
+        }
         // see Twig\Extensions\Twig_Extension_StringLoader
         $name = '__twig_string__';
         // get current loader
