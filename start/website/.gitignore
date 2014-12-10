@@ -1,0 +1,23 @@
+# netbeans project files
+nbproject
+
+# composer itself
+composer.phar
+
+# composer lock files
+composer.lock
+
+# composer vendor
+vendor/
+
+# mac DS_Store files
+.DS_Store
+
+# assets folders
+web/assets/
+
+# cache folders
+web/cache/
+
+# plugins folder
+site/plugins
