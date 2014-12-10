@@ -1,7 +1,13 @@
 Herbie Website (Kick)-Starter
 =============================
 
-Um eine neue Herbie-Website zu installieren, braucht es die folgenden Schritte.
+Ein neues Website-Projekt startest du mit Hilfe von Composer. 
+
+    $ composer create-project getherbie/start-website:dev-master
+    
+Composer installiert den Website-Starter in das Verzeichnis `start-website`. 
+    
+Die einzelnen Schritte kannst du auch einzeln durchführen:
 
 	$ git clone https://github.com/getherbie/start-website.git
     $ cd start-website
