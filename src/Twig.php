@@ -149,14 +149,18 @@ class Twig
         $loader = new Twig_Loader_Filesystem($paths);
 
         // namespaces
-        $pluginPath = $this->config->get('plugins_path');
-        if (is_dir($pluginPath)) {
-            $loader->addPath($pluginPath, 'plugin');
+        $namespaces = [
+            'plugin' => $this->config->get('plugins_path'),
+            'page' => $this->config->get('pages.path'),
+            'post' => $this->config->get('posts.path'),
+            'site' => $this->config->get('site.path'),
+            'widget' => __DIR__ . '/Twig/widgets'
+        ];
+        foreach($namespaces as $namespace => $path) {
+            if (is_dir($path)) {
+                $loader->addPath($path, $namespace);
+            }
         }
-        $loader->addPath($this->config->get('pages.path'), 'page');
-        $loader->addPath($this->config->get('posts.path'), 'post');
-        $loader->addPath($this->config->get('site.path'), 'site');
-        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
         return $loader;
     }
