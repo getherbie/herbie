@@ -3,9 +3,9 @@ Herbie Website (Kick)-Starter
 
 Um eine neue Herbie-Website zu installieren, braucht es die folgenden Schritte.
 
-  $ git clone https://github.com/getherbie/start-website.git
-  $ cd start-website
-  $ composer update
+	$ git clone https://github.com/getherbie/start-website.git
+    $ cd start-website
+    $ composer update
 
 Fertig!
 
