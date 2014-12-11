@@ -18,8 +18,6 @@ use Twig_SimpleFunction;
 
 class SimplecontactPlugin extends Herbie\Plugin
 {
-    protected $page;
-
     protected $errors = [];
 
     /**
@@ -58,8 +56,7 @@ class SimplecontactPlugin extends Herbie\Plugin
                 break;
             default:
                 $content = $this->app['twig']->render('@plugin/simplecontact/templates/form.twig', [
-                    'simplecontact' => $config,
-                    'page' => $this->app['page']->toArray(),
+                    'config' => $config,
                     'errors' => $this->errors,
                     'vars' => $this->filterFormData(),
                     'route' => $this->app['route']
@@ -147,8 +144,8 @@ class SimplecontactPlugin extends Herbie\Plugin
     protected function getFormConfig()
     {
         $config = (array) $this->config('plugins.simplecontact');
-        if(isset($this->app['page']->simplecontact) && is_array($this->app['page']->simplecontact)) {
-            $config = (array)$this->app['page']->simplecontact;
+        if(isset($this->app['menuItem']->simplecontact) && is_array($this->app['menuItem']->simplecontact)) {
+            $config = (array)$this->app['menuItem']->simplecontact;
         }
         return $config;
     }
