@@ -162,6 +162,7 @@ class Application extends Container
 
         $this['pageLoader'] = function ($app) {
             $loader = new Loader\PageLoader($app['alias']);
+            $loader->setTwig($this['twig']->environment);
             return $loader;
         };
 
@@ -173,6 +174,10 @@ class Application extends Container
 
         $this['assets'] = function ($app) {
             return new Assets($app);
+        };
+
+        $this['menuItem'] = function () {
+            return $this['urlMatcher']->match($this['route']);
         };
 
         foreach ($values as $key => $value) {
@@ -215,8 +220,8 @@ class Application extends Container
     {
         try {
 
-            // holds all page data
-            $menuItem = $this['urlMatcher']->match($this['route']);
+            // load menu item (holds page data) from container
+            $menuItem = $this['menuItem'];
 
             $content = false;
 
@@ -265,11 +270,8 @@ class Application extends Container
         $segment = $this['page']->getSegment($segmentId);
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
-        $twigged = $this['twig']->renderString($segment);
-        $this->fireEvent('onContentSegmentTwigged', ['twigged' => &$twigged]);
-
         $formatter = Formatter\FormatterFactory::create($this['page']->format);
-        return $formatter->transform($twigged);
+        return $formatter->transform($segment);
     }
 
     /**
