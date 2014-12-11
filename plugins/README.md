@@ -11,3 +11,7 @@ Danach aktivierst du das Plugin in der Konfigurationsdatei und passt Plugin-Eins
 
 Fertig!
 
+Aktuell stehen folgende Plugins zur Verfügung:
+
+* [Disqus](disqus)
+
