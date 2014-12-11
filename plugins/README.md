@@ -14,4 +14,16 @@ Fertig!
 Aktuell stehen folgende Plugins zur Verfügung:
 
 * [Disqus](disqus)
+* [Google Maps](googlemaps)
+* [Highlight](highlight)
+* [Imagine](imagine)
+* [Lipsum](lipsum)
+* [RSS-Feed](rssfeed)
+* [Shortcode](shortcode)
+* [Simple Contact](simplecontact)
+* [Simple Search](simplesearch)
+* [Test](test)
+* [Vimeo](vimeo)
+* [XML-Sitemap](xmlsitemap)
+* [YouTube](youtube)
 
