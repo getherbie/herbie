@@ -15,6 +15,7 @@ the process of managing one-way read-only subtree splits.
         highlight/:https://github.com/getherbie/plugin-highlight.git
         imagine/:https://github.com/getherbie/plugin-imagine.git
         lipsum/:https://github.com/getherbie/plugin-lipsum.git
+        random/:https://github.com/getherbie/plugin-random.git
         rssfeed/:https://github.com/getherbie/plugin-rssfeed.git
         shortcode/:https://github.com/getherbie/plugin-shortcode.git
         simplecontact/:https://github.com/getherbie/plugin-simplecontact.git
