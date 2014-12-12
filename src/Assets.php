@@ -81,7 +81,7 @@ class Assets
     public function __construct($app)
     {
         $this->alias = $app['alias'];
-        $this->baseUrl = $app['request']->getBaseUrl();
+        $this->baseUrl = str_replace('/index.php', '', $app['request']->getBaseUrl());
         $this->assetsPath = $app['webPath'] . '/' . $this->assetsDir;
         $this->assetsUrl = $this->baseUrl . '/' . $this->assetsDir;
     }
