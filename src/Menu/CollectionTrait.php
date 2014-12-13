@@ -74,4 +74,19 @@ trait CollectionTrait
         return $this->items[$route];
     }
 
+    /**
+     * @param string $value
+     * @param string $key
+     * @return ItemInterface|null
+     */
+    public function find($value, $key)
+    {
+        foreach($this->items as $item) {
+            if($item->$key == $value) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
 }
