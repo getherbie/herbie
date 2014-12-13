@@ -41,7 +41,7 @@ class AsciiTree extends \RecursiveTreeIterator
             $title = $this->getEntry();
             $output .= $this->getPrefix();
     		$output .= empty($title) ? $this->emptyTitle : $title;
-            $output .= "\n";
+            $output .= PHP_EOL;
     	}
     	return $output;
     }

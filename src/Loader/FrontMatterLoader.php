@@ -28,6 +28,8 @@ class FrontMatterLoader
 
         $i = 0;
         foreach ($fileObject as $line) {
+            // strip \n and \r from end of line
+            $line = rtrim($line, "\n\r");
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
@@ -36,10 +38,11 @@ class FrontMatterLoader
                 break;
             }
             if ($i == 1) {
-                $yaml .= $line;
+                // add PHP_EOL to end of line
+                $yaml .= $line . PHP_EOL;
             }
         }
-        
+
         unset($fileObject);
 
         return (array) Yaml::parse($yaml);

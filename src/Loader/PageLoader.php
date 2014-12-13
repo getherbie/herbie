@@ -47,13 +47,15 @@ class PageLoader
 
         $i = 0;
         foreach(explode("\n", $content) as $line) {
-            $line .= "\n";
+            // strip \r from end of line
+            $line = rtrim($line, "\r");
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
             }
             if ($i == 1) {
-                $yaml .= $line;
+                // add PHP_EOL to end of line
+                $yaml .= $line . PHP_EOL;
             }
             if ($i > 1) {
                 if (preg_match('/^--- ([A-Za-z0-9_]+) ---$/', $line, $matches)) {
@@ -63,7 +65,8 @@ class PageLoader
                 if (!array_key_exists($segmentId, $segments)) {
                     $segments[$segmentId] = '';
                 }
-                $segments[$segmentId] .= $line;
+                // add PHP_EOL to end of line
+                $segments[$segmentId] .= $line . PHP_EOL;
             }
         }
 
