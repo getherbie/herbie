@@ -1,0 +1,18 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}Daten editieren{% endblock %}
+{% block subtitle %}{{ path }}{% endblock %}
+
+{% block content %}
+
+    <form action="" method="post" class="pure-form">
+        <textarea wrap="off" class="nowrap pure-input-1" rows="30" cols="60" name="content">{{ content }}</textarea>
+        <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
+        <a href="?action=data" class="pure-button">Abbrechen</a>
+    </form>
+
+    {{ addJs('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js') }}
+    {{ addJs('@plugin/adminpanel/assets/jquery.autosize.min.js') }}
+    {{ addJs('$(document).ready(function() { $("textarea").autosize(); });', raw=true) }}
+
+{% endblock %}

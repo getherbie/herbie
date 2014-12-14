@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+    <title>Herbie Backend</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <style>{% include '@plugin/adminpanel/templates/styles.css' %}</style>
+</head>
+<body>
+<div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+    <div id="menu">
+        <div class="pure-menu pure-menu-open">
+            <a class="pure-menu-heading" href=" {{ url('adminpanel') }}">HERBIE</a>
+            <ul>
+                <!-- li class="menu-item-divided pure-menu-selected"><a href="?action=index">Home</a></li-->
+                <li><a href="?action=pages">Seiten</a></li>
+                <li><a href="?action=posts">Blogposts</a></li>
+                <li><a href="?action=data">Daten</a></li>
+                <li>&nbsp;</li>
+                <li><a href=" {{ url('') }}">Frontend</a></li>
+                <li><a href="?action=logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="main">
+        <div class="header">
+            <h1>{% block title %}{% endblock %}</h1>
+            <h2>{% block subtitle %}{% endblock %}</h2>
+        </div>
+        <div class="content">
+            <div class="pure-g"><div class="pure-u-1">
+            {% block content %}{% endblock %}
+            </div></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window, document) {
+
+        var layout   = document.getElementById('layout'),
+                menu     = document.getElementById('menu'),
+                menuLink = document.getElementById('menuLink');
+
+        function toggleClass(element, className) {
+            var classes = element.className.split(/\s+/),
+                    length = classes.length,
+                    i = 0;
+
+            for(; i < length; i++) {
+                if (classes[i] === className) {
+                    classes.splice(i, 1);
+                    break;
+                }
+            }
+            // The className is not found
+            if (length === classes.length) {
+                classes.push(className);
+            }
+
+            element.className = classes.join(' ');
+        }
+
+        menuLink.onclick = function (e) {
+            var active = 'active';
+
+            e.preventDefault();
+            toggleClass(layout, active);
+            toggleClass(menu, active);
+            toggleClass(menuLink, active);
+        };
+
+    }(this, this.document));
+</script>
+{{ outputJs() }}
+</body>
+</html>

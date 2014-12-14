@@ -1,0 +1,24 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}Seiten{% endblock %}
+
+{% block content %}
+<table class="pure-table pure-table-horizontal">
+    <thead>
+    <tr>
+        <th>Titel</th>
+        <th>Route</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in site.menu %}
+        <tr>
+            <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
+            <td>{{ item.route }}</td>
+            <td class="links"><a class="pure-button button-small" href="?action=editpage&path={{ item.path }}">Editieren</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
