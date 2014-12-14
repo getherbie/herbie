@@ -1,0 +1,11 @@
+{
+    "name": "getherbie/plugin-adminpanel",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Adminpanel.",
+    "keywords": ["herbie", "plugin", "admin", "backend"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
+    "require": {
+        "getherbie/herbie": "dev-master"
+    }
+}

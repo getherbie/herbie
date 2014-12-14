@@ -9,6 +9,7 @@ the process of managing one-way read-only subtree splits.
     $ git subsplit update
 
     $ git subsplit publish "
+        adminpanel/:https://github.com/getherbie/plugin-adminpanel.git
         disqus/:https://github.com/getherbie/plugin-disqus.git
         form/:https://github.com/getherbie/plugin-form.git
         googlemaps/:https://github.com/getherbie/plugin-googlemaps.git
