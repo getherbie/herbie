@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Herbie Flat-File CMS & Blog - Demo Website">
         <meta name="author" content="">
+	    <meta name="robots" content="noindex, nofollow">
         <link rel="shortcut icon" href="<?php echo Yii::app()->baseUrl ?>/favicon.ico">
 
         <title><?php $this->beginWidget('Twigify') ?>{{ pageTitle({delim:' / ', siteTitle:'Herbie Demo Blog', rootTitle: 'Herbie Flat-File CMS & Blog - Demo Website', reverse:false}) }}<?php $this->endWidget() ?></title>
