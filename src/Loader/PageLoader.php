@@ -39,13 +39,42 @@ class PageLoader
      */
     public function load($alias, $twigify = true)
     {
+        $content = $this->readFile($alias, $twigify);
+        list($yaml, $segments) = $this->parseContent($content);
+
+        $data = (array) Yaml::parse($yaml);
+        $data['format'] = pathinfo($alias, PATHINFO_EXTENSION);
+        $data['date'] = $this->extractDateFromPath($alias);
+        $data['path'] = $alias;
+
+        return [
+            'data' => $data,
+            'segments' => $segments
+        ];
+    }
+
+    /**
+     * @param string $alias
+     * @return array
+     */
+    public function loadRaw($alias)
+    {
+        $content = $this->readFile($alias, false);
+        return $this->parseContent($content);
+    }
+
+    /**
+     * @param string $content
+     * @return array
+     * @throws \Exception
+     */
+    protected function parseContent($content)
+    {
         $yaml = '';
         $segments = [];
-        $segmentId = 0;
-
-        $content = $this->loadRawContent($alias, $twigify);
 
         $i = 0;
+        $segmentId = 0;
         foreach(explode("\n", $content) as $line) {
             // strip \r from end of line
             $line = rtrim($line, "\r");
@@ -69,20 +98,10 @@ class PageLoader
                 $segments[$segmentId] .= $line . PHP_EOL;
             }
         }
-
         if ($i < 2) {
-            throw new \Exception("Invalid Front-Matter Block in file {$alias}.");
+            throw new \Exception("Invalid Front-Matter Block in file {$this->alias}.");
         }
-
-        $data = (array) Yaml::parse($yaml);
-        $data['format'] = pathinfo($alias, PATHINFO_EXTENSION);
-        $data['date'] = $this->extractDateFromPath($alias);
-        $data['path'] = $alias;
-
-        return [
-            'data' => $data,
-            'segments' => $segments
-        ];
+        return [$yaml, $segments];
     }
 
     /**
@@ -106,7 +125,7 @@ class PageLoader
      * @param bool $twigify
      * @return string
      */
-    public function loadRawContent($alias, $twigify = true)
+    protected function readFile($alias, $twigify = true)
     {
         if(!$twigify || is_null($this->twig)) {
             $path = $this->alias->get($alias);
