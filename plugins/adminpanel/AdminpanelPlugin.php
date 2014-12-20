@@ -16,6 +16,7 @@ use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu;
 use Twig_SimpleFunction;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Yaml\Yaml;
 
 
 class AdminpanelPlugin extends Herbie\Plugin
@@ -105,6 +106,9 @@ class AdminpanelPlugin extends Herbie\Plugin
     protected function editpageAction()
     {
         $path = $this->request->query->get('path', null);
+
+        $data = $this->app['pageLoader']->load($path, false);
+
         $absPath = $this->app['alias']->get($path);
         $action = strpos($path, '@page') !== false ? 'pages' : 'posts';
 
@@ -140,13 +144,44 @@ class AdminpanelPlugin extends Herbie\Plugin
         $path = $this->request->query->get('path', null);
         $absPath = $this->app['alias']->get($path);
 
-        if($this->request->getMethod() == 'POST') {
-            $content = $this->request->request->get('content', null);
-            file_put_contents($absPath, $content);
+        // Config
+        $name = pathinfo($absPath, PATHINFO_FILENAME);
+        $config = $this->app['config']->get('plugins.adminpanel.data.' . $name . '.config');
+        if(is_null($config)) {
+            return $this->editDataAsString();
         }
 
+        $saved = false;
+        if($this->request->getMethod() == 'POST') {
+            $data = $this->request->request->get('data', []);
+            #echo"<pre>";print_r($data);echo"</pre>";
+            $content = Yaml::dump(array_values($data));
+            $saved = file_put_contents($absPath, $content);
+        }
+
+        #echo"<pre>";print_r(Yaml::parse(file_get_contents($absPath)));echo"</pre>";
+
         return $this->render('editdata.twig', [
+            'config' => $config,
+            'data' => Yaml::parse(file_get_contents($absPath)),
+            'saved' => $saved
+        ]);
+    }
+
+    protected function editDataAsString()
+    {
+        $path = $this->request->query->get('path', null);
+        $absPath = $this->app['alias']->get($path);
+
+        $saved = false;
+        if($this->request->getMethod() == 'POST') {
+            $content = $this->request->request->get('content', null);
+            $saved = file_put_contents($absPath, $content);
+        }
+
+        return $this->render('editdata_string.twig', [
             'content' => file_get_contents($absPath),
+            'saved' => $saved
         ]);
     }
 

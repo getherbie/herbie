@@ -1,7 +1,9 @@
 body {
     color: #777;
 }
-
+a {
+    color:#1F8DD6;
+}
 .pure-img-responsive {
     max-width: 100%;
     height: auto;
@@ -270,4 +272,11 @@ textarea.nowrap {
 }
 .button-xlarge {
     font-size: 125%;
+}
+
+div.alert-success {
+    background: #5CB85C;
+    color:#ffffff;
+    padding:0.5em 1em;
+    margin-bottom:1em;
 }
