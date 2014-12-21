@@ -7,7 +7,7 @@
         <thead>
         <tr>
             <th>Titel</th>
-            <th>Route</th>
+            <th>Datum</th>
             <th></th>
         </tr>
         </thead>
@@ -15,8 +15,8 @@
         {% for item in site.posts %}
             <tr>
                 <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
-                <td>{{ item.route }}</td>
-                <td class="links"><a class="pure-button button-small" href="?action=editpage&path={{ item.path }}">Editieren</a></td>
+                <td>{{ item.date }}</td>
+                <td class="links"><a class="pure-button button-small" href="?action=page/edit&path={{ item.path }}">Editieren</a></td>
             </tr>
         {% endfor %}
         </tbody>

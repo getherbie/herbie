@@ -273,10 +273,16 @@ textarea.nowrap {
 .button-xlarge {
     font-size: 125%;
 }
-
+div.alert {
+    padding:0.5em 1em;
+    margin-bottom:1em;
+}
+div.alert-info {
+    color: #31708F;
+    background-color: #D9EDF7;
+    border-color: #BCE8F1;
+}
 div.alert-success {
     background: #5CB85C;
     color:#ffffff;
-    padding:0.5em 1em;
-    margin-bottom:1em;
 }

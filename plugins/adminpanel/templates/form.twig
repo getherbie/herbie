@@ -3,6 +3,10 @@
 {% block title %}Seite editieren{% endblock %}
 {% block subtitle %}{{ path }}{% endblock %}
 
+{% block alert %}
+    {% if saved %}<div class="alert alert-success">Die Seite wurde gesichert.</div>{% endif %}
+{% endblock %}
+
 {% block content %}
 
     <form action="" method="post" class="pure-form">

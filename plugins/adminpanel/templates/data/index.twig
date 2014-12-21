@@ -1,0 +1,137 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}Daten{% endblock %}
+
+{% block content %}
+    <table class="pure-table pure-table-horizontal data-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Grösse</th>
+            <th>Geändert</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item,entry in data %}
+            <tr class="file-{{ item }}">
+                <td>{{ item }}</td>
+                <td>{{ entry.size|filesize }}</td>
+                <td>{{ entry.modified|strftime }}</td>
+                <td class="links">
+                    <a class="pure-button button-small" href="?action=data/edit&path=@site/data/{{ item }}.yml">Editieren</a>
+                    <a class="delete-confirmed pure-button pure-button-primary button-small" style="display:none;" data-file="{{ item }}" href="#">Ja</a>
+                    <a class="delete-cancel pure-button button-small" style="display:none;" data-file="{{ item }}" href="#">Nein</a>
+                    <a class="delete pure-button button-small" data-file="{{ item }}" href="#">Löschen</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p><a class="add pure-button" data-file="{{ item }}" href="#">Hinzufügen</a></p>
+    <div class="addblock" style="display:none">
+        <form class="pure-form">
+            <input type="text" name="name" class="name pure-input-1-4">
+            <button class="save pure-button">Erstellen</button>
+            <span class="error"></span>
+        </form>
+    </div>
+    <table class="addtemplate" style="display:none">
+        <tbody>
+        <tr class="file-{item}">
+            <td>{item}</td>
+            <td>–</td>
+            <td>–</td>
+            <td class="links">
+                <a class="pure-button button-small" href="?action=data/edit&path=@site/data/{item}.yml">Editieren</a>
+                <a class="delete-confirmed pure-button pure-button-primary button-small" style="display:none;" data-file="{item}" href="#">Ja</a>
+                <a class="delete-cancel pure-button button-small" style="display:none;" data-file="{item}" href="#">Nein</a>
+                <a class="delete pure-button button-small" data-file="{item}" href="#">Löschen</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block jquery %}
+    <script>
+        $(document).ready(function () {
+            /*
+            $(document).on("click", "a.delete", function () {
+                var context = $(this);
+                var item = context.attr('data-file');
+                var path = '@site/data/{item}.yml'.replace('{item}', item);
+                if (!confirm('Datei löschen?')) {
+                    return false;
+                }
+                $.ajax({
+                    type: "DELETE",
+                    url: "?action=file/delete",
+                    data: {path: path},
+                    dataType: "json"
+                }).done(function () {
+                    context.closest('tr').remove();
+                }).error(function () {
+                    alert('Datei konnte nicht gelöscht werden');
+                });
+                return false;
+            });
+            */
+            $(document).on("click", "a.delete", function () {
+                $(this).hide();
+                $(this).siblings('a.delete-cancel').show();
+                $(this).siblings('a.delete-confirmed').show();
+                return false;
+            });
+            $(document).on("click", "a.delete-cancel", function () {
+                $(this).hide();
+                $(this).siblings('a.delete-confirmed').hide();
+                $(this).siblings('a.delete').show();
+                return false;
+            });
+            $(document).on("click", "a.delete-confirmed", function () {
+                var context = $(this);
+                var item = context.attr('data-file');
+                var path = '@site/data/{item}.yml'.replace('{item}', item);
+                $.ajax({
+                    type: "DELETE",
+                    url: "?action=file/delete",
+                    data: {path: path},
+                    dataType: "json"
+                }).done(function () {
+                    context.closest('tr').remove();
+                }).error(function () {
+                    alert('Datei konnte nicht gelöscht werden');
+                });
+                return false;
+            });
+            $(document).on("click", "a.add", function () {
+                $(this).hide();
+                $('div.addblock').show();
+                $('div.addblock input').val("");
+                $('div.addblock input').focus();
+                return false;
+            });
+            $(document).on("click", "div.addblock button.save", function () {
+                var name = $('div.addblock input').val();
+                $.ajax({
+                    type: "POST",
+                    url: "?action=data/add",
+                    data: {name: name},
+                    dataType: "json"
+                }).success(function (name) {
+                    $('div.addblock').hide();
+                    $('a.add').show();
+                    var template = $("table.addtemplate tbody").clone().html().replace(/{item}/g, name);
+                    $(".data-table tbody tr:last-child").after(template);
+                }).error(function (jqXHR, textStatus, errorThrown) {
+                    $('div.addblock .error').text(errorThrown);
+                });
+                return false;
+            });
+            $(document).on("focus", "div.addblock input", function () {
+                $('div.addblock .error').text('');
+            });
+        });
+    </script>
+{% endblock %}

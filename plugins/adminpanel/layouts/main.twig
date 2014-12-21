@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
     <title>Herbie Backend</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
     <!--[if lte IE 8]>
@@ -27,9 +26,9 @@
             <a class="pure-menu-heading" href=" {{ url('adminpanel') }}">HERBIE</a>
             <ul>
                 <!-- li class="menu-item-divided pure-menu-selected"><a href="?action=index">Home</a></li-->
-                <li><a href="?action=pages">Seiten</a></li>
-                <li><a href="?action=posts">Blogposts</a></li>
-                <li><a href="?action=data">Daten</a></li>
+                <li><a href="?action=page/index">Seiten</a></li>
+                <li><a href="?action=post/index">Blogposts</a></li>
+                <li><a href="?action=data/index">Daten</a></li>
                 <li>&nbsp;</li>
                 <li><a href=" {{ url('') }}">Frontend</a></li>
                 <li><a href="?action=logout">Logout</a></li>
@@ -42,7 +41,7 @@
             <h2>{% block subtitle %}{% endblock %}</h2>
         </div>
         <div class="content">
-            {% block success %}{% endblock %}
+            {% block alert %}{% endblock %}
             <div class="pure-g">
                 <div class="pure-u-1">
                     {% block content %}{% endblock %}
@@ -88,7 +87,8 @@
 
     }(this, this.document));
 </script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% block jquery %}{% endblock %}
 {{ outputJs() }}
 </body>
 </html>

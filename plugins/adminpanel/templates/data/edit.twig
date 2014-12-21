@@ -4,8 +4,8 @@
 {% block title %}Daten editieren{% endblock %}
 {% block subtitle %}{{ path }}{% endblock %}
 
-{% block success %}
-    {% if saved %}<div class="alert-success">Die Daten wurden gesichert.</div>{% endif %}
+{% block alert %}
+    {% if saved %}<div class="alert alert-success">Die Daten wurden gesichert.</div>{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
             {% endfor %}
         </fieldset>
         <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
-        <a href="?action=data" class="pure-button">Abbrechen</a>
+        <a href="?action=data/index" class="pure-button">Abbrechen</a>
     </form>
 
     <div class="template" data-count="{{ data|length }}" style="display:none">

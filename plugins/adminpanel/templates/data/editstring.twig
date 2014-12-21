@@ -3,8 +3,9 @@
 {% block title %}Daten editieren{% endblock %}
 {% block subtitle %}{{ path }}{% endblock %}
 
-{% block success %}
-    {% if saved %}<div class="alert-success">Die Daten wurden gesichert.</div>{% endif %}
+{% block alert %}
+    <div class="alert alert-info">Formular-Konfiguration fehlt.</div>
+    {% if saved %}<div class="alert alert-success">Die Daten wurden gesichert.</div>{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,7 +13,7 @@
     <form action="" method="post" class="pure-form">
         <textarea wrap="off" class="nowrap pure-input-1" rows="30" cols="60" name="content">{{ content }}</textarea>
         <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
-        <a href="?action=data" class="pure-button">Abbrechen</a>
+        <a href="?action=data/index" class="pure-button">Abbrechen</a>
     </form>
 
     {{ addJs('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js') }}
