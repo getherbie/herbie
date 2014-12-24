@@ -9,13 +9,13 @@ hidden: true
 {% for item in site.menu %}
 <url>
 <loc>{{ absUrl(item.route) }}</loc>
-<lastmod>{{ item.date }}</lastmod>
+{% if(item.date) %}<lastmod>{{ item.date|date("c") }}</lastmod>{% endif %}
 </url>
 {% endfor %}
 {% for item in site.posts %}
 <url>
 <loc>{{ absUrl(item.route) }}</loc>
-<lastmod>{{ item.date }}</lastmod>
+{% if(item.date) %}<lastmod>{{ item.date|date("c") }}</lastmod>{% endif %}
 </url>
 {% endfor %}
 </urlset>
