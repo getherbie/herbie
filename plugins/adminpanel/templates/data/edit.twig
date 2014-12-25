@@ -21,7 +21,8 @@
         <a href="?action=data/index" class="pure-button">Abbrechen</a>
     </form>
 
-    <div class="template" data-count="{{ data|length }}" style="display:none">
+    <!-- template used for DOM manipulations -->
+    <div class="template" data-count="{{ data|length }}" style="display:none;">
         {{ macro.element(config, '_index_') }}
     </div>
 
@@ -99,6 +100,29 @@
                 return false;
             });
             $(document).on("click", "a.remove-multitext", function() {
+                $(this).parent().remove();
+                return false;
+            });
+
+            // add-matrix
+            $(document).on("click", "a.add-matrix", function() {
+                var parent = $(this).siblings(".matrix-rows");
+                var count = $(parent).attr("data-count");
+                var index = $(parent).attr("data-index");
+                var template = $("div.template div.matrix-rows").clone().html();
+                template = template.replace(/__index__/g, count);
+                template = template.replace(/_index_/g, index);
+                var row = $(parent).children(".matrix-row:last-child");
+                if(row.length) {
+                    row.after( template );
+                } else {
+                    $(parent).html( template );
+                }
+                $(parent).attr("data-count", ++count);
+                return false;
+            });
+
+            $(document).on("click", "a.remove-matrix", function() {
                 $(this).parent().remove();
                 return false;
             });
