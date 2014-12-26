@@ -43,6 +43,11 @@ class ErrorHandler
      */
     public function handleError($code, $message, $file, $line)
     {
+        // error was suppressed with the @-operator
+        if (0 === error_reporting()) {
+            return false;
+        }
+
         // disable error capturing to avoid recursive errors
         restore_error_handler();
         throw new \ErrorException($message, 500, $code, $file, $line);
