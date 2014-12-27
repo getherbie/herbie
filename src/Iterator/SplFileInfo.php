@@ -52,6 +52,14 @@ class SplFileInfo extends \SplFileInfo
     }
 
     /**
+     * @return bool
+     */
+    public function isDot()
+    {
+        return in_array($this->getBasename(), ['.', '..']);
+    }
+
+    /**
      * Returns the contents of the file
      *
      * @return string the contents of the file
