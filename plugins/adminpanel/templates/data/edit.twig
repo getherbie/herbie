@@ -22,11 +22,11 @@
     </form>
 
     <!-- template used for DOM manipulations -->
-    <div class="template" data-count="{{ data|length }}" style="display:none;">
+    <div class="template hidden" data-count="{{ data|length }}">
         {{ macro.element(config, '_index_') }}
     </div>
 
-    <div class="template-fields" style="display:none">
+    <div class="template-fields hidden">
         {{ macro.multitext_input('_index_', '_key_', '', 1) }}
     </div>
 

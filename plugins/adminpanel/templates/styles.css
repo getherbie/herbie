@@ -244,6 +244,7 @@ Herbie Styles
 */
 table {
     width:100%;
+    margin-bottom:1em;
 }
 td {
     vertical-align:top;
@@ -273,6 +274,10 @@ textarea.nowrap {
 .button-xlarge {
     font-size: 125%;
 }
+a.delete-confirmed {
+    background:rgb(202, 60, 60);
+    color:#fff;
+}
 div.alert {
     padding:0.5em 1em;
     margin-bottom:1em;
@@ -285,4 +290,21 @@ div.alert-info {
 div.alert-success {
     background: #5CB85C;
     color:#ffffff;
+}
+div.alert-error {
+    background:rgba(202, 60, 60, 0.9);
+    color:#fff;
+    position:fixed;
+    top:0;
+    width:100%;
+    padding:1em 2em;
+    z-index:100;
+}
+.hidden {
+    display:none;
+}
+.error {
+    color:rgb(202, 60, 60);
+    font-weight:bold;
+    font-size:0.9em;
 }

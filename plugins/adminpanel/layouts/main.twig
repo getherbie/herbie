@@ -29,6 +29,7 @@
                 <li><a href="?action=page/index">Seiten</a></li>
                 <li><a href="?action=post/index">Blogposts</a></li>
                 <li><a href="?action=data/index">Daten</a></li>
+                <li><a href="?action=media/index">Media</a></li>
                 <li>&nbsp;</li>
                 <li><a href=" {{ url('') }}">Frontend</a></li>
                 <li><a href="?action=logout">Logout</a></li>
@@ -36,12 +37,15 @@
         </div>
     </div>
     <div id="main">
+        {% block alert %}
+            <div class="alert alert-success hidden"></div>
+            <div class="alert alert-error hidden"></div>
+        {% endblock %}
         <div class="header">
             <h1>{% block title %}{% endblock %}</h1>
             <h2>{% block subtitle %}{% endblock %}</h2>
         </div>
         <div class="content">
-            {% block alert %}{% endblock %}
             <div class="pure-g">
                 <div class="pure-u-1">
                     {% block content %}{% endblock %}
@@ -89,6 +93,20 @@
 </script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {% block jquery %}{% endblock %}
+<script>
+    $(document).ready(function () {
+        $(document).on("click", "html", function () {
+            if ($('a.delete-confirmed').is(":visible")) {
+                $('a.delete-confirmed').removeClass('delete-confirmed');
+            }
+            if ($('div.alert-error').is(":visible")) {
+                $('div.alert-error').slideUp(50);
+            }
+        });
+    });
+</script>
+
 {{ outputJs() }}
+
 </body>
 </html>

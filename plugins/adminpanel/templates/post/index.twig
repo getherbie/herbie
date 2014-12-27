@@ -1,8 +1,10 @@
 {% extends "@plugin/adminpanel/layouts/main.twig" %}
+{% import "@plugin/adminpanel/templates/macro.grid.twig" as grid %}
 
 {% block title %}Blogposts{% endblock %}
 
 {% block content %}
+
     <table class="pure-table pure-table-horizontal">
         <thead>
         <tr>
@@ -16,9 +18,22 @@
             <tr>
                 <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
                 <td>{{ item.date }}</td>
-                <td class="links"><a class="pure-button button-small" href="?action=page/edit&path={{ item.path }}">Editieren</a></td>
+                <td class="links">
+                    <a class="pure-button button-small" href="?action=page/edit&path={{ item.path }}">Editieren</a>
+                    {{ grid.delete_link(item.path, "Löschen") }}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {{ grid.addblock("Blogpost hinzufügen") }}
+
+{% endblock %}
+
+{% block jquery %}
+
+    {{ grid.delete_js("?action=post/delete") }}
+    {{ grid.addblock_js("?action=post/add") }}
+
 {% endblock %}

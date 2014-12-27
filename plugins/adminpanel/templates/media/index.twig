@@ -1,0 +1,185 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+{% import "@plugin/adminpanel/templates/macro.grid.twig" as grid %}
+
+{% block title %}Media{% endblock %}
+
+{% block content %}
+
+{% if iterator is iterable %}
+
+    <table class="pure-table pure-table-horizontal">
+        <thead>
+        <tr>
+            <th>Datei</th>
+            <th width="10%">Grösse</th>
+            <th width="5%">Art</th>
+            <th width="5%"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if dir != "" %}
+            <tr>
+                <td colspan="4"><i class="fa fa-level-up fa-lg"></i><a href="?action=media/index&dir={{ parentDir }}">Nach oben</a></td>
+            </tr>
+        {% endif %}
+        {% for fileInfo in iterator %}
+            {% if fileInfo.isDir %}
+                <tr>
+                    <td><i class="fa fa-folder-o fa-lg"></i><a href="?action=media/index&dir={{ fileInfo.relativePathname }}">{{ fileInfo.basename }}</a></td>
+                    <td></td>
+                    <td></td>
+                    <td class="links">{{ grid.delete_link(fileInfo.relativePathname, "Löschen") }}</td>
+                </tr>
+            {% endif %}
+            {% if fileInfo.isFile %}
+            <tr>
+                <td><i class="fa fa-file-o fa-lg"></i>{{ fileInfo.basename }}</td>
+                <td nowrap="nowrap">{{ fileInfo.size|filesize }}</td>
+                <td>{{ fileInfo.extension }}</td>
+                <td class="links">{{ grid.delete_link(fileInfo.relativePathname, "Löschen") }}</td>
+            </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="4">Das Verzeichnis ist leer.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="float:left;margin-right:0.5em">
+        <a class="add-folder pure-button" data-file="{{ item }}" href="#">Ordner hinzufügen</a>
+    </div>
+
+    <div class="addblock-folder hidden">
+        <form class="pure-form">
+            <input type="text" name="name" class="name pure-input-1-4">
+            <button class="save pure-button">Erstellen</button>
+            <button class="cancel pure-button">Abbrechen</button>
+            <span class="error"></span>
+        </form>
+    </div>
+
+    <form class="form-upload" action="#" enctype="multipart/form-data" method="post">
+        <button class="pure-button" id="fileselector">Dateien hochladen</button>
+        <input type="file" name="file_upload" id="file_upload" multiple>
+    </form>
+
+    <style>
+        .fa-lg {
+            padding-right:0.5em;
+        }
+        .form-upload {
+            float:left;
+            display:inline-block;
+        }
+        #file_upload {
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+
+    </style>
+{% else %}
+    <p>Das Verzeichnis ist ungültig oder nicht lesbar.</p>
+{% endif %}
+
+{% endblock %}
+
+{% block jquery %}
+
+    {{ grid.delete_js("?action=media/delete") }}
+
+    <script>
+        $(document).ready(function () {
+
+            $(document).on("click", "a.add-folder", function () {
+                $(this).hide();
+                $('div.addblock-folder').show();
+                $('div.addblock-folder input').val("");
+                $('div.addblock-folder input').focus();
+                $('.form-upload').hide();
+                return false;
+            });
+
+            $(document).on("click", "div.addblock-folder button.save", function () {
+                var name = $('div.addblock-folder input').val();
+                $.ajax({
+                    type: "POST",
+                    url: "?action=media/addfolder",
+                    data: { dir: "{{ dir }}", name: name }
+                }).success(function (html) {
+                    var table = $(html).find('.pure-table');
+                    $(".pure-table").replaceWith(table);
+                    $("div.addblock-folder button.cancel").trigger("click");
+                }).error(function (jqXHR, textStatus, errorThrown) {
+                    $('div.addblock-folder .error').text(errorThrown);
+                });
+                return false;
+            });
+
+            $(document).on("click", "div.addblock-folder button.cancel", function () {
+                $('div.addblock-folder').hide();
+                $('a.add-folder').show();
+                $('.form-upload').show();
+                return false;
+            });
+
+            $(document).on("focus", "div.addblock-folder input", function () {
+                $('div.addblock-folder .error').text('');
+            });
+
+            $(document).on("click", "#fileselector", function () {
+                $("#file_upload").trigger("click");
+                return false;
+            });
+
+            // Add events
+            $('input[type=file]').on('change', uploadFiles);
+
+            // Catch the form submit and upload the files
+            function uploadFiles(event)
+            {
+                var files = event.target.files;
+
+                event.stopPropagation(); // Stop stuff happening
+                event.preventDefault(); // Totally stop stuff happening
+
+                // START LOADING SPINNER
+
+                // Create a formdata object and add the files
+                var data = new FormData();
+                $.each(files, function(key, value)
+                {
+                    data.append(key, value);
+                });
+                data.append("dir", "{{ dir }}");
+
+                $.ajax({
+                    url: "?action=media/upload",
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    dataType: 'json',
+                    processData: false, // Don't process the files
+                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                    success: function(data, textStatus, jqXHR)
+                    {
+                        var table = $(data.html).find('.pure-table');
+                        $(".pure-table").replaceWith(table);
+                        //console.log('success');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown)
+                    {
+                        $('div.alert-error').text(jqXHR.responseText).slideDown(50);
+                        // STOP LOADING SPINNER
+                    },
+                    complete: function()
+                    {
+                        // STOP LOADING SPINNER
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

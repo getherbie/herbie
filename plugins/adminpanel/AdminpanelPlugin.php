@@ -34,6 +34,7 @@ class AdminpanelPlugin extends Herbie\Plugin
         $this->session = new Session();
         $this->session->start();
         $this->request = $this->app['request'];
+        $this->app['alias']->set('@media', '@web/media');
     }
 
     /**
@@ -64,40 +65,16 @@ class AdminpanelPlugin extends Herbie\Plugin
                 $event['response']->setContent($content);
             }
         } else {
-            $action = $this->session->get('LOGGED_IN') ? $this->request->query->get('action') : 'login';
-            switch($action) {
-                case 'data/add':
-                    $content = $this->dataAddAction();
-                    break;
-                case 'data/edit':
-                    $content = $this->dataEditAction();
-                    break;
-                case 'data/index':
-                    $content = $this->dataIndexAction();
-                    break;
-                case 'file/delete':
-                    $this->fileDeleteAction();
-                    break;
-                case 'page/edit':
-                    $content = $this->pageEditAction();
-                    break;
-                case 'page/index':
-                case '': // index
-                    $content = $this->render('page/index.twig', []);
-                    break;
-                case 'post/index':
-                    $content = $this->render('post/index.twig', []);
-                    break;
-                case 'login':
-                    $content = $this->loginAction();
-                    break;
-                case 'logout':
-                    $this->session->set('LOGGED_IN', false);
-                    $this->app['twig']->environment->getExtension('herbie')->functionRedirect('');
-                    break;
-                default:
-                    $content = $this->render('error.twig', []);
+            $action = $this->session->get('LOGGED_IN') ? $this->request->query->get('action', 'page/index') : 'login';
+            $method = str_replace('/', '', $action) . 'Action';
+            if(!method_exists($this, $method)) {
+                $method = 'errorAction';
+                if($this->request->isXmlHttpRequest()) {
+                    $this->sendErrorHeader('Ungültiger Action-Parameter');
+                }
             }
+            $params = ['query' => $this->request->query, 'request' => $this->request->request];
+            $content = call_user_func_array([$this, $method], $params);
             $event['response']->setContent($content);
         }
     }
@@ -109,9 +86,184 @@ class AdminpanelPlugin extends Herbie\Plugin
         }
     }
 
-    protected function dataAddAction()
+    protected function sendErrorHeader($message, $exit = true, $code = 418)
     {
-        $name = strtolower(trim($this->request->request->get('name')));
+        header("HTTP/1.1 $code $message");
+        header('Content-type: text/plain; charset=utf-8');
+        echo $message;
+        if ($exit) {
+            exit;
+        }
+    }
+
+    protected function errorAction($query)
+    {
+        return $this->render('error.twig', []);
+    }
+
+    protected function mediaAddFolderAction($query, $request)
+    {
+        $dir = strtolower(trim($request->get('dir')));
+        $name = strtolower(trim($request->get('name')));
+        $path = $this->app['alias']->get('@media/' . $dir . '/' . $name);
+
+        if(empty($name)) {
+            $this->sendErrorHeader('Bitte einen Namen eingeben.');
+        } elseif(is_dir($path)) {
+            $this->sendErrorHeader('Ein gleichnamiger Ordner ist schon vorhanden.');
+        } elseif(!@mkdir($path)) {
+            $this->sendErrorHeader('Ordner konnte nicht erstellt werden.');
+        } else {
+            $query->add(['dir' => $dir]);
+            return $this->mediaIndexAction($query, $request);
+         }
+    }
+
+    protected function mediaIndexAction($query, $request)
+    {
+        $dir = $query->get('dir', '');
+        $dir = str_replace(['../', '..', './', '.'], '', trim($dir, '/'));
+        $path = $this->app['alias']->get('@media/' . $dir);
+        $root = $this->app['alias']->get('@media');
+
+        $iterator = null;
+        if(is_dir($path)) {
+            $directoryIterator = new Herbie\Iterator\DirectoryIterator($path, $root);
+            $iterator = new Herbie\Iterator\DirectoryDotFilter($directoryIterator);
+        }
+
+        return $this->render('media/index.twig', [
+            'iterator' => $iterator,
+            'dir' => $dir,
+            'parentDir' => str_replace('.', '', dirname($dir)),
+        ]);
+    }
+
+    protected function mediaDeleteAction($query, $request)
+    {
+        $path = $request->get('file');
+        $path = str_replace(['../', '..', './'], '', trim($path, '/'));
+        $absPath = $this->app['alias']->get('@media/' . $path);
+        $name = basename($absPath);
+
+        if(is_file($absPath)) {
+            if(!@unlink($absPath)) {
+                $this->sendErrorHeader("Datei {$name} konnte nicht gelöscht werden.");
+            }
+        } elseif(is_dir($absPath)) {
+            if(!@rmdir($absPath)) {
+                if(count(scandir($absPath)) >= 2) {
+                    $this->sendErrorHeader("Ordner {$name} enthält Dateien und konnte nicht gelöscht werden.");
+                }
+                $this->sendErrorHeader("Ordner {$name} konnte nicht gelöscht werden.");
+            }
+        } else {
+            $this->sendErrorHeader("Order oder Datei {$name} konnte nicht gelöscht werden.");
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(true);
+        exit;
+    }
+
+    protected function mediaUploadAction($query, $request)
+    {
+        $data = array();
+        $dir = strtolower(trim($request->get('dir')));
+
+        if(!empty($_FILES)) {
+            $files = array();
+
+            $uploaddir = $this->app['alias']->get("@media/{$dir}/");
+            foreach($_FILES as $file)
+            {
+                if(move_uploaded_file($file['tmp_name'], $uploaddir . basename($file['name']))) {
+                    $files[] = $uploaddir . $file['name'];
+                } else {
+                    $this->sendErrorHeader('Beim Upload ist ein Fehler aufgetreten.');
+                }
+            }
+            $data = array('files' => $files);
+        } else {
+            $this->sendErrorHeader('Bitte eine oder mehrere Dateien auswählen.');
+        }
+
+        $query->add(['dir' => $dir]);
+        $data['html'] = $this->mediaIndexAction($query, $request);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    protected function postIndexAction()
+    {
+        return $this->render('post/index.twig', []);
+    }
+
+    protected function postDeleteAction($query, $request)
+    {
+        $file = $request->get('file');
+        $filepath = $this->app['alias']->get($file);
+        $basename = basename($filepath);
+        if(empty($file)) {
+            $this->sendErrorHeader('Ungültige Parameter!');
+        } elseif(!is_file($filepath)) {
+            $this->sendErrorHeader("Blogpost {$$basename} konnte nicht gefunden werden.");
+        } elseif(!@unlink($filepath)) {
+            $this->sendErrorHeader("Blogpost {$basename} konnte nicht gelöscht werden.");
+        }
+        header('Content-Type: application/json');
+        echo json_encode(true);
+        exit;
+    }
+
+    protected function pageIndexAction()
+    {
+        return $this->render('page/index.twig', []);
+    }
+
+    protected function pageEditAction($query, $request)
+    {
+        $path = $query->get('path', null);
+
+        $data = $this->app['pageLoader']->load($path, false);
+
+        $absPath = $this->app['alias']->get($path);
+        $action = strpos($path, '@page') !== false ? 'page/index' : 'post/index';
+
+        if(is_null($path)) {
+            throw new \Exception('Path must be set');
+        }
+
+        $data = $request->get('data', file_get_contents($absPath));
+        $content = $request->get('content', file_get_contents($absPath));
+
+        $saved = false;
+        if($this->request->getMethod() == 'POST') {
+            $saved = file_put_contents($absPath, $content);
+
+            if ($request->get('button2') !== null) {
+                $this->app['twig']->environment->getExtension('herbie')->functionRedirect('adminpanel?action=' . $action);
+            }
+
+            if ($request->get('button3') !== null) {
+                $this->redirectBack($path);
+            }
+        }
+
+        return $this->render('form.twig', [
+            'data' => $data,
+            'content' => $content,
+            'path' => $path,
+            'action' => $action,
+            'saved' => $saved
+        ]);
+    }
+
+    protected function dataAddAction($query, $request)
+    {
+        $name = strtolower(trim($request->get('name')));
         $path = $this->app['alias']->get("@site/data/{$name}.yml");
         $dir = dirname($path);
         if(empty($name)) {
@@ -124,72 +276,9 @@ class AdminpanelPlugin extends Herbie\Plugin
             $this->sendErrorHeader("Verzeichnis {$dir} ist nicht schreibbar.");
         } elseif(!fclose(fopen($path, "x"))) {
             $this->sendErrorHeader("Datei {$name} konnte nicht erstellt werden.");
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode($name);
-            exit;
-        }
-    }
-
-    protected function sendErrorHeader($message, $exit = true, $code = 418)
-    {
-        header("HTTP/1.0 $code $message");
-        if ($exit) {
-            exit;
-        }
-    }
-
-    protected function fileDeleteAction()
-    {
-        $deleted = false;
-        $path = $this->request->request->get('path');
-        if(!empty($path) && (substr($path, 0, 1) == '@')) {
-            $absPath = $this->app['alias']->get($path);
-            if(is_file($absPath)) {
-                $deleted = unlink($absPath);
-            }
-        }
-        header('Content-Type: application/json');
-        echo json_encode($deleted);
-        exit;
-    }
-
-    protected function pageEditAction()
-    {
-        $path = $this->request->query->get('path', null);
-
-        $data = $this->app['pageLoader']->load($path, false);
-
-        $absPath = $this->app['alias']->get($path);
-        $action = strpos($path, '@page') !== false ? 'page/index' : 'post/index';
-
-        if(is_null($path)) {
-            throw new \Exception('Path must be set');
         }
 
-        $data = $this->request->request->get('data', file_get_contents($absPath));
-        $content = $this->request->request->get('content', file_get_contents($absPath));
-
-        $saved = false;
-        if($this->request->getMethod() == 'POST') {
-            $saved = file_put_contents($absPath, $content);
-
-            if ($this->request->request->get('button2') !== null) {
-                $this->app['twig']->environment->getExtension('herbie')->functionRedirect('adminpanel?action=' . $action);
-            }
-
-            if ($this->request->request->get('button3') !== null) {
-                $this->redirectBack($path);
-            }
-        }
-
-        return $this->render('form.twig', [
-            'data' => $data,
-            'content' => $content,
-            'path' => $path,
-            'action' => $action,
-            'saved' => $saved
-        ]);
+        return $this->dataIndexAction($query, $request);
     }
 
     protected function dataIndexAction()
@@ -209,21 +298,37 @@ class AdminpanelPlugin extends Herbie\Plugin
         ]);
     }
 
-    protected function dataEditAction()
+    protected function dataDeleteAction($query, $request)
     {
-        $path = $this->request->query->get('path', null);
+        $file = $request->get('file');
+        $absPath = $this->app['alias']->get('@site/data/' . $file . '.yml');
+
+        if(!is_file($absPath)) {
+            $this->sendErrorHeader("Datei {$absPath} ist nicht vorhanden.");
+        } elseif(!@unlink($absPath)) {
+            $this->sendErrorHeader("Datei {$file} konnte nicht gelöscht werden.");
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(true);
+        exit;
+    }
+
+    protected function dataEditAction($query, $request)
+    {
+        $path = $query->get('path', null);
         $absPath = $this->app['alias']->get($path);
 
         // Config
         $name = pathinfo($absPath, PATHINFO_FILENAME);
         $config = $this->app['config']->get('plugins.adminpanel.data.' . $name . '.config');
         if(is_null($config)) {
-            return $this->dataEditAsString();
+            return $this->dataEditAsString($query, $request);
         }
 
         $saved = false;
         if($this->request->getMethod() == 'POST') {
-            $data = $this->request->request->get('data', []);
+            $data = $request->get('data', []);
             #echo"<pre>";print_r($data);echo"</pre>";
             $content = Yaml::dump(array_values($data));
             $saved = file_put_contents($absPath, $content);
@@ -238,14 +343,14 @@ class AdminpanelPlugin extends Herbie\Plugin
         ]);
     }
 
-    protected function dataEditAsString()
+    protected function dataEditAsString($query, $request)
     {
-        $path = $this->request->query->get('path', null);
+        $path = $query->get('path', null);
         $absPath = $this->app['alias']->get($path);
 
         $saved = false;
         if($this->request->getMethod() == 'POST') {
-            $content = $this->request->request->get('content', null);
+            $content = $request->get('content', null);
             $saved = file_put_contents($absPath, $content);
         }
 
@@ -255,16 +360,22 @@ class AdminpanelPlugin extends Herbie\Plugin
         ]);
     }
 
-    public function loginAction()
+    public function loginAction($query, $request)
     {
         if($this->request->getMethod() == 'POST') {
-            $password = $this->request->request->get('password', null);
+            $password = $request->get('password', null);
             if(md5($password) == $this->app['config']->get('plugins.adminpanel.password')) {
                 $this->session->set('LOGGED_IN', true);
                 $this->app['twig']->environment->getExtension('herbie')->functionRedirect('adminpanel');
             }
         }
         return $this->render('login.twig', []);
+    }
+
+    protected function logoutAction()
+    {
+        $this->session->set('LOGGED_IN', false);
+        $this->app['twig']->environment->getExtension('herbie')->functionRedirect('');
     }
 
     /**
