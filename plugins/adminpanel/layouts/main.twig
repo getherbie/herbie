@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <style>{% include '@plugin/adminpanel/templates/styles.css' %}</style>
+    <style>{% include '@plugin/adminpanel/layouts/main.css' %}</style>
 </head>
 <body>
 <div id="layout">
@@ -30,6 +30,7 @@
                 <li><a href="?action=post/index">Blogposts</a></li>
                 <li><a href="?action=data/index">Daten</a></li>
                 <li><a href="?action=media/index">Media</a></li>
+                <li><a href="?action=tools/index">Werkzeuge</a></li>
                 <li>&nbsp;</li>
                 <li><a href=" {{ url('') }}">Frontend</a></li>
                 <li><a href="?action=logout">Logout</a></li>
@@ -99,8 +100,8 @@
             if ($('a.delete-confirmed').is(":visible")) {
                 $('a.delete-confirmed').removeClass('delete-confirmed');
             }
-            if ($('div.alert-error').is(":visible")) {
-                $('div.alert-error').slideUp(50);
+            if ($('div.alert').is(":visible")) {
+                $('div.alert').slideUp(50);
             }
         });
     });

@@ -1,0 +1,66 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}Werkzeuge{% endblock %}
+
+{% block content %}
+
+    <h3>Verzeichnisse</h3>
+    <p>Die folgenden Verzeichnisse können gefahrlos geleert werden.</p>
+    <table class="pure-table pure-table-horizontal">
+        {% for key, dir in cacheDirs %}
+            <tr>
+                <td>{{ dir.label }}</td>
+                <td>{{ dir.count }} Datei(en)</td>
+                <td width="10%"><button class="pure-button button-small delete-cache" data-cache="{{ key }}">Leeren</button></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>YAML-Dateien</h3>
+    <p>Die folgenden YAML-Dateien können neu formatiert werden.</p>
+    <table class="pure-table pure-table-horizontal">
+        {% for key, file in yamlFiles %}
+            <tr>
+                <td>{{ file.label }}</td>
+                <td width="10%"><button class="pure-button button-small reformat-file" data-name="{{ key }}">Formatieren</button></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block jquery %}
+
+    <script>
+        $(document).ready(function () {
+            // Delete cache
+            $(document).on("click", "button.delete-cache", function () {
+                var name = $(this).attr('data-cache');
+                $.ajax({
+                    type: "POST",
+                    url: "?action=tools/deletecache",
+                    data: {name: name}
+                }).success(function (message) {
+                    $('div.alert-success').text(message).slideDown(50);
+                }).error(function (jqXHR, textStatus, errorThrown) {
+                    $('div.alert-error').text(jqXHR.responseText).slideDown(50);
+                });
+                return false;
+            });
+            // Reformat file
+            $(document).on("click", "button.reformat-file", function () {
+                var name = $(this).attr('data-name');
+                $.ajax({
+                    type: "POST",
+                    url: "?action=tools/reformatfile",
+                    data: {name: name}
+                }).success(function (message) {
+                    $('div.alert-success').text(message).slideDown(50);
+                }).error(function (jqXHR, textStatus, errorThrown) {
+                    $('div.alert-error').text(jqXHR.responseText).slideDown(50);
+                });
+                return false;
+            });
+        });
+    </script>
+
+{% endblock %}

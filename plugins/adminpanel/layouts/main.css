@@ -279,8 +279,12 @@ a.delete-confirmed {
     color:#fff;
 }
 div.alert {
-    padding:0.5em 1em;
+    position:fixed;
+    top:0;
+    width:100%;
     margin-bottom:1em;
+    padding:1em 2em;
+    z-index:100;
 }
 div.alert-info {
     color: #31708F;
@@ -294,11 +298,6 @@ div.alert-success {
 div.alert-error {
     background:rgba(202, 60, 60, 0.9);
     color:#fff;
-    position:fixed;
-    top:0;
-    width:100%;
-    padding:1em 2em;
-    z-index:100;
 }
 .hidden {
     display:none;

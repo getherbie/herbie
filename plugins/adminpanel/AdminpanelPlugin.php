@@ -98,7 +98,7 @@ class AdminpanelPlugin extends Herbie\Plugin
 
     protected function errorAction($query)
     {
-        return $this->render('error.twig', []);
+        return $this->render('default/error.twig', []);
     }
 
     protected function mediaAddFolderAction($query, $request)
@@ -106,17 +106,17 @@ class AdminpanelPlugin extends Herbie\Plugin
         $dir = strtolower(trim($request->get('dir')));
         $name = strtolower(trim($request->get('name')));
         $path = $this->app['alias']->get('@media/' . $dir . '/' . $name);
-
         if(empty($name)) {
             $this->sendErrorHeader('Bitte einen Namen eingeben.');
-        } elseif(is_dir($path)) {
+        }
+        if(is_dir($path)) {
             $this->sendErrorHeader('Ein gleichnamiger Ordner ist schon vorhanden.');
-        } elseif(!@mkdir($path)) {
+        }
+        if(!@mkdir($path)) {
             $this->sendErrorHeader('Ordner konnte nicht erstellt werden.');
-        } else {
-            $query->add(['dir' => $dir]);
-            return $this->mediaIndexAction($query, $request);
-         }
+        }
+        $query->add(['dir' => $dir]);
+        return $this->mediaIndexAction($query, $request);
     }
 
     protected function mediaIndexAction($query, $request)
@@ -146,21 +146,14 @@ class AdminpanelPlugin extends Herbie\Plugin
         $absPath = $this->app['alias']->get('@media/' . $path);
         $name = basename($absPath);
 
-        if(is_file($absPath)) {
-            if(!@unlink($absPath)) {
-                $this->sendErrorHeader("Datei {$name} konnte nicht gelöscht werden.");
+        if(is_file($absPath) && !@unlink($absPath)) {
+            $this->sendErrorHeader("Datei {$name} konnte nicht gelöscht werden.");
+        } elseif(is_dir($absPath) && !@rmdir($absPath)) {
+            if(count(scandir($absPath)) >= 2) {
+                $this->sendErrorHeader("Ordner {$name} enthält Dateien und konnte nicht gelöscht werden.");
             }
-        } elseif(is_dir($absPath)) {
-            if(!@rmdir($absPath)) {
-                if(count(scandir($absPath)) >= 2) {
-                    $this->sendErrorHeader("Ordner {$name} enthält Dateien und konnte nicht gelöscht werden.");
-                }
-                $this->sendErrorHeader("Ordner {$name} konnte nicht gelöscht werden.");
-            }
-        } else {
-            $this->sendErrorHeader("Order oder Datei {$name} konnte nicht gelöscht werden.");
+            $this->sendErrorHeader("Ordner {$name} konnte nicht gelöscht werden.");
         }
-
         header('Content-Type: application/json');
         echo json_encode(true);
         exit;
@@ -196,9 +189,34 @@ class AdminpanelPlugin extends Herbie\Plugin
         exit;
     }
 
+    protected function postAddAction($query, $request)
+    {
+        $title = $request->get('name');
+        if(empty($title)) {
+            $this->sendErrorHeader("Bitte einen Namen eingeben.");
+        }
+        $filename = date('Y-m-d-') . Herbie\Helper\Filesystem::sanitizeFilename($title);
+        $filepath = $this->app['alias']->get("@post/{$filename}.md");
+        if(is_file($filepath)) {
+            $this->sendErrorHeader("Ein Blogpost mit demselben Namen existiert schon.");
+        }
+        $eol = PHP_EOL;
+        $data = "---{$eol}title: {$title}{$eol}hidden: 1{$eol}---{$eol}Mein neuer Blogpost{$eol}";
+        if(!file_put_contents($filepath, $data)) {
+            $this->sendErrorHeader("Blogpost konnte nicht erstellt werden.");
+        }
+        
+        // Post refreshen
+        
+        return $this->postIndexAction();
+    }
+
     protected function postIndexAction()
     {
-        return $this->render('post/index.twig', []);
+		$builder = new Menu\Post\Builder($this->app);
+        return $this->render('post/index.twig', [
+        	'posts' => $builder->build()
+        ]);
     }
 
     protected function postDeleteAction($query, $request)
@@ -208,9 +226,11 @@ class AdminpanelPlugin extends Herbie\Plugin
         $basename = basename($filepath);
         if(empty($file)) {
             $this->sendErrorHeader('Ungültige Parameter!');
-        } elseif(!is_file($filepath)) {
+        }
+        if(!is_file($filepath)) {
             $this->sendErrorHeader("Blogpost {$$basename} konnte nicht gefunden werden.");
-        } elseif(!@unlink($filepath)) {
+        }
+        if(!@unlink($filepath)) {
             $this->sendErrorHeader("Blogpost {$basename} konnte nicht gelöscht werden.");
         }
         header('Content-Type: application/json');
@@ -268,16 +288,19 @@ class AdminpanelPlugin extends Herbie\Plugin
         $dir = dirname($path);
         if(empty($name)) {
             $this->sendErrorHeader('Bitte einen Namen eingeben.');
-        } elseif(is_file($path)) {
+        }
+        if(is_file($path)) {
             $this->sendErrorHeader('Eine gleichnamige Datei ist schon vorhanden.');
-        } elseif(!is_dir($dir)) {
+        }
+        if(!is_dir($dir)) {
             $this->sendErrorHeader("Verzeichnis {$dir} existiert nicht.");
-        } elseif(!is_writable($dir)) {
+        }
+        if(!is_writable($dir)) {
             $this->sendErrorHeader("Verzeichnis {$dir} ist nicht schreibbar.");
-        } elseif(!fclose(fopen($path, "x"))) {
+        }
+        if(!fclose(fopen($path, "x"))) {
             $this->sendErrorHeader("Datei {$name} konnte nicht erstellt werden.");
         }
-
         return $this->dataIndexAction($query, $request);
     }
 
@@ -305,7 +328,8 @@ class AdminpanelPlugin extends Herbie\Plugin
 
         if(!is_file($absPath)) {
             $this->sendErrorHeader("Datei {$absPath} ist nicht vorhanden.");
-        } elseif(!@unlink($absPath)) {
+        }
+        if(!@unlink($absPath)) {
             $this->sendErrorHeader("Datei {$file} konnte nicht gelöscht werden.");
         }
 
@@ -369,13 +393,69 @@ class AdminpanelPlugin extends Herbie\Plugin
                 $this->app['twig']->environment->getExtension('herbie')->functionRedirect('adminpanel');
             }
         }
-        return $this->render('login.twig', []);
+        return $this->render('default/login.twig', []);
     }
 
     protected function logoutAction()
     {
         $this->session->set('LOGGED_IN', false);
         $this->app['twig']->environment->getExtension('herbie')->functionRedirect('');
+    }
+
+    public function toolsIndexAction($query, $request)
+    {
+        #print_r($this->app['config']);
+        return $this->render('tools/index.twig', [
+            'cacheDirs' => $this->getCacheDirs(),
+            'yamlFiles' => $this->getYamlFiles()
+        ]);
+    }
+
+    public function toolsDeleteCacheAction($query, $request)
+    {
+        $name = $request->get('name');
+        $dirs = $this->getCacheDirs();
+        if(empty($name) || !array_key_exists($name, $dirs)) {
+            $this->sendErrorHeader('Ungültiger Aufruf.');
+        }
+        /**
+         * @param $label
+         * @param $path
+         * @param $count
+         */
+        extract($dirs[$name]);
+        if(!is_dir($path)) {
+            $this->sendErrorHeader("{$label} existiert nicht.");
+        }
+
+        if(!Herbie\Helper\Filesystem::rrmdir($path)) {
+            $this->sendErrorHeader("{$label} wurde nicht oder nur teilweise gelöscht.");
+        }
+
+        echo "Verzeichnis wurde geleert.";
+        exit;
+    }
+
+    public function toolsReformatFileAction($query, $request)
+    {
+        $name = $request->get('name');
+        $files = $this->getYamlFiles();
+        if(empty($name) || !array_key_exists($name, $files)) {
+            $this->sendErrorHeader('Ungültiger Aufruf.');
+        }
+        if(!is_file($files[$name]['path'])) {
+            $this->sendErrorHeader("{$files[$name]['label']} existiert nicht.");
+        }
+        if(!Herbie\Helper\Filesystem::createBackupFile($files[$name]['path'])) {
+            $this->sendErrorHeader("Backup-Datei konnte nicht erstellt werden.");
+        }
+        $parsed = Yaml::parse($files[$name]['path']);
+        $content = Yaml::dump($parsed, 100, 4, false, false);
+        if(!file_put_contents($files[$name]['path'], $content)) {
+            $this->sendErrorHeader("Datei konnte nicht erstellt werden.");
+        }
+        echo "Datei wurde neu formatiert.";
+        exit;
     }
 
     /**
@@ -419,6 +499,43 @@ class AdminpanelPlugin extends Herbie\Plugin
     protected function isAuthenticated()
     {
         return (bool)$this->session->get('LOGGED_IN', false);
+    }
+
+    protected function getCacheDirs()
+    {
+        $config = $this->app['config'];
+        $tempDirs = [
+            ['site/data/cache', 'Daten-Cache', $config->get('cache.data.dir')],
+            ['site/page/cache', 'Seiten-Cache', $config->get('cache.page.dir')],
+            ['site/twig/cache', 'Twig-Cache', $config->get('twig.cache')],
+            ['web/assets', 'Web-Assets', $this->app['alias']->get('@web/assets')],
+            ['web/cache', 'Web-Cache', $this->app['alias']->get('@web/cache')]
+        ];
+        $dirs = [];
+        foreach($tempDirs as $td) {
+            list($key, $label, $path) = $td;
+            if(!empty($path) && is_dir($path)) {
+                $dirs[$key] = [
+                    'label' => $label,
+                    'path' => $path,
+                    'count' => Herbie\Helper\Filesystem::rcount($path)
+                ];
+            }
+        }
+        return $dirs;
+    }
+
+    protected function getYamlFiles()
+    {
+        $dirs = [];
+        $file = $this->app['alias']->get('@site/config.yml');
+        if(is_file($file)) {
+            $dirs['config'] = [
+                'label' => 'Site-Config',
+                'path' => $file
+            ];
+        }
+        return $dirs;
     }
 
 }
