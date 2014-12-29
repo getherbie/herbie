@@ -140,7 +140,9 @@ class Builder
         if (empty($item->date)) {
             $item->date = date('c', filectime($path));
         }
-        $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
+        if(!isset($item->hidden)) {
+            $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
+        }
         return $item;
     }
 
