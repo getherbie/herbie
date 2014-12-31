@@ -71,9 +71,9 @@ class Assets
     protected static $sorted = false;
 
     /**
-     * @var bool
+     * @var array
      */
-    protected static $published = false;
+    protected static $published = [];
 
     /**
      * @param Application $app
@@ -230,9 +230,6 @@ class Assets
      */
     protected function publish()
     {
-        if (self::$published) {
-            return;
-        }
         foreach ($this->assets as $asset) {
 
             if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
@@ -240,6 +237,10 @@ class Assets
             }
 
             $srcPath = $this->alias->get($asset['path']);
+            if(isset(self::$published[$srcPath])) {
+                continue;
+            }
+
             $dstPath = $this->assetsPath . '/' . $this->removeAlias($asset['path']);
             $dstDir = dirname($dstPath);
             if (!is_dir($dstDir)) {
@@ -257,8 +258,8 @@ class Assets
             if ($copy) {
                 copy($srcPath, $dstPath);
             }
+            self::$published[$srcPath] = true;
         }
-        self::$published = true;
     }
 
     /**
