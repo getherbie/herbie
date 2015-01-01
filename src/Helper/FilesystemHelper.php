@@ -11,7 +11,7 @@
 
 namespace Herbie\Helper;
 
-class Filesystem
+class FilesystemHelper
 {
 
     /**
@@ -20,7 +20,7 @@ class Filesystem
      */
     public static function sanitizeFilename($filename)
     {
-        $filename = String::unaccent($filename);
+        $filename = StringHelper::unaccent($filename);
         $filename = mb_strtolower($filename);
         $filename = preg_replace("/[^a-z0-9\. -]/", "", $filename);
         return preg_replace('/( +)|(-+)/', '-', $filename);

@@ -11,7 +11,7 @@
 
 namespace Herbie\Helper;
 
-class String
+class StringHelper
 {
     /**
      * @see https://github.com/alixaxel/phunction/blob/master/phunction/Text.php#L297
@@ -25,6 +25,16 @@ class String
             $string = html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|caron|cedil|circ|grave|lig|orn|ring|slash|tilde|uml);~i', '$1', $string), ENT_QUOTES, 'UTF-8');
         }
         return $string;
+    }
+
+    public static function removeOneNewlineAtEnd($string)
+    {
+
+    }
+
+    public static function escapeNonAsciiCharacters($string)
+    {
+        return addcslashes($string, "\0..\37!@\177..\377");
     }
 
 }
