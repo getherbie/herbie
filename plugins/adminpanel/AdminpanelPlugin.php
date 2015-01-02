@@ -102,7 +102,10 @@ class AdminpanelPlugin extends Herbie\Plugin
     public function onPageLoaded(Herbie\Event $event)
     {
         if(empty($this->app['page']->adminpanel)) {
-            $this->panel = $this->app['twig']->render('@plugin/adminpanel/views/panel.twig');
+            $controller = (0 === strpos($this->app['page']->path, '@post')) ? 'post' : 'page';
+            $this->panel = $this->app['twig']->render('@plugin/adminpanel/views/panel.twig', [
+                'controller' => $controller
+            ]);
         }
     }
 
