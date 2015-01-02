@@ -1,0 +1,42 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+{% import "@plugin/adminpanel/views/post/macros.twig" as macro %}
+
+
+{% block title %}Seiteninhalte{% endblock %}
+{% block subtitle %}{{ path }}{% endblock %}
+
+{% block alert %}
+    {% if saved %}<div class="alert alert-success">Die Seiteninhalte wurden gesichert.</div>{% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <form action="" method="post" class="pure-form">
+
+        <fieldset>
+            {% for key, label in segments %}
+                {{ macro.segment(key, label) }}
+            {% endfor %}
+        </fieldset>
+
+
+        <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
+        <button class="pure-button pure-button-primary" name="button2" type="submit">Sichern & schliessen</button>
+        <button class="pure-button pure-button-primary" name="button3" type="submit">Sichern & ansehen</button>
+        <a href="?action=post/index" class="pure-button">Abbrechen</a>
+
+    </form>
+
+    <style>
+        fieldset {
+            background:#eee;
+            padding:1em !important;
+            margin-bottom:1em !important;
+        }
+    </style>
+
+    {{ addJs('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js') }}
+    {{ addJs('@plugin/adminpanel/assets/jquery.autosize.min.js') }}
+    {{ addJs('$(document).ready(function() { $("textarea").autosize(); });', raw=true) }}
+
+{% endblock %}

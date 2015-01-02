@@ -1,5 +1,5 @@
 {% extends "@plugin/adminpanel/layouts/main.twig" %}
-{% import "@plugin/adminpanel/templates/macro.grid.twig" as grid %}
+{% import "@plugin/adminpanel/views/macro.grid.twig" as grid %}
 
 {% block title %}Blogposts{% endblock %}
 
@@ -19,7 +19,8 @@
                 <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
                 <td>{{ item.date }}</td>
                 <td class="links">
-                    <a class="pure-button button-small" href="?action=page/edit&path={{ item.path }}">Editieren</a>
+                    <a class="pure-button button-small" href="?action=post/data&path={{ item.path }}">Eigenschaften</a>
+                    <a class="pure-button button-small" href="?action=post/content&path={{ item.path }}">Inhalte</a>
                     {{ grid.delete_link(item.path, "Löschen") }}
                 </td>
             </tr>

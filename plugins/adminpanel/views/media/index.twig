@@ -1,5 +1,5 @@
 {% extends "@plugin/adminpanel/layouts/main.twig" %}
-{% import "@plugin/adminpanel/templates/macro.grid.twig" as grid %}
+{% import "@plugin/adminpanel/views/macro.grid.twig" as grid %}
 
 {% block title %}Media{% endblock %}
 
@@ -10,7 +10,8 @@
     <table class="pure-table pure-table-horizontal">
         <thead>
         <tr>
-            <th>Datei</th>
+            <th width="1%" class="icon"></th>
+            <th class="title">Datei</th>
             <th width="10%">Grösse</th>
             <th width="5%">Art</th>
             <th width="5%"></th>
@@ -19,13 +20,15 @@
         <tbody>
         {% if dir != "" %}
             <tr>
-                <td colspan="4"><i class="fa fa-level-up fa-lg"></i><a href="?action=media/index&dir={{ parentDir }}">Nach oben</a></td>
+                <td class="icon"><i class="fa fa-level-up fa-lg"></i></td>
+                <td class="title" colspan="4"><a href="?action=media/index&dir={{ parentDir }}">Nach oben</a></td>
             </tr>
         {% endif %}
         {% for fileInfo in iterator %}
             {% if fileInfo.isDir %}
                 <tr>
-                    <td><i class="fa fa-folder-o fa-lg"></i><a href="?action=media/index&dir={{ fileInfo.relativePathname }}">{{ fileInfo.basename }}</a></td>
+                    <td class="icon"><i class="fa fa-folder-o fa-lg"></i></td>
+                    <td class="title"><a href="?action=media/index&dir={{ fileInfo.relativePathname }}">{{ fileInfo.basename }}</a></td>
                     <td></td>
                     <td></td>
                     <td class="links">{{ grid.delete_link(fileInfo.relativePathname, "Löschen") }}</td>
@@ -33,7 +36,8 @@
             {% endif %}
             {% if fileInfo.isFile %}
             <tr>
-                <td><i class="fa fa-file-o fa-lg"></i>{{ fileInfo.basename }}</td>
+                <td class="icon"><i class="fa fa-file-o fa-lg"></i></td>
+                <td class="title">{{ fileInfo.basename }}</td>
                 <td nowrap="nowrap">{{ fileInfo.size|filesize }}</td>
                 <td>{{ fileInfo.extension }}</td>
                 <td class="links">{{ grid.delete_link(fileInfo.relativePathname, "Löschen") }}</td>
@@ -41,7 +45,7 @@
             {% endif %}
         {% else %}
             <tr>
-                <td colspan="4">Das Verzeichnis ist leer.</td>
+                <td colspan="5">Das Verzeichnis ist leer.</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -78,7 +82,12 @@
             width: 0;
             height: 0;
         }
-
+        th.icon, td.icon {
+            padding-right:0;
+        }
+        th.title, td.title {
+            padding-left:0;
+        }
     </style>
 {% else %}
     <p>Das Verzeichnis ist ungültig oder nicht lesbar.</p>

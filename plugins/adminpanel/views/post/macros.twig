@@ -1,0 +1,148 @@
+{% macro element(name, item, value) %}
+
+    {% import _self as macro %}
+
+    {% if item.type == 'hidden' %}
+        {{ macro.hidden(name, item, value) }}
+    {% elseif item.type == 'text' %}
+        {{ macro.text(name, item, value) }}
+    {% elseif item.type == 'textarea' %}
+        {{ macro.textarea(name, item, value) }}
+    {% elseif item.type == 'checkbox' %}
+        {{ macro.checkbox(name, item, value) }}
+    {% elseif item.type == 'label' %}
+        {{ macro.label(name, item, value) }}
+    {% elseif item.type == 'pageformat' %}
+        {% set options = {
+            '': '[Default]',
+            'markdown': 'Markdown',
+            'textile': 'Textile',
+            'raw': 'Raw'
+        } %}
+        {{ macro.select(name, item, value, options) }}
+    {% elseif item.type == 'pagelayout' %}
+        {% set options = {'': '[Default]'} %}
+        {% for key, unused in config('plugins.adminpanel.layouts') %}
+            {% set options = options|merge({(key): (key)}) %}
+        {% endfor %}
+        {{ macro.select(name, item, value, options) }}
+    {% elseif item.type == 'yaml' %}
+        {{ macro.textarea(name, item, value) }}
+    {% else %}
+        {% set value = 'Konfiguration fehlt, wird unverändert gespeichert.' %}
+        {{ macro.label(name, item, value) }}
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro segment(name, segment) %}
+    <div class="pure-control-wrap">
+        <label for="name">{{ segment.label }}</label>
+        <div style="border:1px dotted black">{{ addcslashes(segment.value) }}</div>
+        <textarea class="pure-input-1" name="segments[{{ name }}]">
+{{ segment.value|e }}</textarea>
+    </div>
+{% endmacro %}
+
+
+{% macro hidden(key, item, value) %}
+    <input type="hidden" name="data[{{ key }}]" value="{{ value|e }}" />
+{% endmacro %}
+
+{% macro label(key, item, value) %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                {{ value|e }}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro text(key, item, value) %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                <input type="text" class="pure-input-1" name="data[{{ key }}]" value="{{ value|e }}" size="{{ item.size|default(20) }}" placeholder="{{ item.placeholder }}" />
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro textarea(key, item, value) %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                <textarea class="pure-input-1" name="data[{{ key }}]" placeholder="{{ item.placeholder }}">{{ value|e }}</textarea>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro checkbox(key, item, value) %}
+    {% import _self as macro %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                <input type="checkbox" name="data[{{ key }}]" value="1" {{ macro.checked(1, value) }} />
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro select(key, item, value, options) %}
+    {% import _self as macro %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                <select class="pure-input-1" name="data[{{ key }}]">
+                    {% for optval, optlabel in options %}
+                        <option value="{{ optval }}" {{ macro.selected(optval, value) }}>{{ optlabel }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+
+{% macro checked(value, checked) %}
+    {% if value == checked %}
+        checked="checked"
+    {% endif %}
+{% endmacro %}
+
+
+{% macro checked2(value, checked) %}
+    {% if checked in value %}
+        checked="checked"
+    {% endif %}
+{% endmacro %}
+
+
+{% macro selected(value, selected) %}
+    {% if value == selected %}
+        selected="selected"
+    {% endif %}
+{% endmacro %}
+
+
