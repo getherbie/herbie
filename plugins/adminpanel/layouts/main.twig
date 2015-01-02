@@ -93,9 +93,11 @@
     }(this, this.document));
 </script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{{ addJs('@plugin/adminpanel/assets/jquery.autosize.min.js') }}
 {% block jquery %}{% endblock %}
 <script>
     $(document).ready(function () {
+        $("textarea").autosize();
         $(document).on("click", "html", function () {
             if ($('a.delete-confirmed').is(":visible")) {
                 $('a.delete-confirmed').removeClass('delete-confirmed');

@@ -6,21 +6,39 @@
 <table class="pure-table pure-table-horizontal">
     <thead>
     <tr>
-        <th>Titel</th>
-        <th>Route</th>
+        <th class="icon" width="1%"></th>
+        <th class="title">Titel</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    {% for item in site.menu %}
+    {% if tree.hasParent() %}
         <tr>
-            <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
-            <td>{{ item.route }}</td>
-            <td class="links">
-                <a class="pure-button button-small" href="?action=page/data&path={{ item.path }}">Eigenschaften</a>
-                <a class="pure-button button-small" href="?action=page/content&path={{ item.path }}">Inhalte</a>
-            </td>
+            <td class="icon"><i class="fa fa-level-up fa-lg"></i></td>
+            <td class="title" colspan="2"><a href="?action=page/index&route={{ tree.parent.menuItem.route }}">Nach oben</a></td>
         </tr>
+    {% endif %}
+    {% for item in tree %}
+        {% set menuItem = item.menuItem %}
+        {% if item.hasChildren() %}
+            <tr>
+                <td class="icon"><i class="fa fa-folder-o fa-lg"></i></td>
+                <td class="title"><a href="?action=page/index&route={{ menuItem.route }}">{% if menuItem.title is empty %}[Kein Titel] {% else %}{{ menuItem.title }}{% endif %}</a></td>
+                <td class="links nowrap">
+                    <a class="pure-button button-small" href="?action=page/data&path={{ menuItem.path }}&cancel={{ cancel }}">Eigenschaften</a>
+                    <a class="pure-button button-small" href="?action=page/content&path={{ menuItem.path }}&cancel={{ cancel }}">Inhalte</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="icon"><i class="fa fa-file-o fa-lg"></i></td>
+                <td class="title">{% if menuItem.title is empty %}[Kein Titel] {% else %}{{ menuItem.title }}{% endif %}</td>
+                <td class="links nowrap">
+                    <a class="pure-button button-small" href="?action=page/data&path={{ menuItem.path }}&cancel={{ cancel }}">Eigenschaften</a>
+                    <a class="pure-button button-small" href="?action=page/content&path={{ menuItem.path }}&cancel={{ cancel }}">Inhalte</a>
+                </td>
+            </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>

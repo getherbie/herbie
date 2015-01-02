@@ -16,7 +16,6 @@ use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu;
 use Twig_SimpleFunction;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Yaml\Yaml;
 
 
 class AdminpanelPlugin extends Herbie\Plugin

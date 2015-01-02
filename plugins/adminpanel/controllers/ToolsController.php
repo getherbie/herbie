@@ -3,6 +3,7 @@
 namespace herbie\plugin\adminpanel\controllers;
 
 use Herbie\Helper\FilesystemHelper;
+use Symfony\Component\Yaml\Yaml;
 
 class ToolsController extends Controller
 {

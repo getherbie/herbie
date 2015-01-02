@@ -22,12 +22,8 @@
         <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
         <!--button class="pure-button pure-button-primary" name="button2" type="submit">Sichern & schliessen</button>
         <button class="pure-button pure-button-primary" name="button3" type="submit">Sichern & ansehen</button-->
-        <a href="?action={{ controller }}/index" class="pure-button">Abbrechen</a>
+        <a href="?action={{ controller }}/index&route={{ cancel }}" class="pure-button">Abbrechen</a>
 
     </form>
-
-    {{ addJs('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js') }}
-    {{ addJs('@plugin/adminpanel/assets/jquery.autosize.min.js') }}
-    {{ addJs('$(document).ready(function() { $("textarea").autosize(); });', raw=true) }}
 
 {% endblock %}

@@ -53,7 +53,8 @@ trait PageControllerTrait
             'fields' => $fields,
             'saved' => $saved,
             'controller' => $this->controller,
-            'action' => $this->action
+            'action' => $this->action,
+            'cancel' => $query->get('cancel')
         ]);
     }
 
@@ -95,7 +96,8 @@ trait PageControllerTrait
             'page' => $page,
             'saved' => $saved,
             'controller' => $this->controller,
-            'action' => $this->action
+            'action' => $this->action,
+            'cancel' => $query->get('cancel')
         ]);
     }
 

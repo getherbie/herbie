@@ -27,7 +27,7 @@ class DataController extends Controller
         if(!fclose(fopen($path, "x"))) {
             $this->sendErrorHeader("Datei {$name} konnte nicht erstellt werden.");
         }
-        return $this->dataIndexAction($query, $request);
+        return $this->indexAction($query, $request);
     }
 
     public function indexAction()

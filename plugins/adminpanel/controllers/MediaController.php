@@ -22,7 +22,7 @@ class MediaController extends Controller
             $this->sendErrorHeader('Ordner konnte nicht erstellt werden.');
         }
         $query->add(['dir' => $dir]);
-        return $this->mediaIndexAction($query, $request);
+        return $this->indexAction($query, $request);
     }
 
     public function indexAction($query, $request)

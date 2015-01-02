@@ -7,7 +7,8 @@
     <table class="pure-table pure-table-horizontal data-table">
         <thead>
         <tr>
-            <th>Name</th>
+            <th class="icon" width="1%"></th>
+            <th class="title">Name</th>
             <th>Grösse</th>
             <th>Geändert</th>
             <th></th>
@@ -16,7 +17,8 @@
         <tbody>
         {% for item,entry in data %}
             <tr class="file-{{ item }}">
-                <td>{{ item }}</td>
+                <td class="icon"><i class="fa fa-database fa-lg"></i></td>
+                <td class="title">{{ item }}</td>
                 <td>{{ entry.size|filesize }}</td>
                 <td>{{ entry.modified|strftime }}</td>
                 <td class="links">

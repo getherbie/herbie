@@ -8,7 +8,8 @@
     <table class="pure-table pure-table-horizontal">
         <thead>
         <tr>
-            <th>Titel</th>
+            <th class="icon" width="1%"></th>
+            <th class="title">Titel</th>
             <th>Datum</th>
             <th></th>
         </tr>
@@ -16,7 +17,8 @@
         <tbody>
         {% for item in posts %}
             <tr>
-                <td>{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
+                <td class="icon"><i class="fa fa-file-o fa-lg"></i></td>
+                <td class="title">{% if item.title is empty %}[Kein Titel] {% else %}{{ item.title }}{% endif %}</td>
                 <td>{{ item.date }}</td>
                 <td class="links">
                     <a class="pure-button button-small" href="?action=post/data&path={{ item.path }}">Eigenschaften</a>

@@ -267,6 +267,21 @@ textarea.nowrap {
     word-wrap: normal !important;
     overflow:auto !important;
 }
+th.icon, td.icon {
+    padding-right:0;
+}
+th.title, td.title {
+    padding-left:0;
+}
+td.icon .fa-lg {
+    padding-right:0.5em;
+}
+td.links {
+    white-space:nowrap;
+}
+td.nowrap {
+    white-space:nowrap;
+}
 .button-xsmall {
     font-size: 70%;
 }

@@ -6,9 +6,16 @@ class PageController extends Controller
 {
     use PageControllerTrait;
 
-    public function indexAction()
+    public function indexAction($query, $request)
     {
-        return $this->render('page/index.twig', []);
+        $route = $query->get('route', '');
+        $tree = $this->app['pageTree']->findByRoute($route);
+
+
+        return $this->render('page/index.twig', [
+            'tree' => $tree,
+            'cancel' => $route
+        ]);
     }
 
     protected function redirectBack($path)
