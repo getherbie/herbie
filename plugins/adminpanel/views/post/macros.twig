@@ -39,9 +39,9 @@
 {% macro segment(name, segment) %}
     <div class="pure-control-wrap">
         <label for="name">{{ segment.label }}</label>
-        <div style="border:1px dotted black">{{ addcslashes(segment.value) }}</div>
         <textarea class="pure-input-1" name="segments[{{ name }}]">
 {{ segment.value|e }}</textarea>
+        {% if config('plugins.adminpanel.show_raw_data') %}<div style="font-size:0.9em"><strong>Rohdaten:</strong> {{ rawdata(segment.value) }}</div>{% endif %}
     </div>
 {% endmacro %}
 

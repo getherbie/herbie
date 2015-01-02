@@ -252,6 +252,11 @@ td {
 table .links {
     text-align:right;
 }
+fieldset {
+    background:#eee;
+    padding:1em !important;
+    margin-bottom:1em !important;
+}
 textarea {
     font-family:"Lucida Console", Monaco, monospace;
     font-size: 14px;

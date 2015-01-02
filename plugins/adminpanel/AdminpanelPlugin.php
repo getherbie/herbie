@@ -37,6 +37,14 @@ class AdminpanelPlugin extends Herbie\Plugin
         $this->app['alias']->set('@media', '@web/media');
     }
 
+    public function onTwigInitialized(Herbie\Event $event)
+    {
+        $function = new Twig_SimpleFunction('rawdata', function ($string) {
+            return addcslashes($string, "\0..\37!@\177");
+        });
+        $event['twig']->addFunction($function);
+    }
+
     /**
      * @param Herbie\Event $event
      */
@@ -70,21 +78,24 @@ class AdminpanelPlugin extends Herbie\Plugin
             $pos = strpos($action, '/');
             if($pos === false) {
                 $controller = 'default';
-                $method = $action . 'Action';
             } else {
                 $controller = substr($action, 0, $pos);
-                $method = substr($action, ++$pos) . 'Action';
+                $action = substr($action, ++$pos);
             }
 
             $controllerClass = '\\herbie\\plugin\\adminpanel\\controllers\\' . ucfirst($controller) . 'Controller';
+            $method = $action . 'Action';
 
-            $controller = new $controllerClass($this->app, $this->session);
-            if(!method_exists($controller, $method)) {
-                $controller = new controllers\DefaultController($this->app, $this->session);
+            $controllerObject = new $controllerClass($this->app, $this->session);
+            if(!method_exists($controllerObject, $method)) {
+                $controllerObject = new controllers\DefaultController($this->app, $this->session);
                 $method = 'errorAction';
             }
+            $controllerObject->controller = $controller;
+            $controllerObject->action = $action;
+
             $params = ['query' => $this->request->query, 'request' => $this->request->request];
-            $content = call_user_func_array([$controller, $method], $params);
+            $content = call_user_func_array([$controllerObject, $method], $params);
             $event['response']->setContent($content);
         }
     }

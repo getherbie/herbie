@@ -7,6 +7,8 @@ class Controller
     protected $app;
     protected $request;
     protected $session;
+    public $controller;
+    public $action;
 
     public function __construct($app, $session)
     {

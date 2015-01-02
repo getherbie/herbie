@@ -11,12 +11,12 @@
 {% block content %}
 
     <form action="" method="post" class="pure-form pure-form-aligned">
-        <fieldset>
+        <div>
             <a class="add first" href="#"><i class="fa fa-plus-circle"></i> Hinzufügen</a>
             {% for index,item in data %}
                 {{ macro.element(config, index, item) }}
             {% endfor %}
-        </fieldset>
+        </div>
         <button class="pure-button pure-button-primary" name="button1" type="submit">Sichern</button>
         <a href="?action=data/index" class="pure-button">Abbrechen</a>
     </form>

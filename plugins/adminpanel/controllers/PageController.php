@@ -4,13 +4,28 @@ namespace herbie\plugin\adminpanel\controllers;
 
 class PageController extends Controller
 {
+    use PageControllerTrait;
 
     public function indexAction()
     {
         return $this->render('page/index.twig', []);
     }
 
-    public function editAction($query, $request)
+    protected function redirectBack($path)
+    {
+        $item = $this->app['menu']->find($path, 'path');
+        if(is_null($item)) {
+            $item = $this->app['posts']->find($path, 'path');
+        }
+        if(isset($item)) {
+            $route = $item->route;
+        } else {
+            $route = '';
+        }
+        $this->app['twig']->environment->getExtension('herbie')->functionRedirect($route);
+    }
+
+    /*public function editAction($query, $request)
     {
         $path = $query->get('path', null);
 
@@ -46,20 +61,6 @@ class PageController extends Controller
             'action' => $action,
             'saved' => $saved
         ]);
-    }
-
-    protected function redirectBack($path)
-    {
-        $item = $this->app['menu']->find($path, 'path');
-        if(is_null($item)) {
-            $item = $this->app['posts']->find($path, 'path');
-        }
-        if(isset($item)) {
-            $route = $item->route;
-        } else {
-            $route = '';
-        }
-        $this->app['twig']->environment->getExtension('herbie')->functionRedirect($route);
-    }
+    }*/
 
 }
