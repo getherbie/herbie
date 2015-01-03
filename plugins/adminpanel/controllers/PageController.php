@@ -2,6 +2,9 @@
 
 namespace herbie\plugin\adminpanel\controllers;
 
+use Herbie\Menu\Page;
+use Herbie\Helper\FilesystemHelper;
+
 class PageController extends Controller
 {
     use PageControllerTrait;
@@ -9,13 +12,61 @@ class PageController extends Controller
     public function indexAction($query, $request)
     {
         $route = $query->get('route', '');
-        $tree = $this->app['pageTree']->findByRoute($route);
-
-
+        $tree = $this->getPageTree()->findByRoute($route);
         return $this->render('page/index.twig', [
             'tree' => $tree,
             'cancel' => $route
         ]);
+    }
+
+    public function addAction($query, $request)
+    {
+        $title = $request->get('name');
+        if(empty($title)) {
+            $this->sendErrorHeader("Bitte einen Namen eingeben.");
+        }
+        $filename = FilesystemHelper::sanitizeFilename($title);
+        $filepath = $this->app['alias']->get("@page/{$filename}.md");
+        if(is_file($filepath)) {
+            $this->sendErrorHeader("Eine Seite mit demselben Namen existiert schon.");
+        }
+        $eol = PHP_EOL;
+        $data = "---{$eol}title: {$title}{$eol}hidden: 1{$eol}---{$eol}Meine neue Seite{$eol}";
+        if(!file_put_contents($filepath, $data)) {
+            $this->sendErrorHeader("Seite konnte nicht erstellt werden.");
+        }
+        return $this->indexAction($query, $request);
+    }
+
+    public function deleteAction($query, $request)
+    {
+        $file = $request->get('file');
+        $filepath = $this->app['alias']->get($file);
+        $basename = basename($filepath);
+        if(empty($file)) {
+            $this->sendErrorHeader('Ungültige Parameter!');
+        }
+        if(!is_file($filepath)) {
+            $this->sendErrorHeader("Seite {$basename} konnte nicht gefunden werden.");
+        }
+        $tree = $this->getPageTree()->findBy('path', $file);
+        $hasChildren = ($tree && $tree->hasChildren()) ? true : false;
+        if($hasChildren) {
+            $this->sendErrorHeader("Seite {$basename} hat Unterseiten und konnte nicht gelöscht werden.");
+        }
+        if(!@unlink($filepath)) {
+            $this->sendErrorHeader("Seite {$basename} konnte nicht gelöscht werden.");
+        }
+        header('Content-Type: application/json');
+        echo json_encode(true);
+        exit;
+    }
+
+    protected function getPageTree()
+    {
+        $builder = new Page\Builder($this->app);
+        $menu = $builder->buildCollection();
+        return Page\Node::buildTree($menu);
     }
 
     protected function redirectBack($path)
