@@ -63,6 +63,9 @@ return [
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
-    'plugins_path' => $app['sitePath'] . '/plugins',
-    'plugins' => []
+    'plugins' => [
+        'path' => $app['sitePath'] . '/plugins',
+        'enable' => [],
+        'config' => []
+    ]
 ];

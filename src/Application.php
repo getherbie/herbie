@@ -77,13 +77,13 @@ class Application extends Container
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins_path'));
+        $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
 
         $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
             '@page' => rtrim($config->get('pages.path'), '/'),
-            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@plugin' => rtrim($config->get('plugins.path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
             '@site' => rtrim($this['sitePath'], '/'),
             '@vendor' => $this->vendorDir,

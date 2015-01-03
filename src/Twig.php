@@ -150,7 +150,7 @@ class Twig
 
         // namespaces
         $namespaces = [
-            'plugin' => $this->config->get('plugins_path'),
+            'plugin' => $this->config->get('plugins.path'),
             'page' => $this->config->get('pages.path'),
             'post' => $this->config->get('posts.path'),
             'site' => $this->config->get('site.path'),

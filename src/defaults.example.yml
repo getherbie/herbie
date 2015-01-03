@@ -49,5 +49,7 @@ language: de
 locale: de_DE.UTF-8
 charset: UTF-8
 
-plugins_path: SITE_PATH/plugins
-plugins: []
+plugins:
+  path: SITE_PATH/plugins
+  enable: []
+  config: []

@@ -37,12 +37,12 @@ class Plugins
         /** @var EventDispatcher $events */
         $events = $this->app['events'];
 
-        $pluginsPath = rtrim($this->app['config']->get('plugins_path'), '/');
-        $pluginKeys = array_keys($this->app['config']->get('plugins', []));
-        foreach ($pluginKeys as $pluginKey) {
+        $pluginPath = rtrim($this->app['config']->get('plugins.path'), '/');
+        $pluginList = $this->app['config']->get('plugins.enable', []);
+        foreach ($pluginList as $pluginKey) {
 
             $filePath = sprintf(
-                '%s/%s/%sPlugin.php', $pluginsPath, $pluginKey, ucfirst($pluginKey)
+                '%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey)
             );
             
             if (!is_file($filePath)) {
