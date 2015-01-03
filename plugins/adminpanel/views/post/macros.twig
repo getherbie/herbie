@@ -22,7 +22,7 @@
         {{ macro.select(name, item, value, options) }}
     {% elseif item.type == 'pagelayout' %}
         {% set options = {'': '[Default]'} %}
-        {% for key, unused in config('plugins.adminpanel.layouts') %}
+        {% for key, unused in config('plugins.config.adminpanel.layouts') %}
             {% set options = options|merge({(key): (key)}) %}
         {% endfor %}
         {{ macro.select(name, item, value, options) }}
@@ -41,7 +41,7 @@
         <label for="name">{{ segment.label }}</label>
         <textarea class="pure-input-1" name="segments[{{ name }}]">
 {{ segment.value|e }}</textarea>
-        {% if config('plugins.adminpanel.show_raw_data') %}<div style="font-size:0.9em"><strong>Rohdaten:</strong> {{ rawdata(segment.value) }}</div>{% endif %}
+        {% if config('plugins.config.adminpanel.show_raw_data') %}<div style="font-size:0.9em"><strong>Rohdaten:</strong> {{ rawdata(segment.value) }}</div>{% endif %}
     </div>
 {% endmacro %}
 

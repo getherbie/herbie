@@ -16,7 +16,7 @@ class DefaultController extends Controller
     {
         if($this->request->getMethod() == 'POST') {
             $password = $request->get('password', null);
-            if(md5($password) == $this->app['config']->get('plugins.adminpanel.password')) {
+            if(md5($password) == $this->app['config']->get('plugins.config.adminpanel.password')) {
                 $this->session->set('LOGGED_IN', true);
                 $this->app['twig']->environment->getExtension('herbie')->functionRedirect('adminpanel');
             }

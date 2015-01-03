@@ -24,7 +24,7 @@ class RssfeedPlugin extends Herbie\Plugin
     public function onPluginsInitialized(Herbie\Event $event)
     {
         $alias = $this->config(
-            'plugins.rssfeed.pages.feed',
+            'plugins.config.rssfeed.pages.feed',
             '@plugin/rssfeed/pages/feed.rss'
         );
         $path = $this->app['alias']->get($alias);

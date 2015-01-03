@@ -12,5 +12,6 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        simplesearch:
+        enable:
+            - simplesearch
 

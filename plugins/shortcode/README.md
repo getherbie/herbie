@@ -11,7 +11,8 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        shortcode:
+        enable:
+            - shortcode
 
 Die eigentlichen Shortcodes definierst du entweder in der PHP-Konfigurationsdatei
 oder in der index-Bootstrapdatei.
@@ -28,9 +29,13 @@ einfache Konfiguration sieht wie folgt aus.
     <?php
     return [
         ...
-        'shortcodes' => [
-            'li' => function($atts, $content) { return '<li>' . $content . '</li>'; }),
-            'ul' => function($atts, $content) { return '<ul>' . $this['shortcode']->parse($content) . '</ul>'; }),
+        'plugins' => [
+            'config' => [
+                'shortcodes' => [
+                    'li' => function($atts, $content) { return '<li>' . $content . '</li>'; }),
+                    'ul' => function($atts, $content) { return '<ul>' . $this['shortcode']->parse($content) . '</ul>'; }),
+                ]
+            ]
         ]
         ...
     ];

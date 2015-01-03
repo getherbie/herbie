@@ -10,23 +10,28 @@ Das Plugin installierst du via Composer.
 
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
+    plugins:
+        enable:
+            - imagine
+
 ## Konfiguration
 
 In der Konfigurationsdatei definierst du die gewünschten Filter.
 
     plugins:
-        imagine:
-            filter_sets:
-                resize:
-                    filters:
-                        thumbnail:
-                            size: [280, 280]
-                            mode: inset
-                crop:
-                    filters:
-                        crop:
-                            start: [0, 0]
-                            size: [560, 560]
+        config:
+            imagine:
+                filter_sets:
+                    resize:
+                        filters:
+                            thumbnail:
+                                size: [280, 280]
+                                mode: inset
+                    crop:
+                        filters:
+                            crop:
+                                start: [0, 0]
+                                size: [560, 560]
 
 Mit obigen Einstellungen stehen dir zwei Filter *resize* und *crop* zur
 Verfügung, die du in Seiten und Layouts als Twig-Funktion oder Twig-Filter

@@ -37,7 +37,7 @@ class SimplesearchPlugin extends Herbie\Plugin
     public function form()
     {
         $template = $this->config(
-            'plugins.simplesearch.template.form',
+            'plugins.config.simplesearch.template.form',
             '@plugin/simplesearch/templates/form.twig'
         );
         return $this->app['twig']->render($template, [
@@ -55,7 +55,7 @@ class SimplesearchPlugin extends Herbie\Plugin
         $query = $this->app['request']->get('query');
         $results = $this->search($query);
         $template = $this->config(
-            'plugins.simplesearch.template.results',
+            'plugins.config.simplesearch.template.results',
             '@plugin/simplesearch/templates/results.twig'
         );
         return $this->app['twig']->render($template, [
@@ -118,7 +118,7 @@ class SimplesearchPlugin extends Herbie\Plugin
 
         $pathAlias = $this->getPathAlias();
         $usePageCache = $this->config('cache.page.enable', false);
-        $usePageCache &= $this->config('plugins.simplesearch.use_page_cache', false);
+        $usePageCache &= $this->config('plugins.config.simplesearch.use_page_cache', false);
 
         $appendIterator = new \AppendIterator();
         $appendIterator->append($this->app['menu']->getIterator());
@@ -162,7 +162,7 @@ class SimplesearchPlugin extends Herbie\Plugin
     protected function getPathAlias()
     {
         return $this->config(
-            'plugins.simplesearch.page.search',
+            'plugins.config.simplesearch.page.search',
             '@plugin/simplesearch/pages/search.html'
         );
     }

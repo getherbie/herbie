@@ -24,7 +24,7 @@ class XmlsitemapPlugin extends Herbie\Plugin
     public function onPluginsInitialized(Herbie\Event $event)
     {
         $alias = $this->config(
-            'plugins.xmlsitemap.pages.sitemap',
+            'plugins.config.xmlsitemap.pages.sitemap',
             '@plugin/xmlsitemap/pages/sitemap.xml'
         );
         $path = $this->app['alias']->get($alias);

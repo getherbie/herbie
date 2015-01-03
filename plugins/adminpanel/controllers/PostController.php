@@ -47,7 +47,7 @@ class PostController extends Controller
             $this->sendErrorHeader('Ungültige Parameter!');
         }
         if(!is_file($filepath)) {
-            $this->sendErrorHeader("Blogpost {$$basename} konnte nicht gefunden werden.");
+            $this->sendErrorHeader("Blogpost {$basename} konnte nicht gefunden werden.");
         }
         if(!@unlink($filepath)) {
             $this->sendErrorHeader("Blogpost {$basename} konnte nicht gelöscht werden.");
@@ -65,7 +65,7 @@ class PostController extends Controller
         $unconfig = [];
 
         // Data config
-        $data = $this->app['config']->get('plugins.adminpanel.fields', []);
+        $data = $this->app['config']->get('plugins.config.adminpanel.fields', []);
 
         foreach($page['data'] as $key => $value) {
             if(!isset($data[$key])) {
@@ -81,7 +81,7 @@ class PostController extends Controller
         }
 
         // Segment config
-        $layouts = $this->app['config']->get('plugins.adminpanel.layouts', []);
+        $layouts = $this->app['config']->get('plugins.config.adminpanel.layouts', []);
         $layout = empty($data['layout']['value']) ? 'default.html' : $data['layout']['value'];
         $segments = [];
         foreach($layouts[$layout] as $pairs) {

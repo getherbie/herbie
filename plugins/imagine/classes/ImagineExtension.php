@@ -143,11 +143,11 @@ class ImagineExtension extends \Twig_Extension
      */
     protected function applyFilter($path, $filter)
     {
-        if ($this->app['config']->isEmpty("plugins.imagine.filter_sets.{$filter}")) {
+        if ($this->app['config']->isEmpty("plugins.config.imagine.filter_sets.{$filter}")) {
             return $path;
         }
 
-        $filterConfig = $this->app['config']->get("plugins.imagine.filter_sets.{$filter}");
+        $filterConfig = $this->app['config']->get("plugins.config.imagine.filter_sets.{$filter}");
         $cachePath = $this->resolveCachePath($path, $filter);
 
         if (!empty($filterConfig['test'])) {

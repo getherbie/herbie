@@ -26,7 +26,7 @@ trait PageControllerTrait
         $loader = new FrontMatterLoader();
         $data = $loader->load($path);
 
-        $fields = $this->app['config']->get('plugins.adminpanel.fields', []);
+        $fields = $this->app['config']->get('plugins.config.adminpanel.fields', []);
         $unconfig = [];
 
         foreach($data as $key => $value) {
@@ -75,7 +75,7 @@ trait PageControllerTrait
         $data = $page['data'];
 
         // Segment config
-        $layouts = $this->app['config']->get('plugins.adminpanel.layouts', []);
+        $layouts = $this->app['config']->get('plugins.config.adminpanel.layouts', []);
         $layout = empty($data['layout']) ? 'default.html' : $data['layout'];
 
         $segments = [];

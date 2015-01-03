@@ -11,7 +11,8 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        highlight:
+        enable:
+            - highlight
 
 Das Plugin stellt den Tag *{% code %}* zur Verfügung, den du in Seiten nutzen kannst.
 

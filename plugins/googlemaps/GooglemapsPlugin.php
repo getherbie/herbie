@@ -51,7 +51,7 @@ class GooglemapsPlugin extends Herbie\Plugin
     {
         self::$instances++;
         $template = $this->app['config']->get(
-            'plugins.googlemaps.template',
+            'plugins.config.googlemaps.template',
             '@plugin/googlemaps/templates/googlemaps.twig'
         );
         return $this->twig->render($template, [

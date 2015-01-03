@@ -13,7 +13,8 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        disqus:
+        enable:
+            - disqus
 
 
 Anwendung

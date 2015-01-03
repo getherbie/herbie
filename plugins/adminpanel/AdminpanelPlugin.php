@@ -115,7 +115,7 @@ class AdminpanelPlugin extends Herbie\Plugin
     protected function getPathAlias()
     {
         return $this->config(
-            'plugins.adminpanel.page.adminpanel',
+            'plugins.config.adminpanel.page.adminpanel',
             '@plugin/adminpanel/pages/adminpanel.html'
         );
     }

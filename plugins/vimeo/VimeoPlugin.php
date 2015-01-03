@@ -46,7 +46,7 @@ class VimeoPlugin extends Herbie\Plugin
     {
         self::$instances++;
         $template = $this->app['config']->get(
-            'plugins.vimeo.template',
+            'plugins.config.vimeo.template',
             '@plugin/vimeo/templates/vimeo.twig'
         );
         return $this->twig->render($template, [

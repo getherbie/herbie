@@ -143,7 +143,7 @@ class SimplecontactPlugin extends Herbie\Plugin
      */
     protected function getFormConfig()
     {
-        $config = (array) $this->config('plugins.simplecontact');
+        $config = (array) $this->config('plugins.config.simplecontact');
         if(isset($this->app['menuItem']->simplecontact) && is_array($this->app['menuItem']->simplecontact)) {
             $config = (array)$this->app['menuItem']->simplecontact;
         }

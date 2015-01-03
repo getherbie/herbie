@@ -71,7 +71,7 @@ class DataController extends Controller
 
         // Config
         $name = pathinfo($absPath, PATHINFO_FILENAME);
-        $config = $this->app['config']->get('plugins.adminpanel.data.' . $name . '.config');
+        $config = $this->app['config']->get('plugins.config.adminpanel.data.' . $name . '.config');
         if(is_null($config)) {
             return $this->editAsString($query, $request);
         }

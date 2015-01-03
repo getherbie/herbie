@@ -13,7 +13,8 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        random:
+        enable:
+            - random
         
 Die Seite, auf welcher das Random-Plugin aktiv sein soll, muss wie folgt aktiviert werden. Optional kannst du eine oder
 mehrere Seiten ausschliessen, indem du die Route(n) angibst.

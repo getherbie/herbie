@@ -12,7 +12,14 @@ Das Plugin installierst du via Composer.
 Danach aktivierst du das Plugin in der Konfigurationsdatei.
 
     plugins:
-        adminpanel:
-            password: "md5 encoded password"
+        enable:
+            - adminpanel
+
+Das Passwort muss md5-codiert werden:
+
+    plugins:
+        config:
+            adminpanel:
+                password: "md5 encoded password"
 
 Das Adminpanel rufst du auf, indem du in der Adresszeile "/adminpanel" eingibst.
