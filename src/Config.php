@@ -28,6 +28,7 @@ class Config
     public function __construct(Application $app)
     {
         $this->items = $this->loadFiles($app);
+        $this->loadPluginFiles($app);
     }
 
     /**
@@ -134,9 +135,8 @@ class Config
         $defaults = require(__DIR__ . '/defaults.php');
         if (is_file($app['sitePath'] . '/config.php')) {
             $userConfig = require($app['sitePath'] . '/config.php');
-            return $this->merge($defaults, $userConfig);
-        }
-        if (is_file($app['sitePath'] . '/config.yml')) {
+            $defaults = $this->merge($defaults, $userConfig);
+        } elseif (is_file($app['sitePath'] . '/config.yml')) {
             $content = file_get_contents($app['sitePath'] . '/config.yml');
             $content = str_replace(
                 ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
@@ -144,8 +144,44 @@ class Config
                 $content
             );
             $userConfig = Yaml::parse($content);
-            return $this->merge($defaults, $userConfig);
+            $defaults = $this->merge($defaults, $userConfig);
         }
         return $defaults;
     }
+
+    /**
+     * @param Application $app
+     */
+    private function loadPluginFiles(Application $app)
+    {
+        $dir = $app['sitePath'] . '/config/plugins';
+        if(is_dir($dir)) {
+            $files = scandir($dir);
+            foreach($files as $file) {
+                if($file == '.' || $file == '..') {
+                    continue;
+                }
+                $basename = pathinfo($file, PATHINFO_FILENAME);
+                $content = $this->loadFile($dir . '/' . $file, $app);
+                $this->set('plugins.config.' . $basename, Yaml::parse($content));
+            }
+        }
+    }
+
+    /**
+     * @param string $file
+     * @param Application $app
+     * @return mixed|string
+     */
+    private function loadFile($file, $app)
+    {
+        $content = file_get_contents($file);
+        $content = str_replace(
+            ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
+            [$app['appPath'], $app['webPath'], $app['sitePath']],
+            $content
+        );
+        return $content;
+    }
+
 }
