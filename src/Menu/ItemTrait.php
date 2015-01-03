@@ -27,7 +27,10 @@ trait ItemTrait
         // defaults
         $this->data = [
             'layout' => 'default.html',
-            'contentType' => 'text/html'
+            'contentType' => 'text/html',
+            'authors' => [],
+            'categories' => [],
+            'tags' => []
         ];
         $this->setData($data);
     }
