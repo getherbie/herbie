@@ -44,3 +44,31 @@
     </style>
 
 {% endblock %}
+
+
+{% block jquery %}
+    <script>
+        $(document).ready(function () {
+            // remove multitext input field
+            $(document).on("click", "a.remove-multitext", function () {
+                $(this).parent().remove();
+                return false;
+            });
+            // add multitext input field
+            $(document).on("click", "a.add-multitext", function () {
+                var key = $(this).siblings('div').attr('data-key');
+                var template = '<div><input type="text" class="pure-input" name="data[{key}][]" value="" /> <a href="#" class="remove-multitext"><i class="fa fa-minus-circle"></i></a></div>';
+                template = template.replace('{key}', key);
+                var row = $(this).parent().find("div div:last-child");
+                if(row.length) {
+                    row.after( template);
+                } else {
+                    $(this).siblings("div").html( template );
+                }
+                // set focus
+                $(this).parent().find("div div:last-child input").focus();
+                return false;
+            });
+        });
+    </script>
+{% endblock %}

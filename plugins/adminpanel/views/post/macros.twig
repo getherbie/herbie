@@ -26,6 +26,8 @@
             {% set options = options|merge({(key): (key)}) %}
         {% endfor %}
         {{ macro.select(name, item, value, options) }}
+    {% elseif item.type == 'multitext' %}
+        {{ macro.multitext(name, item, value) }}
     {% elseif item.type == 'yaml' %}
         {{ macro.textarea(name, item, value) }}
     {% else %}
@@ -71,6 +73,28 @@
             </div>
             <div class="pure-u-1 pure-u-md-4-5">
                 <input type="text" class="pure-input-1" name="data[{{ key }}]" value="{{ value|e }}" size="{{ item.size|default(20) }}" placeholder="{{ item.placeholder }}" />
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro multitext(key, item, value) %}
+    <div class="pure-control-wrap field-{{ key }}">
+        <div class="pure-g" data-type="{{ item.type }}">
+            <div class="pure-u-1 pure-u-md-1-5">
+                <label for="name">{{ item.label }}</label>
+            </div>
+            <div class="pure-u-1 pure-u-md-4-5">
+                <div data-key="{{ key }}">
+                {% for v in value %}
+                    {% set index = loop.index0 %}
+                    <div>
+                        <input type="text" class="pure-input" name="data[{{ key }}][]" value="{{ v|e }}" />
+                        <a href="#" class="remove-multitext"><i class="fa fa-minus-circle"></i></a>
+                    </div>
+                {% endfor %}
+                </div>
+                <a href="#" class="add-multitext"><i class="fa fa-plus-circle"></i></a>
             </div>
         </div>
     </div>
