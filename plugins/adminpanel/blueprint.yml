@@ -1,0 +1,62 @@
+show_raw_data: true
+password: 88cceeb3a39d7f9172c228028e46cb69
+layouts:
+    default.html:
+        segments:
+            '': Inhalt
+fields:
+    title:
+        label: Titel
+        type: text
+    layout:
+        label: Layout
+        type: pagelayout
+    date:
+        label: Datum
+        type: text
+        placeholder: 'JJJJ-MM-DD'
+    format:
+        label: Formatierung
+        type: pageformat
+    excerpt:
+        label: Zusammenfassung
+        type: textarea
+    hidden:
+        label: In Menüs ausblenden
+        type: checkbox
+    noCache:
+        label: Nicht cachen
+        type: checkbox
+    preserveExtension:
+        label: Dateiendung behalten
+        type: checkbox
+    contentType:
+        label: Content-Type
+        type: text
+    categories:
+        label: Kategorien
+        type: multitext
+    authors:
+        label: Autoren
+        type: multitext
+    tags:
+        label: Tags
+        type: multitext
+    category:
+        label: Kategorie (veraltet)
+        type: text
+    author:
+        label: Author (veraltet)
+        type: text
+
+data:
+    example:
+        config:
+            key:
+                label: Schlüssel
+                type: text
+                placeholder: Schlüssel
+            desc:
+                label: Beschreibung
+                type: text
+                placeholder: Beschreibung
