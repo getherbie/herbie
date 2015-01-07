@@ -82,6 +82,7 @@ class Application extends Container
         $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
+            '@media' => rtrim($config->get('media.path'), '/'),
             '@page' => rtrim($config->get('pages.path'), '/'),
             '@plugin' => rtrim($config->get('plugins.path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
