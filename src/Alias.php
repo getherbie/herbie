@@ -31,9 +31,13 @@ class Alias
     /**
      * @param string $alias
      * @param string $path
+     * @throws \Exception
      */
     public function set($alias, $path)
     {
+        if(array_key_exists($alias, $this->aliases)) {
+            throw new \Exception("Alias {$alias} already set, use update instead.");
+        }
         $this->aliases[$alias] = rtrim($path, '/');
         $this->sort();
     }
@@ -50,6 +54,20 @@ class Alias
         $keys = array_keys($this->aliases);
         $values = array_values($this->aliases);
         return str_replace($keys, $values, $alias);
+    }
+
+    /**
+     * @param string $alias
+     * @param string $path
+     * @throws \Exception
+     */
+    public function update($alias, $path)
+    {
+        if(array_key_exists($alias, $this->aliases)) {
+            $this->aliases[$alias] = rtrim($path, '/');
+        } else {
+            throw new \Exception("Alias {$alias} not exists, use set instead.");
+        }
     }
 
     /**
