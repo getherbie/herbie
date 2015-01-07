@@ -33,7 +33,6 @@ class AdminpanelPlugin extends Herbie\Plugin
         $this->session = new Session();
         $this->session->start();
         $this->request = $this->app['request'];
-        $this->app['alias']->set('@media', '@web/media');
     }
 
     public function onTwigInitialized(Herbie\Event $event)
