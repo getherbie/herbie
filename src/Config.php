@@ -138,11 +138,7 @@ class Config
             $defaults = $this->merge($defaults, $userConfig);
         } elseif (is_file($app['sitePath'] . '/config.yml')) {
             $content = file_get_contents($app['sitePath'] . '/config.yml');
-            $content = str_replace(
-                ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-                [$app['appPath'], $app['webPath'], $app['sitePath']],
-                $content
-            );
+            $content = $this->replaceConstants($content, $app);
             $userConfig = Yaml::parse($content);
             $defaults = $this->merge($defaults, $userConfig);
         }
@@ -176,12 +172,21 @@ class Config
     private function loadFile($file, $app)
     {
         $content = file_get_contents($file);
-        $content = str_replace(
-            ['APP_PATH', 'WEB_PATH', 'SITE_PATH'],
-            [$app['appPath'], $app['webPath'], $app['sitePath']],
-            $content
+        return $this->replaceConstants($content, $app);
+    }
+
+    /**
+     * @param string $string
+     * @param Application $app
+     * @return string
+     */
+    private function replaceConstants($string, $app)
+    {
+        return str_replace(
+            ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],
+            [$app['appPath'], $app['webPath'], $app['webUrl'], $app['sitePath']],
+            $string
         );
-        return $content;
     }
 
 }

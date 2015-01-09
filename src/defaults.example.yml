@@ -6,6 +6,7 @@ site:
 
 media:
   path: WEB_PATH/media
+  url: WEB_URL/media
   images: 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai'
   documents: 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf'
   archives: 'zip,tar,gz,gzip,tgz'

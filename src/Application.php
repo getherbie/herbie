@@ -71,6 +71,7 @@ class Application extends Container
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
+        $this['webUrl'] = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         $this['sitePath'] = $this->sitePath;
 
         $config = new Config($this);

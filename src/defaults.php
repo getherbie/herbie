@@ -22,6 +22,7 @@ return [
     ],
     'media' => [
         'path' => $app['webPath'] . '/media',
+        'url' => $app['webUrl'] . '/media',
         'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
         'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
         'archives' => 'zip,tar,gz,gzip,tgz',
