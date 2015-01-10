@@ -22,6 +22,6 @@
         }
     },
     "replace": {
-        "herbie/herbie": "self.version"
+        "getherbie/herbie": "self.version"
     }
 }
