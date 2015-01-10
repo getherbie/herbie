@@ -10,6 +10,7 @@
 
 namespace Herbie\Twig;
 
+use Herbie\Finder;
 use Herbie\Formatter;
 use Herbie\Menu;
 use Herbie\Page;
@@ -153,7 +154,8 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('pager', [$this, 'functionPager'], $options),
             new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
             new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
-            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options)
+            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options),
+            new Twig_SimpleFunction('mediafiles', [$this, 'functionMediafiles'], $options),
         ];
     }
 
@@ -608,6 +610,26 @@ class HerbieExtension extends Twig_Extension
     public function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
+    }
+
+    /**
+     * @param string $type
+     * @return \Traversable
+     */
+    public function functionMediafiles($type = 'images')
+    {
+        $finder = Finder\Finder::create()
+            ->in($this->app['alias']->get('@media'))
+            ->hidden(true);
+
+        if($type == 'folders') {
+            return $finder->directories();
+        }
+
+        $types = ['images', 'documents', 'archives', 'code', 'videos', 'audio'];
+        $type = in_array($type, $types) ? $type : 'images';
+        $extensions = $this->app['config']->get('media.' . $type);
+        return $finder->files()->extensions($extensions);
     }
 
     /**
