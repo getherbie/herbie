@@ -20,5 +20,8 @@
         "psr-4": {
             "Herbie\\": "src"
         }
+    },
+    "replace": {
+        "herbie/herbie": "self.version"
     }
 }
