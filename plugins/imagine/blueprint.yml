@@ -1,0 +1,17 @@
+filter_sets:
+    t560x260:
+        test: false
+        filters:
+            thumbnail:
+                size:
+                    - 560
+                    - 260
+                mode: outbound
+    t560x560:
+        test: false
+        filters:
+            thumbnail:
+                size:
+                    - 560
+                    - 560
+                mode: inset

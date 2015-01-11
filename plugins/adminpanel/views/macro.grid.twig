@@ -1,0 +1,85 @@
+{% macro delete_link(item, label) %}
+    <a class="delete pure-button button-small" data-file="{{ item }}" href="#">{{ label }}</a>
+{% endmacro %}
+
+
+{% macro delete_js(action) %}
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", "a.delete", function () {
+                $('a.delete-confirmed').removeClass('delete-confirmed');
+                $(this).addClass('delete-confirmed');
+                $('div.alert-error').slideUp(50);
+                return false;
+            });
+            $(document).on("click", "a.delete-confirmed", function () {
+                var context = $(this);
+                var file = context.attr('data-file');
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ action }}",
+                    data: {file: file},
+                    dataType: "json"
+                }).done(function () {
+                    context.closest('tr').remove();
+                }).error(function (jqXHR, textStatus, errorThrown) {
+                    context.removeClass('delete-confirmed').addClass('delete');
+                    $('div.alert-error').text(jqXHR.responseText).slideDown(50);
+                });
+                return false;
+            });
+        });
+    </script>
+{% endmacro %}
+
+
+{% macro addblock(label) %}
+    <div style="float:left;margin-right:0.5em">
+        <a class="add-folder pure-button" data-file="{{ item }}" href="#">{{ label }}</a>
+    </div>
+    <div class="addblock-folder hidden">
+        <form class="pure-form">
+            <input type="text" name="name" class="name pure-input-1-4">
+            <button class="save pure-button">Erstellen</button>
+            <button class="cancel pure-button">Abbrechen</button>
+            <span class="error"></span>
+        </form>
+    </div>
+{% endmacro %}
+
+
+{% macro addblock_js(action) %}
+    <script>
+        $(document).on("click", "a.add-folder", function () {
+            $(this).hide();
+            $('div.addblock-folder').show();
+            $('div.addblock-folder input').val("");
+            $('div.addblock-folder input').focus();
+            return false;
+        });
+        $(document).on("click", "div.addblock-folder button.save", function () {
+            var name = $('div.addblock-folder input').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ action }}",
+                data: { dir: "{{ dir }}", name: name }
+            }).success(function (html) {
+                var table = $(html).find('.pure-table');
+                $(".pure-table").replaceWith(table);
+                $("div.addblock-folder button.cancel").trigger("click");
+            }).error(function (jqXHR, textStatus, errorThrown) {
+                $('div.addblock-folder .error').text(jqXHR.responseText);
+            });
+            return false;
+        });
+        $(document).on("click", "div.addblock-folder button.cancel", function () {
+            $('div.addblock-folder').hide();
+            $('a.add-folder').show();
+            return false;
+        });
+        $(document).on("focus", "div.addblock-folder input", function () {
+            $('div.addblock-folder .error').text('');
+        });
+    </script>
+{% endmacro %}
+

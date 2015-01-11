@@ -1,0 +1,38 @@
+{% extends "@plugin/adminpanel/layouts/main.twig" %}
+{% import "@plugin/adminpanel/views/macro.grid.twig" as grid %}
+
+{% block title %}Daten{% endblock %}
+
+{% block content %}
+    <table class="pure-table pure-table-horizontal data-table">
+        <thead>
+        <tr>
+            <th class="icon" width="1%"></th>
+            <th class="title">Name</th>
+            <th>Grösse</th>
+            <th>Geändert</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item,entry in data %}
+            <tr class="file-{{ item }}">
+                <td class="icon"><i class="fa fa-database fa-lg"></i></td>
+                <td class="title">{{ item }}</td>
+                <td>{{ entry.size|filesize }}</td>
+                <td>{{ entry.modified|strftime }}</td>
+                <td class="links">
+                    <a class="pure-button button-small" href="?action=data/edit&path=@site/data/{{ item }}.yml">Editieren</a>
+                    {{ grid.delete_link(item, "Löschen") }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ grid.addblock("Daten hinzufügen") }}
+{% endblock %}
+
+{% block jquery %}
+    {{ grid.delete_js("?action=data/delete") }}
+    {{ grid.addblock_js("?action=data/add") }}
+{% endblock %}

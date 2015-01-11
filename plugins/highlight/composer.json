@@ -1,0 +1,12 @@
+{
+    "name": "getherbie/plugin-highlight",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Plugin Highlight",
+    "keywords": ["herbie", "plugin", "highlight", "geshi"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause",
+    "require": {
+        "getherbie/herbie": "dev-master",
+        "easybook/geshi": "1.0.8.12"
+    }
+}
