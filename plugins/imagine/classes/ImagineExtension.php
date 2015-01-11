@@ -76,11 +76,13 @@ class ImagineExtension extends \Twig_Extension
      * @param string $title
      * @param int $width
      * @param int $height
+     * @param int $media
      * @return string
      */
-    public function imagineFunction($path, $filter, $attributes = [], $alt = '', $class = '', $id = '', $style= '', $title = '', $width = 0, $height = 0)
+    public function imagineFunction($path, $filter, $attributes = [], $alt = '', $class = '', $id = '', $style= '',
+                                    $title = '', $width = 0, $height = 0, $media = 1)
     {
-        $cachePath = $this->applyFilter($path, $filter);
+        $cachePath = $this->applyFilter($path, $filter, $media);
 
         $htmlAttributes = [];
 
@@ -117,13 +119,13 @@ class ImagineExtension extends \Twig_Extension
      *
      * @param string $path
      * @param string $filter
-     *
+     * @param int $media
      * @return \Twig_Markup
      */
-    public function imagineFilter($path, $filter)
+    public function imagineFilter($path, $filter, $media = 1)
     {
         return new \Twig_Markup(
-            $this->basePath . $this->applyFilter($path, $filter),
+            $this->basePath . $this->applyFilter($path, $filter, $media),
             'utf8'
         );
     }
@@ -139,10 +141,15 @@ class ImagineExtension extends \Twig_Extension
     /**
      * @param string $path
      * @param string $filter
+     * @param int $media
      * @return string
      */
-    protected function applyFilter($path, $filter)
+    protected function applyFilter($path, $filter, $media)
     {
+        if($media == 1) {
+            $path = 'media/' . $path;
+        }
+
         if ($this->app['config']->isEmpty("plugins.config.imagine.filter_sets.{$filter}")) {
             return $path;
         }
