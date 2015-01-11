@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="herbie-demo" default="dist">
+
+    <property name="build.base.dir" value="release" />
+
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+        <echo msg="Making directory ./release" />
+        <mkdir dir="./release" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="prepare">
+
+        <echo msg="Copying files to build directory..." />
+        <copy file="./../composer.json" tofile="./release/composer.json" />
+        <copy file="./../composer.phar" tofile="./release/composer.phar" />
+
+        <echo msg="Copying ./web to ./release directory..." />
+        <copy todir="./release/web">
+            <fileset dir="./../web">
+                <include name="**" />
+                <exclude name="**/.DS_Store" />
+            </fileset>
+        </copy>
+
+        <echo msg="Copying ./vendor to ./release directory..." />
+
+        <!-- composer command="self-update" composer="${project.basedir}/release/composer.phar">
+        </composer -->
+
+        <composer command="install" composer="${project.basedir}/release/composer.phar">
+            <arg value="--working-dir=${project.basedir}/release/" />
+            <arg value="--prefer-dist" />
+            <!-- arg value="-x-optimize-autoloader" / -->
+        </composer>
+
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: dist                       -->
+    <!-- ============================================  -->
+    <target name="dist" depends="build">
+        <echo msg="Creating archive..." />
+
+        <tar destfile="./build.tar.gz" compression="gzip">
+            <fileset dir="./release">
+                <include name="**" />
+            </fileset>
+        </tar>
+
+        <echo msg="Files copied and compressed in build directory OK!" />
+
+    </target>
+
+    <target name="clean">
+        <echo>Cleaning up the build...</echo>
+        <delete dir="${project.basedir}/release/" />
+    </target>
+
+</project>

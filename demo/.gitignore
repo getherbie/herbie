@@ -1,0 +1,16 @@
+# netbeans project files
+nbproject
+
+# composer itself
+composer.phar
+
+# composer lock files
+composer.lock
+
+# mac DS_Store files
+.DS_Store
+
+# cache folders
+cache/data/
+cache/page/
+cache/twig/
