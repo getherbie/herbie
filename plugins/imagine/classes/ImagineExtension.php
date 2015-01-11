@@ -147,6 +147,11 @@ class ImagineExtension extends \Twig_Extension
             return $path;
         }
 
+        // return original path if file not exists
+        if (!is_file($path)) {
+            return $path;
+        }
+
         $filterConfig = $this->app['config']->get("plugins.config.imagine.filter_sets.{$filter}");
         $cachePath = $this->resolveCachePath($path, $filter);
 
