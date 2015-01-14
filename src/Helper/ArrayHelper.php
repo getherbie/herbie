@@ -23,4 +23,15 @@ class ArrayHelper
         return array_filter($array, $callback);
     }
 
+    public static function sortArrayByArray(Array $array, Array $orderArray) {
+        $ordered = array();
+        foreach($orderArray as $key) {
+            if(array_key_exists($key,$array)) {
+                $ordered[$key] = $array[$key];
+                unset($array[$key]);
+            }
+        }
+        return $ordered + $array;
+    }
+
 }
