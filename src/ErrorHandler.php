@@ -43,6 +43,11 @@ class ErrorHandler
      */
     public function handleError($code, $message, $file, $line)
     {
+        // error was suppressed with the @-operator
+        if (0 === error_reporting()) {
+            return false;
+        }
+
         // disable error capturing to avoid recursive errors
         restore_error_handler();
         throw new \ErrorException($message, 500, $code, $file, $line);
@@ -54,6 +59,7 @@ class ErrorHandler
      */
     public function handleException($exception)
     {
+        $this->sendHttpHeader();
         echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
         exit(1);
     }
@@ -65,6 +71,7 @@ class ErrorHandler
     {
         $error = error_get_last();
         if($this->isFatalError($error)) {
+            $this->sendHttpHeader();
             $exception = new \ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
             exit(1);
@@ -104,6 +111,14 @@ class ErrorHandler
     public function isFatalError($error)
     {
         return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING]);
+    }
+
+    /**
+     * @return void
+     */
+    protected function sendHttpHeader($code = 500)
+    {
+        header("HTTP/1.1 $code");
     }
 
 }

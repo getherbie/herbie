@@ -63,4 +63,30 @@ trait CollectionTrait
         return count($this->items);
     }
 
+    /**
+     * @return ItemInterface
+     */
+    public function getRandom()
+    {
+        $routes = array_keys($this->items);
+        $index = mt_rand(0, $this->count()-1);
+        $route = $routes[$index];
+        return $this->items[$route];
+    }
+
+    /**
+     * @param string $value
+     * @param string $key
+     * @return ItemInterface|null
+     */
+    public function find($value, $key)
+    {
+        foreach($this->items as $item) {
+            if($item->$key == $value) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
 }

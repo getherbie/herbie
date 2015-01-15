@@ -48,7 +48,7 @@ class Node extends \Herbie\Node
 
     /**
      * @param string $route
-     * @return Node
+     * @return Node|bool
      */
     public function findByRoute($route)
     {
@@ -67,4 +67,25 @@ class Node extends \Herbie\Node
         }
         return false;
     }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return Node|bool
+     */
+    public function findBy($name, $value)
+    {
+        $menuItem = $this->getMenuItem();
+        if (isset($menuItem) && ($menuItem->$name === $value)) {
+            return $this;
+        }
+        foreach ($this->getChildren() as $child) {
+            $node = $child->findBy($name, $value);
+            if ($node) {
+                return $node;
+            }
+        }
+        return false;
+    }
+
 }

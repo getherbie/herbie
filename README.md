@@ -5,7 +5,7 @@ Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdate
 
 ## Was ist Herbie?
 
-Mit Herbie erstellst du mit einfachen Textdateien (Markdown, Textile) in kurzer Zeit und mit wenig Aufwand eine voll
+Mit Herbie erstellst du mit einfachen Markdown- und Textiledateien in kurzer Zeit und mit wenig Aufwand eine voll
 funktionsfähige Website oder einen Blog.
 
 Herbie baut auf bewährten Bibliotheken und Komponenten auf.
@@ -23,9 +23,9 @@ Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
 Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
 
-    $ composer create-project getherbie/demo:dev-master myproject
+    $ composer create-project getherbie/start-website:dev-master myproject
 
-Composer erstellt im Verzeichnis `myproject` eine Demo-Applikation und installiert alle abhängigen Bibliotheken.
+Composer erstellt im Verzeichnis `myproject` eine Website und installiert alle abhängigen Bibliotheken.
 
 ## Website
 

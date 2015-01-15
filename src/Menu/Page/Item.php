@@ -78,4 +78,13 @@ class Item implements ItemInterface
         }
         return 0 === strpos($route, $current);
     }
+
+    /**
+     * @return bool
+     */
+    public function isStaticPage()
+    {
+        return 0 === strpos($this->path, '@page');
+    }
+
 }

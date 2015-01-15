@@ -4,12 +4,22 @@ app:
 site:
   path: SITE_PATH
 
+media:
+  path: WEB_PATH/media
+  url: WEB_URL/media
+  images: 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai'
+  documents: 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf'
+  archives: 'zip,tar,gz,gzip,tgz'
+  code: 'js,css,html,xml,json'
+  videos: 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4'
+  audio: 'mp3,m4a,wav,aiff,midi'
+
 data:
   path: SITE_PATH/data
   extensions: [yml, yaml]
 
 layouts:
-  path: [SITE_PATH/layouts/default, SITE_PATH/layouts/custom, SITE_PATH/layouts]
+  path: SITE_PATH/layouts
 
 theme: default
 
@@ -49,5 +59,7 @@ language: de
 locale: de_DE.UTF-8
 charset: UTF-8
 
-plugins_path: SITE_PATH/plugins
-plugins: []
+plugins:
+  path: SITE_PATH/plugins
+  enable: []
+  config: []

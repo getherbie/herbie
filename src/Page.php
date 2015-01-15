@@ -32,17 +32,6 @@ class Page
     protected $pageLoader;
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->data = [
-            'layout' => 'default.html',
-            'contentType' => 'text/html'
-        ];
-    }
-
-    /**
      * @return string
      */
     public function getPath()

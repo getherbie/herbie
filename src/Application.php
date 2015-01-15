@@ -12,7 +12,6 @@ namespace Herbie;
 
 use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -72,15 +71,21 @@ class Application extends Container
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
+        $this['webUrl'] = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         $this['sitePath'] = $this->sitePath;
 
         $config = new Config($this);
 
+        // Add custom psr4 plugin path to composer autoloader
+        $autoload = require($this->vendorDir . '/autoload.php');
+        $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
+
         $this['alias'] = new Alias([
             '@app' => rtrim($this['appPath'], '/'),
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
+            '@media' => rtrim($config->get('media.path'), '/'),
             '@page' => rtrim($config->get('pages.path'), '/'),
-            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@plugin' => rtrim($config->get('plugins.path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
             '@site' => rtrim($this['sitePath'], '/'),
             '@vendor' => $this->vendorDir,
@@ -95,22 +100,11 @@ class Application extends Container
         $this['config'] = $config;
 
         $this['request'] = Request::createFromGlobals();
-
-        $this['route'] = function ($app) {
-            return trim($app['request']->getPathInfo(), '/');
-        };
+        $this['route'] = $this['request']->getRoute();
+        $this['action'] = $this['request']->getAction();
 
         $this['parentRoutes'] = function ($app) {
-            $parts = empty($app['route']) ? [] : explode('/', $app['route']);
-            $route = '';
-            $delim = '';
-            $parentRoutes[] = ''; // root
-            foreach($parts as $part) {
-                $route .= $delim . $part;
-                $parentRoutes[] = $route;
-                $delim = '/';
-            }
-            return $parentRoutes;
+            return $this['request']->getParentRoutes();
         };
 
         $this['pageCache'] = function ($app) {
@@ -170,7 +164,7 @@ class Application extends Container
 
         $this['pageLoader'] = function ($app) {
             $loader = new Loader\PageLoader($app['alias']);
-            $loader->setTwig($app['twig']->environment);
+            $loader->setTwig($this['twig']->environment);
             return $loader;
         };
 
@@ -182,6 +176,10 @@ class Application extends Container
 
         $this['assets'] = function ($app) {
             return new Assets($app);
+        };
+
+        $this['menuItem'] = function () {
+            return $this['urlMatcher']->match($this['route']);
         };
 
         foreach ($values as $key => $value) {
@@ -223,29 +221,37 @@ class Application extends Container
     protected function handle()
     {
         try {
-            $menuItem = $this['urlMatcher']->match($this['route']);
 
-            $content = $this['pageCache']->get($menuItem->getPath());
+            // load menu item (holds page data) from container
+            $menuItem = $this['menuItem'];
+
+            $content = false;
+
+            // get content from cache if cache enabled
+            if(empty($menuItem->noCache)) {
+                $content = $this['pageCache']->get($menuItem->getPath());
+            }
+
             if ($content === false) {
 
                 $this['page']->load($menuItem->getPath());
 
                 $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
 
-                $layout = $this['page']->layout;
-                if (empty($layout)) {
+                if (empty($menuItem->layout)) {
                     $content = $this->renderContentSegment(0);
                 } else {
-                    $content = $this['twig']->render($layout);
+                    $content = $this['twig']->render($menuItem->layout);
                 }
 
-                if(empty($this['page']->noCache)) {
+                // set content to cache if cache enabled
+                if(empty($menuItem->noCache)) {
                     $this['pageCache']->set($menuItem->getPath(), $content);
                 }
             }
 
             $response = new Response($content);
-            $response->headers->set('Content-Type', $this['page']->contentType);
+            $response->headers->set('Content-Type', $menuItem->contentType);
 
         } catch (ResourceNotFoundException $e) {
 
@@ -264,7 +270,6 @@ class Application extends Container
     public function renderContentSegment($segmentId)
     {
         $segment = $this['page']->getSegment($segmentId);
-
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
         $formatter = Formatter\FormatterFactory::create($this['page']->format);

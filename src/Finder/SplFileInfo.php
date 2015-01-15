@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Iterator;
+namespace Herbie\Finder;
 
 
 class SplFileInfo extends \SplFileInfo
@@ -20,9 +20,9 @@ class SplFileInfo extends \SplFileInfo
     /**
      * Constructor
      *
-     * @param string $file             The file name
-     * @param string $relativePath     The relative path
-     * @param string $relativePathname The relative path name
+     * @param string $file
+     * @param string $relativePath
+     * @param string $relativePathname
      */
     public function __construct($file, $relativePath, $relativePathname)
     {
@@ -34,7 +34,7 @@ class SplFileInfo extends \SplFileInfo
     /**
      * Returns the relative path
      *
-     * @return string the relative path
+     * @return string
      */
     public function getRelativePath()
     {
@@ -44,7 +44,7 @@ class SplFileInfo extends \SplFileInfo
     /**
      * Returns the relative path name
      *
-     * @return string the relative path name
+     * @return string
      */
     public function getRelativePathname()
     {
@@ -62,7 +62,7 @@ class SplFileInfo extends \SplFileInfo
     /**
      * Returns the contents of the file
      *
-     * @return string the contents of the file
+     * @return string
      *
      * @throws \RuntimeException
      */

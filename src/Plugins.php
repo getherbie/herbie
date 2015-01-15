@@ -37,13 +37,14 @@ class Plugins
         /** @var EventDispatcher $events */
         $events = $this->app['events'];
 
-        $pluginKeys = array_keys($this->app['config']->get('plugins', []));
-        foreach ($pluginKeys as $pluginKey) {
+        $pluginPath = rtrim($this->app['config']->get('plugins.path'), '/');
+        $pluginList = $this->app['config']->get('plugins.enable', []);
+        foreach ($pluginList as $pluginKey) {
 
             $filePath = sprintf(
-                '%s/%s/%sPlugin.php', rtrim($this->app['config']->get('plugins_path'), '/'), $pluginKey, ucfirst($pluginKey)
+                '%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey)
             );
-
+            
             if (!is_file($filePath)) {
                 throw new \RuntimeException(sprintf("Plugin '%s' enabled but not found!", $pluginKey));
             }

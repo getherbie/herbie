@@ -27,6 +27,14 @@ class Plugin implements EventSubscriberInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->init();
+    }
+
+	/**
+	 * Initializer
+	 */
+    public function init()
+    {
     }
 
     /**

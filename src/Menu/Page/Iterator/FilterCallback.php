@@ -26,6 +26,9 @@ class FilterCallback
         $menuItem = $current->getMenuItem();
 
         $accept = true;
+        if(empty($this->showHidden)) {
+            $accept &= empty($menuItem->hidden);
+        }
         $accept &= in_array($menuItem->getParentRoute(), $this->parentRoutes);
 
         return $accept;

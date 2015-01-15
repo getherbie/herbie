@@ -10,6 +10,7 @@
 
 namespace Herbie\Twig;
 
+use Herbie\Finder;
 use Herbie\Formatter;
 use Herbie\Menu;
 use Herbie\Page;
@@ -121,6 +122,7 @@ class HerbieExtension extends Twig_Extension
     public function getFilters()
     {
         return [
+            new Twig_SimpleFilter('filesize', [$this, 'filterFilesize'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('markdown', [$this, 'filterMarkdown'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('strftime', [$this, 'filterStrftime']),
             new Twig_SimpleFilter('textile', [$this, 'filterTextile'], ['is_safe' => ['html']]),
@@ -152,7 +154,8 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('pager', [$this, 'functionPager'], $options),
             new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
             new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
-            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options)
+            new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options),
+            new Twig_SimpleFunction('mediafiles', [$this, 'functionMediafiles'], $options),
         ];
     }
 
@@ -165,6 +168,26 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleTest('page', [$this, 'testIsPage']),
             new Twig_SimpleTest('post', [$this, 'testIsPost'])
         ];
+    }
+
+    /**
+     * @param integer $size
+     * @return string
+     */
+    public function filterFilesize($size)
+    {
+        if( $size <= 0 ) {
+            return '0';
+        }
+        if( $size === 1 ) {
+            return '1 Byte';
+        }
+        $mod = 1024;
+        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        for( $i = 0; $size > $mod && $i < count($units) - 1; ++$i ) {
+            $size /= $mod;
+        }
+        return str_replace(',', '.', round($size, 1)) . ' ' . $units[$i];
     }
 
     /**
@@ -184,6 +207,10 @@ class HerbieExtension extends Twig_Extension
      */
     public function filterStrftime($date, $format = '%x')
     {
+        // timestamp?
+        if(is_numeric($date)) {
+            $date = date('Y-m-d H:i:s', $date);
+        }
         $dateTime = new \DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
     }
@@ -411,7 +438,8 @@ class HerbieExtension extends Twig_Extension
         $branch = $this->app['pageTree']->findByRoute($route);
         $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
 
-        $callback = [new Menu\Page\Iterator\FilterCallback($this->app), 'call'];
+        // using FilterCallback for better filtering of nested items
+        $callback = [new Menu\Page\Iterator\FilterCallback($this->app, $showHidden), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
@@ -582,6 +610,26 @@ class HerbieExtension extends Twig_Extension
     public function functionUrl($route)
     {
         return $this->app['urlGenerator']->generate($route);
+    }
+
+    /**
+     * @param string $type
+     * @return \Traversable
+     */
+    public function functionMediafiles($type = 'images')
+    {
+        $finder = Finder\Finder::create()
+            ->in($this->app['alias']->get('@media'))
+            ->hidden(true);
+
+        if($type == 'folders') {
+            return $finder->directories();
+        }
+
+        $types = ['images', 'documents', 'archives', 'code', 'videos', 'audio'];
+        $type = in_array($type, $types) ? $type : 'images';
+        $extensions = $this->app['config']->get('media.' . $type);
+        return $finder->files()->extensions($extensions);
     }
 
     /**

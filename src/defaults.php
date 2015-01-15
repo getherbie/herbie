@@ -20,6 +20,16 @@ return [
     'site' => [
         'path' => $app['sitePath']
     ],
+    'media' => [
+        'path' => $app['webPath'] . '/media',
+        'url' => $app['webUrl'] . '/media',
+        'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
+        'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
+        'archives' => 'zip,tar,gz,gzip,tgz',
+        'code' => 'js,css,html,xml,json',
+        'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
+        'audio' => 'mp3,m4a,wav,aiff,midi'
+    ],
     'layouts' => [
         'path' => $app['sitePath'] . '/layouts'
     ],
@@ -63,6 +73,9 @@ return [
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
-    'plugins_path' => $app['sitePath'] . '/plugins',
-    'plugins' => []
+    'plugins' => [
+        'path' => $app['sitePath'] . '/plugins',
+        'enable' => [],
+        'config' => []
+    ]
 ];

@@ -15,7 +15,7 @@ use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
-use Twig_Loader_String;
+use Twig_Loader_Array;
 
 class Twig
 {
@@ -76,6 +76,33 @@ class Twig
     }
 
     /**
+     * @param string $string
+     * @return string
+     */
+    function renderString($string)
+    {
+        // no rendering if empty
+        if(empty($string)) {
+            return $string;
+        }
+        // see Twig\Extensions\Twig_Extension_StringLoader
+        $name = '__twig_string__';
+        // get current loader
+        $loader = $this->environment->getLoader();
+        // set loader chain with new array loader
+        $this->environment->setLoader(new Twig_Loader_Chain(array(
+            new Twig_Loader_Array(array($name => $string)),
+            $loader
+        )));
+        // render string
+        $rendered = $this->environment->render($name);
+        // reset current loader
+        $this->environment->setLoader($loader);
+        return $rendered;
+    }
+
+
+    /**
      * @return void
      */
     public function addTwigPlugins()
@@ -122,14 +149,18 @@ class Twig
         $loader = new Twig_Loader_Filesystem($paths);
 
         // namespaces
-        $pluginPath = $this->config->get('plugins_path');
-        if(is_dir($pluginPath)) {
-            $loader->addPath($pluginPath, 'plugin');
+        $namespaces = [
+            'plugin' => $this->config->get('plugins.path'),
+            'page' => $this->config->get('pages.path'),
+            'post' => $this->config->get('posts.path'),
+            'site' => $this->config->get('site.path'),
+            'widget' => __DIR__ . '/Twig/widgets'
+        ];
+        foreach($namespaces as $namespace => $path) {
+            if (is_dir($path)) {
+                $loader->addPath($path, $namespace);
+            }
         }
-        $loader->addPath($this->config->get('pages.path'), 'page');
-        $loader->addPath($this->config->get('posts.path'), 'post');
-        $loader->addPath($this->config->get('site.path'), 'site');
-        $loader->addPath(__DIR__ . '/Twig/widgets', 'widget');
 
         return $loader;
     }

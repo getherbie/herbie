@@ -36,7 +36,7 @@ class Container extends PimpleContainer
             '@app' => rtrim($this['appPath'], '/'),
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
             '@page' => rtrim($config->get('pages.path'), '/'),
-            '@plugin' => rtrim($config->get('plugins_path'), '/'),
+            '@plugin' => rtrim($config->get('plugins.path'), '/'),
             '@post' => rtrim($config->get('posts.path'), '/'),
             '@site' => rtrim($this['sitePath'], '/'),
             '@web' => rtrim($this['webPath'], '/')
