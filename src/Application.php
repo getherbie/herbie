@@ -70,11 +70,11 @@ class Application extends Container
         $this['errorHandler']->register();
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
+        $this['sitePath'] = $this->sitePath;
         $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
         $this['webUrl'] = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-        $this['sitePath'] = $this->sitePath;
 
-        $config = new Config($this);
+        $config = new Config($this['appPath'], $this['sitePath'], $this['webPath'], $this['webUrl']);
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
