@@ -175,7 +175,7 @@ class Application extends Container
         };
 
         $this['assets'] = function ($app) {
-            return new Assets($app);
+            return new Assets($app['alias'], $app['webUrl']);
         };
 
         $this['menuItem'] = function () {

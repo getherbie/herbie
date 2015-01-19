@@ -76,14 +76,15 @@ class Assets
     protected static $published = [];
 
     /**
-     * @param Application $app
+     * @param Alias $alias
+     * @param string $baseUrl
      */
-    public function __construct($app)
+    public function __construct(Alias $alias, $baseUrl)
     {
-        $this->alias = $app['alias'];
-        $this->baseUrl = str_replace('/index.php', '', $app['request']->getBaseUrl());
-        $this->assetsPath = $app['webPath'] . '/' . $this->assetsDir;
-        $this->assetsUrl = $this->baseUrl . '/' . $this->assetsDir;
+        $this->alias = $alias;
+        $this->baseUrl = $baseUrl;
+        $this->assetsPath = $alias->get('@web') . '/' . $this->assetsDir;
+        $this->assetsUrl = $baseUrl . '/' . $this->assetsDir;
     }
 
     /**
