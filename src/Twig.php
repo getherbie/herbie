@@ -26,7 +26,7 @@ class Twig
     public $app;
 
     /**
-     * @var type \Herbie\Config
+     * @var \Herbie\Config
      */
     public $config;
 
