@@ -273,7 +273,10 @@ class Application extends Container
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
         $formatter = Formatter\FormatterFactory::create($this['page']->format);
-        return $formatter->transform($segment);
+        $rendered = $formatter->transform($segment);
+        $this->fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
+
+        return $rendered;
     }
 
     /**
