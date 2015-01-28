@@ -16,21 +16,21 @@ class FilterIterator extends \RecursiveFilterIterator
     /**
      * @var boolean
      */
-	private $enabled = true;
+    private $enabled = true;
 
     /**
      * @return boolean
      */
     public function accept()
     {
-    	if(!$this->enabled) {
-    		return true;
-    	}
-    	$menuItem = $this->current()->getMenuItem();
-    	if(empty($menuItem->hidden)) {
-    		return true;
-    	}
-    	return false;
+        if (!$this->enabled) {
+            return true;
+        }
+        $menuItem = $this->current()->getMenuItem();
+        if (empty($menuItem->hidden)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -38,7 +38,6 @@ class FilterIterator extends \RecursiveFilterIterator
      */
     public function setEnabled($enabled)
     {
-    	$this->enabled = (bool)$enabled;
+        $this->enabled = (bool)$enabled;
     }
-
 }

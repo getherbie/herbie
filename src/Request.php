@@ -41,7 +41,7 @@ class Request extends SymfonyRequest
         $route = '';
         $delim = '';
         $parentRoutes[] = ''; // root
-        foreach($this->getRouteSegments() as $segment) {
+        foreach ($this->getRouteSegments() as $segment) {
             $route .= $delim . $segment;
             $parentRoutes[] = $route;
             $delim = '/';
@@ -65,12 +65,11 @@ class Request extends SymfonyRequest
     {
         $pathInfo = trim($this->getPathInfo(), '/');
         $pos = strrpos($pathInfo, ':');
-        if($pos !== false) {
+        if ($pos !== false) {
             $parts = [substr($pathInfo, 0, $pos), substr($pathInfo, $pos + 1)];
         } else {
             $parts = [$pathInfo, ''];
         }
         return array_map('trim', $parts);
     }
-
 }

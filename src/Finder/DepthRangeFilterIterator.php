@@ -40,4 +40,3 @@ class DepthRangeFilterIterator extends \FilterIterator
         return $this->getInnerIterator()->getDepth() >= $this->minDepth;
     }
 }
-

@@ -125,11 +125,11 @@ class Assets
         $this->sort();
         $this->publish();
         foreach ($this->collect(self::TYPE_CSS, $group) as $asset) {
-            if(empty($asset['raw'])) {            
+            if (empty($asset['raw'])) {
                 $href = $this->buildUrl($asset['path']);
                 echo sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
             } else {
-                echo sprintf('<style>%s</style>', $asset['path']);                
+                echo sprintf('<style>%s</style>', $asset['path']);
             }
         }
     }
@@ -142,11 +142,11 @@ class Assets
         $this->sort();
         $this->publish();
         foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
-            if(empty($asset['raw'])) {
+            if (empty($asset['raw'])) {
                 $href = $this->buildUrl($asset['path']);
                 echo sprintf('<script src="%s"></script>', $href);
             } else {
-                echo sprintf('<script>%s</script>', $asset['path']);                
+                echo sprintf('<script>%s</script>', $asset['path']);
             }
         }
     }
@@ -161,7 +161,7 @@ class Assets
      */
     protected function addAsset($type, $path, $attr, $group, $raw, $pos)
     {
-        if($this->search($path)) {
+        if ($this->search($path)) {
             return;
         }
         $this->assets[] = [
@@ -181,7 +181,7 @@ class Assets
     protected function sort()
     {
         if (!self::$sorted) {
-            uasort($this->assets, function($a, $b) {
+            uasort($this->assets, function ($a, $b) {
                 if ($a['pos'] == $b['pos']) {
                     if ($a['counter'] < $b['counter']) {
                         return -1;
@@ -219,7 +219,7 @@ class Assets
     protected function search($path)
     {
         foreach ($this->assets as $index => $asset) {
-            if($asset['path'] == $path) {
+            if ($asset['path'] == $path) {
                 return $index;
             }
         }
@@ -232,13 +232,12 @@ class Assets
     protected function publish()
     {
         foreach ($this->assets as $asset) {
-
             if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
                 continue;
             }
 
             $srcPath = $this->alias->get($asset['path']);
-            if(isset(self::$published[$srcPath])) {
+            if (isset(self::$published[$srcPath])) {
                 continue;
             }
 

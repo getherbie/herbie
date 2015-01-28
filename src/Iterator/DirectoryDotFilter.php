@@ -18,6 +18,4 @@ class DirectoryDotFilter extends \FilterIterator
     {
         return !in_array($this->getBasename(), ['.', '..']);
     }
-
 }
-

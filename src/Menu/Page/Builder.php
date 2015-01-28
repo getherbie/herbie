@@ -63,10 +63,8 @@ class Builder
 
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
-
             $collection = new Collection();
             if (is_dir($this->path)) {
-
                 $this->indexFiles = [];
 
                 // recursive iterators
@@ -140,7 +138,7 @@ class Builder
         if (empty($item->date)) {
             $item->date = date('c', filectime($path));
         }
-        if(!isset($item->hidden)) {
+        if (!isset($item->hidden)) {
             $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
         }
         return $item;

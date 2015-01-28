@@ -35,7 +35,7 @@ class Alias
      */
     public function set($alias, $path)
     {
-        if(array_key_exists($alias, $this->aliases)) {
+        if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
         $this->aliases[$alias] = rtrim($path, '/');
@@ -63,7 +63,7 @@ class Alias
      */
     public function update($alias, $path)
     {
-        if(array_key_exists($alias, $this->aliases)) {
+        if (array_key_exists($alias, $this->aliases)) {
             $this->aliases[$alias] = rtrim($path, '/');
         } else {
             throw new \Exception("Alias {$alias} not exists, use set instead.");
@@ -75,7 +75,7 @@ class Alias
      */
     public function sort()
     {
-        return uksort($this->aliases, function($a, $b) {
+        return uksort($this->aliases, function ($a, $b) {
             return strlen($a) < strlen($b);
         });
     }

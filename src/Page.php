@@ -129,5 +129,4 @@ class Page
         $this->setData($data['data']);
         $this->setSegments($data['segments']);
     }
-
 }

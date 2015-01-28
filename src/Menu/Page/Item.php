@@ -86,5 +86,4 @@ class Item implements ItemInterface
     {
         return 0 === strpos($this->path, '@page');
     }
-
 }

@@ -29,13 +29,10 @@ class StringHelper
 
     public static function removeOneNewlineAtEnd($string)
     {
-
     }
 
     public static function escapeNonAsciiCharacters($string)
     {
         return addcslashes($string, "\0..\37!@\177..\377");
     }
-
 }
-

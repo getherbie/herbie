@@ -33,6 +33,4 @@ class DirectoryIterator extends \DirectoryIterator
         $relativePathname = str_replace($this->root.'/', '', parent::current()->getPathname());
         return new SplFileInfo(parent::current()->getPathname(), $relativePath, $relativePathname);
     }
-
 }
-

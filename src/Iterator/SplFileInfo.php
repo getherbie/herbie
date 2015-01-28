@@ -11,7 +11,6 @@
 
 namespace Herbie\Iterator;
 
-
 class SplFileInfo extends \SplFileInfo
 {
     private $relativePath;
@@ -79,4 +78,3 @@ class SplFileInfo extends \SplFileInfo
         return $content;
     }
 }
-

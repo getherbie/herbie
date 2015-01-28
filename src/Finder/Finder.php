@@ -53,7 +53,7 @@ class Finder implements \IteratorAggregate, \Countable
      */
     public function extensions($extensions)
     {
-        if(is_string($extensions)) {
+        if (is_string($extensions)) {
             $extensions = empty($extensions) ? [] : explode(',', $extensions);
         }
         $this->extensions = $extensions;
@@ -131,5 +131,4 @@ class Finder implements \IteratorAggregate, \Countable
     {
         return iterator_count($this->getIterator());
     }
-
 }

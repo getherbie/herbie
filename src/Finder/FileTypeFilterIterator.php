@@ -47,4 +47,3 @@ class FileTypeFilterIterator extends \FilterIterator
         return true;
     }
 }
-

@@ -16,22 +16,22 @@ class ArrayHelper
 
     public static function filterEmptyElements($array)
     {
-        $callback = function($value) {
+        $callback = function ($value) {
             // @see http://php.net/manual/en/function.empty.php
             return !empty($value);
         };
         return array_filter($array, $callback);
     }
 
-    public static function sortArrayByArray(Array $array, Array $orderArray) {
+    public static function sortArrayByArray(Array $array, Array $orderArray)
+    {
         $ordered = array();
-        foreach($orderArray as $key) {
-            if(array_key_exists($key,$array)) {
+        foreach ($orderArray as $key) {
+            if (array_key_exists($key, $array)) {
                 $ordered[$key] = $array[$key];
                 unset($array[$key]);
             }
         }
         return $ordered + $array;
     }
-
 }
