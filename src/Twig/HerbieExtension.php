@@ -176,15 +176,15 @@ class HerbieExtension extends Twig_Extension
      */
     public function filterFilesize($size)
     {
-        if( $size <= 0 ) {
+        if ($size <= 0) {
             return '0';
         }
-        if( $size === 1 ) {
+        if ($size === 1) {
             return '1 Byte';
         }
         $mod = 1024;
         $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-        for( $i = 0; $size > $mod && $i < count($units) - 1; ++$i ) {
+        for ($i = 0; $size > $mod && $i < count($units) - 1; ++$i) {
             $size /= $mod;
         }
         return str_replace(',', '.', round($size, 1)) . ' ' . $units[$i];
@@ -208,7 +208,7 @@ class HerbieExtension extends Twig_Extension
     public function filterStrftime($date, $format = '%x')
     {
         // timestamp?
-        if(is_numeric($date)) {
+        if (is_numeric($date)) {
             $date = date('Y-m-d H:i:s', $date);
         }
         $dateTime = new \DateTime($date);
@@ -445,7 +445,7 @@ class HerbieExtension extends Twig_Extension
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function($node) {
+        $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
             $href = $this->app['urlGenerator']->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
@@ -503,8 +503,8 @@ class HerbieExtension extends Twig_Extension
      * @return string
      */
     public function functionPager($limit = '', $template = '{prev}{next}', $linkClass='',
-        $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='') {
-
+        $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='')
+    {
         $route = $this->app['route'];
         $iterator = $this->app['menu']->getIterator();
 
@@ -512,13 +512,13 @@ class HerbieExtension extends Twig_Extension
         $cur = null;
         $next = null;
         $keys = [];
-        foreach($iterator as $i => $item) {
-            if(empty($limit) || (strpos($item->route, $limit) === 0)) {
-                if(isset($cur)) {
+        foreach ($iterator as $i => $item) {
+            if (empty($limit) || (strpos($item->route, $limit) === 0)) {
+                if (isset($cur)) {
                     $next = $item;
                     break;
                 }
-                if($route == $item->route) {
+                if ($route == $item->route) {
                     $cur = $item;
                 }
                 $keys[] = $i;
@@ -526,7 +526,7 @@ class HerbieExtension extends Twig_Extension
         }
 
         $position = count($keys)-2;
-        if($position >= 0) {
+        if ($position >= 0) {
             $iterator->seek($position);
             $prev = $iterator->current();
         }
@@ -536,13 +536,13 @@ class HerbieExtension extends Twig_Extension
             '{next}' => ''
         ];
         $attribs = [];
-        if(!empty($linkClass)) {
+        if (!empty($linkClass)) {
             $attribs['class'] = $linkClass;
         }
-        if(isset($prev)) {
+        if (isset($prev)) {
             $label = empty($prevPageLabel) ? $prev->title : $prevPageLabel;
             $label = sprintf('<span>%s</span>', $label);
-            if($prevPageIcon) {
+            if ($prevPageIcon) {
                 $label = $prevPageIcon . $label;
             }
             $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
@@ -551,10 +551,10 @@ class HerbieExtension extends Twig_Extension
             $label = empty($curPageLabel) ? $cur->title : $curPageLabel;
             $replacements['{cur}'] = $this->createLink($cur->route, $label, $attribs);
         }*/
-        if(isset($next)) {
+        if (isset($next)) {
             $label = empty($nextPageLabel) ? $next->title : $nextPageLabel;
             $label = sprintf('<span>%s</span>', $label);
-            if($nextPageIcon) {
+            if ($nextPageIcon) {
                 $label = $label . $nextPageIcon;
             }
             $replacements['{next}'] = $this->createLink($next->route, $label, $attribs);
@@ -595,7 +595,7 @@ class HerbieExtension extends Twig_Extension
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function($node) {
+        $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
             $href = $this->app['urlGenerator']->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
@@ -622,7 +622,7 @@ class HerbieExtension extends Twig_Extension
             ->in($this->app['alias']->get('@media'))
             ->hidden(true);
 
-        if($type == 'folders') {
+        if ($type == 'folders') {
             return $finder->directories();
         }
 
@@ -647,5 +647,4 @@ class HerbieExtension extends Twig_Extension
     {
         return 0 === strpos($page->getPath(), '@post');
     }
-
 }

@@ -20,8 +20,7 @@ class PageHelper
     {
         $content = file_get_contents($filepath);
         $matches = self::pregMatch($content);
-        if(count($matches) == 3) {
-
+        if (count($matches) == 3) {
             $newContent = '';
             $newContent .= '---' . PHP_EOL;
             $newContent .= Yaml::dump($data, 100, 4);
@@ -37,27 +36,26 @@ class PageHelper
     {
         $content = file_get_contents($filepath);
         $matches = self::pregMatch($content);
-        if(count($matches) == 3) {
-
+        if (count($matches) == 3) {
             $newContent = '';
             $newContent .= '---' . PHP_EOL;
             $newContent .= $matches[1];
             $newContent .= PHP_EOL;
             $newContent .= '---';
 
-            if(array_key_exists(0, $segments)) {
+            if (array_key_exists(0, $segments)) {
                 $newContent .= PHP_EOL;
                 $newContent .= $segments[0];
                 #$newContent .= PHP_EOL;
                 unset($segments[0]);
             }
-            if(array_key_exists('', $segments)) {
+            if (array_key_exists('', $segments)) {
                 $newContent .= PHP_EOL;
                 $newContent .= $segments[''];
                 #$newContent .= PHP_EOL;
                 unset($segments['']);
             }
-            foreach($segments as $key => $value) {
+            foreach ($segments as $key => $value) {
                 $newContent .= PHP_EOL . '--- ' . $key . ' ---' . PHP_EOL;
                 $newContent .= $value;
                 #$newContent .= PHP_EOL;
@@ -74,5 +72,4 @@ class PageHelper
         $matched = preg_match('/^-{3}\r?\n(.*)\r?\n-{3}\r?\n(.*)/s', $content, $matches);
         return $matches;
     }
-
 }

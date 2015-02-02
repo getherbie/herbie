@@ -70,7 +70,7 @@ class ErrorHandler
     public function handleFatalError()
     {
         $error = error_get_last();
-        if($this->isFatalError($error)) {
+        if ($this->isFatalError($error)) {
             $this->sendHttpHeader();
             $exception = new \ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
@@ -120,5 +120,4 @@ class ErrorHandler
     {
         header("HTTP/1.1 $code");
     }
-
 }

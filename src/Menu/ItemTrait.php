@@ -268,5 +268,4 @@ trait ItemTrait
     {
         return $this->data;
     }
-
 }

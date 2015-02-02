@@ -26,7 +26,7 @@ class Twig
     public $app;
 
     /**
-     * @var type \Herbie\Config
+     * @var \Herbie\Config
      */
     public $config;
 
@@ -79,10 +79,10 @@ class Twig
      * @param string $string
      * @return string
      */
-    function renderString($string)
+    public function renderString($string)
     {
         // no rendering if empty
-        if(empty($string)) {
+        if (empty($string)) {
             return $string;
         }
         // see Twig\Extensions\Twig_Extension_StringLoader
@@ -156,7 +156,7 @@ class Twig
             'site' => $this->config->get('site.path'),
             'widget' => __DIR__ . '/Twig/widgets'
         ];
-        foreach($namespaces as $namespace => $path) {
+        foreach ($namespaces as $namespace => $path) {
             if (is_dir($path)) {
                 $loader->addPath($path, $namespace);
             }

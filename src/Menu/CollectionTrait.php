@@ -81,12 +81,11 @@ trait CollectionTrait
      */
     public function find($value, $key)
     {
-        foreach($this->items as $item) {
-            if($item->$key == $value) {
+        foreach ($this->items as $item) {
+            if ($item->$key == $value) {
                 return $item;
             }
         }
         return null;
     }
-
 }

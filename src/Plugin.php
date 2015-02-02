@@ -30,9 +30,9 @@ class Plugin implements EventSubscriberInterface
         $this->init();
     }
 
-	/**
-	 * Initializer
-	 */
+    /**
+     * Initializer
+     */
     public function init()
     {
     }
@@ -76,5 +76,4 @@ class Plugin implements EventSubscriberInterface
     {
         return $this->app['config']->get($name, $default);
     }
-
 }

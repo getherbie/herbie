@@ -63,10 +63,8 @@ class Builder
 
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
-
             $collection = new Collection();
             if (is_dir($this->path)) {
-
                 $this->indexFiles = [];
 
                 // recursive iterators
@@ -140,7 +138,7 @@ class Builder
         if (empty($item->date)) {
             $item->date = date('c', filectime($path));
         }
-        if(!isset($item->hidden)) {
+        if (!isset($item->hidden)) {
             $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
         }
         return $item;
@@ -153,7 +151,13 @@ class Builder
      */
     protected function createRoute($path, $trimExtension = false)
     {
+        // extract route from absolute and relative path
         $route = str_replace($this->path, '', $path);
+
+        // strip left unix AND windows dir separator
+        $route = ltrim($route, '\/');
+
+        // remove leading numbers (sorting) from url segments
         $segments = explode('/', $route);
         foreach ($segments as $i => $segment) {
             $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
@@ -165,8 +169,11 @@ class Builder
         if ($trimExtension && ($pos !== false)) {
             $imploded = substr($imploded, 0, $pos);
         }
-        #return trim($imploded, '/');
-        $route = preg_replace('#\/index$#', '', trim($imploded, '/'));
+
+        // remove last "/index" from route
+        $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
+
+        // handle index route
         return ($route == 'index') ? '' : $route;
     }
 }

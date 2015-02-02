@@ -15,5 +15,4 @@ interface ItemInterface
 {
 
     public function getPath();
-
 }

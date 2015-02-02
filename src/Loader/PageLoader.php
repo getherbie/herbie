@@ -44,7 +44,7 @@ class PageLoader
         list($yaml, $segments) = $this->parseContent($content);
 
         $data = (array) Yaml::parse($yaml);
-        if($addDefFields) {
+        if ($addDefFields) {
             $data['format'] = pathinfo($alias, PATHINFO_EXTENSION);
             $data['date'] = $this->extractDateFromPath($alias);
             $data['path'] = $alias;
@@ -73,18 +73,18 @@ class PageLoader
         $content .= '---' . PHP_EOL;
 
         // page segments
-        if(array_key_exists(0, $segments)) {
+        if (array_key_exists(0, $segments)) {
             $content .= $segments[0];
             $content .= PHP_EOL;
             unset($segments[0]);
         }
-        if(array_key_exists('', $segments)) {
+        if (array_key_exists('', $segments)) {
             $content .= $segments[''];
             $content .= PHP_EOL;
             unset($segments['']);
         }
 
-        foreach($segments as $key => $value) {
+        foreach ($segments as $key => $value) {
             $content .= '--- ' . $key . ' ---' . PHP_EOL;
             $content .= $value;
             $content .= PHP_EOL;
@@ -105,22 +105,21 @@ class PageLoader
 
         $matched = preg_match('/^-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
-        if($matched === 1 && count($matches) == 3) {
-
+        if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
 
             $splitted = preg_split('/^-{3} (.+) -{3}$\n?/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $count = count($splitted);
-            if($count %2 == 0) {
+            if ($count %2 == 0) {
                 throw new \Exception('Fehler beim Auslesen der Seite.');
             }
 
             $segments[] = array_shift($splitted);
-            for($i=0; $i<count($splitted); $i=$i+2) {
+            for ($i=0; $i<count($splitted); $i=$i+2) {
                 $key = $splitted[$i];
                 $value = $splitted[$i+1];
-                if(array_key_exists($key, $segments)) {
+                if (array_key_exists($key, $segments)) {
                     $segments[$key] .= $value;
                 } else {
                     $segments[$key] = $value;
@@ -129,7 +128,7 @@ class PageLoader
 
             $i = 0;
             $last = count($segments) - 1;
-            foreach($segments as $key => $segment) {
+            foreach ($segments as $key => $segment) {
                 $segments[$key] = ($i == $last) ? $segment : preg_replace('/\R?$/', '', $segment, 1);
                 $i++;
             }
@@ -161,7 +160,7 @@ class PageLoader
      */
     protected function readFile($alias, $twigify = true)
     {
-        if(!$twigify || is_null($this->twig)) {
+        if (!$twigify || is_null($this->twig)) {
             $path = $this->alias->get($alias);
             return file_get_contents($path);
         } else {

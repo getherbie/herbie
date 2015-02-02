@@ -55,7 +55,7 @@ class Builder
      */
     public function build($path = null)
     {
-        if(is_null($path)) {
+        if (is_null($path)) {
             $path = $this->path;
         }
         $collection = $this->cache->get(__CLASS__);
@@ -63,7 +63,6 @@ class Builder
             $realpath = realpath($path);
             $collection = new Collection($this->blogRoute);
             if (is_dir($realpath)) {
-
                 $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
                     if (in_array(substr($filename, 0, 1), ['.', '_'])) {
@@ -74,7 +73,7 @@ class Builder
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);
-                    if(empty($data['date'])) {
+                    if (empty($data['date'])) {
                         $data['date'] = $this->extractDateFromPath($filename);
                     }
                     $data['path'] = '@post/'.$filename;
@@ -82,7 +81,6 @@ class Builder
                     $item = new Item($data);
                     $collection->addItem($item);
                 }
-
             }
             $this->cache->set(__CLASS__, $collection);
         }
@@ -101,5 +99,4 @@ class Builder
         preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
         return $matches[1];
     }
-
 }

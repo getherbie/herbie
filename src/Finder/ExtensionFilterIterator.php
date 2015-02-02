@@ -37,7 +37,7 @@ class ExtensionFilterIterator extends \FilterIterator
     public function accept()
     {
         $fileinfo = $this->current();
-        if($fileinfo->isFile()) {
+        if ($fileinfo->isFile()) {
             return empty($this->extensions) || in_array($fileinfo->getExtension(), $this->extensions);
         }
         return true;

@@ -52,7 +52,7 @@ class HtmlTree extends \RecursiveIteratorIterator
 
     public function setTemplate($options = [])
     {
-        foreach($options as $key => $value) {
+        foreach ($options as $key => $value) {
             $this->template[$key] = $value;
         }
     }
@@ -84,7 +84,8 @@ class HtmlTree extends \RecursiveIteratorIterator
     /**
      * @return void
      */
-    public function endChildren() {
+    public function endChildren()
+    {
         $this->output .= $this->getTemplate('endChildren');
     }
 
@@ -93,15 +94,15 @@ class HtmlTree extends \RecursiveIteratorIterator
      */
     public function render($route = '')
     {
-        foreach($this as $item) {
+        foreach ($this as $item) {
             $beginCurrent = $this->getTemplate('beginCurrent');
             $this->output .= $this->addCssClasses($beginCurrent, $route);
-            if(is_callable($this->itemCallback)) {
+            if (is_callable($this->itemCallback)) {
                 $this->output .= call_user_func($this->itemCallback, $item);
             } else {
                 $this->output .= $item->getMenuItem()->title;
             }
-            if(!$this->callHasChildren()) {
+            if (!$this->callHasChildren()) {
                 $this->output .= $this->getTemplate('endCurrent');
             }
         }
@@ -134,19 +135,18 @@ class HtmlTree extends \RecursiveIteratorIterator
     {
         $menuItem = $this->getMenuItem();
         $cssClasses = [];
-        if($route == $menuItem->route) {
+        if ($route == $menuItem->route) {
             $cssClasses[] = 'current';
         }
-        if(!empty($menuItem->route)) {
-            if(strpos($route, $menuItem->route) === 0) {
+        if (!empty($menuItem->route)) {
+            if (strpos($route, $menuItem->route) === 0) {
                 $cssClasses[] = 'active';
             }
         }
-        if(!empty($cssClasses)) {
+        if (!empty($cssClasses)) {
             $classString = sprintf(' class="%s"', implode(' ', $cssClasses));
             $beginCurrent = str_replace('>', $classString . '>', $beginCurrent);
         }
         return $beginCurrent;
     }
-
 }

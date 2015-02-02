@@ -21,14 +21,39 @@ class Config
     private $items;
 
     /**
-     * Constructor
-     *
-     * @param Application $app
+     * @var string
      */
-    public function __construct(Application $app)
+    private $appPath;
+
+    /**
+     * @var string
+     */
+    private $webPath;
+
+    /**
+     * @var string
+     */
+    private $webUrl;
+
+    /**
+     * @var string
+     */
+    private $sitePath;
+
+    /**
+     * @param $appPath string
+     * @param $sitePath string
+     * @param $webPath string
+     * @param $webUrl string
+     */
+    public function __construct($appPath, $sitePath, $webPath, $webUrl)
     {
-        $this->items = $this->loadFiles($app);
-        $this->loadPluginFiles($app);
+        $this->appPath  = $appPath;
+        $this->sitePath = $sitePath;
+        $this->webPath  = $webPath;
+        $this->webUrl   = $webUrl;
+        $this->items = $this->loadFiles();
+        $this->loadPluginFiles();
     }
 
     /**
@@ -127,18 +152,23 @@ class Config
     }
 
     /**
-     * @param Application $app
      * @return array
      */
-    private function loadFiles(Application $app)
+    private function loadFiles()
     {
+        // vars used in config files
+        $APP_PATH = $this->appPath;
+        $SITE_PATH = $this->sitePath;
+        $WEB_PATH = $this->webPath;
+        $WEB_URL = $this->webUrl;
+
         $defaults = require(__DIR__ . '/defaults.php');
-        if (is_file($app['sitePath'] . '/config.php')) {
-            $userConfig = require($app['sitePath'] . '/config.php');
+        if (is_file($this->sitePath . '/config.php')) {
+            $userConfig = require($this->sitePath . '/config.php');
             $defaults = $this->merge($defaults, $userConfig);
-        } elseif (is_file($app['sitePath'] . '/config.yml')) {
-            $content = file_get_contents($app['sitePath'] . '/config.yml');
-            $content = $this->replaceConstants($content, $app);
+        } elseif (is_file($this->sitePath . '/config.yml')) {
+            $content = file_get_contents($this->sitePath . '/config.yml');
+            $content = $this->replaceConstants($content);
             $userConfig = Yaml::parse($content);
             $defaults = $this->merge($defaults, $userConfig);
         }
@@ -146,19 +176,18 @@ class Config
     }
 
     /**
-     * @param Application $app
      */
-    private function loadPluginFiles(Application $app)
+    private function loadPluginFiles()
     {
-        $dir = $app['sitePath'] . '/config/plugins';
-        if(is_dir($dir)) {
+        $dir = $this->sitePath . '/config/plugins';
+        if (is_dir($dir)) {
             $files = scandir($dir);
-            foreach($files as $file) {
-                if($file == '.' || $file == '..') {
+            foreach ($files as $file) {
+                if ($file == '.' || $file == '..') {
                     continue;
                 }
                 $basename = pathinfo($file, PATHINFO_FILENAME);
-                $content = $this->loadFile($dir . '/' . $file, $app);
+                $content = $this->loadFile($dir . '/' . $file);
                 $this->set('plugins.config.' . $basename, Yaml::parse($content));
             }
         }
@@ -166,27 +195,24 @@ class Config
 
     /**
      * @param string $file
-     * @param Application $app
      * @return mixed|string
      */
-    private function loadFile($file, $app)
+    private function loadFile($file)
     {
         $content = file_get_contents($file);
-        return $this->replaceConstants($content, $app);
+        return $this->replaceConstants($content);
     }
 
     /**
      * @param string $string
-     * @param Application $app
      * @return string
      */
-    private function replaceConstants($string, $app)
+    private function replaceConstants($string)
     {
         return str_replace(
             ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],
-            [$app['appPath'], $app['webPath'], $app['webUrl'], $app['sitePath']],
+            [$this->appPath, $this->webPath, $this->webUrl, $this->sitePath],
             $string
         );
     }
-
 }

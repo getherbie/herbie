@@ -18,6 +18,8 @@ class Finder implements \IteratorAggregate, \Countable
     private $dir = null;
     private $hidden = false;
     private $extensions = [];
+    private $minDepth = -1;
+    private $maxDepth = PHP_INT_MAX;
 
     /**
      * @return static
@@ -51,7 +53,7 @@ class Finder implements \IteratorAggregate, \Countable
      */
     public function extensions($extensions)
     {
-        if(is_string($extensions)) {
+        if (is_string($extensions)) {
             $extensions = empty($extensions) ? [] : explode(',', $extensions);
         }
         $this->extensions = $extensions;
@@ -78,6 +80,13 @@ class Finder implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    public function range($minDepth, $maxDepth = PHP_INT_MAX)
+    {
+        $this->minDepth = $minDepth;
+        $this->maxDepth = $maxDepth;
+        return $this;
+    }
+
     /**
      * @return \Traversable
      */
@@ -96,16 +105,20 @@ class Finder implements \IteratorAggregate, \Countable
             \RecursiveIteratorIterator::SELF_FIRST
         );
 
-        if(!empty($this->hidden)) {
+        if (!empty($this->hidden)) {
             $iterator = new HiddenFileFilterIterator($iterator);
         }
 
-        if(!empty($this->mode)) {
+        if (!empty($this->mode)) {
             $iterator = new FileTypeFilterIterator($iterator, $this->mode);
         }
 
-        if(!empty($this->extensions)) {
+        if (!empty($this->extensions)) {
             $iterator = new ExtensionFilterIterator($iterator, $this->extensions);
+        }
+
+        if ($this->minDepth > -1 || $this->maxDepth < PHP_INT_MAX) {
+            #$iterator = new DepthRangeFilterIterator($iterator, $this->minDepth, $this->maxDepth);
         }
 
         return $iterator;
@@ -118,5 +131,4 @@ class Finder implements \IteratorAggregate, \Countable
     {
         return iterator_count($this->getIterator());
     }
-
 }

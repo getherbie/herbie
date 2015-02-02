@@ -40,7 +40,6 @@ class Plugins
         $pluginPath = rtrim($this->app['config']->get('plugins.path'), '/');
         $pluginList = $this->app['config']->get('plugins.enable', []);
         foreach ($pluginList as $pluginKey) {
-
             $filePath = sprintf(
                 '%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey)
             );

@@ -34,7 +34,7 @@ class FilesystemHelper
     {
         $dirIterator = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::CHILD_FIRST);
-        if(count($iterator) > 0) {
+        if (count($iterator) > 0) {
             $return = true;
             foreach ($iterator as $filename => $fileInfo) {
                 if ($fileInfo->isDir()) {
@@ -65,7 +65,7 @@ class FilesystemHelper
      */
     public static function createBackupFile($file)
     {
-        if(!is_file($file)) {
+        if (!is_file($file)) {
             return false;
         }
         $info = pathinfo($file);
@@ -78,6 +78,4 @@ class FilesystemHelper
         );
         return copy($file, $backup);
     }
-
 }
-

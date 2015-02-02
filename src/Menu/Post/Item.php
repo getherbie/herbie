@@ -61,5 +61,4 @@ class Item implements ItemInterface
     {
         return $this->getRoute() == $route;
     }
-
 }

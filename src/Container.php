@@ -60,7 +60,7 @@ class Container extends PimpleContainer
             $route = '';
             $delim = '';
             $parentRoutes[] = ''; // root
-            foreach($parts as $part) {
+            foreach ($parts as $part) {
                 $route .= $delim . $part;
                 $parentRoutes[] = $route;
                 $delim = '/';
@@ -131,5 +131,4 @@ class Container extends PimpleContainer
             return new Assets($app);
         };
     }
-
 }

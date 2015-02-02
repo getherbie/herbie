@@ -36,13 +36,13 @@ class AsciiTree extends \RecursiveTreeIterator
      */
     public function render()
     {
-    	$output = '';
-    	foreach($this as $item) {
+        $output = '';
+        foreach ($this as $item) {
             $title = $this->getEntry();
             $output .= $this->getPrefix();
-    		$output .= empty($title) ? $this->emptyTitle : $title;
+            $output .= empty($title) ? $this->emptyTitle : $title;
             $output .= PHP_EOL;
-    	}
-    	return $output;
+        }
+        return $output;
     }
 }

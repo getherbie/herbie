@@ -26,6 +26,4 @@ class HiddenFileFilterIterator extends \FilterIterator
         }
         return substr($fileinfo->getBasename(), 0, 1) !== '.';
     }
-
 }
-
