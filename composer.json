@@ -1,5 +1,5 @@
 {
-    "name": "getherbie/herbie",
+    "name": "ntzwbr/herbie",
     "homepage": "http://www.getherbie.org",
     "description": "Herbie is a flat-file CMS & blog system. Simple installation - no database - just text files.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
@@ -11,16 +11,10 @@
         "michelf/php-markdown": "1.4.*",
         "netcarver/textile": "3.5.*",
         "pimple/pimple": "3.*",
-        "symfony/http-foundation": "2.5.*",
-        "symfony/yaml": "2.5.*",
-        "symfony/form": "2.1.*",
-        "symfony/validator": "2.1.*",
-        "symfony/config": "2.1.*",
-        "symfony/translation": "2.1.*",
-        "symfony/twig-bridge": "2.1.*",
-        "twig/twig": "1.16.*",
-        "imagine/imagine": "~0.5.0",
-        "ntzwbr/markdown": "dev-master"
+        "symfony/event-dispatcher": "2.6.*",
+        "symfony/http-foundation": "2.6.*",
+        "symfony/yaml": "2.6.*",
+        "twig/twig": "1.16.*"
     },
     "autoload": {
         "psr-4": {
@@ -28,3 +22,4 @@
         }
     }
 }
+
