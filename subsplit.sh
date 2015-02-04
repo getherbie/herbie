@@ -24,7 +24,7 @@ git subsplit publish "
     plugins/imagine:https://github.com/getherbie/plugin-imagine.git
     plugins/lipsum:https://github.com/getherbie/plugin-lipsum.git
     plugins/random:https://github.com/getherbie/plugin-random.git
-    plugins/rssfeed:https://github.com/getherbie/plugin-rssfeed.git
+    plugins/feed:https://github.com/getherbie/plugin-feed.git
     plugins/shortcode:https://github.com/getherbie/plugin-shortcode.git
     plugins/simplecontact:https://github.com/getherbie/plugin-simplecontact.git
     plugins/simplesearch:https://github.com/getherbie/plugin-simplesearch.git
