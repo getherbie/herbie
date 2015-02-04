@@ -128,7 +128,7 @@ class Builder
         $loader = new FrontMatterLoader();
         $data = $loader->load($path);
 
-        $trimExtension = empty($data['preserveExtension']);
+        $trimExtension = empty($data['keep_extension']);
         $route = $this->createRoute($path, $trimExtension);
 
         $data['path'] = '@page/' . $relativePath;

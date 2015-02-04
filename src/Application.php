@@ -227,7 +227,7 @@ class Application extends Container
             $content = false;
 
             // get content from cache if cache enabled
-            if (empty($menuItem->noCache)) {
+            if (empty($menuItem->nocache)) {
                 $content = $this['pageCache']->get($menuItem->getPath());
             }
 
@@ -243,7 +243,7 @@ class Application extends Container
                 }
 
                 // set content to cache if cache enabled
-                if (empty($menuItem->noCache)) {
+                if (empty($menuItem->nocache)) {
                     $this['pageCache']->set($menuItem->getPath(), $content);
                 }
             }
