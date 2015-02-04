@@ -249,7 +249,7 @@ class Application extends Container
             }
 
             $response = new Response($content);
-            $response->headers->set('Content-Type', $menuItem->contentType);
+            $response->headers->set('Content-Type', $menuItem->content_type);
         } catch (ResourceNotFoundException $e) {
             $content = $this['twig']->render('error.html', ['error' => $e]);
             $response = new Response($content, 404);
