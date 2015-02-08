@@ -62,7 +62,7 @@ class Builder
         if ($collection === false) {
             $realpath = realpath($path);
             $collection = new Collection($this->blogRoute);
-            if (is_dir($realpath)) {
+            if (is_readable($realpath)) {
                 $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
                     if (in_array(substr($filename, 0, 1), ['.', '_'])) {

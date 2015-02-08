@@ -180,7 +180,7 @@ class Config
     private function loadPluginFiles()
     {
         $dir = $this->sitePath . '/config/plugins';
-        if (is_dir($dir)) {
+        if (is_readable($dir)) {
             $files = scandir($dir);
             foreach ($files as $file) {
                 if ($file == '.' || $file == '..') {

@@ -64,7 +64,7 @@ class Builder
         $collection = $this->cache->get(__CLASS__);
         if ($collection === false) {
             $collection = new Collection();
-            if (is_dir($this->path)) {
+            if (is_readable($this->path)) {
                 $this->indexFiles = [];
 
                 // recursive iterators
