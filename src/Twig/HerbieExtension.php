@@ -166,7 +166,9 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             new Twig_SimpleTest('page', [$this, 'testIsPage']),
-            new Twig_SimpleTest('post', [$this, 'testIsPost'])
+            new Twig_SimpleTest('post', [$this, 'testIsPost']),
+            new Twig_SimpleTest('readable', [$this, 'testIsReadable']),
+            new Twig_SimpleTest('writable', [$this, 'testIsWritable'])
         ];
     }
 
@@ -646,5 +648,31 @@ class HerbieExtension extends Twig_Extension
     public function testIsPost(Page $page)
     {
         return 0 === strpos($page->getPath(), '@post');
+    }
+
+    /**
+     * @param string $alias
+     * @return bool
+     */
+    public function testIsReadable($alias)
+    {
+        if (!is_string($alias) || empty($alias)) {
+            return false;
+        }
+        $filename = $this->app['alias']->get($alias);
+        return is_readable($filename);
+    }
+
+    /**
+     * @param string $alias
+     * @return bool
+     */
+    public function testIsWritable($alias)
+    {
+        if (!is_string($alias) || empty($alias)) {
+            return false;
+        }
+        $filename = $this->app['alias']->get($alias);
+        return is_writable($filename);
     }
 }
