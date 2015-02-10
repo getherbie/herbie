@@ -160,11 +160,16 @@ class PageLoader
      */
     protected function readFile($alias, $twigify = true)
     {
+        $path = $this->alias->get($alias);
         if (!$twigify || is_null($this->twig)) {
-            $path = $this->alias->get($alias);
             return file_get_contents($path);
-        } else {
+        }
+        try {
             return $this->twig->render($alias);
+        } catch (\Exception $e) {
+            return file_get_contents($path);
+        } catch (\Twig_Error_Syntax $e) {
+            return file_get_contents($path);
         }
     }
 
