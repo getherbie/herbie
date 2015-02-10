@@ -253,6 +253,9 @@ class Application extends Container
         } catch (ResourceNotFoundException $e) {
             $content = $this['twig']->render('error.html', ['error' => $e]);
             $response = new Response($content, 404);
+        } catch (\Twig_Error $e) {
+            $content = $this['twig']->render('error.html', ['error' => $e]);
+            $response = new Response($content, 500);
         }
 
         return $response;
