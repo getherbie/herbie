@@ -166,7 +166,7 @@ class PageLoader
         }
         try {
             return $this->twig->render($alias);
-        } catch (\Exception $e) {
+        } catch (\Twig_Error_Runtime $e) {
             return file_get_contents($path);
         } catch (\Twig_Error_Syntax $e) {
             return file_get_contents($path);
