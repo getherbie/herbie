@@ -182,6 +182,12 @@ class Application extends Container
             return $this['urlMatcher']->match($this['route']);
         };
 
+        $this['translator'] = function($app) {
+            $translator = new Translator($app, $this->language);
+            $translator->init();
+            return $translator;
+        };
+
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }

@@ -45,7 +45,8 @@ class Plugins
             );
             
             if (!is_file($filePath)) {
-                throw new \RuntimeException(sprintf("Plugin '%s' enabled but not found!", $pluginKey));
+                $message = $this->app['translator']->t('app', 'Plugin "{plugin}" enabled but not found!', ['{plugin}' => $pluginKey]);
+                throw new \RuntimeException($message);
             }
 
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';

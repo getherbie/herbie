@@ -154,6 +154,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFunction('pager', [$this, 'functionPager'], $options),
             new Twig_SimpleFunction('redirect', [$this, 'functionRedirect'], $options),
             new Twig_SimpleFunction('sitemap', [$this, 'functionSitemap'], $options),
+            new Twig_SimpleFunction('translate', [$this, 'functionTranslate'], $options),
             new Twig_SimpleFunction('url', [$this, 'functionUrl'], $options),
             new Twig_SimpleFunction('mediafiles', [$this, 'functionMediafiles'], $options),
         ];
@@ -603,6 +604,16 @@ class HerbieExtension extends Twig_Extension
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
         };
         return $htmlTree->render();
+    }
+
+    /**
+     * @param string $category
+     * @param string $message
+     * @param array $params
+     */
+    public function functionTranslate($category, $message, array $params = [])
+    {
+        return $this->app['translator']->translate($category, $message, $params);
     }
 
     /**
