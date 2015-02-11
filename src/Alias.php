@@ -25,7 +25,6 @@ class Alias
     public function __construct(array $aliases = [])
     {
         $this->aliases = $aliases;
-        $this->sort();
     }
 
     /**
@@ -39,7 +38,6 @@ class Alias
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
         $this->aliases[$alias] = rtrim($path, '/');
-        $this->sort();
     }
 
     /**
@@ -51,9 +49,7 @@ class Alias
         if (strncmp($alias, '@', 1)) {
             return $alias;
         }
-        $keys = array_keys($this->aliases);
-        $values = array_values($this->aliases);
-        return str_replace($keys, $values, $alias);
+        return strtr($alias, $this->aliases);
     }
 
     /**
@@ -68,15 +64,5 @@ class Alias
         } else {
             throw new \Exception("Alias {$alias} not exists, use set instead.");
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function sort()
-    {
-        return uksort($this->aliases, function ($a, $b) {
-            return strlen($a) < strlen($b);
-        });
     }
 }

@@ -563,7 +563,7 @@ class HerbieExtension extends Twig_Extension
             $replacements['{next}'] = $this->createLink($next->route, $label, $attribs);
         }
 
-        return str_replace(array_keys($replacements), array_values($replacements), $template);
+        return strtr($template, $replacements);
     }
 
     /**
