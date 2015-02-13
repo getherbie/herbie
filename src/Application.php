@@ -141,10 +141,6 @@ class Application extends Container
             return $builder->build();
         };
 
-        $this['paginator'] = function ($app) {
-            return new Paginator($app['posts'], $app['request']);
-        };
-
         $this['rootPath'] = function ($app) {
             return new Menu\Page\RootPath($app['menu'], $app['route']);
         };
