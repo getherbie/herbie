@@ -13,9 +13,14 @@ namespace Herbie;
 class Translator
 {
     /**
-     * @var Application
+     * @var Alias
      */
-    private $app;
+    private $alias;
+
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * @var string
@@ -28,12 +33,14 @@ class Translator
     private $messages;
 
     /**
-     * @param Application $app
+     * @param Alias $alias
+     * @param Config $config
      * @param string $language
      */
-    public function __construct($app, $language)
+    public function __construct(Alias $alias, Config $config, $language)
     {
-        $this->app = $app;
+        $this->alias = $alias;
+        $this->config = $config;
         $this->language = $language;
         $this->messages = [];
     }
@@ -80,15 +87,15 @@ class Translator
     public function loadFiles()
     {
         // load application messages
-        $path = $this->app['alias']->get(sprintf('@app/herbie/src/messages/%s.php', $this->language));
+        $path = $this->alias->get(sprintf('@app/herbie/src/messages/%s.php', $this->language));
         if(file_exists($path)) {
             $this->messages[$this->language]['app'] = require_once($path);
         }
 
         // load plugin messages
-        $pluginList = $this->app['config']->get('plugins.enable', []);
+        $pluginList = $this->config->get('plugins.enable', []);
         foreach ($pluginList as $pluginKey) {
-            $path = $this->app['alias']->get(sprintf('@plugin/%s/messages/%s.php', $pluginKey, $this->language));
+            $path = $this->alias->get(sprintf('@plugin/%s/messages/%s.php', $pluginKey, $this->language));
             if(file_exists($path)) {
                 $this->messages[$this->language][$pluginKey] = require_once($path);
             }

@@ -103,7 +103,7 @@ class Application extends Container
         $this['route'] = $this['request']->getRoute();
         $this['action'] = $this['request']->getAction();
 
-        $this['parentRoutes'] = function ($app) {
+        $this['parentRoutes'] = function () {
             return $this['request']->getParentRoutes();
         };
 
@@ -115,7 +115,7 @@ class Application extends Container
             return Cache\CacheFactory::create('data', $app['config']);
         };
 
-        $this['events'] = function ($app) {
+        $this['events'] = function () {
             return new EventDispatcher();
         };
 
@@ -128,7 +128,7 @@ class Application extends Container
         };
 
         $this['menu'] = function ($app) {
-            $builder = new Menu\Page\Builder($app);
+            $builder = new Menu\Page\Builder($app['dataCache'], $app['config']);
             return $builder->buildCollection();
         };
 
@@ -137,7 +137,7 @@ class Application extends Container
         };
 
         $this['posts'] = function ($app) {
-            $builder = new Menu\Post\Builder($app);
+            $builder = new Menu\Post\Builder($app['dataCache'], $app['config']);
             return $builder->build();
         };
 
@@ -179,7 +179,7 @@ class Application extends Container
         };
 
         $this['translator'] = function($app) {
-            $translator = new Translator($app, $this->language);
+            $translator = new Translator($app['alias'], $app['config'], $this->language);
             $translator->init();
             return $translator;
         };

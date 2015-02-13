@@ -13,6 +13,7 @@ namespace Herbie\Menu\Page;
 
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
+use Herbie\Config;
 use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\Page\Iterator\SortableIterator;
 use Herbie\Menu\RecursiveFilterIterator;
@@ -41,13 +42,14 @@ class Builder
     protected $indexFiles;
 
     /**
-     * @param Application $app
+     * @param CacheInterface $cache
+     * @param Config $config
      */
-    public function __construct(Application $app)
+    public function __construct(CacheInterface $cache, Config $config)
     {
-        $this->cache = $app['dataCache'];
-        $this->path = realpath($app['config']->get('pages.path'));
-        $this->extensions = (array) $app['config']->get('pages.extensions');
+        $this->cache = $cache;
+        $this->path = realpath($config->get('pages.path'));
+        $this->extensions = (array) $config->get('pages.extensions');
         $this->indexFiles = [];
     }
 
