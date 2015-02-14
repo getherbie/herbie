@@ -13,16 +13,6 @@ namespace Herbie;
 class Translator
 {
     /**
-     * @var Alias
-     */
-    private $alias;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
      * @var string
      */
     private $language;
@@ -30,19 +20,25 @@ class Translator
     /**
      * @var array
      */
+    private $paths;
+
+    /**
+     * @var array
+     */
     private $messages;
 
     /**
-     * @param Alias $alias
-     * @param Config $config
      * @param string $language
+     * @param array $paths
      */
-    public function __construct(Alias $alias, Config $config, $language)
+    public function __construct($language, array $paths = [])
     {
-        $this->alias = $alias;
-        $this->config = $config;
         $this->language = $language;
+        $this->paths = [];
         $this->messages = [];
+        foreach ($paths as $key => $path) {
+            $this->addPath($key, $path);
+        }
     }
 
     /**
@@ -50,7 +46,7 @@ class Translator
      */
     public function init()
     {
-        $this->loadFiles();
+        $this->loadMessages();
     }
 
     /**
@@ -84,22 +80,34 @@ class Translator
     /**
      * @return void
      */
-    public function loadFiles()
+    private function loadMessages()
     {
-        // load application messages
-        $path = $this->alias->get(sprintf('@app/herbie/src/messages/%s.php', $this->language));
-        if(file_exists($path)) {
-            $this->messages[$this->language]['app'] = require_once($path);
-        }
-
-        // load plugin messages
-        $pluginList = $this->config->get('plugins.enable', []);
-        foreach ($pluginList as $pluginKey) {
-            $path = $this->alias->get(sprintf('@plugin/%s/messages/%s.php', $pluginKey, $this->language));
-            if(file_exists($path)) {
-                $this->messages[$this->language][$pluginKey] = require_once($path);
+        foreach($this->paths as $category => $paths) {
+            foreach ($paths as $path) {
+                $messagePath = sprintf('%s/%s.php', $path, $this->language);
+                if (file_exists($messagePath)) {
+                    $this->messages[$this->language][$category] = require_once($messagePath);
+                }
             }
         }
+    }
+
+    /**
+     * @param string $category
+     * @param string|array $paths
+     */
+    public function addPath($category, $path)
+    {
+        if (!isset($this->paths[$category])) {
+            $this->paths[$category] = [];
+        }
+        if (is_string($path)) {
+            $path = [$path];
+        } elseif (!is_array($path)) {
+            $message = sprintf('Argument $path has to be an array or a string, %s given.', gettype($path));
+            throw new \InvalidArgumentException($message);
+        }
+        $this->paths[$category] = array_merge($this->paths[$category], $path);
     }
 
 }

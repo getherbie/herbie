@@ -13,7 +13,6 @@ namespace Herbie;
 use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
@@ -179,7 +178,10 @@ class Application extends Container
         };
 
         $this['translator'] = function($app) {
-            $translator = new Translator($app['alias'], $app['config'], $this->language);
+            $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/herbie/src/messages')]);
+            foreach ($app['plugins']->getDirectories() as $key => $dir) {
+                $translator->addPath($key, $dir . '/messages');
+            }
             $translator->init();
             return $translator;
         };

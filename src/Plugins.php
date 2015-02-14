@@ -22,11 +22,23 @@ class Plugins
     protected $app;
 
     /**
+     * @var array
+     */
+    private $items;
+
+    /**
+     * @var array
+     */
+    private $dirs;
+
+    /**
      * @param \Herbie\Application $app
      */
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->items = [];
+        $this->dirs = null;
     }
 
     /**
@@ -52,6 +64,38 @@ class Plugins
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
             $instance = new $pluginClass($this->app);
             $events->addSubscriber($instance);
+            $this->addItem($pluginKey, $filePath, $pluginClass);
         }
     }
+
+    /**
+     * @param string $key
+     * @param string $path
+     * @param string $class
+     */
+    private function addItem($key, $path, $class)
+    {
+        $this->items[] = [
+            'key' => $key,
+            'dir' => dirname($path),
+            'path' => $path,
+            'class' => $class
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDirectories()
+    {
+        if (is_null($this->dirs)) {
+            $this->dirs = [];
+            foreach($this->items as $item) {
+                $key = $item['key'];
+                $this->dirs[$key] = $item['dir'];
+            }
+        }
+        return $this->dirs;
+    }
+
 }
