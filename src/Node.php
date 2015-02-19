@@ -100,7 +100,7 @@ class Node implements \IteratorAggregate
     public function addChild(Node $child)
     {
         $child->setParent($this);
-        array_push($this->children, $child);
+        $this->children[] = $child;
     }
 
     /**
