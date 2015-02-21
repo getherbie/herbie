@@ -24,7 +24,10 @@ class Alias
      */
     public function __construct(array $aliases = [])
     {
-        $this->aliases = $aliases;
+        $this->aliases = [];
+        foreach ($aliases as $alias => $path) {
+            $this->set($alias, $path);
+        }
     }
 
     /**
@@ -37,7 +40,7 @@ class Alias
         if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
-        $this->aliases[$alias] = rtrim($path, '/');
+        $this->aliases[$alias] = $this->rtrim($path);
     }
 
     /**
@@ -60,9 +63,18 @@ class Alias
     public function update($alias, $path)
     {
         if (array_key_exists($alias, $this->aliases)) {
-            $this->aliases[$alias] = rtrim($path, '/');
+            $this->aliases[$alias] = $this->rtrim($path);
         } else {
             throw new \Exception("Alias {$alias} not exists, use set instead.");
         }
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function rtrim($path)
+    {
+        return rtrim($path, '/');
     }
 }

@@ -70,8 +70,8 @@ class Application extends Container
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['sitePath'] = $this->sitePath;
-        $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
-        $this['webUrl'] = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        $this['webPath'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        $this['webUrl'] = dirname($_SERVER['SCRIPT_NAME']);
 
         $config = new Config($this['appPath'], $this['sitePath'], $this['webPath'], $this['webUrl']);
 
@@ -80,15 +80,15 @@ class Application extends Container
         $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
 
         $this['alias'] = new Alias([
-            '@app' => rtrim($this['appPath'], '/'),
+            '@app' => $this['appPath'],
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
-            '@media' => rtrim($config->get('media.path'), '/'),
-            '@page' => rtrim($config->get('pages.path'), '/'),
-            '@plugin' => rtrim($config->get('plugins.path'), '/'),
-            '@post' => rtrim($config->get('posts.path'), '/'),
-            '@site' => rtrim($this['sitePath'], '/'),
+            '@media' => $config->get('media.path'),
+            '@page' => $config->get('pages.path'),
+            '@plugin' => $config->get('plugins.path'),
+            '@post' => $config->get('posts.path'),
+            '@site' => $this['sitePath'],
             '@vendor' => $this->vendorDir,
-            '@web' => rtrim($this['webPath'], '/')
+            '@web' => $this['webPath']
         ]);
 
         setlocale(LC_ALL, $config->get('locale'));
