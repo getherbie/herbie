@@ -126,9 +126,22 @@ class Application extends Container
             return new Twig($app);
         };
 
+        $this['pageBuilder'] = function ($app) {
+
+            $paths = [];
+            $paths['@page'] = realpath($app['config']->get('pages.path'));
+            foreach ($app['config']->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $app['alias']->get($alias);
+            }
+            $extensions = $app['config']->get('pages.extensions', []);
+
+            $builder = new Menu\Page\Builder($paths, $extensions);
+            return $builder;
+        };
+
         $this['menu'] = function ($app) {
-            $builder = new Menu\Page\Builder($app['dataCache'], $app['config']);
-            return $builder->buildCollection();
+            $app['pageBuilder']->setCache($app['dataCache']);
+            return $app['pageBuilder']->buildCollection();
         };
 
         $this['pageTree'] = function ($app) {

@@ -11,9 +11,7 @@
 
 namespace Herbie\Menu\Page;
 
-use Herbie\Application;
 use Herbie\Cache\CacheInterface;
-use Herbie\Config;
 use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\Page\Iterator\SortableIterator;
 use Herbie\Menu\RecursiveFilterIterator;
@@ -27,9 +25,9 @@ class Builder
     protected $cache;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $path;
+    protected $paths;
 
     /**
      * @var array
@@ -42,106 +40,152 @@ class Builder
     protected $indexFiles;
 
     /**
-     * @param CacheInterface $cache
-     * @param Config $config
+     * @param array $paths
+     * @param array $extensions
      */
-    public function __construct(CacheInterface $cache, Config $config)
+    public function __construct(array $paths, array $extensions)
     {
-        $this->cache = $cache;
-        $this->path = realpath($config->get('pages.path'));
-        $this->extensions = (array) $config->get('pages.extensions');
+        $this->paths = $paths;
+        $this->extensions = $extensions;
         $this->indexFiles = [];
     }
 
     /**
-     * @param string $path
+     * @param CacheInterface $cache
+     */
+    public function setCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return void
+     */
+    public function unsetCache()
+    {
+        $this->cache = null;
+    }
+
+    /**
      * @return Collection
      */
-    public function buildCollection($path = null)
+    public function buildCollection()
     {
-        if (isset($path)) {
-            $this->path = realpath($path);
-        }
+        $collection = $this->restoreCollection();
+        if (!$collection->fromCache) {
+            foreach ($this->paths as $alias => $path) {
 
-        $collection = $this->cache->get(__CLASS__);
-        if ($collection === false) {
-            $collection = new Collection();
-            if (is_readable($this->path)) {
                 $this->indexFiles = [];
-
-                // recursive iterators
-                $directoryIterator = new \Herbie\Iterator\RecursiveDirectoryIterator($this->path);
-                $callback = [new FileFilterCallback($this->extensions), 'call'];
-                $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
-                $mode = \RecursiveIteratorIterator::SELF_FIRST;
-                $iteratorIterator = new \RecursiveIteratorIterator($filterIterator, $mode);
-                $sit = new SortableIterator($iteratorIterator, Iterator\SortableIterator::SORT_BY_NAME);
-
-                foreach ($sit as $path => $fileInfo) {
+                foreach ($this->getIterator($path) as $fileInfo) {
                     // index file as describer for parent folder
                     if ($fileInfo->isDir()) {
                         // get first index file only
-                        foreach (glob($path . '/*index.*') as $indexFile) {
+                        foreach (glob($fileInfo->getPathname() . '/*index.*') as $indexFile) {
                             $this->indexFiles[] = $indexFile;
                             $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
-                            $item = $this->createItem($indexFile, $relPathname);
+                            $item = $this->createItem($indexFile, $relPathname, $alias);
                             $collection->addItem($item);
                             break;
                         }
-                    // other files
+                        // other files
                     } else {
-                        if (!$this->isValid($path, $fileInfo->getExtension())) {
+                        if (!$this->isValid($fileInfo->getPathname(), $fileInfo->getExtension())) {
                             continue;
                         }
-                        $item = $this->createItem($path, $fileInfo->getRelativePathname());
+                        $item = $this->createItem($fileInfo->getPathname(), $fileInfo->getRelativePathname(), $alias);
                         $collection->addItem($item);
                     }
                 }
-            }
-            $this->cache->set(__CLASS__, $collection);
-        }
 
+            }
+            $this->storeCollection($collection);
+        }
         return $collection;
     }
 
     /**
+     * @return Collection
+     */
+    private function restoreCollection()
+    {
+        if (is_null($this->cache)) {
+            return new Collection();
+        }
+        $collection = $this->cache->get(__CLASS__);
+        if ($collection === false) {
+            return new Collection();
+        }
+        return $collection;
+    }
+
+    /**
+     * @param $collection
+     * @return bool
+     */
+    private function storeCollection($collection)
+    {
+        if (is_null($this->cache)) {
+            return;
+        }
+        $collection->fromCache = true;
+        return $this->cache->set(__CLASS__, $collection);
+    }
+
+
+    /**
      * @param string $path
+     * @return SortableIterator
+     */
+    protected function getIterator($path)
+    {
+        // recursive iterators
+        $directoryIterator = new \Herbie\Iterator\RecursiveDirectoryIterator($path);
+        $callback = [new FileFilterCallback($this->extensions), 'call'];
+        $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
+        $mode = \RecursiveIteratorIterator::SELF_FIRST;
+        $iteratorIterator = new \RecursiveIteratorIterator($filterIterator, $mode);
+        return new SortableIterator($iteratorIterator, Iterator\SortableIterator::SORT_BY_NAME);
+    }
+
+    /**
+     * @param string $absolutePath
      * @param string $extension
      * @return boolean
      */
-    protected function isValid($path, $extension)
+    protected function isValid($absolutePath, $extension)
     {
         if (!in_array($extension, $this->extensions)) {
             return false;
         }
-        if (in_array($path, $this->indexFiles)) {
+        if (in_array($absolutePath, $this->indexFiles)) {
             return false;
         }
         return true;
     }
 
     /**
-     *
-     * @param string $path
-     * @return \Herbie\Menu\Page\Item
+     * @param string $absolutePath
+     * @param string $relativePath
+     * @param string $alias
+     * @return Item
      */
-    protected function createItem($path, $relativePath)
+    protected function createItem($absolutePath, $relativePath, $alias)
     {
         $loader = new FrontMatterLoader();
-        $data = $loader->load($path);
+        $data = $loader->load($absolutePath);
 
         $trimExtension = empty($data['keep_extension']);
-        $route = $this->createRoute($path, $trimExtension);
+        $route = $this->createRoute($relativePath, $trimExtension);
 
-        $data['path'] = '@page/' . $relativePath;
+        $data['path'] = $alias . '/' . $relativePath;
         $data['route'] = $route;
         $item = new Item($data);
 
         if (empty($item->date)) {
-            $item->date = date('c', filectime($path));
+            $item->date = date('c', filectime($absolutePath));
         }
         if (!isset($item->hidden)) {
-            $item->hidden = !preg_match('/^[0-9]+-/', basename($path));
+            $item->hidden = !preg_match('/^[0-9]+-/', basename($relativePath));
         }
         return $item;
     }
@@ -153,11 +197,8 @@ class Builder
      */
     protected function createRoute($path, $trimExtension = false)
     {
-        // extract route from absolute and relative path
-        $route = str_replace($this->path, '', $path);
-
         // strip left unix AND windows dir separator
-        $route = ltrim($route, '\/');
+        $route = ltrim($path, '\/');
 
         // remove leading numbers (sorting) from url segments
         $segments = explode('/', $route);
