@@ -41,10 +41,10 @@ class Config
     private $sitePath;
 
     /**
-     * @param $appPath string
-     * @param $sitePath string
-     * @param $webPath string
-     * @param $webUrl string
+     * @param string $appPath
+     * @param string $sitePath
+     * @param string $webPath
+     * @param string $webUrl
      */
     public function __construct($appPath, $sitePath, $webPath, $webUrl)
     {
