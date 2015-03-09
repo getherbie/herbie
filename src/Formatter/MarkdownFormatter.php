@@ -11,8 +11,6 @@
 
 namespace Herbie\Formatter;
 
-use Michelf\MarkdownExtra;
-
 class MarkdownFormatter implements FormatterInterface
 {
     /**
@@ -21,7 +19,7 @@ class MarkdownFormatter implements FormatterInterface
      */
     public function transform($value)
     {
-        $parser = new MarkdownExtra();
-        return $parser->transform($value);
+        $parser = new \cebe\markdown\BootstrapMarkdown();
+        return $parser->parse($value);
     }
 }

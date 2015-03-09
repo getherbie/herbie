@@ -1,5 +1,5 @@
 {
-    "name": "getherbie/herbie",
+    "name": "ntzwbr/herbie",
     "homepage": "http://www.getherbie.org",
     "description": "Herbie is a flat-file CMS & blog system. Simple installation - no database - just text files.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
@@ -22,3 +22,4 @@
         }
     }
 }
+

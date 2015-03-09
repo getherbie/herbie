@@ -130,9 +130,6 @@ class Application extends Container
 
             $paths = [];
             $paths['@page'] = realpath($app['config']->get('pages.path'));
-            foreach ($app['config']->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $app['alias']->get($alias);
-            }
             $extensions = $app['config']->get('pages.extensions', []);
 
             $builder = new Menu\Page\Builder($paths, $extensions);
@@ -163,7 +160,11 @@ class Application extends Container
         };
 
         $this['urlMatcher'] = function ($app) {
-            return new Url\UrlMatcher($app['menu'], $app['posts']);
+            $extrapaths = [];
+            foreach ($app['config']->get('pages.extra_paths', []) as $alias) {
+                $extrapaths[$alias] = $app['alias']->get($alias);
+            };
+            return new Url\UrlMatcher($app['menu'], $app['posts'], $app['pageBuilder']->buildCollection($extrapaths));
         };
 
         $this['urlGenerator'] = function ($app) {
@@ -186,6 +187,10 @@ class Application extends Container
             return new Assets($app['alias'], $app['webUrl']);
         };
 
+        $this['plugins']->init();
+
+        $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
+
         $this['menuItem'] = function () {
             return $this['urlMatcher']->match($this['route']);
         };
@@ -202,10 +207,6 @@ class Application extends Container
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
-
-        $this['plugins']->init();
-
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
 
         $this['twig']->init();
 
