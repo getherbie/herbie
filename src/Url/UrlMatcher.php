@@ -32,14 +32,20 @@ class UrlMatcher
     protected $posts;
 
     /**
+     * @var PageMenuCollection Collection of all extrapages.
+     */
+    protected $extrapages;
+
+    /**
      * Constructor
      * @param Page\Collection $collection Collection of all pages
      * @param Post\Collection $posts Collection of all posts
      */
-    public function __construct(Page\Collection $pages, Post\Collection $posts)
+    public function __construct(Page\Collection $pages, Post\Collection $posts, Page\Collection $extrapages)
     {
         $this->pages = $pages;
         $this->posts = $posts;
+        $this->extrapages = $extrapages;
     }
 
     /**
@@ -73,6 +79,13 @@ class UrlMatcher
                 }
             }
         }
+
+        // Extrapage
+        $item = $this->extrapages->getItem($route);
+        if (isset($item)) {
+            return $item;
+        }
+
         throw new ResourceNotFoundException('Page "' . $route . '" not found.', 404);
     }
 
