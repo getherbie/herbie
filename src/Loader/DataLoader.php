@@ -39,6 +39,12 @@ class DataLoader
     public function load($path)
     {
         $data = [];
+
+        // dir does not exist or is not readable
+        if (!is_readable($path)) {
+            return $data;
+        }
+
         $files = scandir($path);
         foreach ($files as $file) {
             if (substr($file, 0, 1) === '.') {

@@ -32,7 +32,8 @@ return [
     'theme' => 'default',
     'pages' => [
         'path' => $SITE_PATH . '/pages',
-        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml']
+        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+        'extra_paths' => []
     ],
     'posts' => [
         'path' => $SITE_PATH . '/posts',

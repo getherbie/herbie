@@ -13,7 +13,6 @@ namespace Herbie;
 use Herbie\Exception\ResourceNotFoundException;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
@@ -55,7 +54,7 @@ class Application extends Container
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
-        $this->benchmark();
+        Benchmark::mark();
         $this->sitePath = realpath($sitePath);
         $this->vendorDir = realpath($vendorDir);
         parent::__construct();
@@ -71,8 +70,8 @@ class Application extends Container
 
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['sitePath'] = $this->sitePath;
-        $this['webPath'] = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/');
-        $this['webUrl'] = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        $this['webPath'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        $this['webUrl'] = dirname($_SERVER['SCRIPT_NAME']);
 
         $config = new Config($this['appPath'], $this['sitePath'], $this['webPath'], $this['webUrl']);
 
@@ -81,15 +80,15 @@ class Application extends Container
         $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
 
         $this['alias'] = new Alias([
-            '@app' => rtrim($this['appPath'], '/'),
+            '@app' => $this['appPath'],
             '@asset' => rtrim($this['sitePath'], '/') . '/assets',
-            '@media' => rtrim($config->get('media.path'), '/'),
-            '@page' => rtrim($config->get('pages.path'), '/'),
-            '@plugin' => rtrim($config->get('plugins.path'), '/'),
-            '@post' => rtrim($config->get('posts.path'), '/'),
-            '@site' => rtrim($this['sitePath'], '/'),
+            '@media' => $config->get('media.path'),
+            '@page' => $config->get('pages.path'),
+            '@plugin' => $config->get('plugins.path'),
+            '@post' => $config->get('posts.path'),
+            '@site' => $this['sitePath'],
             '@vendor' => $this->vendorDir,
-            '@web' => rtrim($this['webPath'], '/')
+            '@web' => $this['webPath']
         ]);
 
         setlocale(LC_ALL, $config->get('locale'));
@@ -103,7 +102,7 @@ class Application extends Container
         $this['route'] = $this['request']->getRoute();
         $this['action'] = $this['request']->getAction();
 
-        $this['parentRoutes'] = function ($app) {
+        $this['parentRoutes'] = function () {
             return $this['request']->getParentRoutes();
         };
 
@@ -115,7 +114,7 @@ class Application extends Container
             return Cache\CacheFactory::create('data', $app['config']);
         };
 
-        $this['events'] = function ($app) {
+        $this['events'] = function () {
             return new EventDispatcher();
         };
 
@@ -127,9 +126,22 @@ class Application extends Container
             return new Twig($app);
         };
 
+        $this['pageBuilder'] = function ($app) {
+
+            $paths = [];
+            $paths['@page'] = realpath($app['config']->get('pages.path'));
+            foreach ($app['config']->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $app['alias']->get($alias);
+            }
+            $extensions = $app['config']->get('pages.extensions', []);
+
+            $builder = new Menu\Page\Builder($paths, $extensions);
+            return $builder;
+        };
+
         $this['menu'] = function ($app) {
-            $builder = new Menu\Page\Builder($app);
-            return $builder->buildCollection();
+            $app['pageBuilder']->setCache($app['dataCache']);
+            return $app['pageBuilder']->buildCollection();
         };
 
         $this['pageTree'] = function ($app) {
@@ -137,12 +149,8 @@ class Application extends Container
         };
 
         $this['posts'] = function ($app) {
-            $builder = new Menu\Post\Builder($app);
+            $builder = new Menu\Post\Builder($app['dataCache'], $app['config']);
             return $builder->build();
-        };
-
-        $this['paginator'] = function ($app) {
-            return new Paginator($app['posts'], $app['request']);
         };
 
         $this['rootPath'] = function ($app) {
@@ -182,6 +190,15 @@ class Application extends Container
             return $this['urlMatcher']->match($this['route']);
         };
 
+        $this['translator'] = function($app) {
+            $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/herbie/src/messages')]);
+            foreach ($app['plugins']->getDirectories() as $key => $dir) {
+                $translator->addPath($key, $dir . '/messages');
+            }
+            $translator->init();
+            return $translator;
+        };
+
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
@@ -209,7 +226,7 @@ class Application extends Container
         $this->fireEvent('onOutputRendered');
 
         if (0 < $this['config']->get('display_load_time', 0)) {
-            $time = $this->benchmark();
+            $time = Benchmark::mark();
             echo sprintf("\n<!-- Generated by Herbie in %s seconds | www.getherbie.org -->", $time);
         }
     }
@@ -227,7 +244,7 @@ class Application extends Container
             $content = false;
 
             // get content from cache if cache enabled
-            if (empty($menuItem->noCache)) {
+            if (empty($menuItem->nocache)) {
                 $content = $this['pageCache']->get($menuItem->getPath());
             }
 
@@ -243,16 +260,19 @@ class Application extends Container
                 }
 
                 // set content to cache if cache enabled
-                if (empty($menuItem->noCache)) {
+                if (empty($menuItem->nocache)) {
                     $this['pageCache']->set($menuItem->getPath(), $content);
                 }
             }
 
             $response = new Response($content);
-            $response->headers->set('Content-Type', $menuItem->contentType);
+            $response->headers->set('Content-Type', $menuItem->content_type);
         } catch (ResourceNotFoundException $e) {
             $content = $this['twig']->render('error.html', ['error' => $e]);
             $response = new Response($content, 404);
+        } catch (\Twig_Error $e) {
+            $content = $this['twig']->render('error.html', ['error' => $e]);
+            $response = new Response($content, 500);
         }
 
         return $response;
@@ -293,22 +313,5 @@ class Application extends Container
             $attributes['app'] = $this;
         }
         return $this['events']->dispatch($eventName, new Event($attributes));
-    }
-
-    /**
-     * @param bool $reset
-     * @return string (number format)
-     */
-    public function benchmark($reset = false)
-    {
-        static $start = null;
-        if ($reset) {
-            $start = null;
-        }
-        if ($start === null) {
-            $start = microtime(true);
-            return number_format(0, 4);
-        }
-        return number_format(microtime(true) - $start, 4);
     }
 }

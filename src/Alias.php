@@ -24,8 +24,10 @@ class Alias
      */
     public function __construct(array $aliases = [])
     {
-        $this->aliases = $aliases;
-        $this->sort();
+        $this->aliases = [];
+        foreach ($aliases as $alias => $path) {
+            $this->set($alias, $path);
+        }
     }
 
     /**
@@ -38,8 +40,7 @@ class Alias
         if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
-        $this->aliases[$alias] = rtrim($path, '/');
-        $this->sort();
+        $this->aliases[$alias] = $this->rtrim($path);
     }
 
     /**
@@ -51,9 +52,7 @@ class Alias
         if (strncmp($alias, '@', 1)) {
             return $alias;
         }
-        $keys = array_keys($this->aliases);
-        $values = array_values($this->aliases);
-        return str_replace($keys, $values, $alias);
+        return strtr($alias, $this->aliases);
     }
 
     /**
@@ -64,19 +63,18 @@ class Alias
     public function update($alias, $path)
     {
         if (array_key_exists($alias, $this->aliases)) {
-            $this->aliases[$alias] = rtrim($path, '/');
+            $this->aliases[$alias] = $this->rtrim($path);
         } else {
             throw new \Exception("Alias {$alias} not exists, use set instead.");
         }
     }
 
     /**
-     * @return bool
+     * @param string $path
+     * @return string
      */
-    public function sort()
+    private function rtrim($path)
     {
-        return uksort($this->aliases, function ($a, $b) {
-            return strlen($a) < strlen($b);
-        });
+        return rtrim($path, '/');
     }
 }

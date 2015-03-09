@@ -14,7 +14,7 @@ namespace Herbie\Helper;
 class ArrayHelper
 {
 
-    public static function filterEmptyElements($array)
+    public static function filterEmptyElements(Array $array)
     {
         $callback = function ($value) {
             // @see http://php.net/manual/en/function.empty.php
@@ -33,5 +33,11 @@ class ArrayHelper
             }
         }
         return $ordered + $array;
+    }
+
+    public static function appendToItems(Array $array, $append)
+    {
+        $closure = function($value) use ($append) { return $value . $append; };
+        return array_map($closure, $array);
     }
 }

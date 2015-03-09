@@ -97,7 +97,7 @@ class Site
     /**
      * @return string
      */
-    public function getLastCreated()
+    public function getCreated()
     {
         $lastCreated = 0;
         foreach ($this->app['menu'] as $item) {
@@ -112,7 +112,7 @@ class Site
     /**
      * @return string
      */
-    public function getLastModified()
+    public function getModified()
     {
         $lastModified = 0;
         foreach ($this->app['menu'] as $item) {

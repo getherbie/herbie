@@ -22,11 +22,17 @@ class Plugin implements EventSubscriberInterface
     protected $app;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Application $app
      */
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->config = $app['config'];
         $this->init();
     }
 
@@ -74,6 +80,6 @@ class Plugin implements EventSubscriberInterface
      */
     protected function config($name, $default = null)
     {
-        return $this->app['config']->get($name, $default);
+        return $this->config->get($name, $default);
     }
 }

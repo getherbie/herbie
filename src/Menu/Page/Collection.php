@@ -18,6 +18,8 @@ class Collection implements \IteratorAggregate, \Countable
 
     use CollectionTrait;
 
+    public $fromCache;
+
     /**
      * @param callable $callback
      * @throws \InvalidArgumentException

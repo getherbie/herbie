@@ -157,7 +157,7 @@ class Twig
             'widget' => __DIR__ . '/Twig/widgets'
         ];
         foreach ($namespaces as $namespace => $path) {
-            if (is_dir($path)) {
+            if (is_readable($path)) {
                 $loader->addPath($path, $namespace);
             }
         }
@@ -182,7 +182,7 @@ class Twig
     private function readPhpFiles($dir)
     {
         $dir = rtrim($dir, '/');
-        if (empty($dir) || !is_dir($dir)) {
+        if (empty($dir) || !is_readable($dir)) {
             return [];
         }
         $pattern = $dir . '/*.php';

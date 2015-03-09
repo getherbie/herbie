@@ -13,6 +13,7 @@ namespace Herbie\Menu\Post;
 
 use Herbie\Application;
 use Herbie\Cache\CacheInterface;
+use Herbie\Config;
 use Herbie\Loader\FrontMatterLoader;
 
 class Builder
@@ -39,14 +40,15 @@ class Builder
     protected $blogRoute;
 
     /**
-     * @param Application $app
+     * @param CacheInterface $cache
+     * @param Config $config
      */
-    public function __construct(Application $app)
+    public function __construct(CacheInterface $cache, Config $config)
     {
-        $this->cache = $app['dataCache'];
-        $this->path = $app['config']->get('posts.path');
-        $this->extensions = $app['config']->get('posts.extensions');
-        $this->blogRoute = $app['config']->get('posts.blog_route');
+        $this->cache = $cache;
+        $this->path = $config->get('posts.path');
+        $this->extensions = $config->get('posts.extensions');
+        $this->blogRoute = $config->get('posts.blog_route');
     }
 
     /**
@@ -62,7 +64,7 @@ class Builder
         if ($collection === false) {
             $realpath = realpath($path);
             $collection = new Collection($this->blogRoute);
-            if (is_dir($realpath)) {
+            if (is_readable($realpath)) {
                 $loader = new FrontMatterLoader();
                 foreach (scandir($realpath, 1) as $filename) {
                     if (in_array(substr($filename, 0, 1), ['.', '_'])) {

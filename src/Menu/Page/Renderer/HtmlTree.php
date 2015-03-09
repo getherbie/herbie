@@ -119,11 +119,7 @@ class HtmlTree extends \RecursiveIteratorIterator
             '{class}' => $this->class,
             '{level}' => $this->getDepth()+1
         ];
-        return str_replace(
-            array_keys($replacements),
-            array_values($replacements),
-            $this->template[$key]
-        );
+        return strtr($this->template[$key], $replacements);
     }
 
     /**

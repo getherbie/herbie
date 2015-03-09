@@ -41,10 +41,10 @@ class Config
     private $sitePath;
 
     /**
-     * @param $appPath string
-     * @param $sitePath string
-     * @param $webPath string
-     * @param $webUrl string
+     * @param string $appPath
+     * @param string $sitePath
+     * @param string $webPath
+     * @param string $webUrl
      */
     public function __construct($appPath, $sitePath, $webPath, $webUrl)
     {
@@ -83,7 +83,33 @@ class Config
     }
 
     /**
-     * Sey value by using dot notation for nested arrays.
+     * Push an element onto the end of array by using dot notation for nested arrays. Creates a new array if it
+     * does not exist.
+     *
+     * @example $config->push('pages.extra_paths', '@plugin/test/pages');
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return int
+     */
+    public function push($name, $value)
+    {
+        $path = explode('.', $name);
+        $current = &$this->items;
+        foreach ($path as $field) {
+            if (is_array($current)) {
+                if (!isset($current[$field])) {
+                    $current[$field] = [];
+                }
+                $current = &$current[$field];
+            }
+        }
+        $current[] = $value;
+        return count($current);
+    }
+
+    /**
+     * Set value by using dot notation for nested arrays.
      *
      * @example $value = $config->set('twig.cache', false);
      *
@@ -180,7 +206,7 @@ class Config
     private function loadPluginFiles()
     {
         $dir = $this->sitePath . '/config/plugins';
-        if (is_dir($dir)) {
+        if (is_readable($dir)) {
             $files = scandir($dir);
             foreach ($files as $file) {
                 if ($file == '.' || $file == '..') {
