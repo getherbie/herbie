@@ -70,7 +70,7 @@ class Application extends Container
 
         $request = Request::createFromGlobals();
 
-        $this['appPath'] = realpath(__DIR__ . '/../../');
+        $this['appPath'] = realpath(__DIR__);
         $this['sitePath'] = $this->sitePath;
         $this['webPath'] = dirname($_SERVER['SCRIPT_FILENAME']);
         $this['webUrl'] = $request->getBaseUrl();
@@ -193,7 +193,7 @@ class Application extends Container
         };
 
         $this['translator'] = function($app) {
-            $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/herbie/src/messages')]);
+            $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/messages')]);
             foreach ($app['plugins']->getDirectories() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
