@@ -33,7 +33,7 @@ class Assets
     /**
      * @var string
      */
-    protected $assetsDir = 'assets';
+    protected $assetsDir = '/assets';
 
     /**
      * @var string
@@ -77,12 +77,8 @@ class Assets
     public function __construct(Alias $alias, $baseUrl)
     {
         $this->alias = $alias;
-        $this->assetsPath = $alias->get('@web') . '/' . $this->assetsDir;
-        $this->assetsUrl = $baseUrl . '/' . $this->assetsDir;
-        // local url should begin with single slash, if document-root points to web-dir
-        if(substr($this->assetsUrl,0,2)=='//'){
-            $this->assetsUrl = substr($this->assetsUrl,1);
-        }
+        $this->assetsPath = $alias->get('@web') . $this->assetsDir;
+        $this->assetsUrl = rtrim($baseUrl, '/') . $this->assetsDir;
     }
 
     /**
