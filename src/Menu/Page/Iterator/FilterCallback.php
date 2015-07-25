@@ -18,7 +18,7 @@ class FilterCallback
 
     public function __construct($app)
     {
-        $this->parentRoutes = $app['parentRoutes'];
+        $this->parentRoutes = $app['request']->getParentRoutes();
     }
 
     public function call($current, $key, $iterator)

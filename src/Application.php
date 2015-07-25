@@ -104,10 +104,6 @@ class Application extends Container
         $this['route'] = $request->getRoute();
         $this['action'] = $request->getAction();
 
-        $this['parentRoutes'] = function () {
-            return $this['request']->getParentRoutes();
-        };
-
         $this['pageCache'] = function ($app) {
             return Cache\CacheFactory::create('page', $app['config']);
         };
