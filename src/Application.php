@@ -68,10 +68,12 @@ class Application extends Container
         $this['errorHandler'] = new ErrorHandler();
         $this['errorHandler']->register();
 
+        $request = Request::createFromGlobals();
+
         $this['appPath'] = realpath(__DIR__ . '/../../');
         $this['sitePath'] = $this->sitePath;
         $this['webPath'] = dirname($_SERVER['SCRIPT_FILENAME']);
-        $this['webUrl'] = dirname($_SERVER['SCRIPT_NAME']);
+        $this['webUrl'] = $request->getBaseUrl();
 
         $config = new Config($this['appPath'], $this['sitePath'], $this['webPath'], $this['webUrl']);
 
@@ -98,9 +100,9 @@ class Application extends Container
 
         $this['config'] = $config;
 
-        $this['request'] = Request::createFromGlobals();
-        $this['route'] = $this['request']->getRoute();
-        $this['action'] = $this['request']->getAction();
+        $this['request'] = $request;
+        $this['route'] = $request->getRoute();
+        $this['action'] = $request->getAction();
 
         $this['parentRoutes'] = function () {
             return $this['request']->getParentRoutes();
