@@ -85,6 +85,10 @@ class Assets
         $this->baseUrl = $baseUrl;
         $this->assetsPath = $alias->get('@web') . '/' . $this->assetsDir;
         $this->assetsUrl = $baseUrl . '/' . $this->assetsDir;
+        // local url should begin with single slash, if document-root points to web-dir
+        if(substr($this->assetsUrl,0,2)=='//'){
+            $this->assetsUrl = substr($this->assetsUrl,1);
+        }
     }
 
     /**
