@@ -25,12 +25,12 @@ class Application extends Container
     /**
      * @var string
      */
-    public $sitePath;
+    protected $sitePath;
 
     /**
      * @var string
      */
-    public $vendorDir;
+    protected $vendorDir;
 
     /**
      * @var string
