@@ -16,6 +16,10 @@ return [
     'site' => [
         'path' => $SITE_PATH
     ],
+    'web' => [
+        'path' => $WEB_PATH,
+        'url' => $WEB_URL
+    ],
     'media' => [
         'path' => $WEB_PATH . '/media',
         'url' => $WEB_URL . '/media',
