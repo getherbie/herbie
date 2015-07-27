@@ -70,27 +70,22 @@ class Application extends Container
 
         $request = Request::createFromGlobals();
 
-        $appPath = realpath(__DIR__);
-        $sitePath = $this->sitePath;
-        $webPath = dirname($_SERVER['SCRIPT_FILENAME']);
-        $webUrl = $request->getBaseUrl();
-
-        $config = new Config($appPath, $sitePath, $webPath, $webUrl);
+        $config = new Config(realpath(__DIR__), $this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
 
         $this['alias'] = new Alias([
-            '@app' => $appPath,
-            '@asset' => rtrim($sitePath, '/') . '/assets',
+            '@app' => $config->get('app.path'),
+            '@asset' => $this->sitePath . '/assets',
             '@media' => $config->get('media.path'),
             '@page' => $config->get('pages.path'),
             '@plugin' => $config->get('plugins.path'),
             '@post' => $config->get('posts.path'),
-            '@site' => $sitePath,
+            '@site' => $this->sitePath,
             '@vendor' => $this->vendorDir,
-            '@web' => $webPath
+            '@web' => $config->get('web.path')
         ]);
 
         setlocale(LC_ALL, $config->get('locale'));
@@ -178,15 +173,15 @@ class Application extends Container
             return $page;
         };
 
-        $this['assets'] = function ($app) use ($webUrl) {
-            return new Assets($app['alias'], $webUrl);
+        $this['assets'] = function ($app) {
+            return new Assets($app['alias'], $app['config']->get('web.url'));
         };
 
         $this['menuItem'] = function () {
             return $this['urlMatcher']->match($this['request']->getRoute());
         };
 
-        $this['translator'] = function($app) {
+        $this['translator'] = function ($app) {
             $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/messages')]);
             foreach ($app['plugins']->getDirectories() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
@@ -292,7 +287,7 @@ class Application extends Container
 
     /**
      * @param  string $eventName
-     * @param  array  $attributes
+     * @param  array $attributes
      * @return Event
      */
     protected function fireEvent($eventName, array $attributes = [])
