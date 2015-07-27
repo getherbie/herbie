@@ -14,6 +14,22 @@ namespace Herbie\Helper;
 class StringHelper
 {
     /**
+     * Creates a web friendly URL slug from a string.
+     *
+     * @see http://cubiq.org/the-perfect-php-clean-url-generator
+     * @param string $str
+     * @param string $delimiter
+     * @return string
+     */
+    public static function urlify($str, $delimiter='-') {
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+        $clean = strtolower(trim($clean, '-'));
+        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+        return $clean;
+    }
+
+    /**
      * @see https://github.com/alixaxel/phunction/blob/master/phunction/Text.php#L297
      */
     public static function unaccent($string)
