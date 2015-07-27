@@ -65,8 +65,8 @@ class Application extends Container
      */
     public function init(array $values = [])
     {
-        $this['errorHandler'] = new ErrorHandler();
-        $this['errorHandler']->register();
+        $errorHandler = new ErrorHandler();
+        $errorHandler->register();
 
         $request = Request::createFromGlobals();
 
