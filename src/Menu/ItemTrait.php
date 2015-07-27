@@ -11,6 +11,8 @@
 
 namespace Herbie\Menu;
 
+use Herbie\Helper\StringHelper;
+
 trait ItemTrait
 {
 
@@ -58,8 +60,9 @@ trait ItemTrait
      */
     public function getAuthor($author)
     {
+        $author = $this->urlify($author);
         foreach ($this->data['authors'] as $a) {
-            if (strtolower($a) == strtolower($author)) {
+            if ($this->urlify($a) == $author) {
                 return $a;
             }
         }
@@ -80,8 +83,9 @@ trait ItemTrait
      */
     public function getCategory($category)
     {
+        $category = $this->urlify($category);
         foreach ($this->data['categories'] as $c) {
-            if (strtolower($c) == strtolower($category)) {
+            if ($this->urlify($c) == $category) {
                 return $c;
             }
         }
@@ -107,8 +111,9 @@ trait ItemTrait
      */
     public function getTag($tag)
     {
+        $tag = $this->urlify($tag);
         foreach ($this->getTags() as $t) {
-            if (strtolower($t) == strtolower($tag)) {
+            if ($this->urlify($t) == $tag) {
                 return $t;
             }
         }
@@ -170,8 +175,9 @@ trait ItemTrait
      */
     public function hasAuthor($author)
     {
+        $author = $this->urlify($author);
         foreach ($this->data['authors'] as $c) {
-            if (strtolower($c) == strtolower($author)) {
+            if ($this->urlify($c) == $author) {
                 return true;
             }
         }
@@ -184,8 +190,9 @@ trait ItemTrait
      */
     public function hasCategory($category)
     {
+        $category = $this->urlify($category);
         foreach ($this->data['categories'] as $c) {
-            if (strtolower($c) == strtolower($category)) {
+            if ($this->urlify($c) == $category) {
                 return true;
             }
         }
@@ -198,8 +205,9 @@ trait ItemTrait
      */
     public function hasTag($tag)
     {
+        $tag = $this->urlify($tag);
         foreach ($this->getTags() as $t) {
-            if (strtolower($t) == strtolower($tag)) {
+            if ($this->urlify($t) == $tag) {
                 return true;
             }
         }
@@ -268,4 +276,14 @@ trait ItemTrait
     {
         return $this->data;
     }
+
+    /**
+     * @param string $slug
+     * @return string
+     */
+    private function urlify($slug)
+    {
+        return StringHelper::urlify($slug);
+    }
+
 }

@@ -199,15 +199,15 @@ class Collection implements \IteratorAggregate, \Countable
             // filter by year
         } elseif (preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
             $date = urldecode($matches[1]);
-            $filteredByLabel = 'Archiv für den Jahr';
+            $filteredByLabel = 'Archiv für das Jahr';
             // filter by category
-        } elseif (preg_match('/^category\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
+        } elseif (preg_match('/^category\/(.+)$/', $pathInfo, $matches)) {
             $category = urldecode($matches[1]);
             // filter by tag
-        } elseif (preg_match('/^tag\/([A-Za-z0-9]+)$/', $pathInfo, $matches)) {
+        } elseif (preg_match('/^tag\/(.+)$/', $pathInfo, $matches)) {
             $tag = urldecode($matches[1]);
             // filter by author
-        } elseif (preg_match('/^author\/([A-Za-z0-9%]+)$/', $pathInfo, $matches)) {
+        } elseif (preg_match('/^author\/(.+)$/', $pathInfo, $matches)) {
             $author = urldecode($matches[1]);
         } else {
             // Invalid filter setting, return empty array
