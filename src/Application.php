@@ -70,27 +70,27 @@ class Application extends Container
 
         $request = Request::createFromGlobals();
 
-        $this['appPath'] = realpath(__DIR__);
-        $this['sitePath'] = $this->sitePath;
-        $this['webPath'] = dirname($_SERVER['SCRIPT_FILENAME']);
-        $this['webUrl'] = $request->getBaseUrl();
+        $appPath = realpath(__DIR__);
+        $sitePath = $this->sitePath;
+        $webPath = dirname($_SERVER['SCRIPT_FILENAME']);
+        $webUrl = $request->getBaseUrl();
 
-        $config = new Config($this['appPath'], $this['sitePath'], $this['webPath'], $this['webUrl']);
+        $config = new Config($appPath, $sitePath, $webPath, $webUrl);
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
 
         $this['alias'] = new Alias([
-            '@app' => $this['appPath'],
-            '@asset' => rtrim($this['sitePath'], '/') . '/assets',
+            '@app' => $appPath,
+            '@asset' => rtrim($sitePath, '/') . '/assets',
             '@media' => $config->get('media.path'),
             '@page' => $config->get('pages.path'),
             '@plugin' => $config->get('plugins.path'),
             '@post' => $config->get('posts.path'),
-            '@site' => $this['sitePath'],
+            '@site' => $sitePath,
             '@vendor' => $this->vendorDir,
-            '@web' => $this['webPath']
+            '@web' => $webPath
         ]);
 
         setlocale(LC_ALL, $config->get('locale'));
@@ -178,8 +178,8 @@ class Application extends Container
             return $page;
         };
 
-        $this['assets'] = function ($app) {
-            return new Assets($app['alias'], $app['webUrl']);
+        $this['assets'] = function ($app) use ($webUrl) {
+            return new Assets($app['alias'], $webUrl);
         };
 
         $this['menuItem'] = function () {
