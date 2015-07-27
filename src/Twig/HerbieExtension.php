@@ -12,6 +12,7 @@ namespace Herbie\Twig;
 
 use Herbie\Finder;
 use Herbie\Formatter;
+use Herbie\Helper;
 use Herbie\Menu;
 use Herbie\Page;
 use Herbie\Site;
@@ -126,6 +127,7 @@ class HerbieExtension extends Twig_Extension
             new Twig_SimpleFilter('markdown', [$this, 'filterMarkdown'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('strftime', [$this, 'filterStrftime']),
             new Twig_SimpleFilter('textile', [$this, 'filterTextile'], ['is_safe' => ['html']]),
+            new Twig_SimpleFilter('urlify', [$this, 'filterUrlify'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
         ];
     }
@@ -226,6 +228,17 @@ class HerbieExtension extends Twig_Extension
     {
         $formatter = Formatter\FormatterFactory::create('textile');
         return $formatter->transform($content);
+    }
+
+    /**
+     * Creates a web friendly URL (slug) from a string.
+     *
+     * @param $url
+     * @return string
+     */
+    public function filterUrlify($url)
+    {
+        return Helper\StringHelper::urlify($url);
     }
 
     /**
