@@ -41,14 +41,13 @@ class Config
     private $sitePath;
 
     /**
-     * @param string $appPath
      * @param string $sitePath
      * @param string $webPath
      * @param string $webUrl
      */
-    public function __construct($appPath, $sitePath, $webPath, $webUrl)
+    public function __construct($sitePath, $webPath, $webUrl)
     {
-        $this->appPath  = $appPath;
+        $this->appPath  = realpath(__DIR__);
         $this->sitePath = $sitePath;
         $this->webPath  = $webPath;
         $this->webUrl   = $webUrl;

@@ -70,7 +70,7 @@ class Application extends Container
 
         $request = Request::createFromGlobals();
 
-        $config = new Config(realpath(__DIR__), $this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+        $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
