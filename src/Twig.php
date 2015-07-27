@@ -68,7 +68,7 @@ class Twig
     public function render($name, array $context = [])
     {
         $context = array_merge($context, [
-            'route' => $this->app->getRoute(),
+            'route' => $this->app['request']->getRoute(),
             'baseUrl' => $this->app['request']->getBasePath(),
             'theme' => $this->app['config']->get('theme')
         ]);

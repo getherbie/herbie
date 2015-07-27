@@ -101,8 +101,6 @@ class Application extends Container
         $this['config'] = $config;
 
         $this['request'] = $request;
-        $this['route'] = $request->getRoute();
-        $this['action'] = $request->getAction();
 
         $this['pageCache'] = function ($app) {
             return Cache\CacheFactory::create('page', $app['config']);
@@ -152,7 +150,7 @@ class Application extends Container
         };
 
         $this['rootPath'] = function ($app) {
-            return new Menu\Page\RootPath($app['menu'], $app['route']);
+            return new Menu\Page\RootPath($app['menu'], $app['request']->getRoute());
         };
 
         $this['data'] = function ($app) {
@@ -185,7 +183,7 @@ class Application extends Container
         };
 
         $this['menuItem'] = function () {
-            return $this['urlMatcher']->match($this['route']);
+            return $this['urlMatcher']->match($this['request']->getRoute());
         };
 
         $this['translator'] = function($app) {
@@ -290,14 +288,6 @@ class Application extends Container
         $this->fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
 
         return $rendered;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRoute()
-    {
-        return $this['route'];
     }
 
     /**

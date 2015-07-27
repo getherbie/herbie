@@ -329,7 +329,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionBodyClass()
     {
-        $route = trim($this->app->getRoute(), '/');
+        $route = trim($this->app['request']->getRoute(), '/');
         if (empty($route)) {
             $route = 'index';
         }
@@ -466,7 +466,7 @@ class HerbieExtension extends Twig_Extension
             $href = $this->app['urlGenerator']->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
         };
-        return $htmlTree->render($this->app->getRoute());
+        return $htmlTree->render($this->app['request']->getRoute());
     }
 
     /**
@@ -521,7 +521,7 @@ class HerbieExtension extends Twig_Extension
     public function functionPager($limit = '', $template = '{prev}{next}', $linkClass='',
         $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='')
     {
-        $route = $this->app['route'];
+        $route = $this->app['request']->getRoute();
         $iterator = $this->app['menu']->getIterator();
 
         $prev = null;
