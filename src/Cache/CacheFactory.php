@@ -28,7 +28,7 @@ class CacheFactory
         }
         $class = 'Herbie\Cache\\' . ucfirst($type) . 'Cache';
         if (!class_exists($class)) {
-            throw new \Exception("Missing format class $class.");
+            throw new \Exception("Missing cache class $class.");
         }
         $options = $config->get("cache.{$type}", []);
         return new $class($options);
