@@ -129,7 +129,7 @@ class Site
      */
     public function getLanguage()
     {
-        return $this->app->language;
+        return $this->app['config']->get('language');
     }
 
     /**
@@ -137,7 +137,7 @@ class Site
      */
     public function getLocale()
     {
-        return $this->app->locale;
+        return $this->app['config']->get('locale');
     }
 
     /**
@@ -145,6 +145,6 @@ class Site
      */
     public function getCharset()
     {
-        return $this->app->charset;
+        return $this->app['config']->get('charset');
     }
 }

@@ -33,22 +33,6 @@ class Application extends Container
     protected $vendorDir;
 
     /**
-     * @var string
-     */
-    public $charset;
-
-    /**
-     * @var string
-     */
-    public $language;
-
-    /**
-     * LC_ALL
-     * @var string
-     */
-    public $locale;
-
-    /**
      * @param string $sitePath
      * @param string $vendorDir
      */
@@ -68,9 +52,11 @@ class Application extends Container
         $errorHandler = new ErrorHandler();
         $errorHandler->register();
 
-        $request = Request::createFromGlobals();
+        $this['request'] = $request = Request::createFromGlobals();
 
-        $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+        $this['config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+
+        setlocale(LC_ALL, $config->get('locale'));
 
         // Add custom psr4 plugin path to composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
@@ -87,15 +73,6 @@ class Application extends Container
             '@vendor' => $this->vendorDir,
             '@web' => $config->get('web.path')
         ]);
-
-        setlocale(LC_ALL, $config->get('locale'));
-        $this->charset = $config->get('charset');
-        $this->language = $config->get('language');
-        $this->locale = $config->get('locale');
-
-        $this['config'] = $config;
-
-        $this['request'] = $request;
 
         $this['pageCache'] = function ($app) {
             return Cache\CacheFactory::create('page', $app['config']);
@@ -182,7 +159,7 @@ class Application extends Container
         };
 
         $this['translator'] = function ($app) {
-            $translator = new Translator($this->language, ['app' => $app['alias']->get('@app/messages')]);
+            $translator = new Translator($app['config']->get('language'), ['app' => $app['alias']->get('@app/messages')]);
             foreach ($app['plugins']->getDirectories() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
