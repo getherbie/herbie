@@ -67,11 +67,7 @@ class Twig
      */
     public function render($name, array $context = [])
     {
-        $context = array_merge($context, [
-            'route' => $this->app['request']->getRoute(),
-            'baseUrl' => $this->app['request']->getBasePath(),
-            'theme' => $this->app['config']->get('theme')
-        ]);
+        $context = array_merge($context, $this->getContext());
         return $this->environment->render($name, $context);
     }
 
@@ -95,12 +91,24 @@ class Twig
             $loader
         )));
         // render string
-        $rendered = $this->environment->render($name);
+        $context = $this->getContext();
+        $rendered = $this->environment->render($name, $context);
         // reset current loader
         $this->environment->setLoader($loader);
         return $rendered;
     }
 
+    /**
+     * @return array
+     */
+    private function getContext()
+    {
+        return [
+            'route' => $this->app['request']->getRoute(),
+            'baseUrl' => $this->app['request']->getBasePath(),
+            'theme' => $this->app['config']->get('theme')
+        ];
+    }
 
     /**
      * @return void
