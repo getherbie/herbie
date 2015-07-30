@@ -20,7 +20,6 @@ use Symfony\Component\Yaml\Yaml;
 class PageLoader
 {
     protected $alias;
-    protected $twig;
     protected $page;
 
     /**
@@ -33,21 +32,20 @@ class PageLoader
 
     /**
      * @param string $alias
-     * @param bool $twigify
      * @param bool $addDefFields
      * @return array
      * @throws \Exception
      */
-    public function load($alias, $twigify = true, $addDefFields = true)
+    public function load($alias, $addDefFields = true)
     {
-        $content = $this->readFile($alias, $twigify);
+        $content = $this->readFile($alias);
         list($yaml, $segments) = $this->parseContent($content);
 
         $data = (array) Yaml::parse($yaml);
         if ($addDefFields) {
-            $data['format'] = pathinfo($alias, PATHINFO_EXTENSION);
-            $data['date'] = $this->extractDateFromPath($alias);
-            $data['path'] = $alias;
+            $data['format'] = isset($data['format']) ? $data['format'] : pathinfo($alias, PATHINFO_EXTENSION);
+            $data['date'] = isset($data['date']) ? $data['date'] : $this->extractDateFromPath($alias);
+            $data['path'] = isset($data['path']) ? $data['path'] : $alias;
         }
         return [
             'data' => $data,
@@ -138,37 +136,13 @@ class PageLoader
     }
 
     /**
-     * @param \Twig_Environment $twig
-     */
-    public function setTwig(\Twig_Environment $twig)
-    {
-        $this->twig = $twig;
-    }
-
-    /**
-     * @return void
-     */
-    public function unsetTwig()
-    {
-        $this->twig = null;
-    }
-
-    /**
      * @param string $alias
-     * @param bool $twigify
      * @return string
      */
-    protected function readFile($alias, $twigify = true)
+    protected function readFile($alias)
     {
         $path = $this->alias->get($alias);
-        if (!$twigify || is_null($this->twig)) {
-            return file_get_contents($path);
-        }
-        try {
-            return $this->twig->render($alias);
-        } catch (\Twig_Error $e) {
-            return file_get_contents($path);
-        }
+        return file_get_contents($path);
     }
 
     /**

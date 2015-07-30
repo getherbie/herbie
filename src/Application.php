@@ -140,7 +140,6 @@ class Application extends Container
 
         $this['pageLoader'] = function ($app) {
             $loader = new Loader\PageLoader($app['alias']);
-            $loader->setTwig($this['twig']->environment);
             return $loader;
         };
 
@@ -255,8 +254,11 @@ class Application extends Container
         $segment = $this['page']->getSegment($segmentId);
         $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
 
+        $twigged = $this['twig']->renderString($segment);
+        $this->fireEvent('onContentSegmentTwigged', ['twigged' => &$twigged]);
+
         $formatter = Formatter\FormatterFactory::create($this['page']->format);
-        $rendered = $formatter->transform($segment);
+        $rendered = $formatter->transform($twigged);
         $this->fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
 
         return $rendered;
