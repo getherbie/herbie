@@ -11,6 +11,7 @@
 
 namespace Herbie\Loader;
 
+use Herbie\Exception\ResourceNotFoundException;
 use Herbie\Page;
 use Symfony\Component\Yaml\Yaml;
 
@@ -142,7 +143,12 @@ class PageLoader
     protected function readFile($alias)
     {
         $path = $this->alias->get($alias);
-        return file_get_contents($path);
+        // suppress E_WARNING since we throw an exception on error
+        $contents = @file_get_contents($path);
+        if (false === $contents) {
+            throw new ResourceNotFoundException('Page "' . $alias . '" does not exist.');
+        }
+        return $contents;
     }
 
     /**
