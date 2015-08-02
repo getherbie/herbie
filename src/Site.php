@@ -42,14 +42,6 @@ class Site
     }
 
     /**
-     * @return Paginator
-     */
-    public function getPaginator()
-    {
-        return Application::getService('paginator');
-    }
-
-    /**
      * @return Menu\Page\Node
      */
     public function getTree()
