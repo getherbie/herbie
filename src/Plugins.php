@@ -11,15 +11,8 @@
 
 namespace Herbie;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 class Plugins
 {
-
-    /**
-     * @var Application
-     */
-    protected $app;
 
     /**
      * @var array
@@ -32,40 +25,48 @@ class Plugins
     private $dirs;
 
     /**
-     * @param \Herbie\Application $app
+     * @var boolean
      */
-    public function __construct(Application $app)
+    private $initialized;
+
+    /**
+     *
+     */
+    public function __construct()
     {
-        $this->app = $app;
         $this->items = [];
         $this->dirs = null;
+        $this->initialized = false;
     }
 
     /**
+     * @param Container $container
      * @throws \RuntimeException
      */
-    public function init()
+    public function init(Container $container)
     {
-        /** @var EventDispatcher $events */
-        $events = $this->app['events'];
+        // Retrieve services from container
+        $events = $container['EventDispatcher'];
+        $config = $container['Config'];
 
-        $pluginPath = rtrim($this->app['config']->get('plugins.path'), '/');
-        $pluginList = $this->app['config']->get('plugins.enable', []);
+        $pluginPath = rtrim($config->get('plugins.path'), '/');
+        $pluginList = $config->get('plugins.enable', []);
         foreach ($pluginList as $pluginKey) {
             $filePath = sprintf(
                 '%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey)
             );
             
             if (!is_file($filePath)) {
-                $message = $this->app['translator']->t('app', 'Plugin "{plugin}" enabled but not found!', ['{plugin}' => $pluginKey]);
+                $message = sprintf('Plugin "{%s}" enabled but not found!', $pluginKey);
                 throw new \RuntimeException($message);
             }
 
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
-            $instance = new $pluginClass($this->app);
+            $instance = new $pluginClass($config);
             $events->addSubscriber($instance);
             $this->addItem($pluginKey, $filePath, $pluginClass);
         }
+        $this->initialized = true;
     }
 
     /**
@@ -96,6 +97,14 @@ class Plugins
             }
         }
         return $this->dirs;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInitialized()
+    {
+        return true === $this->initialized;
     }
 
 }

@@ -18,19 +18,6 @@ class Site
 {
 
     /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @param $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
      * @return string
      */
     public function getTime()
@@ -43,15 +30,15 @@ class Site
      */
     public function getData()
     {
-        return $this->app['data'];
+        return Application::getService('DataArray');
     }
 
     /**
-     * @return \Herbie\Menu\Page\Collection
+     * @return Menu\Page\Collection
      */
     public function getMenu()
     {
-        return $this->app['menu'];
+        return Application::getService('Menu\Page\Collection');
     }
 
     /**
@@ -59,39 +46,39 @@ class Site
      */
     public function getPaginator()
     {
-        return $this->app['paginator'];
+        return Application::getService('paginator');
     }
 
     /**
-     * @return PageMenuTree
+     * @return Menu\Page\Node
      */
     public function getTree()
     {
-        return $this->app['pageTree'];
+        return Application::getService('Menu\Page\Node');
     }
 
     /**
-     * @return PageMenuTree
+     * @return Menu\Page\Node
      */
     public function getPageTree()
     {
-        return $this->app['pageTree'];
+        return Application::getService('Menu\Page\Node');
     }
 
     /**
-     * @return \Herbie\Menu\Post\Collection
+     * @return Menu\Post\Collection
      */
     public function getPosts()
     {
-        return $this->app['posts'];
+        return Application::getService('Menu\Post\Collection');
     }
 
     /**
-     * @return string
+     * @return Menu\Page\RootPath
      */
     public function getRootPath()
     {
-        return $this->app['rootPath'];
+        return Application::getService('Menu\Page\RootPath');
     }
 
     /**
@@ -100,7 +87,7 @@ class Site
     public function getCreated()
     {
         $lastCreated = 0;
-        foreach ($this->app['menu'] as $item) {
+        foreach (Application::getService('Menu\Page\Collection') as $item) {
             $modified = strtotime($item->getCreated());
             if ($modified > $lastCreated) {
                 $lastCreated = $modified;
@@ -115,7 +102,7 @@ class Site
     public function getModified()
     {
         $lastModified = 0;
-        foreach ($this->app['menu'] as $item) {
+        foreach (Application::getService('Menu\Page\Collection') as $item) {
             $modified = strtotime($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;
@@ -129,7 +116,7 @@ class Site
      */
     public function getLanguage()
     {
-        return $this->app['config']->get('language');
+        return Application::getService('Config')->get('language');
     }
 
     /**
@@ -137,7 +124,7 @@ class Site
      */
     public function getLocale()
     {
-        return $this->app['config']->get('locale');
+        return Application::getService('Config')->get('locale');
     }
 
     /**
@@ -145,6 +132,6 @@ class Site
      */
     public function getCharset()
     {
-        return $this->app['config']->get('charset');
+        return Application::getService('Config')->get('charset');
     }
 }

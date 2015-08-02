@@ -21,12 +21,7 @@ class Twig
 {
 
     /**
-     * @var \Herbie\Application
-     */
-    public $app;
-
-    /**
-     * @var \Herbie\Config
+     * @var Config
      */
     public $config;
 
@@ -36,14 +31,19 @@ class Twig
     public $environment;
 
     /**
+     * @var boolean
+     */
+    private $initialized;
+
+    /**
      * Constructor
      *
-     * @param \Herbie\Application $app
+     * @param Config $config
      */
-    public function __construct(Application $app)
+    public function __construct($config)
     {
-        $this->app = $app;
-        $this->config = $app['config'];
+        $this->config = $config;
+        $this->initialized = false;
     }
 
     public function init()
@@ -56,8 +56,9 @@ class Twig
         if (!$this->config->isEmpty('twig.debug')) {
             $this->environment->addExtension(new Twig_Extension_Debug());
         }
-        $this->environment->addExtension(new Twig\HerbieExtension($this->app));
+        $this->environment->addExtension(new Twig\HerbieExtension());
         $this->addTwigPlugins();
+        $this->initialized = true;
     }
 
     /**
@@ -69,6 +70,41 @@ class Twig
     {
         $context = array_merge($context, $this->getContext());
         return $this->environment->render($name, $context);
+    }
+
+    public function renderPage(Page $page)
+    {
+        if (empty($page->layout)) {
+            $content = $this->renderPageSegment(0, $page);
+        } else {
+            $content = $this->render($page->layout);
+        }
+        return $content;
+    }
+
+    /**
+     * Renders a page content segment.
+     * @param string|int $segmentId
+     * @param Page $page
+     * @return string
+     */
+    public function renderPageSegment($segmentId, Page $page = null)
+    {
+        if (is_null($page)) {
+            $page = Application::getPage();
+        }
+
+        $segment = $page->getSegment($segmentId);
+        Application::fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
+
+        $twigged = Application::getService('Twig')->renderString($segment);
+        Application::fireEvent('onContentSegmentTwigged', ['twigged' => &$twigged]);
+
+        $formatter = Formatter\FormatterFactory::create($page->format);
+        $rendered = $formatter->transform($twigged);
+        Application::fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
+
+        return $rendered;
     }
 
     /**
@@ -103,10 +139,11 @@ class Twig
      */
     private function getContext()
     {
+        // @todo Inject request object or refactor code
         return [
-            'route' => $this->app['request']->getRoute(),
-            'baseUrl' => $this->app['request']->getBasePath(),
-            'theme' => $this->app['config']->get('theme')
+            'route' => Application::getService('Request')->getRoute(),
+            'baseUrl' => Application::getService('Request')->getBasePath(),
+            'theme' => $this->config->get('theme')
         ];
     }
 
@@ -179,7 +216,8 @@ class Twig
      */
     private function includePhpFile($file)
     {
-        $app = $this->app; // Global $app var used by plugins
+        // @todo Don't use $app in twig plugins
+        #$app = $this->app; // Global $app var used by plugins
         return include($file);
     }
 
@@ -196,4 +234,13 @@ class Twig
         $pattern = $dir . '/*.php';
         return glob($pattern);
     }
+
+    /**
+     * @return bool
+     */
+    public function isInitialized()
+    {
+        return true === $this->initialized;
+    }
+
 }

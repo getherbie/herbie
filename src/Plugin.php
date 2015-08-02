@@ -17,22 +17,16 @@ class Plugin implements EventSubscriberInterface
 {
 
     /**
-     * @var Application;
-     */
-    protected $app;
-
-    /**
      * @var Config
      */
     protected $config;
 
     /**
-     * @param Application $app
+     * @param Config $config
      */
-    public function __construct(Application $app)
+    public function __construct(Config $config)
     {
-        $this->app = $app;
-        $this->config = $app['config'];
+        $this->config = $config;
         $this->init();
     }
 
@@ -82,4 +76,19 @@ class Plugin implements EventSubscriberInterface
     {
         return $this->config->get($name, $default);
     }
+
+    protected function render($name, array $context = [])
+    {
+        return Application::getService('Twig')->render($name, $context);
+    }
+
+    /**
+     * @param string $service
+     * @return mixed
+     */
+    protected function getService($service)
+    {
+        return Application::getService($service);
+    }
+
 }

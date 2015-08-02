@@ -11,17 +11,25 @@
 namespace Herbie;
 
 use Herbie\Exception\ResourceNotFoundException;
-use Pimple\Container;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
 /**
  * The application using Pimple as dependency injection container.
  */
-class Application extends Container
+class Application
 {
+    /**
+     * @var Container
+     */
+    protected static $container;
+
+    /**
+     * @var Page
+     */
+    protected static $page;
+
     /**
      * @var string
      */
@@ -41,142 +49,69 @@ class Application extends Container
         Benchmark::mark();
         $this->sitePath = realpath($sitePath);
         $this->vendorDir = realpath($vendorDir);
-        parent::__construct();
+        $this->init();
+        return $this;
     }
 
     /**
+     * Initialize the application.
      * @param array $values
      */
-    public function init(array $values = [])
+    private function init(array $values = [])
     {
+
         $errorHandler = new ErrorHandler();
         $errorHandler->register();
 
-        $this['request'] = $request = Request::createFromGlobals();
+        static::$container = $container = new Container($this->sitePath, $this->vendorDir, $values);
 
-        $this['config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+        setlocale(LC_ALL, $container['Config']->get('locale'));
 
-        setlocale(LC_ALL, $config->get('locale'));
-
-        // Add custom psr4 plugin path to composer autoloader
+        // Add custom PSR-4 plugin path to Composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $config->get('plugins.path'));
+        $autoload->addPsr4('herbie\\plugin\\', $container['Config']->get('plugins.path'));
 
-        $this['alias'] = new Alias([
-            '@app' => $config->get('app.path'),
-            '@asset' => $this->sitePath . '/assets',
-            '@media' => $config->get('media.path'),
-            '@page' => $config->get('pages.path'),
-            '@plugin' => $config->get('plugins.path'),
-            '@post' => $config->get('posts.path'),
-            '@site' => $this->sitePath,
-            '@vendor' => $this->vendorDir,
-            '@web' => $config->get('web.path')
-        ]);
+        $container['Plugins']->init($container);
 
-        $this['pageCache'] = function ($app) {
-            return Cache\CacheFactory::create('page', $app['config']);
-        };
+        $this->fireEvent('onPluginsInitialized', ['plugins' => $container['Plugins']]);
 
-        $this['dataCache'] = function ($app) {
-            return Cache\CacheFactory::create('data', $app['config']);
-        };
+        $container['Twig']->init();
 
-        $this['events'] = function () {
-            return new EventDispatcher();
-        };
+        $this->fireEvent('onTwigInitialized', ['twig' => $container['Twig']->environment]);
+    }
 
-        $this['plugins'] = function ($app) {
-            return new Plugins($app);
-        };
+    /**
+     * Fire an event.
+     * @param  string $eventName
+     * @param  array $attributes
+     * @return Event
+     */
+    public static function fireEvent($eventName, array $attributes = [])
+    {
+        $event = new Event($attributes);
+        return static::$container['EventDispatcher']->dispatch($eventName, $event);
+    }
 
-        $this['twig'] = function ($app) {
-            return new Twig($app);
-        };
+    /**
+     * Retrieve a registered service from DI container.
+     * @param string $service
+     * @return mixed
+     */
+    public static function getService($service)
+    {
+        return static::$container[$service];
+    }
 
-        $this['pageBuilder'] = function ($app) {
-
-            $paths = [];
-            $paths['@page'] = realpath($app['config']->get('pages.path'));
-            foreach ($app['config']->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $app['alias']->get($alias);
-            }
-            $extensions = $app['config']->get('pages.extensions', []);
-
-            $builder = new Menu\Page\Builder($paths, $extensions);
-            return $builder;
-        };
-
-        $this['menu'] = function ($app) {
-            $app['pageBuilder']->setCache($app['dataCache']);
-            return $app['pageBuilder']->buildCollection();
-        };
-
-        $this['pageTree'] = function ($app) {
-            return Menu\Page\Node::buildTree($app['menu']);
-        };
-
-        $this['posts'] = function ($app) {
-            $builder = new Menu\Post\Builder($app['dataCache'], $app['config']);
-            return $builder->build();
-        };
-
-        $this['rootPath'] = function ($app) {
-            return new Menu\Page\RootPath($app['menu'], $app['request']->getRoute());
-        };
-
-        $this['data'] = function ($app) {
-            $loader = new Loader\DataLoader($app['config']->get('data.extensions'));
-            return $loader->load($app['config']->get('data.path'));
-        };
-
-        $this['urlMatcher'] = function ($app) {
-            return new Url\UrlMatcher($app['menu'], $app['posts']);
-        };
-
-        $this['urlGenerator'] = function ($app) {
-            return new Url\UrlGenerator($app['request'], $app['config']->get('nice_urls', false));
-        };
-
-        $this['pageLoader'] = function ($app) {
-            $loader = new Loader\PageLoader($app['alias']);
-            return $loader;
-        };
-
-        $this['page'] = function ($app) {
-            $page = new Page(); // be sure that we always have a Page object
-            $page->setLoader($app['pageLoader']);
-            return $page;
-        };
-
-        $this['assets'] = function ($app) {
-            return new Assets($app['alias'], $app['config']->get('web.url'));
-        };
-
-        $this['menuItem'] = function () {
-            return $this['urlMatcher']->match($this['request']->getRoute());
-        };
-
-        $this['translator'] = function ($app) {
-            $translator = new Translator($app['config']->get('language'), ['app' => $app['alias']->get('@app/messages')]);
-            foreach ($app['plugins']->getDirectories() as $key => $dir) {
-                $translator->addPath($key, $dir . '/messages');
-            }
-            $translator->init();
-            return $translator;
-        };
-
-        foreach ($values as $key => $value) {
-            $this->offsetSet($key, $value);
+    /**
+     * Get the loaded (current) Page from DI container. This is a shortcut to Application::getService('Page').
+     * @return Page
+     */
+    public static function getPage()
+    {
+        if (null === static::$page) {
+            static::$page = static::getService('Page');
         }
-
-        $this['plugins']->init();
-
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $this['plugins']]);
-
-        $this['twig']->init();
-
-        $this->fireEvent('onTwigInitialized', ['twig' => $this['twig']->environment]);
+        return static::$page;
     }
 
     /**
@@ -184,7 +119,26 @@ class Application extends Container
      */
     public function run()
     {
-        $response = $this->handle();
+        $twig = $this->getService('Twig');
+
+        try {
+
+            $page = $this->getPage();
+            $content = $twig->renderPage($page);
+            $response = new Response($content);
+            $response->headers->set('Content-Type', $page->content_type);
+
+        } catch (ResourceNotFoundException $e) {
+
+            $content = $twig->render('error.html', ['error' => $e]);
+            $response = new Response($content, 404);
+
+        } catch (\Twig_Error $e) {
+
+            $content = $twig->render('error.html', ['error' => $e]);
+            $response = new Response($content, 500);
+
+        }
 
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
@@ -192,88 +146,10 @@ class Application extends Container
 
         $this->fireEvent('onOutputRendered');
 
-        if (0 < $this['config']->get('display_load_time', 0)) {
+        if (0 < static::$container['Config']->get('display_load_time', 0)) {
             $time = Benchmark::mark();
             echo sprintf("\n<!-- Generated by Herbie in %s seconds | www.getherbie.org -->", $time);
         }
     }
 
-    /**
-     * @return Response
-     */
-    protected function handle()
-    {
-        try {
-
-            // load menu item (holds page data) from container
-            $menuItem = $this['menuItem'];
-
-            $content = false;
-
-            // get content from cache if cache enabled
-            if (empty($menuItem->nocache)) {
-                $content = $this['pageCache']->get($menuItem->getPath());
-            }
-
-            if ($content === false) {
-                $this['page']->load($menuItem->getPath());
-
-                $this->fireEvent('onPageLoaded', ['page' => $this['page']]);
-
-                if (empty($menuItem->layout)) {
-                    $content = $this->renderContentSegment(0);
-                } else {
-                    $content = $this['twig']->render($menuItem->layout);
-                }
-
-                // set content to cache if cache enabled
-                if (empty($menuItem->nocache)) {
-                    $this['pageCache']->set($menuItem->getPath(), $content);
-                }
-            }
-
-            $response = new Response($content);
-            $response->headers->set('Content-Type', $menuItem->content_type);
-        } catch (ResourceNotFoundException $e) {
-            $content = $this['twig']->render('error.html', ['error' => $e]);
-            $response = new Response($content, 404);
-        } catch (\Twig_Error $e) {
-            $content = $this['twig']->render('error.html', ['error' => $e]);
-            $response = new Response($content, 500);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param string|int $segmentId
-     * @return string
-     */
-    public function renderContentSegment($segmentId)
-    {
-        $segment = $this['page']->getSegment($segmentId);
-        $this->fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
-
-        $twigged = $this['twig']->renderString($segment);
-        $this->fireEvent('onContentSegmentTwigged', ['twigged' => &$twigged]);
-
-        $formatter = Formatter\FormatterFactory::create($this['page']->format);
-        $rendered = $formatter->transform($twigged);
-        $this->fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
-
-        return $rendered;
-    }
-
-    /**
-     * @param  string $eventName
-     * @param  array $attributes
-     * @return Event
-     */
-    protected function fireEvent($eventName, array $attributes = [])
-    {
-        if (!isset($attributes['app'])) {
-            $attributes['app'] = $this;
-        }
-        return $this['events']->dispatch($eventName, new Event($attributes));
-    }
 }

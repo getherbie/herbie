@@ -29,7 +29,7 @@ class Page
     /**
      * @var PageLoader
      */
-    protected $pageLoader;
+    private $pageLoader;
 
     /**
      * @return string
@@ -129,4 +129,5 @@ class Page
         $this->setData($data['data']);
         $this->setSegments($data['segments']);
     }
+
 }

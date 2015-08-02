@@ -13,6 +13,9 @@ namespace Herbie;
 
 use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
 
+/*
+ * @todo Replace Symfony Event with GenericEvent
+ */
 class Event extends SymfonyEvent implements \ArrayAccess
 {
 
@@ -65,4 +68,15 @@ class Event extends SymfonyEvent implements \ArrayAccess
     {
         unset($this->items[$offset]);
     }
+
+    /**
+     * Retrieve a service by name from application container.
+     * @param string $name
+     * @return mixed
+     */
+    public function getService($name)
+    {
+        return Application::getService($name);
+    }
+
 }

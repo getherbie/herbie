@@ -10,6 +10,7 @@
 
 namespace Herbie\Twig;
 
+use Herbie\Application;
 use Herbie\Finder;
 use Herbie\Formatter;
 use Herbie\Helper;
@@ -25,22 +26,23 @@ use Twig_SimpleTest;
 
 class HerbieExtension extends Twig_Extension
 {
-    /**
-     * @var Application
-     */
-    protected $app;
+
+    private $alias;
+    private $config;
+    private $request;
+    private $urlGenerator;
 
     /**
      * @var Twig_Environment
      */
     private $environment;
 
-    /**
-     * @param Application $app
-     */
-    public function __construct($app)
+    public function __construct()
     {
-        $this->app = $app;
+        $this->alias = Application::getService('Alias');
+        $this->config = Application::getService('Config');
+        $this->request = Application::getService('Request');
+        $this->urlGenerator = Application::getService('Url\UrlGenerator');
     }
 
     /**
@@ -65,8 +67,8 @@ class HerbieExtension extends Twig_Extension
     public function getGlobals()
     {
         return [
-            'site' => new Site($this->app),
-            'page' => $this->app['page']
+            'site' => new Site(),
+            'page' => Application::getPage()
         ];
     }
 
@@ -101,7 +103,7 @@ class HerbieExtension extends Twig_Extension
      */
     protected function createLink($route, $label, $htmlAttributes = [])
     {
-        $url = $this->app['urlGenerator']->generate($route);
+        $url = $this->urlGenerator->generate($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
         return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
     }
@@ -257,7 +259,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionAbsUrl($route)
     {
-        return $this->app['urlGenerator']->generateAbsolute($route);
+        return $this->urlGenerator->generateAbsolute($route);
     }
 
     /**
@@ -269,7 +271,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionAddCss($paths, $attr = [], $group = null, $raw = false, $pos = 1)
     {
-        $this->app['assets']->addCss($paths, $attr, $group, $raw, $pos);
+        Application::getService('Assets')->addCss($paths, $attr, $group, $raw, $pos);
     }
 
     /**
@@ -281,7 +283,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionAddJs($paths, $attr = [], $group = null, $raw = false, $pos = 1)
     {
-        $this->app['assets']->addJs($paths, $attr, $group, $raw, $pos);
+        Application::getService('Assets')->addJs($paths, $attr, $group, $raw, $pos);
     }
 
     /**
@@ -290,7 +292,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionOutputCss($group = null)
     {
-        return $this->app['assets']->outputCss($group);
+        return Application::getService('Assets')->outputCss($group);
     }
 
     /**
@@ -299,7 +301,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionOutputJs($group = null)
     {
-        return $this->app['assets']->outputJs($group);
+        return Application::getService('Assets')->outputJs($group);
     }
 
     /**
@@ -314,7 +316,7 @@ class HerbieExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->app['pageTree']->findByRoute($route);
+        $branch = Application::getService('Menu\Page\Node')->findByRoute($route);
         $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
         $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
@@ -329,11 +331,11 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionBodyClass()
     {
-        $route = trim($this->app['request']->getRoute(), '/');
+        $route = trim($this->request->getRoute(), '/');
         if (empty($route)) {
             $route = 'index';
         }
-        $layout = $this->app['page']->layout;
+        $layout = Application::getPage()->layout;
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
@@ -363,7 +365,7 @@ class HerbieExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->app['rootPath'] as $item) {
+        foreach (Application::getService('Menu\Page\RootPath') as $item) {
             $links[] = $this->createLink($item->route, $item->title);
         }
 
@@ -386,7 +388,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionConfig($name, $default = null)
     {
-        return $this->app['config']->get($name, $default);
+        return $this->config->get($name, $default);
     }
 
     /**
@@ -396,7 +398,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionContent($segmentId = 0, $wrap = false)
     {
-        $content = $this->app->renderContentSegment($segmentId);
+        $content = Application::getService('Twig')->renderPageSegment($segmentId);
         if (empty($wrap)) {
             return $content;
         }
@@ -414,7 +416,7 @@ class HerbieExtension extends Twig_Extension
     public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
     {
         $attribs = [];
-        $attribs['src'] = $this->app['request']->getBasePath() . '/' . $src;
+        $attribs['src'] = $this->request->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
             $attribs['width'] = $width;
@@ -451,11 +453,12 @@ class HerbieExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'menu';
 
-        $branch = $this->app['pageTree']->findByRoute($route);
+        $branch = Application::getService('Menu\Page\Node')->findByRoute($route);
         $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
-        $callback = [new Menu\Page\Iterator\FilterCallback($this->app, $showHidden), 'call'];
+        $parentRoutes = $this->request->getParentRoutes();
+        $callback = [new Menu\Page\Iterator\FilterCallback($parentRoutes, $showHidden), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
@@ -463,10 +466,10 @@ class HerbieExtension extends Twig_Extension
         $htmlTree->setClass($class);
         $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
-            $href = $this->app['urlGenerator']->generate($menuItem->route);
+            $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
         };
-        return $htmlTree->render($this->app['request']->getRoute());
+        return $htmlTree->render($this->request->getRoute());
     }
 
     /**
@@ -482,7 +485,7 @@ class HerbieExtension extends Twig_Extension
         $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
-        $count = count($this->app['rootPath']);
+        $count = count(Application::getService('Menu\Page\RootPath'));
 
         $titles = [];
 
@@ -490,15 +493,16 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $siteTitle;
         }
 
-        foreach ($this->app['rootPath'] as $item) {
+        foreach (Application::getService('Menu\Page\RootPath') as $item) {
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
             $titles[] = $item->title;
         }
 
-        if ($this->testIsPost($this->app['page'])) {
-            $titles[] = $this->app['page']->title;
+        $page = Application::getPage();
+        if ($this->testIsPost($page)) {
+            $titles[] = $page->title;
         }
 
         if (!empty($reverse)) {
@@ -521,8 +525,8 @@ class HerbieExtension extends Twig_Extension
     public function functionPager($limit = '', $template = '{prev}{next}', $linkClass='',
         $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='')
     {
-        $route = $this->app['request']->getRoute();
-        $iterator = $this->app['menu']->getIterator();
+        $route = $this->request->getRoute();
+        $iterator = Application::getService('Menu\Page\Collection')->getIterator();
 
         $prev = null;
         $cur = null;
@@ -586,7 +590,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionRedirect($route, $status = 302)
     {
-        $url = $this->app['urlGenerator']->generateAbsolute($route);
+        $url = $this->urlGenerator->generateAbsolute($route);
         $response = new RedirectResponse($url, $status);
         $response->send();
     }
@@ -603,7 +607,7 @@ class HerbieExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->app['pageTree']->findByRoute($route);
+        $branch = Application::getService('Menu\Page\Node')->findByRoute($route);
         $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
         $filterIterator = new Menu\Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
@@ -613,7 +617,7 @@ class HerbieExtension extends Twig_Extension
         $htmlTree->setClass($class);
         $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
-            $href = $this->app['urlGenerator']->generate($menuItem->route);
+            $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
         };
         return $htmlTree->render();
@@ -626,7 +630,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionTranslate($category, $message, array $params = [])
     {
-        return $this->app['translator']->translate($category, $message, $params);
+        return Application::getService('Translator')->translate($category, $message, $params);
     }
 
     /**
@@ -635,7 +639,7 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionUrl($route)
     {
-        return $this->app['urlGenerator']->generate($route);
+        return $this->urlGenerator->generate($route);
     }
 
     /**
@@ -645,7 +649,7 @@ class HerbieExtension extends Twig_Extension
     public function functionMediafiles($type = 'images')
     {
         $finder = Finder\Finder::create()
-            ->in($this->app['alias']->get('@media'))
+            ->in($this->alias->get('@media'))
             ->hidden(true);
 
         if ($type == 'folders') {
@@ -654,7 +658,7 @@ class HerbieExtension extends Twig_Extension
 
         $types = ['images', 'documents', 'archives', 'code', 'videos', 'audio'];
         $type = in_array($type, $types) ? $type : 'images';
-        $extensions = $this->app['config']->get('media.' . $type);
+        $extensions = $this->config->get('media.' . $type);
         return $finder->files()->extensions($extensions);
     }
 
@@ -683,7 +687,7 @@ class HerbieExtension extends Twig_Extension
         if (!is_string($alias) || empty($alias)) {
             return false;
         }
-        $filename = $this->app['alias']->get($alias);
+        $filename = $this->alias->get($alias);
         return is_readable($filename);
     }
 
@@ -696,7 +700,7 @@ class HerbieExtension extends Twig_Extension
         if (!is_string($alias) || empty($alias)) {
             return false;
         }
-        $filename = $this->app['alias']->get($alias);
+        $filename = $this->alias->get($alias);
         return is_writable($filename);
     }
 }
