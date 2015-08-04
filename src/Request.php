@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 class Request extends SymfonyRequest
 {
     /**
+     * Get the current route.
      * @return string
      */
     public function getRoute()
@@ -25,28 +26,30 @@ class Request extends SymfonyRequest
     }
 
     /**
+     * Get the parts of the current route.
      * @return array
      */
-    public function getRouteSegments()
+    public function getRouteParts()
     {
         $route = $this->getRoute();
         return empty($route) ? [] : explode('/', $route);
     }
 
     /**
+     * Get all routes from root to current page as an index array.
      * @return array
      */
-    public function getParentRoutes()
+    public function getRouteLine()
     {
         $route = '';
         $delim = '';
-        $parentRoutes[] = ''; // root
-        foreach ($this->getRouteSegments() as $segment) {
-            $route .= $delim . $segment;
-            $parentRoutes[] = $route;
+        $routeLine[] = ''; // root
+        foreach ($this->getRouteParts() as $part) {
+            $route .= $delim . $part;
+            $routeLine[] = $route;
             $delim = '/';
         }
-        return $parentRoutes;
+        return $routeLine;
     }
 
     /**

@@ -457,8 +457,8 @@ class HerbieExtension extends Twig_Extension
         $treeIterator = new Menu\Page\Iterator\TreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
-        $parentRoutes = $this->request->getParentRoutes();
-        $callback = [new Menu\Page\Iterator\FilterCallback($parentRoutes, $showHidden), 'call'];
+        $routeLine = $this->request->getRouteLine();
+        $callback = [new Menu\Page\Iterator\FilterCallback($routeLine, $showHidden), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);

@@ -14,11 +14,14 @@ namespace Herbie\Menu\Page\Iterator;
 class FilterCallback
 {
 
-    private $parentRoutes;
+    /**
+     * @var array
+     */
+    private $routeLine;
 
-    public function __construct(array $parentRoutes)
+    public function __construct(array $routeLine)
     {
-        $this->parentRoutes = $parentRoutes;
+        $this->routeLine = $routeLine;
     }
 
     public function call($current, $key, $iterator)
@@ -29,7 +32,7 @@ class FilterCallback
         if (empty($this->showHidden)) {
             $accept &= empty($menuItem->hidden);
         }
-        $accept &= in_array($menuItem->getParentRoute(), $this->parentRoutes);
+        $accept &= in_array($menuItem->getParentRoute(), $this->routeLine);
 
         return $accept;
     }
