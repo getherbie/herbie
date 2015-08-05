@@ -130,4 +130,33 @@ class Page
         $this->setSegments($data['segments']);
     }
 
+    /**
+     * Get the http status code depending on a set error code.
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        if (empty($this->data['error'])) {
+            return 200;
+        }
+        if (empty($this->data['error']['code'])) {
+            return 500;
+        }
+        return $this->data['error']['code'];
+    }
+
+    /**
+     * @param \Exception $e
+     */
+    public function setError(\Exception $e)
+    {
+        $this->data['error'] = [
+            'message' => $e->getMessage(),
+            'code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ];
+    }
+
 }

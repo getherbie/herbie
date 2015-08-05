@@ -11,6 +11,7 @@
 
 namespace Herbie;
 
+use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
@@ -72,14 +73,35 @@ class Twig
         return $this->environment->render($name, $context);
     }
 
+    /**
+     * Renders a page and returns a response object.
+     * Catches every exception that occured during the rendering process.
+     * @param Page $page
+     * @return Response
+     */
     public function renderPage(Page $page)
     {
-        if (empty($page->layout)) {
-            $content = $this->renderPageSegment(0, $page);
-        } else {
-            $content = $this->render($page->layout);
+
+        try {
+
+            if (empty($page->layout)) {
+                $content = $this->renderPageSegment(0, $page);
+            } else {
+                $content = $this->render($page->layout);
+            }
+
+        } catch (\Exception $e) {
+
+            $page->setError($e);
+            $content = $this->render('error.html');
+
         }
-        return $content;
+
+        $response = new Response($content);
+        $response->setStatusCode($page->getStatusCode());
+        $response->headers->set('Content-Type', $page->content_type);
+
+        return $response;
     }
 
     /**

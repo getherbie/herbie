@@ -91,7 +91,8 @@ class Container extends Pimple
         };
 
         $this['Menu\Page\RootPath'] = function ($c) {
-            return new Menu\Page\RootPath($c['Menu\Page\Collection'], $c['Request']->getRoute());
+            $rootPath = new Menu\Page\RootPath($c['Menu\Page\Collection'], $c['Request']->getRoute());
+            return $rootPath;
         };
 
         $this['Menu\Post\Collection'] = function ($c) {
@@ -105,29 +106,38 @@ class Container extends Pimple
                 throw new \Exception('You have to initialize Twig before using Page.');
             }
 
-            $menuItem = $c['Menu\Item'];
+            try {
 
-            $path = $menuItem->getPath();
+                $menuItem = $c['Menu\Item'];
 
-            $page = false;
+                $path = $menuItem->getPath();
 
-            // @todo Implement a proper page cache
-            // get content from cache if cache enabled
-            if (empty($menuItem->nocache)) {
-                $page = $c['Cache\PageCache']->get($path);
-            }
+                $page = false;
 
-            if (false === $page) {
+                // @todo Implement a proper page cache
+                // get content from cache if cache enabled
+                if (empty($menuItem->nocache)) {
+                    $page = $c['Cache\PageCache']->get($path);
+                }
+
+                if (false === $page) {
+
+                    $page = new Page();
+                    $page->setLoader($c['Loader\PageLoader']);
+                    $page->load($path);
+
+                    Application::fireEvent('onPageLoaded', ['page' => $page]);
+
+                    if (empty($menuItem->nocache)) {
+                        $c['Cache\PageCache']->set($path, $page);
+                    }
+                }
+
+            } catch (\Exception $e) {
 
                 $page = new Page();
-                $page->setLoader($c['Loader\PageLoader']);
-                $page->load($path);
-
-                Application::fireEvent('onPageLoaded', ['page' => $page]);
-
-                if (empty($menuItem->nocache)) {
-                    $c['Cache\PageCache']->set($path, $page);
-                }
+                $page->layout = 'error.html';
+                $page->setError($e);
             }
 
             return $page;

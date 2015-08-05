@@ -10,9 +10,6 @@
 
 namespace Herbie;
 
-use Herbie\Exception\ResourceNotFoundException;
-use Symfony\Component\HttpFoundation\Response;
-
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
 /**
@@ -119,26 +116,12 @@ class Application
      */
     public function run()
     {
+        /** @var Twig $twig */
         $twig = $this->getService('Twig');
 
-        try {
+        $page = $this->getPage();
 
-            $page = $this->getPage();
-            $content = $twig->renderPage($page);
-            $response = new Response($content);
-            $response->headers->set('Content-Type', $page->content_type);
-
-        } catch (ResourceNotFoundException $e) {
-
-            $content = $twig->render('error.html', ['error' => $e]);
-            $response = new Response($content, 404);
-
-        } catch (\Twig_Error $e) {
-
-            $content = $twig->render('error.html', ['error' => $e]);
-            $response = new Response($content, 500);
-
-        }
+        $response = $twig->renderPage($page);
 
         $this->fireEvent('onOutputGenerated', ['response' => $response]);
 
