@@ -181,6 +181,9 @@ class Builder
         $data['route'] = $route;
         $item = new Item($data);
 
+        if (empty($item->modified)) {
+            $item->modified = date('c', filemtime($absolutePath));
+        }
         if (empty($item->date)) {
             $item->date = date('c', filectime($absolutePath));
         }

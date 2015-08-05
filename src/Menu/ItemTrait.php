@@ -214,6 +214,11 @@ trait ItemTrait
         return false;
     }
 
+    public function getModified()
+    {
+        return isset($this->data['modified']) ? $this->data['modified'] : '';
+    }
+
     /**
      * @param $name
      * @throws \LogicException

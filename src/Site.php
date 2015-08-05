@@ -76,21 +76,6 @@ class Site
     /**
      * @return string
      */
-    public function getCreated()
-    {
-        $lastCreated = 0;
-        foreach (Application::getService('Menu\Page\Collection') as $item) {
-            $modified = strtotime($item->getCreated());
-            if ($modified > $lastCreated) {
-                $lastCreated = $modified;
-            }
-        }
-        return date('c', $lastCreated);
-    }
-
-    /**
-     * @return string
-     */
     public function getModified()
     {
         $lastModified = 0;

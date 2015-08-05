@@ -75,6 +75,9 @@ class Builder
                         continue;
                     }
                     $data = $loader->load($realpath.'/'.$filename);
+                    if (empty($data['modified'])) {
+                        $data['modified'] = date('c', filemtime($realpath.'/'.$filename));
+                    }
                     if (empty($data['date'])) {
                         $data['date'] = $this->extractDateFromPath($filename);
                     }
