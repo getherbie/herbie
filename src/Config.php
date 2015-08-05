@@ -51,8 +51,29 @@ class Config
         $this->sitePath = $sitePath;
         $this->webPath  = $webPath;
         $this->webUrl   = $webUrl;
-        $this->items = $this->loadFiles();
-        $this->loadPluginFiles();
+        $this->items = [];
+        $this->cache = [];
+        $this->loadConfig(false);
+    }
+
+    private function loadConfig($useCache = true)
+    {
+        if ($useCache) {
+            #$cacheFile = $this->sitePath . '/cache/config.json';
+            $cacheFile = $this->sitePath . '/cache/config.php';
+            if (is_file($cacheFile)) {
+                #$this->items = json_decode(file_get_contents($cacheFile), true);
+                $this->items = require($cacheFile);
+            } else {
+                $this->loadMainFile();
+                $this->loadPluginFiles();
+                #file_put_contents($cacheFile, json_encode($this->items));
+                file_put_contents($cacheFile, '<?php return '.var_export($this->items, true).';');
+            }
+        } else {
+            $this->loadMainFile();
+            $this->loadPluginFiles();
+        }
     }
 
     /**
@@ -179,7 +200,7 @@ class Config
     /**
      * @return array
      */
-    private function loadFiles()
+    private function loadMainFile()
     {
         // vars used in config files
         $APP_PATH = $this->appPath;
@@ -197,7 +218,7 @@ class Config
             $userConfig = Yaml::parse($content);
             $defaults = $this->merge($defaults, $userConfig);
         }
-        return $defaults;
+        $this->items = $defaults;
     }
 
     /**
