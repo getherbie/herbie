@@ -77,10 +77,6 @@ class Container extends Pimple
             return $builder;
         };
 
-        $this['Menu\Item'] = function ($c) {
-            return $c['Url\UrlMatcher']->match($c['Request']->getRoute());
-        };
-
         $this['Menu\Page\Collection'] = function ($c) {
             $c['Menu\Page\Builder']->setCache($c['Cache\DataCache']);
             return $c['Menu\Page\Builder']->buildCollection();
@@ -108,8 +104,8 @@ class Container extends Pimple
 
             try {
 
-                $menuItem = $c['Menu\Item'];
-
+                $route = $c['Request']->getRoute();
+                $menuItem = $c['Url\UrlMatcher']->match($route);
                 $path = $menuItem->getPath();
 
                 $page = false;
