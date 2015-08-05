@@ -238,8 +238,6 @@ class Twig
      */
     private function includePhpFile($file)
     {
-        // @todo Don't use $app in twig plugins
-        #$app = $this->app; // Global $app var used by plugins
         return include($file);
     }
 
