@@ -76,12 +76,14 @@ class Plugins
      */
     private function addItem($key, $path, $class)
     {
+        $dir = dirname($path);
         $this->items[] = [
             'key' => $key,
-            'dir' => dirname($path),
+            'dir' => $dir,
             'path' => $path,
             'class' => $class
         ];
+        $this->dirs[$key] = $dir;
     }
 
     /**
@@ -89,13 +91,6 @@ class Plugins
      */
     public function getDirectories()
     {
-        if (is_null($this->dirs)) {
-            $this->dirs = [];
-            foreach($this->items as $item) {
-                $key = $item['key'];
-                $this->dirs[$key] = $item['dir'];
-            }
-        }
         return $this->dirs;
     }
 
