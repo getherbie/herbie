@@ -11,7 +11,7 @@
 
 namespace Herbie\Formatter;
 
-use Parsedown;
+use ParsedownExtra;
 
 class MarkdownFormatter implements FormatterInterface
 {
@@ -21,7 +21,7 @@ class MarkdownFormatter implements FormatterInterface
      */
     public function transform($value)
     {
-        $parser = new Parsedown();
+        $parser = new ParsedownExtra();
         return $parser->text($value);
     }
 }

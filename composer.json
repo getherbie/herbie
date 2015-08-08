@@ -8,7 +8,7 @@
     "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
-        "erusev/parsedown": "1.5.*",
+        "erusev/parsedown-extra": "0.7.*",
         "netcarver/textile": "3.5.*",
         "pimple/pimple": "3.*",
         "symfony/event-dispatcher": "2.7.*",
