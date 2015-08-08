@@ -13,7 +13,7 @@ namespace Herbie\Loader;
 
 use Herbie\Exception\ResourceNotFoundException;
 use Herbie\Page;
-use Symfony\Component\Yaml\Yaml;
+use Herbie\Yaml;
 
 /**
  * Loads the whole page.

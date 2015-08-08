@@ -11,7 +11,7 @@
 
 namespace Herbie\Loader;
 
-use Symfony\Component\Yaml\Yaml;
+use Herbie\Yaml;
 
 /**
  * Loads site data.

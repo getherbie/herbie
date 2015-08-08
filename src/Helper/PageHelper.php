@@ -11,7 +11,7 @@
 
 namespace Herbie\Helper;
 
-use Symfony\Component\Yaml\Yaml;
+use Herbie\Yaml;
 
 class PageHelper
 {
@@ -23,7 +23,7 @@ class PageHelper
         if (count($matches) == 3) {
             $newContent = '';
             $newContent .= '---' . PHP_EOL;
-            $newContent .= Yaml::dump($data, 100, 4);
+            $newContent .= Yaml::dump($data);
             $newContent .= '---' . PHP_EOL;
             $newContent .= $matches[2];
 

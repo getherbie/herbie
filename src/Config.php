@@ -11,8 +11,6 @@
 
 namespace Herbie;
 
-use Symfony\Component\Yaml\Yaml;
-
 class Config
 {
     /**
