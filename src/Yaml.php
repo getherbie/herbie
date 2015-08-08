@@ -22,12 +22,22 @@ class Yaml
 {
 
     /**
-     * @param $input
+     * @param string $input
      * @return array
      */
     public static function parse($input)
     {
         return sfYaml::parse($input);
+    }
+
+    /**
+     * @param string $file
+     * @return array
+     */
+    public static function parseFile($file)
+    {
+        $input = file_get_contents($file);
+        return self::parse($input);
     }
 
     /**
