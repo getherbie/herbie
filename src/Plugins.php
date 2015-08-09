@@ -63,7 +63,7 @@ class Plugins
 
             $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
             $instance = new $pluginClass($config);
-            $events->addSubscriber($instance);
+            $events->addPlugin($instance);
             $this->addItem($pluginKey, $filePath, $pluginClass);
         }
         $this->initialized = true;

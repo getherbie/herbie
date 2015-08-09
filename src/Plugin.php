@@ -11,9 +11,7 @@
 
 namespace Herbie;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-class Plugin implements EventSubscriberInterface
+class Plugin
 {
 
     /**
@@ -40,14 +38,14 @@ class Plugin implements EventSubscriberInterface
     /**
      * @return array
      */
-    public static function getSubscribedEvents()
+    public function getSubscribedEvents()
     {
         $methods = get_class_methods(get_called_class());
 
         $list = [];
         foreach ($methods as $method) {
             if (strpos($method, 'on') === 0) {
-                $list[$method] = [$method, 0];
+                $list[] = $method;
             }
         }
 

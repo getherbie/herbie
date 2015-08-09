@@ -11,12 +11,7 @@
 
 namespace Herbie;
 
-use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
-
-/*
- * @todo Replace Symfony Event with GenericEvent
- */
-class Event extends SymfonyEvent implements \ArrayAccess
+class Event implements \ArrayAccess
 {
 
     /**
@@ -27,7 +22,7 @@ class Event extends SymfonyEvent implements \ArrayAccess
     /**
      * Constructor.
      *
-     * @param  array  $items  Initial items inside the iterator.
+     * @param  array $items Initial items inside the iterator.
      */
     public function __construct(array $items = [])
     {
@@ -80,3 +75,4 @@ class Event extends SymfonyEvent implements \ArrayAccess
     }
 
 }
+

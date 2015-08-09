@@ -12,7 +12,6 @@
 namespace Herbie;
 
 use Pimple\Container as Pimple;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Container extends Pimple
 {
