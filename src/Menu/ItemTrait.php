@@ -26,8 +26,9 @@ trait ItemTrait
      */
     public function __construct(array $data = [])
     {
-        // defaults
+        // default / required fields
         $this->data = [
+            'title' => '',
             'layout' => 'default.html',
             'content_type' => 'text/html',
             'authors' => [],
