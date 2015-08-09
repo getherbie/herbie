@@ -117,16 +117,12 @@ class Twig
         }
 
         $segment = $page->getSegment($segmentId);
-        Application::fireEvent('onContentSegmentLoaded', ['segment' => &$segment]);
+        Application::fireEvent('onContentSegmentLoaded', ['segment' => &$segment, 'format' => $page->format]);
 
         $twigged = Application::getService('Twig')->renderString($segment);
-        Application::fireEvent('onContentSegmentTwigged', ['segment' => &$twigged]);
+        Application::fireEvent('onContentSegmentTwigged', ['segment' => &$twigged, 'format' => $page->format]);
 
-        $formatter = Formatter\FormatterFactory::create($page->format);
-        $rendered = $formatter->transform($twigged);
-        Application::fireEvent('onContentSegmentRendered', ['segment' => &$rendered]);
-
-        return $rendered;
+        return $twigged;
     }
 
     /**

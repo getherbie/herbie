@@ -12,7 +12,6 @@ namespace Herbie\Twig;
 
 use Herbie\Application;
 use Herbie\Finder;
-use Herbie\Formatter;
 use Herbie\Helper;
 use Herbie\Menu;
 use Herbie\Page;
@@ -126,9 +125,7 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             new Twig_SimpleFilter('filesize', [$this, 'filterFilesize'], ['is_safe' => ['html']]),
-            new Twig_SimpleFilter('markdown', [$this, 'filterMarkdown'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('strftime', [$this, 'filterStrftime']),
-            new Twig_SimpleFilter('textile', [$this, 'filterTextile'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('urlify', [$this, 'filterUrlify'], ['is_safe' => ['html']]),
             new Twig_SimpleFilter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
         ];
@@ -198,16 +195,6 @@ class HerbieExtension extends Twig_Extension
     }
 
     /**
-     * @param string $content
-     * @return string
-     */
-    public function filterMarkdown($content)
-    {
-        $formatter = Formatter\FormatterFactory::create('markdown');
-        return $formatter->transform($content);
-    }
-
-    /**
      * @param string $date
      * @param string $format
      * @return string
@@ -220,16 +207,6 @@ class HerbieExtension extends Twig_Extension
         }
         $dateTime = new \DateTime($date);
         return strftime($format, $dateTime->getTimestamp());
-    }
-
-    /**
-     * @param string $content
-     * @return string
-     */
-    public function filterTextile($content)
-    {
-        $formatter = Formatter\FormatterFactory::create('textile');
-        return $formatter->transform($content);
     }
 
     /**
