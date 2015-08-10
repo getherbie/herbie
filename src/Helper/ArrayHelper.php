@@ -25,7 +25,7 @@ class ArrayHelper
 
     public static function sortArrayByArray(Array $array, Array $orderArray)
     {
-        $ordered = array();
+        $ordered = [];
         foreach ($orderArray as $key) {
             if (array_key_exists($key, $array)) {
                 $ordered[$key] = $array[$key];

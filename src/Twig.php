@@ -140,10 +140,7 @@ class Twig
         // get current loader
         $loader = $this->environment->getLoader();
         // set loader chain with new array loader
-        $this->environment->setLoader(new Twig_Loader_Chain(array(
-            new Twig_Loader_Array(array($name => $string)),
-            $loader
-        )));
+        $this->environment->setLoader(new Twig_Loader_Chain([new Twig_Loader_Array([$name => $string]), $loader]));
         // render string
         $context = $this->getContext();
         $rendered = $this->environment->render($name, $context);

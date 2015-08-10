@@ -13,7 +13,7 @@ namespace Herbie;
 
 class EventDispatcher
 {
-    private $listeners = array();
+    private $listeners = [];
 
     /**
      * @param string $eventName

@@ -187,7 +187,7 @@ class HerbieExtension extends Twig_Extension
             return '1 Byte';
         }
         $mod = 1024;
-        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
         for ($i = 0; $size > $mod && $i < count($units) - 1; ++$i) {
             $size /= $mod;
         }

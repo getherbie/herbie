@@ -96,7 +96,7 @@ class Request
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             return null;
         }
-        return array('user' => $_SERVER['PHP_AUTH_USER'], 'password' => $_SERVER['PHP_AUTH_PW']);
+        return ['user' => $_SERVER['PHP_AUTH_USER'], 'password' => $_SERVER['PHP_AUTH_PW']];
     }
 
     public function getRemoteAddress()

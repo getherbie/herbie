@@ -21,12 +21,12 @@ class DI implements \ArrayAccess
     /**
      * @var array
      */
-    private $values = array();
+    private $values = [];
 
     /**
      * @var array
      */
-    private $frozen = array();
+    private $frozen = [];
 
     /**
      * It is not allowed to call from outside
