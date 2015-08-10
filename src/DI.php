@@ -53,7 +53,7 @@ class DI implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->values[$offset]);
+        return isset($this->frozen[$offset]) || isset($this->values[$offset]);
     }
 
     /**
@@ -71,7 +71,10 @@ class DI implements \ArrayAccess
             }
             return $this->frozen[$offset];
         }
-        return $this->values[$offset];
+        if (!isset($this->frozen[$offset])) {
+            $this->frozen[$offset] = $this->values[$offset];
+        }
+        return $this->frozen[$offset];
     }
 
     /**
@@ -88,6 +91,7 @@ class DI implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
+        unset($this->frozen[$offset]);
         unset($this->values[$offset]);
     }
 
