@@ -62,24 +62,24 @@ class Request
         $this->server = $_SERVER;
     }
 
-    public function getQuery($name)
+    public function getQuery($name, $default = null)
     {
-        return $this->get[$name];
+        return isset($this->get[$name]) ? $this->get[$name] : $default;
     }
 
-    public function getPost($name)
+    public function getPost($name, $default = null)
     {
-        return $this->post[$name];
+        return isset($this->post[$name]) ? $this->post[$name] : $default;
     }
 
-    public function getCookie($name)
+    public function getCookie($name, $default = null)
     {
-        return $this->cookie[$name];
+        return isset($this->cookie[$name]) ? $this->cookie[$name] : $default;
     }
 
-    public function getServer($name)
+    public function getServer($name, $default = null)
     {
-        return $this->server[$name];
+        return isset($this->server[$name]) ? $this->server[$name] : $default;
     }
 
     public function getHeader($name)
@@ -102,6 +102,29 @@ class Request
     public function getRemoteAddress()
     {
         return $_SERVER['REMOTE_ADDR'];
+    }
+
+    public function getScheme()
+    {
+        // see https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/Request.php
+        if ((!empty($this->server['HTTPS']) && strtolower($this->server['HTTPS']) !== 'off')
+            || (!empty($this->server['HTTP_X_FORWARDED_PROTO'])
+                && $this->server['HTTP_X_FORWARDED_PROTO'] == 'https')
+        ) {
+            return 'https';
+        } else {
+            return 'http';
+        }
+    }
+
+    public function getHttpHost()
+    {
+        return $this->getServer('HTTP_HOST');
+    }
+
+    public function getPort()
+    {
+        return 'https' === $this->getScheme() ? 443 : 80;
     }
 
     /**
@@ -310,6 +333,18 @@ class Request
         }
 
         return (string) $pathInfo;
+    }
+
+    /**
+     * Returns current script name.
+     *
+     * @return string
+     *
+     * @api
+     */
+    public function getScriptName()
+    {
+        return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
     private function getUrlencodedPrefix($string, $prefix)
