@@ -16,17 +16,17 @@ class Response
     /**
      * @var array
      */
-    private $headers = [];
+    protected $headers = [];
 
     /**
      * @var null|string
      */
-    private $body = null;
+    protected $body = null;
 
     /**
      * @var int|null
      */
-    private $status = null;
+    protected $status = null;
 
     /**
      * @param string $content
@@ -83,6 +83,11 @@ class Response
     public function isSuccessful()
     {
         return $this->status >= 200 && $this->status < 300;
+    }
+
+    public function isRedirection()
+    {
+        return $this->status >= 300 && $this->status < 400;
     }
 
 }
