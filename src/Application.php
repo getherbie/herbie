@@ -175,16 +175,16 @@ class Application
 
         };
 
-        $DI['Plugins'] = function () {
-            return new Plugins();
+        $DI['PluginManager'] = function () {
+            return new PluginManager();
         };
 
         $DI['Translator'] = function ($c) {
-            if (!$c['Plugins']->isInitialized()) {
-                throw new \Exception('You have to initialize Plugins before using Translator.');
+            if (!$c['PluginManager']->isInitialized()) {
+                throw new \Exception('You have to initialize PluginManager before using Translator.');
             }
             $translator = new Translator($c['Config']->get('language'), ['app' => $c['Alias']->get('@app/messages')]);
-            foreach ($c['Plugins']->getDirectories() as $key => $dir) {
+            foreach ($c['PluginManager']->getDirectories() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
             $translator->init();
@@ -192,8 +192,8 @@ class Application
         };
 
         $DI['Twig'] = function ($c) {
-            if (!$c['Plugins']->isInitialized()) {
-                #throw new \Exception('You have to initialize Plugins before using Twig.');
+            if (!$c['PluginManager']->isInitialized()) {
+                throw new \Exception('You have to initialize PluginManager before using Twig.');
             }
             return new Twig($c['Config']);
         };
@@ -212,9 +212,9 @@ class Application
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $DI['Config']->get('plugins.path'));
 
-        $DI['Plugins']->init($DI);
+        $DI['PluginManager']->init($DI['Config']);
 
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $DI['Plugins']]);
+        $this->fireEvent('onPluginsInitialized', ['plugins' => $DI['PluginManager']]);
 
         $DI['Twig']->init();
 
@@ -230,7 +230,7 @@ class Application
     public static function fireEvent($eventName, array $attributes = [])
     {
         $event = new Event($attributes);
-        return static::$container['EventDispatcher']->dispatch($eventName, $event);
+        return static::$container['PluginManager']->dispatch($eventName, $event);
     }
 
     /**
