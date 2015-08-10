@@ -207,7 +207,6 @@ class Twig
             $paths[] = $this->config->get('layouts.path') . '/' . $this->config->get('theme');
             $paths[] = $this->config->get('layouts.path') . '/default';
         }
-        $paths[] = __DIR__ . '/layouts'; // Fallback
 
         $loader = new Twig_Loader_Filesystem($paths);
 
