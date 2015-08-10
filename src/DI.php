@@ -48,6 +48,24 @@ class DI implements \ArrayAccess
     }
 
     /**
+     * @param string $service
+     * @return mixed
+     */
+    public static function get($service)
+    {
+        return static::create()->offsetGet($service);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $service
+     */
+    public static function set($name, $service)
+    {
+        return static::create()->offsetSet($name, $service);
+    }
+
+    /**
      * @param mixed $offset
      * @return bool
      */
