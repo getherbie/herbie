@@ -43,7 +43,7 @@ class Plugins
      * @param Container $container
      * @throws \RuntimeException
      */
-    public function init(Container $container)
+    public function init(DI $container)
     {
         // Retrieve services from container
         $events = $container['EventDispatcher'];

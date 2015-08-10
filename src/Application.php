@@ -12,9 +12,6 @@ namespace Herbie;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
-/**
- * The application using Pimple as dependency injection container.
- */
 class Application
 {
     /**
@@ -60,21 +57,169 @@ class Application
         $errorHandler = new ErrorHandler();
         $errorHandler->register();
 
-        static::$container = $container = new Container($this->sitePath, $this->vendorDir, $values);
+        static::$container = $DI = DI::create();
 
-        setlocale(LC_ALL, $container['Config']->get('locale'));
+        $DI['Request'] = $request = Request::createFromGlobals();
+        $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+
+        $DI['Alias'] = new Alias([
+            '@app' => $config->get('app.path'),
+            '@asset' => $this->sitePath . '/assets',
+            '@media' => $config->get('media.path'),
+            '@page' => $config->get('pages.path'),
+            '@plugin' => $config->get('plugins.path'),
+            '@post' => $config->get('posts.path'),
+            '@site' => $this->sitePath,
+            '@vendor' => $this->vendorDir,
+            '@web' => $config->get('web.path')
+        ]);
+
+        $DI['Assets'] = function ($c) {
+            return new Assets($c['Alias'], $c['Config']->get('web.url'));
+        };
+
+        $DI['Cache\PageCache'] = function ($c) {
+            return Cache\CacheFactory::create('page', $c['Config']);
+        };
+
+        $DI['Cache\DataCache'] = function ($c) {
+            return Cache\CacheFactory::create('data', $c['Config']);
+        };
+
+        $DI['DataArray'] = function ($c) {
+            $loader = new Loader\DataLoader($c['Config']->get('data.extensions'));
+            return $loader->load($c['Config']->get('data.path'));
+        };
+
+        $DI['EventDispatcher'] = function () {
+            return new EventDispatcher();
+        };
+
+        $DI['Loader\PageLoader'] = function ($c) {
+            $loader = new Loader\PageLoader($c['Alias']);
+            return $loader;
+        };
+
+        $DI['Menu\Page\Builder'] = function ($c) {
+
+            $paths = [];
+            $paths['@page'] = realpath($c['Config']->get('pages.path'));
+            foreach ($c['Config']->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $c['Alias']->get($alias);
+            }
+            $extensions = $c['Config']->get('pages.extensions', []);
+
+            $builder = new Menu\Page\Builder($paths, $extensions);
+            return $builder;
+        };
+
+        $DI['Menu\Page\Collection'] = function ($c) {
+            $c['Menu\Page\Builder']->setCache($c['Cache\DataCache']);
+            return $c['Menu\Page\Builder']->buildCollection();
+        };
+
+        $DI['Menu\Page\Node'] = function ($c) {
+            return Menu\Page\Node::buildTree($c['Menu\Page\Collection']);
+        };
+
+        $DI['Menu\Page\RootPath'] = function ($c) {
+            $rootPath = new Menu\Page\RootPath($c['Menu\Page\Collection'], $c['Request']->getRoute());
+            return $rootPath;
+        };
+
+        $DI['Menu\Post\Collection'] = function ($c) {
+            $builder = new Menu\Post\Builder($c['Cache\DataCache'], $c['Config']);
+            return $builder->build();
+        };
+
+        $DI['Page'] = function ($c) {
+
+            if (!$c['Twig']->isInitialized()) {
+                #throw new \Exception('You have to initialize Twig before using Page.');
+            }
+
+            try {
+
+                $route = $c['Request']->getRoute();
+                $menuItem = $c['Url\UrlMatcher']->match($route);
+                $path = $menuItem->getPath();
+
+                $page = false;
+
+                // @todo Implement a proper page cache
+                // get content from cache if cache enabled
+                if (empty($menuItem->nocache)) {
+                    $page = $c['Cache\PageCache']->get($path);
+                }
+
+                if (false === $page) {
+
+                    $page = new Page();
+                    $page->setLoader($c['Loader\PageLoader']);
+                    $page->load($path);
+
+                    Application::fireEvent('onPageLoaded', ['page' => $page]);
+
+                    if (empty($menuItem->nocache)) {
+                        $c['Cache\PageCache']->set($path, $page);
+                    }
+                }
+
+            } catch (\Exception $e) {
+
+                $page = new Page();
+                $page->layout = 'error.html';
+                $page->setError($e);
+            }
+
+            return $page;
+
+        };
+
+        $DI['Plugins'] = function () {
+            return new Plugins();
+        };
+
+        $DI['Translator'] = function ($c) {
+            if (!$c['Plugins']->isInitialized()) {
+                throw new \Exception('You have to initialize Plugins before using Translator.');
+            }
+            $translator = new Translator($c['Config']->get('language'), ['app' => $c['Alias']->get('@app/messages')]);
+            foreach ($c['Plugins']->getDirectories() as $key => $dir) {
+                $translator->addPath($key, $dir . '/messages');
+            }
+            $translator->init();
+            return $translator;
+        };
+
+        $DI['Twig'] = function ($c) {
+            if (!$c['Plugins']->isInitialized()) {
+                #throw new \Exception('You have to initialize Plugins before using Twig.');
+            }
+            return new Twig($c['Config']);
+        };
+
+        $DI['Url\UrlGenerator'] = function ($c) {
+            return new Url\UrlGenerator($c['Request'], $c['Config']->get('nice_urls', false));
+        };
+
+        $DI['Url\UrlMatcher'] = function ($c) {
+            return new Url\UrlMatcher($c['Menu\Page\Collection'], $c['Menu\Post\Collection']);
+        };
+
+        setlocale(LC_ALL, $DI['Config']->get('locale'));
 
         // Add custom PSR-4 plugin path to Composer autoloader
         $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $container['Config']->get('plugins.path'));
+        $autoload->addPsr4('herbie\\plugin\\', $DI['Config']->get('plugins.path'));
 
-        $container['Plugins']->init($container);
+        $DI['Plugins']->init($DI);
 
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $container['Plugins']]);
+        $this->fireEvent('onPluginsInitialized', ['plugins' => $DI['Plugins']]);
 
-        $container['Twig']->init();
+        $DI['Twig']->init();
 
-        $this->fireEvent('onTwigInitialized', ['twig' => $container['Twig']->environment]);
+        $this->fireEvent('onTwigInitialized', ['twig' => $DI['Twig']->environment]);
     }
 
     /**
