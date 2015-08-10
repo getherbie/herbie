@@ -12,7 +12,7 @@
 namespace Herbie\Menu\Post;
 
 use Herbie\Menu\CollectionTrait;
-use Symfony\Component\HttpFoundation\Request;
+use Herbie\Http\Request;
 
 class Collection implements \IteratorAggregate, \Countable
 {
@@ -260,7 +260,7 @@ class Collection implements \IteratorAggregate, \Countable
      */
     protected function getBlogPathInfo()
     {
-        $request = Request::createFromGlobals();
+        $request = new Request();
         $pathInfo = trim($request->getPathInfo(), '/');
 
         $segments = explode('/', $pathInfo);

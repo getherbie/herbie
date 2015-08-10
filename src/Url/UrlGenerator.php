@@ -11,7 +11,7 @@
 
 namespace Herbie\Url;
 
-use Symfony\Component\HttpFoundation\Request;
+use Herbie\Http\Request;
 
 /**
  * The URLGenerator creates URLs based on the given route.

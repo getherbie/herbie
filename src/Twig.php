@@ -11,7 +11,7 @@
 
 namespace Herbie;
 
-use Symfony\Component\HttpFoundation\Response;
+use Herbie\Http\Response;
 use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
@@ -98,8 +98,8 @@ class Twig
         }
 
         $response = new Response($content);
-        $response->setStatusCode($page->getStatusCode());
-        $response->headers->set('Content-Type', $page->content_type);
+        $response->setStatus($page->getStatusCode());
+        #$response->headers->set('Content-Type', $page->content_type);
 
         return $response;
     }

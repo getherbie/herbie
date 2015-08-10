@@ -59,7 +59,7 @@ class Application
 
         static::$container = $DI = DI::create();
 
-        $DI['Request'] = $request = Request::createFromGlobals();
+        $DI['Request'] = $request = new Http\Request(); //Request::createFromGlobals();
         $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
 
         $DI['Alias'] = new Alias([
