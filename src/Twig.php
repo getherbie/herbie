@@ -99,7 +99,7 @@ class Twig
 
         $response = new Response($content);
         $response->setStatus($page->getStatusCode());
-        #$response->headers->set('Content-Type', $page->content_type);
+        $response->setHeader('Content-Type', $page->content_type);
 
         return $response;
     }
