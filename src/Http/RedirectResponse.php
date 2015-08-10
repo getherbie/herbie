@@ -52,7 +52,7 @@ class RedirectResponse extends Response
 
         $this->targetUrl = $url;
 
-        $this->setBody(
+        $this->setContent(
             sprintf('<!DOCTYPE html>
 <html>
     <head>
@@ -66,7 +66,7 @@ class RedirectResponse extends Response
     </body>
 </html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8')));
 
-        $this->addHeader('Location', $url);
+        $this->setHeader('Location', $url);
 
         return $this;
     }

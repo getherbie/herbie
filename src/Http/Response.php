@@ -35,14 +35,26 @@ class Response
      */
     public function __construct($content = '', $status = 200, array $headers = [])
     {
-        $this->headers = $headers;
-        $this->body = $content;
+        $this->setContent($content);
         $this->setStatus($status);
+        $this->setHeaders($headers);
     }
 
-    public function addHeader($name, $value)
+    public function setHeaders(array $headers)
+    {
+        foreach ($headers as $name => $value) {
+            $this->setHeader($name, $value);
+        }
+    }
+
+    public function setHeader($name, $value)
     {
         $this->headers[$name] = $value;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     public function setStatus($status)
@@ -58,19 +70,19 @@ class Response
         foreach ($this->headers as $name => $value) {
             header("{$name}: {$value}");
         }
-        print $this->body;
+        print $this->content;
         $this->headers = [];
-        $this->body = null;
+        $this->content = null;
     }
 
-    public function getBody()
+    public function getContent()
     {
-        return $this->body;
+        return $this->content;
     }
 
-    public function setBody($body)
+    public function setContent($content)
     {
-        $this->body = $body;
+        $this->content = $content;
     }
 
     /**
