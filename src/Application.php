@@ -49,9 +49,8 @@ class Application
 
     /**
      * Initialize the application.
-     * @param array $values
      */
-    private function init(array $values = [])
+    private function init()
     {
 
         $errorHandler = new ErrorHandler();
@@ -59,7 +58,7 @@ class Application
 
         static::$container = $DI = DI::create();
 
-        $DI['Request'] = $request = new Http\Request(); //Request::createFromGlobals();
+        $DI['Request'] = $request = new Http\Request();
         $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
 
         $DI['Alias'] = new Alias([
