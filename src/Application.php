@@ -134,7 +134,7 @@ class Application
         $DI['Page'] = function ($c) {
 
             if (!$c['Twig']->isInitialized()) {
-                #throw new \Exception('You have to initialize Twig before using Page.');
+                throw new \Exception('You have to initialize Twig before using Page.');
             }
 
             try {
