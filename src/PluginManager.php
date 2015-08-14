@@ -124,11 +124,28 @@ class PluginManager
     }
 
     /**
+     * @param string $pluginKey
+     * @return bool
+     */
+    public function hasPlugin($pluginKey)
+    {
+        return isset($this->plugins[$pluginKey]);
+    }
+
+    /**
      * @return array
      */
     public function getDirectories()
     {
         return $this->dirs;
+    }
+
+    /**
+     * @return array
+     */
+    public function getListeners()
+    {
+        return $this->listeners;
     }
 
 }
