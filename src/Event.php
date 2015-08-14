@@ -17,16 +17,14 @@ class Event implements \ArrayAccess
     /**
      * @var array
      */
-    protected $items = [];
+    protected $arguments = [];
 
     /**
-     * Constructor.
-     *
-     * @param  array $items Initial items inside the iterator.
+     * @param array $arguments
      */
-    public function __construct(array $items = [])
+    public function __construct(array $arguments = [])
     {
-        $this->items = $items;
+        $this->arguments = $arguments;
     }
 
     /**
@@ -35,7 +33,7 @@ class Event implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->items[$offset]);
+        return isset($this->arguments[$offset]);
     }
 
     /**
@@ -44,7 +42,7 @@ class Event implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->items[$offset];
+        return $this->arguments[$offset];
     }
 
     /**
@@ -53,7 +51,7 @@ class Event implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->items[$offset] = $value;
+        $this->arguments[$offset] = $value;
     }
 
     /**
@@ -61,7 +59,7 @@ class Event implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        unset($this->items[$offset]);
+        unset($this->arguments[$offset]);
     }
 
     /**
