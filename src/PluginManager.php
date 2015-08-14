@@ -53,21 +53,31 @@ class PluginManager
         $pluginPath = rtrim($config->get('plugins.path'), '/');
         $pluginList = $config->get('plugins.enable', []);
         foreach ($pluginList as $pluginKey) {
-            $filePath = sprintf(
-                '%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey)
-            );
-            
-            if (!is_file($filePath)) {
-                $message = sprintf('Plugin "{%s}" enabled but not found!', $pluginKey);
-                throw new \RuntimeException($message);
-            }
-
-            $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
-            $pluginObj = new $pluginClass($config);
+            $pluginObj = $this->createPlugin($pluginPath, $pluginKey, $config);
             $this->addPlugin($pluginObj, $pluginKey);
-            $this->dirs[$pluginKey] = dirname($filePath);
         }
         $this->initialized = true;
+    }
+
+    /**
+     * @param $pluginPath
+     * @param $pluginKey
+     * @param $config
+     * @return Plugin
+     */
+    protected function createPlugin($pluginPath, $pluginKey, $config)
+    {
+        $filePath = sprintf('%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey));
+
+        if (!is_file($filePath)) {
+            $message = sprintf('Plugin "{%s}" enabled but not found!', $pluginKey);
+            throw new \RuntimeException($message);
+        }
+
+        $this->dirs[$pluginKey] = dirname($filePath);
+
+        $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
+        return new $pluginClass($config);
     }
 
     /**
