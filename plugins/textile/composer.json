@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-textile",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Textile Plugin.",
+    "keywords": ["herbie", "plugin", "textile"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause"
+}

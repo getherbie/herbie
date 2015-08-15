@@ -89,4 +89,22 @@ class Plugin
         return Application::getService($service);
     }
 
+    /**
+     * @param array $defaults
+     * @param array $options
+     * @return array
+     */
+    protected function initOptions(array $defaults, array $options)
+    {
+        $out = [];
+        foreach ($defaults as $name => $default) {
+            if (array_key_exists($name, $options)) {
+                $out[$name] = $options[$name];
+            } else {
+                $out[$name] = $default;
+            }
+        }
+        return $out;
+    }
+
 }

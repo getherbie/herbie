@@ -206,7 +206,7 @@ class Config
         $WEB_PATH = $this->webPath;
         $WEB_URL = $this->webUrl;
 
-        $defaults = require(__DIR__ . '/defaults.php');
+        $defaults = require(__DIR__ . '/../config/defaults.php');
         if (is_file($this->sitePath . '/config.php')) {
             $userConfig = require($this->sitePath . '/config.php');
             $defaults = $this->merge($defaults, $userConfig);

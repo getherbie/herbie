@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-shortcode",
+    "homepage": "http://www.getherbie.org",
+    "description": "Shortcode Plugin for Herbie.",
+    "keywords": ["herbie", "plugin", "shortcode"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause"
+}

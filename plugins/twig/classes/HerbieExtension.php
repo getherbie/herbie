@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Twig;
+namespace herbie\sysplugin\twig\classes;
 
 use Herbie\Application;
 use Herbie\Finder;

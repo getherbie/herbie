@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie;
+namespace herbie\sysplugin\twig\classes;
 
+use Herbie\Application;
 use Herbie\Http\Response;
 use Twig_Environment;
 use Twig_Extension_Debug;
@@ -57,7 +58,7 @@ class Twig
         if (!$this->config->isEmpty('twig.debug')) {
             $this->environment->addExtension(new Twig_Extension_Debug());
         }
-        $this->environment->addExtension(new Twig\HerbieExtension());
+        $this->environment->addExtension(new HerbieExtension());
         $this->addTwigPlugins();
         $this->initialized = true;
     }
@@ -213,7 +214,7 @@ class Twig
             'page' => $this->config->get('pages.path'),
             'post' => $this->config->get('posts.path'),
             'site' => $this->config->get('site.path'),
-            'widget' => __DIR__ . '/Twig/widgets'
+            'widget' => __DIR__ . '/widgets'
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {

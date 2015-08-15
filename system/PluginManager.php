@@ -50,6 +50,11 @@ class PluginManager
      */
     public function init(Config $config)
     {
+        $this->installSysPlugin('twig', $config);
+        $this->installSysPlugin('markdown', $config);
+        $this->installSysPlugin('textile', $config);
+        $this->installSysPlugin('shortcode', $config);
+
         $pluginPath = rtrim($config->get('plugins.path'), '/');
         $pluginList = $config->get('plugins.enable', []);
         foreach ($pluginList as $pluginKey) {
@@ -57,6 +62,17 @@ class PluginManager
             $this->addPlugin($pluginObj, $pluginKey);
         }
         $this->initialized = true;
+        #echo"<pre>";print_r($this->listeners);echo"</pre>";
+    }
+
+    /**
+     * @param string $key
+     * @param Config $config
+     */
+    protected function installSysPlugin($key, $config)
+    {
+        $pluginObj = $this->createPlugin(__DIR__ . '/../plugins/', $key, $config, true);
+        $this->addPlugin($pluginObj, $key);
     }
 
     /**
@@ -65,7 +81,7 @@ class PluginManager
      * @param $config
      * @return Plugin
      */
-    protected function createPlugin($pluginPath, $pluginKey, $config)
+    protected function createPlugin($pluginPath, $pluginKey, $config, $isSystemPlugin = false)
     {
         $filePath = sprintf('%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey));
 
@@ -76,7 +92,11 @@ class PluginManager
 
         $this->dirs[$pluginKey] = dirname($filePath);
 
-        $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
+        if ($isSystemPlugin) {
+            $pluginClass = '\\herbie\\sysplugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
+        } else {
+            $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
+        }
         return new $pluginClass($config);
     }
 
@@ -156,6 +176,11 @@ class PluginManager
     public function getListeners()
     {
         return $this->listeners;
+    }
+
+    public function getPlugins()
+    {
+        return $this->plugins;
     }
 
 }

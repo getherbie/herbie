@@ -57,7 +57,8 @@ return [
             'functions' => $SITE_PATH . '/twig/functions',
             'filters' => $SITE_PATH . '/twig/filters',
             'tests' => $SITE_PATH . '/twig/tests',
-        ]
+        ],
+        'parse_content' => true,
     ],
     'cache' => [
         'page' => [
