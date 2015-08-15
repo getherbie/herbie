@@ -61,6 +61,7 @@ class PluginManager
             $pluginObj = $this->createPlugin($pluginPath, $pluginKey, $config);
             $this->addPlugin($pluginObj, $pluginKey);
         }
+
         $this->initialized = true;
         #echo"<pre>";print_r($this->listeners);echo"</pre>";
     }
@@ -86,7 +87,7 @@ class PluginManager
         $filePath = sprintf('%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey));
 
         if (!is_file($filePath)) {
-            $message = sprintf('Plugin "{%s}" enabled but not found!', $pluginKey);
+            $message = sprintf('Plugin "%s" enabled but not found!', $pluginKey);
             throw new \RuntimeException($message);
         }
 
@@ -133,6 +134,10 @@ class PluginManager
      */
     public function addPlugin(Plugin $plugin, $pluginKey)
     {
+        if (isset($this->plugins[$pluginKey])) {
+            $message = sprintf('Plugin "%s" is already installed!', $pluginKey);
+            throw new \Exception($message, 500);
+        }
         $this->plugins[$pluginKey] = $plugin;
         foreach ($plugin->getSubscribedEvents() as $eventName) {
             $this->listeners[$eventName][] = $pluginKey;
@@ -147,7 +152,7 @@ class PluginManager
     public function getPlugin($pluginKey)
     {
         if (!isset($this->plugins[$pluginKey])) {
-            $message = sprintf('Plugin "{%s}" not found!', $pluginKey);
+            $message = sprintf('Plugin "%s" not found!', $pluginKey);
             throw new \Exception($message, 500);
         }
         return $this->plugins[$pluginKey];
