@@ -19,10 +19,9 @@ include_once (__DIR__ . '/vendor/Netcarver/Textile/Parser.php');
 
 class TextilePlugin extends Herbie\Plugin
 {
-    public function onTwigInitialized($event)
+    public function onTwigInitialized($twig)
     {
         $options = ['is_safe' => ['html']];
-        $twig = $event['twig'];
         $twig->addFunction(
             new Twig_SimpleFunction('textile', [$this, 'parseTextile'], $options)
         );
@@ -31,17 +30,17 @@ class TextilePlugin extends Herbie\Plugin
         );
     }
 
-    public function onShortcodeInitialized($event)
+    public function onShortcodeInitialized($shortcode)
     {
-        $event['shortcode']->add('textile', [$this, 'textileShortcode']);
+        $shortcode->add('textile', [$this, 'textileShortcode']);
     }
 
-    public function onContentSegmentTwigged($event)
+    public function onContentSegmentLoaded($null, array $attributes)
     {
-        if(!in_array($event['format'], ['textile'])) {
+        if(!in_array($attributes['format'], ['textile'])) {
             return;
         }
-        $event['segment'] = $this->parseTextile($event['segment']);
+        $attributes['segment'] = $this->parseTextile($attributes['segment']);
     }
 
     public function parseTextile($value)

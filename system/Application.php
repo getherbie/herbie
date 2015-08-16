@@ -152,7 +152,7 @@ class Application
                     $page->setLoader($c['Loader\PageLoader']);
                     $page->load($path);
 
-                    Application::fireEvent('onPageLoaded', ['page' => $page]);
+                    Application::fireEvent('onPageLoaded', $page);
 
                     if (empty($menuItem->nocache)) {
                         $c['Cache\PageCache']->set($path, $page);
@@ -205,14 +205,14 @@ class Application
 
         #echo"<pre>";print_r($DI['PluginManager']->getListeners());echo"</pre>";
 
-        $this->fireEvent('onPluginsInitialized', ['plugins' => $DI['PluginManager']]);
+        $this->fireEvent('onPluginsInitialized', $DI['PluginManager']);
 
         #foreach ($DI['PluginManager']->getPlugins() as $key => $plugin) {
         #    echo $key . ' --> ' . get_class($plugin) . '<br>';
         #}
         #exit;
 
-        $this->fireEvent('onShortcodeInitialized', ['shortcode' => $DI['PluginManager']->getPlugin('shortcode')]);
+        $this->fireEvent('onShortcodeInitialized', $DI['PluginManager']->getPlugin('shortcode'));
 
     }
 
@@ -220,12 +220,11 @@ class Application
      * Fire an event.
      * @param  string $eventName
      * @param  array $attributes
-     * @return Event
+     * @return mixed
      */
-    public static function fireEvent($eventName, array $attributes = [])
+    public static function fireEvent($eventName, $subject = null, array $attributes = [])
     {
-        $event = new Event($attributes);
-        return static::$container['PluginManager']->dispatch($eventName, $event);
+        return static::$container['PluginManager']->dispatch($eventName, $subject, $attributes);
     }
 
     /**
@@ -279,15 +278,15 @@ class Application
         try {
 
             if (empty($page->layout)) {
-                static::fireEvent('onRenderPageSegment', ['content' => &$content, 'segment' => 0, 'page' => $page]);
+                static::fireEvent('onRenderPageSegment', null, ['content' => &$content, 'segment' => 0, 'page' => $page]);
             } else {
-                static::fireEvent('onRenderLayout', ['content' => &$content, 'layout' => $page->layout]);
+                static::fireEvent('onRenderLayout', null, ['content' => &$content, 'layout' => $page->layout]);
             }
 
         } catch (\Exception $e) {
 
             $page->setError($e);
-            static::fireEvent('onRenderLayout', ['content' => &$content, 'layout' => 'error.html']);
+            static::fireEvent('onRenderLayout', null, ['content' => &$content, 'layout' => 'error.html']);
 
         }
 

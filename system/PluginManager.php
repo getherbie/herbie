@@ -21,7 +21,7 @@ class PluginManager
     /**
      * @var array
      */
-    private $listeners;
+    private $events;
 
     /**
      * @var array
@@ -39,7 +39,7 @@ class PluginManager
     public function __construct()
     {
         $this->plugins =  [];
-        $this->listeners = [];
+        $this->events = [];
         $this->dirs = [];
         $this->initialized = false;
     }
@@ -51,9 +51,9 @@ class PluginManager
     public function init(Config $config)
     {
         $this->installSysPlugin('twig', $config);
+        $this->installSysPlugin('shortcode', $config);
         $this->installSysPlugin('markdown', $config);
         $this->installSysPlugin('textile', $config);
-        $this->installSysPlugin('shortcode', $config);
 
         $pluginPath = rtrim($config->get('plugins.path'), '/');
         $pluginList = $config->get('plugins.enable', []);
@@ -63,7 +63,6 @@ class PluginManager
         }
 
         $this->initialized = true;
-        #echo"<pre>";print_r($this->listeners);echo"</pre>";
     }
 
     /**
@@ -111,21 +110,22 @@ class PluginManager
 
     /**
      * @param string $eventName
-     * @param Event $event
-     * @return Event
+     * @param mixed $subject
+     * @param array $attributes
+     * @return mixed
      */
-    public function dispatch($eventName, Event $event)
+    public function dispatch($eventName, $subject, array $attributes)
     {
-        if (!isset($this->listeners[$eventName])) {
-            return $event;
+        if (!isset($this->events[$eventName])) {
+            return $subject;
         }
 
-        foreach ($this->listeners[$eventName] as $pluginKey) {
+        foreach ($this->events[$eventName] as $pluginKey) {
             $plugin = $this->plugins[$pluginKey];
-            call_user_func([$plugin, $eventName], $event);
+            call_user_func([$plugin, $eventName], $subject, $attributes);
         }
 
-        return $event;
+        return $subject;
     }
 
     /**
@@ -140,7 +140,7 @@ class PluginManager
         }
         $this->plugins[$pluginKey] = $plugin;
         foreach ($plugin->getSubscribedEvents() as $eventName) {
-            $this->listeners[$eventName][] = $pluginKey;
+            $this->events[$eventName][] = $pluginKey;
         }
     }
 
@@ -178,9 +178,9 @@ class PluginManager
     /**
      * @return array
      */
-    public function getListeners()
+    public function getEvents()
     {
-        return $this->listeners;
+        return $this->events;
     }
 
     public function getPlugins()

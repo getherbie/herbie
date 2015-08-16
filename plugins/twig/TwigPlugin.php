@@ -19,23 +19,31 @@ class TwigPlugin extends Herbie\Plugin
 {
     private $twig;
 
-    public function onPluginsInitialized($event)
+    public function onPluginsInitialized()
     {
         $config = Herbie\DI::get('Config');
         $this->twig = new Twig($config);
         $this->twig->init();
         Herbie\Di::set('Twig', $this->twig);
-        Herbie\Application::fireEvent('onTwigInitialized', ['twig' => $this->twig->environment]);
+        Herbie\Application::fireEvent('onTwigInitialized', $this->twig->environment);
     }
 
-    public function onRenderPageSegment($event)
+    public function onRenderPageSegment($null, array $attributes)
     {
-        $event['content'] = $this->twig->renderPageSegment($event['segment'], $event['page']);
+        $attributes['content'] = $this->twig->renderPageSegment($attributes['segment'], $attributes['page']);
     }
 
-    public function onRenderLayout($event)
+    public function onContentSegmentLoaded($null, array $attributes)
     {
-        $event['content'] = $this->twig->render($event['layout']);
+        if(!in_array($attributes['format'], ['twig'])) {
+            return;
+        }
+        $attributes['segment'] = $this->twig->renderString($attributes['segment']);
+    }
+
+    public function onRenderLayout($null, array $attributes)
+    {
+        $attributes['content'] = $this->twig->render($attributes['layout']);
     }
 
 }
