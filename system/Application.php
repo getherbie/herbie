@@ -56,7 +56,7 @@ class Application
         $errorHandler = new ErrorHandler();
         $errorHandler->register();
 
-        static::$container = $DI = DI::create();
+        static::$container = $DI = DI::instance();
 
         $DI['Request'] = $request = new Http\Request();
         $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());

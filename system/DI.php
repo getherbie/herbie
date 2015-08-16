@@ -28,18 +28,13 @@ class DI implements \ArrayAccess
      */
     private $frozen = [];
 
-    /**
-     * It is not allowed to call from outside
-     */
-    private function __construct()
-    {
-    }
+    final private function __construct() {}
+    final private function __clone() {}
 
     /**
-     * Create instance on first usage
      * @return DI
      */
-    public static function create()
+    public static function instance()
     {
         if (is_null(static::$instance)) {
             static::$instance = new static();
@@ -53,7 +48,7 @@ class DI implements \ArrayAccess
      */
     public static function get($service)
     {
-        return static::create()->offsetGet($service);
+        return static::instance()->offsetGet($service);
     }
 
     /**
@@ -62,7 +57,7 @@ class DI implements \ArrayAccess
      */
     public static function set($name, $service)
     {
-        return static::create()->offsetSet($name, $service);
+        return static::instance()->offsetSet($name, $service);
     }
 
     /**
