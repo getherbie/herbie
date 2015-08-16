@@ -44,7 +44,6 @@ class Application
         $this->sitePath = realpath($sitePath);
         $this->vendorDir = realpath($vendorDir);
         $this->init();
-        return $this;
     }
 
     /**
