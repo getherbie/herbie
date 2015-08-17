@@ -119,7 +119,7 @@ class Twig
 
         $segment = $page->getSegment($segmentId);
 
-        Application::fireEvent('onRenderContent', $segment, ['format' => $page->format]);
+        Application::fireEvent('onRenderContent', $segment, $page->getData());
 
         return $segment->string;
     }

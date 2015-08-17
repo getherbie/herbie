@@ -269,7 +269,7 @@ class Application
 
             if (empty($page->layout)) {
                 $content = $page->getSegment(0);
-                static::fireEvent('onRenderContent', $content, ['format' => $page->format]);
+                static::fireEvent('onRenderContent', $content, $page->getData());
             } else {
                 static::fireEvent('onRenderLayout', $content, ['layout' => $page->layout]);
             }

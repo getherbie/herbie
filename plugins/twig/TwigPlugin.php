@@ -30,7 +30,7 @@ class TwigPlugin extends Herbie\Plugin
 
     public function onRenderContent($segment, array $attributes)
     {
-        if(!in_array($attributes['format'], ['twig'])) {
+        if(empty($attributes['twig'])) {
             return;
         }
         $segment->string = $this->twig->renderString($segment->string);
