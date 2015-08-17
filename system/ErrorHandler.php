@@ -88,19 +88,16 @@ class ErrorHandler
         if ($exception instanceof \Exception && !HERBIE_DEBUG) {
             $message = get_class($exception) . ": {$exception->getMessage()}";
         } elseif (HERBIE_DEBUG) {
-            if ($exception instanceof \InvalidArgumentException) {
-                $message = "Exception";
-            } elseif ($exception instanceof \ErrorException) {
-                $message = "Error";
-            } else {
-                $message = 'Exception';
-            }
-            $message .= " '" . get_class($exception) . "' with message '{$exception->getMessage()}' \n\nin "
-                . $exception->getFile() . ':' . $exception->getLine() . "\n\n"
+            $message = $exception->getMessage() . "\n\n"
+                . get_class($exception) . ' [' . $exception->getCode() . '] in '
+                . $exception->getFile() . '(' . $exception->getLine() . ")\n\n"
                 . "Stack trace:\n" . $exception->getTraceAsString();
+
         } else {
             $message = 'Error: ' . $exception->getMessage();
         }
+        // remove path
+        $message = str_replace(realpath(__DIR__ . '/../../').'/', '', $message);
         return $message;
     }
 
