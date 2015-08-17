@@ -40,15 +40,12 @@ class Plugin
      */
     public function getSubscribedEvents()
     {
-        $methods = get_class_methods(get_called_class());
-
         $list = [];
-        foreach ($methods as $method) {
+        foreach (get_class_methods($this) as $method) {
             if (strpos($method, 'on') === 0) {
                 $list[] = $method;
             }
         }
-
         return $list;
     }
 
