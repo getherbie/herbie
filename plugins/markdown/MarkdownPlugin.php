@@ -20,6 +20,21 @@ include_once (__DIR__ . '/vendor/ParsedownExtra.php');
 
 class MarkdownPlugin extends Herbie\Plugin
 {
+    /**
+     * @return array
+     */
+    public function getSubscribedEvents()
+    {
+        $events = [];
+        if ((bool)$this->config('plugins.config.markdown.twig', false)) {
+            $events[] = 'onTwigInitialized';
+        }
+        if ((bool)$this->config('plugins.config.markdown.shortcode', true)) {
+            $events[] = 'onShortcodeInitialized';
+        }
+        $events[] = 'onRenderContent';
+        return $events;
+    }
 
     public function onTwigInitialized($twig)
     {

@@ -19,6 +19,22 @@ include_once (__DIR__ . '/vendor/Netcarver/Textile/Parser.php');
 
 class TextilePlugin extends Herbie\Plugin
 {
+    /**
+     * @return array
+     */
+    public function getSubscribedEvents()
+    {
+        $events = [];
+        if ((bool)$this->config('plugins.config.textile.twig', false)) {
+            $events[] = 'onTwigInitialized';
+        }
+        if ((bool)$this->config('plugins.config.textile.shortcode', true)) {
+            $events[] = 'onShortcodeInitialized';
+        }
+        $events[] = 'onRenderContent';
+        return $events;
+    }
+
     public function onTwigInitialized($twig)
     {
         $options = ['is_safe' => ['html']];
