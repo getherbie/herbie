@@ -30,7 +30,7 @@ class ShortcodePlugin extends \Herbie\Plugin
     {
         $this->addPageTag();
         $this->addSiteTag();
-        $this->addSnippetTag();
+        $this->addIncludeTag();
         $this->addTwigTag();
         // http://getkirby.com/docs/content/text#basic-formats
         $this->addLinkTag();
@@ -93,9 +93,9 @@ class ShortcodePlugin extends \Herbie\Plugin
         });
     }
 
-    protected function addSnippetTag()
+    protected function addIncludeTag()
     {
-        $this->add('snippet', function($options) {
+        $this->add('include', function($options) {
 
             $params = $options;
 
