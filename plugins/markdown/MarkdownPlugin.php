@@ -20,6 +20,7 @@ include_once (__DIR__ . '/vendor/ParsedownExtra.php');
 
 class MarkdownPlugin extends Herbie\Plugin
 {
+
     public function onTwigInitialized($twig)
     {
         $options = ['is_safe' => ['html']];
@@ -36,12 +37,12 @@ class MarkdownPlugin extends Herbie\Plugin
         $shortcode->add('markdown', [$this, 'markdownShortcode']);
     }
 
-    public function onContentSegmentLoaded($null, array $attributes)
+    public function onRenderContent($segment, array $attributes)
     {
         if(!in_array($attributes['format'], ['markdown', 'md'])) {
             return;
         }
-        $attributes['segment'] = $this->parseMarkdown($attributes['segment']);
+        $segment->string = $this->parseMarkdown($segment->string);
     }
 
     public function parseMarkdown($value)

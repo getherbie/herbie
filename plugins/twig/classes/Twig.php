@@ -118,12 +118,10 @@ class Twig
         }
 
         $segment = $page->getSegment($segmentId);
-        Application::fireEvent('onContentSegmentLoaded', null, ['segment' => &$segment, 'format' => $page->format]);
 
-        #$twigged = Application::getService('Twig')->renderString($segment);
-        #Application::fireEvent('onContentSegmentTwigged', ['segment' => &$twigged, 'format' => $page->format]);
+        Application::fireEvent('onRenderContent', $segment, ['format' => $page->format]);
 
-        return $segment;
+        return $segment->string;
     }
 
     /**

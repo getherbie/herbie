@@ -50,14 +50,16 @@ class Page
     /**
      *
      * @param string $id
-     * @return null|string
+     * @return \stdClass
      */
     public function getSegment($id)
     {
+        $segment = new \stdClass();
+        $segment->string = '';
         if (array_key_exists($id, $this->segments)) {
-            return $this->segments[$id];
+            $segment->string = $this->segments[$id];
         }
-        return null;
+        return $segment;
     }
 
     /**

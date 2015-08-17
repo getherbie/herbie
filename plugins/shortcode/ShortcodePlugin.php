@@ -40,9 +40,9 @@ class ShortcodePlugin extends \Herbie\Plugin
         $this->addFileTag();
     }
 
-    public function onContentSegmentLoaded($null, array $attributes)
+    public function onRenderContent($segment, array $attributes)
     {
-        $attributes['segment'] = $this->shortcode->parse($attributes['segment']);
+        $segment->string = $this->shortcode->parse($segment->string);
     }
 
     public function getShortcodeObject()

@@ -35,12 +35,12 @@ class TextilePlugin extends Herbie\Plugin
         $shortcode->add('textile', [$this, 'textileShortcode']);
     }
 
-    public function onContentSegmentLoaded($null, array $attributes)
+    public function onRenderContent($segment, array $attributes)
     {
         if(!in_array($attributes['format'], ['textile'])) {
             return;
         }
-        $attributes['segment'] = $this->parseTextile($attributes['segment']);
+        $segment->string = $this->parseTextile($segment->string);
     }
 
     public function parseTextile($value)

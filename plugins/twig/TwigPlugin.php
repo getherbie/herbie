@@ -28,22 +28,17 @@ class TwigPlugin extends Herbie\Plugin
         Herbie\Application::fireEvent('onTwigInitialized', $this->twig->environment);
     }
 
-    public function onRenderPageSegment($null, array $attributes)
-    {
-        $attributes['content'] = $this->twig->renderPageSegment($attributes['segment'], $attributes['page']);
-    }
-
-    public function onContentSegmentLoaded($null, array $attributes)
+    public function onRenderContent($segment, array $attributes)
     {
         if(!in_array($attributes['format'], ['twig'])) {
             return;
         }
-        $attributes['segment'] = $this->twig->renderString($attributes['segment']);
+        $segment->string = $this->twig->renderString($segment->string);
     }
 
-    public function onRenderLayout($null, array $attributes)
+    public function onRenderLayout($content, array $attributes)
     {
-        $attributes['content'] = $this->twig->render($attributes['layout']);
+        $content->string = $this->twig->render($attributes['layout']);
     }
 
 }

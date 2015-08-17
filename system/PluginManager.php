@@ -33,6 +33,8 @@ class PluginManager
      */
     private $initialized;
 
+    private $pluginInitialized;
+
     /**
      *
      */
@@ -42,10 +44,12 @@ class PluginManager
         $this->events = [];
         $this->dirs = [];
         $this->initialized = false;
+        $this->pluginInitialized = [];
     }
 
     /**
      * @param Config $config
+     * @return bool
      * @throws \RuntimeException
      */
     public function init(Config $config)
@@ -63,6 +67,7 @@ class PluginManager
         }
 
         $this->initialized = true;
+        return $this->initialized;
     }
 
     /**
@@ -112,9 +117,10 @@ class PluginManager
      * @param string $eventName
      * @param mixed $subject
      * @param array $attributes
+     * @param DI $DI
      * @return mixed
      */
-    public function dispatch($eventName, $subject, array $attributes)
+    public function dispatch($eventName, $subject, array $attributes, $DI)
     {
         if (!isset($this->events[$eventName])) {
             return $subject;
@@ -122,7 +128,11 @@ class PluginManager
 
         foreach ($this->events[$eventName] as $pluginKey) {
             $plugin = $this->plugins[$pluginKey];
-            call_user_func([$plugin, $eventName], $subject, $attributes);
+            if (!isset($this->pluginInitialized[$pluginKey])) {
+                $plugin->init(\Herbie\DI::instance());
+                $this->pluginInitialized[$pluginKey] = true;
+            }
+            call_user_func([$plugin, $eventName], $subject, $attributes, $DI);
         }
 
         return $subject;

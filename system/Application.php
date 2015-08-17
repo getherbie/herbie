@@ -15,9 +15,9 @@ defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 class Application
 {
     /**
-     * @var Container
+     * @var DI
      */
-    protected static $container;
+    protected static $DI;
 
     /**
      * @var Page
@@ -55,7 +55,7 @@ class Application
         $errorHandler = new ErrorHandler();
         $errorHandler->register();
 
-        static::$container = $DI = DI::instance();
+        static::$DI = $DI = DI::instance();
 
         $DI['Request'] = $request = new Http\Request();
         $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
@@ -72,126 +72,47 @@ class Application
             '@web' => $config->get('web.path')
         ]);
 
-        $DI['Assets'] = function ($c) {
-            return new Assets($c['Alias'], $c['Config']->get('web.url'));
+        $DI['Assets'] = function ($DI) {
+            return new Assets($DI['Alias'], $DI['Config']->get('web.url'));
         };
 
-        $DI['Cache\PageCache'] = function ($c) {
-            return Cache\CacheFactory::create('page', $c['Config']);
+        $DI['Cache\PageCache'] = function ($DI) {
+            return Cache\CacheFactory::create('page', $DI['Config']);
         };
 
-        $DI['Cache\DataCache'] = function ($c) {
-            return Cache\CacheFactory::create('data', $c['Config']);
+        $DI['Cache\DataCache'] = function ($DI) {
+            return Cache\CacheFactory::create('data', $DI['Config']);
         };
 
-        $DI['DataArray'] = function ($c) {
-            $loader = new Loader\DataLoader($c['Config']->get('data.extensions'));
-            return $loader->load($c['Config']->get('data.path'));
+        $DI['DataArray'] = function ($DI) {
+            $loader = new Loader\DataLoader($DI['Config']->get('data.extensions'));
+            return $loader->load($DI['Config']->get('data.path'));
         };
 
-        $DI['EventDispatcher'] = function () {
-            return new EventDispatcher();
-        };
-
-        $DI['Loader\PageLoader'] = function ($c) {
-            $loader = new Loader\PageLoader($c['Alias']);
+        $DI['Loader\PageLoader'] = function ($DI) {
+            $loader = new Loader\PageLoader($DI['Alias']);
             return $loader;
         };
 
-        $DI['Menu\Page\Builder'] = function ($c) {
+        $DI['Menu\Page\Builder'] = function ($DI) {
 
             $paths = [];
-            $paths['@page'] = realpath($c['Config']->get('pages.path'));
-            foreach ($c['Config']->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $c['Alias']->get($alias);
+            $paths['@page'] = realpath($DI['Config']->get('pages.path'));
+            foreach ($DI['Config']->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $DI['Alias']->get($alias);
             }
-            $extensions = $c['Config']->get('pages.extensions', []);
+            $extensions = $DI['Config']->get('pages.extensions', []);
 
             $builder = new Menu\Page\Builder($paths, $extensions);
             return $builder;
-        };
-
-        $DI['Menu\Page\Collection'] = function ($c) {
-            $c['Menu\Page\Builder']->setCache($c['Cache\DataCache']);
-            return $c['Menu\Page\Builder']->buildCollection();
-        };
-
-        $DI['Menu\Page\Node'] = function ($c) {
-            return Menu\Page\Node::buildTree($c['Menu\Page\Collection']);
-        };
-
-        $DI['Menu\Page\RootPath'] = function ($c) {
-            $rootPath = new Menu\Page\RootPath($c['Menu\Page\Collection'], $c['Request']->getRoute());
-            return $rootPath;
-        };
-
-        $DI['Menu\Post\Collection'] = function ($c) {
-            $builder = new Menu\Post\Builder($c['Cache\DataCache'], $c['Config']);
-            return $builder->build();
-        };
-
-        $DI['Page'] = function ($c) {
-
-            try {
-
-                $route = $c['Request']->getRoute();
-                $menuItem = $c['Url\UrlMatcher']->match($route);
-                $path = $menuItem->getPath();
-
-                $page = false;
-
-                // @todo Implement a proper page cache
-                // get content from cache if cache enabled
-                if (empty($menuItem->nocache)) {
-                    $page = $c['Cache\PageCache']->get($path);
-                }
-
-                if (false === $page) {
-
-                    $page = new Page();
-                    $page->setLoader($c['Loader\PageLoader']);
-                    $page->load($path);
-
-                    Application::fireEvent('onPageLoaded', $page);
-
-                    if (empty($menuItem->nocache)) {
-                        $c['Cache\PageCache']->set($path, $page);
-                    }
-                }
-
-            } catch (\Exception $e) {
-
-                $page = new Page();
-                $page->layout = 'error.html';
-                $page->setError($e);
-            }
-
-            return $page;
-
         };
 
         $DI['PluginManager'] = function () {
             return new PluginManager();
         };
 
-        $DI['Translator'] = function ($c) {
-            if (!$c['PluginManager']->isInitialized()) {
-                throw new \Exception('You have to initialize PluginManager before using Translator.');
-            }
-            $translator = new Translator($c['Config']->get('language'), ['app' => $c['Alias']->get('@app/../messages')]);
-            foreach ($c['PluginManager']->getDirectories() as $key => $dir) {
-                $translator->addPath($key, $dir . '/messages');
-            }
-            $translator->init();
-            return $translator;
-        };
-
-        $DI['Url\UrlGenerator'] = function ($c) {
-            return new Url\UrlGenerator($c['Request'], $c['Config']->get('nice_urls', false));
-        };
-
-        $DI['Url\UrlMatcher'] = function ($c) {
-            return new Url\UrlMatcher($c['Menu\Page\Collection'], $c['Menu\Post\Collection']);
+        $DI['Url\UrlGenerator'] = function ($DI) {
+            return new Url\UrlGenerator($DI['Request'], $DI['Config']->get('nice_urls', false));
         };
 
         setlocale(LC_ALL, $DI['Config']->get('locale'));
@@ -201,18 +122,86 @@ class Application
         $autoload->addPsr4('herbie\\sysplugin\\', __DIR__ . '/../plugins/');
         $autoload->addPsr4('herbie\\plugin\\', $DI['Config']->get('plugins.path'));
 
-        $DI['PluginManager']->init($DI['Config']);
+        // Init PluginManager at first
+        if (true === $DI['PluginManager']->init($DI['Config'])) {
 
-        #echo"<pre>";print_r($DI['PluginManager']->getListeners());echo"</pre>";
+            $this->fireEvent('onPluginsInitialized', $DI['PluginManager']);
 
-        $this->fireEvent('onPluginsInitialized', $DI['PluginManager']);
+            $this->fireEvent('onShortcodeInitialized', $DI['PluginManager']->getPlugin('shortcode'));
 
-        #foreach ($DI['PluginManager']->getPlugins() as $key => $plugin) {
-        #    echo $key . ' --> ' . get_class($plugin) . '<br>';
-        #}
-        #exit;
+            $DI['Menu\Page\Collection'] = function ($DI) {
+                $DI['Menu\Page\Builder']->setCache($DI['Cache\DataCache']);
+                return $DI['Menu\Page\Builder']->buildCollection();
+            };
 
-        $this->fireEvent('onShortcodeInitialized', $DI['PluginManager']->getPlugin('shortcode'));
+            $DI['Menu\Page\Node'] = function ($DI) {
+                return Menu\Page\Node::buildTree($DI['Menu\Page\Collection']);
+            };
+
+            $DI['Menu\Page\RootPath'] = function ($DI) {
+                $rootPath = new Menu\Page\RootPath($DI['Menu\Page\Collection'], $DI['Request']->getRoute());
+                return $rootPath;
+            };
+
+            $DI['Menu\Post\Collection'] = function ($DI) {
+                $builder = new Menu\Post\Builder($DI['Cache\DataCache'], $DI['Config']);
+                return $builder->build();
+            };
+
+            $DI['Page'] = function ($DI) {
+
+                try {
+
+                    $route = $DI['Request']->getRoute();
+                    $menuItem = $DI['Url\UrlMatcher']->match($route);
+                    $path = $menuItem->getPath();
+
+                    $page = false;
+
+                    // @todo Implement a proper page cache
+                    // get content from cache if cache enabled
+                    if (empty($menuItem->nocache)) {
+                        $page = $DI['Cache\PageCache']->get($path);
+                    }
+
+                    if (false === $page) {
+
+                        $page = new Page();
+                        $page->setLoader($DI['Loader\PageLoader']);
+                        $page->load($path);
+
+                        Application::fireEvent('onPageLoaded', $page);
+
+                        if (empty($menuItem->nocache)) {
+                            $DI['Cache\PageCache']->set($path, $page);
+                        }
+                    }
+
+                } catch (\Exception $e) {
+
+                    $page = new Page();
+                    $page->layout = 'error.html';
+                    $page->setError($e);
+                }
+
+                return $page;
+
+            };
+
+            $DI['Translator'] = function ($DI) {
+                $translator = new Translator($DI['Config']->get('language'), ['app' => $DI['Alias']->get('@app/../messages')]);
+                foreach ($DI['PluginManager']->getDirectories() as $key => $dir) {
+                    $translator->addPath($key, $dir . '/messages');
+                }
+                $translator->init();
+                return $translator;
+            };
+
+            $DI['Url\UrlMatcher'] = function ($DI) {
+                return new Url\UrlMatcher($DI['Menu\Page\Collection'], $DI['Menu\Post\Collection']);
+            };
+
+        }
 
     }
 
@@ -224,7 +213,7 @@ class Application
      */
     public static function fireEvent($eventName, $subject = null, array $attributes = [])
     {
-        return static::$container['PluginManager']->dispatch($eventName, $subject, $attributes);
+        return static::$DI['PluginManager']->dispatch($eventName, $subject, $attributes, static::$DI);
     }
 
     /**
@@ -234,7 +223,7 @@ class Application
      */
     public static function getService($service)
     {
-        return static::$container[$service];
+        return static::$DI[$service];
     }
 
     /**
@@ -264,7 +253,7 @@ class Application
 
         $this->fireEvent('onOutputRendered');
 
-        if (0 < static::$container['Config']->get('display_load_time', 0)) {
+        if (0 < static::$DI['Config']->get('display_load_time', 0)) {
             $time = Benchmark::mark();
             echo sprintf("\n<!-- Generated by Herbie in %s seconds | www.getherbie.org -->", $time);
         }
@@ -273,24 +262,26 @@ class Application
     public function renderPage(Page $page)
     {
 
-        $content = '';
+        $content = new \stdClass();
+        $content->string = '';
 
         try {
 
             if (empty($page->layout)) {
-                static::fireEvent('onRenderPageSegment', null, ['content' => &$content, 'segment' => 0, 'page' => $page]);
+                $content = $page->getSegment(0);
+                static::fireEvent('onRenderContent', $content, ['format' => $page->format]);
             } else {
-                static::fireEvent('onRenderLayout', null, ['content' => &$content, 'layout' => $page->layout]);
+                static::fireEvent('onRenderLayout', $content, ['layout' => $page->layout]);
             }
 
         } catch (\Exception $e) {
 
             $page->setError($e);
-            static::fireEvent('onRenderLayout', null, ['content' => &$content, 'layout' => 'error.html']);
+            static::fireEvent('onRenderLayout', $content, ['layout' => 'error.html']);
 
         }
 
-        $response = new Http\Response($content);
+        $response = new Http\Response($content->string);
         $response->setStatus($page->getStatusCode());
         $response->setHeader('Content-Type', $page->content_type);
 
