@@ -75,6 +75,10 @@ class DI implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
+        if (!isset($this->frozen[$offset]) && !isset($this->values[$offset])) {
+            $message = sprintf("The object '%s' is not stored in DI container.", $offset);
+            throw new \Exception($message, 500);
+        }
         if (isset($this->frozen[$offset])) {
             return $this->frozen[$offset];
         }
