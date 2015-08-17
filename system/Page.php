@@ -103,6 +103,14 @@ class Page
         $this->segments = $segments;
     }
 
+	/**
+	 * @return array
+	 */
+    public function getData()
+    {
+        return $this->data;
+    }
+
     /**
      * @return array
      */
