@@ -207,11 +207,11 @@ class Config
         $WEB_URL = $this->webUrl;
 
         $defaults = require(__DIR__ . '/../config/defaults.php');
-        if (is_file($this->sitePath . '/config.php')) {
+        if (is_file($this->sitePath . '/config/main.php')) {
             $userConfig = require($this->sitePath . '/config.php');
             $defaults = $this->merge($defaults, $userConfig);
-        } elseif (is_file($this->sitePath . '/config.yml')) {
-            $content = file_get_contents($this->sitePath . '/config.yml');
+        } elseif (is_file($this->sitePath . '/config/main.yml')) {
+            $content = file_get_contents($this->sitePath . '/config/main.yml');
             $content = $this->replaceConstants($content);
             $userConfig = Yaml::parse($content);
             $defaults = $this->merge($defaults, $userConfig);
