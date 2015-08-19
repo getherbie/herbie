@@ -23,10 +23,11 @@ class CacheFactory
     public static function create($type, Config $config)
     {
         $type = strtolower($type);
+        $class = 'filesystem';
         if ($config->isEmpty("cache.{$type}.enable") || !in_array($type, ['data', 'page'])) {
-            $type = 'dummy';
+            $class = 'dummy';
         }
-        $class = 'Herbie\Cache\\' . ucfirst($type) . 'Cache';
+        $class = 'Herbie\Cache\\' . ucfirst($class) . 'Cache';
         if (!class_exists($class)) {
             throw new \Exception("Missing cache class $class.");
         }
