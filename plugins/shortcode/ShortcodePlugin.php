@@ -28,6 +28,7 @@ class ShortcodePlugin extends \Herbie\Plugin
 
     public function init()
     {
+        $this->addDateTag();
         $this->addPageTag();
         $this->addSiteTag();
         $this->addIncludeTag();
@@ -58,6 +59,23 @@ class ShortcodePlugin extends \Herbie\Plugin
     public function getTags()
     {
         return $this->shortcode->getTags();
+    }
+
+    protected function addDateTag()
+    {
+        $this->add('date', function($options) {
+            if (is_string($options)) {
+                $options = (array)$options;
+            }
+            $options = $this->initOptions([
+                'format' => empty($options[0]) ? '%x' : $options[0],
+                'locale' => ''
+            ], $options);
+            if (!empty($options['locale'])) {
+                setlocale(LC_TIME, $options['locale']);
+            }
+            return strftime($options['format']);
+        });
     }
 
     protected function addPageTag()
