@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-markdown",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Markdown Plugin.",
+    "keywords": ["herbie", "plugin", "markdown"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause"
+}

@@ -1,0 +1,8 @@
+{
+    "name": "getherbie/plugin-twig",
+    "homepage": "http://www.getherbie.org",
+    "description": "Herbie Twig Plugin.",
+    "keywords": ["herbie", "plugin", "twig"],
+    "type": "herbie-plugin",
+    "license": "BSD-3-Clause"
+}
