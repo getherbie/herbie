@@ -16,7 +16,7 @@ use Herbie\Helper;
 use Herbie\Menu;
 use Herbie\Page;
 use Herbie\Site;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Herbie\Http\RedirectResponse;
 use Twig_Environment;
 use Twig_Extension;
 use Twig_SimpleFilter;
