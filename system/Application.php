@@ -153,18 +153,13 @@ class Application
                 try {
 
                     $route = $DI['Request']->getRoute();
-                    $menuItem = $DI['Url\UrlMatcher']->match($route);
-                    $path = $menuItem->getPath();
 
-                    $page = false;
-
-                    // @todo Implement a proper page cache
-                    // get content from cache if cache enabled
-                    if (empty($menuItem->nocache)) {
-                        $page = $DI['Cache\PageCache']->get($path);
-                    }
+                    $page = false; ##$DI['Cache\PageCache']->get($route);
 
                     if (false === $page) {
+
+                        $menuItem = $DI['Url\UrlMatcher']->match($route);
+                        $path = $menuItem->getPath();
 
                         $page = new Page();
                         $page->setLoader($DI['Loader\PageLoader']);
@@ -173,7 +168,7 @@ class Application
                         Application::fireEvent('onPageLoaded', $page);
 
                         if (empty($menuItem->nocache)) {
-                            $DI['Cache\PageCache']->set($path, $page);
+                            ##$DI['Cache\PageCache']->set($path, $page);
                         }
                     }
 
@@ -261,27 +256,41 @@ class Application
 
     public function renderPage(Page $page)
     {
+        $rendered = false;
 
-        $content = new \stdClass();
-        $content->string = '';
-
-        try {
-
-            if (empty($page->layout)) {
-                $content = $page->getSegment(0);
-                static::fireEvent('onRenderContent', $content, $page->getData());
-            } else {
-                static::fireEvent('onRenderLayout', $content, ['layout' => $page->layout]);
-            }
-
-        } catch (\Exception $e) {
-
-            $page->setError($e);
-            static::fireEvent('onRenderLayout', $content, ['layout' => 'error.html']);
-
+        $cacheId = 'page-' . static::$DI['Request']->getRoute();
+        if (empty($page->nocache)) {
+            $rendered = static::$DI['Cache\PageCache']->get($cacheId);
         }
 
-        $response = new Http\Response($content->string);
+        if (false === $rendered) {
+
+            $content = new \stdClass();
+            $content->string = '';
+
+            try {
+
+                if (empty($page->layout)) {
+                    $content = $page->getSegment(0);
+                    static::fireEvent('onRenderContent', $content, $page->getData());
+                } else {
+                    static::fireEvent('onRenderLayout', $content, ['layout' => $page->layout]);
+                }
+
+            } catch (\Exception $e) {
+
+                $page->setError($e);
+                static::fireEvent('onRenderLayout', $content, ['layout' => 'error.html']);
+
+            }
+
+            if (empty($page->nocache)) {
+                static::$DI['Cache\PageCache']->set($cacheId, $content->string);
+            }
+            $rendered = $content->string;
+        }
+
+        $response = new Http\Response($rendered);
         $response->setStatus($page->getStatusCode());
         $response->setHeader('Content-Type', $page->content_type);
 
