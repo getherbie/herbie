@@ -90,14 +90,4 @@ class DataCache implements CacheInterface
         return sprintf('%s/%s.%s', $this->dir, $id, 'cache');
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @throws \LogicException
-     */
-    public function __set($name, $value)
-    {
-        $message = sprintf('Property "%s" does not exist in class %s.', $name, __CLASS__);
-        throw new \LogicException($message);
-    }
 }
