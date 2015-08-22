@@ -25,12 +25,12 @@ class Twig
     /**
      * @var Config
      */
-    public $config;
+    private $config;
 
     /**
      * @var \Twig_Environment
      */
-    public $environment;
+    private $environment;
 
     /**
      * @var boolean
@@ -61,6 +61,14 @@ class Twig
         $this->environment->addExtension(new HerbieExtension());
         $this->addTwigPlugins();
         $this->initialized = true;
+    }
+
+    /**
+     * @return Twig_Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
     }
 
     /**
@@ -253,5 +261,14 @@ class Twig
     {
         return true === $this->initialized;
     }
+    
+	public function __debugInfo()
+	{
+        return [
+            'config' => call_user_func('get_object_vars', $this->config),
+            'environment' => call_user_func('get_object_vars', $this->environment),
+            'initialized' => $this->initialized
+        ];
+	}
 
 }

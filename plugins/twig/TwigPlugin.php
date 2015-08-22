@@ -25,7 +25,7 @@ class TwigPlugin extends Herbie\Plugin
         $this->twig = new Twig($config);
         $this->twig->init();
         Herbie\Di::set('Twig', $this->twig);
-        Herbie\Application::fireEvent('onTwigInitialized', $this->twig->environment);
+        Herbie\Application::fireEvent('onTwigInitialized', $this->twig->getEnvironment());
     }
 
     public function onRenderContent($segment, array $attributes)
