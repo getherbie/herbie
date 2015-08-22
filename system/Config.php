@@ -48,7 +48,7 @@ class Config
         $this->appPath  = realpath(__DIR__);
         $this->sitePath = $sitePath;
         $this->webPath  = $webPath;
-        $this->webUrl   = $webUrl;
+        $this->webUrl   = preg_replace('#\/?index.php#', '', $webUrl);
         $this->items = [];
         $this->cache = [];
         $this->loadConfig(false);
