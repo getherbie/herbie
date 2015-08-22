@@ -261,9 +261,8 @@ class Collection implements \IteratorAggregate, \Countable
     protected function getBlogPathInfo()
     {
         $request = new Request();
-        $pathInfo = trim($request->getPathInfo(), '/');
 
-        $segments = explode('/', $pathInfo);
+        $segments = explode('/', $request->getRoute());
         if (empty($segments)) {
             return '';
         }
