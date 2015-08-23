@@ -62,18 +62,18 @@ class Twig
         $this->environment->addExtension(new HerbieExtension());
         $this->addTwigPlugins();
 
-        foreach (Hook::get('addTwigFunction') as $closure) {
-            @list($name, $callable, $options) = $closure();
+        foreach(Hook::trigger(Hook::CONFIG, 'addTwigFunction') as $function) {
+            @list($name, $callable, $options) = $function;
             $this->environment->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
         }
 
-        foreach (Hook::get('addTwigFilter') as $closure) {
-            @list($name, $callable, $options) = $closure();
+        foreach(Hook::trigger(Hook::CONFIG, 'addTwigFilter') as $filter) {
+            @list($name, $callable, $options) = $filter;
             $this->environment->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
         }
 
-        foreach (Hook::get('addTwigTest') as $closure) {
-            @list($name, $callable, $options) = $closure();
+        foreach(Hook::trigger(Hook::CONFIG, 'addTwigTest') as $test) {
+            @list($name, $callable, $options) = $test;
             $this->environment->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
         }
 

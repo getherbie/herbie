@@ -32,12 +32,9 @@ class ShortcodePlugin
         $this->addImageTag();
         $this->addFileTag();
 
-        foreach (Hook::get('addShortcode') as $tag => $closure) {
-            $this->shortcode->add($tag, $closure);
-        }
+        Hook::trigger(Hook::ACTION, 'addShortcode', $this->shortcode);
 
         Hook::attach('renderContent', [$this, 'renderContent']);
-
     }
 
     public function renderContent($segment)

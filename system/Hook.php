@@ -6,6 +6,7 @@ class Hook
 {
     const ACTION = 'action';
     const FILTER = 'filter';
+    const CONFIG = 'config';
 
     /** @var array  */
     private static $hooks = array();
@@ -51,6 +52,9 @@ class Hook
         if ($type == Hook::ACTION) {
             return static::triggerAction($name, $subject, $data);
         }
+        if ($type == Hook::CONFIG) {
+            return static::triggerConfig($name, $subject, $data);
+        }
         if ($type == Hook::FILTER) {
             return static::triggerFilter($name, $subject, $data);
         }
@@ -94,11 +98,38 @@ class Hook
             if (is_callable($callback)) {
                 $subject = $callback($subject, $data, $name);
                 if (is_null($subject)) {
-                    throw new \Exception("The hook filter '{$name}' has to return a value instead of null.", 404);
+                    throw new \Exception("The hook filter '{$name}' has to return a value, null given.", 500);
                 }
             }
         }
         return $subject;
+    }
+
+    /**
+     * @param $name
+     * @param $subject
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public static function triggerConfig($name, $subject, array $data = [])
+    {
+        $config = [];
+        if (!array_key_exists($name, static::$hooks)) {
+            return $config;
+        }
+        foreach (static::$hooks[$name] as $callback) {
+            if (is_array($callback)) {
+                $config[] = $callback;
+            } elseif (is_callable($callback)) {
+                $return = $callback($subject, $data, $name);
+                if (is_null($return) || !is_array($return)) {
+                    throw new \Exception("The hook filter '{$name}' has to return an array.", 500);
+                }
+                $config[] = $return;
+            }
+        }
+        return $config;
     }
 
     /**
