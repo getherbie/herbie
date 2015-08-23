@@ -356,7 +356,7 @@ class Request
             return str_replace('\\', '/', dirname($baseUrl));
         }
         // Base path is identical to base URL
-        return $baseUrl;
+        return rtrim($baseUrl, '/');
     }
 
     /**
