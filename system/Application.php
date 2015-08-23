@@ -107,8 +107,10 @@ class Application
             return $builder;
         };
 
-        $DI['PluginManager'] = function () {
-            return new PluginManager();
+        $DI['PluginManager'] = function ($DI) {
+            $enabled = $DI['Config']->get('plugins.enable', []);
+            $path = $DI['Config']->get('plugins.path');
+            return new PluginManager($enabled, $path);
         };
 
         $DI['Url\UrlGenerator'] = function ($DI) {
@@ -125,9 +127,9 @@ class Application
         // Init PluginManager at first
         if (true === $DI['PluginManager']->init($DI['Config'])) {
 
-            $this->fireEvent('onPluginsInitialized', $DI['PluginManager']);
+            Hook::trigger(Hook::ACTION, 'pluginsInitialized', $DI['PluginManager']);
 
-            $this->fireEvent('onShortcodeInitialized', $DI['PluginManager']->getPlugin('shortcode'));
+            Hook::trigger(Hook::ACTION, 'shortcodeInitialized', $DI['Shortcode']);
 
             $DI['Menu\Page\Collection'] = function ($DI) {
                 $DI['Menu\Page\Builder']->setCache($DI['Cache\DataCache']);
@@ -165,7 +167,7 @@ class Application
                         $page->setLoader($DI['Loader\PageLoader']);
                         $page->load($path);
 
-                        Application::fireEvent('onPageLoaded', $page);
+                        Hook::trigger(Hook::ACTION, 'pageLoaded', $page);
 
                         if (empty($menuItem->nocache)) {
                             ##$DI['Cache\PageCache']->set($path, $page);
@@ -185,7 +187,7 @@ class Application
 
             $DI['Translator'] = function ($DI) {
                 $translator = new Translator($DI['Config']->get('language'), ['app' => $DI['Alias']->get('@app/../messages')]);
-                foreach ($DI['PluginManager']->getDirectories() as $key => $dir) {
+                foreach ($DI['PluginManager']->getLoadedPlugins() as $key => $dir) {
                     $translator->addPath($key, $dir . '/messages');
                 }
                 $translator->init();
@@ -198,17 +200,6 @@ class Application
 
         }
 
-    }
-
-    /**
-     * Fire an event.
-     * @param  string $eventName
-     * @param  array $attributes
-     * @return mixed
-     */
-    public static function fireEvent($eventName, $subject = null, array $attributes = [])
-    {
-        return static::$DI['PluginManager']->dispatch($eventName, $subject, $attributes, static::$DI);
     }
 
     /**
@@ -242,11 +233,11 @@ class Application
 
         $response = $this->renderPage($page);
 
-        $this->fireEvent('onOutputGenerated', ['response' => $response]);
+        Hook::trigger(Hook::ACTION, 'outputGenerated', $response);
 
         $response->send();
 
-        $this->fireEvent('onOutputRendered');
+        Hook::trigger(Hook::ACTION, 'outputRendered');
 
         if (0 < static::$DI['Config']->get('display_load_time', 0)) {
             $time = Benchmark::mark();
@@ -272,15 +263,15 @@ class Application
 
                 if (empty($page->layout)) {
                     $content = $page->getSegment(0);
-                    static::fireEvent('onRenderContent', $content, $page->getData());
+                    $content->string = Hook::trigger(Hook::FILTER, 'renderContent', $content->string, $page->getData());
                 } else {
-                    static::fireEvent('onRenderLayout', $content, ['layout' => $page->layout]);
+                    $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', '', ['layout' => $page->layout]);
                 }
 
             } catch (\Exception $e) {
 
                 $page->setError($e);
-                static::fireEvent('onRenderLayout', $content, ['layout' => 'error.html']);
+                $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', '', ['layout' => 'error.html']);
 
             }
 

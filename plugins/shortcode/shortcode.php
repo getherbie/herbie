@@ -1,32 +1,24 @@
 <?php
 
-/**
- * This file is part of Herbie.
- *
- * (c) Thomas Breuss <www.tebe.ch>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace herbie\sysplugin\shortcode;
-
-use herbie\sysplugin\shortcode\classes\Shortcode;
-use Herbie\Config;
+use Herbie\DI;
+use Herbie\Hook;
 use Herbie\Site;
+use herbie\sysplugin\shortcode\classes\Shortcode;
 
-class ShortcodePlugin extends \Herbie\Plugin
+class ShortcodePlugin
 {
+    protected $config;
     protected $shortcode;
 
-    public function __construct(Config $config)
+    public function __construct()
     {
-        $tags = $config->get('plugins.config.shortcode', []);
+        $this->config = DI::get('Config');
+        $tags = $this->config->get('plugins.config.shortcode', []);
         $this->shortcode = new Shortcode($tags);
-        parent::__construct($config);
+        DI::set('Shortcode', $this->shortcode);
     }
 
-    public function init()
+    public function install()
     {
         $this->addDateTag();
         $this->addPageTag();
@@ -39,11 +31,18 @@ class ShortcodePlugin extends \Herbie\Plugin
         $this->addTelTag();
         $this->addImageTag();
         $this->addFileTag();
+
+        foreach (Hook::get('addShortcode') as $tag => $closure) {
+            $this->shortcode->add($tag, $closure);
+        }
+
+        Hook::attach('renderContent', [$this, 'renderContent']);
+
     }
 
-    public function onRenderContent($segment, array $attributes)
+    public function renderContent($segment)
     {
-        $segment->string = $this->shortcode->parse($segment->string);
+        return $this->shortcode->parse($segment);
     }
 
     public function getShortcodeObject()
@@ -67,7 +66,7 @@ class ShortcodePlugin extends \Herbie\Plugin
             if (is_string($options)) {
                 $options = (array)$options;
             }
-            $options = $this->initOptions([
+            $options = array_merge([
                 'format' => empty($options[0]) ? '%x' : $options[0],
                 'locale' => ''
             ], $options);
@@ -117,7 +116,7 @@ class ShortcodePlugin extends \Herbie\Plugin
 
             $params = $options;
 
-            $options = $this->initOptions([
+            $options = array_merge([
                 'path' => empty($options[0]) ? '' : $options[0]
             ], $options);
 
@@ -147,7 +146,7 @@ class ShortcodePlugin extends \Herbie\Plugin
     {
         $this->add('email', function($options) {
 
-            $options = $this->initOptions([
+            $options = array_merge([
                 'address' => empty($options[0]) ? '' : $options[0],
                 'text' => '',
                 'title' => '',
@@ -180,7 +179,7 @@ class ShortcodePlugin extends \Herbie\Plugin
     {
         $this->add('link', function($options) {
 
-            $options = $this->initOptions([
+            $options = array_merge([
                 'href' => empty($options[0]) ? '' : $options[0],
                 'text' => '',
                 'title' => '',
@@ -212,7 +211,7 @@ class ShortcodePlugin extends \Herbie\Plugin
     protected function addImageTag()
     {
         $this->add('image', function ($options) {
-            $options = $this->initOptions([
+            $options = array_merge([
                 'src' => empty($options[0]) ? '' : $options[0],
                 'width' => '',
                 'height' => '',
@@ -227,7 +226,7 @@ class ShortcodePlugin extends \Herbie\Plugin
 
             // Interne Ressource
             if (strpos($options['src'], 'http') !== 0) {
-                $options['src'] = $this->config('web.url') . '/' . $options['src'];
+                $options['src'] = $this->config->get('web.url') . '/' . $options['src'];
             }
 
             $replace = [
@@ -243,7 +242,7 @@ class ShortcodePlugin extends \Herbie\Plugin
     protected function addFileTag()
     {
         $this->add('file', function ($options) {
-            $options = $this->initOptions([
+            $options = array_merge([
                 'path' => empty($options[0]) ? '' : $options[0],
                 'title' => '',
                 'text' => '',
@@ -257,7 +256,7 @@ class ShortcodePlugin extends \Herbie\Plugin
 
             // Interne Ressource
             if (strpos($options['path'], 'http') !== 0) {
-                #$options['path'] = $this->config('web.url') . '/' . $options['src'];
+                #$options['path'] = $this->config->get('web.url') . '/' . $options['src'];
             }
 
             $info = '';
@@ -305,4 +304,15 @@ class ShortcodePlugin extends \Herbie\Plugin
         return array_filter($extracted, 'strlen');
     }
 
+    protected function buildHtmlAttributes($htmlOptions = [])
+    {
+        $attributes = '';
+        foreach ($htmlOptions as $key => $value) {
+            $attributes .= $key . '="' . $value . '" ';
+        }
+        return trim($attributes);
+    }
+
 }
+
+(new ShortcodePlugin())->install();

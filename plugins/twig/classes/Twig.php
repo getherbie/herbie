@@ -12,6 +12,7 @@
 namespace herbie\sysplugin\twig\classes;
 
 use Herbie\Application;
+use Herbie\Hook;
 use Herbie\Http\Response;
 use Twig_Environment;
 use Twig_Extension_Debug;
@@ -60,6 +61,22 @@ class Twig
         }
         $this->environment->addExtension(new HerbieExtension());
         $this->addTwigPlugins();
+
+        foreach (Hook::get('addTwigFunction') as $closure) {
+            @list($name, $callable, $options) = $closure();
+            $this->environment->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
+        }
+
+        foreach (Hook::get('addTwigFilter') as $closure) {
+            @list($name, $callable, $options) = $closure();
+            $this->environment->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
+        }
+
+        foreach (Hook::get('addTwigTest') as $closure) {
+            @list($name, $callable, $options) = $closure();
+            $this->environment->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
+        }
+
         $this->initialized = true;
     }
 
@@ -127,7 +144,7 @@ class Twig
 
         $segment = $page->getSegment($segmentId);
 
-        Application::fireEvent('onRenderContent', $segment, $page->getData());
+        $segment->string = Hook::trigger(Hook::FILTER, 'renderContent', $segment->string, $page->getData());
 
         return $segment->string;
     }
