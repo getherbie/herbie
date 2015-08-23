@@ -71,11 +71,14 @@ class Hook
     public static function triggerAction($name, $subject = null, array $data = [])
     {
         if (!array_key_exists($name, static::$hooks)) {
-            return false;
+            return null;
         }
         foreach (static::$hooks[$name] as $callback) {
             if (is_callable($callback)) {
-                $callback($subject, $data, $name);
+                $return = $callback($subject, $data, $name);
+                if (!is_null($return)) {
+                    throw new \Exception("The hook action '{$name}' has to return null.", 500);
+                }
             }
         }
         return true;
