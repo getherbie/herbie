@@ -17,10 +17,10 @@ class MarkdownPlugin
             Hook::attach('twigInitialized', function($twig) {
                 $options = ['is_safe' => ['html']];
                 $twig->addFunction(
-                    new \Twig_SimpleFunction('markdown', [MarkdownPlugin::class, 'parseMarkdown'], $options)
+                    new \Twig_SimpleFunction('markdown', ['MarkdownPlugin', 'parseMarkdown'], $options)
                 );
                 $twig->addFilter(
-                    new \Twig_SimpleFilter('markdown', [MarkdownPlugin::class, 'parseMarkdown'], $options)
+                    new \Twig_SimpleFilter('markdown', ['MarkdownPlugin', 'parseMarkdown'], $options)
                 );
             });
         }
@@ -28,9 +28,9 @@ class MarkdownPlugin
         // add shortcode
         if ((bool)$config->get('plugins.config.markdown.shortcode', true)) {
             #Hook::attach('shortcodeInitialized', function($shortcode) {
-            #    $shortcode->add('markdown', [MarkdownPlugin::class, 'markdownShortcode']);
+            #    $shortcode->add('markdown', ['MarkdownPlugin', 'markdownShortcode']);
             #});
-            Hook::attach('shortcodeInitialized', [MarkdownPlugin::class, 'addShortcode']);
+            Hook::attach('shortcodeInitialized', ['MarkdownPlugin', 'addShortcode']);
 
         }
 
@@ -44,7 +44,7 @@ class MarkdownPlugin
 
     public static function addShortcode($shortcode)
     {
-        $shortcode->add('markdown', [MarkdownPlugin::class, 'markdownShortcode']);
+        $shortcode->add('markdown', ['MarkdownPlugin', 'markdownShortcode']);
     }
 
     public static function parseMarkdown($value)
