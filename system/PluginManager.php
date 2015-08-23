@@ -13,57 +13,47 @@ namespace Herbie;
 
 class PluginManager
 {
-    /**
-     * @var array
-     */
-    private $plugins;
 
-    /**
-     * @var array
-     */
-    private $events;
+    /** @var array  */
+    private $enabled;
 
-    /**
-     * @var array
-     */
-    private $dirs;
+    /** @var string  */
+    private $path;
 
-    /**
-     * @var boolean
-     */
+    /** @var array  */
+    private $loaded;
+
+    /** @var bool  */
     private $initialized;
 
-    private $pluginInitialized;
-
     /**
-     *
+     * @param array $enabled
+     * @param $path
      */
-    public function __construct()
+    public function __construct(array $enabled, $path)
     {
-        $this->plugins =  [];
-        $this->events = [];
-        $this->dirs = [];
+        $this->enabled = $enabled;
+        $this->path = realpath($path);
+        $this->loaded = [];
         $this->initialized = false;
-        $this->pluginInitialized = [];
     }
 
     /**
-     * @param Config $config
      * @return bool
      * @throws \RuntimeException
      */
-    public function init(Config $config)
+    public function init()
     {
-        $this->installSysPlugin('twig', $config);
-        $this->installSysPlugin('shortcode', $config);
-        $this->installSysPlugin('markdown', $config);
-        $this->installSysPlugin('textile', $config);
+        // add system plugins
+        $path = realpath(__DIR__ . '/../plugins');
+        $plugins = ['twig', 'shortcode', 'markdown', 'textile'];
+        foreach ($plugins as $key) {
+            $this->loadPlugin($path, $key);
+        }
 
-        $pluginPath = rtrim($config->get('plugins.path'), '/');
-        $pluginList = $config->get('plugins.enable', []);
-        foreach ($pluginList as $pluginKey) {
-            $pluginObj = $this->createPlugin($pluginPath, $pluginKey, $config);
-            $this->addPlugin($pluginObj, $pluginKey);
+        // add third-party plugins
+        foreach ($this->enabled as $key) {
+            $this->loadPlugin($this->path, $key);
         }
 
         $this->initialized = true;
@@ -71,38 +61,16 @@ class PluginManager
     }
 
     /**
+     * @param string $path
      * @param string $key
-     * @param Config $config
      */
-    protected function installSysPlugin($key, $config)
+    protected function loadPlugin($path, $key)
     {
-        $pluginObj = $this->createPlugin(__DIR__ . '/../plugins/', $key, $config, true);
-        $this->addPlugin($pluginObj, $key);
-    }
-
-    /**
-     * @param $pluginPath
-     * @param $pluginKey
-     * @param $config
-     * @return Plugin
-     */
-    protected function createPlugin($pluginPath, $pluginKey, $config, $isSystemPlugin = false)
-    {
-        $filePath = sprintf('%s/%s/%sPlugin.php', $pluginPath, $pluginKey, ucfirst($pluginKey));
-
-        if (!is_file($filePath)) {
-            $message = sprintf('Plugin "%s" enabled but not found!', $pluginKey);
-            throw new \RuntimeException($message);
+        $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
+        if (is_readable($pluginPath)) {
+            require($pluginPath);
+            $this->loaded[$key] = dirname($pluginPath);
         }
-
-        $this->dirs[$pluginKey] = dirname($filePath);
-
-        if ($isSystemPlugin) {
-            $pluginClass = '\\herbie\\sysplugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
-        } else {
-            $pluginClass = '\\herbie\\plugin\\' . $pluginKey . '\\' . ucfirst($pluginKey) . 'Plugin';
-        }
-        return new $pluginClass($config);
     }
 
     /**
@@ -114,88 +82,11 @@ class PluginManager
     }
 
     /**
-     * @param string $eventName
-     * @param mixed $subject
-     * @param array $attributes
-     * @param DI $DI
-     * @return mixed
-     */
-    public function dispatch($eventName, $subject, array $attributes, $DI)
-    {
-        if (!isset($this->events[$eventName])) {
-            return $subject;
-        }
-
-        foreach ($this->events[$eventName] as $pluginKey) {
-            $plugin = $this->plugins[$pluginKey];
-            if (!isset($this->pluginInitialized[$pluginKey])) {
-                $plugin->init(\Herbie\DI::instance());
-                $this->pluginInitialized[$pluginKey] = true;
-            }
-            call_user_func([$plugin, $eventName], $subject, $attributes, $DI);
-        }
-
-        return $subject;
-    }
-
-    /**
-     * @param Plugin $plugin
-     * @param string $pluginKey
-     */
-    public function addPlugin(Plugin $plugin, $pluginKey)
-    {
-        if (isset($this->plugins[$pluginKey])) {
-            $message = sprintf('Plugin "%s" is already installed!', $pluginKey);
-            throw new \Exception($message, 500);
-        }
-        $this->plugins[$pluginKey] = $plugin;
-        foreach ($plugin->getSubscribedEvents() as $eventName) {
-            $this->events[$eventName][] = $pluginKey;
-        }
-    }
-
-    /**
-     * @param string $pluginKey
-     * @return Plugin
-     * @throws \Exception
-     */
-    public function getPlugin($pluginKey)
-    {
-        if (!isset($this->plugins[$pluginKey])) {
-            $message = sprintf('Plugin "%s" not found!', $pluginKey);
-            throw new \Exception($message, 500);
-        }
-        return $this->plugins[$pluginKey];
-    }
-
-    /**
-     * @param string $pluginKey
-     * @return bool
-     */
-    public function hasPlugin($pluginKey)
-    {
-        return isset($this->plugins[$pluginKey]);
-    }
-
-    /**
      * @return array
      */
-    public function getDirectories()
+    public function getLoadedPlugins()
     {
-        return $this->dirs;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    public function getPlugins()
-    {
-        return $this->plugins;
+        return $this->loaded;
     }
 
 }
