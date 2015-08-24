@@ -1,7 +1,5 @@
 <?php
 
-namespace herbie\sysplugin\markdown;
-
 use Herbie\DI;
 use Herbie\Hook;
 
