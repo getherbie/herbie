@@ -19,6 +19,12 @@ class TwigPlugin
     public function initTwig()
     {
         $config = DI::get('Config');
+
+        // Add custom namespace path to Imagine lib
+        $vendorDir = $config->get('site.path') . '/../vendor';
+        $autoload = require($vendorDir . '/autoload.php');
+        $autoload->add('Twig_', __DIR__ . '/vendor/twig/lib');
+
         $this->twig = new Twig($config);
         $this->twig->init();
         Di::set('Twig', $this->twig);

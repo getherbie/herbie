@@ -8,8 +8,7 @@
     "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
-        "symfony/yaml": "2.7.*",
-        "twig/twig": "1.18.*"
+        "symfony/yaml": "2.7.*"
     },
     "autoload": {
         "psr-4": {
