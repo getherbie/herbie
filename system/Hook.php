@@ -75,11 +75,9 @@ class Hook
             return null;
         }
         foreach (static::$hooks[$name] as $callback) {
-            if (is_callable($callback)) {
-                $return = $callback($subject, $data, $name);
-                if (!is_null($return)) {
-                    throw new \Exception("The hook action '{$name}' has to return null.", 500);
-                }
+            $return = $callback($subject, $data, $name);
+            if (!is_null($return)) {
+                throw new \Exception("The hook action '{$name}' has to return null.", 500);
             }
         }
         return true;
@@ -99,11 +97,9 @@ class Hook
             return $subject;
         }
         foreach (static::$hooks[$name] as $callback) {
-            if (is_callable($callback)) {
-                $subject = $callback($subject, $data, $name);
-                if (is_null($subject)) {
-                    throw new \Exception("The hook filter '{$name}' has to return a value, null given.", 500);
-                }
+            $subject = $callback($subject, $data, $name);
+            if (is_null($subject)) {
+                throw new \Exception("The hook filter '{$name}' has to return a value, null given.", 500);
             }
         }
         return $subject;
@@ -126,7 +122,7 @@ class Hook
         foreach (static::$hooks[$name] as $callback) {
             if (is_array($callback)) {
                 $config[] = $callback;
-            } elseif (is_callable($callback)) {
+            } else {
                 $return = $callback($subject, $data, $name);
                 if (is_null($return) || !is_array($return)) {
                     throw new \Exception("The hook filter '{$name}' has to return an array.", 500);
