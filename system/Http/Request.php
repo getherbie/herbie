@@ -91,6 +91,11 @@ class Request
         return null;
     }
 
+    public function getMethod()
+    {
+        return strtoupper($this->getServer('REQUEST_METHOD'));
+    }
+
     public function getAuthData()
     {
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
