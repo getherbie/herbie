@@ -39,12 +39,12 @@ class Hook
     }
 
     /**
-     * Trigger a hook action or filter.
+     * Trigger a hook action, filter or config. The return value depends on the hook type.
      * @param string $type
      * @param string $name
      * @param mixed $subject
      * @param array $data
-     * @return bool
+     * @return mixed
      * @throws \Exception
      */
     public static function trigger($type, $name, $subject = null, array $data = [])
@@ -62,11 +62,12 @@ class Hook
     }
 
     /**
-     * Trigger a hook action and return a boolean.
+     * Trigger a hook action and return null.
      * @param string $name
      * @param mixed $subject
      * @param array $data
-     * @return bool
+     * @return null
+     * @throws \Exception
      */
     public static function triggerAction($name, $subject = null, array $data = [])
     {
@@ -109,8 +110,9 @@ class Hook
     }
 
     /**
-     * @param $name
-     * @param $subject
+     * Trigger a hook config and return an composed array.
+     * @param string $name
+     * @param mixed $subject
      * @param array $data
      * @return array
      * @throws \Exception
