@@ -8,34 +8,30 @@ class Hook
     const FILTER = 'filter';
     const CONFIG = 'config';
 
-    /** @var array  */
-    private static $hooks = array();
+    /** @var array */
+    private static $hooks = [];
+
+    /** @var array */
+    private static $sorted = [];
 
     /**
      * Attach a hook.
      * @param string $name
      * @param callable $callback
+     * @param int $priority
      * @throws \Exception
      */
-    public static function attach($name, $callback)
+    public static function attach($name, $callback, $priority = 10)
     {
-        $args = func_get_args();
-        $numArgs = func_num_args();
-
-        if ($numArgs > 3) {
+        if (func_num_args() > 3) {
             throw new \Exception("You can't call Hook::attach() with more than 3 arguments!", 500);
         }
 
-        if (!isset(static::$hooks[$name])) {
-            static::$hooks[$name] = array();
+        if (!isset(static::$hooks[$name][$priority])) {
+            static::$hooks[$name][$priority] = array();
         }
 
-        if ($numArgs == 2) {
-            static::$hooks[$name][] = $callback;
-        } else {
-            static::$hooks[$name][$callback] = $args[2];
-        }
-
+        static::$hooks[$name][$priority][] = $callback;
     }
 
     /**
@@ -71,13 +67,16 @@ class Hook
      */
     public static function triggerAction($name, $subject = null, array $data = [])
     {
-        if (!array_key_exists($name, static::$hooks)) {
+        if (!static::has($name)) {
             return null;
         }
-        foreach (static::$hooks[$name] as $callback) {
-            $return = $callback($subject, $data, $name);
-            if (!is_null($return)) {
-                throw new \Exception("The hook action '{$name}' has to return null.", 500);
+        static::sort($name);
+        foreach (static::$hooks[$name] as $callbacks) {
+            foreach ($callbacks as $callback) {
+                $return = $callback($subject, $data, $name);
+                if (!is_null($return)) {
+                    throw new \Exception("The hook action '{$name}' has to return null.", 500);
+                }
             }
         }
         return true;
@@ -93,13 +92,16 @@ class Hook
      */
     public static function triggerFilter($name, $subject, array $data = [])
     {
-        if (!array_key_exists($name, static::$hooks)) {
+        if (!static::has($name)) {
             return $subject;
         }
-        foreach (static::$hooks[$name] as $callback) {
-            $subject = $callback($subject, $data, $name);
-            if (is_null($subject)) {
-                throw new \Exception("The hook filter '{$name}' has to return a value, null given.", 500);
+        static::sort($name);
+        foreach (static::$hooks[$name] as $callbacks) {
+            foreach ($callbacks as $callback) {
+                $subject = $callback($subject, $data, $name);
+                if (is_null($subject)) {
+                    throw new \Exception("The hook filter '{$name}' has to return a value, null given.", 500);
+                }
             }
         }
         return $subject;
@@ -116,21 +118,38 @@ class Hook
     public static function triggerConfig($name, $subject, array $data = [])
     {
         $config = [];
-        if (!array_key_exists($name, static::$hooks)) {
+        if (!static::has($name)) {
             return $config;
         }
-        foreach (static::$hooks[$name] as $callback) {
-            if (is_array($callback)) {
-                $config[] = $callback;
-            } else {
-                $return = $callback($subject, $data, $name);
-                if (is_null($return) || !is_array($return)) {
-                    throw new \Exception("The hook filter '{$name}' has to return an array.", 500);
+        static::sort($name);
+        foreach (static::$hooks[$name] as $callbacks) {
+            foreach ($callbacks as $callback) {
+                if (is_array($callback)) {
+                    $config[] = $callback;
+                } else {
+                    $return = $callback($subject, $data, $name);
+                    if (is_null($return) || !is_array($return)) {
+                        throw new \Exception("The hook filter '{$name}' has to return an array.", 500);
+                    }
+                    $config[] = $return;
                 }
-                $config[] = $return;
             }
         }
         return $config;
+    }
+
+    /**
+     * Sort hook callbacks by priority and only once.
+     * @param string $name
+     * @return bool
+     */
+    private static function sort($name)
+    {
+        if (array_key_exists($name, static::$sorted)) {
+            return false;
+        }
+        static::$sorted[$name] = true;
+        return ksort(static::$hooks[$name], SORT_NUMERIC);
     }
 
     /**
