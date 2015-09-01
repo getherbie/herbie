@@ -67,6 +67,11 @@ class Request
         return isset($this->get[$name]) ? $this->get[$name] : $default;
     }
 
+    public function setQuery($name, $mixed)
+    {
+        $this->get[$name] = $mixed;
+    }
+
     public function getPost($name, $default = null)
     {
         return isset($this->post[$name]) ? $this->post[$name] : $default;
