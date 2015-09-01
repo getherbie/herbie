@@ -60,7 +60,7 @@ class PageLoader
      */
     public function loadRaw($alias)
     {
-        $content = $this->readFile($alias, false);
+        $content = $this->readFile($alias);
         return $this->parseContent($content);
     }
 
