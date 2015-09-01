@@ -125,7 +125,7 @@ class Builder
     private function storeCollection($collection)
     {
         if (is_null($this->cache)) {
-            return;
+            return false;
         }
         $collection->fromCache = true;
         return $this->cache->set(__CLASS__, $collection);
