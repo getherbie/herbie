@@ -23,14 +23,9 @@ class Hook
      */
     public static function attach($name, $callback, $priority = 10)
     {
-        if (func_num_args() > 3) {
-            throw new \Exception("You can't call Hook::attach() with more than 3 arguments!", 500);
-        }
-
         if (!isset(static::$hooks[$name][$priority])) {
             static::$hooks[$name][$priority] = array();
         }
-
         static::$hooks[$name][$priority][] = $callback;
     }
 
