@@ -33,7 +33,8 @@ trait ItemTrait
             'content_type' => 'text/html',
             'authors' => [],
             'categories' => [],
-            'tags' => []
+            'tags' => [],
+            'menu' => ''
         ];
         $this->setData($data);
     }
@@ -54,6 +55,16 @@ trait ItemTrait
         $this->data['date'] = is_numeric($date) ? date('c', $date) : $date;
     }
 
+    /**
+     * @return string
+     */
+    public function getMenuTitle()
+    {
+        if (!empty($this->data['menu'])) {
+            return $this->data['menu'];
+        }
+        return $this->data['title'];
+    }
 
     /**
      * @param string $author
