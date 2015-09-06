@@ -343,7 +343,7 @@ class HerbieExtension extends Twig_Extension
         }
 
         foreach (Application::getService('Menu\Page\RootPath') as $item) {
-            $links[] = $this->createLink($item->route, $item->title);
+            $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
 
         if (!empty($reverse)) {
@@ -444,7 +444,7 @@ class HerbieExtension extends Twig_Extension
         $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
-            return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         };
         return $htmlTree->render($this->request->getRoute());
     }
@@ -537,7 +537,7 @@ class HerbieExtension extends Twig_Extension
             $attribs['class'] = $linkClass;
         }
         if (isset($prev)) {
-            $label = empty($prevPageLabel) ? $prev->title : $prevPageLabel;
+            $label = empty($prevPageLabel) ? $prev->getMenuTitle() : $prevPageLabel;
             $label = sprintf('<span>%s</span>', $label);
             if ($prevPageIcon) {
                 $label = $prevPageIcon . $label;
@@ -545,11 +545,11 @@ class HerbieExtension extends Twig_Extension
             $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
         }
         /*if(isset($cur)) {
-            $label = empty($curPageLabel) ? $cur->title : $curPageLabel;
+            $label = empty($curPageLabel) ? $cur->getMenuTitle() : $curPageLabel;
             $replacements['{cur}'] = $this->createLink($cur->route, $label, $attribs);
         }*/
         if (isset($next)) {
-            $label = empty($nextPageLabel) ? $next->title : $nextPageLabel;
+            $label = empty($nextPageLabel) ? $next->getMenuTitle() : $nextPageLabel;
             $label = sprintf('<span>%s</span>', $label);
             if ($nextPageIcon) {
                 $label = $label . $nextPageIcon;
@@ -595,7 +595,7 @@ class HerbieExtension extends Twig_Extension
         $htmlTree->itemCallback = function ($node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
-            return sprintf('<a href="%s">%s</a>', $href, $menuItem->title);
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         };
         return $htmlTree->render();
     }
