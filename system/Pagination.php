@@ -2,22 +2,31 @@
 
 namespace Herbie;
 
+use Herbie\Menu\Page\Collection;
+
 class Pagination implements \IteratorAggregate, \Countable
 {
 
     protected $items;
-    protected $page;
     protected $limit;
+    protected $name;
 
     /**
-     * @param array $items
+     * @param Collection|array $items
      * @param int $limit
+     * @param string $name
      */
-    public function __construct(array $items, $limit = 10)
+    public function __construct($items, $limit = 10, $name = 'page')
     {
-        $this->items = $items;
-        $this->limit = intval($limit);
-        $this->page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $this->items = [];
+        if (is_array($items)) {
+            $this->items = $items;
+        }
+        if ($items instanceof Collection) {
+            $this->items = $items->flatten();
+        }
+        $this->limit = $this->setLimit($limit);
+        $this->name = $name;
     }
 
     /**
@@ -25,11 +34,12 @@ class Pagination implements \IteratorAggregate, \Countable
      */
     public function getPage()
     {
+        $page = isset($_GET[$this->name]) ? intval($_GET[$this->name]) : 1;
         $calculated = ceil($this->count() / $this->limit);
-        if ($this->page > $calculated) {
-            $this->page = $calculated;
+        if ($page > $calculated) {
+            $page = $calculated;
         }
-        return $this->page;
+        return $page;
     }
 
     /**
@@ -45,7 +55,8 @@ class Pagination implements \IteratorAggregate, \Countable
      */
     public function setLimit($limit)
     {
-        $this->limit = intval($limit);
+        $limit = (0 == $limit) ? 1000 : intval($limit);
+        $this->limit = $limit;
     }
 
     /**
