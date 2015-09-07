@@ -351,7 +351,10 @@ class HerbieExtension extends Twig_Extension
         }
 
         $html = '<ul class="breadcrumb">';
-        foreach ($links as $link) {
+        foreach ($links as $i => $link) {
+            if ($i > 0 && !empty($delim)) {
+                $html .= '<li class="delim">' . $delim . '</li>';
+            }
             $html .= '<li>' . $link . '</li>';
         }
         $html .= '</ul>';
