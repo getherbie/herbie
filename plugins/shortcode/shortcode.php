@@ -31,6 +31,7 @@ class ShortcodePlugin
         $this->addTelTag();
         $this->addImageTag();
         $this->addFileTag();
+        $this->addListingTag();
 
         Hook::trigger(Hook::ACTION, 'addShortcode', $this->shortcode);
 
@@ -129,6 +130,47 @@ class ShortcodePlugin
             }
 
             return \Herbie\DI::get('Twig')->render($options['path'], $params);
+        });
+    }
+
+    protected function addListingTag()
+    {
+        $this->add('listing', function($options) {
+
+            $options = array_merge([
+                'path' => '@widget/listing.twig',
+                'filter' => '',
+                'sort' => '',
+                'shuffle' => false,
+                'limit' => 10,
+                'pagination' => true
+            ], $options);
+
+            $collection = Herbie\DI::get('Menu\Page\Collection');
+
+            if (!empty($options['filter'])) {
+                list($field, $value) = explode('|', $options['filter']);
+                $collection = $collection->filter($field, $value);
+            }
+
+            if (!empty($options['sort'])) {
+                list($field, $direction) = explode('|', $options['sort']);
+                $collection = $collection->sort($field, $direction);
+            }
+
+            if (true == (int)$options['shuffle']) {
+                $collection = $collection->shuffle();
+            }
+
+            // filter pages with empty title
+            $collection = $collection->filter(function($page) {
+                return !empty($page->title);
+            });
+
+            $pagination = new \Herbie\Pagination($collection);
+            $pagination->setLimit($options['limit']);
+
+            return \Herbie\DI::get('Twig')->render($options['path'], ['pagination' => $pagination]);
         });
     }
 
