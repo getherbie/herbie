@@ -21,6 +21,11 @@ trait CollectionTrait
      */
     protected $items = [];
 
+    public function __construct(array $items = [])
+    {
+        $this->items = $items;
+    }
+
     /**
      * @param ItemInterface $item
      */
@@ -88,4 +93,72 @@ trait CollectionTrait
         }
         return null;
     }
+
+    /**
+     * Run a filter over each of the items.
+     *
+     * @param  callable|null  $callback
+     * @return static
+     */
+    public function filter($key = null, $value = null)
+    {
+        if (is_callable($key)) {
+            return new static(array_filter($this->items, $key));
+        }
+        if (is_string($key) && is_scalar($value)) {
+            return new static(array_filter($this->items, function($val) use ($key, $value) {
+                if ($val->{$key} == $value) {
+                    return true;
+                }
+            }));
+        }
+        return new static(array_filter($this->items));
+    }
+
+    /**
+     * Shuffle the items in the collection.
+     *
+     * @return static
+     */
+    public function shuffle()
+    {
+        $items = $this->items;
+        shuffle($items);
+        return new static($items);
+    }
+
+    public function flatten()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param callable|string|null $mixed
+     * @param string $direction
+     * @return static
+     */
+    public function sort($mixed = null, $direction = 'asc')
+    {
+        $items = $this->items;
+
+        if (is_callable($mixed)) {
+            uasort($items, $mixed);
+            return new static($items);
+        }
+
+        $field = is_string($mixed) ? $mixed : 'title';
+        uasort($items, function($a, $b) use ($field, $direction) {
+            if ($a->{$field} == $b->{$field}) {
+                return 0;
+            }
+            if ($direction == 'asc') {
+                return ($a->{$field} < $b->{$field}) ? -1 : 1;
+            } else {
+                return ($b->{$field} < $a->{$field}) ? -1 : 1;
+            }
+        });
+
+        return new static($items);
+    }
+
 }

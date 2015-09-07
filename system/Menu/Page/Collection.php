@@ -20,15 +20,4 @@ class Collection implements \IteratorAggregate, \Countable
 
     public $fromCache;
 
-    /**
-     * @param callable $callback
-     * @throws \InvalidArgumentException
-     */
-    public function sort(callable $callback)
-    {
-        if (!is_callable($callback)) {
-            throw new \InvalidArgumentException('Given callback is not callable.');
-        }
-        uasort($this->items, $callback);
-    }
 }
