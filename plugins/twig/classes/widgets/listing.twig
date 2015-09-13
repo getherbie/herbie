@@ -2,7 +2,7 @@
     <section>
         {% for menuitem in pagination %}
             <article>
-                <h2>{{ link(menuitem.route, menuitem.title) }}</h2>
+                <h2>{{ link(menuitem.route, menuitem.getMenuTitle()) }}</h2>
                 {% if menuitem.image %}
                     <div class="page-image">
                         <a href="{{ url(menuitem.route) }}"><img class="pure-img" src="{{ menuitem.image|imagine('t560x260') }}" alt=""/></a>
