@@ -61,7 +61,7 @@ class ShortcodePlugin
 
     protected function addDateTag()
     {
-        $this->add('date', function($options) {
+        $this->add('date', function ($options) {
             if (is_string($options)) {
                 $options = (array)$options;
             }
@@ -78,7 +78,7 @@ class ShortcodePlugin
 
     protected function addPageTag()
     {
-        $this->add('page', function($options) {
+        $this->add('page', function ($options) {
             if (empty($options[0])) {
                 return;
             }
@@ -94,7 +94,7 @@ class ShortcodePlugin
 
     protected function addSiteTag()
     {
-        $this->add('site', function($options) {
+        $this->add('site', function ($options) {
             if (empty($options[0])) {
                 return;
             }
@@ -111,7 +111,7 @@ class ShortcodePlugin
 
     protected function addIncludeTag()
     {
-        $this->add('include', function($options) {
+        $this->add('include', function ($options) {
 
             $params = $options;
 
@@ -136,7 +136,7 @@ class ShortcodePlugin
 
     protected function addListingTag()
     {
-        $this->add('listing', function($options) {
+        $this->add('listing', function ($options) {
 
             $options = array_merge([
                 'path' => '@widget/listing.twig',
@@ -164,7 +164,7 @@ class ShortcodePlugin
             }
 
             // filter pages with empty title
-            $collection = $collection->filter(function($page) {
+            $collection = $collection->filter(function ($page) {
                 return !empty($page->title);
             });
 
@@ -191,7 +191,7 @@ class ShortcodePlugin
 
             ob_start();
 
-            foreach($scanned as $i => $filename) {
+            foreach ($scanned as $i => $filename) {
 
                 $block = new Herbie\Page();
                 $block->setLoader($loader);
@@ -216,14 +216,14 @@ class ShortcodePlugin
 
     protected function addTwigTag()
     {
-        $this->add('twig', function($options, $content) {
+        $this->add('twig', function ($options, $content) {
             return \Herbie\DI::get('Twig')->renderString($content);
         });
     }
 
     protected function addEmailTag()
     {
-        $this->add('email', function($options) {
+        $this->add('email', function ($options) {
 
             $options = array_merge([
                 'address' => empty($options[0]) ? '' : $options[0],
@@ -249,14 +249,14 @@ class ShortcodePlugin
 
     protected function addTelTag()
     {
-        $this->add('tel', function($options, $content) {
+        $this->add('tel', function ($options, $content) {
             return '';
         });
     }
 
     protected function addLinkTag()
     {
-        $this->add('link', function($options) {
+        $this->add('link', function ($options) {
 
             $options = array_merge([
                 'href' => empty($options[0]) ? '' : $options[0],
@@ -366,7 +366,8 @@ class ShortcodePlugin
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    protected function human_filesize($bytes, $decimals = 0) {
+    protected function human_filesize($bytes, $decimals = 0)
+    {
         $sz = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . $sz[$factor];
