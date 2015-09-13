@@ -179,23 +179,35 @@ class ShortcodePlugin
     {
         $this->add('blocks', function ($options) {
 
-            // Folder with "blocks"
-            $page = Herbie\DI::get('Page');
-            $path = Herbie\DI::get('Alias')->get($page->path);
-            $info = pathinfo($path);
-            $dir = $info['dirname'] . '/_' . $info['filename'];
+            $options = array_merge([
+                'path' => Herbie\DI::get('Page')->getDefaultBlocksPath(),
+                'sort' => '',
+                'shuffle' => 'false'
+            ], (array)$options);
 
-            $loader = Herbie\DI::get('Loader\PageLoader');
+            // collect pages
+            $extensions = $this->config->get('pages.extensions', []);
+            $path = $options['path'];
+            $paths = [$path => Herbie\DI::get('Alias')->get($path)];
+            $pageBuilder = new Herbie\Menu\Page\Builder($paths, $extensions);
+            $collection = $pageBuilder->buildCollection();
+
+            if (!empty($options['sort'])) {
+                list($field, $direction) = explode('|', $options['sort']);
+                $collection = $collection->sort($field, $direction);
+            }
+
+            if ('true' == strtolower($options['shuffle'])) {
+                $collection = $collection->shuffle();
+            }
+
             $twig = Herbie\DI::get('Twig');
-            $scanned = is_dir($dir) ? array_diff(scandir($dir), ['..', '.']) : [];
 
             ob_start();
 
-            foreach ($scanned as $i => $filename) {
+            foreach ($collection as $i => $item) {
 
-                $block = new Herbie\Page();
-                $block->setLoader($loader);
-                $block->load("{$dir}/{$filename}");
+                $block = Herbie\Page::create($item->path);
 
                 if (!empty($block->layout) && ($block->layout == 'default.html')) {
                     $block->layout = false;

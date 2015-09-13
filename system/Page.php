@@ -169,4 +169,26 @@ class Page
         ];
     }
 
+    /**
+     * @param string $alias
+     * @return static
+     */
+    public static function create($alias)
+    {
+        $loader = DI::get('Loader\PageLoader');
+        $page = new static();
+        $page->setLoader($loader);
+        $page->load($alias);
+        return $page;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultBlocksPath()
+    {
+        $pathinfo = pathinfo($this->path);
+        return $pathinfo['dirname'] . '/_' . $pathinfo['filename'];
+    }
+
 }
