@@ -32,6 +32,7 @@ class ShortcodePlugin
         $this->addImageTag();
         $this->addFileTag();
         $this->addListingTag();
+        $this->addBlocksTag();
 
         Hook::trigger(Hook::ACTION, 'addShortcode', $this->shortcode);
 
@@ -171,6 +172,45 @@ class ShortcodePlugin
             $pagination->setLimit($options['limit']);
 
             return \Herbie\DI::get('Twig')->render($options['path'], ['pagination' => $pagination]);
+        });
+    }
+
+    protected function addBlocksTag()
+    {
+        $this->add('blocks', function ($options) {
+
+            // Folder with "blocks"
+            $page = Herbie\DI::get('Page');
+            $path = Herbie\DI::get('Alias')->get($page->path);
+            $info = pathinfo($path);
+            $dir = $info['dirname'] . '/_' . $info['filename'];
+
+            $loader = Herbie\DI::get('Loader\PageLoader');
+            $twig = Herbie\DI::get('Twig');
+            $scanned = is_dir($dir) ? array_diff(scandir($dir), ['..', '.']) : [];
+
+            ob_start();
+
+            foreach($scanned as $i => $filename) {
+
+                $block = new Herbie\Page();
+                $block->setLoader($loader);
+                $block->load("{$dir}/{$filename}");
+
+                if (!empty($block->layout) && ($block->layout == 'default.html')) {
+                    $block->layout = false;
+                }
+
+                if (empty($block->layout)) {
+                    echo $twig->renderPageSegment(0, $block);
+                } else {
+                    $twig->getEnvironment()->getExtension('herbie')->setPage($block);
+                    echo $twig->render($block->layout);
+                }
+                ob_flush();
+            }
+
+            return ob_get_clean();
         });
     }
 
