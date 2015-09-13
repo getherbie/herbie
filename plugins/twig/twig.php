@@ -39,9 +39,10 @@ class TwigPlugin
         return $this->twig->renderString($content);
     }
 
-    public function twigifyLayout($unused, array $attributes)
+    public function twigifyLayout($page)
     {
-        return $this->twig->render($attributes['layout']);
+        $this->twig->getEnvironment()->getExtension('herbie')->setPage($page);
+        return $this->twig->render($page->layout);
     }
 
 }

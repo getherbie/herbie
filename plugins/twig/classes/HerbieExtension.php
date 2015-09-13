@@ -30,6 +30,7 @@ class HerbieExtension extends Twig_Extension
     private $config;
     private $request;
     private $urlGenerator;
+    private $page;
 
     /**
      * @var Twig_Environment
@@ -60,6 +61,16 @@ class HerbieExtension extends Twig_Extension
         return 'herbie';
     }
 
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
     /**
      * @return array
      */
@@ -67,7 +78,7 @@ class HerbieExtension extends Twig_Extension
     {
         return [
             'site' => new Site(),
-            'page' => Application::getPage()
+            'page' => $this->page
         ];
     }
 
@@ -312,7 +323,7 @@ class HerbieExtension extends Twig_Extension
         if (empty($route)) {
             $route = 'index';
         }
-        $layout = Application::getPage()->layout;
+        $layout = $this->page->layout;
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
@@ -378,7 +389,8 @@ class HerbieExtension extends Twig_Extension
      */
     public function functionContent($segmentId = 0, $wrap = false)
     {
-        $content = Application::getService('Twig')->renderPageSegment($segmentId);
+        $page = $this->getPage();
+        $content = Application::getService('Twig')->renderPageSegment($segmentId, $page);
         if (empty($wrap)) {
             return $content;
         }
@@ -480,9 +492,9 @@ class HerbieExtension extends Twig_Extension
             $titles[] = $item->title;
         }
 
-        $page = Application::getPage();
-        if ($this->testIsPost($page)) {
-            $titles[] = $page->title;
+        #$page = Application::getPage();
+        if ($this->testIsPost($this->page)) {
+            $titles[] = $this->page->title;
         }
 
         if (!empty($reverse)) {

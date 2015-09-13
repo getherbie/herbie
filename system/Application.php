@@ -265,13 +265,13 @@ class Application
                     $content = $page->getSegment(0);
                     $content->string = Hook::trigger(Hook::FILTER, 'renderContent', $content->string, $page->getData());
                 } else {
-                    $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', '', ['layout' => $page->layout]);
+                    $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
                 }
 
             } catch (\Exception $e) {
 
                 $page->setError($e);
-                $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', '', ['layout' => 'error.html']);
+                $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
 
             }
 

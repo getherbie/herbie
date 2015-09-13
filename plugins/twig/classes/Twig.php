@@ -14,6 +14,7 @@ namespace herbie\sysplugin\twig\classes;
 use Herbie\Application;
 use Herbie\Hook;
 use Herbie\Http\Response;
+use Herbie\Page;
 use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Loader_Chain;
@@ -105,7 +106,7 @@ class Twig
      * @param Page $page
      * @return Response
      */
-    public function renderPage(Page $page)
+    /*public function renderPage(Page $page)
     {
 
         try {
@@ -128,7 +129,7 @@ class Twig
         $response->setHeader('Content-Type', $page->content_type);
 
         return $response;
-    }
+    }*/
 
     /**
      * Renders a page content segment.
@@ -136,7 +137,7 @@ class Twig
      * @param Page $page
      * @return string
      */
-    public function renderPageSegment($segmentId, Page $page = null)
+    public function renderPageSegment($segmentId, Page $page)
     {
         if (is_null($page)) {
             $page = Application::getPage();
