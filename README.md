@@ -1,14 +1,14 @@
-Herbie
+Cheküll
 ======
 
-Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
+Cheküll ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
 
-## Was ist Herbie?
+## Was ist Cheküll?
 
-Mit Herbie erstellst du mit einfachen Markdown- und Textiledateien in kurzer Zeit und mit wenig Aufwand eine voll
+Mit Cheküll erstellst du mit einfachen Markdown- und Textiledateien in kurzer Zeit und mit wenig Aufwand eine voll
 funktionsfähige Website oder einen Blog.
 
-Herbie baut auf bewährten Bibliotheken und Komponenten auf.
+Cheküll baut auf bewährten Bibliotheken und Komponenten auf.
 
 * [Markdown][markdown] und [Textile][textile] zur Formatierung von Inhalten
 * [Twig][twig] Template Engine zur Erstellung von Layouts
@@ -21,15 +21,15 @@ Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
 ## Installation
 
-Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
+Am einfachsten installierst du Cheküll via Composer. Führe dazu im Terminal die folgende Anweisung aus:
 
-    $ composer create-project getherbie/start-website:dev-master myproject
+    $ composer create-project getcheckuell/start-website:dev-master myproject
 
 Composer erstellt im Verzeichnis `myproject` eine Website und installiert alle abhängigen Bibliotheken.
 
 ## Website
 
-Weitere Informationen findest du unter [www.getherbie.org](http://www.getherbie.org).
+Weitere Informationen findest du unter [www.getcheckuell.org](http://www.getcheckuell.org).
 
 
 [markdown]: http://daringfireball.net/projects/markdown/
