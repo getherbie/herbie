@@ -1,8 +1,8 @@
 {
-    "name": "getherbie/herbie",
-    "homepage": "http://www.getherbie.org",
-    "description": "Herbie is a flat-file CMS & blog system. Simple installation - no database - just text files.",
-    "keywords": ["herbie", "flat-file", "cms", "blog"],
+    "name": "getcheckuell/checkuell",
+    "homepage": "http://www.checkuell.org",
+    "description": "Checküll is a flat-file CMS & blog system. Simple installation - no database - just text files.",
+    "keywords": ["checkuell", "flat-file", "cms", "blog"],
     "type": "library",
     "minimum-stability": "dev",
     "license":"BSD-3-Clause",
