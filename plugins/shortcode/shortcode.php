@@ -25,7 +25,6 @@ class ShortcodePlugin
         $this->addSiteTag();
         $this->addIncludeTag();
         $this->addTwigTag();
-        // http://getkirby.com/docs/content/text#basic-formats
         $this->addLinkTag();
         $this->addEmailTag();
         $this->addTelTag();
@@ -83,7 +82,7 @@ class ShortcodePlugin
                 return;
             }
             $name = ltrim($options[0], '.');
-            $field = \Herbie\DI::get('Page')->{$name};
+            $field = DI::get('Page')->{$name};
             if (is_array($field)) {
                 $delim = empty($options['join']) ? ' ' : $options['join'];
                 return join($delim, $field);
@@ -130,7 +129,7 @@ class ShortcodePlugin
                 unset($params['path']);
             }
 
-            return \Herbie\DI::get('Twig')->render($options['path'], $params);
+            return DI::get('Twig')->render($options['path'], $params);
         });
     }
 
@@ -147,7 +146,7 @@ class ShortcodePlugin
                 'pagination' => true
             ], $options);
 
-            $collection = Herbie\DI::get('Menu\Page\Collection');
+            $collection = DI::get('Menu\Page\Collection');
 
             if (!empty($options['filter'])) {
                 list($field, $value) = explode('|', $options['filter']);
@@ -171,7 +170,7 @@ class ShortcodePlugin
             $pagination = new \Herbie\Pagination($collection);
             $pagination->setLimit($options['limit']);
 
-            return \Herbie\DI::get('Twig')->render($options['path'], ['pagination' => $pagination]);
+            return DI::get('Twig')->render($options['path'], ['pagination' => $pagination]);
         });
     }
 
@@ -180,7 +179,7 @@ class ShortcodePlugin
         $this->add('blocks', function ($options) {
 
             $options = array_merge([
-                'path' => Herbie\DI::get('Page')->getDefaultBlocksPath(),
+                'path' => DI::get('Page')->getDefaultBlocksPath(),
                 'sort' => '',
                 'shuffle' => 'false'
             ], (array)$options);
@@ -188,7 +187,7 @@ class ShortcodePlugin
             // collect pages
             $extensions = $this->config->get('pages.extensions', []);
             $path = $options['path'];
-            $paths = [$path => Herbie\DI::get('Alias')->get($path)];
+            $paths = [$path => DI::get('Alias')->get($path)];
             $pageBuilder = new Herbie\Menu\Page\Builder($paths, $extensions);
             $collection = $pageBuilder->buildCollection();
 
@@ -201,7 +200,7 @@ class ShortcodePlugin
                 $collection = $collection->shuffle();
             }
 
-            $twig = Herbie\DI::get('Twig');
+            $twig = DI::get('Twig');
 
             ob_start();
 
@@ -229,7 +228,7 @@ class ShortcodePlugin
     protected function addTwigTag()
     {
         $this->add('twig', function ($options, $content) {
-            return \Herbie\DI::get('Twig')->renderString($content);
+            return DI::get('Twig')->renderString($content);
         });
     }
 
@@ -286,7 +285,7 @@ class ShortcodePlugin
 
             // Interner Link
             if (strpos($options['href'], 'http') !== 0) {
-                $options['href'] = \Herbie\DI::get('Url\UrlGenerator')->generate($options['href']);
+                $options['href'] = DI::get('Url\UrlGenerator')->generate($options['href']);
             }
 
             $replace = [
