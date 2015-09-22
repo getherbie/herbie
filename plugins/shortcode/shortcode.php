@@ -208,6 +208,8 @@ class ShortcodePlugin
 
                 $block = Herbie\Page::create($item->path);
 
+                DI::set('Page', $block);
+
                 if (!empty($block->layout) && ($block->layout == 'default.html')) {
                     $block->layout = false;
                 }
