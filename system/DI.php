@@ -57,7 +57,8 @@ class DI implements \ArrayAccess
      */
     public static function set($name, $service)
     {
-        return static::instance()->offsetSet($name, $service);
+        static::instance()->offsetUnset($name);
+        static::instance()->offsetSet($name, $service);
     }
 
     /**
