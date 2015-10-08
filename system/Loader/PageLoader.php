@@ -107,7 +107,7 @@ class PageLoader
         if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
 
-            $splitted = preg_split('/^-{3} (.+) -{3}$\n?/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+            $splitted = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $count = count($splitted);
             if ($count %2 == 0) {
