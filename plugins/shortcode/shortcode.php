@@ -202,6 +202,9 @@ class ShortcodePlugin
 
             $twig = DI::get('Twig');
 
+            // store page
+            $page = DI::get('Page');
+
             ob_start();
 
             foreach ($collection as $i => $item) {
@@ -222,6 +225,10 @@ class ShortcodePlugin
                 }
                 ob_flush();
             }
+
+            // restore page
+            $twig->getEnvironment()->getExtension('herbie')->setPage($page);
+            DI::set('Page', $page);
 
             return ob_get_clean();
         });
