@@ -209,12 +209,20 @@ class ShortcodePlugin
 
             foreach ($collection as $i => $item) {
 
+                if (!empty($options['name']) && ($options['name'] != $i)) {
+                    continue;
+                }
+
                 $block = Herbie\Page::create($item->path);
 
                 DI::set('Page', $block);
 
                 if (!empty($block->layout) && ($block->layout == 'default.html')) {
                     $block->layout = false;
+                }
+
+                if (!empty($block->layout) && file_exists($paths[$path].'/.'.$i.'/'.$block->layout)) {
+                    $block->layout = $path.'/.'.$i.'/'.$block->layout;
                 }
 
                 if (empty($block->layout)) {
