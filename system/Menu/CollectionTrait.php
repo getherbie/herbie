@@ -110,6 +110,7 @@ trait CollectionTrait
                 if ($val->{$key} == $value) {
                     return true;
                 }
+                return false;
             }));
         }
         return new static(array_filter($this->items));
