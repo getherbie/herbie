@@ -221,7 +221,7 @@ class ShortcodePlugin
                     echo $twig->renderPageSegment(0, $block);
                 } else {
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
-                    echo $twig->render($block->layout);
+                    echo $twig->render($block->layout, $block->data);
                 }
                 ob_flush();
             }
