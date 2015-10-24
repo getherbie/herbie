@@ -177,8 +177,6 @@ class ShortcodePlugin
     protected function addBlocksTag()
     {
         $this->add('blocks', function ($options) {
-            
-            $return = '';
 
             $options = array_merge([
                 'path' => DI::get('Page')->getDefaultBlocksPath(),
@@ -225,10 +223,10 @@ class ShortcodePlugin
                 }
 
                 if (empty($block->layout)) {
-                    $return .= $twig->renderPageSegment(0, $block);
+                    echo $twig->renderPageSegment(0, $block);
                 } else {
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
-                    $return .= $twig->render($block->layout);
+                    echo $twig->render($block->layout);
                 }
                 ob_flush();
             }
@@ -237,8 +235,7 @@ class ShortcodePlugin
             $twig->getEnvironment()->getExtension('herbie')->setPage($page);
             DI::set('Page', $page);
 
-            ob_get_clean();
-            return $return;
+            return ob_get_clean();
         });
     }
 
