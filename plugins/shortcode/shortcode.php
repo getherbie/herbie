@@ -217,6 +217,11 @@ class ShortcodePlugin
                     $block->layout = false;
                 }
 
+                // self-contained blocks aka widgets
+                if (!empty($block->layout) && file_exists($paths[$path].'/.layouts/'.$block->layout)) {
+                    $block->layout = $path.'/.layouts/'.$block->layout;
+                }
+
                 if (empty($block->layout)) {
                     echo $twig->renderPageSegment(0, $block);
                 } else {
