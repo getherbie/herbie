@@ -37,7 +37,7 @@ class MarkdownPlugin
                 return $content;
             }
             return MarkdownPlugin::parseMarkdown($content);
-        },9);
+        });
     }
 
     public static function addShortcode($shortcode)
