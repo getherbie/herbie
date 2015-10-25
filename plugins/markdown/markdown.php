@@ -52,7 +52,9 @@ class MarkdownPlugin
 
         $parser = new \ParsedownExtra();
         $parser->setUrlsLinked(false);
-        return $parser->text($value);
+        $html = $parser->text($value);
+        $html = htmlspecialchars_decode($html, ENT_QUOTES|ENT_HTML5);
+        return $html;
     }
 
     public static function markdownShortcode($attribs, $content)
