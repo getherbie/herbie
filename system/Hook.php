@@ -65,8 +65,7 @@ class Hook
         if (!static::has($name)) {
             return null;
         }
-        static::sort($name);
-        foreach (static::$hooks[$name] as $callbacks) {
+        foreach (static::get($name) as $callbacks) {
             foreach ($callbacks as $callback) {
                 $return = $callback($subject, $data, $name);
                 if (!is_null($return)) {
@@ -90,8 +89,7 @@ class Hook
         if (!static::has($name)) {
             return $subject;
         }
-        static::sort($name);
-        foreach (static::$hooks[$name] as $callbacks) {
+        foreach (static::get($name) as $callbacks) {
             foreach ($callbacks as $callback) {
                 $subject = $callback($subject, $data, $name);
                 if (is_null($subject)) {
@@ -116,8 +114,7 @@ class Hook
         if (!static::has($name)) {
             return $config;
         }
-        static::sort($name);
-        foreach (static::$hooks[$name] as $callbacks) {
+        foreach (static::get($name) as $callbacks) {
             foreach ($callbacks as $callback) {
                 if (is_array($callback)) {
                     $config[] = $callback;
@@ -164,6 +161,7 @@ class Hook
      */
     public static function get($name)
     {
+        static::sort($name);
         return array_key_exists($name, static::$hooks) ? static::$hooks[$name] : [];
     }
 
