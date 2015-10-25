@@ -209,15 +209,9 @@ class ShortcodePlugin
 
             foreach ($collection as $i => $item) {
 
-                #ob_start();
-
                 $block = Herbie\Page::create($item->path);
 
                 DI::set('Page', $block);
-
-                if (!empty($block->layout) && ($block->layout == 'default.html')) {
-                    #$block->layout = false;
-                }
 
                 // self-contained blocks aka widgets
                 if (!empty($block->layout) && file_exists($paths[$path].'/.layouts/'.$block->layout)) {
@@ -230,7 +224,6 @@ class ShortcodePlugin
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
                     $return .= $twig->render($block->layout);
                 }
-                #$return .= ob_get_clean();
             }
 
             // restore page
