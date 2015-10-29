@@ -53,7 +53,6 @@ class MarkdownPlugin
         $parser = new \ParsedownExtra();
         $parser->setUrlsLinked(false);
         $html = $parser->text($value);
-        $html = htmlspecialchars_decode($html, ENT_QUOTES|ENT_HTML5);
         return $html;
     }
 

@@ -46,7 +46,7 @@ class PluginManager
     {
         // add system plugins
         $path = realpath(__DIR__ . '/../plugins');
-        $plugins = ['twig', 'markdown', 'textile', 'shortcode'];
+        $plugins = ['twig', 'shortcode', 'markdown', 'textile'];
         foreach ($plugins as $key) {
             $this->loadPlugin($path, $key);
         }

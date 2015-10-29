@@ -224,13 +224,14 @@ class ShortcodePlugin
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
                     $return .= $twig->render($block->layout);
                 }
+                $return .= "\n";
             }
 
             // restore page
             $twig->getEnvironment()->getExtension('herbie')->setPage($page);
             DI::set('Page', $page);
 
-            return $return;
+            return trim($return);
         });
     }
 
