@@ -222,7 +222,7 @@ class ShortcodePlugin
                     $return .= $twig->renderPageSegment(0, $block);
                 } else {
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
-                    $return .= $twig->render($block->layout);
+                    $return .= $twig->render($block->layout, ['block' => $block]);
                 }
                 $return .= "\n";
             }
