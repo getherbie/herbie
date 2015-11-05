@@ -205,7 +205,7 @@ class ShortcodePlugin
             // store page
             $page = DI::get('Page');
 
-            ob_start();
+            $return = '';
 
             foreach ($collection as $i => $item) {
 
@@ -213,24 +213,29 @@ class ShortcodePlugin
 
                 DI::set('Page', $block);
 
-                if (!empty($block->layout) && ($block->layout == 'default.html')) {
-                    $block->layout = false;
+                // self-contained blocks aka widgets
+                if (!empty($block->layout) && file_exists($paths[$path].'/.layouts/'.$block->layout)) {
+                    $block->layout = $path.'/.layouts/'.$block->layout;
                 }
 
                 if (empty($block->layout)) {
-                    echo $twig->renderPageSegment(0, $block);
+                    $return .= $twig->renderPageSegment(0, $block);
                 } else {
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
+<<<<<<< HEAD
                     echo $twig->render($block->layout, $block->data);
+=======
+                    $return .= $twig->render($block->layout);
+>>>>>>> master
                 }
-                ob_flush();
+                $return .= "\n";
             }
 
             // restore page
             $twig->getEnvironment()->getExtension('herbie')->setPage($page);
             DI::set('Page', $page);
 
-            return ob_get_clean();
+            return trim($return);
         });
     }
 

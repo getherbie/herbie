@@ -52,7 +52,8 @@ class MarkdownPlugin
 
         $parser = new \ParsedownExtra();
         $parser->setUrlsLinked(false);
-        return $parser->text($value);
+        $html = $parser->text($value);
+        return $html;
     }
 
     public static function markdownShortcode($attribs, $content)
