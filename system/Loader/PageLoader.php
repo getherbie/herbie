@@ -99,10 +99,14 @@ class PageLoader
      */
     protected function parseContent($content)
     {
+        if(!defined('UTF8_BOM')) {
+            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+        }
+        
         $yaml = '';
         $segments = [];
 
-        $matched = preg_match('/^-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
+        $matched = preg_match('/^['.UTF8_BOM.']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
         if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
