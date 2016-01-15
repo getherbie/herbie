@@ -22,14 +22,18 @@ class FrontMatterLoader
      */
     public function load($path)
     {
+        if(!defined('UTF8_BOM')) {
+            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+        }
+        
         $yaml = '';
 
         $fileObject = new \SplFileObject($path);
 
         $i = 0;
         foreach ($fileObject as $line) {
-            // strip \n and \r from end of line
-            $line = rtrim($line, "\n\r");
+            // strip BOM from the beginning and \n and \r from end of line
+            $line = rtrim(ltrim($line, UTF8_BOM), "\n\r");
             if (preg_match('/^---$/', $line)) {
                 $i++;
                 continue;
