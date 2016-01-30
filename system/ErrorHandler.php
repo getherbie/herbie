@@ -18,7 +18,10 @@ class ErrorHandler
      */
     public function register()
     {
-        ini_set('display_errors', false);
+        ini_set("display_errors", 0);
+        ini_set("log_errors", 1);
+        ini_set("error_log", sprintf("%s/log/%s-error.log", dirname(__DIR__), date('Y-m')));
+
         set_exception_handler([$this, 'handleException']);
         set_error_handler([$this, 'handleError'], error_reporting());
         register_shutdown_function([$this, 'handleFatalError']);
