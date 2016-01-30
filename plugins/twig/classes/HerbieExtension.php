@@ -17,13 +17,13 @@ use Herbie\Menu;
 use Herbie\Page;
 use Herbie\Site;
 use Herbie\Http\RedirectResponse;
-use Twig_Environment;
 use Twig_Extension;
+use Twig_Extension_GlobalsInterface;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 use Twig_SimpleTest;
 
-class HerbieExtension extends Twig_Extension
+class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
 {
 
     private $alias;
@@ -32,25 +32,12 @@ class HerbieExtension extends Twig_Extension
     private $urlGenerator;
     private $page;
 
-    /**
-     * @var Twig_Environment
-     */
-    private $environment;
-
     public function __construct()
     {
         $this->alias = Application::getService('Alias');
         $this->config = Application::getService('Config');
         $this->request = Application::getService('Request');
         $this->urlGenerator = Application::getService('Url\UrlGenerator');
-    }
-
-    /**
-     * @param Twig_Environment $environment
-     */
-    public function initRuntime(Twig_Environment $environment)
-    {
-        $this->environment = $environment;
     }
 
     /**
