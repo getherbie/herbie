@@ -27,7 +27,7 @@ class Page
     protected $segments = [];
 
     /**
-     * @var PageLoader
+     * @var Loader\PageLoader
      */
     private $pageLoader;
 
@@ -123,7 +123,7 @@ class Page
     }
 
     /**
-     * @param PageLoader $loader
+     * @param Loader\PageLoader $loader
      */
     public function setLoader(Loader\PageLoader $loader)
     {

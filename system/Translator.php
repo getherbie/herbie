@@ -94,7 +94,7 @@ class Translator
 
     /**
      * @param string $category
-     * @param string|array $paths
+     * @param string $path
      */
     public function addPath($category, $path)
     {

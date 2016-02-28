@@ -11,8 +11,8 @@
 
 namespace Herbie\Loader;
 
+use Herbie\Alias;
 use Herbie\Exception\ResourceNotFoundException;
-use Herbie\Page;
 use Herbie\Yaml;
 
 /**
@@ -24,9 +24,9 @@ class PageLoader
     protected $page;
 
     /**
-     * @param \Herbie\Alias $alias
+     * @param Alias $alias
      */
-    public function __construct(\Herbie\Alias $alias)
+    public function __construct(Alias $alias)
     {
         $this->alias = $alias;
     }
@@ -143,6 +143,7 @@ class PageLoader
     /**
      * @param string $alias
      * @return string
+     * @throws ResourceNotFoundException
      */
     protected function readFile($alias)
     {

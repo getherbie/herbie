@@ -30,6 +30,8 @@ class StringHelper
     }
 
     /**
+     * @param string $string
+     * @return string
      * @see https://github.com/alixaxel/phunction/blob/master/phunction/Text.php#L297
      */
     public static function unaccent($string)

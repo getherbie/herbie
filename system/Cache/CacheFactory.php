@@ -19,6 +19,7 @@ class CacheFactory
      * @param string $type
      * @param Config $config
      * @return CacheInterface
+     * @throws \Exception
      */
     public static function create($type, Config $config)
     {

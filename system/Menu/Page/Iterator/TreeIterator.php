@@ -51,7 +51,7 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return Herbie\Menu\Page\Node
+     * @return \Herbie\Menu\Page\Node
      */
     public function current()
     {

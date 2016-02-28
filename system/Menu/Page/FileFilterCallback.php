@@ -29,9 +29,9 @@ class FileFilterCallback
 
     /**
      *
-     * @param SplFileInfo $file
+     * @param \SplFileInfo $file
      * @param string $path
-     * @param RecursiveDirectoryIterator $iterator
+     * @param \RecursiveDirectoryIterator $iterator
      * @return boolean
      */
     public function call(\SplFileInfo $file, $path, \RecursiveDirectoryIterator $iterator)
