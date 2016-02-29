@@ -25,7 +25,7 @@ class Pagination implements \IteratorAggregate, \Countable
         if ($items instanceof Collection) {
             $this->items = $items->flatten();
         }
-        $this->limit = $this->setLimit($limit);
+        $this->setLimit($limit);
         $this->name = $name;
     }
 

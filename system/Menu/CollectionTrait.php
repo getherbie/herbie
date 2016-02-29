@@ -53,7 +53,7 @@ trait CollectionTrait
     }
 
     /**
-     * @return \ArrayIterator|Traversable
+     * @return \ArrayIterator|\Traversable
      */
     public function getIterator()
     {
@@ -97,7 +97,8 @@ trait CollectionTrait
     /**
      * Run a filter over each of the items.
      *
-     * @param  callable|null  $callback
+     * @param callable|null $key
+     * @param mixed $value
      * @return static
      */
     public function filter($key = null, $value = null)

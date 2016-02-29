@@ -22,7 +22,7 @@ use Herbie\Menu\Post;
 class UrlMatcher
 {
     /**
-     * @var PageMenuCollection Collection of all pages.
+     * @var Page\Collection Collection of all pages.
      */
     protected $pages;
 
@@ -33,7 +33,7 @@ class UrlMatcher
 
     /**
      * Constructor
-     * @param Page\Collection $collection Collection of all pages
+     * @param Page\Collection $pages Collection of all pages
      * @param Post\Collection $posts Collection of all posts
      */
     public function __construct(Page\Collection $pages, Post\Collection $posts)

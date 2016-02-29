@@ -191,6 +191,7 @@ class Collection implements \IteratorAggregate, \Countable
         $category = null;
         $tag = null;
         $author = null;
+        $filteredByLabel = null;
 
         // filter by year and month
         if (preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {

@@ -69,7 +69,7 @@ class PageHelper
     protected static function pregMatch($content)
     {
         // @see https://github.com/kzykhys/YamlFrontMatter/blob/master/src/KzykHys/FrontMatter/FrontMatter.php
-        $matched = preg_match('/^-{3}\r?\n(.*)\r?\n-{3}\r?\n(.*)/s', $content, $matches);
+        preg_match('/^-{3}\r?\n(.*)\r?\n-{3}\r?\n(.*)/s', $content, $matches);
         return $matches;
     }
 }

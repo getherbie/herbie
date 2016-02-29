@@ -51,7 +51,7 @@ class Assets
     protected $refresh = 86400;
 
     /**
-     * @var octal
+     * @var int
      */
     protected $chmode = 0755;
 

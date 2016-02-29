@@ -11,6 +11,9 @@
 
 namespace Herbie;
 
+/**
+ * @see http://stackoverflow.com/questions/2561235/best-possible-php-error-class
+ */
 class ErrorHandler
 {
     /**
@@ -42,6 +45,7 @@ class ErrorHandler
      * @param string $message
      * @param string $file
      * @param int $line
+     * @return bool
      * @throws \ErrorException
      */
     public function handleError($code, $message, $file, $line)
@@ -114,7 +118,7 @@ class ErrorHandler
     }
 
     /**
-     * @return void
+     * @param int $code
      */
     protected function sendHttpHeader($code = 500)
     {

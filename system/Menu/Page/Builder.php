@@ -12,9 +12,9 @@
 namespace Herbie\Menu\Page;
 
 use Herbie\Cache\CacheInterface;
+use Herbie\Iterator\RecursiveDirectoryIterator;
 use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\Page\Iterator\SortableIterator;
-use Herbie\Menu\RecursiveFilterIterator;
 
 class Builder
 {
@@ -139,7 +139,7 @@ class Builder
     protected function getIterator($path)
     {
         // recursive iterators
-        $directoryIterator = new \Herbie\Iterator\RecursiveDirectoryIterator($path);
+        $directoryIterator = new RecursiveDirectoryIterator($path);
         $callback = [new FileFilterCallback($this->extensions), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($directoryIterator, $callback);
         $mode = \RecursiveIteratorIterator::SELF_FIRST;

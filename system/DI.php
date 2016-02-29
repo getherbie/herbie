@@ -73,6 +73,7 @@ class DI implements \ArrayAccess
     /**
      * @param mixed $offset
      * @return mixed
+     * @throws \Exception
      */
     public function offsetGet($offset)
     {
