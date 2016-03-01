@@ -14,6 +14,12 @@ class ShortcodePlugin
     {
         $this->config = DI::get('Config');
         $tags = $this->config->get('plugins.config.shortcode', []);
+
+        // Feature 20160224: Define simple shortcodes also in config.yml
+        foreach($tags as $tag => $_callable){
+            $tags[$tag] = create_function('$atts, $content', $_callable.';');
+        }
+        
         $this->shortcode = new Shortcode($tags);
         DI::set('Shortcode', $this->shortcode);
     }
