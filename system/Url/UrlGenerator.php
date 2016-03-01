@@ -74,6 +74,7 @@ class UrlGenerator
     protected function filterUrl($url)
     {
         $url = preg_replace('/\/index$/', '', $url);
-        return empty($url) ? '/' : rtrim($url, '/');
+        $url = rtrim($url, '/');
+        return empty($url) ? '/' : $url;
     }
 }
