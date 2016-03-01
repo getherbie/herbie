@@ -90,6 +90,7 @@ class HtmlTree extends \RecursiveIteratorIterator
     }
 
     /**
+     * @param string $route
      * @return string
      */
     public function render($route = '')

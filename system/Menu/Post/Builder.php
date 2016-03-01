@@ -11,7 +11,6 @@
 
 namespace Herbie\Menu\Post;
 
-use Herbie\Application;
 use Herbie\Cache\CacheInterface;
 use Herbie\Config;
 use Herbie\Loader\FrontMatterLoader;
