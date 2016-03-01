@@ -59,6 +59,7 @@ return [
             'tests' => $SITE_PATH . '/twig/tests',
         ],
         'parse_content' => true,
+        'content_container_class' => 'placeholder'
     ],
     'cache' => [
         'page' => [
