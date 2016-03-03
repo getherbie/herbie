@@ -4,5 +4,8 @@
     "description": "Herbie Twig Plugin.",
     "keywords": ["herbie", "plugin", "twig"],
     "type": "herbie-plugin",
-    "license": "BSD-3-Clause"
+    "license": "BSD-3-Clause",
+    "require": {
+        "twig/twig": "v1.24.0"
+    }
 }
