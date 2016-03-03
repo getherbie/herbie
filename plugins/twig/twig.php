@@ -23,7 +23,7 @@ class TwigPlugin
         // Add custom namespace path to Imagine lib
         $vendorDir = $config->get('site.path') . '/../vendor';
         $autoload = require($vendorDir . '/autoload.php');
-        $autoload->add('Twig_', __DIR__ . '/vendor/twig/lib');
+        $autoload->add('Twig_', __DIR__ . '/vendor/twig/twig/lib');
 
         $this->twig = new Twig($config);
         $this->twig->init();
