@@ -387,13 +387,13 @@ class ShortcodePlugin
             return '';
         }
         $replace = [
-            '{size}' => $this->human_filesize(filesize($path)),
+            '{size}' => $this->humanFilesize(filesize($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
         ];
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    protected function human_filesize($bytes, $decimals = 0)
+    protected function humanFilesize($bytes, $decimals = 0)
     {
         $sz = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
         $factor = floor((strlen($bytes) - 1) / 3);
