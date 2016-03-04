@@ -14,6 +14,12 @@ class ShortcodePlugin
     {
         $this->config = DI::get('Config');
         $tags = $this->config->get('plugins.config.shortcode', []);
+
+        // Feature 20160224: Define simple shortcodes also in config.yml
+        foreach($tags as $tag => $_callable){
+            $tags[$tag] = create_function('$atts, $content', $_callable.';');
+        }
+        
         $this->shortcode = new Shortcode($tags);
         DI::set('Shortcode', $this->shortcode);
     }
@@ -381,13 +387,13 @@ class ShortcodePlugin
             return '';
         }
         $replace = [
-            '{size}' => $this->human_filesize(filesize($path)),
+            '{size}' => $this->humanFilesize(filesize($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
         ];
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    protected function human_filesize($bytes, $decimals = 0)
+    protected function humanFilesize($bytes, $decimals = 0)
     {
         $sz = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
         $factor = floor((strlen($bytes) - 1) / 3);

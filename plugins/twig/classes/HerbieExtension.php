@@ -381,7 +381,10 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
         if (empty($wrap)) {
             return $content;
         }
-        return sprintf('<div class="placeholder-%s">%s</div>', $segmentId, $content);
+        if(!$placeholderName = $this->config->get('twig.content_container_class')){
+            $placeholderName = 'placeholder';
+        }
+        return sprintf('<div class="'.$placeholderName.'-%s">%s</div>', $segmentId, $content);
     }
 
     /**
