@@ -78,7 +78,7 @@ class Builder
                         $data['modified'] = date('c', filemtime($realpath.'/'.$filename));
                     }
                     if (empty($data['date'])) {
-                        $data['date'] = $this->extractDateFromPath($filename);
+                        $data['date'] = \Herbie\Helper\PathHelper::extractDateFromPath($filename);
                     }
                     $data['path'] = '@post/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
@@ -90,17 +90,5 @@ class Builder
         }
         #echo"<pre>";print_r($collection);echo"</pre>";
         return $collection;
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     * @todo Duplicate code in Herbie\Loader\PageLoader
-     */
-    protected function extractDateFromPath($path)
-    {
-        $filename = basename($path);
-        preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
-        return $matches[1];
     }
 }
