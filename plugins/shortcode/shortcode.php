@@ -360,11 +360,6 @@ class ShortcodePlugin
             $attributes = $this->extractValuesFromArray(['title', 'text', 'alt', 'class'], $options);
             $attributes['alt'] = isset($attributes['alt']) ? $attributes['alt'] : '';
 
-            // Interne Ressource
-            if (strpos($options['path'], 'http') !== 0) {
-                #$options['path'] = $this->config->get('web.url') . '/' . $options['src'];
-            }
-
             $info = '';
             if (!empty($options['info'])) {
                 $info = $this->getFileInfo($options['path']);

@@ -34,7 +34,7 @@ class FileFilterCallback
      * @param \RecursiveDirectoryIterator $iterator
      * @return boolean
      */
-    public function call(\SplFileInfo $file, $path, \RecursiveDirectoryIterator $iterator)
+    public function call(\SplFileInfo $file)
     {
         $firstChar = substr($file->getFileName(), 0, 1);
         if (in_array($firstChar, ['.', '_'])) {

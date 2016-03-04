@@ -24,7 +24,7 @@ class FilterCallback
         $this->routeLine = $routeLine;
     }
 
-    public function call(\Herbie\Menu\Page\Node $current, $key, $iterator)
+    public function call(\Herbie\Menu\Page\Node $current)
     {
         $menuItem = $current->getMenuItem();
 

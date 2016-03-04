@@ -156,7 +156,7 @@ class Application
 
                     $route = $DI['Request']->getRoute();
 
-                    $page = false; ##$DI['Cache\PageCache']->get($route);
+                    $page = false;
 
                     if (false === $page) {
 
@@ -168,10 +168,6 @@ class Application
                         $page->load($path);
 
                         Hook::trigger(Hook::ACTION, 'pageLoaded', $page);
-
-                        if (empty($menuItem->nocache)) {
-                            ##$DI['Cache\PageCache']->set($path, $page);
-                        }
                     }
 
                 } catch (\Exception $e) {

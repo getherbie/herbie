@@ -57,15 +57,12 @@ class Config
     private function loadConfig($useCache = true)
     {
         if ($useCache) {
-            #$cacheFile = $this->sitePath . '/cache/config.json';
             $cacheFile = $this->sitePath . '/cache/config.php';
             if (is_file($cacheFile)) {
-                #$this->items = json_decode(file_get_contents($cacheFile), true);
                 $this->items = require($cacheFile);
             } else {
                 $this->loadMainFile();
                 $this->loadPluginFiles();
-                #file_put_contents($cacheFile, json_encode($this->items));
                 file_put_contents($cacheFile, '<?php return '.var_export($this->items, true).';');
             }
         } else {

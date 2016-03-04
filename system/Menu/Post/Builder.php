@@ -88,7 +88,6 @@ class Builder
             }
             $this->cache->set(__CLASS__, $collection);
         }
-        #echo"<pre>";print_r($collection);echo"</pre>";
         return $collection;
     }
 }

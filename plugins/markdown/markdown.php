@@ -25,9 +25,6 @@ class MarkdownPlugin
 
         // add shortcode
         if ((bool)$config->get('plugins.config.markdown.shortcode', true)) {
-            #Hook::attach('shortcodeInitialized', function($shortcode) {
-            #    $shortcode->add('markdown', ['MarkdownPlugin', 'markdownShortcode']);
-            #});
             Hook::attach('shortcodeInitialized', ['MarkdownPlugin', 'addShortcode']);
 
         }

@@ -46,19 +46,16 @@ class PageHelper
             if (array_key_exists(0, $segments)) {
                 $newContent .= PHP_EOL;
                 $newContent .= $segments[0];
-                #$newContent .= PHP_EOL;
                 unset($segments[0]);
             }
             if (array_key_exists('', $segments)) {
                 $newContent .= PHP_EOL;
                 $newContent .= $segments[''];
-                #$newContent .= PHP_EOL;
                 unset($segments['']);
             }
             foreach ($segments as $key => $value) {
                 $newContent .= PHP_EOL . '--- ' . $key . ' ---' . PHP_EOL;
                 $newContent .= $value;
-                #$newContent .= PHP_EOL;
             }
 
             return file_put_contents($filepath, $newContent);

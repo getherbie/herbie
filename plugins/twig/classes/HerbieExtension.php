@@ -482,7 +482,6 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
             $titles[] = $item->title;
         }
 
-        #$page = Application::getPage();
         if ($this->testIsPost($this->page)) {
             $titles[] = $this->page->title;
         }
@@ -549,10 +548,6 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
             }
             $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
         }
-        /*if(isset($cur)) {
-            $label = empty($curPageLabel) ? $cur->getMenuTitle() : $curPageLabel;
-            $replacements['{cur}'] = $this->createLink($cur->route, $label, $attribs);
-        }*/
         if (isset($next)) {
             $label = empty($nextPageLabel) ? $next->getMenuTitle() : $nextPageLabel;
             $label = sprintf('<span>%s</span>', $label);
