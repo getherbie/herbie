@@ -20,7 +20,9 @@ class PathHelper
     public static function extractDateFromPath($path)
     {
         $filename = basename($path);
-        preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches);
-        return $matches[1];
+        if(preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 }
