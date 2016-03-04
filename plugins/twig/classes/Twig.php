@@ -64,18 +64,24 @@ class Twig
         $this->addTwigPlugins();
 
         foreach(Hook::trigger(Hook::CONFIG, 'addTwigFunction') as $function) {
-            @list($name, $callable, $options) = $function;
-            $this->environment->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
+            try {
+                list($name, $callable, $options) = $function;
+                $this->environment->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
+            } catch (\Exception $e) {;/*do nothing else yet*/}
         }
 
         foreach(Hook::trigger(Hook::CONFIG, 'addTwigFilter') as $filter) {
-            @list($name, $callable, $options) = $filter;
-            $this->environment->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
+            try {
+                list($name, $callable, $options) = $filter;
+                $this->environment->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
+            } catch (\Exception $e) {;/*do nothing else yet*/}
         }
 
         foreach(Hook::trigger(Hook::CONFIG, 'addTwigTest') as $test) {
-            @list($name, $callable, $options) = $test;
-            $this->environment->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
+            try {
+                list($name, $callable, $options) = $test;
+                $this->environment->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
+            } catch (\Exception $e) {;/*do nothing else yet*/}
         }
 
         $this->initialized = true;
