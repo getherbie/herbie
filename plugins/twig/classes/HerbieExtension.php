@@ -443,7 +443,7 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function ($node) {
+        $htmlTree->itemCallback = function (\Herbie\Node $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
@@ -594,7 +594,7 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
         $htmlTree = new Menu\Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function ($node) {
+        $htmlTree->itemCallback = function (\Herbie\Node $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
