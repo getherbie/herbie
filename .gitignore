@@ -1,6 +1,3 @@
-# netbeans project files
-nbproject
-
 # apigen docs dir
 /docs
 
@@ -12,9 +9,6 @@ composer.phar
 
 # composer lock files
 composer.lock
-
-# mac DS_Store files
-.DS_Store
 
 # cache folders
 cache/data/
