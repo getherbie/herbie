@@ -39,11 +39,11 @@ class SortableIterator implements \IteratorAggregate
         $this->iterator = $iterator;
 
         if (self::SORT_BY_NAME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function (\Herbie\Iterator\SplFileInfo $a, \Herbie\Iterator\SplFileInfo $b) {
                 return strcmp($a->getRealpath(), $b->getRealpath());
             };
         } elseif (self::SORT_BY_TYPE === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function (\Herbie\Iterator\SplFileInfo $a, \Herbie\Iterator\SplFileInfo $b) {
                 if ($a->isDir() && $b->isFile()) {
                     return -1;
                 } elseif ($a->isFile() && $b->isDir()) {
@@ -52,15 +52,15 @@ class SortableIterator implements \IteratorAggregate
                 return strcmp($a->getRealpath(), $b->getRealpath());
             };
         } elseif (self::SORT_BY_ACCESSED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function (\Herbie\Iterator\SplFileInfo $a, \Herbie\Iterator\SplFileInfo $b) {
                 return ($a->getATime() - $b->getATime());
             };
         } elseif (self::SORT_BY_CHANGED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function (\Herbie\Iterator\SplFileInfo $a, \Herbie\Iterator\SplFileInfo $b) {
                 return ($a->getCTime() - $b->getCTime());
             };
         } elseif (self::SORT_BY_MODIFIED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function (\Herbie\Iterator\SplFileInfo $a, \Herbie\Iterator\SplFileInfo $b) {
                 return ($a->getMTime() - $b->getMTime());
             };
         } elseif (is_callable($sort)) {
