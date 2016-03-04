@@ -163,7 +163,7 @@ class ShortcodePlugin
             }
 
             // filter pages with empty title
-            $collection = $collection->filter(function ($page) {
+            $collection = $collection->filter(function (\Herbie\Page $page) {
                 return !empty($page->title);
             });
 

@@ -39,7 +39,7 @@ class TwigPlugin
         return $this->twig->renderString($content);
     }
 
-    public function twigifyLayout($page)
+    public function twigifyLayout(\Herbie\Page $page)
     {
         $this->twig->getEnvironment()->getExtension('herbie')->setPage($page);
         return $this->twig->render($page->layout);
