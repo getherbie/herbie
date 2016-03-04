@@ -164,7 +164,7 @@ class ShortcodePlugin
                 $collection = $collection->sort($field, $direction);
             }
 
-            if (true == (int)$options['shuffle']) {
+            if (1 == (int)$options['shuffle']) {
                 $collection = $collection->shuffle();
             }
 
