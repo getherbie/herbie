@@ -179,7 +179,6 @@ class Twig
      */
     private function getContext()
     {
-        // @todo Inject request object or refactor code
         return [
             'route' => Application::getService('Request')->getRoute(),
             'baseUrl' => Application::getService('Request')->getBasePath(),
