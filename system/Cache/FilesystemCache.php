@@ -13,5 +13,5 @@ namespace Herbie\Cache;
 
 class FilesystemCache extends AbstractCache implements CacheInterface
 {
-    
+
 }
