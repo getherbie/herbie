@@ -119,7 +119,8 @@ class PageLoader
             }
 
             $segments[] = array_shift($splitted);
-            for ($i=0; $i<count($splitted); $i=$i+2) {
+            $ct_splitted = count($splitted);
+            for ($i=0; $i<$ct_splitted; $i=$i+2) {
                 $key = $splitted[$i];
                 $value = $splitted[$i+1];
                 if (array_key_exists($key, $segments)) {
