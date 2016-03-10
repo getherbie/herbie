@@ -12,7 +12,7 @@ class MarkdownPlugin
 
         // add twig function / filter
         if ((bool)$config->get('plugins.config.markdown.twig', false)) {
-            Hook::attach('twigInitialized', function($twig) {
+            Hook::attach('twigInitialized', function(\Twig_Environment $twig) {
                 $options = ['is_safe' => ['html']];
                 $twig->addFunction(
                     new \Twig_SimpleFunction('markdown', ['MarkdownPlugin', 'parseMarkdown'], $options)
@@ -25,9 +25,6 @@ class MarkdownPlugin
 
         // add shortcode
         if ((bool)$config->get('plugins.config.markdown.shortcode', true)) {
-            #Hook::attach('shortcodeInitialized', function($shortcode) {
-            #    $shortcode->add('markdown', ['MarkdownPlugin', 'markdownShortcode']);
-            #});
             Hook::attach('shortcodeInitialized', ['MarkdownPlugin', 'addShortcode']);
 
         }
@@ -40,7 +37,7 @@ class MarkdownPlugin
         });
     }
 
-    public static function addShortcode($shortcode)
+    public static function addShortcode(\herbie\sysplugin\shortcode\classes\Shortcode $shortcode)
     {
         $shortcode->add('markdown', ['MarkdownPlugin', 'markdownShortcode']);
     }

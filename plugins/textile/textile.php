@@ -20,7 +20,7 @@ class TextilePlugin
         Hook::attach('renderContent', [$this, 'renderContent']);
     }
 
-    public function addTwigFunctionAndFilter($twig)
+    public function addTwigFunctionAndFilter(\Twig_Environment $twig)
     {
         $options = ['is_safe' => ['html']];
         $twig->addFunction(
@@ -31,17 +31,17 @@ class TextilePlugin
         );
     }
 
-    public function addSortcode($shortcode)
+    public function addSortcode(herbie\sysplugin\shortcode\classes\Shortcode $shortcode)
     {
         $shortcode->add('textile', [$this, 'textileShortcode']);
     }
 
-    public function renderContent($segment, array $attributes)
+    public function renderContent( $segment, array $attributes)
     {
         if(!in_array($attributes['format'], ['textile'])) {
             return $segment;
         }
-        return $this->parseTextile($segment->string);
+        return $this->parseTextile($segment);
     }
 
     public function parseTextile($value)

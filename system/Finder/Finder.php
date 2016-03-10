@@ -118,7 +118,7 @@ class Finder implements \IteratorAggregate, \Countable
         }
 
         if ($this->minDepth > -1 || $this->maxDepth < PHP_INT_MAX) {
-            #$iterator = new DepthRangeFilterIterator($iterator, $this->minDepth, $this->maxDepth);
+            $iterator = new DepthRangeFilterIterator($iterator, $this->minDepth, $this->maxDepth);
         }
 
         return $iterator;

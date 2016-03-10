@@ -164,12 +164,12 @@ class ShortcodePlugin
                 $collection = $collection->sort($field, $direction);
             }
 
-            if (true == (int)$options['shuffle']) {
+            if (1 == (int)$options['shuffle']) {
                 $collection = $collection->shuffle();
             }
 
             // filter pages with empty title
-            $collection = $collection->filter(function ($page) {
+            $collection = $collection->filter(function (\Herbie\Page $page) {
                 return !empty($page->title);
             });
 
@@ -360,11 +360,6 @@ class ShortcodePlugin
             $attributes = $this->extractValuesFromArray(['title', 'text', 'alt', 'class'], $options);
             $attributes['alt'] = isset($attributes['alt']) ? $attributes['alt'] : '';
 
-            // Interne Ressource
-            if (strpos($options['path'], 'http') !== 0) {
-                #$options['path'] = $this->config->get('web.url') . '/' . $options['src'];
-            }
-
             $info = '';
             if (!empty($options['info'])) {
                 $info = $this->getFileInfo($options['path']);
@@ -387,13 +382,13 @@ class ShortcodePlugin
             return '';
         }
         $replace = [
-            '{size}' => $this->human_filesize(filesize($path)),
+            '{size}' => $this->humanFilesize(filesize($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
         ];
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    protected function human_filesize($bytes, $decimals = 0)
+    protected function humanFilesize($bytes, $decimals = 0)
     {
         $sz = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
         $factor = floor((strlen($bytes) - 1) / 3);

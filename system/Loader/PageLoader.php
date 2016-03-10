@@ -45,7 +45,7 @@ class PageLoader
         $data = (array) Yaml::parse($yaml);
         if ($addDefFields) {
             $data['format'] = isset($data['format']) ? $data['format'] : pathinfo($alias, PATHINFO_EXTENSION);
-            $data['date'] = isset($data['date']) ? $data['date'] : $this->extractDateFromPath($alias);
+            $data['date'] = isset($data['date']) ? $data['date'] : \Herbie\Helper\PathHelper::extractDateFromPath($alias);
             $data['path'] = isset($data['path']) ? $data['path'] : $alias;
         }
         return [
@@ -119,7 +119,8 @@ class PageLoader
             }
 
             $segments[] = array_shift($splitted);
-            for ($i=0; $i<count($splitted); $i=$i+2) {
+            $ct_splitted = count($splitted);
+            for ($i=0; $i<$ct_splitted; $i=$i+2) {
                 $key = $splitted[$i];
                 $value = $splitted[$i+1];
                 if (array_key_exists($key, $segments)) {
@@ -154,19 +155,5 @@ class PageLoader
             throw new ResourceNotFoundException('Page "' . $alias . '" does not exist.');
         }
         return $contents;
-    }
-
-    /**
-     * @param string $alias
-     * @return string
-     * @todo Duplicate code in Herbie\Menu\Post\Builder
-     */
-    protected function extractDateFromPath($alias)
-    {
-        $filename = basename($alias);
-        if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
-            return $matches[1];
-        }
-        return null;
     }
 }

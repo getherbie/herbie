@@ -23,7 +23,7 @@ class TwigPlugin
         // Add custom namespace path to Imagine lib
         $vendorDir = $config->get('site.path') . '/../vendor';
         $autoload = require($vendorDir . '/autoload.php');
-        $autoload->add('Twig_', __DIR__ . '/vendor/twig/lib');
+        $autoload->add('Twig_', __DIR__ . '/vendor/twig/twig/lib');
 
         $this->twig = new Twig($config);
         $this->twig->init();
@@ -39,7 +39,7 @@ class TwigPlugin
         return $this->twig->renderString($content);
     }
 
-    public function twigifyLayout($page)
+    public function twigifyLayout(\Herbie\Page $page)
     {
         $this->twig->getEnvironment()->getExtension('herbie')->setPage($page);
         return $this->twig->render($page->layout);
