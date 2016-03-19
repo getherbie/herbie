@@ -110,7 +110,8 @@ class Application
         $DI['PluginManager'] = function ($DI) {
             $enabled = $DI['Config']->get('plugins.enable', []);
             $path = $DI['Config']->get('plugins.path');
-            return new PluginManager($enabled, $path);
+            $enabledSysPlugins = $DI['Config']->get('sysplugins.enable');
+            return new PluginManager($enabled, $path, $enabledSysPlugins);
         };
 
         $DI['Url\UrlGenerator'] = function ($DI) {

@@ -26,16 +26,20 @@ class PluginManager
     /** @var bool  */
     private $initialized;
 
+    /** @var array */
+    private $enabledSysPlugins;
+
     /**
      * @param array $enabled
      * @param $path
      */
-    public function __construct(array $enabled, $path)
+    public function __construct(array $enabled, $path, array $enabledSysPlugins)
     {
         $this->enabled = $enabled;
         $this->path = realpath($path);
         $this->loaded = [];
         $this->initialized = false;
+        $this->enabledSysPlugins = $enabledSysPlugins;
     }
 
     /**
@@ -46,8 +50,7 @@ class PluginManager
     {
         // add system plugins
         $path = realpath(__DIR__ . '/../plugins');
-        $plugins = ['twig', 'shortcode', 'markdown', 'textile'];
-        foreach ($plugins as $key) {
+        foreach ($this->enabledSysPlugins as $key) {
             $this->loadPlugin($path, $key);
         }
 

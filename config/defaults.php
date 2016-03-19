@@ -80,5 +80,8 @@ return [
         'path' => $SITE_PATH . '/plugins',
         'enable' => [],
         'config' => []
+    ],
+    'sysplugins' => [
+        'enable' => ['twig', 'shortcode', 'markdown', 'textile']
     ]
 ];
