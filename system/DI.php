@@ -52,6 +52,15 @@ class DI implements \ArrayAccess
     }
 
     /**
+     * @param string $service
+     * @return bool
+     */
+    public static function has($service)
+    {
+        return static::instance()->offsetExists($service);
+    }
+
+    /**
      * @param string $name
      * @param mixed $service
      */
@@ -77,7 +86,7 @@ class DI implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        if (!isset($this->frozen[$offset]) && !isset($this->values[$offset])) {
+        if (!$this->offsetExists($offset)) {
             $message = sprintf("The object '%s' is not stored in DI container.", $offset);
             throw new \Exception($message, 500);
         }
