@@ -71,7 +71,7 @@ class Node implements \IteratorAggregate
     }
 
     /**
-     * @param \Herbie\Node $parent
+     * @param Node $parent
      */
     public function setParent(Node $parent)
     {
@@ -79,7 +79,7 @@ class Node implements \IteratorAggregate
     }
 
     /**
-     * @return \Herbie\Node
+     * @return Node|null
      */
     public function getParent()
     {
@@ -95,7 +95,7 @@ class Node implements \IteratorAggregate
     }
 
     /**
-     * @param \Herbie\Node $child
+     * @param Node $child
      */
     public function addChild(Node $child)
     {
@@ -120,7 +120,7 @@ class Node implements \IteratorAggregate
     }
 
     /**
-     * @return \Herbie\Node
+     * @return $this|Node
      */
     public function root()
     {
