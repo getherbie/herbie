@@ -2,28 +2,32 @@
 
 namespace Herbie;
 
-use Herbie\Menu\Page\Collection;
-
 class Pagination implements \IteratorAggregate, \Countable
 {
-
+    /** @var array */
     protected $items;
+
+    /** @var int */
     protected $limit;
+
+    /** @var string */
     protected $name;
 
     /**
-     * @param Collection|array $items
+     * @param \IteratorAggregate|array $items
      * @param int $limit
      * @param string $name
+     * @throws \Exception
      */
     public function __construct($items, $limit = 10, $name = 'page')
     {
         $this->items = [];
         if (is_array($items)) {
             $this->items = $items;
-        }
-        if ($items instanceof Collection) {
-            $this->items = $items->flatten();
+        } elseif ($items instanceof \IteratorAggregate) {
+            $this->items = (array)$items->getIterator();
+        } else {
+            throw new \Exception("The param \$items must be an array or an object implementing IteratorAggregate.", 500);
         }
         $this->setLimit($limit);
         $this->name = $name;
