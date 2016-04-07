@@ -23,7 +23,7 @@ Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
 Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
 
-    $ composer create-project getherbie/start-website:dev-master myproject
+    $ composer create-project getherbie/start-website myproject
 
 Composer erstellt im Verzeichnis `myproject` eine Website und installiert alle abhängigen Bibliotheken.
 
