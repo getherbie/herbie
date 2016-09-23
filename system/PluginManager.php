@@ -30,8 +30,11 @@ class PluginManager
     private $enabledSysPlugins;
 
     /**
+     * PluginManager constructor.
      * @param array $enabled
-     * @param $path
+     * @param string $path
+     * @param array $enabledSysPlugins
+     * @throws \Exception
      */
     public function __construct(array $enabled, $path, array $enabledSysPlugins)
     {
@@ -40,6 +43,9 @@ class PluginManager
         $this->loaded = [];
         $this->initialized = false;
         $this->enabledSysPlugins = $enabledSysPlugins;
+        if (false === $this->path) {
+            throw new \Exception("Plugins path '{$path}' doesn't exist or isn't readable (see config plugins.path).");
+        }
     }
 
     /**
