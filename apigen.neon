@@ -1,3 +1,3 @@
 title: Herbie - Flat-file CMS & Blogsystem
-source: system/
+source: src/system/
 destination: docs/
