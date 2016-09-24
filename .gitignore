@@ -22,5 +22,5 @@ cache/twig/
 /src/Tests
 
 # twig test and doc folders
-plugins/twig/vendor/twig/twig/doc/
-plugins/twig/vendor/twig/twig/test/
+src/plugins/twig/vendor/twig/twig/doc/
+src/plugins/twig/vendor/twig/twig/test/
