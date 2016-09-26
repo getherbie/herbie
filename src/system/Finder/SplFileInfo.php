@@ -11,7 +11,7 @@
 
 namespace Herbie\Finder;
 
-class SplFileInfo extends \Herbie\SplFileInfo
+class SplFileInfo extends \Herbie\Iterator\SplFileInfo
 {
     
 }
