@@ -20,7 +20,7 @@
     </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../src</directory>
+            <directory suffix=".php">../src/system</directory>
         </whitelist>
     </filter>
 </phpunit>
