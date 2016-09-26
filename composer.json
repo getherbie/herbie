@@ -10,6 +10,16 @@
         "php": ">=5.4.0",
         "symfony/yaml": "2.7.*"
     },
+    "require-dev": {
+        "pdepend/pdepend": "2.2.4",
+        "phing/phing": "2.15.0",
+        "phploc/phploc": "3.0.1",
+        "phpmd/phpmd": "2.4.3",
+        "phpunit/phpunit": "5.5.4",
+        "sebastian/phpcpd": "2.0.4",
+        "squizlabs/php_codesniffer": "2.7.0",
+        "theseer/phpdox": "0.9.0"
+    },
     "autoload": {
         "psr-4": {
             "Herbie\\": "src/system"
