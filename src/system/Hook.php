@@ -24,7 +24,7 @@ class Hook
     public static function attach($name, $callback, $priority = 10)
     {
         if (!isset(static::$hooks[$name][$priority])) {
-            static::$hooks[$name][$priority] = array();
+            static::$hooks[$name][$priority] = [];
         }
         static::$hooks[$name][$priority][] = $callback;
     }
