@@ -11,8 +11,6 @@
 
 namespace Herbie\Menu;
 
-use Herbie\Menu\ItemInterface;
-
 trait CollectionTrait
 {
 
@@ -45,7 +43,7 @@ trait CollectionTrait
 
     /**
      * @param string $route
-     * @return Item|null
+     * @return ItemInterface|null
      */
     public function getItem($route)
     {

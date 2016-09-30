@@ -30,13 +30,11 @@ class FileFilterCallback
     /**
      *
      * @param \SplFileInfo $file
-     * @param string $path
-     * @param \RecursiveDirectoryIterator $iterator
      * @return boolean
      */
     public function call(\SplFileInfo $file)
     {
-        $firstChar = substr($file->getFileName(), 0, 1);
+        $firstChar = substr($file->getFilename(), 0, 1);
         if (in_array($firstChar, ['.', '_'])) {
             return false;
         }
