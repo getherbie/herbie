@@ -4,9 +4,6 @@
 # composer vendor dir
 /vendor
 
-# composer itself
-composer.phar
-
 # composer lock files
 composer.lock
 
@@ -24,3 +21,13 @@ cache/twig/
 # twig test and doc folders
 src/plugins/twig/vendor/twig/twig/doc/
 src/plugins/twig/vendor/twig/twig/test/
+
+.idea
+.DS_Store
+cache.properties
+composer.lock
+build/api
+build/coverage
+build/logs
+build/pdepend
+build/phpdox
