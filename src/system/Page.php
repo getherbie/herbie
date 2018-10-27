@@ -103,9 +103,9 @@ class Page
         $this->segments = $segments;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
     public function getData()
     {
         return $this->data;
@@ -190,5 +190,4 @@ class Page
         $pathinfo = pathinfo($this->path);
         return $pathinfo['dirname'] . '/_' . $pathinfo['filename'];
     }
-
 }

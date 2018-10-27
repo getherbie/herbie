@@ -74,7 +74,6 @@ class Builder
         $collection = $this->restoreCollection();
         if (!$collection->fromCache) {
             foreach ($this->paths as $alias => $path) {
-
                 $this->indexFiles = [];
                 foreach ($this->getIterator($path) as $fileInfo) {
                     // index file as describer for parent folder
@@ -96,7 +95,6 @@ class Builder
                         $collection->addItem($item);
                     }
                 }
-
             }
             $this->storeCollection($collection);
         }

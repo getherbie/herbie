@@ -302,5 +302,4 @@ trait ItemTrait
     {
         return StringHelper::urlify($slug);
     }
-
 }

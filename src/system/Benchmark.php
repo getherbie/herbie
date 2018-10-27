@@ -33,5 +33,4 @@ class Benchmark
         }
         return number_format(microtime(true) - self::$start, 4);
     }
-
 }

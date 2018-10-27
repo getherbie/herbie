@@ -19,5 +19,4 @@ class Collection implements \IteratorAggregate, \Countable
     use CollectionTrait;
 
     public $fromCache;
-
 }
