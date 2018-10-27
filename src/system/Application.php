@@ -58,7 +58,11 @@ class Application
         static::$DI = $DI = DI::instance();
 
         $DI['Request'] = $request = new Http\Request();
-        $DI['Config'] = $config = new Config($this->sitePath, dirname($_SERVER['SCRIPT_FILENAME']), $request->getBaseUrl());
+        $DI['Config'] = $config = new Config(
+            $this->sitePath,
+            dirname($_SERVER['SCRIPT_FILENAME']),
+            $request->getBaseUrl()
+        );
 
         $DI['Alias'] = new Alias([
             '@app' => $config->get('app.path'),
@@ -177,7 +181,9 @@ class Application
             };
 
             $DI['Translator'] = function ($DI) {
-                $translator = new Translator($DI['Config']->get('language'), ['app' => $DI['Alias']->get('@app/../messages')]);
+                $translator = new Translator($DI['Config']->get('language'), [
+                    'app' => $DI['Alias']->get('@app/../messages')
+                ]);
                 foreach ($DI['PluginManager']->getLoadedPlugins() as $key => $dir) {
                     $translator->addPath($key, $dir . '/messages');
                 }
