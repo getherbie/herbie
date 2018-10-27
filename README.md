@@ -25,11 +25,18 @@ Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die 
 
     $ composer create-project getherbie/start-website myproject
 
-Composer erstellt im Verzeichnis `myproject` eine Website und installiert alle abhängigen Bibliotheken.
+Composer erstellt im Verzeichnis `myproject` deine Website und installiert alle abhängigen Bibliotheken.
+
+Danach wechselst du ins Webverzeichnis und startest den eingebauten Webserver von PHP. 
+
+    $ cd myproject/web
+    $ php -S localhost:8888
+
+Dann musst du nur noch die Website im Browser unter <http://localhost:8888> aufrufen. Fertig!
 
 ## Website
 
-Weitere Informationen findest du unter [www.getherbie.org](http://www.getherbie.org).
+Weitere Informationen findest du unter [www.getherbie.org](https://www.getherbie.org).
 
 
 [markdown]: http://daringfireball.net/projects/markdown/

@@ -13,6 +13,7 @@ namespace Herbie\Loader;
 
 use Herbie\Alias;
 use Herbie\Exception\ResourceNotFoundException;
+use Herbie\Helper\PathHelper;
 use Herbie\Yaml;
 
 /**
@@ -45,7 +46,7 @@ class PageLoader
         $data = (array) Yaml::parse($yaml);
         if ($addDefFields) {
             $data['format'] = isset($data['format']) ? $data['format'] : pathinfo($alias, PATHINFO_EXTENSION);
-            $data['date'] = isset($data['date']) ? $data['date'] : \Herbie\Helper\PathHelper::extractDateFromPath($alias);
+            $data['date'] = isset($data['date']) ? $data['date'] : PathHelper::extractDateFromPath($alias);
             $data['path'] = isset($data['path']) ? $data['path'] : $alias;
         }
         return [

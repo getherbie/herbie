@@ -11,6 +11,8 @@
 
 namespace Herbie\Menu\Page\Iterator;
 
+use Herbie\Menu\Page\Node;
+
 class FilterCallback
 {
 
@@ -24,7 +26,7 @@ class FilterCallback
         $this->routeLine = $routeLine;
     }
 
-    public function call(\Herbie\Menu\Page\Node $current)
+    public function call(Node $current)
     {
         $menuItem = $current->getMenuItem();
 

@@ -193,7 +193,7 @@ class Config
     }
 
     /**
-     * @return array
+     *
      */
     private function loadMainFile()
     {
