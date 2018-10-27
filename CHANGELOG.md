@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2018-10-27
+- Remove Composer minimum-stability
+- Bump php version requirement to 5.6
+- Fix phpcs code issues
+
 ## [1.0.1] - 2016-09-24
 ### Added
 - CHANGELOG.md
