@@ -13,5 +13,7 @@
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
     <!-- Paths to check -->
-    <file>src</file>
+    <file>src/config</file>
+    <file>src/messages</file>
+    <file>src/system</file>
 </ruleset>

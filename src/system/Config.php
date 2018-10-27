@@ -257,9 +257,8 @@ class Config
         );
     }
     
-	public function __debugInfo()
-	{
+    public function __debugInfo()
+    {
         return call_user_func('get_object_vars', $this);
-	}
-	    
+    }
 }

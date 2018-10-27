@@ -28,8 +28,12 @@ class DI implements \ArrayAccess
      */
     private $frozen = [];
 
-    final private function __construct() {}
-    final private function __clone() {}
+    final private function __construct()
+    {
+    }
+    final private function __clone()
+    {
+    }
 
     /**
      * @return DI
@@ -122,5 +126,4 @@ class DI implements \ArrayAccess
         unset($this->frozen[$offset]);
         unset($this->values[$offset]);
     }
-
 }
