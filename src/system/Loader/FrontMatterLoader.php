@@ -22,7 +22,7 @@ class FrontMatterLoader
      */
     public function load($path)
     {
-        if(!defined('UTF8_BOM')) {
+        if (!defined('UTF8_BOM')) {
             define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
         }
         

@@ -127,7 +127,6 @@ class Application
 
         // Init PluginManager at first
         if (true === $DI['PluginManager']->init($DI['Config'])) {
-
             Hook::trigger(Hook::ACTION, 'pluginsInitialized', $DI['PluginManager']);
 
             Hook::trigger(Hook::ACTION, 'shortcodeInitialized', $DI['Shortcode']);
@@ -154,13 +153,11 @@ class Application
             $DI['Page'] = function ($DI) {
 
                 try {
-
                     $route = $DI['Request']->getRoute();
 
                     $page = false;
 
                     if (false === $page) {
-
                         $menuItem = $DI['Url\UrlMatcher']->match($route);
                         $path = $menuItem->getPath();
 
@@ -170,16 +167,13 @@ class Application
 
                         Hook::trigger(Hook::ACTION, 'pageLoaded', $page);
                     }
-
                 } catch (\Exception $e) {
-
                     $page = new Page();
                     $page->layout = 'error.html';
                     $page->setError($e);
                 }
 
                 return $page;
-
             };
 
             $DI['Translator'] = function ($DI) {
@@ -194,9 +188,7 @@ class Application
             $DI['Url\UrlMatcher'] = function ($DI) {
                 return new Url\UrlMatcher($DI['Menu\Page\Collection'], $DI['Menu\Post\Collection']);
             };
-
         }
-
     }
 
     /**
@@ -252,24 +244,19 @@ class Application
         }
 
         if (false === $rendered) {
-
             $content = new \stdClass();
             $content->string = '';
 
             try {
-
                 if (empty($page->layout)) {
                     $content = $page->getSegment(0);
                     $content->string = Hook::trigger(Hook::FILTER, 'renderContent', $content->string, $page->getData());
                 } else {
                     $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
                 }
-
             } catch (\Exception $e) {
-
                 $page->setError($e);
                 $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
-
             }
 
             if (empty($page->nocache)) {
@@ -284,5 +271,4 @@ class Application
 
         return $response;
     }
-
 }

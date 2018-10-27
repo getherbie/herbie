@@ -37,7 +37,9 @@ class ArrayHelper
 
     public static function appendToItems(Array $array, $append)
     {
-        $closure = function($value) use ($append) { return $value . $append; };
+        $closure = function ($value) use ($append) {
+            return $value . $append;
+        };
         return array_map($closure, $array);
     }
 }

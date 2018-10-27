@@ -21,7 +21,8 @@ class StringHelper
      * @param string $delimiter
      * @return string
      */
-    public static function urlify($str, $delimiter='-') {
+    public static function urlify($str, $delimiter = '-')
+    {
         $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
         $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
         $clean = strtolower(trim($clean, '-'));
