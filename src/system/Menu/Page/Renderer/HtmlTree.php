@@ -11,7 +11,9 @@
 
 namespace Herbie\Menu\Page\Renderer;
 
-class HtmlTree extends \RecursiveIteratorIterator
+use RecursiveIteratorIterator;
+
+class HtmlTree extends RecursiveIteratorIterator
 {
     /**
      * @var string
@@ -40,7 +42,7 @@ class HtmlTree extends \RecursiveIteratorIterator
      * @param int $mode
      * @param int $flags
      */
-    public function __construct(\RecursiveIterator $iterator, $mode = \RecursiveIteratorIterator::SELF_FIRST, $flags = 0)
+    public function __construct(\RecursiveIterator $iterator, $mode = RecursiveIteratorIterator::SELF_FIRST, $flags = 0)
     {
         parent::__construct($iterator, $mode, $flags);
     }

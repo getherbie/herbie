@@ -68,7 +68,8 @@ class SortableIterator implements \IteratorAggregate
         } elseif (is_callable($sort)) {
             $this->sort = $sort;
         } else {
-            throw new \InvalidArgumentException('The SortableIterator takes a PHP callable or a valid built-in sort algorithm as an argument.');
+            $message = 'The SortableIterator takes a PHP callable or a valid built-in sort algorithm as an argument.';
+            throw new \InvalidArgumentException($message);
         }
     }
 

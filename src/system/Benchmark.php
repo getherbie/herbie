@@ -16,7 +16,7 @@ class Benchmark
     /**
      * @var int|null
      */
-    static $start = null;
+    private static $start = null;
 
     /**
      * @param bool $reset

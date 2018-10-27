@@ -41,7 +41,9 @@ class StringHelper
             $string = \Normalizer::normalize($string, \Normalizer::FORM_KD);
         }
         if (strpos($string = htmlentities($string, ENT_QUOTES, 'UTF-8'), '&') !== false) {
-            $string = html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|caron|cedil|circ|grave|lig|orn|ring|slash|tilde|uml);~i', '$1', $string), ENT_QUOTES, 'UTF-8');
+            $pattern = '~&([a-z]{1,2})(?:acute|caron|cedil|circ|grave|lig|orn|ring|slash|tilde|uml);~i';
+            $replacement = '$1';
+            $string = html_entity_decode(preg_replace($pattern, $replacement, $string), ENT_QUOTES, 'UTF-8');
         }
         return $string;
     }

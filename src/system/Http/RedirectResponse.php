@@ -26,7 +26,8 @@ class RedirectResponse extends Response
         $this->setTargetUrl($url);
 
         if (!$this->isRedirection()) {
-            throw new \InvalidArgumentException(sprintf('The HTTP status code is not a redirect ("%s" given).', $status));
+            $message = sprintf('The HTTP status code is not a redirect ("%s" given).', $status);
+            throw new \InvalidArgumentException($message);
         }
     }
 
