@@ -36,9 +36,9 @@ class TextilePlugin
         $shortcode->add('textile', [$this, 'textileShortcode']);
     }
 
-    public function renderContent( $segment, array $attributes)
+    public function renderContent($segment, array $attributes)
     {
-        if(!in_array($attributes['format'], ['textile'])) {
+        if (!in_array($attributes['format'], ['textile'])) {
             return $segment;
         }
         return $this->parseTextile($segment);
@@ -46,7 +46,7 @@ class TextilePlugin
 
     public function parseTextile($value)
     {
-        include_once (__DIR__ . '/vendor/Netcarver/Textile/Parser.php');
+        include_once(__DIR__ . '/vendor/Netcarver/Textile/Parser.php');
 
         $parser = new \Netcarver\Textile\Parser();
         return $parser->textileThis($value);
@@ -56,7 +56,6 @@ class TextilePlugin
     {
         return $this->parseTextile($content);
     }
-
 }
 
 (new TextilePlugin())->install();

@@ -33,7 +33,7 @@ class TwigPlugin
 
     public function twigifyContent($content, array $attributes)
     {
-        if(empty($attributes['twig'])) {
+        if (empty($attributes['twig'])) {
             return $content;
         }
         return $this->twig->renderString($content);
@@ -44,7 +44,6 @@ class TwigPlugin
         $this->twig->getEnvironment()->getExtension('herbie')->setPage($page);
         return $this->twig->render($page->layout);
     }
-
 }
 
 (new TwigPlugin)->install();

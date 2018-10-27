@@ -381,7 +381,7 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
         if (empty($wrap)) {
             return $content;
         }
-        if(!$placeholderName = $this->config->get('twig.content_container_class')){
+        if (!$placeholderName = $this->config->get('twig.content_container_class')) {
             $placeholderName = 'placeholder';
         }
         return sprintf('<div class="'.$placeholderName.'-%s">%s</div>', $segmentId, $content);
@@ -503,9 +503,15 @@ class HerbieExtension extends Twig_Extension implements Twig_Extension_GlobalsIn
      * @param string $nextPageIcon
      * @return string
      */
-    public function functionPager($limit = '', $template = '{prev}{next}', $linkClass='',
-        $nextPageLabel='', $prevPageLabel='', $prevPageIcon='', $nextPageIcon='')
-    {
+    public function functionPager(
+        $limit = '',
+        $template = '{prev}{next}',
+        $linkClass = '',
+        $nextPageLabel = '',
+        $prevPageLabel = '',
+        $prevPageIcon = '',
+        $nextPageIcon = ''
+    ) {
         $route = $this->request->getRoute();
         $iterator = Application::getService('Menu\Page\Collection')->getIterator();
 
