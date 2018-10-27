@@ -4,7 +4,6 @@
     "description": "Herbie is a flat-file CMS & blog system. Simple installation - no database - just text files.",
     "keywords": ["herbie", "flat-file", "cms", "blog"],
     "type": "library",
-    "minimum-stability": "dev",
     "license":"BSD-3-Clause",
     "require": {
         "php": ">=5.6.0",
