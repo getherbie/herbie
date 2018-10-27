@@ -63,25 +63,31 @@ class Twig
         $this->environment->addExtension(new HerbieExtension());
         $this->addTwigPlugins();
 
-        foreach(Hook::trigger(Hook::CONFIG, 'addTwigFunction') as $function) {
+        foreach (Hook::trigger(Hook::CONFIG, 'addTwigFunction') as $function) {
             try {
                 list($name, $callable, $options) = $function;
                 $this->environment->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
-            } catch (\Exception $e) {;/*do nothing else yet*/}
+            } catch (\Exception $e) {
+                ;/*do nothing else yet*/
+            }
         }
 
-        foreach(Hook::trigger(Hook::CONFIG, 'addTwigFilter') as $filter) {
+        foreach (Hook::trigger(Hook::CONFIG, 'addTwigFilter') as $filter) {
             try {
                 list($name, $callable, $options) = $filter;
                 $this->environment->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
-            } catch (\Exception $e) {;/*do nothing else yet*/}
+            } catch (\Exception $e) {
+                ;/*do nothing else yet*/
+            }
         }
 
-        foreach(Hook::trigger(Hook::CONFIG, 'addTwigTest') as $test) {
+        foreach (Hook::trigger(Hook::CONFIG, 'addTwigTest') as $test) {
             try {
                 list($name, $callable, $options) = $test;
                 $this->environment->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
-            } catch (\Exception $e) {;/*do nothing else yet*/}
+            } catch (\Exception $e) {
+                ;/*do nothing else yet*/
+            }
         }
 
         $this->initialized = true;
@@ -285,13 +291,12 @@ class Twig
         return true === $this->initialized;
     }
     
-	public function __debugInfo()
-	{
+    public function __debugInfo()
+    {
         return [
             'config' => call_user_func('get_object_vars', $this->config),
             'environment' => call_user_func('get_object_vars', $this->environment),
             'initialized' => $this->initialized
         ];
-	}
-
+    }
 }
