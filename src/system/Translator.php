@@ -68,10 +68,10 @@ class Translator
      */
     public function translate($category, $message, array $params = [])
     {
-        if (isset($this->messages[$this->language][$category][$message])) {
+        if(isset($this->messages[$this->language][$category][$message])) {
             $message = $this->messages[$this->language][$category][$message];
         }
-        if (empty($params)) {
+        if(empty($params)) {
             return $message;
         }
         return strtr($message, $params);
@@ -82,7 +82,7 @@ class Translator
      */
     private function loadMessages()
     {
-        foreach ($this->paths as $category => $paths) {
+        foreach($this->paths as $category => $paths) {
             foreach ($paths as $path) {
                 $messagePath = sprintf('%s/%s.php', $path, $this->language);
                 if (file_exists($messagePath)) {
@@ -109,4 +109,5 @@ class Translator
         }
         $this->paths[$category] = array_merge($this->paths[$category], $path);
     }
+
 }

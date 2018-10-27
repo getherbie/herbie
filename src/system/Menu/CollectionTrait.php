@@ -105,7 +105,7 @@ trait CollectionTrait
             return new static(array_filter($this->items, $key));
         }
         if (is_string($key) && is_scalar($value)) {
-            return new static(array_filter($this->items, function ($val) use ($key, $value) {
+            return new static(array_filter($this->items, function($val) use ($key, $value) {
                 if ($val->{$key} == $value) {
                     return true;
                 }
@@ -147,7 +147,7 @@ trait CollectionTrait
         }
 
         $field = is_string($mixed) ? $mixed : 'title';
-        uasort($items, function ($a, $b) use ($field, $direction) {
+        uasort($items, function($a, $b) use ($field, $direction) {
             if ($a->{$field} == $b->{$field}) {
                 return 0;
             }
@@ -160,4 +160,5 @@ trait CollectionTrait
 
         return new static($items);
     }
+
 }

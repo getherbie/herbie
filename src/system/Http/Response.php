@@ -101,4 +101,5 @@ class Response
     {
         return $this->status >= 300 && $this->status < 400;
     }
+
 }

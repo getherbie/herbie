@@ -99,6 +99,7 @@ class ErrorHandler
                 . get_class($exception) . ' [' . $exception->getCode() . '] in '
                 . $exception->getFile() . '(' . $exception->getLine() . ")\n\n"
                 . "Stack trace:\n" . $exception->getTraceAsString();
+
         } else {
             $message = 'Error: ' . $exception->getMessage();
         }

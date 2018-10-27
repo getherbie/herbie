@@ -48,4 +48,5 @@ class Yaml
     {
         return sfYaml::dump($array, 100);
     }
+
 }

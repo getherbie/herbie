@@ -405,4 +405,5 @@ class Request
     {
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
+
 }

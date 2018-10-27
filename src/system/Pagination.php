@@ -112,4 +112,5 @@ class Pagination implements \IteratorAggregate, \Countable
     {
         return max(1, $this->getPage() - 1);
     }
+
 }

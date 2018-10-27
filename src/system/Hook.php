@@ -192,4 +192,5 @@ class Hook
     {
         static::$hooks = [];
     }
+
 }

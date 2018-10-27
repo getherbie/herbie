@@ -97,4 +97,5 @@ class PluginManager
     {
         return $this->loaded;
     }
+
 }

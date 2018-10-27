@@ -89,4 +89,5 @@ class PageCache implements CacheInterface
         $id = md5($id);
         return sprintf('%s/%s.%s', $this->dir, $id, 'cache');
     }
+
 }
