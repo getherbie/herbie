@@ -1,5 +1,4 @@
-Herbie
-======
+# :red_car: Herbie
 
 Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
 
