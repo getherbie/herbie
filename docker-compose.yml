@@ -1,0 +1,22 @@
+version: '2'
+services:
+  php:
+    build: ./docker/php/
+    environment:
+      TIMEZONE: Europe/Berlin
+    volumes:
+    - ./docker/php/php.ini:/usr/local/etc/php/php.ini:ro
+    - ./:/var/www/app:cached
+    working_dir: /var/www/app
+
+  webserver:
+    image: nginx
+    depends_on:
+    - php
+    volumes_from:
+    - php
+    volumes:
+    - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+    - 80:80
+    - 443:443
