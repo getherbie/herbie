@@ -132,7 +132,7 @@ class Twig
         } catch (\Exception $e) {
 
             $page->setError($e);
-            $content = $this->render('error.html');
+            $content = $this->render('error.html.twig');
 
         }
 
