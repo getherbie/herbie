@@ -31,7 +31,7 @@ class Translator
      * @param string $language
      * @param array $paths
      */
-    public function __construct($language, array $paths = [])
+    public function __construct(string $language, array $paths = [])
     {
         $this->language = $language;
         $this->paths = [];
@@ -55,7 +55,7 @@ class Translator
      * @param array $params
      * @return string
      */
-    public function t($category, $message, array $params = [])
+    public function t(string $category, string $message, array $params = []): string
     {
         return $this->translate($category, $message, $params);
     }
@@ -66,7 +66,7 @@ class Translator
      * @param array $params
      * @return string
      */
-    public function translate($category, $message, array $params = [])
+    public function translate(string $category, string $message, array $params = []): string
     {
         if (isset($this->messages[$this->language][$category][$message])) {
             $message = $this->messages[$this->language][$category][$message];
@@ -96,7 +96,7 @@ class Translator
      * @param string $category
      * @param string $path
      */
-    public function addPath($category, $path)
+    public function addPath(string $category, string $path)
     {
         if (!isset($this->paths[$category])) {
             $this->paths[$category] = [];

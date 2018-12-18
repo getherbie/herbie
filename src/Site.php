@@ -11,6 +11,8 @@
 
 namespace Herbie;
 
+use Herbie\Menu\Page\RootPath;
+
 /**
  * Stores the site.
  */
@@ -20,7 +22,7 @@ class Site
     /**
      * @return string
      */
-    public function getTime()
+    public function getTime(): string
     {
         return date('c');
     }
@@ -28,31 +30,31 @@ class Site
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return Application::getService('DataArray');
     }
 
     /**
-     * @return Menu\Page\Collection
+     * @return \Herbie\Menu\Page\Collection
      */
-    public function getMenu()
+    public function getMenu(): \Herbie\Menu\Page\Collection
     {
         return Application::getService('Menu\Page\Collection');
     }
 
     /**
-     * @return Menu\Page\Node
+     * @return Node
      */
-    public function getTree()
+    public function getTree(): Node
     {
         return Application::getService('Menu\Page\Node');
     }
 
     /**
-     * @return Menu\Page\Node
+     * @return Node
      */
-    public function getPageTree()
+    public function getPageTree(): Node
     {
         return Application::getService('Menu\Page\Node');
     }
@@ -60,15 +62,15 @@ class Site
     /**
      * @return Menu\Post\Collection
      */
-    public function getPosts()
+    public function getPosts(): \Herbie\Menu\Post\Collection
     {
         return Application::getService('Menu\Post\Collection');
     }
 
     /**
-     * @return Menu\Page\RootPath
+     * @return RootPath
      */
-    public function getRootPath()
+    public function getRootPath(): RootPath
     {
         return Application::getService('Menu\Page\RootPath');
     }
@@ -76,7 +78,7 @@ class Site
     /**
      * @return string
      */
-    public function getModified()
+    public function getModified(): string
     {
         $lastModified = 0;
         foreach (Application::getService('Menu\Page\Collection') as $item) {
@@ -91,7 +93,7 @@ class Site
     /**
      * @return string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return Application::getService('Config')->get('language');
     }
@@ -99,7 +101,7 @@ class Site
     /**
      * @return string
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return Application::getService('Config')->get('locale');
     }
@@ -107,7 +109,7 @@ class Site
     /**
      * @return string
      */
-    public function getCharset()
+    public function getCharset(): string
     {
         return Application::getService('Config')->get('charset');
     }

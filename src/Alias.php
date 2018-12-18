@@ -21,6 +21,7 @@ class Alias
 
     /**
      * @param array $aliases
+     * @throws \Exception
      */
     public function __construct(array $aliases = [])
     {

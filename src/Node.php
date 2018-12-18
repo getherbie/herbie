@@ -41,7 +41,7 @@ class Node implements \IteratorAggregate
     /**
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->children);
     }
@@ -65,7 +65,7 @@ class Node implements \IteratorAggregate
     /**
      * @return bool
      */
-    public function isRoot()
+    public function isRoot(): bool
     {
         return null === $this->parent;
     }
@@ -89,7 +89,7 @@ class Node implements \IteratorAggregate
     /**
      * @return bool
      */
-    public function hasParent()
+    public function hasParent(): bool
     {
         return null !== $this->parent;
     }
@@ -106,7 +106,7 @@ class Node implements \IteratorAggregate
     /**
      * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return !empty($this->children);
     }
@@ -114,15 +114,15 @@ class Node implements \IteratorAggregate
     /**
      * @return array
      */
-    public function getChildren()
+    public function getChildren(): array
     {
         return $this->children;
     }
 
     /**
-     * @return $this|Node
+     * @return Node
      */
-    public function root()
+    public function root(): Node
     {
         if (is_null($this->parent)) {
             return $this;

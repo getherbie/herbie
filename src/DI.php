@@ -49,8 +49,9 @@ class DI implements \ArrayAccess
     /**
      * @param string $service
      * @return mixed
+     * @throws \Exception
      */
-    public static function get($service)
+    public static function get(string $service)
     {
         return static::instance()->offsetGet($service);
     }
@@ -59,7 +60,7 @@ class DI implements \ArrayAccess
      * @param string $service
      * @return bool
      */
-    public static function has($service)
+    public static function has(string $service): bool
     {
         return static::instance()->offsetExists($service);
     }
@@ -68,7 +69,7 @@ class DI implements \ArrayAccess
      * @param string $name
      * @param mixed $service
      */
-    public static function set($name, $service)
+    public static function set(string $name, $service)
     {
         static::instance()->offsetUnset($name);
         static::instance()->offsetSet($name, $service);
@@ -78,7 +79,7 @@ class DI implements \ArrayAccess
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->frozen[$offset]) || isset($this->values[$offset]);
     }

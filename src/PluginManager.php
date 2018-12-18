@@ -36,7 +36,7 @@ class PluginManager
      * @param array $enabledSysPlugins
      * @throws \Exception
      */
-    public function __construct(array $enabled, $path, array $enabledSysPlugins)
+    public function __construct(array $enabled, string $path, array $enabledSysPlugins)
     {
         $this->enabled = $enabled;
         $this->path = realpath($path);
@@ -52,7 +52,7 @@ class PluginManager
      * @return bool
      * @throws \RuntimeException
      */
-    public function init()
+    public function init(): bool
     {
         // add system plugins
         $path = realpath(__DIR__ . '/../plugins');
@@ -73,7 +73,7 @@ class PluginManager
      * @param string $path
      * @param string $key
      */
-    protected function loadPlugin($path, $key)
+    protected function loadPlugin(string $path, string $key)
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
@@ -85,7 +85,7 @@ class PluginManager
     /**
      * @return bool
      */
-    public function isInitialized()
+    public function isInitialized(): bool
     {
         return true === $this->initialized;
     }
@@ -93,7 +93,7 @@ class PluginManager
     /**
      * @return array
      */
-    public function getLoadedPlugins()
+    public function getLoadedPlugins(): array
     {
         return $this->loaded;
     }

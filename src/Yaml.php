@@ -25,7 +25,7 @@ class Yaml
      * @param string $input
      * @return array
      */
-    public static function parse($input)
+    public static function parse(string $input): array
     {
         return sfYaml::parse($input);
     }
@@ -34,7 +34,7 @@ class Yaml
      * @param string $file
      * @return array
      */
-    public static function parseFile($file)
+    public static function parseFile(string $file): array
     {
         $input = file_get_contents($file);
         return self::parse($input);
@@ -44,7 +44,7 @@ class Yaml
      * @param array $array
      * @return string
      */
-    public static function dump(array $array)
+    public static function dump(array $array): string
     {
         return sfYaml::dump($array, 100);
     }

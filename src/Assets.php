@@ -74,7 +74,7 @@ class Assets
      * @param Alias $alias
      * @param string $baseUrl
      */
-    public function __construct(Alias $alias, $baseUrl)
+    public function __construct(Alias $alias, string $baseUrl)
     {
         $this->alias = $alias;
         $this->assetsPath = $alias->get('@web') . $this->assetsDir;
@@ -92,7 +92,7 @@ class Assets
     {
         $paths = is_array($paths) ? $paths : [$paths];
         foreach ($paths as $path) {
-            $this->addAsset(self::TYPE_CSS, $path, $group, $attr, $raw, $pos);
+            $this->addAsset(self::TYPE_CSS, $path, $attr, $group, $raw, $pos);
         }
     }
 

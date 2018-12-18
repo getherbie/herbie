@@ -22,7 +22,7 @@ class Benchmark
      * @param bool $reset
      * @return string (number format)
      */
-    public static function mark($reset = false)
+    public static function mark(bool $reset = false): string
     {
         if ($reset) {
             self::$start = null;

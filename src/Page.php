@@ -34,7 +34,7 @@ class Page
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return isset($this->data['path']) ? $this->data['path'] : '';
     }
@@ -42,7 +42,7 @@ class Page
     /**
      * @return array
      */
-    public function getSegments()
+    public function getSegments(): array
     {
         return $this->segments;
     }
@@ -52,7 +52,7 @@ class Page
      * @param string $id
      * @return \stdClass
      */
-    public function getSegment($id)
+    public function getSegment(string $id): \stdClass
     {
         $segment = new \stdClass();
         $segment->string = '';
@@ -79,7 +79,7 @@ class Page
     /**
      * @param string $format
      */
-    public function setFormat($format)
+    public function setFormat(string $format)
     {
         switch ($format) {
             case 'md':
@@ -106,7 +106,7 @@ class Page
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -114,7 +114,7 @@ class Page
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'data' => $this->data,
@@ -131,9 +131,10 @@ class Page
     }
 
     /**
-     * @param $alias
+     * @param string $alias
+     * @throws \Exception
      */
-    public function load($alias)
+    public function load(string $alias)
     {
         $data = $this->pageLoader->load($alias);
         $this->setData($data['data']);
@@ -144,7 +145,7 @@ class Page
      * Get the http status code depending on a set error code.
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         if (empty($this->data['error'])) {
             return 200;
@@ -173,7 +174,7 @@ class Page
      * @param string $alias
      * @return static
      */
-    public static function create($alias)
+    public static function create(string $alias)
     {
         $loader = DI::get('Loader\PageLoader');
         $page = new static();
@@ -185,7 +186,7 @@ class Page
     /**
      * @return string
      */
-    public function getDefaultBlocksPath()
+    public function getDefaultBlocksPath(): string
     {
         $pathinfo = pathinfo($this->path);
         return $pathinfo['dirname'] . '/_' . $pathinfo['filename'];

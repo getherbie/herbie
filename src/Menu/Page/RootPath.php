@@ -64,7 +64,7 @@ class RootPath implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return \ArrayIterator|Traversable
+     * @return \ArrayIterator
      */
     public function getIterator()
     {

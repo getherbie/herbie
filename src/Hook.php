@@ -21,7 +21,7 @@ class Hook
      * @param int $priority
      * @throws \Exception
      */
-    public static function attach($name, $callback, $priority = 10)
+    public static function attach(string $name, callable $callback, int $priority = 10)
     {
         if (!isset(static::$hooks[$name][$priority])) {
             static::$hooks[$name][$priority] = [];
@@ -38,7 +38,7 @@ class Hook
      * @return mixed
      * @throws \Exception
      */
-    public static function trigger($type, $name, $subject = null, array $data = [])
+    public static function trigger(string $type, string $name, $subject = null, array $data = [])
     {
         if ($type == Hook::ACTION) {
             return static::triggerAction($name, $subject, $data);
@@ -60,7 +60,7 @@ class Hook
      * @return null
      * @throws \Exception
      */
-    public static function triggerAction($name, $subject = null, array $data = [])
+    public static function triggerAction(string $name, $subject = null, array $data = [])
     {
         if (!static::has($name)) {
             return null;
@@ -84,7 +84,7 @@ class Hook
      * @return mixed
      * @throws \Exception
      */
-    public static function triggerFilter($name, $subject, array $data = [])
+    public static function triggerFilter(string $name, $subject, array $data = [])
     {
         if (!static::has($name)) {
             return $subject;
@@ -108,7 +108,7 @@ class Hook
      * @return array
      * @throws \Exception
      */
-    public static function triggerConfig($name, $subject, array $data = [])
+    public static function triggerConfig(string $name, $subject, array $data = [])
     {
         $config = [];
         if (!static::has($name)) {
@@ -135,7 +135,7 @@ class Hook
      * @param string $name
      * @return bool
      */
-    private static function sort($name)
+    private static function sort(string $name): bool
     {
         if (array_key_exists($name, static::$sorted)) {
             return false;
@@ -149,7 +149,7 @@ class Hook
      * @param string $name
      * @return bool
      */
-    public static function has($name)
+    public static function has(string $name): bool
     {
         return array_key_exists($name, static::$hooks);
     }
@@ -159,7 +159,7 @@ class Hook
      * @param $name
      * @return array
      */
-    public static function get($name)
+    public static function get(string $name): array
     {
         static::sort($name);
         return array_key_exists($name, static::$hooks) ? static::$hooks[$name] : [];
@@ -169,7 +169,7 @@ class Hook
      * Return all hooks.
      * @return array
      */
-    public static function getAll()
+    public static function getAll(): array
     {
         return static::$hooks;
     }
@@ -178,7 +178,7 @@ class Hook
      * Remove the hook with the given name.
      * @param string $name
      */
-    public static function remove($name)
+    public static function remove(string $name)
     {
         if (array_key_exists($name, static::$hooks)) {
             unset(static::$hooks[$name]);

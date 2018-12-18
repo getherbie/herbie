@@ -19,7 +19,7 @@ class Pagination implements \IteratorAggregate, \Countable
      * @param string $name
      * @throws \Exception
      */
-    public function __construct($items, $limit = 10, $name = 'page')
+    public function __construct($items, int $limit = 10, string $name = 'page')
     {
         $this->items = [];
         if (is_array($items)) {
@@ -36,7 +36,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function getPage()
+    public function getPage(): int
     {
         $page = isset($_GET[$this->name]) ? intval($_GET[$this->name]) : 1;
         $calculated = ceil($this->count() / $this->limit);
@@ -49,7 +49,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }
@@ -57,7 +57,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @param int $limit
      */
-    public function setLimit($limit)
+    public function setLimit(int $limit)
     {
         $limit = (0 == $limit) ? 1000 : intval($limit);
         $this->limit = $limit;
@@ -66,7 +66,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         $offset = ($this->getPage() - 1) * $this->limit;
         $items = array_slice($this->items, $offset, $this->limit);
@@ -76,7 +76,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
@@ -84,7 +84,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return bool
      */
-    public function hasNextPage()
+    public function hasNextPage(): bool
     {
         return ($this->limit * $this->getPage()) < $this->count();
     }
@@ -92,7 +92,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function getNextPage()
+    public function getNextPage(): int
     {
         return max(2, $this->getPage() + 1);
     }
@@ -100,7 +100,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return bool
      */
-    public function hasPrevPage()
+    public function hasPrevPage(): bool
     {
         return 1 < $this->getPage();
     }
@@ -108,7 +108,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function getPrevPage()
+    public function getPrevPage(): int
     {
         return max(1, $this->getPage() - 1);
     }

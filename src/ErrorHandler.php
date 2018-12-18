@@ -48,7 +48,7 @@ class ErrorHandler
      * @return bool
      * @throws \ErrorException
      */
-    public function handleError($code, $message, $file, $line)
+    public function handleError(int $code, string $message, string $file, int $line)
     {
         // error was suppressed with the @-operator
         if (0 === error_reporting()) {
