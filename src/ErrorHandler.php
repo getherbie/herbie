@@ -109,7 +109,7 @@ class ErrorHandler
             $message = 'Error: ' . $exception->getMessage();
         }
         // remove path
-        $message = str_replace(realpath(__DIR__ . '/../../').'/', '', $message);
+        $message = str_replace(__DIR__ . '/../../', '', $message);
         return $message;
     }
 
