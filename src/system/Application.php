@@ -173,7 +173,7 @@ class Application
                     }
                 } catch (\Exception $e) {
                     $page = new Page();
-                    $page->layout = 'error.html.twig';
+                    $page->layout = 'error';
                     $page->setError($e);
                 }
 

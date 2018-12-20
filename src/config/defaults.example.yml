@@ -24,6 +24,7 @@ data:
 
 layouts:
   path: SITE_PATH/layouts
+  extension: 'html'
 
 theme: default
 

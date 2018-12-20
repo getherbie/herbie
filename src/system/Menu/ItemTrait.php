@@ -29,7 +29,7 @@ trait ItemTrait
         // default / required fields
         $this->data = [
             'title' => '',
-            'layout' => 'default.html.twig',
+            'layout' => 'default',
             'content_type' => 'text/html',
             'authors' => [],
             'categories' => [],
