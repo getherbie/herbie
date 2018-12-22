@@ -54,10 +54,9 @@ class PluginManager
      */
     public function init(): bool
     {
-        // add system plugins
-        $path = realpath(__DIR__ . '/../plugins');
+        // add sys plugins first
         foreach ($this->enabledSysPlugins as $key) {
-            $this->loadPlugin($path, $key);
+            $this->loadPlugin($this->path, $key);
         }
 
         // add third-party plugins

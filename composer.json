@@ -7,7 +7,12 @@
     "license":"BSD-3-Clause",
     "require": {
         "php": "^7.1.3",
-        "symfony/yaml": "^4.2"
+        "symfony/yaml": "^4.2",
+        "getherbie/composer": "^1.0.0",
+        "getherbie/plugin-markdown": "dev-master",
+        "getherbie/plugin-shortcode": "dev-master",
+        "getherbie/plugin-textile": "dev-master",
+        "getherbie/plugin-twig": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -26,5 +31,23 @@
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
         "phpunit": "./vendor/bin/phpunit"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/getherbie-plugin/markdown"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/getherbie-plugin/shortcode"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/getherbie-plugin/textile"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/getherbie-plugin/twig"
+        }
+    ]
 }
