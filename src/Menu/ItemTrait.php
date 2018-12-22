@@ -11,7 +11,8 @@
 
 namespace Herbie\Menu;
 
-use Herbie\Helper\StringHelper;
+use Ausi\SlugGenerator\SlugGenerator;
+use Herbie\Application;
 
 trait ItemTrait
 {
@@ -233,6 +234,7 @@ trait ItemTrait
 
     /**
      * @param $name
+     * @return mixed
      * @throws \LogicException
      */
     public function __get($name)
@@ -300,6 +302,6 @@ trait ItemTrait
      */
     private function urlify($slug)
     {
-        return StringHelper::urlify($slug);
+        return Application::getService('SlugGenerator')->generate($slug);
     }
 }

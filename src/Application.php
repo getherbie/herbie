@@ -10,6 +10,9 @@
 
 namespace Herbie;
 
+use Ausi\SlugGenerator\SlugGenerator;
+use Ausi\SlugGenerator\SlugOptions;
+
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
 class Application
@@ -57,6 +60,7 @@ class Application
         static::$DI = $DI = DI::instance();
 
         $DI['Request'] = $request = new Http\Request();
+
         $DI['Config'] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
@@ -74,6 +78,14 @@ class Application
             '@vendor' => $this->vendorDir,
             '@web' => $config->get('web.path')
         ]);
+
+        $DI['SlugGenerator'] = function ($DI) {
+            $locale = $DI['Config']->get('locale');
+            return new SlugGenerator((new SlugOptions)
+                ->setLocale($locale)
+                ->setDelimiter('-')
+            );
+        };
 
         $DI['Assets'] = function ($DI) {
             return new Assets($DI['Alias'], $DI['Config']->get('web.url'));
