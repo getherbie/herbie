@@ -18,12 +18,22 @@ class ErrorHandler
 {
     /**
      * Registers this error handler.
+     * @param string $logDir
+     * @throws \Exception
      */
-    public function register()
+    public function register(string $logDir)
     {
+        if (!is_dir($logDir)) {
+            throw new \Exception(sprintf('Log dir "%s" does not exist', $logDir));
+        }
+
+        if (!is_writable($logDir)) {
+            throw new \Exception(sprintf('Log dir "%s" is not writable', $logDir));
+        }
+
         ini_set("display_errors", 0);
         ini_set("log_errors", 1);
-        ini_set("error_log", sprintf("%s/log/%s-error.log", dirname(__DIR__), date('Y-m')));
+        ini_set("error_log", sprintf("%s/%s-error.log", $logDir, date('Y-m')));
 
         set_exception_handler([$this, 'handleException']);
         set_error_handler([$this, 'handleError'], error_reporting());

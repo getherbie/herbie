@@ -51,9 +51,8 @@ class Application
      */
     private function init()
     {
-
         $errorHandler = new ErrorHandler();
-        $errorHandler->register();
+        $errorHandler->register($this->sitePath . '/log');
 
         static::$DI = $DI = DI::instance();
 
