@@ -207,6 +207,7 @@ class ShortcodePlugin
             }
 
             $twig = DI::get('Twig');
+            $extension = DI::get('Config')->get('layouts.extension');
 
             // store page
             $page = DI::get('Page');
@@ -218,16 +219,16 @@ class ShortcodePlugin
 
                 DI::set('Page', $block);
 
-                // self-contained blocks aka widgets
-                if (!empty($block->layout) && file_exists($paths[$path].'/.layouts/'.$block->layout)) {
-                    $block->layout = $path.'/.layouts/'.$block->layout;
-                }
-
                 if (empty($block->layout)) {
                     $return .= $twig->renderPageSegment(0, $block);
                 } else {
+                    $layout = empty($extension) ? $block->layout : sprintf('%s.%s', $block->layout, $extension);
+                    // self-contained blocks aka widgets
+                    if (file_exists($paths[$path].'/.layouts/'.$layout)) {
+                        $layout = $path.'/.layouts/'.$layout;
+                    }
                     $twig->getEnvironment()->getExtension('herbie')->setPage($block);
-                    $return .= $twig->render($block->layout, ['block' => $block]);
+                    $return .= $twig->render($layout, ['block' => $block]);
                 }
                 $return .= "\n";
             }

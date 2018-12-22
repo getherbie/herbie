@@ -31,7 +31,8 @@ return [
         'audio' => 'mp3,m4a,wav,aiff,midi'
     ],
     'layouts' => [
-        'path' => $SITE_PATH . '/layouts'
+        'path' => $SITE_PATH . '/layouts',
+        'extension' => 'html'
     ],
     'theme' => 'default',
     'pages' => [
