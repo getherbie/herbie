@@ -31,23 +31,5 @@
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
         "phpunit": "./vendor/bin/phpunit"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/markdown"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/shortcode"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/textile"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/twig"
-        }
-    ]
+    }
 }
