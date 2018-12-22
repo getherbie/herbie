@@ -80,7 +80,7 @@ class Application
         ]);
 
         $DI['SlugGenerator'] = function ($DI) {
-            $locale = $DI['Config']->get('locale');
+            $locale = $DI['Config']->get('language');
             return new SlugGenerator((new SlugOptions)
                 ->setLocale($locale)
                 ->setDelimiter('-')
