@@ -35,7 +35,7 @@ class ErrorHandler
         ini_set("log_errors", 1);
         ini_set("error_log", sprintf("%s/%s-error.log", $logDir, date('Y-m')));
 
-        set_exception_handler([$this, 'handleException']);
+        set_exception_handler([$this, 'handleUncaughtException']);
         set_error_handler([$this, 'handleError'], error_reporting());
         register_shutdown_function([$this, 'handleFatalError']);
     }
@@ -74,7 +74,7 @@ class ErrorHandler
      * Handles an exception
      * @param \Exception $exception
      */
-    public function handleException($exception)
+    public function handleUncaughtException($exception)
     {
         $this->sendHttpHeader();
         echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
@@ -108,7 +108,7 @@ class ErrorHandler
      */
     public function convertExceptionToString($exception)
     {
-        if ($exception instanceof \Exception && !HERBIE_DEBUG) {
+        if ($exception instanceof \Throwable && !HERBIE_DEBUG) {
             $message = get_class($exception) . ": {$exception->getMessage()}";
         } elseif (HERBIE_DEBUG) {
             $message = $exception->getMessage() . "\n\n"
@@ -119,7 +119,8 @@ class ErrorHandler
             $message = 'Error: ' . $exception->getMessage();
         }
         // remove path
-        $message = str_replace(__DIR__ . '/../../', '', $message);
+        $path = realpath(__DIR__ . '/../../');
+        $message = str_replace($path, '', $message);
         return $message;
     }
 
@@ -138,6 +139,8 @@ class ErrorHandler
      */
     protected function sendHttpHeader($code = 500)
     {
-        header("HTTP/1.1 $code");
+        if (!headers_sent()) {
+            header("HTTP/1.1 $code");
+        }
     }
 }
