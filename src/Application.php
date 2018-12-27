@@ -12,6 +12,8 @@ namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
+use Psr\Http\Message\ResponseInterface;
+use Tebe\HttpFactory\HttpFactory;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
@@ -59,12 +61,16 @@ class Application
 
         static::$DI = $DI = DI::instance();
 
-        $DI['Request'] = $request = new Http\Request();
+        $DI['HttpFactory'] = $httpFactory = new HttpFactory();
+
+        $DI['Request'] = $request = $httpFactory->createServerRequestFromGlobals();
+
+        $DI['Environment'] = $environment = new Environment($request);
 
         $DI['Config'] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
-            $request->getBaseUrl()
+            $environment->getBaseUrl()
         );
 
         $DI['Alias'] = new Alias([
@@ -81,10 +87,11 @@ class Application
 
         $DI['SlugGenerator'] = function ($DI) {
             $locale = $DI['Config']->get('language');
-            return new SlugGenerator((new SlugOptions)
-                ->setLocale($locale)
-                ->setDelimiter('-')
-            );
+            $options = new SlugOptions([
+                'locale' => $locale,
+                'delimiter' => '-'
+            ]);
+            return new SlugGenerator($options);
         };
 
         $DI['Assets'] = function ($DI) {
@@ -130,7 +137,11 @@ class Application
         };
 
         $DI['Url\UrlGenerator'] = function ($DI) {
-            return new Url\UrlGenerator($DI['Request'], $DI['Config']->get('nice_urls', false));
+            return new Url\UrlGenerator(
+                $DI['Request'],
+                $DI['Environment'],
+                $DI['Config']->get('nice_urls', false)
+            );
         };
 
         setlocale(LC_ALL, $DI['Config']->get('locale'));
@@ -155,7 +166,7 @@ class Application
             };
 
             $DI['Menu\Page\RootPath'] = function ($DI) {
-                $rootPath = new Menu\Page\RootPath($DI['Menu\Page\Collection'], $DI['Request']->getRoute());
+                $rootPath = new Menu\Page\RootPath($DI['Menu\Page\Collection'], $DI['Environment']->getRoute());
                 return $rootPath;
             };
 
@@ -167,7 +178,7 @@ class Application
             $DI['Page'] = function ($DI) {
 
                 try {
-                    $route = $DI['Request']->getRoute();
+                    $route = $DI['Environment']->getRoute();
 
                     $page = false;
 
@@ -181,10 +192,10 @@ class Application
 
                         Hook::trigger(Hook::ACTION, 'pageLoaded', $page);
                     }
-                } catch (\Exception $e) {
+                } catch (\Throwable $t) {
                     $page = new Page();
                     $page->layout = 'error';
-                    $page->setError($e);
+                    $page->setError($t);
                 }
 
                 return $page;
@@ -231,6 +242,7 @@ class Application
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function run()
     {
@@ -240,7 +252,7 @@ class Application
 
         Hook::trigger(Hook::ACTION, 'outputGenerated', $response);
 
-        $response->send();
+        $this->emitResponse($response);
 
         Hook::trigger(Hook::ACTION, 'outputRendered');
 
@@ -250,11 +262,11 @@ class Application
         }
     }
 
-    public function renderPage(Page $page)
+    public function renderPage(Page $page): ResponseInterface
     {
         $rendered = false;
 
-        $cacheId = 'page-' . static::$DI['Request']->getRoute();
+        $cacheId = 'page-' . static::$DI['Environment']->getRoute();
         if (empty($page->nocache)) {
             $rendered = static::$DI['Cache\PageCache']->get($cacheId);
         }
@@ -270,8 +282,8 @@ class Application
                 } else {
                     $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
                 }
-            } catch (\Exception $e) {
-                $page->setError($e);
+            } catch (\Throwable $t) {
+                $page->setError($t);
                 $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
             }
 
@@ -281,10 +293,40 @@ class Application
             $rendered = $content->string;
         }
 
-        $response = new Http\Response($rendered);
-        $response->setStatus($page->getStatusCode());
-        $response->setHeader('Content-Type', $page->content_type);
+        $response = static::$DI['HttpFactory']->createResponse($page->getStatusCode());
+        $response->getBody()->write($rendered);
+        $response->withHeader('Content-Type', $page->content_type);
 
         return $response;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     */
+    private function emitResponse(ResponseInterface $response): void
+    {
+        $statusCode = $response->getStatusCode();
+        http_response_code($statusCode);
+        foreach ($response->getHeaders() as $k => $values) {
+            foreach ($values as $v) {
+                header(sprintf('%s: %s', $k, $v), false);
+            }
+        }
+        echo $response->getBody();
+    }
+
+    public static function getRoute()
+    {
+        return static::getService('Environment')->getRoute();
+    }
+
+    public static function getRouteLine()
+    {
+        return static::getService('Environment')->getRouteLine();
+    }
+
+    public static function getBasePath()
+    {
+        return static::getService('Environment')->getBasePath();
     }
 }

@@ -11,7 +11,8 @@
 
 namespace Herbie\Url;
 
-use Herbie\Http\Request;
+use Herbie\Environment;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * The URLGenerator creates URLs based on the given route.
@@ -24,18 +25,24 @@ class UrlGenerator
     protected $request;
 
     /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
      * @var bool
      */
     protected $niceUrls;
 
     /**
      * Constructor
-     * @param Request $request The request object.
+     * @param ServerRequestInterface $request The request object.
      * @param bool $niceUrls Whether to generate nice URLs.
      */
-    public function __construct(Request $request, $niceUrls)
+    public function __construct(ServerRequestInterface $request, Environment $environment, $niceUrls)
     {
         $this->request = $request;
+        $this->environment = $environment;
         $this->niceUrls = $niceUrls;
     }
 
@@ -48,9 +55,9 @@ class UrlGenerator
     {
         $route = ltrim($route, '/');
         if ($this->niceUrls) {
-            $url = $this->request->getBasePath() . '/' . $route;
+            $url = $this->environment->getBasePath() . '/' . $route;
         } else {
-            $url = $this->request->getScriptName() . '/' . $route;
+            $url = $this->environment->getScriptName() . '/' . $route;
         }
         return $this->filterUrl($url);
     }
@@ -62,7 +69,8 @@ class UrlGenerator
      */
     public function generateAbsolute($route)
     {
-        $baseurl = $this->request->getScheme() . '://' . $this->request->getHttpHost();
+        $uri = $this->request->getUri();
+        $baseurl = $uri->getScheme() . '://' . $uri->getHost();
         return $baseurl . $this->generate($route);
     }
 

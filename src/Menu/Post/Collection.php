@@ -11,8 +11,8 @@
 
 namespace Herbie\Menu\Post;
 
+use Herbie\Application;
 use Herbie\Menu\CollectionTrait;
-use Herbie\Http\Request;
 
 class Collection implements \IteratorAggregate, \Countable
 {
@@ -261,9 +261,9 @@ class Collection implements \IteratorAggregate, \Countable
      */
     protected function getBlogPathInfo()
     {
-        $request = new Request();
+        $route = Application::getRoute();
 
-        $segments = explode('/', $request->getRoute());
+        $segments = explode('/', $route);
         if (empty($segments)) {
             return '';
         }

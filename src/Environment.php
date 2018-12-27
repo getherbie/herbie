@@ -9,132 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Http;
+namespace Herbie;
 
-class Request
+use Psr\Http\Message\ServerRequestInterface;
+
+class Environment
 {
-    /**
-     * @var array
-     */
-    private $get;
-
-    /**
-     * @var array
-     */
-    private $post;
-
-    /**
-     * @var array
-     */
-    private $cookie;
-
-    /**
-     * @var array
-     */
-    private $server;
-
-    /**
-     * @var string
-     */
     private $basePath;
-
-    /**
-     * @var string
-     */
     private $baseUrl;
-
-    /**
-     * @var
-     */
     private $pathInfo;
-
-    /**
-     * @var string
-     */
     private $requestUri;
 
-    public function __construct()
-    {
-        $this->get = $_GET;
-        $this->post = $_POST;
-        $this->cookie = $_COOKIE;
-        $this->files = $_FILES;
-        $this->server = $_SERVER;
-    }
+    /**
+     * @var ServerRequestInterface
+     */
+    private $serverRequest;
 
-    public function getQuery($name, $default = null)
+    public function __construct(ServerRequestInterface $serverRequest)
     {
-        return isset($this->get[$name]) ? $this->get[$name] : $default;
-    }
-
-    public function setQuery($name, $mixed)
-    {
-        $this->get[$name] = $mixed;
-    }
-
-    public function getPost($name, $default = null)
-    {
-        return isset($this->post[$name]) ? $this->post[$name] : $default;
-    }
-
-    public function getCookie($name, $default = null)
-    {
-        return isset($this->cookie[$name]) ? $this->cookie[$name] : $default;
-    }
-
-    public function getServer($name, $default = null)
-    {
-        return isset($this->server[$name]) ? $this->server[$name] : $default;
-    }
-
-    public function getHeader($name)
-    {
-        $name = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
-        if (isset($_SERVER[$name])) {
-            return $_SERVER[$name];
-        }
-        return null;
-    }
-
-    public function getMethod()
-    {
-        return strtoupper($this->getServer('REQUEST_METHOD'));
-    }
-
-    public function getAuthData()
-    {
-        if (!isset($_SERVER['PHP_AUTH_USER'])) {
-            return null;
-        }
-        return ['user' => $_SERVER['PHP_AUTH_USER'], 'password' => $_SERVER['PHP_AUTH_PW']];
-    }
-
-    public function getRemoteAddress()
-    {
-        return $_SERVER['REMOTE_ADDR'];
-    }
-
-    public function getScheme()
-    {
-        // see https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/Request.php
-        if ((!empty($this->server['HTTPS']) && strtolower($this->server['HTTPS']) !== 'off')
-            || (!empty($this->server['HTTP_X_FORWARDED_PROTO'])
-                && $this->server['HTTP_X_FORWARDED_PROTO'] == 'https')
-        ) {
-            return 'https';
-        } else {
-            return 'http';
-        }
-    }
-
-    public function getHttpHost()
-    {
-        return $this->getServer('HTTP_HOST');
-    }
-
-    public function getPort()
-    {
-        return 'https' === $this->getScheme() ? 443 : 80;
+        $this->serverRequest = $serverRequest;
     }
 
     /**
@@ -404,5 +297,11 @@ class Request
     public function getScriptName()
     {
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
+    }
+
+    private function getServer(string $name)
+    {
+        $params = $this->serverRequest->getServerParams();
+        return $params[$name] ?? null;
     }
 }

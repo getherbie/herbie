@@ -20,6 +20,7 @@ class StringHelper
      * @param string $str
      * @param string $delimiter
      * @return string
+     * @deprecated
      */
     public static function urlify($str, $delimiter = '-')
     {
@@ -48,10 +49,11 @@ class StringHelper
         return $string;
     }
 
-    public static function removeOneNewlineAtEnd($string)
-    {
-    }
-
+    /**
+     * @param $string
+     * @return string
+     * @deprecated
+     */
     public static function escapeNonAsciiCharacters($string)
     {
         return addcslashes($string, "\0..\37!@\177..\377");
