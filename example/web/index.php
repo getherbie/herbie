@@ -37,7 +37,7 @@ class CustomHeader implements MiddlewareInterface {
 }
 
 $app = new Herbie\Application('../site');
-$app->setMiddleware([
+$app->setMiddlewares([
     ResponseTimeMiddleware::class,
     CustomHeader::class,
     new CustomHeader(2),
