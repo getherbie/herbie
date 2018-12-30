@@ -11,7 +11,6 @@
 
 namespace Herbie\Menu;
 
-use Ausi\SlugGenerator\SlugGenerator;
 use Herbie\Application;
 
 trait ItemTrait
@@ -73,9 +72,9 @@ trait ItemTrait
      */
     public function getAuthor($author)
     {
-        $author = $this->urlify($author);
+        $author = $this->slugify($author);
         foreach ($this->data['authors'] as $a) {
-            if ($this->urlify($a) == $author) {
+            if ($this->slugify($a) == $author) {
                 return $a;
             }
         }
@@ -96,9 +95,9 @@ trait ItemTrait
      */
     public function getCategory($category)
     {
-        $category = $this->urlify($category);
+        $category = $this->slugify($category);
         foreach ($this->data['categories'] as $c) {
-            if ($this->urlify($c) == $category) {
+            if ($this->slugify($c) == $category) {
                 return $c;
             }
         }
@@ -124,9 +123,9 @@ trait ItemTrait
      */
     public function getTag($tag)
     {
-        $tag = $this->urlify($tag);
+        $tag = $this->slugify($tag);
         foreach ($this->getTags() as $t) {
-            if ($this->urlify($t) == $tag) {
+            if ($this->slugify($t) == $tag) {
                 return $t;
             }
         }
@@ -188,9 +187,9 @@ trait ItemTrait
      */
     public function hasAuthor($author)
     {
-        $author = $this->urlify($author);
+        $author = $this->slugify($author);
         foreach ($this->data['authors'] as $c) {
-            if ($this->urlify($c) == $author) {
+            if ($this->slugify($c) == $author) {
                 return true;
             }
         }
@@ -203,9 +202,9 @@ trait ItemTrait
      */
     public function hasCategory($category)
     {
-        $category = $this->urlify($category);
+        $category = $this->slugify($category);
         foreach ($this->data['categories'] as $c) {
-            if ($this->urlify($c) == $category) {
+            if ($this->slugify($c) == $category) {
                 return true;
             }
         }
@@ -218,9 +217,9 @@ trait ItemTrait
      */
     public function hasTag($tag)
     {
-        $tag = $this->urlify($tag);
+        $tag = $this->slugify($tag);
         foreach ($this->getTags() as $t) {
-            if ($this->urlify($t) == $tag) {
+            if ($this->slugify($t) == $tag) {
                 return true;
             }
         }
@@ -300,7 +299,7 @@ trait ItemTrait
      * @param string $slug
      * @return string
      */
-    private function urlify($slug)
+    private function slugify($slug)
     {
         return Application::getService('SlugGenerator')->generate($slug);
     }

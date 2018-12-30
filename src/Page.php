@@ -157,9 +157,9 @@ class Page
     }
 
     /**
-     * @param \Exception $e
+     * @param \Throwable $e
      */
-    public function setError(\Exception $e)
+    public function setError(\Throwable $e)
     {
         $this->data['error'] = [
             'message' => $e->getMessage(),

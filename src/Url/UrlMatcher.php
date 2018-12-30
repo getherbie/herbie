@@ -45,7 +45,7 @@ class UrlMatcher
     /**
      * Returns a path to a valid page or post file.
      * @param string $route The route of the current request.
-     * @return \Herbie\Menu\ItemInferface The path to a page or post file.
+     * @return Herbie\Menu\ItemInferface The path to a page or post file.
      * @throws ResourceNotFoundException
      */
     public function match($route)

@@ -10,6 +10,7 @@
         "symfony/yaml": "^4.2",
         "ausi/slug-generator": "^1.1",
         "psr/http-message": "^1.0",
+        "psr/http-server-middleware": "^1.0",
         "getherbie/composer": "^1.0",
         "getherbie/plugin-markdown": "dev-master",
         "getherbie/plugin-shortcode": "dev-master",
