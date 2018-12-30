@@ -11,13 +11,8 @@
 
 namespace Herbie;
 
-class DI implements \ArrayAccess
+class Container implements \ArrayAccess
 {
-    /**
-     * @var DI
-     */
-    private static $instance;
-
     /**
      * @var array
      */
@@ -28,51 +23,33 @@ class DI implements \ArrayAccess
      */
     private $frozen = [];
 
-    final private function __construct()
-    {
-    }
-    final private function __clone()
-    {
-    }
-
-    /**
-     * @return DI
-     */
-    public static function instance()
-    {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-        return static::$instance;
-    }
-
     /**
      * @param string $service
      * @return mixed
      * @throws \Exception
      */
-    public static function get(string $service)
+    public function get(string $service)
     {
-        return static::instance()->offsetGet($service);
+        return $this->offsetGet($service);
     }
 
     /**
      * @param string $service
      * @return bool
      */
-    public static function has(string $service): bool
+    public function has(string $service): bool
     {
-        return static::instance()->offsetExists($service);
+        return $this->offsetExists($service);
     }
 
     /**
      * @param string $name
      * @param mixed $service
      */
-    public static function set(string $name, $service)
+    public function set(string $name, $service)
     {
-        static::instance()->offsetUnset($name);
-        static::instance()->offsetSet($name, $service);
+        $this->offsetUnset($name);
+        $this->offsetSet($name, $service);
     }
 
     /**

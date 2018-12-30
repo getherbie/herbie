@@ -18,6 +18,12 @@ use Herbie\Menu\Page\RootPath;
  */
 class Site
 {
+    protected $herbie;
+
+    public function __construct(Application $herbie)
+    {
+        $this->herbie = $herbie;
+    }
 
     /**
      * @return string
@@ -32,7 +38,7 @@ class Site
      */
     public function getData(): array
     {
-        return Application::getService('DataArray');
+        return $this->herbie->getDataArray();
     }
 
     /**
@@ -40,7 +46,7 @@ class Site
      */
     public function getMenu(): \Herbie\Menu\Page\Collection
     {
-        return Application::getService('Menu\Page\Collection');
+        return $this->herbie->getMenuPageCollection();
     }
 
     /**
@@ -48,7 +54,7 @@ class Site
      */
     public function getTree(): Node
     {
-        return Application::getService('Menu\Page\Node');
+        return $this->herbie->getMenuPageNode();
     }
 
     /**
@@ -56,7 +62,7 @@ class Site
      */
     public function getPageTree(): Node
     {
-        return Application::getService('Menu\Page\Node');
+        return $this->herbie->getMenuPageNode();
     }
 
     /**
@@ -64,7 +70,7 @@ class Site
      */
     public function getPosts(): \Herbie\Menu\Post\Collection
     {
-        return Application::getService('Menu\Post\Collection');
+        return $this->herbie->getMenuPostCollection();
     }
 
     /**
@@ -72,7 +78,7 @@ class Site
      */
     public function getRootPath(): RootPath
     {
-        return Application::getService('Menu\Page\RootPath');
+        return $this->herbie->getMenuPageRootPath();
     }
 
     /**
@@ -81,7 +87,7 @@ class Site
     public function getModified(): string
     {
         $lastModified = 0;
-        foreach (Application::getService('Menu\Page\Collection') as $item) {
+        foreach ($this->herbie->getMenuPageCollection() as $item) {
             $modified = strtotime($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;
@@ -95,7 +101,7 @@ class Site
      */
     public function getLanguage(): string
     {
-        return Application::getService('Config')->get('language');
+        return $this->herbie->getConfig()->get('language');
     }
 
     /**
@@ -103,7 +109,7 @@ class Site
      */
     public function getLocale(): string
     {
-        return Application::getService('Config')->get('locale');
+        return $this->herbie->getConfig()->get('locale');
     }
 
     /**
@@ -111,6 +117,6 @@ class Site
      */
     public function getCharset(): string
     {
-        return Application::getService('Config')->get('charset');
+        return $this->herbie->getConfig()->get('charset');
     }
 }

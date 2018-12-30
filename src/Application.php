@@ -12,10 +12,18 @@ namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
+use Herbie\Cache\PageCache;
+use Herbie\Loader\PageLoader;
+use Herbie\Menu\Page\Node;
+use Herbie\Menu\Page\RootPath;
 use Herbie\Middleware\DispatchMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageResolverMiddleware;
+use herbie\plugin\shortcode\ShortcodePlugin;
+use herbie\plugin\twig\classes\Twig;
+use Herbie\Url\UrlGenerator;
+use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Tebe\HttpFactory\HttpFactory;
 
@@ -24,14 +32,14 @@ defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 class Application
 {
     /**
-     * @var DI
+     * @var Container
      */
-    protected static $DI;
+    protected $container;
 
     /**
      * @var Page
      */
-    protected static $page;
+    protected $page;
 
     /**
      * @var string
@@ -73,12 +81,8 @@ class Application
             ],
             $this->middlewares,
             [
-                new PageResolverMiddleware(
-                    static::getService('Environment'),
-                    static::getService('Url\UrlMatcher'),
-                    static::getService('Loader\PageLoader')
-                ),
-                DispatchMiddleware::class
+                new PageResolverMiddleware($this),
+                new DispatchMiddleware($this)
             ]
         );
         return $middlewares;
@@ -92,21 +96,25 @@ class Application
         $errorHandler = new ErrorHandler();
         $errorHandler->register($this->sitePath . '/log');
 
-        static::$DI = $DI = DI::instance();
+        $this->container = $container = new Container();
 
-        $DI['HttpFactory'] = $httpFactory = new HttpFactory();
+        $container['HttpFactory'] = $httpFactory = new HttpFactory();
 
-        $DI['Request'] = $request = $httpFactory->createServerRequestFromGlobals();
+        $container['Request'] = $request = $httpFactory->createServerRequestFromGlobals();
 
-        $DI['Environment'] = $environment = new Environment($request);
+        $container['Environment'] = $environment = new Environment($request);
 
-        $DI['Config'] = $config = new Config(
+        $container['Config'] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
             $environment->getBaseUrl()
         );
 
-        $DI['Alias'] = new Alias([
+        // Add custom PSR-4 plugin path to Composer autoloader
+        $autoload = require($this->vendorDir . '/autoload.php');
+        $autoload->addPsr4('herbie\\plugin\\', $container['Config']->get('plugins.path'));
+
+        $container['Alias'] = new Alias([
             '@app' => $config->get('app.path'),
             '@asset' => $this->sitePath . '/assets',
             '@media' => $config->get('media.path'),
@@ -118,8 +126,8 @@ class Application
             '@web' => $config->get('web.path')
         ]);
 
-        $DI['SlugGenerator'] = function ($DI) {
-            $locale = $DI['Config']->get('language');
+        $container['SlugGenerator'] = function ($container) {
+            $locale = $container['Config']->get('language');
             $options = new SlugOptions([
                 'locale' => $locale,
                 'delimiter' => '-'
@@ -127,127 +135,136 @@ class Application
             return new SlugGenerator($options);
         };
 
-        $DI['Assets'] = function ($DI) {
-            return new Assets($DI['Alias'], $DI['Config']->get('web.url'));
+        $container['Assets'] = function ($container) {
+            return new Assets($container['Alias'], $container['Config']->get('web.url'));
         };
 
-        $DI['Cache\PageCache'] = function ($DI) {
-            return Cache\CacheFactory::create('page', $DI['Config']);
+        $container['Cache\PageCache'] = function ($container) {
+            return Cache\CacheFactory::create('page', $container['Config']);
         };
 
-        $DI['Cache\DataCache'] = function ($DI) {
-            return Cache\CacheFactory::create('data', $DI['Config']);
+        $container['Cache\DataCache'] = function ($container) {
+            return Cache\CacheFactory::create('data', $container['Config']);
         };
 
-        $DI['DataArray'] = function ($DI) {
-            $loader = new Loader\DataLoader($DI['Config']->get('data.extensions'));
-            return $loader->load($DI['Config']->get('data.path'));
+        $container['DataArray'] = function ($container) {
+            $loader = new Loader\DataLoader($container['Config']->get('data.extensions'));
+            return $loader->load($container['Config']->get('data.path'));
         };
 
-        $DI['Loader\PageLoader'] = function ($DI) {
-            $loader = new Loader\PageLoader($DI['Alias']);
+        $container['Loader\PageLoader'] = function ($container) {
+            $loader = new Loader\PageLoader($container['Alias']);
             return $loader;
         };
 
-        $DI['Menu\Page\Builder'] = function ($DI) {
+        $container['Menu\Page\Builder'] = function ($container) {
 
             $paths = [];
-            $paths['@page'] = realpath($DI['Config']->get('pages.path'));
-            foreach ($DI['Config']->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $DI['Alias']->get($alias);
+            $paths['@page'] = realpath($container['Config']->get('pages.path'));
+            foreach ($container['Config']->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $container['Alias']->get($alias);
             }
-            $extensions = $DI['Config']->get('pages.extensions', []);
+            $extensions = $container['Config']->get('pages.extensions', []);
 
             $builder = new Menu\Page\Builder($paths, $extensions);
             return $builder;
         };
 
-        $DI['PluginManager'] = function ($DI) {
-            $enabled = $DI['Config']->get('plugins.enable', []);
-            $path = $DI['Config']->get('plugins.path');
-            $enabledSysPlugins = $DI['Config']->get('sysplugins.enable');
-            return new PluginManager($enabled, $path, $enabledSysPlugins);
+        $container['PluginManager'] = function ($container) {
+            $enabled = $container['Config']->get('plugins.enable', []);
+            $path = $container['Config']->get('plugins.path');
+            $enabledSysPlugins = $container['Config']->get('sysplugins.enable');
+            return new PluginManager($enabled, $path, $enabledSysPlugins, $this);
         };
 
-        $DI['Url\UrlGenerator'] = function ($DI) {
+        $container['Url\UrlGenerator'] = function ($container) {
             return new Url\UrlGenerator(
-                $DI['Request'],
-                $DI['Environment'],
-                $DI['Config']->get('nice_urls', false)
+                $container['Request'],
+                $container['Environment'],
+                $container['Config']->get('nice_urls', false)
             );
         };
 
-        setlocale(LC_ALL, $DI['Config']->get('locale'));
-
-        // Add custom PSR-4 plugin path to Composer autoloader
-        $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $DI['Config']->get('plugins.path'));
+        setlocale(LC_ALL, $container['Config']->get('locale'));
 
         // Init PluginManager at first
-        if (true === $DI['PluginManager']->init($DI['Config'])) {
-            Hook::trigger(Hook::ACTION, 'pluginsInitialized', $DI['PluginManager']);
+        if (true === $container['PluginManager']->init($container['Config'])) {
 
-            Hook::trigger(Hook::ACTION, 'shortcodeInitialized', $DI['Shortcode']);
+            $container['PluginManager']->trigger('pluginsInitialized', $container['PluginManager']);
+            $container['PluginManager']->trigger('shortcodeInitialized', $container['Shortcode']);
 
-            $DI['Menu\Page\Collection'] = function ($DI) {
-                $DI['Menu\Page\Builder']->setCache($DI['Cache\DataCache']);
-                return $DI['Menu\Page\Builder']->buildCollection();
+            $container['Menu\Page\Collection'] = function ($container) {
+                $container['Menu\Page\Builder']->setCache($container['Cache\DataCache']);
+                return $container['Menu\Page\Builder']->buildCollection();
             };
 
-            $DI['Menu\Page\Node'] = function ($DI) {
-                return Menu\Page\Node::buildTree($DI['Menu\Page\Collection']);
+            $container['Menu\Page\Node'] = function ($container) {
+                return Menu\Page\Node::buildTree($container['Menu\Page\Collection']);
             };
 
-            $DI['Menu\Page\RootPath'] = function ($DI) {
-                $rootPath = new Menu\Page\RootPath($DI['Menu\Page\Collection'], $DI['Environment']->getRoute());
+            $container['Menu\Page\RootPath'] = function ($container) {
+                $rootPath = new Menu\Page\RootPath($container['Menu\Page\Collection'], $container['Environment']->getRoute());
                 return $rootPath;
             };
 
-            $DI['Menu\Post\Collection'] = function ($DI) {
-                $builder = new Menu\Post\Builder($DI['Cache\DataCache'], $DI['Config']);
+            $container['Menu\Post\Collection'] = function ($container) {
+                $builder = new Menu\Post\Builder($container['Cache\DataCache'], $container['Config']);
                 return $builder->build();
             };
 
-            $DI['Translator'] = function ($DI) {
-                $translator = new Translator($DI['Config']->get('language'), [
-                    'app' => $DI['Alias']->get('@app/../messages')
+            $container['Translator'] = function ($container) {
+                $translator = new Translator($container['Config']->get('language'), [
+                    'app' => $container['Alias']->get('@app/../messages')
                 ]);
-                foreach ($DI['PluginManager']->getLoadedPlugins() as $key => $dir) {
+                foreach ($container['PluginManager']->getLoadedPlugins() as $key => $dir) {
                     $translator->addPath($key, $dir . '/messages');
                 }
                 $translator->init();
                 return $translator;
             };
 
-            $DI['Url\UrlMatcher'] = function ($DI) {
-                return new Url\UrlMatcher($DI['Menu\Page\Collection'], $DI['Menu\Post\Collection']);
+            $container['Url\UrlMatcher'] = function ($container) {
+                return new Url\UrlMatcher($container['Menu\Page\Collection'], $container['Menu\Post\Collection']);
             };
         }
     }
 
     /**
      * Retrieve a registered service from DI container.
-     * @param string $service
+     * @param string $name
      * @return mixed
      */
-    public static function getService($service)
+    protected function getService($name)
     {
-        return static::$DI[$service];
+        return $this->container[$name];
     }
 
     /**
-     * Get the loaded (current) Page from DI container. This is a shortcut to Application::getService('Page').
+     * @param string $name
+     * @param mixed $service
+     * @return mixed
+     */
+    protected function setService($name, $service)
+    {
+        return $this->container[$name] = $service;
+    }
+
+    /**
+     * Get the loaded (current) Page from container. This is a shortcut to Application::getService('Page').
      * @return Page
      */
 
-    public static function getPage()
+    public function getPage()
     {
-        return static::$page;
+        return $this->page;
     }
 
-    public static function setPage(Page $page)
+    /**
+     * @param Page $page
+     */
+    public function setPage(Page $page)
     {
-        static::$page = $page;
+        $this->page = $page;
     }
 
     /**
@@ -258,14 +275,14 @@ class Application
     {
         $middlewares = $this->getMiddleware();
         $dispatcher = new MiddlewareDispatcher($middlewares);
-        $request = static::getService('Request');
+        $request = $this->getService('Request');
         $response = $dispatcher->dispatch($request);
 
-        Hook::trigger(Hook::ACTION, 'outputGenerated', $response);
+        $this->getPluginManager()->trigger('outputGenerated', $response);
 
         $this->emitResponse($response);
 
-        Hook::trigger(Hook::ACTION, 'outputRendered');
+        $this->getPluginManager()->trigger('outputRendered');
     }
 
     /**
@@ -283,18 +300,149 @@ class Application
         echo $response->getBody();
     }
 
-    public static function getRoute()
+    /**
+     * @return string
+     */
+    public function getRoute()
     {
-        return static::getService('Environment')->getRoute();
+        return $this->getService('Environment')->getRoute();
     }
 
-    public static function getRouteLine()
+    /**
+     * @return string
+     */
+    public function getRouteLine()
     {
-        return static::getService('Environment')->getRouteLine();
+        return $this->getService('Environment')->getRouteLine();
     }
 
-    public static function getBasePath()
+    /**
+     * @return string
+     */
+    public function getBasePath()
     {
-        return static::getService('Environment')->getBasePath();
+        return $this->getService('Environment')->getBasePath();
     }
+
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->getService('Config');
+    }
+
+    /**
+     * @param Twig $twig
+     */
+    public function setTwig($twig)
+    {
+        $this->setService('Twig', $twig);
+    }
+
+    /**
+     * @return PluginManager
+     */
+    public function getPluginManager()
+    {
+        return $this->getService('PluginManager');
+    }
+
+    /**
+     * @param ShortcodePlugin $shortcode
+     */
+    public function setShortcode($shortcode)
+    {
+        $this->setService('Shortcode', $shortcode);
+    }
+
+    /**
+     * @return Alias
+     */
+    public function getAlias()
+    {
+        return $this->getService('Alias');
+    }
+
+    /**
+     * @return UrlGenerator
+     */
+    public function getUrlGenerator()
+    {
+        return $this->getService('Url\UrlGenerator');
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->getService('Environment');
+    }
+
+    /**
+     * @return PageCache
+     */
+    public function getPageCache()
+    {
+        return $this->getService('Cache\PageCache');
+    }
+
+    /**
+     * @return Assets
+     */
+    public function getAssets()
+    {
+        return $this->getService('Assets');
+    }
+
+    /**
+     * @return RootPath
+     */
+    public function getMenuPageRootPath()
+    {
+        return $this->getService('Menu\Page\RootPath');
+    }
+
+    /**
+     * @return Node
+     */
+    public function getMenuPageNode()
+    {
+        return $this->getService('Menu\Page\Node');
+    }
+
+    /**
+     * @return Twig
+     */
+    public function getTwig()
+    {
+        $twig = $this->getService('Twig');
+        return $twig;
+    }
+
+    /**
+     * @return HttpFactory
+     */
+    public function getHttpFactory()
+    {
+        return $this->getService('HttpFactory');
+    }
+
+    /**
+     * @return UrlMatcher
+     */
+    public function getUrlMatcher()
+    {
+        return $this->getService('Url\UrlMatcher');
+    }
+
+    /**
+     * @return PageLoader
+     */
+    public function getPageLoader()
+    {
+        return $this->getService('Loader\PageLoader');
+    }
+
 }

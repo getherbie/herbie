@@ -16,7 +16,8 @@
         "getherbie/plugin-shortcode": "dev-master",
         "getherbie/plugin-textile": "dev-master",
         "getherbie/plugin-twig": "dev-master",
-        "tebe/http-factory": "dev-master"
+        "tebe/http-factory": "dev-master",
+        "zendframework/zend-eventmanager": "^3.2"
     },
     "autoload": {
         "psr-4": {

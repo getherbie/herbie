@@ -11,7 +11,9 @@
 
 namespace Herbie;
 
-class PluginManager
+use Zend\EventManager\EventManager;
+
+class PluginManager extends EventManager
 {
 
     /** @var array  */
@@ -29,6 +31,8 @@ class PluginManager
     /** @var array */
     private $enabledSysPlugins;
 
+    private $application;
+
     /**
      * PluginManager constructor.
      * @param array $enabled
@@ -36,16 +40,18 @@ class PluginManager
      * @param array $enabledSysPlugins
      * @throws \Exception
      */
-    public function __construct(array $enabled, string $path, array $enabledSysPlugins)
+    public function __construct(array $enabled, string $path, array $enabledSysPlugins, Application $application)
     {
         $this->enabled = $enabled;
         $this->path = realpath($path);
         $this->loaded = [];
         $this->initialized = false;
         $this->enabledSysPlugins = $enabledSysPlugins;
+        $this->application = $application;
         if (false === $this->path) {
             throw new \Exception("Plugins path '{$path}' doesn't exist or isn't readable (see config plugins.path).");
         }
+        parent::__construct();
     }
 
     /**
@@ -77,6 +83,12 @@ class PluginManager
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
             require($pluginPath);
+
+            $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
+
+            $plugin = new $className($this->application);
+            $plugin->attach($this);
+
             $this->loaded[$key] = dirname($pluginPath);
         }
     }

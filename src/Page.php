@@ -50,14 +50,13 @@ class Page
     /**
      *
      * @param string $id
-     * @return \stdClass
+     * @return StringValue
      */
-    public function getSegment(string $id): \stdClass
+    public function getSegment(string $id): StringValue
     {
-        $segment = new \stdClass();
-        $segment->string = '';
+        $segment = new StringValue();
         if (array_key_exists($id, $this->segments)) {
-            $segment->string = $this->segments[$id];
+            $segment->set($this->segments[$id]);
         }
         return $segment;
     }
@@ -176,7 +175,7 @@ class Page
      */
     public static function create(string $alias)
     {
-        $loader = DI::get('Loader\PageLoader');
+        $loader = Container::get('Loader\PageLoader');
         $page = new static();
         $page->setLoader($loader);
         $page->load($alias);

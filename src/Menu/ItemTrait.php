@@ -301,6 +301,7 @@ trait ItemTrait
      */
     private function slugify($slug)
     {
-        return Application::getService('SlugGenerator')->generate($slug);
+        // TODO
+        return $this->herbie->getSlugGenerator()->generate($slug);
     }
 }

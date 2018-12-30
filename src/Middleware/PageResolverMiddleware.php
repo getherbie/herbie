@@ -24,15 +24,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PageResolverMiddleware implements MiddlewareInterface
 {
+    protected $herbie;
     protected $environment;
     protected $urlMatcher;
     protected $pageLoader;
 
-    public function __construct(Environment $environment, UrlMatcher $urlMatcher, PageLoader $pageLoader)
+    /**
+     * PageResolverMiddleware constructor.
+     * @param Application $herbie
+     */
+    public function __construct(Application $herbie)
     {
-        $this->environment = $environment;
-        $this->urlMatcher = $urlMatcher;
-        $this->pageLoader = $pageLoader;
+        $this->herbie = $herbie;
+        $this->environment = $herbie->getEnvironment();
+        $this->urlMatcher = $herbie->getUrlMatcher();
+        $this->pageLoader = $herbie->getPageLoader();
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
@@ -51,7 +57,7 @@ class PageResolverMiddleware implements MiddlewareInterface
             $page->layout = 'error';
             $page->setError($t);
         }
-        Application::setPage($page);
+        $this->herbie->setPage($page);
         $request = $request->withAttribute(Page::class, $page);
         return $handler->handle($request);
     }

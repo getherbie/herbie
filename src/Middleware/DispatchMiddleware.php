@@ -15,6 +15,7 @@ namespace Herbie\Middleware;
 use Herbie\Application;
 use Herbie\Hook;
 use Herbie\Page;
+use Herbie\StringValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -22,6 +23,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class DispatchMiddleware implements MiddlewareInterface
 {
+    protected $herbie;
+    protected $pluginManager;
+
+    public function __construct(Application $herbie)
+    {
+        $this->herbie = $herbie;
+        $this->pluginManager = $herbie->getPluginManager();
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
@@ -49,34 +59,34 @@ class DispatchMiddleware implements MiddlewareInterface
     {
         $rendered = false;
 
-        $cacheId = 'page-' . Application::getService('Environment')->getRoute();
+        $cacheId = 'page-' . $this->herbie->getEnvironment()->getRoute();
         if (empty($page->nocache)) {
-            $rendered = Application::getService('Cache\PageCache')->get($cacheId);
+            $rendered = $this->herbie->getPageCache()->get($cacheId);
         }
 
         if (false === $rendered) {
-            $content = new \stdClass();
-            $content->string = '';
+            $content = new StringValue();
 
             try {
                 if (empty($page->layout)) {
                     $content = $page->getSegment('0');
-                    $content->string = Hook::trigger(Hook::FILTER, 'renderContent', $content->string, $page->getData());
+                    #Hook::trigger(Hook::FILTER, 'renderContent', $content, $page->getData());
+                    $this->pluginManager->trigger('renderContent', $content, $page->getData());
                 } else {
-                    $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
+                    $this->pluginManager->trigger('renderLayout', $content, ['page' => $page]);
                 }
             } catch (\Throwable $t) {
                 $page->setError($t);
-                $content->string = Hook::trigger(Hook::FILTER, 'renderLayout', $page);
+                $this->pluginManager->trigger('renderLayout', $content, ['page' => $page]);
             }
 
             if (empty($page->nocache)) {
-                Application::getService('Cache\PageCache')->set($cacheId, $content->string);
+                #$this->herbie->getService('Cache\PageCache')->set($cacheId, $content->string);
             }
-            $rendered = $content->string;
+            $rendered = $content->get();
         }
 
-        $response = Application::getService('HttpFactory')->createResponse($page->getStatusCode());
+        $response = $this->herbie->getHttpFactory()->createResponse($page->getStatusCode());
         $response->getBody()->write($rendered);
         $response->withHeader('Content-Type', $page->content_type);
 

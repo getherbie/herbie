@@ -261,7 +261,8 @@ class Collection implements \IteratorAggregate, \Countable
      */
     protected function getBlogPathInfo()
     {
-        $route = Application::getRoute();
+        // TODO
+        $route = $this->herbie->getRoute();
 
         $segments = explode('/', $route);
         if (empty($segments)) {
