@@ -69,9 +69,14 @@ class Application
         $this->init();
     }
 
+    /**
+     * @param array $middlewares
+     * @return Application
+     */
     public function setMiddleware(array $middlewares)
     {
         $this->middlewares = $middlewares;
+        return $this;
     }
 
     protected function getMiddleware(): array
@@ -243,11 +248,12 @@ class Application
     /**
      * @param string $name
      * @param mixed $service
-     * @return mixed
+     * @return Application
      */
     protected function setService($name, $service)
     {
-        return $this->container[$name] = $service;
+        $this->container[$name] = $service;
+        return $this;
     }
 
     /**
@@ -262,10 +268,12 @@ class Application
 
     /**
      * @param Page $page
+     * @return Application
      */
     public function setPage(Page $page)
     {
         $this->page = $page;
+        return $this;
     }
 
     /**
@@ -335,10 +343,12 @@ class Application
 
     /**
      * @param Twig $twig
+     * @return Application
      */
     public function setTwig($twig)
     {
         $this->setService('Twig', $twig);
+        return $this;
     }
 
     /**
@@ -351,10 +361,12 @@ class Application
 
     /**
      * @param ShortcodePlugin $shortcode
+     * @return Application
      */
     public function setShortcode($shortcode)
     {
         $this->setService('Shortcode', $shortcode);
+        return $this;
     }
 
     /**
