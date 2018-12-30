@@ -33,6 +33,13 @@ defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 class Application
 {
     /**
+     * Herbie version
+     * @see http://php.net/version-compare
+     * @var string
+     */
+    const VERSION = '2.0.0';
+
+    /**
      * @var Container
      */
     protected $container;
@@ -73,13 +80,16 @@ class Application
      * @param array $middlewares
      * @return Application
      */
-    public function setMiddleware(array $middlewares)
+    public function setMiddlewares(array $middlewares)
     {
         $this->middlewares = $middlewares;
         return $this;
     }
 
-    protected function getMiddleware(): array
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
     {
         $middlewares = array_merge(
             [
@@ -282,7 +292,7 @@ class Application
      */
     public function run()
     {
-        $middlewares = $this->getMiddleware();
+        $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
         $request = $this->getService('Request');
         $response = $dispatcher->dispatch($request);
