@@ -13,10 +13,7 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use Herbie\Application;
-use Herbie\Environment;
-use Herbie\Loader\PageLoader;
 use Herbie\Page;
-use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

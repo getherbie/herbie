@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class UrlGenerator
 {
     /**
-     * @var Request
+     * @var ServerRequestInterface
      */
     protected $request;
 

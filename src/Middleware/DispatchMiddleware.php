@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use Herbie\Application;
-use Herbie\Hook;
 use Herbie\Page;
 use Herbie\StringValue;
 use Psr\Http\Message\ResponseInterface;
@@ -70,7 +69,6 @@ class DispatchMiddleware implements MiddlewareInterface
             try {
                 if (empty($page->layout)) {
                     $content = $page->getSegment('0');
-                    #Hook::trigger(Hook::FILTER, 'renderContent', $content, $page->getData());
                     $this->pluginManager->trigger('renderContent', $content, $page->getData());
                 } else {
                     $this->pluginManager->trigger('renderLayout', $content, ['page' => $page]);
@@ -81,7 +79,7 @@ class DispatchMiddleware implements MiddlewareInterface
             }
 
             if (empty($page->nocache)) {
-                #$this->herbie->getService('Cache\PageCache')->set($cacheId, $content->string);
+                $this->herbie->getPageCache()->set($cacheId, $content);
             }
             $rendered = $content->get();
         }

@@ -11,8 +11,6 @@
 
 namespace Herbie\Menu;
 
-use Herbie\Application;
-
 trait ItemTrait
 {
 

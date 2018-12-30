@@ -24,7 +24,7 @@ class Node implements \IteratorAggregate
     private $parent;
 
     /**
-     * @var array[Node]
+     * @var Node[]
      */
     private $children;
 
@@ -112,7 +112,7 @@ class Node implements \IteratorAggregate
     }
 
     /**
-     * @return array
+     * @return Node[]
      */
     public function getChildren(): array
     {

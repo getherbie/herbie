@@ -11,7 +11,6 @@
 
 namespace Herbie\Menu\Post;
 
-use Herbie\Application;
 use Herbie\Menu\CollectionTrait;
 
 class Collection implements \IteratorAggregate, \Countable
@@ -25,7 +24,7 @@ class Collection implements \IteratorAggregate, \Countable
     protected $blogRoute;
 
     /**
-     * @var string
+     * @var array
      */
     protected $filteredBy;
 
