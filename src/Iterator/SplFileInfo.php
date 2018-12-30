@@ -13,8 +13,8 @@ namespace Herbie\Iterator;
 
 class SplFileInfo extends \SplFileInfo
 {
-    private $relativePath;
-    private $relativePathname;
+    protected $relativePath;
+    protected $relativePathname;
 
     /**
      * Constructor

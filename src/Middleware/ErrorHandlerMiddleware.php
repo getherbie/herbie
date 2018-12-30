@@ -49,7 +49,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      *
      * @return callable
      */
-    private function createErrorHandler() : callable
+    protected function createErrorHandler() : callable
     {
         /**
          * @throws ErrorException if error is not within the error_reporting mask.

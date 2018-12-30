@@ -20,7 +20,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class MiddlewareDispatcher implements RequestHandlerInterface
 {
     /** @var MiddlewareInterface[] */
-    private $middlewares = [];
+    protected $middlewares = [];
 
     /**
      * Dispatcher constructor.
@@ -45,7 +45,7 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         return $response;
     }
 
-    private function getMiddleware(): MiddlewareInterface
+    protected function getMiddleware(): MiddlewareInterface
     {
         $current = current($this->middlewares);
 

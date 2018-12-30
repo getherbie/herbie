@@ -14,12 +14,12 @@ namespace Herbie\Finder;
 class Finder implements \IteratorAggregate, \Countable
 {
 
-    private $mode = 0;
-    private $dir = null;
-    private $hidden = false;
-    private $extensions = [];
-    private $minDepth = -1;
-    private $maxDepth = PHP_INT_MAX;
+    protected $mode = 0;
+    protected $dir = null;
+    protected $hidden = false;
+    protected $extensions = [];
+    protected $minDepth = -1;
+    protected $maxDepth = PHP_INT_MAX;
 
     /**
      * @return static

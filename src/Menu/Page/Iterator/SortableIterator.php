@@ -24,12 +24,12 @@ class SortableIterator implements \IteratorAggregate
     /**
      * @var \Traversable
      */
-    private $iterator;
+    protected $iterator;
 
     /**
      * @var int|callable
      */
-    private $sort;
+    protected $sort;
 
     /**
      * @param \Traversable $iterator

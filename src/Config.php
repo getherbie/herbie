@@ -16,27 +16,27 @@ class Config
     /**
      * @var array
      */
-    private $items;
+    protected $items;
 
     /**
      * @var string
      */
-    private $appPath;
+    protected $appPath;
 
     /**
      * @var string
      */
-    private $webPath;
+    protected $webPath;
 
     /**
      * @var string
      */
-    private $webUrl;
+    protected $webUrl;
 
     /**
      * @var string
      */
-    private $sitePath;
+    protected $sitePath;
 
     /**
      * @param string $sitePath
@@ -54,7 +54,7 @@ class Config
         $this->loadConfig(false);
     }
 
-    private function loadConfig($useCache = true)
+    protected function loadConfig($useCache = true)
     {
         if ($useCache) {
             $cacheFile = $this->sitePath . '/cache/config.php';
@@ -179,7 +179,7 @@ class Config
      * @param array $override
      * @return array
      */
-    private function merge($default, $override)
+    protected function merge($default, $override)
     {
         foreach ($override as $key => $value) {
             if (is_array($value)) {
@@ -195,7 +195,7 @@ class Config
     /**
      *
      */
-    private function loadMainFile()
+    protected function loadMainFile()
     {
         // vars used in config files
         $APP_PATH = $this->appPath;
@@ -218,7 +218,7 @@ class Config
 
     /**
      */
-    private function loadPluginFiles()
+    protected function loadPluginFiles()
     {
         $dir = $this->sitePath . '/config/plugins';
         if (is_readable($dir)) {
@@ -238,7 +238,7 @@ class Config
      * @param string $file
      * @return mixed|string
      */
-    private function loadFile($file)
+    protected function loadFile($file)
     {
         $content = file_get_contents($file);
         return $this->replaceConstants($content);
@@ -248,7 +248,7 @@ class Config
      * @param string $string
      * @return string
      */
-    private function replaceConstants($string)
+    protected function replaceConstants($string)
     {
         return str_replace(
             ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],

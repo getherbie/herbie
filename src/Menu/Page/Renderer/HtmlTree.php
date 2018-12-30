@@ -18,12 +18,12 @@ class HtmlTree extends RecursiveIteratorIterator
     /**
      * @var string
      */
-    private $output;
+    protected $output;
 
     /**
      * @var array
      */
-    private $template = [
+    protected $template = [
         'beginIteration' => '<div class="{class}"><ul>',
         'endIteration' => '</ul></div>',
         'beginChildren' => '<ul>',
@@ -116,7 +116,7 @@ class HtmlTree extends RecursiveIteratorIterator
      * @param string $key
      * @return string
      */
-    private function getTemplate($key)
+    protected function getTemplate($key)
     {
         $replacements = [
             '{class}' => $this->class,
@@ -130,7 +130,7 @@ class HtmlTree extends RecursiveIteratorIterator
      * @param string $route
      * @return string
      */
-    private function addCssClasses($beginCurrent, $route)
+    protected function addCssClasses($beginCurrent, $route)
     {
         $menuItem = $this->getMenuItem();
         $cssClasses = [];

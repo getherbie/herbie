@@ -297,7 +297,7 @@ trait ItemTrait
      * @param string $slug
      * @return string
      */
-    private function slugify($slug)
+    protected function slugify($slug)
     {
         // TODO
         return $this->herbie->getSlugGenerator()->generate($slug);

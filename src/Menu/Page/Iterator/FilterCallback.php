@@ -19,7 +19,7 @@ class FilterCallback
     /**
      * @var array
      */
-    private $routeLine;
+    protected $routeLine;
 
     public function __construct(array $routeLine)
     {

@@ -13,7 +13,7 @@ namespace Herbie\Finder;
 
 class DepthRangeFilterIterator extends \FilterIterator
 {
-    private $minDepth = 0;
+    protected $minDepth = 0;
 
     /**
      * Constructor.

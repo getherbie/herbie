@@ -104,7 +104,7 @@ class Builder
     /**
      * @return Collection
      */
-    private function restoreCollection()
+    protected function restoreCollection()
     {
         if (is_null($this->cache)) {
             return new Collection();
@@ -120,7 +120,7 @@ class Builder
      * @param $collection
      * @return bool
      */
-    private function storeCollection($collection)
+    protected function storeCollection($collection)
     {
         if (is_null($this->cache)) {
             return false;

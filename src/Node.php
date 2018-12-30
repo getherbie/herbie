@@ -16,17 +16,17 @@ class Node implements \IteratorAggregate
     /**
      * @var mixed
      */
-    private $value;
+    protected $value;
 
     /**
      * @var Node
      */
-    private $parent;
+    protected $parent;
 
     /**
      * @var Node[]
      */
-    private $children;
+    protected $children;
 
     /**
      * @param mixed $value

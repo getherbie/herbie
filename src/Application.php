@@ -107,7 +107,7 @@ class Application
     /**
      * Initialize the application.
      */
-    private function init()
+    protected function init()
     {
         $errorHandler = new ErrorHandler();
         $errorHandler->register($this->sitePath . '/log');
@@ -307,7 +307,7 @@ class Application
     /**
      * @param ResponseInterface $response
      */
-    private function emitResponse(ResponseInterface $response): void
+    protected function emitResponse(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
         http_response_code($statusCode);

@@ -74,7 +74,7 @@ class Alias
      * @param string $path
      * @return string
      */
-    private function rtrim($path)
+    protected function rtrim($path)
     {
         return rtrim($path, '/');
     }

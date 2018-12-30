@@ -29,7 +29,7 @@ class Page
     /**
      * @var Loader\PageLoader
      */
-    private $pageLoader;
+    protected $pageLoader;
 
     /**
      * @return string

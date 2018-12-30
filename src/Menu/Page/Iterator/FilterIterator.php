@@ -16,7 +16,7 @@ class FilterIterator extends \RecursiveFilterIterator
     /**
      * @var boolean
      */
-    private $enabled = true;
+    protected $enabled = true;
 
     /**
      * @return boolean

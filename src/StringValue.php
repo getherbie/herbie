@@ -14,7 +14,7 @@ namespace Herbie;
 
 class StringValue
 {
-    private $value;
+    protected $value;
 
     /**
      * StringValue constructor.

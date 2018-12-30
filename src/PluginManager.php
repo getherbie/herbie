@@ -17,21 +17,21 @@ class PluginManager extends EventManager
 {
 
     /** @var array  */
-    private $enabled;
+    protected $enabled;
 
     /** @var string  */
-    private $path;
+    protected $path;
 
     /** @var array  */
-    private $loaded;
+    protected $loaded;
 
     /** @var bool  */
-    private $initialized;
+    protected $initialized;
 
     /** @var array */
-    private $enabledSysPlugins;
+    protected $enabledSysPlugins;
 
-    private $application;
+    protected $application;
 
     /**
      * PluginManager constructor.

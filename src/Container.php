@@ -16,12 +16,12 @@ class Container implements \ArrayAccess
     /**
      * @var array
      */
-    private $values = [];
+    protected $values = [];
 
     /**
      * @var array
      */
-    private $frozen = [];
+    protected $frozen = [];
 
     /**
      * @param string $service

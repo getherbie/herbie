@@ -15,15 +15,15 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Environment
 {
-    private $basePath;
-    private $baseUrl;
-    private $pathInfo;
-    private $requestUri;
+    protected $basePath;
+    protected $baseUrl;
+    protected $pathInfo;
+    protected $requestUri;
 
     /**
      * @var ServerRequestInterface
      */
-    private $serverRequest;
+    protected $serverRequest;
 
     public function __construct(ServerRequestInterface $serverRequest)
     {
@@ -79,7 +79,7 @@ class Environment
     /**
      * @return array
      */
-    private function getRawRoute()
+    protected function getRawRoute()
     {
         $pathInfo = trim($this->getPathInfo(), '/');
         $pos = strrpos($pathInfo, ':');
@@ -299,7 +299,7 @@ class Environment
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
-    private function getServer(string $name)
+    protected function getServer(string $name)
     {
         $params = $this->serverRequest->getServerParams();
         return $params[$name] ?? null;

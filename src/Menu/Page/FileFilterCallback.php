@@ -17,7 +17,7 @@ class FileFilterCallback
     /**
      * @var array
      */
-    private $extensions;
+    protected $extensions;
 
     /**
      * @param array $extensions
