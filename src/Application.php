@@ -15,7 +15,6 @@ use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Middleware\DispatchMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
-use Herbie\Middleware\NotFoundMiddleware;
 use Herbie\Middleware\PageResolverMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Tebe\HttpFactory\HttpFactory;
