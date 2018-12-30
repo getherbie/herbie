@@ -25,6 +25,7 @@ use herbie\plugin\twig\classes\Twig;
 use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Tebe\HttpFactory\HttpFactory;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
@@ -445,4 +446,35 @@ class Application
         return $this->getService('Loader\PageLoader');
     }
 
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest()
+    {
+        return $this->getService('Request');
+    }
+
+    /**
+     * @return Translator
+     */
+    public function getTranslator()
+    {
+        return $this->getService('Translator');
+    }
+
+    /**
+     * @return \Herbie\Menu\Page\Collection
+     */
+    public function getMenuPageCollection()
+    {
+        return $this->getService('Menu\Page\Collection');
+    }
+
+    /**
+     * @return \Herbie\Menu\Post\Collection
+     */
+    public function getMenuPostCollection()
+    {
+        return $this->getService('Menu\Post\Collection');
+    }
 }
