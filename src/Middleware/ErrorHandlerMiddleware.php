@@ -33,8 +33,16 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             $response = $handler->handle($request);
         } catch (\Throwable $e) {
+            $documentRoot = dirname(dirname(dirname(__FILE__)));
+            $traceAsString = str_replace($documentRoot, '', $e->getTraceAsString());
             $response = HttpFactory::instance()->createResponse(500);
-            $response->getBody()->write($e->getMessage() . ' ' . $e->getTraceAsString());
+            $response->getBody()->write(
+                $e->getMessage()
+                . '<br>'
+                . '<pre>'
+                . $traceAsString
+                . '</pre>'
+            );
         }
 
         restore_error_handler();
