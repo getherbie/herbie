@@ -61,13 +61,15 @@ class PluginManager extends EventManager
     public function init(): bool
     {
         // add sys plugins first
+        $priority = 900;
         foreach ($this->enabledSysPlugins as $key) {
-            $this->loadPlugin($this->path, $key);
+            $this->loadPlugin($this->path, $key, $priority);
         }
 
         // add third-party plugins
+        $priority = 700;
         foreach ($this->enabled as $key) {
-            $this->loadPlugin($this->path, $key);
+            $this->loadPlugin($this->path, $key, $priority);
         }
 
         $this->initialized = true;
@@ -78,7 +80,7 @@ class PluginManager extends EventManager
      * @param string $path
      * @param string $key
      */
-    protected function loadPlugin(string $path, string $key)
+    protected function loadPlugin(string $path, string $key, $priority)
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
@@ -86,8 +88,9 @@ class PluginManager extends EventManager
 
             $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
 
+            /** @var Plugin $plugin */
             $plugin = new $className($this->application);
-            $plugin->attach($this);
+            $plugin->attach($this, $priority);
 
             $this->loaded[$key] = dirname($pluginPath);
         }
