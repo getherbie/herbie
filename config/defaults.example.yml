@@ -40,7 +40,7 @@ posts:
 nice_urls: false
 
 twig:
-  debug: true
+  debug: false
   #cache: SITE_PATH/cache/twig
   cache: false
   extend:

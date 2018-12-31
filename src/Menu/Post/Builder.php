@@ -12,7 +12,6 @@
 namespace Herbie\Menu\Post;
 
 use Herbie\Config;
-use Herbie\Helper\PathHelper;
 use Herbie\Loader\FrontMatterLoader;
 use Psr\SimpleCache\CacheInterface;
 
@@ -80,7 +79,9 @@ class Builder
                         $data['modified'] = date('c', filemtime($realpath.'/'.$filename));
                     }
                     if (empty($data['date'])) {
-                        $data['date'] = PathHelper::extractDateFromPath($filename);
+                        if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $filename, $matches)) {
+                            $data['date'] = $matches[1];
+                        }
                     }
                     $data['path'] = '@post/'.$filename;
                     $data['blogRoute'] = $this->blogRoute;
