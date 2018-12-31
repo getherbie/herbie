@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie\Iterator;
+namespace Herbie\Menu\Page\Iterator;
 
 class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {

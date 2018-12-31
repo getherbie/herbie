@@ -11,8 +11,8 @@
 
 namespace Herbie\Menu\Page;
 
-use Herbie\Iterator\RecursiveDirectoryIterator;
 use Herbie\Loader\FrontMatterLoader;
+use Herbie\Menu\Page\Iterator\RecursiveDirectoryIterator;
 use Herbie\Menu\Page\Iterator\SortableIterator;
 use Psr\SimpleCache\CacheInterface;
 
