@@ -71,5 +71,4 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
             throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         };
     }
-
 }

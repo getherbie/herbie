@@ -59,5 +59,4 @@ class MiddlewareDispatcher implements RequestHandlerInterface
 
         return $current;
     }
-
 }

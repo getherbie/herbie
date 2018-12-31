@@ -40,5 +40,4 @@ class Plugin implements ListenerAggregateInterface
             unset($this->listeners[$index]);
         }
     }
-
 }

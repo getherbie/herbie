@@ -206,7 +206,6 @@ class Application
 
         // Init PluginManager at first
         if (true === $container['PluginManager']->init($container['Config'])) {
-
             $container['PluginManager']->trigger('pluginsInitialized', $container['PluginManager']);
             $container['PluginManager']->trigger('shortcodeInitialized', $container['Shortcode']);
 
@@ -221,7 +220,10 @@ class Application
             };
 
             $container['Menu\Page\RootPath'] = function ($container) {
-                $rootPath = new Menu\Page\RootPath($container['Menu\Page\Collection'], $container['Environment']->getRoute());
+                $rootPath = new Menu\Page\RootPath(
+                    $container['Menu\Page\Collection'],
+                    $container['Environment']->getRoute()
+                );
                 return $rootPath;
             };
 

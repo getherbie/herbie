@@ -48,7 +48,6 @@ class PageResolverMiddleware implements MiddlewareInterface
             $page = new Page();
             $page->setLoader($this->pageLoader);
             $page->load($path);
-
         } catch (\Throwable $t) {
             $page = new Page();
             $page->layout = 'error';
