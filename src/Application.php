@@ -40,7 +40,7 @@ class Application
     const VERSION = '2.0.0';
 
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     protected $container;
 
