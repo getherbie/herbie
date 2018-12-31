@@ -12,7 +12,6 @@ namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
-use Herbie\Cache\PageCache;
 use Herbie\Loader\PageLoader;
 use Herbie\Menu\Page\Node;
 use Herbie\Menu\Page\RootPath;
@@ -26,6 +25,7 @@ use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
@@ -155,12 +155,13 @@ class Application
             return new Assets($container['Alias'], $container['Config']->get('web.url'));
         };
 
-        $container['Cache\PageCache'] = function ($container) {
-            return Cache\CacheFactory::create('page', $container['Config']);
+        $container['Cache\PageCache'] = function () {
+            return new Cache();
         };
 
-        $container['Cache\DataCache'] = function ($container) {
-            return Cache\CacheFactory::create('data', $container['Config']);
+        // TODO unused at the moment
+        $container['Cache\DataCache'] = function () {
+            return new Cache();
         };
 
         $container['DataArray'] = function ($container) {
@@ -210,7 +211,8 @@ class Application
             $container['PluginManager']->trigger('shortcodeInitialized', $container['Shortcode']);
 
             $container['Menu\Page\Collection'] = function ($container) {
-                $container['Menu\Page\Builder']->setCache($container['Cache\DataCache']);
+                $cache = $container['Cache\PageCache'];
+                $container['Menu\Page\Builder']->setCache($cache);
                 return $container['Menu\Page\Builder']->buildCollection();
             };
 
@@ -224,7 +226,7 @@ class Application
             };
 
             $container['Menu\Post\Collection'] = function ($container) {
-                $builder = new Menu\Post\Builder($container['Cache\DataCache'], $container['Config']);
+                $builder = new Menu\Post\Builder($container['Cache\PageCache'], $container['Config']);
                 return $builder->build();
             };
 
@@ -404,11 +406,21 @@ class Application
     }
 
     /**
-     * @return PageCache
+     * @return CacheInterface
      */
     public function getPageCache()
     {
         return $this->getService('Cache\PageCache');
+    }
+
+    /**
+     * @param CacheInterface $cache
+     * @return Application
+     */
+    public function setPageCache(CacheInterface $cache)
+    {
+        $this->setService('Cache\PageCache', $cache);
+        return $this;
     }
 
     /**

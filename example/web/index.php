@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
+require_once(__DIR__ . '/../vendor/autoload.php');
+
 use Herbie\Middleware\ResponseTimeMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-
-require_once(__DIR__ . '/../vendor/autoload.php');
 
 define('HERBIE_DEBUG', true);
 
@@ -47,4 +47,8 @@ $app->setMiddlewares([
         return $response->withHeader('X-Custom-Header-3', time());
     },
 ]);
+
+$fileCache = new Anax\Cache\FileCache();
+$fileCache->setPath(dirname(__DIR__) . '/site/cache/page/');
+$app->setPageCache($fileCache);
 $app->run();

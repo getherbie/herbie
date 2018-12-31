@@ -50,16 +50,6 @@ twig:
   parse_content: true
   content_container_class: placeholder
 
-cache:
-  page:
-    enable: false
-    dir: SITE_PATH/cache/page
-    expire: 86400
-  data:
-    enable: false
-    dir: SITE_PATH/cache/data
-    expire: 86400
-
 language: de
 locale: de_DE.UTF-8
 charset: UTF-8

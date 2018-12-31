@@ -11,10 +11,10 @@
 
 namespace Herbie\Menu\Post;
 
-use Herbie\Cache\CacheInterface;
 use Herbie\Config;
 use Herbie\Helper\PathHelper;
 use Herbie\Loader\FrontMatterLoader;
+use Psr\SimpleCache\CacheInterface;
 
 class Builder
 {
@@ -54,6 +54,7 @@ class Builder
     /**
      * @param string $path
      * @return Collection
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function build($path = null)
     {
@@ -61,7 +62,7 @@ class Builder
             $path = $this->path;
         }
         $collection = $this->cache->get(__CLASS__);
-        if ($collection === false) {
+        if (is_null($collection)) {
             $realpath = realpath($path);
             $collection = new Collection($this->blogRoute);
             if (is_readable($realpath)) {

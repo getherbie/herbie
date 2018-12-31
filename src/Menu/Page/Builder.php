@@ -11,10 +11,10 @@
 
 namespace Herbie\Menu\Page;
 
-use Herbie\Cache\CacheInterface;
 use Herbie\Iterator\RecursiveDirectoryIterator;
 use Herbie\Loader\FrontMatterLoader;
 use Herbie\Menu\Page\Iterator\SortableIterator;
+use Psr\SimpleCache\CacheInterface;
 
 class Builder
 {
@@ -68,6 +68,7 @@ class Builder
 
     /**
      * @return Collection
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function buildCollection()
     {
@@ -103,6 +104,7 @@ class Builder
 
     /**
      * @return Collection
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function restoreCollection()
     {
@@ -110,7 +112,7 @@ class Builder
             return new Collection();
         }
         $collection = $this->cache->get(__CLASS__);
-        if ($collection === false) {
+        if (is_null($collection)) {
             return new Collection();
         }
         return $collection;
@@ -119,6 +121,7 @@ class Builder
     /**
      * @param $collection
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function storeCollection($collection)
     {

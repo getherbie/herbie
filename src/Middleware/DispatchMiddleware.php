@@ -36,6 +36,7 @@ class DispatchMiddleware implements MiddlewareInterface
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      * @throws \Exception
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
@@ -53,17 +54,18 @@ class DispatchMiddleware implements MiddlewareInterface
      * @param Page $page
      * @return ResponseInterface
      * @throws \Exception
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function renderPage(Page $page): ResponseInterface
     {
-        $rendered = false;
+        $rendered = null;
 
         $cacheId = 'page-' . $this->herbie->getEnvironment()->getRoute();
         if (empty($page->nocache)) {
             $rendered = $this->herbie->getPageCache()->get($cacheId);
         }
 
-        if (false === $rendered) {
+        if (null === $rendered) {
             $content = new StringValue();
 
             try {
@@ -79,7 +81,7 @@ class DispatchMiddleware implements MiddlewareInterface
             }
 
             if (empty($page->nocache)) {
-                $this->herbie->getPageCache()->set($cacheId, $content);
+                $this->herbie->getPageCache()->set($cacheId, $content->get());
             }
             $rendered = $content->get();
         }
