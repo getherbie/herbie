@@ -11,7 +11,9 @@
 
 namespace Herbie;
 
-class Container implements \ArrayAccess
+use Psr\Container\ContainerInterface;
+
+class Container implements \ArrayAccess, ContainerInterface
 {
     /**
      * @var array
@@ -24,32 +26,32 @@ class Container implements \ArrayAccess
     protected $frozen = [];
 
     /**
-     * @param string $service
+     * @param string $id
      * @return mixed
      * @throws \Exception
      */
-    public function get(string $service)
+    public function get($id)
     {
-        return $this->offsetGet($service);
+        return $this->offsetGet($id);
     }
 
     /**
-     * @param string $service
+     * @param string $id
      * @return bool
      */
-    public function has(string $service): bool
+    public function has($id): bool
     {
-        return $this->offsetExists($service);
+        return $this->offsetExists($id);
     }
 
     /**
-     * @param string $name
+     * @param string $id
      * @param mixed $service
      */
-    public function set(string $name, $service)
+    public function set($id, $service)
     {
-        $this->offsetUnset($name);
-        $this->offsetSet($name, $service);
+        $this->offsetUnset($id);
+        $this->offsetSet($id, $service);
     }
 
     /**

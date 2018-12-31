@@ -9,7 +9,8 @@
         "zendframework/zend-eventmanager": "^3.2",
         "zendframework/zend-diactoros": "^2.1@dev",
         "psr/simple-cache": "^1.0",
-        "anax/cache": "dev-master"
+        "anax/cache": "dev-master",
+        "psr/container": "^1.0"
     },    
     "config": {
         "process-timeout": 1800
