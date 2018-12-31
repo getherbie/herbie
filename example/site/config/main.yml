@@ -1,6 +1,15 @@
 nice_urls: true
 
 plugins:
+    config:
+        markdown:
+            twig: true
+        simplecontact:
+          twig: true
+        simplesearch:
+            twig: true
+        textile:
+            twig: true
     enable:
         - simplecontact
         - simplesearch
