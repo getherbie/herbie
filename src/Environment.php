@@ -11,24 +11,12 @@
 
 namespace Herbie;
 
-use Psr\Http\Message\ServerRequestInterface;
-
 class Environment
 {
     protected $basePath;
     protected $baseUrl;
     protected $pathInfo;
     protected $requestUri;
-
-    /**
-     * @var ServerRequestInterface
-     */
-    protected $serverRequest;
-
-    public function __construct(ServerRequestInterface $serverRequest)
-    {
-        $this->serverRequest = $serverRequest;
-    }
 
     /**
      * Get the current route.
@@ -299,9 +287,8 @@ class Environment
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
-    protected function getServer(string $name)
+    protected function getServer(string $name, $default = null)
     {
-        $params = $this->serverRequest->getServerParams();
-        return $params[$name] ?? null;
+        return $_SERVER[$name] ?? $default;
     }
 }
