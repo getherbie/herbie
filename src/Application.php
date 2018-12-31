@@ -110,7 +110,7 @@ class Application
     protected function init()
     {
         $errorHandler = new ErrorHandler();
-        $errorHandler->register($this->sitePath . '/log');
+        $errorHandler->register($this->sitePath . '/runtime/log');
 
         $this->container = $container = new Container();
 
