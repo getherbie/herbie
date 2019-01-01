@@ -11,15 +11,17 @@
 
 namespace Herbie;
 
-use Herbie\Menu\ItemTrait;
+use Herbie\Menu\MenuItemTrait;
 
 /**
  * Stores the page.
  */
 class Page
 {
+    protected $id;
+    protected $parent;
 
-    use ItemTrait;
+    use MenuItemTrait;
 
     /**
      * @var array
@@ -27,9 +29,12 @@ class Page
     protected $segments = [];
 
     /**
-     * @var Loader\PageLoader
+     * @return string
      */
-    protected $pageLoader;
+    public function getTitle(): string
+    {
+        return $this->data['title'] ?? '';
+    }
 
     /**
      * @return string
@@ -59,6 +64,16 @@ class Page
             $segment->set($this->segments[$id]);
         }
         return $segment;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
     }
 
     /**
@@ -122,25 +137,6 @@ class Page
     }
 
     /**
-     * @param Loader\PageLoader $loader
-     */
-    public function setLoader(Loader\PageLoader $loader)
-    {
-        $this->pageLoader = $loader;
-    }
-
-    /**
-     * @param string $alias
-     * @throws \Exception
-     */
-    public function load(string $alias)
-    {
-        $data = $this->pageLoader->load($alias);
-        $this->setData($data['data']);
-        $this->setSegments($data['segments']);
-    }
-
-    /**
      * Get the http status code depending on a set error code.
      * @return int
      */
@@ -167,19 +163,6 @@ class Page
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString()
         ];
-    }
-
-    /**
-     * @param string $alias
-     * @return static
-     */
-    public static function create(string $alias)
-    {
-        $loader = Container::get('Loader\PageLoader');
-        $page = new static();
-        $page->setLoader($loader);
-        $page->load($alias);
-        return $page;
     }
 
     /**

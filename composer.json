@@ -19,7 +19,8 @@
         "psr/simple-cache": "^1.0",
         "symfony/yaml": "^4.2",
         "tebe/http-factory": "dev-master",
-        "zendframework/zend-eventmanager": "^3.2"
+        "zendframework/zend-eventmanager": "^3.2",
+        "psr/log": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -31,7 +32,8 @@
         "phpunit/phpunit": "^7.5",
         "zendframework/zend-diactoros": "^2.1@dev",
         "getherbie/plugin-simplecontact": "dev-master",
-        "getherbie/plugin-simplesearch": "dev-master"
+        "getherbie/plugin-simplesearch": "dev-master",
+        "monolog/monolog": "^1.24"
     },
     "scripts": {
         "test": [

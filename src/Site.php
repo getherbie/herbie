@@ -11,7 +11,7 @@
 
 namespace Herbie;
 
-use Herbie\Menu\Page\RootPath;
+use Herbie\Menu\RootPath;
 
 /**
  * Stores the site.
@@ -38,15 +38,15 @@ class Site
      */
     public function getData(): array
     {
-        return $this->herbie->getDataArray();
+        return $this->herbie->getDataRepository()->loadAll();
     }
 
     /**
-     * @return \Herbie\Menu\Page\Collection
+     * @return \Herbie\Menu\MenuList
      */
-    public function getMenu(): \Herbie\Menu\Page\Collection
+    public function getMenu(): \Herbie\Menu\MenuList
     {
-        return $this->herbie->getMenuPageCollection();
+        return $this->herbie->getMenuList();
     }
 
     /**
@@ -54,7 +54,7 @@ class Site
      */
     public function getTree(): Node
     {
-        return $this->herbie->getMenuPageNode();
+        return $this->herbie->getMenuNode();
     }
 
     /**
@@ -62,15 +62,7 @@ class Site
      */
     public function getPageTree(): Node
     {
-        return $this->herbie->getMenuPageNode();
-    }
-
-    /**
-     * @return Menu\Post\Collection
-     */
-    public function getPosts(): \Herbie\Menu\Post\Collection
-    {
-        return $this->herbie->getMenuPostCollection();
+        return $this->herbie->getMenuNode();
     }
 
     /**
@@ -78,7 +70,7 @@ class Site
      */
     public function getRootPath(): RootPath
     {
-        return $this->herbie->getMenuPageRootPath();
+        return $this->herbie->getMenuRootPath();
     }
 
     /**
@@ -87,7 +79,7 @@ class Site
     public function getModified(): string
     {
         $lastModified = 0;
-        foreach ($this->herbie->getMenuPageCollection() as $item) {
+        foreach ($this->herbie->getMenuList() as $item) {
             $modified = strtotime($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;

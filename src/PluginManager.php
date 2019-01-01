@@ -11,6 +11,7 @@
 
 namespace Herbie;
 
+use Herbie\Exception\SystemException;
 use Zend\EventManager\EventManager;
 
 class PluginManager extends EventManager
@@ -49,7 +50,7 @@ class PluginManager extends EventManager
         $this->enabledSysPlugins = $enabledSysPlugins;
         $this->application = $application;
         if (false === $this->path) {
-            throw new \Exception("Plugins path '{$path}' doesn't exist or isn't readable (see config plugins.path).");
+            throw SystemException::directoryNotExist($path);
         }
         parent::__construct();
     }

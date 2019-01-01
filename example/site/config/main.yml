@@ -14,3 +14,6 @@ plugins:
     enable:
         - simplecontact
         - simplesearch
+
+twig:
+  debug: true

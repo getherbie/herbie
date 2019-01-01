@@ -12,6 +12,7 @@
 namespace Herbie;
 
 use Psr\Container\ContainerInterface;
+use Psr\Log\InvalidArgumentException;
 
 class Container implements \ArrayAccess, ContainerInterface
 {
@@ -71,8 +72,8 @@ class Container implements \ArrayAccess, ContainerInterface
     public function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
-            $message = sprintf("The object '%s' is not stored in DI container.", $offset);
-            throw new \Exception($message, 500);
+            $message = sprintf('Object "%s" is not stored in container', $offset);
+            throw new InvalidArgumentException($message);
         }
         if (isset($this->frozen[$offset])) {
             return $this->frozen[$offset];

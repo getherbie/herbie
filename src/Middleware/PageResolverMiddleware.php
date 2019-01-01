@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use Herbie\Application;
+use Herbie\Environment;
 use Herbie\Page;
+use Herbie\Repository\PageRepositoryInterface;
+use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -25,29 +28,31 @@ class PageResolverMiddleware implements MiddlewareInterface
     protected $environment;
     protected $urlMatcher;
     protected $pageLoader;
+    protected $pageRepository;
 
     /**
      * PageResolverMiddleware constructor.
      * @param Application $herbie
      */
-    public function __construct(Application $herbie)
-    {
+    public function __construct(
+        Application $herbie,
+        Environment $environment,
+        UrlMatcher $urlMatcher,
+        PageRepositoryInterface $pageRepository
+    ) {
         $this->herbie = $herbie;
-        $this->environment = $herbie->getEnvironment();
-        $this->urlMatcher = $herbie->getUrlMatcher();
-        $this->pageLoader = $herbie->getPageLoader();
+        $this->environment = $environment;
+        $this->urlMatcher = $urlMatcher;
+        $this->pageRepository = $pageRepository;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             $route = $this->environment->getRoute();
             $menuItem = $this->urlMatcher->match($route);
             $path = $menuItem->getPath();
-
-            $page = new Page();
-            $page->setLoader($this->pageLoader);
-            $page->load($path);
+            $page = $this->pageRepository->find($path);
         } catch (\Throwable $t) {
             $page = new Page();
             $page->layout = 'error';

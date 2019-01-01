@@ -12,15 +12,23 @@ namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
-use Herbie\Loader\PageLoader;
-use Herbie\Menu\Page\Node;
-use Herbie\Menu\Page\RootPath;
+use Herbie\Exception\SystemException;
+use Herbie\Menu\MenuBuilder;
+use Herbie\Menu\MenuList;
+use Herbie\Menu\MenuTree;
+use Herbie\Menu\RootPath;
 use Herbie\Middleware\DispatchMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageResolverMiddleware;
-use herbie\plugin\shortcode\ShortcodePlugin;
+use Herbie\Persistence\FlatfilePagePersistence;
+use Herbie\Persistence\FlatfilePersistenceInterface;
+use herbie\plugin\shortcode\classes\Shortcode;
 use herbie\plugin\twig\classes\Twig;
+use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Repository\FlatfilePageRepository;
+use Herbie\Repository\PageRepositoryInterface;
+use Herbie\Repository\YamlDataRepository;
 use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
@@ -42,7 +50,7 @@ class Application
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    protected $c;
 
     /**
      * @var Page
@@ -67,41 +75,29 @@ class Application
     /**
      * @param string $sitePath
      * @param string $vendorDir
+     * @throws \Exception
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
-        $this->sitePath = realpath($sitePath);
-        $this->vendorDir = realpath($vendorDir);
+        $this->sitePath = $this->normalizePath($sitePath);
+        $this->vendorDir = $this->normalizePath($vendorDir);
         $this->middlewares = [];
         $this->init();
     }
 
     /**
-     * @param array $middlewares
-     * @return Application
+     * @param string $path
+     * @return string
+     * @throws \Exception
      */
-    public function setMiddlewares(array $middlewares)
+    protected function normalizePath(string $path)
     {
-        $this->middlewares = $middlewares;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMiddlewares(): array
-    {
-        $middlewares = array_merge(
-            [
-                ErrorHandlerMiddleware::class
-            ],
-            $this->middlewares,
-            [
-                new PageResolverMiddleware($this),
-                new DispatchMiddleware($this)
-            ]
-        );
-        return $middlewares;
+        $realpath = realpath($path);
+        if ($realpath === false) {
+            $message = sprintf('Could not normalize path "%s"', $path);
+            throw SystemException::serverError($message);
+        }
+        return rtrim($realpath, '/');
     }
 
     /**
@@ -112,39 +108,38 @@ class Application
         $errorHandler = new ErrorHandler();
         $errorHandler->register($this->sitePath . '/runtime/log');
 
-        $this->container = $container = new Container();
+        $this->container = $c = new Container();
 
-        $container['HttpFactory'] = $httpFactory = new HttpFactory();
+        $c[HttpFactory::class] = $httpFactory = new HttpFactory();
 
-        $container['Request'] = $request = $httpFactory->createServerRequestFromGlobals();
+        $c[ServerRequestInterface::class] = $request = $httpFactory->createServerRequestFromGlobals();
 
-        $container['Environment'] = $environment = new Environment($request);
+        $c[Environment::class] = $environment = new Environment($request);
 
-        $container['Config'] = $config = new Config(
+        $c[Config::class] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
             $environment->getBaseUrl()
         );
 
         // Add custom PSR-4 plugin path to Composer autoloader
-        $pluginsPath = $container['Config']->get('plugins.path');
+        $pluginsPath = $c[Config::class]->get('plugins.path');
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
 
-        $container['Alias'] = new Alias([
+        $c[Alias::class] = new Alias([
             '@app' => $config->get('app.path'),
             '@asset' => $this->sitePath . '/assets',
             '@media' => $config->get('media.path'),
             '@page' => $config->get('pages.path'),
             '@plugin' => $config->get('plugins.path'),
-            '@post' => $config->get('posts.path'),
             '@site' => $this->sitePath,
             '@vendor' => $this->vendorDir,
             '@web' => $config->get('web.path')
         ]);
 
-        $container['SlugGenerator'] = function ($container) {
-            $locale = $container['Config']->get('language');
+        $c[SlugGenerator::class] = function ($c) {
+            $locale = $c[Config::class]->get('language');
             $options = new SlugOptions([
                 'locale' => $locale,
                 'delimiter' => '-'
@@ -152,123 +147,106 @@ class Application
             return new SlugGenerator($options);
         };
 
-        $container['Assets'] = function ($container) {
-            return new Assets($container['Alias'], $container['Config']->get('web.url'));
+        $c[Assets::class] = function ($c) {
+            return new Assets($c[Alias::class], $c[Config::class]->get('web.url'));
         };
 
-        $container['Cache\PageCache'] = function () {
+        $c[Cache::class] = function () {
             return new Cache();
         };
 
-        // TODO unused at the moment
-        $container['Cache\DataCache'] = function () {
-            return new Cache();
+        $c[DataRepositoryInterface::class] = function ($c) {
+            $dataRepository = new YamlDataRepository(
+                $c[Config::class]->get('data.path'),
+                $c[Config::class]->get('data.extensions')
+            );
+            return $dataRepository;
         };
 
-        $container['DataArray'] = function ($container) {
-            $loader = new Loader\DataLoader($container['Config']->get('data.extensions'));
-            return $loader->load($container['Config']->get('data.path'));
+        $c[FlatfilePersistenceInterface::class] = function ($c) {
+            return new FlatfilePagePersistence($c[Alias::class]);
         };
 
-        $container['Loader\PageLoader'] = function ($container) {
-            $loader = new Loader\PageLoader($container['Alias']);
-            return $loader;
+        $c[PageRepositoryInterface::class] = function ($c) {
+            $pageRepository = new FlatfilePageRepository(
+                $c[FlatfilePersistenceInterface::class],
+                new PageFactory()
+            );
+            return $pageRepository;
         };
 
-        $container['Menu\Page\Builder'] = function ($container) {
+        $c[MenuBuilder::class] = function ($c) {
 
             $paths = [];
-            $paths['@page'] = realpath($container['Config']->get('pages.path'));
-            foreach ($container['Config']->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $container['Alias']->get($alias);
+            $paths['@page'] = $this->normalizePath($c[Config::class]->get('pages.path'));
+            foreach ($c[Config::class]->get('pages.extra_paths', []) as $alias) {
+                $paths[$alias] = $c[Alias::class]->get($alias);
             }
-            $extensions = $container['Config']->get('pages.extensions', []);
+            $extensions = $c[Config::class]->get('pages.extensions', []);
 
-            $builder = new Menu\Page\Builder($paths, $extensions);
+            $builder = new MenuBuilder(
+                $c[FlatfilePersistenceInterface::class],
+                $paths,
+                $extensions
+            );
             return $builder;
         };
 
-        $container['PluginManager'] = function ($container) {
-            $enabled = $container['Config']->get('plugins.enable', []);
-            $path = $container['Config']->get('plugins.path');
-            $enabledSysPlugins = $container['Config']->get('sysplugins.enable');
+        $c[PluginManager::class] = function ($c) {
+            $enabled = $c[Config::class]->get('plugins.enable', []);
+            $path = $c[Config::class]->get('plugins.path');
+            $enabledSysPlugins = $c[Config::class]->get('sysplugins.enable');
             return new PluginManager($enabled, $path, $enabledSysPlugins, $this);
         };
 
-        $container['Url\UrlGenerator'] = function ($container) {
-            return new Url\UrlGenerator(
-                $container['Request'],
-                $container['Environment'],
-                $container['Config']->get('nice_urls', false)
+        $c[UrlGenerator::class] = function ($c) {
+            return new UrlGenerator(
+                $c[ServerRequestInterface::class],
+                $c[Environment::class],
+                $c[Config::class]->get('nice_urls', false)
             );
         };
 
-        setlocale(LC_ALL, $container['Config']->get('locale'));
+        setlocale(LC_ALL, $c[Config::class]->get('locale'));
 
         // Init PluginManager at first
-        if (true === $container['PluginManager']->init($container['Config'])) {
-            $container['PluginManager']->trigger('pluginsInitialized', $container['PluginManager']);
-            $container['PluginManager']->trigger('shortcodeInitialized', $container['Shortcode']);
+        if (true === $c[PluginManager::class]->init($c[Config::class])) {
+            $c[PluginManager::class]->trigger('pluginsInitialized', $c[PluginManager::class]);
+            $c[PluginManager::class]->trigger('shortcodeInitialized', $c[Shortcode::class]);
 
-            $container['Menu\Page\Collection'] = function ($container) {
-                $cache = $container['Cache\PageCache'];
-                $container['Menu\Page\Builder']->setCache($cache);
-                return $container['Menu\Page\Builder']->buildCollection();
+            $c[MenuList::class] = function ($c) {
+                $cache = $c[Cache::class];
+                $c[MenuBuilder::class]->setCache($cache);
+                return $c[MenuBuilder::class]->buildCollection();
             };
 
-            $container['Menu\Page\Node'] = function ($container) {
-                return Menu\Page\Node::buildTree($container['Menu\Page\Collection']);
+            $c[MenuTree::class] = function ($c) {
+                return MenuTree::buildTree($c[MenuList::class]);
             };
 
-            $container['Menu\Page\RootPath'] = function ($container) {
-                $rootPath = new Menu\Page\RootPath(
-                    $container['Menu\Page\Collection'],
-                    $container['Environment']->getRoute()
+            $c[RootPath::class] = function ($c) {
+                $rootPath = new RootPath(
+                    $c[MenuList::class],
+                    $c[Environment::class]->getRoute()
                 );
                 return $rootPath;
             };
 
-            $container['Menu\Post\Collection'] = function ($container) {
-                $builder = new Menu\Post\Builder($container['Cache\PageCache'], $container['Config']);
-                return $builder->build();
-            };
-
-            $container['Translator'] = function ($container) {
-                $translator = new Translator($container['Config']->get('language'), [
-                    'app' => $container['Alias']->get('@app/../messages')
+            $c[Translator::class] = function ($c) {
+                $translator = new Translator($c[Config::class]->get('language'), [
+                    'app' => $c[Alias::class]->get('@app/../messages')
                 ]);
-                foreach ($container['PluginManager']->getLoadedPlugins() as $key => $dir) {
+                foreach ($c[PluginManager::class]->getLoadedPlugins() as $key => $dir) {
                     $translator->addPath($key, $dir . '/messages');
                 }
                 $translator->init();
                 return $translator;
             };
 
-            $container['Url\UrlMatcher'] = function ($container) {
-                return new Url\UrlMatcher($container['Menu\Page\Collection'], $container['Menu\Post\Collection']);
+            $c[UrlMatcher::class] = function ($c) {
+                return new UrlMatcher($c[MenuList::class]);
             };
         }
-    }
-
-    /**
-     * Retrieve a registered service from DI container.
-     * @param string $name
-     * @return mixed
-     */
-    protected function getService($name)
-    {
-        return $this->container[$name];
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $service
-     * @return Application
-     */
-    protected function setService($name, $service)
-    {
-        $this->container[$name] = $service;
-        return $this;
     }
 
     /**
@@ -299,7 +277,7 @@ class Application
     {
         $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
-        $request = $this->getService('Request');
+        $request = $this->getService(ServerRequestInterface::class);
         $response = $dispatcher->dispatch($request);
 
         $this->getPluginManager()->trigger('outputGenerated', $response);
@@ -307,6 +285,81 @@ class Application
         $this->emitResponse($response);
 
         $this->getPluginManager()->trigger('outputRendered');
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        $middlewares = array_merge(
+            [
+                ErrorHandlerMiddleware::class
+            ],
+            $this->middlewares,
+            [
+                new PageResolverMiddleware(
+                    $this,
+                    $this->getEnvironment(),
+                    $this->getUrlMatcher(),
+                    $this->getPageRepository()
+                ),
+                new DispatchMiddleware($this)
+            ]
+        );
+        return $middlewares;
+    }
+
+    /**
+     * @param array $middlewares
+     * @return Application
+     */
+    public function setMiddlewares(array $middlewares)
+    {
+        $this->middlewares = $middlewares;
+        return $this;
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->getService(Environment::class);
+    }
+
+    /**
+     * Retrieve a registered service from DI container.
+     * @param string $name
+     * @return mixed
+     */
+    protected function getService($name)
+    {
+        return $this->container[$name];
+    }
+
+    /**
+     * @return UrlMatcher
+     */
+    public function getUrlMatcher()
+    {
+        return $this->getService(UrlMatcher::class);
+    }
+
+    /**
+     * @return PageRepositoryInterface
+     */
+    public function getPageRepository()
+    {
+        return $this->getService(PageRepositoryInterface::class);
+    }
+
+    /**
+     * @return PluginManager
+     */
+    public function getPluginManager()
+    {
+        return $this->getService(PluginManager::class);
     }
 
     /**
@@ -324,28 +377,24 @@ class Application
         echo $response->getBody();
     }
 
-    /**
-     * @return string
-     */
-    public function getRoute()
+    public function test()
     {
-        return $this->getService('Environment')->getRoute();
-    }
+        $mappings = FlatfilePagePersistence::getRouteToIdMapping(
+            $this->getConfig()->get('pages.path'),
+            $this->getConfig()->get('pages.extensions')
+        );
 
-    /**
-     * @return string
-     */
-    public function getRouteLine()
-    {
-        return $this->getService('Environment')->getRouteLine();
-    }
+        $repository = $this->getPageRepository();
 
-    /**
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->getService('Environment')->getBasePath();
+        echo "<pre>";
+
+        foreach ($mappings as $path => $route) {
+            $page = $repository->find($path);
+            print_r($page);
+        }
+
+        echo "</pre>";
+        exit;
     }
 
     /**
@@ -353,34 +402,61 @@ class Application
      */
     public function getConfig()
     {
-        return $this->getService('Config');
+        return $this->getService(Config::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return $this->getService(Environment::class)->getRoute();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRouteLine()
+    {
+        return $this->getService(Environment::class)->getRouteLine();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->getService(Environment::class)->getBasePath();
     }
 
     /**
      * @param Twig $twig
      * @return Application
      */
-    public function setTwig($twig)
+    public function setTwig(Twig $twig)
     {
-        $this->setService('Twig', $twig);
+        $this->setService(Twig::class, $twig);
         return $this;
     }
 
     /**
-     * @return PluginManager
+     * @param string $name
+     * @param mixed $service
+     * @return Application
      */
-    public function getPluginManager()
+    protected function setService($name, $service)
     {
-        return $this->getService('PluginManager');
+        $this->container[$name] = $service;
+        return $this;
     }
 
     /**
-     * @param ShortcodePlugin $shortcode
+     * @param Shortcode $shortcode
      * @return Application
      */
-    public function setShortcode($shortcode)
+    public function setShortcode(Shortcode $shortcode)
     {
-        $this->setService('Shortcode', $shortcode);
+        $this->setService(Shortcode::class, $shortcode);
         return $this;
     }
 
@@ -389,7 +465,7 @@ class Application
      */
     public function getAlias()
     {
-        return $this->getService('Alias');
+        return $this->getService(Alias::class);
     }
 
     /**
@@ -397,15 +473,7 @@ class Application
      */
     public function getUrlGenerator()
     {
-        return $this->getService('Url\UrlGenerator');
-    }
-
-    /**
-     * @return Environment
-     */
-    public function getEnvironment()
-    {
-        return $this->getService('Environment');
+        return $this->getService(UrlGenerator::class);
     }
 
     /**
@@ -413,7 +481,7 @@ class Application
      */
     public function getPageCache()
     {
-        return $this->getService('Cache\PageCache');
+        return $this->getService(Cache::class);
     }
 
     /**
@@ -422,7 +490,7 @@ class Application
      */
     public function setPageCache(CacheInterface $cache)
     {
-        $this->setService('Cache\PageCache', $cache);
+        $this->setService(Cache::class, $cache);
         return $this;
     }
 
@@ -431,23 +499,23 @@ class Application
      */
     public function getAssets()
     {
-        return $this->getService('Assets');
+        return $this->getService(Assets::class);
     }
 
     /**
      * @return RootPath
      */
-    public function getMenuPageRootPath()
+    public function getMenuRootPath()
     {
-        return $this->getService('Menu\Page\RootPath');
+        return $this->getService(RootPath::class);
     }
 
     /**
-     * @return Node
+     * @return MenuTree
      */
-    public function getMenuPageNode()
+    public function getMenuNode()
     {
-        return $this->getService('Menu\Page\Node');
+        return $this->getService(MenuTree::class);
     }
 
     /**
@@ -455,7 +523,7 @@ class Application
      */
     public function getTwig()
     {
-        $twig = $this->getService('Twig');
+        $twig = $this->getService(Twig::class);
         return $twig;
     }
 
@@ -464,23 +532,7 @@ class Application
      */
     public function getHttpFactory()
     {
-        return $this->getService('HttpFactory');
-    }
-
-    /**
-     * @return UrlMatcher
-     */
-    public function getUrlMatcher()
-    {
-        return $this->getService('Url\UrlMatcher');
-    }
-
-    /**
-     * @return PageLoader
-     */
-    public function getPageLoader()
-    {
-        return $this->getService('Loader\PageLoader');
+        return $this->getService(HttpFactory::class);
     }
 
     /**
@@ -488,7 +540,7 @@ class Application
      */
     public function getRequest()
     {
-        return $this->getService('Request');
+        return $this->getService(ServerRequestInterface::class);
     }
 
     /**
@@ -496,22 +548,43 @@ class Application
      */
     public function getTranslator()
     {
-        return $this->getService('Translator');
+        return $this->getService(Translator::class);
     }
 
     /**
-     * @return \Herbie\Menu\Page\Collection
+     * @return MenuList
      */
-    public function getMenuPageCollection()
+    public function getMenuList()
     {
-        return $this->getService('Menu\Page\Collection');
+        return $this->getService(MenuList::class);
     }
 
     /**
-     * @return \Herbie\Menu\Post\Collection
+     * @return DataRepositoryInterface
      */
-    public function getMenuPostCollection()
+    public function getDataRepository()
     {
-        return $this->getService('Menu\Post\Collection');
+        return $this->getService(DataRepositoryInterface::class);
+    }
+
+    public function getSlugGenerator()
+    {
+        return $this->getService(SlugGenerator::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSitePath()
+    {
+        return $this->sitePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVendorPath()
+    {
+        return $this->vendorDir;
     }
 }

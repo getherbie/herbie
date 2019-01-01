@@ -11,9 +11,9 @@
 
 namespace Herbie\Url;
 
-use Herbie\Exception\ResourceNotFoundException;
-use Herbie\Menu\Page;
-use Herbie\Menu\Post;
+use Herbie\Exception\HttpException;
+use Herbie\Menu\MenuItem;
+use Herbie\Menu\MenuList;
 
 /**
  * The URLMatcher matches a given route and returns the path to a valid page
@@ -22,42 +22,29 @@ use Herbie\Menu\Post;
 class UrlMatcher
 {
     /**
-     * @var Page\Collection Collection of all pages.
+     * @var MenuList Collection of all pages.
      */
     protected $pages;
 
     /**
-     * @var Post\Collection Collection of all posts.
-     */
-    protected $posts;
-
-    /**
      * Constructor
-     * @param Page\Collection $pages Collection of all pages
-     * @param Post\Collection $posts Collection of all posts
+     * @param MenuList $pages List of all pages
      */
-    public function __construct(Page\Collection $pages, Post\Collection $posts)
+    public function __construct(MenuList $pages)
     {
         $this->pages = $pages;
-        $this->posts = $posts;
     }
 
     /**
      * Returns a path to a valid page or post file.
      * @param string $route The route of the current request.
-     * @return Herbie\Menu\ItemInferface The path to a page or post file.
-     * @throws ResourceNotFoundException
+     * @return MenuItem
+     * @throws HttpException
      */
-    public function match($route)
+    public function match(string $route): MenuItem
     {
         // Page
         $item = $this->pages->getItem($route);
-        if (isset($item)) {
-            return $item;
-        }
-
-        // Post
-        $item = $this->posts->getItem($route);
         if (isset($item)) {
             return $item;
         }
@@ -67,21 +54,22 @@ class UrlMatcher
         if (0 === strpos($route, $blogRoute)) {
             $item = $this->pages->getItem($blogRoute);
             if (isset($item)) {
-                $filteredItems = $this->posts->filterItems();
+                $filteredItems = $this->pages->filterItems($route);
                 if (!empty($filteredItems)) {
                     return $item;
                 }
             }
         }
-        throw new ResourceNotFoundException('Page "' . $route . '" not found.', 404);
+
+        throw HttpException::notFound('Page "' . $route . '" not found');
     }
 
     /**
      * Returns the route to the website blog.
      * @return string The route to the blog.
      */
-    protected function getBlogRoute()
+    protected function getBlogRoute(): string
     {
-        return $this->posts->getBlogRoute();
+        return 'blog';
     }
 }

@@ -11,6 +11,8 @@
 
 namespace Herbie;
 
+use Herbie\Exception\SystemException;
+
 /**
  * @see http://stackoverflow.com/questions/2561235/best-possible-php-error-class
  */
@@ -24,11 +26,11 @@ class ErrorHandler
     public function register(string $logDir)
     {
         if (!is_dir($logDir)) {
-            throw new \Exception(sprintf('Log dir "%s" does not exist', $logDir));
+            throw SystemException::directoryNotExist($logDir);
         }
 
         if (!is_writable($logDir)) {
-            throw new \Exception(sprintf('Log dir "%s" is not writable', $logDir));
+            throw SystemException::directoryNotWritable($logDir);
         }
 
         ini_set("display_errors", 0);

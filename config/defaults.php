@@ -40,11 +40,6 @@ return [
         'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
         'extra_paths' => []
     ],
-    'posts' => [
-        'path' => $SITE_PATH . '/posts',
-        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
-        'blog_route' => 'blog'
-    ],
     'data' => [
         'path' => $SITE_PATH . '/data',
         'extensions' => ['yml', 'yaml']

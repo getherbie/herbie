@@ -1,0 +1,22 @@
+action: self
+method: post
+elements:
+    -
+      name: spam
+      type: hidden
+    -
+      name: vorname
+      type: text
+      label: Vorname
+    -
+      name: nachname
+      type: text
+      label: Nachname
+    -
+      name: email
+      type: text
+      label: E-Mail
+buttons:
+    -
+      name: submit
+      label: Absenden

@@ -44,7 +44,7 @@ class DispatchMiddleware implements MiddlewareInterface
 
         if (!$page) {
             $message = sprintf('Server request attribute "%s" doesn\'t exist', Page::class);
-            throw new \Exception($message);
+            throw new \InvalidArgumentException($message);
         }
 
         return $this->renderPage($page);
