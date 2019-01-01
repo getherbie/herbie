@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__ . '/../vendor/autoload.php');
+require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use Herbie\Middleware\ResponseTimeMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,7 +36,7 @@ class CustomHeader implements MiddlewareInterface {
     }
 }
 
-$app = new Herbie\Application('../site');
+$app = new Herbie\Application('../site', '../../vendor');
 $app->setMiddlewares([
     ResponseTimeMiddleware::class,
     CustomHeader::class,

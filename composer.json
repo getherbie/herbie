@@ -28,7 +28,10 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "zendframework/zend-diactoros": "^2.1@dev",
+        "getherbie/plugin-simplecontact": "dev-master",
+        "getherbie/plugin-simplesearch": "dev-master"
     },
     "scripts": {
         "test": [

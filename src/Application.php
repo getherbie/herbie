@@ -127,8 +127,9 @@ class Application
         );
 
         // Add custom PSR-4 plugin path to Composer autoloader
+        $pluginsPath = $container['Config']->get('plugins.path');
         $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $container['Config']->get('plugins.path'));
+        $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
 
         $container['Alias'] = new Alias([
             '@app' => $config->get('app.path'),

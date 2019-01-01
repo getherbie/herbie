@@ -1,6 +1,7 @@
 nice_urls: true
 
 plugins:
+    path: APP_PATH/../site/plugins
     config:
         markdown:
             twig: true
