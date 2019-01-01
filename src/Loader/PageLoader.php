@@ -120,10 +120,11 @@ class PageLoader
                 throw new \Exception('Fehler beim Auslesen der Seite.');
             }
 
-            $segments[] = array_shift($splitted);
+            $segments['default'] = array_shift($splitted);
             $ct_splitted = count($splitted);
             for ($i=0; $i<$ct_splitted; $i=$i+2) {
                 $key = $splitted[$i];
+               # $key = ($key == 0) ? 'default' : $key;
                 $value = $splitted[$i+1];
                 if (array_key_exists($key, $segments)) {
                     $segments[$key] .= $value;
