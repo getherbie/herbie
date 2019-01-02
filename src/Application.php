@@ -50,7 +50,7 @@ class Application
     /**
      * @var ContainerInterface
      */
-    protected $c;
+    protected $container;
 
     /**
      * @var Page
@@ -110,11 +110,7 @@ class Application
 
         $this->container = $c = new Container();
 
-        $c[HttpFactory::class] = $httpFactory = new HttpFactory();
-
-        $c[ServerRequestInterface::class] = $request = $httpFactory->createServerRequestFromGlobals();
-
-        $c[Environment::class] = $environment = new Environment($request);
+        $c[Environment::class] = $environment = new Environment();
 
         $c[Config::class] = $config = new Config(
             $this->sitePath,
@@ -126,6 +122,10 @@ class Application
         $pluginsPath = $c[Config::class]->get('plugins.path');
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
+
+        $c[HttpFactory::class] = new HttpFactory();
+
+        $c[ServerRequestInterface::class] = $c[HttpFactory::class]->createServerRequestFromGlobals();
 
         $c[Alias::class] = new Alias([
             '@app' => $config->get('app.path'),

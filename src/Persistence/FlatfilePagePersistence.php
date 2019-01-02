@@ -23,6 +23,8 @@ use SplFileInfo;
  */
 class FlatfilePagePersistence implements FlatfilePersistenceInterface
 {
+    const DATE_REGEX_PATTERN = '/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/';
+
     /**
      * @var Alias
      */
@@ -75,11 +77,15 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
             if (!isset($data['path'])) {
                 $data['path'] = $alias;
             }
+            if (!isset($data['route'])) {
+                $trimExtension = empty($data['keep_extension']);
+                $data['route'] = $this->createRoute($alias, $trimExtension);
+            }
             if (!isset($data['modified'])) {
                 $data['modified'] = date('c', filemtime($path));
             }
             if (!isset($data['date'])) {
-                if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $basename, $matches)) {
+                if (preg_match(static::DATE_REGEX_PATTERN, $basename, $matches)) {
                     $data['date'] = date('c', strtotime($matches[1]));
                 } else {
                     $data['date'] = date('c', filectime($path));
@@ -96,6 +102,45 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
             'data' => $data,
             'segments' => $segments
         ];
+    }
+
+    /**
+     * @param string $path
+     * @param bool $trimExtension
+     * @return string
+     */
+    protected function createRoute($path, $trimExtension = false)
+    {
+        // strip left unix AND windows dir separator
+        $route = ltrim($path, '\/');
+
+        // remove leading numbers (sorting) from url segments
+        $segments = explode('/', $route);
+
+        if (isset($segments[0])) {
+            if (substr($segments[0], 0, 1) === '@') {
+                unset($segments[0]);
+            }
+        }
+
+        foreach ($segments as $i => $segment) {
+            if (!preg_match(static::DATE_REGEX_PATTERN, $segment)) {
+                $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
+            }
+        }
+        $imploded = implode('/', $segments);
+
+        // trim extension
+        $pos = strrpos($imploded, '.');
+        if ($trimExtension && ($pos !== false)) {
+            $imploded = substr($imploded, 0, $pos);
+        }
+
+        // remove last "/index" from route
+        $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
+
+        // handle index route
+        return ($route == 'index') ? '' : $route;
     }
 
     /**

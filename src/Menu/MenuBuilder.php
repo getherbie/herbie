@@ -90,7 +90,7 @@ class MenuBuilder
                         foreach (glob($fileInfo->getPathname() . '/*index.*') as $indexFile) {
                             $this->indexFiles[] = $indexFile;
                             $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
-                            $item = $this->createItem($indexFile, $relPathname, $alias);
+                            $item = $this->createItem($relPathname, $alias);
                             $collection->addItem($item);
                             break;
                         }
@@ -99,7 +99,7 @@ class MenuBuilder
                         if (!$this->isValid($fileInfo->getPathname(), $fileInfo->getExtension())) {
                             continue;
                         }
-                        $item = $this->createItem($fileInfo->getPathname(), $fileInfo->getRelativePathname(), $alias);
+                        $item = $this->createItem($fileInfo->getRelativePathname(), $alias);
                         $collection->addItem($item);
                     }
                 }
@@ -172,62 +172,14 @@ class MenuBuilder
     }
 
     /**
-     * @param string $absolutePath
      * @param string $relativePath
      * @param string $alias
      * @return MenuItem
      */
-    protected function createItem($absolutePath, $relativePath, $alias)
+    protected function createItem($relativePath, $alias)
     {
         $page = $this->flatfilePersistence->findById($alias . '/' . $relativePath);
-        $data = $page['data'];
-
-        $trimExtension = empty($data['keep_extension']);
-        $route = $this->createRoute($relativePath, $trimExtension);
-
-        $data['path'] = $alias . '/' . $relativePath;
-        $data['route'] = $route;
-        $item = new MenuItem($data);
-
-        if (empty($item->modified)) {
-            $item->modified = date('c', filemtime($absolutePath));
-        }
-        if (empty($item->date)) {
-            $item->date = date('c', filectime($absolutePath));
-        }
-        if (!isset($item->hidden)) {
-            $item->hidden = !preg_match('/^[0-9]+-/', basename($relativePath));
-        }
+        $item = new MenuItem($page['data']);
         return $item;
-    }
-
-    /**
-     * @param string $path
-     * @param bool $trimExtension
-     * @return string
-     */
-    protected function createRoute($path, $trimExtension = false)
-    {
-        // strip left unix AND windows dir separator
-        $route = ltrim($path, '\/');
-
-        // remove leading numbers (sorting) from url segments
-        $segments = explode('/', $route);
-        foreach ($segments as $i => $segment) {
-            $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
-        }
-        $imploded = implode('/', $segments);
-
-        // trim extension
-        $pos = strrpos($imploded, '.');
-        if ($trimExtension && ($pos !== false)) {
-            $imploded = substr($imploded, 0, $pos);
-        }
-
-        // remove last "/index" from route
-        $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
-
-        // handle index route
-        return ($route == 'index') ? '' : $route;
     }
 }
