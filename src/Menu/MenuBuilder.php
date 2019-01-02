@@ -179,7 +179,53 @@ class MenuBuilder
     protected function createItem($relativePath, $alias)
     {
         $page = $this->flatfilePersistence->findById($alias . '/' . $relativePath);
+
+        // determine route here because we need the relative path for this
+        if (!isset($page['data']['route'])) {
+            $trimExtension = empty($page['data']['keep_extension']);
+            $page['data']['route'] = $this->createRoute($relativePath, $trimExtension);
+        }
+
         $item = new MenuItem($page['data']);
         return $item;
+    }
+
+    /**
+     * @param string $path
+     * @param bool $trimExtension
+     * @return string
+     */
+    protected function createRoute($path, $trimExtension = false)
+    {
+        // strip left unix AND windows dir separator
+        $route = ltrim($path, '\/');
+
+        // remove leading numbers (sorting) from url segments
+        $segments = explode('/', $route);
+
+        if (isset($segments[0])) {
+            if (substr($segments[0], 0, 1) === '@') {
+                unset($segments[0]);
+            }
+        }
+
+        foreach ($segments as $i => $segment) {
+            if (!preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $segment)) {
+                $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
+            }
+        }
+        $imploded = implode('/', $segments);
+
+        // trim extension
+        $pos = strrpos($imploded, '.');
+        if ($trimExtension && ($pos !== false)) {
+            $imploded = substr($imploded, 0, $pos);
+        }
+
+        // remove last "/index" from route
+        $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
+
+        // handle index route
+        return ($route == 'index') ? '' : $route;
     }
 }
