@@ -6,6 +6,8 @@
  * Time: 13:36
  */
 
+declare(strict_types=1);
+
 namespace Herbie\Repository;
 
 use Herbie\Page;

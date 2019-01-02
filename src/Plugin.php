@@ -6,6 +6,8 @@
  * Time: 10:21
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 use Zend\EventManager\EventManagerInterface;

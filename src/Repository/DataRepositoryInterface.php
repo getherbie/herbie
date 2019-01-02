@@ -6,6 +6,8 @@
  * Time: 14:31
  */
 
+declare(strict_types=1);
+
 namespace Herbie\Repository;
 
 interface DataRepositoryInterface

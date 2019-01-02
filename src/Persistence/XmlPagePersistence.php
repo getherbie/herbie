@@ -6,8 +6,9 @@
  * Time: 13:36
  */
 
-namespace Herbie\Persistence;
+declare(strict_types=1);
 
+namespace Herbie\Persistence;
 
 class XmlPagePersistence implements FlatfilePersistenceInterface
 {

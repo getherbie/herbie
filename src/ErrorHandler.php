@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 use Herbie\Exception\SystemException;
@@ -33,9 +35,9 @@ class ErrorHandler
             throw SystemException::directoryNotWritable($logDir);
         }
 
-        ini_set("display_errors", 0);
-        ini_set("log_errors", 1);
-        ini_set("error_log", sprintf("%s/%s-error.log", $logDir, date('Y-m')));
+        ini_set('display_errors', '0');
+        ini_set('log_errors', '1');
+        ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
         set_exception_handler([$this, 'handleUncaughtException']);
         set_error_handler([$this, 'handleError'], error_reporting());
