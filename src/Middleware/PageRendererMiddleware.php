@@ -12,23 +12,37 @@ declare(strict_types=1);
 
 namespace Herbie\Middleware;
 
-use Herbie\Application;
+use Herbie\Environment;
 use Herbie\Page;
+use Herbie\PluginManager;
 use Herbie\StringValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\SimpleCache\CacheInterface;
+use Tebe\HttpFactory\HttpFactory;
 
-class DispatchMiddleware implements MiddlewareInterface
+class PageRendererMiddleware implements MiddlewareInterface
 {
-    protected $herbie;
+    protected $cache;
+    protected $environment;
+    protected $httpFactory;
     protected $pluginManager;
 
-    public function __construct(Application $herbie)
+    /**
+     * PageRendererMiddleware constructor.
+     * @param CacheInterface $cache
+     * @param Environment $environment
+     * @param HttpFactory $httpFactory
+     * @param PluginManager $pluginManager
+     */
+    public function __construct(CacheInterface $cache, Environment $environment, HttpFactory $httpFactory, PluginManager $pluginManager)
     {
-        $this->herbie = $herbie;
-        $this->pluginManager = $herbie->getPluginManager();
+        $this->cache = $cache;
+        $this->environment = $environment;
+        $this->httpFactory = $httpFactory;
+        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -60,9 +74,9 @@ class DispatchMiddleware implements MiddlewareInterface
     {
         $rendered = null;
 
-        $cacheId = 'page-' . $this->herbie->getEnvironment()->getRoute();
+        $cacheId = 'page-' . $this->environment->getRoute();
         if (empty($page->nocache)) {
-            $rendered = $this->herbie->getPageCache()->get($cacheId);
+            $rendered = $this->cache->get($cacheId);
         }
 
         if (null === $rendered) {
@@ -81,12 +95,12 @@ class DispatchMiddleware implements MiddlewareInterface
             }
 
             if (empty($page->nocache)) {
-                $this->herbie->getPageCache()->set($cacheId, $content->get());
+                $this->cache->set($cacheId, $content->get());
             }
             $rendered = $content->get();
         }
 
-        $response = $this->herbie->getHttpFactory()->createResponse($page->getStatusCode());
+        $response = $this->httpFactory->createResponse($page->getStatusCode());
         $response->getBody()->write($rendered);
         $response->withHeader('Content-Type', $page->content_type);
 

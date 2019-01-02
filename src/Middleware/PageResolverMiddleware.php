@@ -24,16 +24,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PageResolverMiddleware implements MiddlewareInterface
 {
-    protected $herbie;
     protected $environment;
-    protected $urlMatcher;
+    protected $herbie;
     protected $pageLoader;
-    protected $pageRepository;
+    protected $urlMatcher;
 
     /**
      * PageResolverMiddleware constructor.
      * @param Application $herbie
+     * @param Environment $environment
+     * @param UrlMatcher $urlMatcher
+     * @param PageRepositoryInterface $pageRepository
      */
+    // TODO dont inject Application
     public function __construct(
         Application $herbie,
         Environment $environment,
@@ -54,6 +57,7 @@ class PageResolverMiddleware implements MiddlewareInterface
             $path = $menuItem->getPath();
             $page = $this->pageRepository->find($path);
         } catch (\Throwable $t) {
+            // TODO use page factory
             $page = new Page();
             $page->layout = 'error';
             $page->setError($t);

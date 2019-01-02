@@ -48,8 +48,8 @@ $app->setMiddlewares([
     },
 ]);
 
-$fileCache = new Anax\Cache\FileCache();
-$fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
-$app->setPageCache($fileCache);
+//$fileCache = new Anax\Cache\FileCache();
+//$fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
+//$app->setPageCache($fileCache);
 
 $app->run();

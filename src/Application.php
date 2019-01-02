@@ -17,7 +17,7 @@ use Herbie\Menu\MenuBuilder;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\RootPath;
-use Herbie\Middleware\DispatchMiddleware;
+use Herbie\Middleware\PageRendererMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageResolverMiddleware;
@@ -304,7 +304,12 @@ class Application
                     $this->getUrlMatcher(),
                     $this->getPageRepository()
                 ),
-                new DispatchMiddleware($this)
+                new PageRendererMiddleware(
+                    $this->getPageCache(),
+                    $this->getEnvironment(),
+                    $this->getHttpFactory(),
+                    $this->getPluginManager()
+                )
             ]
         );
         return $middlewares;
