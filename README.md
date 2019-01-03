@@ -6,17 +6,18 @@ Herbie is a simple Flat-File CMS- und Blogsystem based on human readable text fi
 
 With Herbie you are able to create a full functional website or blog in a short amount of time and with little effort.
 
-Herbie is based on the following libraries:
+Herbie is based on the following libraries and concepts:
 
 * [Markdown][markdown] and [Textile][textile] for formatting page content
 * [Twig][twig] Template Engine for rendering layouts
 * [Yaml][yaml] for configuration and data structures files
 * [Pimple][pimple] as Dependency Injection Container
 * [Composer][composer] and [Packagist][packagist] for das Dependency and Plugin Management
+* PHP Middlewares 
 
 Herbie supports the following [PHP Standards Recommendations][psr]:
 
-* 2 Coding Style Guid 
+* 2 Coding Style Guide
 * 3	Logger Interface
 * 4	Autoloading Standard
 * 7 HTTP Message Interface
