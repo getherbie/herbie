@@ -90,7 +90,7 @@ class Assets
      * @param bool $raw
      * @param int $pos
      */
-    public function addCss($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    public function addCss($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1): void
     {
         $paths = is_array($paths) ? $paths : [$paths];
         foreach ($paths as $path) {
@@ -105,7 +105,7 @@ class Assets
      * @param bool $raw
      * @param int $pos
      */
-    public function addJs($paths, $attr = [], $group = null, $raw = false, $pos = 1)
+    public function addJs($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1): void
     {
         $paths = is_array($paths) ? $paths : [$paths];
         foreach ($paths as $path) {
@@ -116,7 +116,7 @@ class Assets
     /**
      * @param string $group
      */
-    public function outputCss($group = null)
+    public function outputCss(string $group = null): void
     {
         $this->sort();
         $this->publish();
@@ -133,7 +133,7 @@ class Assets
     /**
      * @param string $group
      */
-    public function outputJs($group = null)
+    public function outputJs(string $group = null): void
     {
         $this->sort();
         $this->publish();
@@ -155,7 +155,7 @@ class Assets
      * @param bool $raw
      * @param int $pos
      */
-    protected function addAsset($type, $path, $attr, $group, $raw, $pos)
+    protected function addAsset(int $type, string $path, array $attr, string $group = null, bool $raw = false, int $pos = 1): void
     {
         if ($this->search($path)) {
             return;
@@ -174,7 +174,7 @@ class Assets
     /**
      * return void
      */
-    protected function sort()
+    protected function sort(): void
     {
         if (!self::$sorted) {
             uasort($this->assets, function ($a, $b) {
@@ -197,7 +197,7 @@ class Assets
      * @param string $group
      * @return array
      */
-    protected function collect($type, $group = null)
+    protected function collect(int $type, string $group = null): array
     {
         $assets = [];
         foreach ($this->assets as $asset) {
@@ -209,10 +209,10 @@ class Assets
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool|int
      */
-    protected function search($path)
+    protected function search(string $path)
     {
         foreach ($this->assets as $index => $asset) {
             if ($asset['path'] == $path) {
@@ -225,7 +225,7 @@ class Assets
     /**
      * @return void
      */
-    protected function publish()
+    protected function publish(): void
     {
         foreach ($this->assets as $asset) {
             if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
@@ -262,7 +262,7 @@ class Assets
      * @param string $file
      * @return string
      */
-    protected function buildUrl($file)
+    protected function buildUrl(string $file): string
     {
         $url = $file;
         if ('@' == substr($file, 0, 1)) {
@@ -276,7 +276,7 @@ class Assets
      * @param string $file
      * @return string
      */
-    protected function removeAlias($file)
+    protected function removeAlias(string $file): string
     {
         $parts = explode('/', $file);
         array_shift($parts);
