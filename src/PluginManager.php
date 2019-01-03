@@ -19,21 +19,22 @@ use Zend\EventManager\EventManager;
 class PluginManager extends EventManager
 {
 
-    /** @var array  */
+    /** @var array */
     protected $enabled;
 
-    /** @var string  */
+    /** @var string */
     protected $path;
 
-    /** @var array  */
+    /** @var array */
     protected $loaded;
 
-    /** @var bool  */
+    /** @var bool */
     protected $initialized;
 
     /** @var array */
     protected $enabledSysPlugins;
 
+    /** @var Application */
     protected $application;
 
     /**
@@ -41,7 +42,8 @@ class PluginManager extends EventManager
      * @param array $enabled
      * @param string $path
      * @param array $enabledSysPlugins
-     * @throws \Exception
+     * @param Application $application
+     * @throws SystemException
      */
     public function __construct(array $enabled, string $path, array $enabledSysPlugins, Application $application)
     {
@@ -82,8 +84,9 @@ class PluginManager extends EventManager
     /**
      * @param string $path
      * @param string $key
+     * @param int $priority
      */
-    protected function loadPlugin(string $path, string $key, $priority)
+    protected function loadPlugin(string $path, string $key, int $priority): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {

@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Herbie;
 
+use ErrorException;
 use Herbie\Exception\SystemException;
+use Throwable;
 
 /**
  * @see http://stackoverflow.com/questions/2561235/best-possible-php-error-class
@@ -23,9 +25,9 @@ class ErrorHandler
     /**
      * Registers this error handler.
      * @param string $logDir
-     * @throws \Exception
+     * @throws SystemException
      */
-    public function register(string $logDir)
+    public function register(string $logDir): void
     {
         if (!is_dir($logDir)) {
             throw SystemException::directoryNotExist($logDir);
@@ -47,7 +49,7 @@ class ErrorHandler
     /**
      * Unregisters this error handler.
      */
-    public function unregister()
+    public function unregister(): void
     {
         restore_error_handler();
         restore_exception_handler();
@@ -60,9 +62,9 @@ class ErrorHandler
      * @param string $file
      * @param int $line
      * @return bool
-     * @throws \ErrorException
+     * @throws ErrorException
      */
-    public function handleError(int $code, string $message, string $file, int $line)
+    public function handleError(int $code, string $message, string $file, int $line): bool
     {
         // error was suppressed with the @-operator
         if (0 === error_reporting()) {
@@ -71,14 +73,14 @@ class ErrorHandler
 
         // disable error capturing to avoid recursive errors
         restore_error_handler();
-        throw new \ErrorException($message, 500, $code, $file, $line);
+        throw new ErrorException($message, 500, $code, $file, $line);
     }
 
     /**
      * Handles an exception
-     * @param \Exception $exception
+     * @param Throwable $exception
      */
-    public function handleUncaughtException($exception)
+    public function handleUncaughtException(Throwable $exception): void
     {
         $this->sendHttpHeader();
         echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
@@ -88,12 +90,12 @@ class ErrorHandler
     /**
      * Handles a fatal error
      */
-    public function handleFatalError()
+    public function handleFatalError(): void
     {
         $error = error_get_last();
         if ($this->isFatalError($error)) {
             $this->sendHttpHeader();
-            $exception = new \ErrorException(
+            $exception = new ErrorException(
                 $error['message'],
                 $error['type'],
                 $error['type'],
@@ -107,12 +109,12 @@ class ErrorHandler
 
     /**
      * Converts an exception into a simple string.
-     * @param \Exception $exception the exception being converted
+     * @param Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      */
-    public function convertExceptionToString($exception)
+    public function convertExceptionToString(Throwable $exception): string
     {
-        if ($exception instanceof \Throwable && !HERBIE_DEBUG) {
+        if ($exception instanceof Throwable && !HERBIE_DEBUG) {
             $message = get_class($exception) . ": {$exception->getMessage()}";
         } elseif (HERBIE_DEBUG) {
             $message = $exception->getMessage() . "\n\n"
@@ -132,7 +134,7 @@ class ErrorHandler
      * @param $error
      * @return bool
      */
-    public function isFatalError($error)
+    public function isFatalError($error): bool
     {
         $errorTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING];
         return isset($error['type']) && in_array($error['type'], $errorTypes);
@@ -141,7 +143,7 @@ class ErrorHandler
     /**
      * @param int $code
      */
-    protected function sendHttpHeader($code = 500)
+    protected function sendHttpHeader($code = 500): void
     {
         if (!headers_sent()) {
             header("HTTP/1.1 $code");

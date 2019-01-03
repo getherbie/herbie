@@ -14,6 +14,9 @@ namespace Herbie;
 
 class StringValue
 {
+    /**
+     * @var string
+     */
     protected $value;
 
     /**
@@ -28,7 +31,7 @@ class StringValue
     /**
      * @return string
      */
-    public function get()
+    public function get(): string
     {
         return $this->value;
     }
@@ -36,7 +39,7 @@ class StringValue
     /**
      * @param string $value
      */
-    public function set(string $value)
+    public function set(string $value): void
     {
         $this->value = $value;
     }
@@ -44,7 +47,7 @@ class StringValue
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->get();
     }

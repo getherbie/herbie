@@ -16,12 +16,12 @@ class Pagination implements \IteratorAggregate, \Countable
     protected $name;
 
     /**
-     * @param \IteratorAggregate|array $items
+     * @param iterable $items
      * @param int $limit
      * @param string $name
      * @throws \Exception
      */
-    public function __construct($items, int $limit = 10, string $name = 'page')
+    public function __construct(iterable $items, int $limit = 10, string $name = 'page')
     {
         $this->items = [];
         if (is_array($items)) {
@@ -59,7 +59,7 @@ class Pagination implements \IteratorAggregate, \Countable
     /**
      * @param int $limit
      */
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): void
     {
         $limit = (0 == $limit) ? 1000 : intval($limit);
         $this->limit = $limit;

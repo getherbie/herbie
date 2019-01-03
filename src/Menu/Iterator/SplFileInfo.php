@@ -15,7 +15,14 @@ namespace Herbie\Menu\Iterator;
 
 class SplFileInfo extends \SplFileInfo
 {
+    /**
+     * @var string
+     */
     protected $relativePath;
+
+    /**
+     * @var string
+     */
     protected $relativePathname;
 
     /**
@@ -25,7 +32,7 @@ class SplFileInfo extends \SplFileInfo
      * @param string $relativePath     The relative path
      * @param string $relativePathname The relative path name
      */
-    public function __construct($file, $relativePath, $relativePathname)
+    public function __construct(string $file, string $relativePath, string $relativePathname)
     {
         parent::__construct($file);
         $this->relativePath = $relativePath;
@@ -37,7 +44,7 @@ class SplFileInfo extends \SplFileInfo
      *
      * @return string the relative path
      */
-    public function getRelativePath()
+    public function getRelativePath(): string
     {
         return $this->relativePath;
     }
@@ -47,7 +54,7 @@ class SplFileInfo extends \SplFileInfo
      *
      * @return string the relative path name
      */
-    public function getRelativePathname()
+    public function getRelativePathname(): string
     {
         return $this->relativePathname;
     }
@@ -55,7 +62,7 @@ class SplFileInfo extends \SplFileInfo
     /**
      * @return bool
      */
-    public function isDot()
+    public function isDot(): bool
     {
         return in_array($this->getBasename(), ['.', '..']);
     }
@@ -67,7 +74,7 @@ class SplFileInfo extends \SplFileInfo
      *
      * @throws \RuntimeException
      */
-    public function getContents()
+    public function getContents(): string
     {
         $level = error_reporting(0);
         $content = file_get_contents($this->getPathname());

@@ -25,17 +25,28 @@ class Plugin implements ListenerAggregateInterface
      */
     protected $listeners = [];
 
+    /**
+     * Plugin constructor.
+     * @param Application $herbie
+     */
     public function __construct(Application $herbie)
     {
         $this->herbie = $herbie;
     }
 
-    public function attach(EventManagerInterface $events, $priority = 1)
+    /**
+     * @param EventManagerInterface $events
+     * @param int $priority
+     */
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
         // overwrite in concrete plugin
     }
 
-    public function detach(EventManagerInterface $events)
+    /**
+     * @param EventManagerInterface $events
+     */
+    public function detach(EventManagerInterface $events): void
     {
         foreach ($this->listeners as $index => $listener) {
             $events->detach($listener);

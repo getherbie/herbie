@@ -73,7 +73,10 @@ class SortableIterator implements \IteratorAggregate
         }
     }
 
-    public function getIterator()
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator(): \ArrayIterator
     {
         $array = iterator_to_array($this->iterator, true);
         uasort($array, $this->sort);

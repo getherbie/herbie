@@ -23,12 +23,20 @@ class FilterCallback
      */
     protected $routeLine;
 
+    /**
+     * FilterCallback constructor.
+     * @param array $routeLine
+     */
     public function __construct(array $routeLine)
     {
         $this->routeLine = $routeLine;
     }
 
-    public function call(MenuTree $current)
+    /**
+     * @param MenuTree $current
+     * @return int
+     */
+    public function call(MenuTree $current): int
     {
         $menuItem = $current->getMenuItem();
 
@@ -38,6 +46,6 @@ class FilterCallback
         }
         $accept &= in_array($menuItem->getParentRoute(), $this->routeLine);
 
-        return $accept;
+        return $accept ? 1 : 0;
     }
 }

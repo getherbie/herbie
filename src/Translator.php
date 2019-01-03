@@ -46,7 +46,7 @@ class Translator
     /**
      * Initializer
      */
-    public function init()
+    public function init(): void
     {
         $this->loadMessages();
     }
@@ -82,7 +82,7 @@ class Translator
     /**
      * @return void
      */
-    protected function loadMessages()
+    protected function loadMessages(): void
     {
         foreach ($this->paths as $category => $paths) {
             foreach ($paths as $path) {
@@ -98,7 +98,7 @@ class Translator
      * @param string $category
      * @param string $path
      */
-    public function addPath(string $category, string $path)
+    public function addPath(string $category, string $path): void
     {
         if (!isset($this->paths[$category])) {
             $this->paths[$category] = [];

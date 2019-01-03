@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Herbie\Menu\Iterator;
 
+use Herbie\Menu\MenuItem;
+use Herbie\Menu\MenuTree;
+
 class TreeIterator implements \RecursiveIterator
 {
     /**
@@ -37,7 +40,7 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return \self
+     * @return TreeIterator
      */
     public function getChildren()
     {
@@ -45,17 +48,17 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return $this->children[$this->position]->hasChildren();
     }
 
     /**
-     * @return \Herbie\Menu\MenuTree
+     * @return MenuTree
      */
-    public function current()
+    public function current(): MenuTree
     {
         return $this->children[$this->position];
     }
@@ -63,7 +66,7 @@ class TreeIterator implements \RecursiveIterator
     /**
      * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
@@ -71,7 +74,7 @@ class TreeIterator implements \RecursiveIterator
     /**
      * @return void
      */
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
@@ -79,23 +82,23 @@ class TreeIterator implements \RecursiveIterator
     /**
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->children[$this->position]);
     }
 
     /**
-     * @return Item
+     * @return MenuItem
      */
-    public function getMenuItem()
+    public function getMenuItem(): MenuItem
     {
         return $this->children[$this->position]->getMenuItem();
     }

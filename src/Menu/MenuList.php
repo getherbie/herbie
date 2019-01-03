@@ -28,12 +28,12 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @var array
      */
-    protected $filteredBy;
+    protected $filteredBy = [];
 
     /**
      * @var bool
      */
-    public $fromCache;
+    public $fromCache = false;
 
     /**
      * MenuList constructor.
@@ -47,7 +47,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @param MenuItem $item
      */
-    public function addItem(MenuItem $item)
+    public function addItem(MenuItem $item): void
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -56,7 +56,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
@@ -65,15 +65,15 @@ class MenuList implements \IteratorAggregate, \Countable
      * @param string $route
      * @return MenuItem|null
      */
-    public function getItem($route)
+    public function getItem($route): ?MenuItem
     {
         return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 
     /**
-     * @return \ArrayIterator|\Traversable
+     * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }
@@ -81,7 +81,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
@@ -89,7 +89,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return MenuItem
      */
-    public function getRandom()
+    public function getRandom(): MenuItem
     {
         $routes = array_keys($this->items);
         $index = mt_rand(0, $this->count()-1);
@@ -102,7 +102,7 @@ class MenuList implements \IteratorAggregate, \Countable
      * @param string $key
      * @return MenuItem|null
      */
-    public function find($value, $key)
+    public function find($value, $key): ?MenuItem
     {
         foreach ($this->items as $item) {
             if ($item->$key == $value) {
@@ -117,9 +117,9 @@ class MenuList implements \IteratorAggregate, \Countable
      *
      * @param callable|null $key
      * @param mixed $value
-     * @return static
+     * @return MenuList
      */
-    public function filter($key = null, $value = null)
+    public function filter($key = null, $value = null): MenuList
     {
         if (is_callable($key)) {
             return new static(array_filter($this->items, $key));
@@ -138,16 +138,19 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * Shuffle the items in the collection.
      *
-     * @return static
+     * @return MenuList
      */
-    public function shuffle()
+    public function shuffle(): MenuList
     {
         $items = $this->items;
         shuffle($items);
         return new static($items);
     }
 
-    public function flatten()
+    /**
+     * @return array
+     */
+    public function flatten(): array
     {
         return $this->items;
     }
@@ -155,9 +158,9 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @param callable|string|null $mixed
      * @param string $direction
-     * @return static
+     * @return MenuList
      */
-    public function sort($mixed = null, $direction = 'asc')
+    public function sort($mixed = null, $direction = 'asc'): MenuList
     {
         $items = $this->items;
 
@@ -184,7 +187,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return string
      */
-    public function getBlogRoute()
+    public function getBlogRoute(): string
     {
         return $this->blogRoute;
     }
@@ -192,7 +195,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getFilteredBy()
+    public function getFilteredBy(): array
     {
         return $this->filteredBy;
     }
@@ -200,7 +203,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getAuthors()
+    public function getAuthors(): array
     {
         $authors = [];
         foreach ($this->items as $item) {
@@ -220,7 +223,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getCategories()
+    public function getCategories(): array
     {
         $categories = [];
         foreach ($this->items as $item) {
@@ -238,10 +241,10 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param integer $limit
+     * @param int $limit
      * @return array
      */
-    public function getRecent($limit)
+    public function getRecent(int $limit): array
     {
         $limit = intval($limit);
         $items = [];
@@ -259,7 +262,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getTags()
+    public function getTags(): array
     {
         $tags = [];
         foreach ($this->items as $item) {
@@ -279,7 +282,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getYears()
+    public function getYears(): array
     {
         $years = [];
         foreach ($this->items as $item) {
@@ -297,7 +300,7 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    public function getMonths()
+    public function getMonths(): array
     {
         $items = [];
         foreach ($this->items as $item) {
@@ -323,7 +326,7 @@ class MenuList implements \IteratorAggregate, \Countable
      * @param string $route
      * @return array
      */
-    public function filterItems(string $route)
+    public function filterItems(string $route): array
     {
         $pathInfo = $this->getBlogPathInfo($route);
         if (empty($pathInfo)) {
@@ -404,7 +407,7 @@ class MenuList implements \IteratorAggregate, \Countable
      * @param string $route
      * @return string
      */
-    protected function getBlogPathInfo(string $route)
+    protected function getBlogPathInfo(string $route): string
     {
         $segments = explode('/', $route);
         if (empty($segments)) {

@@ -45,21 +45,20 @@ class Config
      * @param string $webPath
      * @param string $webUrl
      */
-    public function __construct($sitePath, $webPath, $webUrl)
+    public function __construct(string $sitePath, string $webPath, string $webUrl)
     {
         $this->appPath  = realpath(__DIR__);
         $this->sitePath = $sitePath;
         $this->webPath  = $webPath;
         $this->webUrl   = preg_replace('#\/?index.php#', '', $webUrl);
         $this->items = [];
-        $this->cache = [];
         $this->loadConfig(false);
     }
 
-    protected function loadConfig($useCache = true)
+    protected function loadConfig(bool $useCache = true): void
     {
         if ($useCache) {
-            $cacheFile = $this->sitePath . '/cache/config.php';
+            $cacheFile = $this->sitePath . '/runtime/cache/config.php';
             if (is_file($cacheFile)) {
                 $this->items = require($cacheFile);
             } else {
@@ -82,7 +81,7 @@ class Config
      * @param mixed $default
      * @return mixed
      */
-    public function get($name, $default = null)
+    public function get(string $name, $default = null)
     {
         $path = explode('.', $name);
         $current = $this->items;
@@ -109,7 +108,7 @@ class Config
      * @param mixed $value
      * @return int
      */
-    public function push($name, $value)
+    public function push(string $name, $value): int
     {
         $path = explode('.', $name);
         $current = &$this->items;
@@ -133,7 +132,7 @@ class Config
      * @param string $name
      * @param mixed $value
      */
-    public function set($name, $value)
+    public function set(string $name, $value): void
     {
         $path = explode('.', $name);
         $current = &$this->items;
@@ -162,7 +161,7 @@ class Config
      * @param string $name
      * @return boolean
      */
-    public function isEmpty($name)
+    public function isEmpty(string $name): bool
     {
         $value = $this->get($name);
         return empty($value);
@@ -171,7 +170,7 @@ class Config
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->items;
     }
@@ -181,7 +180,7 @@ class Config
      * @param array $override
      * @return array
      */
-    protected function merge($default, $override)
+    protected function merge(array $default, array $override): array
     {
         foreach ($override as $key => $value) {
             if (is_array($value)) {
@@ -197,7 +196,7 @@ class Config
     /**
      *
      */
-    protected function loadMainFile()
+    protected function loadMainFile(): void
     {
         // vars used in config files
         $APP_PATH = $this->appPath;
@@ -207,7 +206,7 @@ class Config
 
         $defaults = require(__DIR__ . '/../config/defaults.php');
         if (is_file($this->sitePath . '/config/main.php')) {
-            $userConfig = require($this->sitePath . '/config.php');
+            $userConfig = require($this->sitePath . '/config/main.php');
             $defaults = $this->merge($defaults, $userConfig);
         } elseif (is_file($this->sitePath . '/config/main.yml')) {
             $content = file_get_contents($this->sitePath . '/config/main.yml');
@@ -220,7 +219,7 @@ class Config
 
     /**
      */
-    protected function loadPluginFiles()
+    protected function loadPluginFiles(): void
     {
         $dir = $this->sitePath . '/config/plugins';
         if (is_readable($dir)) {
@@ -238,9 +237,9 @@ class Config
 
     /**
      * @param string $file
-     * @return mixed|string
+     * @return string
      */
-    protected function loadFile($file)
+    protected function loadFile(string $file): string
     {
         $content = file_get_contents($file);
         return $this->replaceConstants($content);
@@ -250,7 +249,7 @@ class Config
      * @param string $string
      * @return string
      */
-    protected function replaceConstants($string)
+    protected function replaceConstants(string $string): string
     {
         return str_replace(
             ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],
@@ -258,8 +257,11 @@ class Config
             $string
         );
     }
-    
-    public function __debugInfo()
+
+    /**
+     * @return array
+     */
+    public function __debugInfo(): array
     {
         return call_user_func('get_object_vars', $this);
     }

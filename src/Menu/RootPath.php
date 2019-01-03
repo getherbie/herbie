@@ -35,7 +35,7 @@ class RootPath implements \IteratorAggregate, \Countable
      * @param MenuList $collection
      * @param string $route
      */
-    public function __construct(MenuList $collection, $route)
+    public function __construct(MenuList $collection, string $route)
     {
         $this->collection = $collection;
         $this->route = $route;
@@ -45,7 +45,7 @@ class RootPath implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    protected function buildRootPath()
+    protected function buildRootPath(): array
     {
         $items = [];
 
@@ -68,7 +68,7 @@ class RootPath implements \IteratorAggregate, \Countable
     /**
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }
@@ -76,7 +76,7 @@ class RootPath implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }

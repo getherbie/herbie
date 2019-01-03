@@ -25,9 +25,24 @@ use Tebe\HttpFactory\HttpFactory;
 
 class PageRendererMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var CacheInterface
+     */
     protected $cache;
+
+    /**
+     * @var Environment
+     */
     protected $environment;
+
+    /**
+     * @var HttpFactory
+     */
     protected $httpFactory;
+
+    /**
+     * @var PluginManager
+     */
     protected $pluginManager;
 
     /**
@@ -37,8 +52,12 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param HttpFactory $httpFactory
      * @param PluginManager $pluginManager
      */
-    public function __construct(CacheInterface $cache, Environment $environment, HttpFactory $httpFactory, PluginManager $pluginManager)
-    {
+    public function __construct(
+        CacheInterface $cache,
+        Environment $environment,
+        HttpFactory $httpFactory,
+        PluginManager $pluginManager
+    ) {
         $this->cache = $cache;
         $this->environment = $environment;
         $this->httpFactory = $httpFactory;

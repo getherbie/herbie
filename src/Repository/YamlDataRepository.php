@@ -46,7 +46,7 @@ class YamlDataRepository implements DataRepositoryInterface
      * @param string $name
      * @return array
      */
-    public function find(string $name): array
+    public function load(string $name): array
     {
         $dataFiles = $this->scanDataDir();
         $name = strtolower($name);
@@ -59,7 +59,7 @@ class YamlDataRepository implements DataRepositoryInterface
     /**
      * @return array
      */
-    public function findAll(): array
+    public function loadAll(): array
     {
         $data = [];
         foreach ($this->scanDataDir() as $name => $dataFile) {
@@ -71,7 +71,7 @@ class YamlDataRepository implements DataRepositoryInterface
     /**
      * @return array
      */
-    protected function scanDataDir()
+    protected function scanDataDir(): array
     {
         $dataFiles = [];
 
@@ -101,7 +101,7 @@ class YamlDataRepository implements DataRepositoryInterface
      * @param string $filepath
      * @return array
      */
-    protected function parseDataFile(string $filepath)
+    protected function parseDataFile(string $filepath): array
     {
         $yaml = file_get_contents($filepath);
         return Yaml::parse($yaml);

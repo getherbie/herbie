@@ -39,9 +39,10 @@ class UrlGenerator
     /**
      * Constructor
      * @param ServerRequestInterface $request The request object.
+     * @param Environment $environment
      * @param bool $niceUrls Whether to generate nice URLs.
      */
-    public function __construct(ServerRequestInterface $request, Environment $environment, $niceUrls)
+    public function __construct(ServerRequestInterface $request, Environment $environment, bool $niceUrls)
     {
         $this->request = $request;
         $this->environment = $environment;
@@ -53,7 +54,7 @@ class UrlGenerator
      * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
      * @return string The generated relative URL.
      */
-    public function generate($route)
+    public function generate(string $route): string
     {
         $route = ltrim($route, '/');
         if ($this->niceUrls) {
@@ -69,7 +70,7 @@ class UrlGenerator
      * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
      * @return string The generated absolute URL.
      */
-    public function generateAbsolute($route)
+    public function generateAbsolute(string $route): string
     {
         $uri = $this->request->getUri();
         $baseurl = $uri->getScheme() . '://' . $uri->getHost();
@@ -81,7 +82,7 @@ class UrlGenerator
      * @param string $url The URL.
      * @return string The filtered URL.
      */
-    protected function filterUrl($url)
+    protected function filterUrl(string $url): string
     {
         $url = preg_replace('/\/index$/', '', $url);
         $url = rtrim($url, '/');

@@ -31,12 +31,20 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         $this->middlewares = $middlewares;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
     public function dispatch(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->handle($request);
         return $response;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();
@@ -45,6 +53,9 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         return $response;
     }
 
+    /**
+     * @return MiddlewareInterface
+     */
     protected function getMiddleware(): MiddlewareInterface
     {
         $current = current($this->middlewares);

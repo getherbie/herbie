@@ -33,6 +33,7 @@ use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Repository\YamlDataRepository;
 use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -502,7 +503,7 @@ class Application
     /**
      * @return MenuTree
      */
-    public function getMenuNode()
+    public function getMenuTree()
     {
         return $this->getService(MenuTree::class);
     }

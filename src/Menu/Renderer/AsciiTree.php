@@ -36,7 +36,7 @@ class AsciiTree extends \RecursiveTreeIterator
     /**
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $output = '';
         foreach ($this as $item) {

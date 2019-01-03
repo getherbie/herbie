@@ -17,7 +17,7 @@ class MenuTree extends \Herbie\Node
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $menuItem = $this->getMenuItem();
         return (string) $menuItem->title;
@@ -27,7 +27,7 @@ class MenuTree extends \Herbie\Node
      * @param MenuList $menuCollection
      * @return MenuTree
      */
-    public static function buildTree($menuCollection)
+    public static function buildTree(MenuList $menuCollection): MenuTree
     {
         $tree = new self();
         foreach ($menuCollection as $menuItem) {
@@ -52,7 +52,7 @@ class MenuTree extends \Herbie\Node
      * @param string $route
      * @return MenuTree|bool
      */
-    public function findByRoute($route)
+    public function findByRoute(string $route)
     {
         if (empty($route)) {
             return $this->root();
@@ -75,7 +75,7 @@ class MenuTree extends \Herbie\Node
      * @param mixed $value
      * @return MenuTree|bool
      */
-    public function findBy($name, $value)
+    public function findBy(string $name, $value)
     {
         $menuItem = $this->getMenuItem();
         if (isset($menuItem) && ($menuItem->$name === $value)) {

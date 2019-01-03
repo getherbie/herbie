@@ -24,9 +24,24 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PageResolverMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var Environment
+     */
     protected $environment;
+
+    /**
+     * @var Application
+     */
     protected $herbie;
+
+    /**
+     * @var UrlMatcher
+     */
     protected $urlMatcher;
+
+    /**
+     * @var PageRepositoryInterface
+     */
     protected $pageRepository;
 
     /**

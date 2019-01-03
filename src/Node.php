@@ -75,7 +75,7 @@ class Node implements \IteratorAggregate
     /**
      * @param Node $parent
      */
-    public function setParent(Node $parent)
+    public function setParent(Node $parent): void
     {
         $this->parent = $parent;
     }
@@ -83,7 +83,7 @@ class Node implements \IteratorAggregate
     /**
      * @return Node|null
      */
-    public function getParent()
+    public function getParent(): Node
     {
         return $this->parent;
     }
@@ -99,7 +99,7 @@ class Node implements \IteratorAggregate
     /**
      * @param Node $child
      */
-    public function addChild(Node $child)
+    public function addChild(Node $child): void
     {
         $child->setParent($this);
         $this->children[] = $child;

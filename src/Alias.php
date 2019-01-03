@@ -38,7 +38,7 @@ class Alias
      * @param string $path
      * @throws \Exception
      */
-    public function set($alias, $path)
+    public function set(string $alias, string $path): void
     {
         if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
@@ -50,7 +50,7 @@ class Alias
      * @param string $alias
      * @return string
      */
-    public function get($alias)
+    public function get(string $alias): string
     {
         if (strncmp($alias, '@', 1)) {
             return $alias;
@@ -63,7 +63,7 @@ class Alias
      * @param string $path
      * @throws \Exception
      */
-    public function update($alias, $path)
+    public function update(string $alias, string $path): void
     {
         if (array_key_exists($alias, $this->aliases)) {
             $this->aliases[$alias] = $this->rtrim($path);
@@ -76,7 +76,7 @@ class Alias
      * @param string $path
      * @return string
      */
-    protected function rtrim($path)
+    protected function rtrim(string $path): string
     {
         return rtrim($path, '/');
     }

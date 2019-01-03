@@ -20,7 +20,14 @@ use Herbie\Menu\MenuItemTrait;
  */
 class Page
 {
+    /**
+     * @var string
+     */
     protected $id;
+
+    /**
+     * @var string
+     */
     protected $parent;
 
     use MenuItemTrait;
@@ -68,12 +75,18 @@ class Page
         return $segment;
     }
 
-    public function setId($id)
+    /**
+     * @param $id
+     */
+    public function setId(string $id): void
     {
         $this->id = $id;
     }
 
-    public function setParent($parent)
+    /**
+     * @param string $parent
+     */
+    public function setParent(string $parent): void
     {
         $this->parent = $parent;
     }
@@ -82,7 +95,7 @@ class Page
      * @param array $data
      * @throws \LogicException
      */
-    public function setData(array $data)
+    public function setData(array $data): void
     {
         if (array_key_exists('segments', $data)) {
             throw new \LogicException("Field segments is not allowed.");
@@ -95,7 +108,7 @@ class Page
     /**
      * @param string $format
      */
-    public function setFormat(string $format)
+    public function setFormat(string $format): void
     {
         switch ($format) {
             case 'md':
@@ -114,7 +127,7 @@ class Page
     /**
      * @param array $segments
      */
-    public function setSegments(array $segments = [])
+    public function setSegments(array $segments = []): void
     {
         $this->segments = $segments;
     }
@@ -156,7 +169,7 @@ class Page
     /**
      * @param \Throwable $e
      */
-    public function setError(\Throwable $e)
+    public function setError(\Throwable $e): void
     {
         $this->data['error'] = [
             'message' => $e->getMessage(),

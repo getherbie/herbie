@@ -16,11 +16,10 @@ interface DataRepositoryInterface
      * @param string $name
      * @return array
      */
-    public function find(string $name): array;
+    public function load(string $name): array;
 
     /**
      * @return array
      */
-    public function findAll(): array;
-
+    public function loadAll(): array;
 }

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie;
 
+use Herbie\Menu\MenuList;
+use Herbie\Menu\MenuTree;
 use Herbie\Menu\RootPath;
 
 /**
@@ -20,8 +22,15 @@ use Herbie\Menu\RootPath;
  */
 class Site
 {
+    /**
+     * @var Application
+     */
     protected $herbie;
 
+    /**
+     * Site constructor.
+     * @param Application $herbie
+     */
     public function __construct(Application $herbie)
     {
         $this->herbie = $herbie;
@@ -44,27 +53,27 @@ class Site
     }
 
     /**
-     * @return \Herbie\Menu\MenuList
+     * @return MenuList
      */
-    public function getMenu(): \Herbie\Menu\MenuList
+    public function getMenu(): MenuList
     {
         return $this->herbie->getMenuList();
     }
 
     /**
-     * @return Node
+     * @return MenuTree
      */
-    public function getTree(): Node
+    public function getTree(): MenuTree
     {
-        return $this->herbie->getMenuNode();
+        return $this->herbie->getMenuTree();
     }
 
     /**
-     * @return Node
+     * @return MenuTree
      */
-    public function getPageTree(): Node
+    public function getPageTree(): MenuTree
     {
-        return $this->herbie->getMenuNode();
+        return $this->herbie->getMenuTree();
     }
 
     /**

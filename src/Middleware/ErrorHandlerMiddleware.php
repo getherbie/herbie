@@ -24,8 +24,15 @@ use Tebe\HttpFactory\HttpFactory;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var PluginManager
+     */
     protected $events;
 
+    /**
+     * ErrorHandlerMiddleware constructor.
+     * @param PluginManager $events
+     */
     public function __construct(PluginManager $events)
     {
         $this->events = $events;
@@ -75,7 +82,10 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     protected function createErrorHandler() : callable
     {
         /**
-         * @throws ErrorException if error is not within the error_reporting mask.
+         * @param int $errno
+         * @param string $errstr
+         * @param string $errfile
+         * @param int $errline
          */
         return function (int $errno, string $errstr, string $errfile, int $errline) : void {
             if (! (error_reporting() & $errno)) {

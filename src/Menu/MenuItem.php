@@ -22,7 +22,7 @@ class MenuItem
      * @param array $data
      * @throws \LogicException
      */
-    public function setData(array $data)
+    public function setData(array $data): void
     {
         if (array_key_exists('data', $data)) {
             throw new \LogicException("Field data is not allowed.");
@@ -35,7 +35,7 @@ class MenuItem
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute(): string
     {
         return trim($this->data['route']);
     }
@@ -44,7 +44,7 @@ class MenuItem
      * @return string
      * TODO do we need this?
      */
-    public function __getRoute()
+    public function __getRoute(): string
     {
         $route = trim(basename($this->path), '/');
         $route = preg_replace('/^([0-9]{4})-([0-9]{2})-([0-9]{2})(.*)$/', '\\1/\\2/\\3\\4', $route);
@@ -64,7 +64,7 @@ class MenuItem
     /**
      * @return string
      */
-    public function getParentRoute()
+    public function getParentRoute(): string
     {
         return trim(dirname($this->getRoute()), '.');
     }
@@ -72,7 +72,7 @@ class MenuItem
     /**
      * @return bool
      */
-    public function isStartPage()
+    public function isStartPage(): bool
     {
         return $this->getRoute() == '';
     }
@@ -81,7 +81,7 @@ class MenuItem
      * @param string $route
      * @return bool
      */
-    public function routeEquals($route)
+    public function routeEquals(string $route): bool
     {
         return $this->getRoute() == $route;
     }
@@ -90,7 +90,7 @@ class MenuItem
      * @param string $route
      * @return bool
      */
-    public function routeInRootPath($route)
+    public function routeInRootPath(string $route): bool
     {
         $current = $this->getRoute();
         if (empty($route) || empty($current)) {
@@ -102,7 +102,7 @@ class MenuItem
     /**
      * @return bool
      */
-    public function isStaticPage()
+    public function isStaticPage(): bool
     {
         return 0 === strpos($this->path, '@page');
     }

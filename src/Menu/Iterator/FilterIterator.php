@@ -23,7 +23,7 @@ class FilterIterator extends \RecursiveFilterIterator
     /**
      * @return boolean
      */
-    public function accept()
+    public function accept(): bool
     {
         if (!$this->enabled) {
             return true;
@@ -36,9 +36,9 @@ class FilterIterator extends \RecursiveFilterIterator
     }
 
     /**
-     * @param boolean $enabled
+     * @param bool $enabled
      */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): void
     {
         $this->enabled = (bool)$enabled;
     }

@@ -15,16 +15,31 @@ namespace Herbie;
 
 class Environment
 {
+    /**
+     * @var string
+     */
     protected $basePath;
+
+    /**
+     * @var string
+     */
     protected $baseUrl;
+
+    /**
+     * @var string
+     */
     protected $pathInfo;
+
+    /**
+     * @var string
+     */
     protected $requestUri;
 
     /**
      * Get the current route.
      * @return string
      */
-    public function getRoute()
+    public function getRoute(): string
     {
         $route = $this->getRawRoute();
         return $route[0];
@@ -34,7 +49,7 @@ class Environment
      * Get the parts of the current route.
      * @return array
      */
-    public function getRouteParts()
+    public function getRouteParts(): array
     {
         $route = $this->getRoute();
         return empty($route) ? [] : explode('/', $route);
@@ -44,7 +59,7 @@ class Environment
      * Get all routes from root to current page as an index array.
      * @return array
      */
-    public function getRouteLine()
+    public function getRouteLine(): array
     {
         $route = '';
         $delim = '';
@@ -60,7 +75,7 @@ class Environment
     /**
      * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         $route = $this->getRawRoute();
         return $route[1];
@@ -69,7 +84,7 @@ class Environment
     /**
      * @return array
      */
-    protected function getRawRoute()
+    protected function getRawRoute(): array
     {
         $pathInfo = trim($this->getPathInfo(), '/');
         $pos = strrpos($pathInfo, ':');
@@ -84,7 +99,7 @@ class Environment
     /**
      * @return string
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         if (null === $this->basePath) {
             $this->basePath = $this->detectBasePath();
@@ -96,7 +111,7 @@ class Environment
     /**
      * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         if (null === $this->baseUrl) {
             $this->baseUrl = $this->detectBaseUrl();
@@ -107,7 +122,7 @@ class Environment
     /**
      * @return string
      */
-    public function getPathInfo()
+    public function getPathInfo(): string
     {
         if (null === $this->pathInfo) {
             $this->pathInfo = $this->preparePathInfo();
@@ -119,7 +134,7 @@ class Environment
     /**
      * @return string
      */
-    public function getRequestUri()
+    public function getRequestUri(): string
     {
         if (null === $this->requestUri) {
             $this->requestUri = $this->detectRequestUri();
@@ -131,7 +146,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectRequestUri()
+    protected function detectRequestUri(): string
     {
         $requestUri = null;
         // Check this first so IIS will catch.
@@ -174,7 +189,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectBaseUrl()
+    protected function detectBaseUrl(): string
     {
         $filename       = $this->getServer('SCRIPT_FILENAME', '');
         $scriptName     = $this->getServer('SCRIPT_NAME');
@@ -236,7 +251,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectBasePath()
+    protected function detectBasePath(): string
     {
         $filename = basename($this->getServer('SCRIPT_FILENAME', ''));
         $baseUrl  = $this->getBaseUrl();
@@ -255,7 +270,7 @@ class Environment
     /**
      * @return string
      */
-    protected function preparePathInfo()
+    protected function preparePathInfo(): string
     {
         $baseUrl = $this->getBaseUrl();
 
@@ -281,15 +296,19 @@ class Environment
 
     /**
      * Returns current script name.
-     *
      * @return string
      */
-    public function getScriptName()
+    public function getScriptName(): string
     {
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
-    protected function getServer(string $name, $default = null)
+    /**
+     * @param string $name
+     * @param null $default
+     * @return string|null
+     */
+    protected function getServer(string $name, $default = null): ?string
     {
         return $_SERVER[$name] ?? $default;
     }

@@ -24,7 +24,7 @@ class FileFilterCallback
     /**
      * @param array $extensions
      */
-    public function __construct($extensions)
+    public function __construct(array $extensions)
     {
         $this->extensions = $extensions;
     }
@@ -32,9 +32,9 @@ class FileFilterCallback
     /**
      *
      * @param \SplFileInfo $file
-     * @return boolean
+     * @return bool
      */
-    public function call(\SplFileInfo $file)
+    public function call(\SplFileInfo $file): bool
     {
         $firstChar = substr($file->getFilename(), 0, 1);
         if (in_array($firstChar, ['.', '_'])) {

@@ -61,7 +61,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return array
      * @throws \Exception
      */
-    protected function readFile(string $alias, $addDefFields = true)
+    protected function readFile(string $alias, bool $addDefFields = true): array
     {
         $path = $this->alias->get($alias);
         $content = $this->readFileContent($path);
@@ -104,7 +104,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @param string $path
      * @return array
      */
-    public function readFrontMatter($path)
+    public function readFrontMatter(string $path): array
     {
         if (!defined('UTF8_BOM')) {
             define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
@@ -141,7 +141,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return array
      * @throws \Exception
      */
-    protected function parseFileContent($content)
+    protected function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
             define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
@@ -190,7 +190,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return string
      * @throws HttpException
      */
-    protected function readFileContent($path)
+    protected function readFileContent(string $path): string
     {
         // suppress E_WARNING since we throw an exception on error
         $contents = @file_get_contents($path);

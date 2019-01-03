@@ -51,7 +51,7 @@ class Container implements \ArrayAccess, ContainerInterface
      * @param string $id
      * @param mixed $service
      */
-    public function set($id, $service)
+    public function set($id, $service): void
     {
         $this->offsetUnset($id);
         $this->offsetSet($id, $service);
@@ -96,7 +96,7 @@ class Container implements \ArrayAccess, ContainerInterface
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->values[$offset] = $value;
     }
@@ -104,7 +104,7 @@ class Container implements \ArrayAccess, ContainerInterface
     /**
      * @param mixed $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->frozen[$offset]);
         unset($this->values[$offset]);
