@@ -84,7 +84,7 @@ class PageRendererMiddleware implements MiddlewareInterface
 
             try {
                 if (empty($page->layout)) {
-                    $content = $page->getSegment('0');
+                    $content = $page->getSegment('default');
                     $this->pluginManager->trigger('onRenderContent', $content, $page->getData());
                 } else {
                     $this->pluginManager->trigger('onRenderLayout', $content, ['page' => $page]);
