@@ -296,15 +296,17 @@ class Application
     {
         $middlewares = array_merge(
             [
-                ErrorHandlerMiddleware::class
+                new ErrorHandlerMiddleware(
+                    $this->getPluginManager()
+                )
             ],
             $this->middlewares,
             [
                 new PageResolverMiddleware(
                     $this,
                     $this->getEnvironment(),
-                    $this->getUrlMatcher(),
-                    $this->getPageRepository()
+                    $this->getPageRepository(),
+                    $this->getUrlMatcher()
                 ),
                 new PageRendererMiddleware(
                     $this->getPageCache(),

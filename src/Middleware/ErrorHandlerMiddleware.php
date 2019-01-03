@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use ErrorException;
+use Herbie\Page;
+use Herbie\PluginManager;
+use Herbie\StringValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -21,6 +24,13 @@ use Tebe\HttpFactory\HttpFactory;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    protected $events;
+
+    public function __construct(PluginManager $events)
+    {
+        $this->events = $events;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
@@ -33,16 +43,21 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             $response = $handler->handle($request);
         } catch (\Throwable $e) {
-            $documentRoot = dirname(dirname(dirname(__FILE__)));
-            $traceAsString = str_replace($documentRoot, '', $e->getTraceAsString());
-            $response = HttpFactory::instance()->createResponse(500);
-            $response->getBody()->write(
-                $e->getMessage()
-                . '<br>'
-                . '<pre>'
-                . $traceAsString
-                . '</pre>'
-            );
+            $string = new StringValue();
+
+            $page = new Page();
+            $page->layout = 'error';
+            $page->setError($e);
+
+            $this->events->trigger('onRenderLayout', $string, ['page' => $page]);
+
+            $code = $e->getCode();
+            if (empty($code)) {
+                $code = 500;
+            }
+
+            $response = HttpFactory::instance()->createResponse($code);
+            $response->getBody()->write(strval($string));
         }
 
         restore_error_handler();

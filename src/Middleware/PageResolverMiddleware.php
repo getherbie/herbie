@@ -26,22 +26,22 @@ class PageResolverMiddleware implements MiddlewareInterface
 {
     protected $environment;
     protected $herbie;
-    protected $pageLoader;
     protected $urlMatcher;
+    protected $pageRepository;
 
     /**
      * PageResolverMiddleware constructor.
      * @param Application $herbie
      * @param Environment $environment
-     * @param UrlMatcher $urlMatcher
      * @param PageRepositoryInterface $pageRepository
+     * @param UrlMatcher $urlMatcher
      */
     // TODO dont inject Application
     public function __construct(
         Application $herbie,
         Environment $environment,
-        UrlMatcher $urlMatcher,
-        PageRepositoryInterface $pageRepository
+        PageRepositoryInterface $pageRepository,
+        UrlMatcher $urlMatcher
     ) {
         $this->herbie = $herbie;
         $this->environment = $environment;
@@ -49,19 +49,18 @@ class PageResolverMiddleware implements MiddlewareInterface
         $this->pageRepository = $pageRepository;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
+     * @throws \Herbie\Exception\HttpException
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            $route = $this->environment->getRoute();
-            $menuItem = $this->urlMatcher->match($route);
-            $path = $menuItem->getPath();
-            $page = $this->pageRepository->find($path);
-        } catch (\Throwable $t) {
-            // TODO use page factory
-            $page = new Page();
-            $page->layout = 'error';
-            $page->setError($t);
-        }
+        $route = $this->environment->getRoute();
+        $menuItem = $this->urlMatcher->match($route);
+        $path = $menuItem->getPath();
+        $page = $this->pageRepository->find($path);
         $this->herbie->setPage($page);
         $request = $request->withAttribute(Page::class, $page);
         return $handler->handle($request);
