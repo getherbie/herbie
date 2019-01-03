@@ -84,7 +84,6 @@ class Application
         $this->sitePath = $this->normalizePath($sitePath);
         $this->vendorDir = $this->normalizePath($vendorDir);
         $this->middlewares = [];
-        $this->init();
     }
 
     /**
@@ -213,8 +212,7 @@ class Application
 
         // Init PluginManager at first
         if (true === $c[PluginManager::class]->init($c[Config::class])) {
-            $c[PluginManager::class]->trigger('pluginsInitialized', $c[PluginManager::class]);
-            $c[PluginManager::class]->trigger('shortcodeInitialized', $c[Shortcode::class]);
+            $c[PluginManager::class]->trigger('onPluginsInitialized', $c[PluginManager::class]);
 
             $c[MenuList::class] = function ($c) {
                 $cache = $c[Cache::class];
@@ -277,16 +275,18 @@ class Application
      */
     public function run()
     {
+        $this->init();
+
         $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
         $request = $this->getService(ServerRequestInterface::class);
         $response = $dispatcher->dispatch($request);
 
-        $this->getPluginManager()->trigger('outputGenerated', $response);
+        $this->getPluginManager()->trigger('onResponseGenerated', $response);
 
         $this->emitResponse($response);
 
-        $this->getPluginManager()->trigger('outputRendered');
+        $this->getPluginManager()->trigger('onResponseRendered');
     }
 
     /**
@@ -382,26 +382,6 @@ class Application
             }
         }
         echo $response->getBody();
-    }
-
-    public function test()
-    {
-        $mappings = FlatfilePagePersistence::getRouteToIdMapping(
-            $this->getConfig()->get('pages.path'),
-            $this->getConfig()->get('pages.extensions')
-        );
-
-        $repository = $this->getPageRepository();
-
-        echo "<pre>";
-
-        foreach ($mappings as $path => $route) {
-            $page = $repository->find($path);
-            print_r($page);
-        }
-
-        echo "</pre>";
-        exit;
     }
 
     /**

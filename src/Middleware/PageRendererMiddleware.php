@@ -85,13 +85,13 @@ class PageRendererMiddleware implements MiddlewareInterface
             try {
                 if (empty($page->layout)) {
                     $content = $page->getSegment('0');
-                    $this->pluginManager->trigger('renderContent', $content, $page->getData());
+                    $this->pluginManager->trigger('onRenderContent', $content, $page->getData());
                 } else {
-                    $this->pluginManager->trigger('renderLayout', $content, ['page' => $page]);
+                    $this->pluginManager->trigger('onRenderLayout', $content, ['page' => $page]);
                 }
             } catch (\Throwable $t) {
                 $page->setError($t);
-                $this->pluginManager->trigger('renderLayout', $content, ['page' => $page]);
+                $this->pluginManager->trigger('onRenderLayout', $content, ['page' => $page]);
             }
 
             if (empty($page->nocache)) {
