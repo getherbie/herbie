@@ -1,51 +1,59 @@
 # :red_car: Herbie
 
-Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
+Herbie is a simple Flat-File CMS- und Blogsystem based on human readable text files.
 
-## Was ist Herbie?
+## About Herbie
 
-Mit Herbie erstellst du mit einfachen Markdown- und Textiledateien in kurzer Zeit und mit wenig Aufwand eine voll
-funktionsfähige Website oder einen Blog.
+With Herbie you are able to create a full functional website or blog in a short amount of time and with little effort.
 
-Herbie baut auf bewährten Bibliotheken und Komponenten auf.
+Herbie is based on the following libraries:
 
-* [Markdown][markdown] und [Textile][textile] zur Formatierung von Inhalten
-* [Twig][twig] Template Engine zur Erstellung von Layouts
-* [Yaml][yaml] zum Konfigurieren der Website und Verwalten von Datenstrukturen
-* [Pimple][pimple] als Dependency Injection Container
-* [Composer][composer] und [Packagist][packagist] für das Dependency Management
-* die HttpFoundation-, EventDispatcher- und Yaml-Komponenten der [Symfony Components][symfony]
-* [Imagine][imagine] zur Bildmanipulation und -bearbeitung
-* [GeSHi][geshi] als leistungsfähgier Code Syntaxhighlighter
+* [Markdown][markdown] and [Textile][textile] for formatting page content
+* [Twig][twig] Template Engine for rendering layouts
+* [Yaml][yaml] for configuration and data structures files
+* [Pimple][pimple] as Dependency Injection Container
+* [Composer][composer] and [Packagist][packagist] for das Dependency and Plugin Management
 
-## Installation
+Herbie supports the following [PHP Standards Recommendations][psr]:
 
-Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
+* 2 Coding Style Guid 
+* 3	Logger Interface
+* 4	Autoloading Standard
+* 7 HTTP Message Interface
+* 11 Container Interface
+* 15 HTTP Handlers
+* 16 Simple Cache
+* 17 HTTP Factories
+
+ 
+## Install
+
+The easiest way to install Herbie is via Composer. To do this, execute the following statement in the terminal:
 
     $ composer create-project getherbie/start-website myproject
 
-Composer erstellt im Verzeichnis `myproject` deine Website und installiert alle abhängigen Bibliotheken.
+Composer creates your website in the `myproject` directory and installs all dependent libraries.
 
-Danach wechselst du ins Webverzeichnis und startest den eingebauten Webserver von PHP. 
+Go to the web directory and start the built-in web server of PHP.
 
     $ cd myproject/web
     $ php -S localhost:8888
 
-Dann musst du nur noch die Website im Browser unter <http://localhost:8888> aufrufen. Fertig!
-
-## Website
-
-Weitere Informationen findest du unter [www.getherbie.org](https://www.getherbie.org).
+Visit the website in the browser at <http://localhost:8888>. Finished!
 
 
-[markdown]: http://daringfireball.net/projects/markdown/
-[textile]: http://txstyle.org/article/36/php-textile
+## More Information
+
+More information see [www.getherbie.org][herbie].
+
+
+[markdown]: https://www.markdownguide.org
+[textile]: https://textile-lang.com
 [twig]: http://twig.sensiolabs.org
 [yaml]: http://www.yaml.org
-[geshi]: http://qbnz.com/highlighter/
 [pimple]: http://pimple.sensiolabs.org
 [composer]: http://getcomposer.org
 [packagist]: https://packagist.org
 [symfony]: http://symfony.com/doc/current/components/
-[phpunit]: http://phpunit.de
-[imagine]: https://github.com/avalanche123/Imagine
+[psr]: https://www.php-fig.org/psr/
+[herbie]: https://www.getherbie.org
