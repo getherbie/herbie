@@ -2,58 +2,48 @@
 
 Herbie is a simple Flat-File CMS- und Blogsystem based on human readable text files.
 
+
 ## About Herbie
 
-With Herbie you are able to create a full functional website or blog in a short amount of time and with little effort.
+With Herbie you are able to create a fully functional website or blog in a short amount of time and with little effort.
 
-Herbie is based on the following libraries and concepts:
+Herbie is based on proven libraries and concepts:
 
-* [Markdown][markdown] and [Textile][textile] for formatting page content
-* [Twig][twig] Template Engine for rendering layouts
-* [Yaml][yaml] for configuration and data structures files
-* [Composer][composer] and [Packagist][packagist] for das Dependency and Plugin Management
-# [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
-* PHP Middlewares 
+* [Markdown](https://www.markdownguide.org) and [Textile](https://textile-lang.com) for formatting page content
+* [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts
+* [Yaml](http://www.yaml.org) for configuration and data structures files
+* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for das Dependency and Plugin Management
+* [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
+* PHP Middlewares
 
-Herbie supports the following [PHP Standards Recommendations][psr]:
+Herbie supports the following [PHP Standards Recommendations](https://www.php-fig.org/psr/):
 
-* PSR-2 Coding Style Guide
-* PSR-3 Logger Interface
-* PSR-4 Autoloading Standard
-* PSR-7 HTTP Message Interface
+* PSR-2  Coding Style Guide
+* PSR-3  Logger Interface
+* PSR-4  Autoloading Standard
+* PSR-7  HTTP Message Interface
 * PSR-11 Container Interface
 * PSR-15 HTTP Handlers
 * PSR-16 Simple Cache
 * PSR-17 HTTP Factories
 
- 
+
 ## Install
 
-The easiest way to install Herbie is via Composer. To do this, execute the following statement in the terminal:
+The easiest way to install Herbie is via Composer. To do this, execute the following statement in your terminal:
 
     $ composer create-project getherbie/start-website myproject
 
-Composer creates your website in the `myproject` directory and installs all dependent libraries.
+Composer creates your website in the `myproject` folder and installs all dependent libraries.
 
-Go to the web directory and start the built-in web server of PHP.
+Go to the web directory and start PHPs built-in web server.
 
     $ cd myproject/web
     $ php -S localhost:8888
 
-Visit the website in the browser at <http://localhost:8888>. Finished!
+Now, open <http://localhost:8888> in your browser. You should then see your first Herbie website. 
 
 
 ## More Information
 
-More information see [www.getherbie.org][herbie].
-
-
-[markdown]: https://www.markdownguide.org
-[textile]: https://textile-lang.com
-[twig]: http://twig.sensiolabs.org
-[yaml]: http://www.yaml.org
-[composer]: http://getcomposer.org
-[packagist]: https://packagist.org
-[symfony]: http://symfony.com/doc/current/components/
-[psr]: https://www.php-fig.org/psr/
-[herbie]: https://www.getherbie.org
+More information see [www.getherbie.org](https://www.getherbie.org).
