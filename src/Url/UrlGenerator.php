@@ -72,9 +72,9 @@ class UrlGenerator
      */
     public function generateAbsolute(string $route): string
     {
-        $uri = $this->request->getUri();
-        $baseurl = $uri->getScheme() . '://' . $uri->getHost();
-        return $baseurl . $this->generate($route);
+        $path = $this->generate($route);
+        $absUrl = $this->request->getUri()->withPath($path);
+        return strval($absUrl);
     }
 
     /**
