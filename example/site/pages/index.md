@@ -1,10 +1,7 @@
 ---
-title: Übersicht
+title: Homepage
 layout: home
 ---
-
-# Deine neue Herbie-Website läuft!
-
 
 --- left ---
 

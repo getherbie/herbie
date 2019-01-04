@@ -1,4 +1,10 @@
+language: en
+locale: en_US.UTF-8
+
 nice_urls: true
+
+layouts:
+    extension: 'twig'
 
 plugins:
     path: APP_PATH/../site/plugins
@@ -8,6 +14,7 @@ plugins:
         simplecontact:
           twig: true
         simplesearch:
+            no_page: true
             twig: true
         textile:
             twig: true

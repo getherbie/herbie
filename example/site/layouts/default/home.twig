@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "main.twig" %}
 
 {% block content %}
 
@@ -6,7 +6,7 @@
     <div class="container">
         <div class="pure-g">
             <div class="pure-u-1">
-                <h2 class="brand-tagline"><strong>Deine neue Herbie-Website läuft!</strong></h2>
+                <h2 class="brand-tagline"><strong>Congrats!</strong> Your Herbie website is running.</h2>
             </div>
         </div>
     </div>
@@ -21,8 +21,12 @@
         </div>
 
         <div class="pure-g content two-col">
-            <div class="pure-u-1-2"><div class="box box-l">{{ content('left') }}</div></div>
-            <div class="pure-u-1-2"><div class="box box-r">{{ content('right') }}</div></div>
+            <div class="pure-u-1-2">
+                <div class="box box-l">{{ content('left') }}</div>
+            </div>
+            <div class="pure-u-1-2">
+                <div class="box box-r">{{ content('right') }}</div>
+            </div>
         </div>
 
         <div class="pure-g">
@@ -32,5 +36,15 @@
         </div>
     </div>
 </div>
-        <style>.box-l { padding-right: 1em; } .box-r { padding-left:1em }</style>
+
+<style>
+    .box-l {
+        padding-right: 1em;
+    }
+
+    .box-r {
+        padding-left: 1em
+    }
+</style>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "main.twig" %}
 
 {% block content %}
 
@@ -12,8 +12,6 @@
                 </nav>
 
                 <div class="content">
-
-                        {{ dump(page) }}
 
                         <h1> {{ page.title }}</h1>
 
@@ -82,7 +80,7 @@
             </div>
             <div class="pure-u-1 pure-u-md-1-3">
                 <div class="sidebar">
-                    {{ include('includes/simplesearch.html') }}
+                    {{ include('includes/simplesearch.twig') }}
                     {{ include('@widget/blog/recent_posts.html', {title: 'Letzte Artikel', showDate:false}) }}
                     {{ include('@widget/blog/categories.html', {title: 'Kategorien', showCount:true}) }}
                     {{ include('@widget/blog/tags.html', {title: 'Tags', showCount:true}) }}

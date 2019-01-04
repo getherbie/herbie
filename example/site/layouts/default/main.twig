@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ pagetitle({delim:' / ', siteTitle:'Herbie Flat-File CMS & Blog', rootTitle: 'Herbie - Einfaches Flat-File CMS- und Blogsystem', reverse:true}) }}</title>
+        <title>{{ pagetitle({delim:' / ', siteTitle:'Herbie Flat-File CMS & Blog', rootTitle: 'Herbie - A simple Flat-File CMS and Blogsystem', reverse:true}) }}</title>
         <base href="{{ baseUrl }}">
         <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="{{ baseUrl }}/feed.rss">
         {{ outputcss() }}
@@ -36,7 +36,7 @@
                     </div>
                     <div class="pure-g">
                         <div class="pure-u-3-5 pure-u-md-1-5">
-                            <h1 class="brand-title">{{ link('index', '<span class="e">DEIN LOGO</span>') }}</h1>
+                            <h1 class="brand-title">{{ link('index', '<span class="e">E</span> Herbie') }}</h1>
                         </div>
                         <div class="pure-u-2-5 pure-u-md-4-5 text-right pure-hidden-phone">
                             <div class="topmenu" id="topmenu">
@@ -67,30 +67,31 @@
             <div class="container">
                 <div class="pure-g">
                     <div class="pure-u-1 pure-u-md-1-4 footer-about">
-                        {{ textile('h3. Über Herbie') }}
-                        {{ 'Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert. Keine komplizierte Installation, keine Datenbank, nur Textdateien.'|textile}}
+                        {{ textile('h3. About Herbie') }}
+                        {{ 'Herbie is a simple Flat-File CMS- and Blogsystem based on human readable text files.'|textile}}
                     </div>
                     <div class="pure-u-1 pure-u-md-1-4">
                     </div>
                     <div class="pure-u-1 pure-u-md-1-4 footer-links">
                         {{ '### Links'|markdown }}
                         <ul>
-                            <li>{{ link('kontakt', 'Kontakt') }}</li>
-                            <li>{{ link('suche', 'Suche') }}</li>
+                            <li>{{ link('sitemap', 'Sitemap') }}</li>
+                            <li>{{ link('contact', 'Contact') }}</li>
+                            <li>{{ link('search', 'Search') }}</li>
                         </ul>
                     </div>
                     <div class="pure-u-1 pure-u-md-1-4">
                         {{ markdown('### Code') }}
                         <ul>
-                            <li><a target="_blank" href="https://www.github.com/getherbie">Herbie bei GitHub</a></li>
-                            <li><a target="_blank" href="https://packagist.org/packages/getherbie/">Herbie bei Packagist</a></li>
+                            <li><a target="_blank" href="https://www.github.com/getherbie">Herbie at GitHub</a></li>
+                            <li><a target="_blank" href="https://packagist.org/packages/getherbie/">Herbie at Packagist</a></li>
                         </ul>
                     </div>
                 </div>
                 <hr>
                 <div class="pure-g">
                     <div class="pure-u-1 footer-copyright">
-                        &copy; 2015 - {{ "now"|date("Y") }} Handgemacht mit Herbie
+                        &copy; 2015 - {{ "now"|date("Y") }} Handmade by Herbie
                     </div>
                 </div>
             </div>
