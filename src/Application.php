@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
 use Herbie\Menu\MenuBuilder;
@@ -120,6 +121,8 @@ class Application
             $environment->getBaseUrl()
         );
 
+        setlocale(LC_ALL, $c[Config::class]->get('locale'));
+
         // Add custom PSR-4 plugin path to Composer autoloader
         $pluginsPath = $c[Config::class]->get('plugins.path');
         $autoload = require($this->vendorDir . '/autoload.php');
@@ -209,45 +212,41 @@ class Application
             );
         };
 
-        setlocale(LC_ALL, $c[Config::class]->get('locale'));
+        $c[MenuList::class] = function ($c) {
+            $cache = $c[Cache::class];
+            $c[MenuBuilder::class]->setCache($cache);
+            return $c[MenuBuilder::class]->buildCollection();
+        };
 
-        // Init PluginManager at first
-        if (true === $c[PluginManager::class]->init($c[Config::class])) {
-            $c[PluginManager::class]->trigger('onPluginsInitialized', $c[PluginManager::class]);
+        $c[MenuTree::class] = function ($c) {
+            return MenuTree::buildTree($c[MenuList::class]);
+        };
 
-            $c[MenuList::class] = function ($c) {
-                $cache = $c[Cache::class];
-                $c[MenuBuilder::class]->setCache($cache);
-                return $c[MenuBuilder::class]->buildCollection();
-            };
+        $c[RootPath::class] = function ($c) {
+            $rootPath = new RootPath(
+                $c[MenuList::class],
+                $c[Environment::class]->getRoute()
+            );
+            return $rootPath;
+        };
 
-            $c[MenuTree::class] = function ($c) {
-                return MenuTree::buildTree($c[MenuList::class]);
-            };
+        $c[Translator::class] = function ($c) {
+            $translator = new Translator($c[Config::class]->get('language'), [
+                'app' => $c[Alias::class]->get('@app/../messages')
+            ]);
+            foreach ($c[PluginManager::class]->getLoadedPlugins() as $key => $dir) {
+                $translator->addPath($key, $dir . '/messages');
+            }
+            $translator->init();
+            return $translator;
+        };
 
-            $c[RootPath::class] = function ($c) {
-                $rootPath = new RootPath(
-                    $c[MenuList::class],
-                    $c[Environment::class]->getRoute()
-                );
-                return $rootPath;
-            };
+        $c[UrlMatcher::class] = function ($c) {
+            return new UrlMatcher($c[MenuList::class]);
+        };
 
-            $c[Translator::class] = function ($c) {
-                $translator = new Translator($c[Config::class]->get('language'), [
-                    'app' => $c[Alias::class]->get('@app/../messages')
-                ]);
-                foreach ($c[PluginManager::class]->getLoadedPlugins() as $key => $dir) {
-                    $translator->addPath($key, $dir . '/messages');
-                }
-                $translator->init();
-                return $translator;
-            };
-
-            $c[UrlMatcher::class] = function ($c) {
-                return new UrlMatcher($c[MenuList::class]);
-            };
-        }
+        // Init PluginManager
+        $c[PluginManager::class]->init($c[Config::class]);
     }
 
     /**
@@ -423,9 +422,9 @@ class Application
      * @param Twig $twig
      * @return Application
      */
-    public function setTwig(Twig $twig)
+    public function setTwig($twig)
     {
-        $this->setService(Twig::class, $twig);
+        $this->setService('Twig', $twig);
         return $this;
     }
 
@@ -513,7 +512,7 @@ class Application
      */
     public function getTwig()
     {
-        $twig = $this->getService(Twig::class);
+        $twig = $this->getService('Twig');
         return $twig;
     }
 
@@ -557,6 +556,9 @@ class Application
         return $this->getService(DataRepositoryInterface::class);
     }
 
+    /**
+     * @return SlugGeneratorInterface
+     */
     public function getSlugGenerator()
     {
         return $this->getService(SlugGenerator::class);

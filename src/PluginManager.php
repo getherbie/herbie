@@ -18,7 +18,6 @@ use Zend\EventManager\EventManager;
 
 class PluginManager extends EventManager
 {
-
     /** @var array */
     protected $enabled;
 
@@ -27,9 +26,6 @@ class PluginManager extends EventManager
 
     /** @var array */
     protected $loaded;
-
-    /** @var bool */
-    protected $initialized;
 
     /** @var array */
     protected $enabledSysPlugins;
@@ -50,7 +46,6 @@ class PluginManager extends EventManager
         $this->enabled = $enabled;
         $this->path = realpath($path);
         $this->loaded = [];
-        $this->initialized = false;
         $this->enabledSysPlugins = $enabledSysPlugins;
         $this->application = $application;
         if (false === $this->path) {
@@ -60,10 +55,9 @@ class PluginManager extends EventManager
     }
 
     /**
-     * @return bool
      * @throws \RuntimeException
      */
-    public function init(): bool
+    public function init(): void
     {
         // add sys plugins first
         $priority = 900;
@@ -77,8 +71,7 @@ class PluginManager extends EventManager
             $this->loadPlugin($this->path, $key, $priority);
         }
 
-        $this->initialized = true;
-        return $this->initialized;
+        $this->trigger('onPluginsInitialized', $this);
     }
 
     /**
@@ -100,14 +93,6 @@ class PluginManager extends EventManager
 
             $this->loaded[$key] = dirname($pluginPath);
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInitialized(): bool
-    {
-        return true === $this->initialized;
     }
 
     /**
