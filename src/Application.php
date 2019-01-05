@@ -26,8 +26,7 @@ use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageResolverMiddleware;
 use Herbie\Persistence\FlatfilePagePersistence;
 use Herbie\Persistence\FlatfilePersistenceInterface;
-use herbie\plugin\shortcode\classes\Shortcode;
-use herbie\plugin\twig\classes\Twig;
+use herbie\plugin\twig\TwigPlugin;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Repository\FlatfilePageRepository;
 use Herbie\Repository\PageRepositoryInterface;
@@ -86,6 +85,7 @@ class Application
         $this->sitePath = $this->normalizePath($sitePath);
         $this->vendorDir = $this->normalizePath($vendorDir);
         $this->middlewares = [];
+        $this->init();
     }
 
     /**
@@ -275,8 +275,6 @@ class Application
      */
     public function run()
     {
-        $this->init();
-
         $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
         $request = $this->getService(ServerRequestInterface::class);
@@ -292,7 +290,7 @@ class Application
     /**
      * @return array
      */
-    public function getMiddlewares(): array
+    protected function getMiddlewares(): array
     {
         $middlewares = array_merge(
             [
@@ -395,36 +393,12 @@ class Application
     }
 
     /**
-     * @return string
-     */
-    public function getRoute()
-    {
-        return $this->getService(Environment::class)->getRoute();
-    }
-
-    /**
-     * @return string
-     */
-    public function getRouteLine()
-    {
-        return $this->getService(Environment::class)->getRouteLine();
-    }
-
-    /**
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->getService(Environment::class)->getBasePath();
-    }
-
-    /**
-     * @param Twig $twig
+     * @param TwigPlugin $twig
      * @return Application
      */
-    public function setTwig($twig)
+    public function setTwigPlugin(TwigPlugin $twig)
     {
-        $this->setService('Twig', $twig);
+        $this->setService(TwigPlugin::class, $twig);
         return $this;
     }
 
@@ -436,16 +410,6 @@ class Application
     protected function setService($name, $service)
     {
         $this->container[$name] = $service;
-        return $this;
-    }
-
-    /**
-     * @param Shortcode $shortcode
-     * @return Application
-     */
-    public function setShortcode(Shortcode $shortcode)
-    {
-        $this->setService(Shortcode::class, $shortcode);
         return $this;
     }
 
@@ -508,11 +472,11 @@ class Application
     }
 
     /**
-     * @return Twig
+     * @return TwigPlugin
      */
-    public function getTwig()
+    public function getTwigPlugin(): TwigPlugin
     {
-        $twig = $this->getService('Twig');
+        $twig = $this->getService(TwigPlugin::class);
         return $twig;
     }
 
@@ -567,7 +531,7 @@ class Application
     /**
      * @return string
      */
-    public function getSitePath()
+    protected function getSitePath()
     {
         return $this->sitePath;
     }
@@ -575,7 +539,7 @@ class Application
     /**
      * @return string
      */
-    public function getVendorPath()
+    protected function getVendorPath()
     {
         return $this->vendorDir;
     }

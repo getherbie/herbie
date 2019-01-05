@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use herbie\plugin\shortcode\classes\Shortcode;
+use herbie\plugin\twig\TwigPlugin;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 
@@ -72,11 +72,11 @@ class Plugin implements ListenerAggregateInterface
     }
 
     /**
-     * @return \herbie\plugin\twig\classes\Twig
+     * @return TwigPlugin
      */
-    protected function getTwig()
+    protected function getTwigPlugin()
     {
-        return $this->herbie->getTwig();
+        return $this->herbie->getTwigPlugin();
     }
 
     /**
@@ -168,26 +168,24 @@ class Plugin implements ListenerAggregateInterface
     }
 
     /**
-     * @param Shortcode $shortcode
+     * @param TwigPlugin $twig
      */
-    protected function setShortcode(Shortcode $shortcode)
+    protected function setTwigPlugin(TwigPlugin $twig)
     {
-        $this->herbie->setShortcode($shortcode);
+        $this->herbie->setTwigPlugin($twig);
     }
 
     /**
-     * @param $twig
+     * @return Repository\PageRepositoryInterface
      */
-    protected function setTwig($twig)
-    {
-        $this->herbie->setTwig($twig);
-    }
-
     protected function getPageRepository()
     {
         return $this->herbie->getPageRepository();
     }
 
+    /**
+     * @return \Tebe\HttpFactory\HttpFactory
+     */
     protected function getHttpFactory()
     {
         return $this->herbie->getHttpFactory();
