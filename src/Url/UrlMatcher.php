@@ -25,15 +25,15 @@ class UrlMatcher
     /**
      * @var MenuList Collection of all pages.
      */
-    protected $pages;
+    protected $menuList;
 
     /**
      * Constructor
-     * @param MenuList $pages List of all pages
+     * @param MenuList $menuList List of all pages
      */
-    public function __construct(MenuList $pages)
+    public function __construct(MenuList $menuList)
     {
-        $this->pages = $pages;
+        $this->menuList = $menuList;
     }
 
     /**
@@ -45,7 +45,7 @@ class UrlMatcher
     public function match(string $route): MenuItem
     {
         // Page
-        $item = $this->pages->getItem($route);
+        $item = $this->menuList->getItem($route);
         if (isset($item)) {
             return $item;
         }
@@ -53,9 +53,9 @@ class UrlMatcher
         // Blog main page
         $blogRoute = $this->getBlogRoute();
         if (0 === strpos($route, $blogRoute)) {
-            $item = $this->pages->getItem($blogRoute);
+            $item = $this->menuList->getItem($blogRoute);
             if (isset($item)) {
-                $filteredItems = $this->pages->filterItems($route);
+                $filteredItems = $this->menuList->filterItems($route);
                 if (!empty($filteredItems)) {
                     return $item;
                 }
