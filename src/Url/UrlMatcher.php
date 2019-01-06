@@ -18,8 +18,7 @@ use Herbie\Menu\MenuItem;
 use Herbie\Menu\MenuList;
 
 /**
- * The URLMatcher matches a given route and returns the path to a valid page
- * or post file.
+ * The URLMatcher matches a given route and returns the path to a valid page file.
  */
 class UrlMatcher
 {
@@ -38,7 +37,7 @@ class UrlMatcher
     }
 
     /**
-     * Returns a path to a valid page or post file.
+     * Returns a path to a valid page file.
      * @param string $route The route of the current request.
      * @return MenuItem
      * @throws HttpException
