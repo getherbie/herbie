@@ -150,7 +150,7 @@ class TwigExtension extends Twig_Extension
      * @param array $htmlOptions
      * @return string
      */
-    protected function buildHtmlAttributes($htmlOptions = [])
+    private function buildHtmlAttributes($htmlOptions = [])
     {
         $attributes = '';
         foreach ($htmlOptions as $key => $value) {
@@ -165,7 +165,7 @@ class TwigExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    protected function createLink($route, $label, $htmlAttributes = [])
+    private function createLink($route, $label, $htmlAttributes = [])
     {
         $url = $this->urlGenerator->generate($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
@@ -176,7 +176,7 @@ class TwigExtension extends Twig_Extension
      * @param string $message
      * @return string
      */
-    protected function renderError($message)
+    private function renderError($message)
     {
         $style = 'background:red;color:white;padding:4px;margin:2em 0';
         $message = 'Error: ' . $message;

@@ -15,11 +15,10 @@ namespace Herbie\Menu;
 
 trait MenuItemTrait
 {
-
     /**
      * @var array
      */
-    protected $data = [];
+    private $data = [];
 
     /**
      * @param array $data
@@ -305,7 +304,7 @@ trait MenuItemTrait
      * @param string $slug
      * @return string
      */
-    protected function slugify(string $slug): string
+    private function slugify(string $slug): string
     {
         return strtolower($slug);
         // TODO

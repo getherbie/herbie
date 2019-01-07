@@ -19,17 +19,17 @@ class RootPath implements \IteratorAggregate, \Countable
     /**
      * @var MenuList
      */
-    protected $collection;
+    private $collection;
 
     /**
      * @var string
      */
-    protected $route;
+    private $route;
 
     /**
      * @var array
      */
-    protected $items;
+    private $items;
 
     /**
      * @param MenuList $collection
@@ -45,7 +45,7 @@ class RootPath implements \IteratorAggregate, \Countable
     /**
      * @return array
      */
-    protected function buildRootPath(): array
+    private function buildRootPath(): array
     {
         $items = [];
 

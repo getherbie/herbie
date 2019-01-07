@@ -18,17 +18,17 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @var MenuItem[]
      */
-    protected $items = [];
+    private $items = [];
 
     /**
      * @var string
      */
-    protected $blogRoute = 'blog';
+    private $blogRoute = 'blog';
 
     /**
      * @var array
      */
-    protected $filteredBy = [];
+    private $filteredBy = [];
 
     /**
      * @var bool
@@ -407,7 +407,7 @@ class MenuList implements \IteratorAggregate, \Countable
      * @param string $route
      * @return string
      */
-    protected function getBlogPathInfo(string $route): string
+    private function getBlogPathInfo(string $route): string
     {
         $segments = explode('/', $route);
         if (empty($segments)) {

@@ -24,27 +24,27 @@ class MenuBuilder
     /**
      * @var FlatfilePersistenceInterface
      */
-    protected $flatfilePersistence;
+    private $flatfilePersistence;
 
     /**
      * @var CacheInterface
      */
-    protected $cache;
+    private $cache;
 
     /**
      * @var array
      */
-    protected $paths;
+    private $paths;
 
     /**
      * @var array
      */
-    protected $extensions;
+    private $extensions;
 
     /**
      * @var array
      */
-    protected $indexFiles;
+    private $indexFiles;
 
     /**
      * @param FlatfilePersistenceInterface $flatfilePersistence
@@ -115,7 +115,7 @@ class MenuBuilder
      * @return MenuList
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    protected function restoreCollection(): MenuList
+    private function restoreCollection(): MenuList
     {
         if (is_null($this->cache)) {
             return new MenuList();
@@ -132,7 +132,7 @@ class MenuBuilder
      * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    protected function storeCollection(MenuList $collection): bool
+    private function storeCollection(MenuList $collection): bool
     {
         if (is_null($this->cache)) {
             return false;
@@ -146,7 +146,7 @@ class MenuBuilder
      * @param string $path
      * @return SortableIterator
      */
-    protected function getIterator(string $path) :SortableIterator
+    private function getIterator(string $path) :SortableIterator
     {
         // recursive iterators
         $directoryIterator = new RecursiveDirectoryIterator($path);
@@ -162,7 +162,7 @@ class MenuBuilder
      * @param string $extension
      * @return boolean
      */
-    protected function isValid(string $absolutePath, string $extension): bool
+    private function isValid(string $absolutePath, string $extension): bool
     {
         if (!in_array($extension, $this->extensions)) {
             return false;
@@ -178,7 +178,7 @@ class MenuBuilder
      * @param string $alias
      * @return MenuItem
      */
-    protected function createItem(string $relativePath, string $alias): MenuItem
+    private function createItem(string $relativePath, string $alias): MenuItem
     {
         $page = $this->flatfilePersistence->findById($alias . '/' . $relativePath);
 
@@ -197,7 +197,7 @@ class MenuBuilder
      * @param bool $trimExtension
      * @return string
      */
-    protected function createRoute(string $path, bool $trimExtension = false): string
+    private function createRoute(string $path, bool $trimExtension = false): string
     {
         // strip left unix AND windows dir separator
         $route = ltrim($path, '\/');
