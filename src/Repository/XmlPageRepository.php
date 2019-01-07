@@ -22,6 +22,7 @@ class XmlPageRepository implements PageRepositoryInterface
     public function find(string $id): ?Page
     {
         // TODO: Implement find() method.
+        return null;
     }
 
     /**
@@ -30,6 +31,7 @@ class XmlPageRepository implements PageRepositoryInterface
     public function findAll(): array
     {
         // TODO: Implement findAll() method.
+        return [];
     }
 
     /**
@@ -39,6 +41,7 @@ class XmlPageRepository implements PageRepositoryInterface
     public function save(Page $page): bool
     {
         // TODO: Implement save() method.
+        return false;
     }
 
     /**
@@ -48,5 +51,6 @@ class XmlPageRepository implements PageRepositoryInterface
     public function delete(Page $page): bool
     {
         // TODO: Implement delete() method.
+        return false;
     }
 }

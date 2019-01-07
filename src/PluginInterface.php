@@ -13,5 +13,4 @@ use Zend\EventManager\EventManagerInterface;
 interface PluginInterface
 {
     public function attach(EventManagerInterface $events, $priority = 1);
-
 }

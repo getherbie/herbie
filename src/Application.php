@@ -57,11 +57,6 @@ class Application
     private $container;
 
     /**
-     * @var Page
-     */
-    private $page;
-
-    /**
      * @var string
      */
     private $sitePath;
@@ -148,7 +143,6 @@ class Application
             $twig = new TwigRenderer(
                 $c[Alias::class],
                 $c[Config::class],
-                $c[ServerRequestInterface::class],
                 $c[UrlGenerator::class],
                 $c[SlugGeneratorInterface::class],
                 $c[Assets::class],
@@ -281,7 +275,7 @@ class Application
 
         $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
-        $request = $this->getService(ServerRequestInterface::class);
+        $request = $this->container->get(ServerRequestInterface::class);
         $response = $dispatcher->dispatch($request);
 
         $this->getEventManager()->trigger('onResponseGenerated', $response);
@@ -319,7 +313,11 @@ class Application
                     $this->getHttpFactory(),
                     $this->getEventManager(),
                     $this->getTwigRenderer(),
-                    $this->getConfig()
+                    $this->getConfig(),
+                    $this->getDataRepository(),
+                    $this->getMenuList(),
+                    $this->getMenuTree(),
+                    $this->getMenuRootPath()
                 )
             ]
         );
@@ -341,17 +339,7 @@ class Application
      */
     public function getEnvironment()
     {
-        return $this->getService(Environment::class);
-    }
-
-    /**
-     * Retrieve a registered service from DI container.
-     * @param string $name
-     * @return mixed
-     */
-    private function getService($name)
-    {
-        return $this->container[$name];
+        return $this->container->get(Environment::class);
     }
 
     /**
@@ -359,7 +347,7 @@ class Application
      */
     public function getUrlMatcher()
     {
-        return $this->getService(UrlMatcher::class);
+        return $this->container->get(UrlMatcher::class);
     }
 
     /**
@@ -367,7 +355,7 @@ class Application
      */
     public function getPageRepository()
     {
-        return $this->getService(PageRepositoryInterface::class);
+        return $this->container->get(PageRepositoryInterface::class);
     }
 
     /**
@@ -375,7 +363,7 @@ class Application
      */
     public function getPluginManager()
     {
-        return $this->getService(PluginManager::class);
+        return $this->container->get(PluginManager::class);
     }
 
     /**
@@ -383,7 +371,7 @@ class Application
      */
     public function getEventManager()
     {
-        return $this->getService(EventManagerInterface::class);
+        return $this->container->get(EventManagerInterface::class);
     }
 
     /**
@@ -406,18 +394,7 @@ class Application
      */
     public function getConfig()
     {
-        return $this->getService(Config::class);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $service
-     * @return Application
-     */
-    private function setService($name, $service)
-    {
-        $this->container[$name] = $service;
-        return $this;
+        return $this->container->get(Config::class);
     }
 
     /**
@@ -425,7 +402,7 @@ class Application
      */
     public function getAlias()
     {
-        return $this->getService(Alias::class);
+        return $this->container->get(Alias::class);
     }
 
     /**
@@ -433,7 +410,7 @@ class Application
      */
     public function getUrlGenerator()
     {
-        return $this->getService(UrlGenerator::class);
+        return $this->container->get(UrlGenerator::class);
     }
 
     /**
@@ -441,7 +418,7 @@ class Application
      */
     public function getPageCache()
     {
-        return $this->getService(Cache::class);
+        return $this->container->get(Cache::class);
     }
 
     /**
@@ -450,7 +427,7 @@ class Application
      */
     public function setPageCache(CacheInterface $cache)
     {
-        $this->setService(Cache::class, $cache);
+        $this->container->set(Cache::class, $cache);
         return $this;
     }
 
@@ -459,7 +436,7 @@ class Application
      */
     public function getAssets()
     {
-        return $this->getService(Assets::class);
+        return $this->container->get(Assets::class);
     }
 
     /**
@@ -467,7 +444,7 @@ class Application
      */
     public function getMenuRootPath()
     {
-        return $this->getService(RootPath::class);
+        return $this->container->get(RootPath::class);
     }
 
     /**
@@ -475,7 +452,7 @@ class Application
      */
     public function getMenuTree()
     {
-        return $this->getService(MenuTree::class);
+        return $this->container->get(MenuTree::class);
     }
 
     /**
@@ -483,7 +460,7 @@ class Application
      */
     public function getHttpFactory()
     {
-        return $this->getService(HttpFactory::class);
+        return $this->container->get(HttpFactory::class);
     }
 
     /**
@@ -491,7 +468,7 @@ class Application
      */
     public function getTranslator()
     {
-        return $this->getService(Translator::class);
+        return $this->container->get(Translator::class);
     }
 
     /**
@@ -499,7 +476,7 @@ class Application
      */
     public function getMenuList()
     {
-        return $this->getService(MenuList::class);
+        return $this->container->get(MenuList::class);
     }
 
     /**
@@ -507,7 +484,7 @@ class Application
      */
     public function getDataRepository()
     {
-        return $this->getService(DataRepositoryInterface::class);
+        return $this->container->get(DataRepositoryInterface::class);
     }
 
     /**
@@ -515,7 +492,7 @@ class Application
      */
     public function getSlugGenerator()
     {
-        return $this->getService(SlugGeneratorInterface::class);
+        return $this->container->get(SlugGeneratorInterface::class);
     }
 
     /**
@@ -523,6 +500,6 @@ class Application
      */
     public function getTwigRenderer()
     {
-        return $this->getService(TwigRenderer::class);
+        return $this->container->get(TwigRenderer::class);
     }
 }

@@ -40,9 +40,7 @@ class PluginManager
 
     /** @var array */
     private $enabledSysPlugins;
-
-    /** @var Application */
-    private $application;
+    private $container;
 
     /**
      * PluginManager constructor.
@@ -117,7 +115,7 @@ class PluginManager
                 };
             }
 
-            /** @var Plugin $plugin */
+            /** @var PluginInterface $plugin */
             $plugin = new $className(...$constructorParams);
             $plugin->attach($this->eventManager, $priority);
 

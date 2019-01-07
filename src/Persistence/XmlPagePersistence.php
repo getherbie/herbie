@@ -20,6 +20,7 @@ class XmlPagePersistence implements FlatfilePersistenceInterface
     public function findById(string $id): array
     {
         // TODO: Implement findById() method.
+        return [];
     }
 
     /**
@@ -28,5 +29,6 @@ class XmlPagePersistence implements FlatfilePersistenceInterface
     public function findAll(): array
     {
         // TODO: Implement findAll() method.
+        return [];
     }
 }

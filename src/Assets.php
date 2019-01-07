@@ -155,8 +155,14 @@ class Assets
      * @param bool $raw
      * @param int $pos
      */
-    private function addAsset(int $type, string $path, array $attr, string $group = null, bool $raw = false, int $pos = 1): void
-    {
+    private function addAsset(
+        int $type,
+        string $path,
+        array $attr,
+        string $group = null,
+        bool $raw = false,
+        int $pos = 1
+    ): void {
         if ($this->search($path)) {
             return;
         }

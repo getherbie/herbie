@@ -11,13 +11,13 @@
 namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
+use Exception;
 use Herbie\Menu;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\RootPath;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Url\UrlGenerator;
-use Psr\Http\Message\ServerRequestInterface;
 use Twig_Extension;
 use Twig_Filter;
 use Twig_Function;
@@ -27,9 +27,7 @@ class TwigExtension extends Twig_Extension
 {
     private $alias;
     private $config;
-    private $request;
     private $urlGenerator;
-    private $page;
     private $translator;
     private $slugGenerator;
     private $assets;
@@ -44,7 +42,6 @@ class TwigExtension extends Twig_Extension
      * TwigExtension constructor.
      * @param Alias $alias
      * @param Config $config
-     * @param ServerRequestInterface $request
      * @param UrlGenerator $urlGenerator
      * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
@@ -59,7 +56,6 @@ class TwigExtension extends Twig_Extension
     public function __construct(
         Alias $alias,
         Config $config,
-        ServerRequestInterface $request,
         UrlGenerator $urlGenerator,
         SlugGeneratorInterface $slugGenerator,
         Assets $assets,
@@ -73,7 +69,6 @@ class TwigExtension extends Twig_Extension
     ) {
         $this->alias = $alias;
         $this->config = $config;
-        $this->request = $request;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
         $this->slugGenerator = $slugGenerator;
@@ -207,6 +202,7 @@ class TwigExtension extends Twig_Extension
      * @param string $date
      * @param string $format
      * @return string
+     * @throws Exception
      */
     public function filterStrftime($date, $format = '%x')
     {
@@ -274,20 +270,20 @@ class TwigExtension extends Twig_Extension
 
     /**
      * @param string $group
-     * @return string
+     * @return void
      */
-    public function functionOutputCss($group = null)
+    public function functionOutputCss($group = null): void
     {
-        return $this->assets->outputCss($group);
+        $this->assets->outputCss($group);
     }
 
     /**
      * @param string $group
-     * @return string
+     * @return void
      */
-    public function functionOutputJs($group = null)
+    public function functionOutputJs($group = null): void
     {
-        return $this->assets->outputJs($group);
+        $this->assets->outputJs($group);
     }
 
     /**
@@ -374,6 +370,7 @@ class TwigExtension extends Twig_Extension
     /**
      * @param string $name
      * @param mixed $default
+     * @return mixed
      */
     public function functionConfig($name, $default = null)
     {
@@ -391,7 +388,7 @@ class TwigExtension extends Twig_Extension
     public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
     {
         $attribs = [];
-        $attribs['src'] = $this->request->getBasePath() . '/' . $src;
+        $attribs['src'] = $this->environment->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
             $attribs['width'] = $width;
@@ -433,13 +430,13 @@ class TwigExtension extends Twig_Extension
 
         // using FilterCallback for better filtering of nested items
         $routeLine = $this->environment->getRouteLine();
-        $callback = [new Menu\Iterator\FilterCallback($routeLine, $showHidden), 'call'];
+        $callback = [new Menu\Iterator\FilterCallback($routeLine), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
         $htmlTree = new Menu\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function (\Herbie\Node $node) {
+        $htmlTree->itemCallback = function (Menu\MenuTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
@@ -563,6 +560,7 @@ class TwigExtension extends Twig_Extension
     public function functionRedirect($route, $status = 302)
     {
         $url = $this->urlGenerator->generateAbsolute($route);
+        // TODO replace undefined class
         $response = new RedirectResponse($url, $status);
         $response->send();
     }

@@ -14,13 +14,13 @@ use Herbie\Menu\MenuTree;
 use Herbie\Menu\RootPath;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Url\UrlGenerator;
-use Psr\Http\Message\ServerRequestInterface;
 use Twig_Environment;
 use Twig_Extension_Debug;
 use Twig_Filter;
 use Twig_Function;
 use Twig_Loader_Array;
 use Twig_Loader_Filesystem;
+use Twig_Test;
 use Zend\EventManager\EventManagerInterface;
 
 class TwigRenderer
@@ -51,12 +51,12 @@ class TwigRenderer
     private $menuTree;
     private $menuRootPath;
     private $dataRepository;
+    private $eventManager;
 
     /**
      * TwigRenderer constructor.
      * @param Alias $alias
      * @param Config $config
-     * @param ServerRequestInterface $request
      * @param UrlGenerator $urlGenerator
      * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
@@ -67,12 +67,10 @@ class TwigRenderer
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
      * @param EventManagerInterface $eventManager
-     * @throws \Twig_Error_Loader
      */
     public function __construct(
         Alias $alias,
         Config $config,
-        ServerRequestInterface $request,
         UrlGenerator $urlGenerator,
         SlugGeneratorInterface $slugGenerator,
         Assets $assets,
@@ -88,7 +86,6 @@ class TwigRenderer
         $this->environment = $environment;
         $this->alias = $alias;
         $this->config = $config;
-        $this->request = $request;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
         $this->slugGenerator = $slugGenerator;
@@ -120,7 +117,6 @@ class TwigRenderer
         $herbieExtension = new TwigExtension(
             $this->alias,
             $this->config,
-            $this->request,
             $this->urlGenerator,
             $this->slugGenerator,
             $this->assets,
@@ -134,16 +130,6 @@ class TwigRenderer
         );
 
         $this->twig->addExtension($herbieExtension);
-
-        $this->twig->addGlobal('site', new Site(
-            $this->config,
-            $this->dataRepository,
-            $this->menuList,
-            $this->menuTree,
-            $this->menuRootPath
-        ));
-
-        $this->twig->addGlobal('page', $this->request->getAttribute(Page::class));
 
         $this->addTwigPlugins();
 

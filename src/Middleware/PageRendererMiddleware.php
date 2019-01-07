@@ -14,7 +14,12 @@ namespace Herbie\Middleware;
 
 use Herbie\Config;
 use Herbie\Environment;
+use Herbie\Menu\MenuList;
+use Herbie\Menu\MenuTree;
+use Herbie\Menu\RootPath;
 use Herbie\Page;
+use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Site;
 use Herbie\StringValue;
 use Herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
@@ -50,6 +55,22 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $twigRenderer;
 
     private $config;
+    /**
+     * @var DataRepositoryInterface
+     */
+    private $dataRepository;
+    /**
+     * @var MenuList
+     */
+    private $menuList;
+    /**
+     * @var MenuTree
+     */
+    private $menuTree;
+    /**
+     * @var RootPath
+     */
+    private $menuRootPath;
 
     /**
      * PageRendererMiddleware constructor.
@@ -59,6 +80,10 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param EventManagerInterface $eventManager
      * @param TwigRenderer $twigRenderer
      * @param Config $config
+     * @param DataRepositoryInterface $dataRepository
+     * @param MenuList $menuList
+     * @param MenuTree $menuTree
+     * @param RootPath $menuRootPath
      */
     public function __construct(
         CacheInterface $cache,
@@ -66,7 +91,11 @@ class PageRendererMiddleware implements MiddlewareInterface
         HttpFactory $httpFactory,
         EventManagerInterface $eventManager,
         TwigRenderer $twigRenderer,
-        Config $config
+        Config $config,
+        DataRepositoryInterface $dataRepository,
+        MenuList $menuList,
+        MenuTree $menuTree,
+        RootPath $menuRootPath
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
@@ -74,6 +103,10 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->eventManager = $eventManager;
         $this->twigRenderer = $twigRenderer;
         $this->config = $config;
+        $this->dataRepository = $dataRepository;
+        $this->menuList = $menuList;
+        $this->menuTree = $menuTree;
+        $this->menuRootPath = $menuRootPath;
     }
 
     /**
@@ -114,13 +147,24 @@ class PageRendererMiddleware implements MiddlewareInterface
         }
 
         if (null === $rendered) {
+            $context = [
+                'site' => new Site(
+                    $this->config,
+                    $this->dataRepository,
+                    $this->menuList,
+                    $this->menuTree,
+                    $this->menuRootPath
+                ),
+                'page' => $page
+            ];
+
             // Render segments
             $renderedSegments = [];
             foreach ($page->getSegments() as $segmentId => $content) {
                 if (empty($page->twig)) {
                     $renderedContent = new StringValue($content);
                 } else {
-                    $renderedContent = new StringValue($this->twigRenderer->renderString($content));
+                    $renderedContent = new StringValue($this->twigRenderer->renderString($content, $context));
                 }
                 $this->eventManager->trigger('onRenderContent', $renderedContent, $page->getData());
                 $renderedSegments[$segmentId] = $renderedContent->get();
@@ -133,9 +177,9 @@ class PageRendererMiddleware implements MiddlewareInterface
             } else {
                 $extension = trim($this->config->get('layouts.extension'));
                 $name = empty($extension) ? $page->layout : sprintf('%s.%s', $page->layout, $extension);
-                $content->set($this->twigRenderer->renderTemplate($name, [
+                $content->set($this->twigRenderer->renderTemplate($name, array_merge([
                     'content' => $renderedSegments
-                ]));
+                ], $context)));
                 $this->eventManager->trigger('onRenderLayout', $content, ['page' => $page]);
             }
 
