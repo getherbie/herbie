@@ -19,7 +19,7 @@ class Alias
     /**
      * @var array
      */
-    protected $aliases;
+    private $aliases;
 
     /**
      * @param array $aliases
@@ -76,7 +76,7 @@ class Alias
      * @param string $path
      * @return string
      */
-    protected function rtrim(string $path): string
+    private function rtrim(string $path): string
     {
         return rtrim($path, '/');
     }

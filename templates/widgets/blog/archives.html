@@ -1,0 +1,15 @@
+{% set title = title ? title : 'Archives' %}
+{% set showCount = showCount ? showCount : false %}
+
+{% if site.posts.months|length > 0 %}
+<div class="widget-blog widget-blog-archives">
+    <h4>{{ title }}</h4>
+    <ul>
+        {% for item in site.posts.months %}
+        {% set route = 'blog/' ~ item.year ~ '/' ~ item.month %}
+        {% set label = item.date|strftime('%B %Y') %}
+        <li>{{ link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

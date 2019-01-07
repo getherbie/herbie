@@ -12,56 +12,68 @@ declare(strict_types=1);
 
 namespace Herbie\Middleware;
 
+use Herbie\Config;
 use Herbie\Environment;
 use Herbie\Page;
-use Herbie\PluginManager;
 use Herbie\StringValue;
+use Herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
+use Zend\EventManager\EventManagerInterface;
 
 class PageRendererMiddleware implements MiddlewareInterface
 {
     /**
      * @var CacheInterface
      */
-    protected $cache;
+    private $cache;
 
     /**
      * @var Environment
      */
-    protected $environment;
+    private $environment;
 
     /**
      * @var HttpFactory
      */
-    protected $httpFactory;
+    private $httpFactory;
 
     /**
-     * @var PluginManager
+     * @var EventManagerInterface
      */
-    protected $pluginManager;
+    private $eventManager;
+
+    private $twigRenderer;
+
+    private $config;
 
     /**
      * PageRendererMiddleware constructor.
      * @param CacheInterface $cache
      * @param Environment $environment
      * @param HttpFactory $httpFactory
-     * @param PluginManager $pluginManager
+     * @param EventManagerInterface $eventManager
+     * @param TwigRenderer $twigRenderer
+     * @param Config $config
      */
     public function __construct(
         CacheInterface $cache,
         Environment $environment,
         HttpFactory $httpFactory,
-        PluginManager $pluginManager
+        EventManagerInterface $eventManager,
+        TwigRenderer $twigRenderer,
+        Config $config
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
         $this->httpFactory = $httpFactory;
-        $this->pluginManager = $pluginManager;
+        $this->eventManager = $eventManager;
+        $this->twigRenderer = $twigRenderer;
+        $this->config = $config;
     }
 
     /**
@@ -89,8 +101,11 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @throws \Exception
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    protected function renderPage(Page $page): ResponseInterface
+    private function renderPage(Page $page): ResponseInterface
     {
+        // initialize as late as possible
+        $this->twigRenderer->init();
+
         $rendered = null;
 
         $cacheId = 'page-' . $this->environment->getRoute();
@@ -99,18 +114,29 @@ class PageRendererMiddleware implements MiddlewareInterface
         }
 
         if (null === $rendered) {
+            // Render segments
+            $renderedSegments = [];
+            foreach ($page->getSegments() as $segmentId => $content) {
+                if (empty($page->twig)) {
+                    $renderedContent = new StringValue($content);
+                } else {
+                    $renderedContent = new StringValue($this->twigRenderer->renderString($content));
+                }
+                $this->eventManager->trigger('onRenderContent', $renderedContent, $page->getData());
+                $renderedSegments[$segmentId] = $renderedContent->get();
+            }
+
             $content = new StringValue();
 
-            try {
-                if (empty($page->layout)) {
-                    $content = $page->getSegment('default');
-                    $this->pluginManager->trigger('onRenderContent', $content, $page->getData());
-                } else {
-                    $this->pluginManager->trigger('onRenderLayout', $content, ['page' => $page]);
-                }
-            } catch (\Throwable $t) {
-                $page->setError($t);
-                $this->pluginManager->trigger('onRenderLayout', $content, ['page' => $page]);
+            if (empty($page->layout)) {
+                $content->set(implode('', $renderedSegments));
+            } else {
+                $extension = trim($this->config->get('layouts.extension'));
+                $name = empty($extension) ? $page->layout : sprintf('%s.%s', $page->layout, $extension);
+                $content->set($this->twigRenderer->renderTemplate($name, [
+                    'content' => $renderedSegments
+                ]));
+                $this->eventManager->trigger('onRenderLayout', $content, ['page' => $page]);
             }
 
             if (empty($page->nocache)) {

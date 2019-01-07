@@ -18,22 +18,22 @@ class Environment
     /**
      * @var string
      */
-    protected $basePath;
+    private $basePath;
 
     /**
      * @var string
      */
-    protected $baseUrl;
+    private $baseUrl;
 
     /**
      * @var string
      */
-    protected $pathInfo;
+    private $pathInfo;
 
     /**
      * @var string
      */
-    protected $requestUri;
+    private $requestUri;
 
     /**
      * Get the current route.
@@ -84,7 +84,7 @@ class Environment
     /**
      * @return array
      */
-    protected function getRawRoute(): array
+    private function getRawRoute(): array
     {
         $pathInfo = trim($this->getPathInfo(), '/');
         $pos = strrpos($pathInfo, ':');
@@ -146,7 +146,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectRequestUri(): string
+    private function detectRequestUri(): string
     {
         $requestUri = null;
         // Check this first so IIS will catch.
@@ -189,7 +189,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectBaseUrl(): string
+    private function detectBaseUrl(): string
     {
         $filename       = $this->getServer('SCRIPT_FILENAME', '');
         $scriptName     = $this->getServer('SCRIPT_NAME');
@@ -251,7 +251,7 @@ class Environment
     /**
      * @return string
      */
-    protected function detectBasePath(): string
+    private function detectBasePath(): string
     {
         $filename = basename($this->getServer('SCRIPT_FILENAME', ''));
         $baseUrl  = $this->getBaseUrl();
@@ -270,7 +270,7 @@ class Environment
     /**
      * @return string
      */
-    protected function preparePathInfo(): string
+    private function preparePathInfo(): string
     {
         $baseUrl = $this->getBaseUrl();
 
@@ -308,7 +308,7 @@ class Environment
      * @param null $default
      * @return string|null
      */
-    protected function getServer(string $name, $default = null): ?string
+    private function getServer(string $name, $default = null): ?string
     {
         return $_SERVER[$name] ?? $default;
     }

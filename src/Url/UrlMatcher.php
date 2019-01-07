@@ -25,7 +25,7 @@ class UrlMatcher
     /**
      * @var MenuList Collection of all pages.
      */
-    protected $menuList;
+    private $menuList;
 
     /**
      * Constructor
@@ -69,7 +69,7 @@ class UrlMatcher
      * Returns the route to the website blog.
      * @return string The route to the blog.
      */
-    protected function getBlogRoute(): string
+    private function getBlogRoute(): string
     {
         return 'blog';
     }

@@ -143,7 +143,7 @@ class ErrorHandler
     /**
      * @param int $code
      */
-    protected function sendHttpHeader($code = 500): void
+    private function sendHttpHeader($code = 500): void
     {
         if (!headers_sent()) {
             header("HTTP/1.1 $code");

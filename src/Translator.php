@@ -17,17 +17,17 @@ class Translator
     /**
      * @var string
      */
-    protected $language;
+    private $language;
 
     /**
      * @var array
      */
-    protected $paths;
+    private $paths;
 
     /**
      * @var array
      */
-    protected $messages;
+    private $messages;
 
     /**
      * @param string $language
@@ -82,7 +82,7 @@ class Translator
     /**
      * @return void
      */
-    protected function loadMessages(): void
+    private function loadMessages(): void
     {
         foreach ($this->paths as $category => $paths) {
             foreach ($paths as $path) {

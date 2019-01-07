@@ -7,13 +7,13 @@ namespace Herbie;
 class Pagination implements \IteratorAggregate, \Countable
 {
     /** @var array */
-    protected $items;
+    private $items;
 
     /** @var int */
-    protected $limit;
+    private $limit;
 
     /** @var string */
-    protected $name;
+    private $name;
 
     /**
      * @param iterable $items

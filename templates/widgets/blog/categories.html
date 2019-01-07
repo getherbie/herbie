@@ -1,0 +1,14 @@
+{% set title = title ? title : 'Categories' %}
+{% set showCount = showCount ? showCount : false %}
+
+{% if site.posts.categories|length > 0 %}
+<div class="widget-blog widget-blog-categories">
+    <h4>{{ title }}</h4>
+    <ul>
+        {% for category, count in site.posts.categories %}
+        {% set route = 'blog/category/' ~ category|lower %}
+        <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

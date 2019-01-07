@@ -26,27 +26,27 @@ class Site
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var DataRepositoryInterface
      */
-    protected $dataRepository;
+    private $dataRepository;
 
     /**
      * @var MenuList
      */
-    protected $menuList;
+    private $menuList;
 
     /**
      * @var MenuTree
      */
-    protected $menuTree;
+    private $menuTree;
 
     /**
      * @var RootPath
      */
-    protected $menuRootPath;
+    private $menuRootPath;
 
     /**
      * Site constructor.

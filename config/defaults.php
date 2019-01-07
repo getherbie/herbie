@@ -65,6 +65,6 @@ return [
         'config' => []
     ],
     'sysplugins' => [
-        'enable' => ['twig', 'shortcode', 'markdown', 'textile']
+        'enable' => ['shortcode', 'markdown', 'textile']
     ]
 ];

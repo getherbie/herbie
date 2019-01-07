@@ -20,13 +20,12 @@ use Herbie\Menu\MenuBuilder;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\RootPath;
-use Herbie\Middleware\PageRendererMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
+use Herbie\Middleware\PageRendererMiddleware;
 use Herbie\Middleware\PageResolverMiddleware;
 use Herbie\Persistence\FlatfilePagePersistence;
 use Herbie\Persistence\FlatfilePersistenceInterface;
-use herbie\plugin\twig\TwigPlugin;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Repository\FlatfilePageRepository;
 use Herbie\Repository\PageRepositoryInterface;
@@ -38,6 +37,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerInterface;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
@@ -53,27 +54,27 @@ class Application
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    private $container;
 
     /**
      * @var Page
      */
-    protected $page;
+    private $page;
 
     /**
      * @var string
      */
-    protected $sitePath;
+    private $sitePath;
 
     /**
      * @var string
      */
-    protected $vendorDir;
+    private $vendorDir;
 
     /**
      * @var array
      */
-    protected $middlewares;
+    private $middlewares;
 
     /**
      * @param string $sitePath
@@ -93,7 +94,7 @@ class Application
      * @return string
      * @throws \Exception
      */
-    protected function normalizePath(string $path)
+    private function normalizePath(string $path)
     {
         $realpath = realpath($path);
         if ($realpath === false) {
@@ -106,7 +107,7 @@ class Application
     /**
      * Initialize the application.
      */
-    protected function init()
+    private function init()
     {
         $errorHandler = new ErrorHandler();
         $errorHandler->register($this->sitePath . '/runtime/log');
@@ -143,7 +144,26 @@ class Application
             '@web' => $config->get('web.path')
         ]);
 
-        $c[SlugGenerator::class] = function ($c) {
+        $c[TwigRenderer::class] = function ($c) {
+            $twig = new TwigRenderer(
+                $c[Alias::class],
+                $c[Config::class],
+                $c[ServerRequestInterface::class],
+                $c[UrlGenerator::class],
+                $c[SlugGeneratorInterface::class],
+                $c[Assets::class],
+                $c[MenuList::class],
+                $c[MenuTree::class],
+                $c[RootPath::class],
+                $c[Environment::class],
+                $c[DataRepositoryInterface::class],
+                $c[Translator::class],
+                $c[EventManagerInterface::class]
+            );
+            return $twig;
+        };
+
+        $c[SlugGeneratorInterface::class] = function ($c) {
             $locale = $c[Config::class]->get('language');
             $options = new SlugOptions([
                 'locale' => $locale,
@@ -197,11 +217,15 @@ class Application
             return $builder;
         };
 
+        $c[EventManagerInterface::class] = function () {
+            return new EventManager();
+        };
+
         $c[PluginManager::class] = function ($c) {
             $enabled = $c[Config::class]->get('plugins.enable', []);
             $path = $c[Config::class]->get('plugins.path');
             $enabledSysPlugins = $c[Config::class]->get('sysplugins.enable');
-            return new PluginManager($enabled, $path, $enabledSysPlugins, $this);
+            return new PluginManager($c[EventManagerInterface::class], $enabled, $path, $enabledSysPlugins, $c);
         };
 
         $c[UrlGenerator::class] = function ($c) {
@@ -234,7 +258,7 @@ class Application
             $translator = new Translator($c[Config::class]->get('language'), [
                 'app' => $c[Alias::class]->get('@app/../messages')
             ]);
-            foreach ($c[PluginManager::class]->getLoadedPlugins() as $key => $dir) {
+            foreach ($c[PluginManager::class]->getPluginPaths() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
             $translator->init();
@@ -244,29 +268,6 @@ class Application
         $c[UrlMatcher::class] = function ($c) {
             return new UrlMatcher($c[MenuList::class]);
         };
-
-        // Init PluginManager
-        $c[PluginManager::class]->init($c[Config::class]);
-    }
-
-    /**
-     * Get the loaded (current) Page from container. This is a shortcut to Application::getService('Page').
-     * @return Page
-     */
-
-    public function getPage()
-    {
-        return $this->page;
-    }
-
-    /**
-     * @param Page $page
-     * @return Application
-     */
-    public function setPage(Page $page)
-    {
-        $this->page = $page;
-        return $this;
     }
 
     /**
@@ -275,27 +276,30 @@ class Application
      */
     public function run()
     {
+        // Init PluginManager
+        $this->getPluginManager()->init();
+
         $middlewares = $this->getMiddlewares();
         $dispatcher = new MiddlewareDispatcher($middlewares);
         $request = $this->getService(ServerRequestInterface::class);
         $response = $dispatcher->dispatch($request);
 
-        $this->getPluginManager()->trigger('onResponseGenerated', $response);
+        $this->getEventManager()->trigger('onResponseGenerated', $response);
 
         $this->emitResponse($response);
 
-        $this->getPluginManager()->trigger('onResponseRendered');
+        $this->getEventManager()->trigger('onResponseRendered');
     }
 
     /**
      * @return array
      */
-    protected function getMiddlewares(): array
+    private function getMiddlewares(): array
     {
         $middlewares = array_merge(
             [
                 new ErrorHandlerMiddleware(
-                    $this->getPluginManager()
+                    $this->getTwigRenderer()
                 )
             ],
             $this->middlewares,
@@ -305,12 +309,17 @@ class Application
                     $this->getEnvironment(),
                     $this->getPageRepository(),
                     $this->getUrlMatcher()
-                ),
+                )
+            ],
+            $this->getPluginManager()->getMiddlewares(),
+            [
                 new PageRendererMiddleware(
                     $this->getPageCache(),
                     $this->getEnvironment(),
                     $this->getHttpFactory(),
-                    $this->getPluginManager()
+                    $this->getEventManager(),
+                    $this->getTwigRenderer(),
+                    $this->getConfig()
                 )
             ]
         );
@@ -340,7 +349,7 @@ class Application
      * @param string $name
      * @return mixed
      */
-    protected function getService($name)
+    private function getService($name)
     {
         return $this->container[$name];
     }
@@ -370,9 +379,17 @@ class Application
     }
 
     /**
+     * @return EventManagerInterface
+     */
+    public function getEventManager()
+    {
+        return $this->getService(EventManagerInterface::class);
+    }
+
+    /**
      * @param ResponseInterface $response
      */
-    protected function emitResponse(ResponseInterface $response): void
+    private function emitResponse(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
         http_response_code($statusCode);
@@ -393,21 +410,11 @@ class Application
     }
 
     /**
-     * @param TwigPlugin $twig
-     * @return Application
-     */
-    public function setTwigPlugin(TwigPlugin $twig)
-    {
-        $this->setService(TwigPlugin::class, $twig);
-        return $this;
-    }
-
-    /**
      * @param string $name
      * @param mixed $service
      * @return Application
      */
-    protected function setService($name, $service)
+    private function setService($name, $service)
     {
         $this->container[$name] = $service;
         return $this;
@@ -472,28 +479,11 @@ class Application
     }
 
     /**
-     * @return TwigPlugin
-     */
-    public function getTwigPlugin(): TwigPlugin
-    {
-        $twig = $this->getService(TwigPlugin::class);
-        return $twig;
-    }
-
-    /**
      * @return HttpFactory
      */
     public function getHttpFactory()
     {
         return $this->getService(HttpFactory::class);
-    }
-
-    /**
-     * @return ServerRequestInterface
-     */
-    public function getRequest()
-    {
-        return $this->getService(ServerRequestInterface::class);
     }
 
     /**
@@ -525,22 +515,14 @@ class Application
      */
     public function getSlugGenerator()
     {
-        return $this->getService(SlugGenerator::class);
+        return $this->getService(SlugGeneratorInterface::class);
     }
 
     /**
-     * @return string
+     * @return TwigRenderer
      */
-    protected function getSitePath()
+    public function getTwigRenderer()
     {
-        return $this->sitePath;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getVendorPath()
-    {
-        return $this->vendorDir;
+        return $this->getService(TwigRenderer::class);
     }
 }

@@ -18,27 +18,27 @@ class Config
     /**
      * @var array
      */
-    protected $items;
+    private $items;
 
     /**
      * @var string
      */
-    protected $appPath;
+    private $appPath;
 
     /**
      * @var string
      */
-    protected $webPath;
+    private $webPath;
 
     /**
      * @var string
      */
-    protected $webUrl;
+    private $webUrl;
 
     /**
      * @var string
      */
-    protected $sitePath;
+    private $sitePath;
 
     /**
      * @param string $sitePath
@@ -55,7 +55,7 @@ class Config
         $this->loadConfig(false);
     }
 
-    protected function loadConfig(bool $useCache = true): void
+    private function loadConfig(bool $useCache = true): void
     {
         if ($useCache) {
             $cacheFile = $this->sitePath . '/runtime/cache/config.php';
@@ -180,7 +180,7 @@ class Config
      * @param array $override
      * @return array
      */
-    protected function merge(array $default, array $override): array
+    private function merge(array $default, array $override): array
     {
         foreach ($override as $key => $value) {
             if (is_array($value)) {
@@ -196,7 +196,7 @@ class Config
     /**
      *
      */
-    protected function loadMainFile(): void
+    private function loadMainFile(): void
     {
         // vars used in config files
         $APP_PATH = $this->appPath;
@@ -219,7 +219,7 @@ class Config
 
     /**
      */
-    protected function loadPluginFiles(): void
+    private function loadPluginFiles(): void
     {
         $dir = $this->sitePath . '/config/plugins';
         if (is_readable($dir)) {
@@ -239,7 +239,7 @@ class Config
      * @param string $file
      * @return string
      */
-    protected function loadFile(string $file): string
+    private function loadFile(string $file): string
     {
         $content = file_get_contents($file);
         return $this->replaceConstants($content);
@@ -249,7 +249,7 @@ class Config
      * @param string $string
      * @return string
      */
-    protected function replaceConstants(string $string): string
+    private function replaceConstants(string $string): string
     {
         return str_replace(
             ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],

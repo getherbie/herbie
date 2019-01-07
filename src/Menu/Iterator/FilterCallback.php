@@ -21,7 +21,7 @@ class FilterCallback
     /**
      * @var array
      */
-    protected $routeLine;
+    private $routeLine;
 
     /**
      * FilterCallback constructor.

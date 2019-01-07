@@ -20,12 +20,12 @@ class TreeIterator implements \RecursiveIterator
     /**
      * @var array
      */
-    protected $children = [];
+    private $children = [];
 
     /**
      * @var int
      */
-    protected $position = 0;
+    private $position = 0;
 
     /**
      * @param mixed $context

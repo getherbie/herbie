@@ -17,7 +17,7 @@ class StringValue
     /**
      * @var string
      */
-    protected $value;
+    private $value;
 
     /**
      * StringValue constructor.

@@ -24,17 +24,17 @@ class UrlGenerator
     /**
      * @var ServerRequestInterface
      */
-    protected $request;
+    private $request;
 
     /**
      * @var Environment
      */
-    protected $environment;
+    private $environment;
 
     /**
      * @var bool
      */
-    protected $niceUrls;
+    private $niceUrls;
 
     /**
      * Constructor
@@ -82,7 +82,7 @@ class UrlGenerator
      * @param string $url The URL.
      * @return string The filtered URL.
      */
-    protected function filterUrl(string $url): string
+    private function filterUrl(string $url): string
     {
         $url = preg_replace('/\/index$/', '', $url);
         $url = rtrim($url, '/');

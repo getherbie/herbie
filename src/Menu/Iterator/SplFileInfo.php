@@ -18,12 +18,12 @@ class SplFileInfo extends \SplFileInfo
     /**
      * @var string
      */
-    protected $relativePath;
+    private $relativePath;
 
     /**
      * @var string
      */
-    protected $relativePathname;
+    private $relativePathname;
 
     /**
      * Constructor

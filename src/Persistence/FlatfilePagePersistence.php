@@ -28,7 +28,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
     /**
      * @var Alias
      */
-    protected $alias;
+    private $alias;
 
     /**
      * @param Alias $alias
@@ -61,7 +61,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return array
      * @throws \Exception
      */
-    protected function readFile(string $alias, bool $addDefFields = true): array
+    private function readFile(string $alias, bool $addDefFields = true): array
     {
         $path = $this->alias->get($alias);
         $content = $this->readFileContent($path);
@@ -141,7 +141,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return array
      * @throws \Exception
      */
-    protected function parseFileContent(string $content): array
+    private function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
             define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
@@ -190,7 +190,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
      * @return string
      * @throws HttpException
      */
-    protected function readFileContent(string $path): string
+    private function readFileContent(string $path): string
     {
         // suppress E_WARNING since we throw an exception on error
         $contents = @file_get_contents($path);

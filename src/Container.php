@@ -21,12 +21,12 @@ class Container implements \ArrayAccess, ContainerInterface
     /**
      * @var array
      */
-    protected $values = [];
+    private $values = [];
 
     /**
      * @var array
      */
-    protected $frozen = [];
+    private $frozen = [];
 
     /**
      * @param string $id

@@ -24,7 +24,7 @@ class CallableMiddleware implements MiddlewareInterface
      *
      * @var callable
      */
-    protected $callable;
+    private $callable;
 
     /**
      * Set up a callable middleware proxying the given callable.

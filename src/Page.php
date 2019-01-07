@@ -23,19 +23,19 @@ class Page
     /**
      * @var string
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
      */
-    protected $parent;
+    private $parent;
 
     use MenuItemTrait;
 
     /**
      * @var array
      */
-    protected $segments = [];
+    private $segments = [];
 
     /**
      * @return string

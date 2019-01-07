@@ -14,48 +14,66 @@ declare(strict_types=1);
 namespace Herbie;
 
 use Herbie\Exception\SystemException;
-use Zend\EventManager\EventManager;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use ReflectionClass;
+use Zend\EventManager\EventManagerInterface;
 
-class PluginManager extends EventManager
+class PluginManager
 {
+    /**
+     * @var
+     */
+    private $eventManager;
+
     /** @var array */
-    protected $enabled;
+    private $enabledPlugins;
 
     /** @var string */
-    protected $path;
+    private $path;
 
     /** @var array */
-    protected $loaded;
+    private $loadedPlugins;
 
     /** @var array */
-    protected $enabledSysPlugins;
+    private $pluginPaths;
+
+    /** @var array */
+    private $enabledSysPlugins;
 
     /** @var Application */
-    protected $application;
+    private $application;
 
     /**
      * PluginManager constructor.
-     * @param array $enabled
+     * @param EventManagerInterface $eventManager
+     * @param array $enabledPlugins
      * @param string $path
      * @param array $enabledSysPlugins
-     * @param Application $application
+     * @param ContainerInterface $container
      * @throws SystemException
      */
-    public function __construct(array $enabled, string $path, array $enabledSysPlugins, Application $application)
-    {
-        $this->enabled = $enabled;
+    public function __construct(
+        EventManagerInterface $eventManager,
+        array $enabledPlugins,
+        string $path,
+        array $enabledSysPlugins,
+        ContainerInterface $container
+    ) {
+        $this->eventManager = $eventManager;
+        $this->enabledPlugins = $enabledPlugins;
         $this->path = realpath($path);
-        $this->loaded = [];
+        $this->loadedPlugins = [];
+        $this->pluginPaths = [];
         $this->enabledSysPlugins = $enabledSysPlugins;
-        $this->application = $application;
+        $this->container = $container;
         if (false === $this->path) {
             throw SystemException::directoryNotExist($path);
         }
-        parent::__construct();
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws \ReflectionException
      */
     public function init(): void
     {
@@ -67,19 +85,20 @@ class PluginManager extends EventManager
 
         // add third-party plugins
         $priority = 700;
-        foreach ($this->enabled as $key) {
+        foreach ($this->enabledPlugins as $key) {
             $this->loadPlugin($this->path, $key, $priority);
         }
 
-        $this->trigger('onPluginsInitialized', $this);
+        $this->eventManager->trigger('onPluginsInitialized', $this);
     }
 
     /**
      * @param string $path
      * @param string $key
      * @param int $priority
+     * @throws \ReflectionException
      */
-    protected function loadPlugin(string $path, string $key, int $priority): void
+    private function loadPlugin(string $path, string $key, int $priority): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
@@ -87,11 +106,23 @@ class PluginManager extends EventManager
 
             $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
 
-            /** @var Plugin $plugin */
-            $plugin = new $className($this->application);
-            $plugin->attach($this, $priority);
+            $class = new ReflectionClass($className);
 
-            $this->loaded[$key] = dirname($pluginPath);
+            $constructor = $class->getConstructor();
+            $constructorParams = [];
+            if ($constructor) {
+                foreach ($constructor->getParameters() as $param) {
+                    $classNameToInject = $param->getClass()->getName();
+                    $constructorParams[] = $this->container->get($classNameToInject);
+                };
+            }
+
+            /** @var Plugin $plugin */
+            $plugin = new $className(...$constructorParams);
+            $plugin->attach($this->eventManager, $priority);
+
+            $this->loadedPlugins[$key] = $plugin;
+            $this->pluginPaths[$key] = dirname($pluginPath);
         }
     }
 
@@ -100,6 +131,28 @@ class PluginManager extends EventManager
      */
     public function getLoadedPlugins(): array
     {
-        return $this->loaded;
+        return $this->loadedPlugins;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        $middlewares = [];
+        foreach ($this->loadedPlugins as $plugin) {
+            if ($plugin instanceof MiddlewareInterface) {
+                $middlewares[] = $plugin;
+            }
+        }
+        return $middlewares;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPluginPaths(): array
+    {
+        return $this->pluginPaths;
     }
 }

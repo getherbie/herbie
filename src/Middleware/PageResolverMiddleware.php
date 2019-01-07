@@ -27,22 +27,22 @@ class PageResolverMiddleware implements MiddlewareInterface
     /**
      * @var Environment
      */
-    protected $environment;
+    private $environment;
 
     /**
      * @var Application
      */
-    protected $herbie;
+    private $herbie;
 
     /**
      * @var UrlMatcher
      */
-    protected $urlMatcher;
+    private $urlMatcher;
 
     /**
      * @var PageRepositoryInterface
      */
-    protected $pageRepository;
+    private $pageRepository;
 
     /**
      * PageResolverMiddleware constructor.
@@ -76,7 +76,7 @@ class PageResolverMiddleware implements MiddlewareInterface
         $menuItem = $this->urlMatcher->match($route);
         $path = $menuItem->getPath();
         $page = $this->pageRepository->find($path);
-        $this->herbie->setPage($page);
+        #$this->herbie->setPage($page);
         $request = $request->withAttribute(Page::class, $page);
         return $handler->handle($request);
     }

@@ -18,12 +18,12 @@ class YamlDataRepository implements DataRepositoryInterface
     /**
      * @var string
      */
-    protected $path;
+    private $path;
 
     /**
      * @var array
      */
-    protected $extensions;
+    private $extensions;
 
     /**
      * @param string $path
@@ -71,7 +71,7 @@ class YamlDataRepository implements DataRepositoryInterface
     /**
      * @return array
      */
-    protected function scanDataDir(): array
+    private function scanDataDir(): array
     {
         $dataFiles = [];
 
@@ -101,7 +101,7 @@ class YamlDataRepository implements DataRepositoryInterface
      * @param string $filepath
      * @return array
      */
-    protected function parseDataFile(string $filepath): array
+    private function parseDataFile(string $filepath): array
     {
         $yaml = file_get_contents($filepath);
         return Yaml::parse($yaml);

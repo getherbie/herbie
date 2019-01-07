@@ -25,52 +25,52 @@ class Assets
     /**
      * @var \Herbie\Alias
      */
-    protected $alias;
+    private $alias;
 
     /**
      * @var array
      */
-    protected $assets = [];
+    private $assets = [];
 
     /**
      * @var string
      */
-    protected $assetsDir = '/assets';
+    private $assetsDir = '/assets';
 
     /**
      * @var string
      */
-    protected $assetsUrl;
+    private $assetsUrl;
 
     /**
      * @var string
      */
-    protected $assetsPath;
+    private $assetsPath;
 
     /**
      * @var int
      */
-    protected $refresh = 86400;
+    private $refresh = 86400;
 
     /**
      * @var int
      */
-    protected $chmode = 0755;
+    private $chmode = 0755;
 
     /**
      * @var int
      */
-    protected static $counter = 0;
+    private static $counter = 0;
 
     /**
      * @var bool
      */
-    protected static $sorted = false;
+    private static $sorted = false;
 
     /**
      * @var array
      */
-    protected static $published = [];
+    private static $published = [];
 
     /**
      * @param Alias $alias
@@ -155,7 +155,7 @@ class Assets
      * @param bool $raw
      * @param int $pos
      */
-    protected function addAsset(int $type, string $path, array $attr, string $group = null, bool $raw = false, int $pos = 1): void
+    private function addAsset(int $type, string $path, array $attr, string $group = null, bool $raw = false, int $pos = 1): void
     {
         if ($this->search($path)) {
             return;
@@ -174,7 +174,7 @@ class Assets
     /**
      * return void
      */
-    protected function sort(): void
+    private function sort(): void
     {
         if (!self::$sorted) {
             uasort($this->assets, function ($a, $b) {
@@ -197,7 +197,7 @@ class Assets
      * @param string $group
      * @return array
      */
-    protected function collect(int $type, string $group = null): array
+    private function collect(int $type, string $group = null): array
     {
         $assets = [];
         foreach ($this->assets as $asset) {
@@ -212,7 +212,7 @@ class Assets
      * @param string $path
      * @return bool|int
      */
-    protected function search(string $path)
+    private function search(string $path)
     {
         foreach ($this->assets as $index => $asset) {
             if ($asset['path'] == $path) {
@@ -225,7 +225,7 @@ class Assets
     /**
      * @return void
      */
-    protected function publish(): void
+    private function publish(): void
     {
         foreach ($this->assets as $asset) {
             if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
@@ -262,7 +262,7 @@ class Assets
      * @param string $file
      * @return string
      */
-    protected function buildUrl(string $file): string
+    private function buildUrl(string $file): string
     {
         $url = $file;
         if ('@' == substr($file, 0, 1)) {
@@ -276,7 +276,7 @@ class Assets
      * @param string $file
      * @return string
      */
-    protected function removeAlias(string $file): string
+    private function removeAlias(string $file): string
     {
         $parts = explode('/', $file);
         array_shift($parts);

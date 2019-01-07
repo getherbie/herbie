@@ -19,12 +19,12 @@ class FlatfilePageRepository implements PageRepositoryInterface
     /**
      * @var FlatfilePersistenceInterface
      */
-    protected $pagePersistence;
+    private $pagePersistence;
 
     /**
      * @var PageFactory
      */
-    protected $pageFactory;
+    private $pageFactory;
 
     /**
      * FlatfilePageRepository constructor.
@@ -85,7 +85,7 @@ class FlatfilePageRepository implements PageRepositoryInterface
      * @param array $data
      * @return Page
      */
-    protected function createPage(array $data): Page
+    private function createPage(array $data): Page
     {
         return call_user_func(
             $this->pageFactory,

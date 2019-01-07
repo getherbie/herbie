@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use ErrorException;
-use Herbie\Page;
-use Herbie\PluginManager;
-use Herbie\StringValue;
+use Herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,24 +22,24 @@ use Tebe\HttpFactory\HttpFactory;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var PluginManager
-     */
-    protected $events;
+    private $twigRenderer;
 
     /**
      * ErrorHandlerMiddleware constructor.
-     * @param PluginManager $events
+     * @param TwigRenderer $twigRenderer
      */
-    public function __construct(PluginManager $events)
+    public function __construct(TwigRenderer $twigRenderer)
     {
-        $this->events = $events;
+        $this->twigRenderer = $twigRenderer;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
@@ -50,13 +48,12 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             $response = $handler->handle($request);
         } catch (\Throwable $e) {
-            $string = new StringValue();
-
-            $page = new Page();
-            $page->layout = 'error';
-            $page->setError($e);
-
-            $this->events->trigger('onRenderLayout', $string, ['page' => $page]);
+            if (!$this->twigRenderer->isInitialized()) {
+                $this->twigRenderer->init();
+            }
+            $content = $this->twigRenderer->renderTemplate('error.twig', [
+                'error' => $e
+            ]);
 
             $code = $e->getCode();
             if (empty($code)) {
@@ -64,7 +61,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
             }
 
             $response = HttpFactory::instance()->createResponse($code);
-            $response->getBody()->write(strval($string));
+            $response->getBody()->write($content);
         }
 
         restore_error_handler();
@@ -79,7 +76,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      *
      * @return callable
      */
-    protected function createErrorHandler() : callable
+    private function createErrorHandler() : callable
     {
         /**
          * @param int $errno

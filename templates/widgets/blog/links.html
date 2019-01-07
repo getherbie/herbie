@@ -1,0 +1,38 @@
+{% if page.categories %}
+<span class="links-categories">
+    <span class="label">Kategorien:</span>
+    <i class="fa fa-folder-open"></i>
+    {% set delim = '' %}
+    {% for category in page.categories %}
+        {%- set route = 'blog/category/' ~ category|urlify -%}
+        {{ delim|raw }}{{ link(route, category) }}
+        {%- set delim = '<span class="delim">, </span>' -%}
+    {% endfor %}
+</span>
+{% endif %}
+
+{% if page.tags %}
+<span class="links-tags">
+    <span class="label">Tags:</span>
+    <i class="fa fa-tags"></i>
+    {% set delim = '' %}
+    {% for tag in page.tags %}
+        {%- set route = 'blog/tag/' ~ tag|urlify -%}
+        {{ delim|raw }}{{ link(route, tag) }}
+        {%- set delim = '<span class="delim">, </span>' -%}
+    {% endfor %}
+</span>
+{% endif %}
+
+{% if page.authors %}
+<span class="links-authors">
+    <span class="label">Autoren:</span>
+    <i class="fa fa-user"></i>
+    {% set delim = '' %}
+    {% for author in page.authors %}
+        {%- set route = 'blog/author/' ~ author|urlify -%}
+        {{ delim|raw }}{{ link(route, author) }}
+        {%- set delim = '<span class="delim">, </span>' -%}
+    {% endfor %}
+</span>
+{% endif %}
