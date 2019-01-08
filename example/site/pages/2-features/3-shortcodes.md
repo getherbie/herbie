@@ -23,7 +23,7 @@ Link mit einer eigenen CSS-Klasse:
 [link http://wikipedia.org text="Wikipedia" class="wikipedia"]    
   
 Relativer Link:  
-[link dokumentation/cheat-sheet text="Cheat Sheet"]    
+[link features/vars text="Vars"]    
 
 
 ## E-Mails
@@ -104,30 +104,24 @@ Textile:
 
 Twig:  
 
-[twig]Das ist ein mit {{ "<h1>twig</h1>"|upper|striptags }} formatierter Text.[/twig]
+[twig]Das ist ein mit {{ "<b>twig</b>"|upper }} formatierter Text.[/twig]
 
 
 ## Include
 
 HTML-Datei:  
-[include @site/pages/1-features/.include.html]
+[include @site/pages/2-features/.include.html]
 
 Twig-Datei:    
-[include @site/pages/1-features/.include.twig]
+[include @site/pages/2-features/.include.twig]
 
 Twig-Datei mit Attributen:  
-[include @site/pages/1-features/.include.twig attrib1="ABC" attrib2="DEF"]
+[include @site/pages/2-features/.include.twig attrib1="ABC" attrib2="DEF"]
 
 
 ## Listing
 
 [listing path="@widget/listing.twig" filter="parentRoute|test" sort="title|desc" shuffle="true" limit="2" pagination="true"]
-
-
-## Blocks
-
-Siehe Test-Seite [link test/blocks text="Blocks"].
-
 
 
 <style>

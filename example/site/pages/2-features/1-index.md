@@ -1,6 +1,5 @@
 ---
 title: Features
-twig: 1
 ---
 
 # Features Overview

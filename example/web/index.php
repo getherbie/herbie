@@ -21,7 +21,7 @@ define('HERBIE_DEBUG', true);
 
 class CustomHeader implements MiddlewareInterface {
 
-    protected $count;
+    private $count;
 
     public function __construct($count = 1)
     {

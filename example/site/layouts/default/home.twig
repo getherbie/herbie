@@ -2,49 +2,49 @@
 
 {% block content %}
 
-<div class="pure-g slider">
-    <div class="container">
-        <div class="pure-g">
-            <div class="pure-u-1">
-                <h2 class="brand-tagline"><strong>Congrats!</strong> Your Herbie website is running.</h2>
+    <div class="pure-g slider">
+        <div class="container">
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <h2 class="brand-tagline"><strong>Congrats!</strong> Your Herbie website is running.</h2>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="content-container">
-    <div class="container">
-        <div class="pure-g content">
-            <div class="pure-u-1 content lead">
-                {{ content('default') }}
+    <div class="content-container">
+        <div class="container">
+            <div class="pure-g content">
+                <div class="pure-u-1 content lead">
+                    {{ content.default|raw }}
+                </div>
             </div>
-        </div>
 
-        <div class="pure-g content two-col">
-            <div class="pure-u-1-2">
-                <div class="box box-l">{{ content('left') }}</div>
+            <div class="pure-g content two-col">
+                <div class="pure-u-1-2">
+                    <div class="box box-l">{{ content.left|raw }}</div>
+                </div>
+                <div class="pure-u-1-2">
+                    <div class="box box-r">{{ content.right|raw }}</div>
+                </div>
             </div>
-            <div class="pure-u-1-2">
-                <div class="box box-r">{{ content('right') }}</div>
-            </div>
-        </div>
 
-        <div class="pure-g">
-            <div class="pure-u-1 content">
-                {{ content('footer') }}
+            <div class="pure-g">
+                <div class="pure-u-1 content">
+                    {{ content.footer|raw }}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .box-l {
-        padding-right: 1em;
-    }
+    <style>
+        .box-l {
+            padding-right: 1em;
+        }
 
-    .box-r {
-        padding-left: 1em
-    }
-</style>
+        .box-r {
+            padding-left: 1em
+        }
+    </style>
 
 {% endblock %}
