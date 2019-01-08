@@ -19,7 +19,7 @@ use Herbie\Exception\SystemException;
 use Herbie\Menu\MenuBuilder;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
-use Herbie\Menu\RootPath;
+use Herbie\Menu\MenuTrail;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageRendererMiddleware;
@@ -148,7 +148,7 @@ class Application
                 $c[Assets::class],
                 $c[MenuList::class],
                 $c[MenuTree::class],
-                $c[RootPath::class],
+                $c[MenuTrail::class],
                 $c[Environment::class],
                 $c[DataRepositoryInterface::class],
                 $c[Translator::class],
@@ -233,19 +233,19 @@ class Application
         $c[MenuList::class] = function ($c) {
             $cache = $c[Cache::class];
             $c[MenuBuilder::class]->setCache($cache);
-            return $c[MenuBuilder::class]->buildCollection();
+            return $c[MenuBuilder::class]->buildMenuList();
         };
 
         $c[MenuTree::class] = function ($c) {
             return MenuTree::buildTree($c[MenuList::class]);
         };
 
-        $c[RootPath::class] = function ($c) {
-            $rootPath = new RootPath(
+        $c[MenuTrail::class] = function ($c) {
+            $menuTrail = new MenuTrail(
                 $c[MenuList::class],
                 $c[Environment::class]->getRoute()
             );
-            return $rootPath;
+            return $menuTrail;
         };
 
         $c[Translator::class] = function ($c) {
@@ -317,7 +317,7 @@ class Application
                     $this->getDataRepository(),
                     $this->getMenuList(),
                     $this->getMenuTree(),
-                    $this->getMenuRootPath()
+                    $this->getMenuTrail()
                 )
             ]
         );
@@ -440,11 +440,11 @@ class Application
     }
 
     /**
-     * @return RootPath
+     * @return MenuTrail
      */
-    public function getMenuRootPath()
+    public function getMenuTrail()
     {
-        return $this->container->get(RootPath::class);
+        return $this->container->get(MenuTrail::class);
     }
 
     /**

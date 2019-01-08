@@ -24,13 +24,13 @@ class MenuTree extends \Herbie\Node
     }
 
     /**
-     * @param MenuList $menuCollection
+     * @param MenuList $menuList
      * @return MenuTree
      */
-    public static function buildTree(MenuList $menuCollection): MenuTree
+    public static function buildTree(MenuList $menuList): MenuTree
     {
         $tree = new self();
-        foreach ($menuCollection as $menuItem) {
+        foreach ($menuList as $menuItem) {
             $route = $menuItem->getParentRoute();
             $node = $tree->findByRoute($route);
             if ($node) {

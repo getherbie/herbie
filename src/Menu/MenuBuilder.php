@@ -79,10 +79,10 @@ class MenuBuilder
      * @return MenuList
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function buildCollection(): MenuList
+    public function buildMenuList(): MenuList
     {
-        $collection = $this->restoreCollection();
-        if (!$collection->fromCache) {
+        $menuList = $this->restoreMenuList();
+        if (!$menuList->fromCache) {
             foreach ($this->paths as $alias => $path) {
                 $this->indexFiles = [];
                 foreach ($this->getIterator($path) as $fileInfo) {
@@ -93,7 +93,7 @@ class MenuBuilder
                             $this->indexFiles[] = $indexFile;
                             $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
                             $item = $this->createItem($relPathname, $alias);
-                            $collection->addItem($item);
+                            $menuList->addItem($item);
                             break;
                         }
                         // other files
@@ -102,43 +102,43 @@ class MenuBuilder
                             continue;
                         }
                         $item = $this->createItem($fileInfo->getRelativePathname(), $alias);
-                        $collection->addItem($item);
+                        $menuList->addItem($item);
                     }
                 }
             }
-            $this->storeCollection($collection);
+            $this->storeMenuList($menuList);
         }
-        return $collection;
+        return $menuList;
     }
 
     /**
      * @return MenuList
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    private function restoreCollection(): MenuList
+    private function restoreMenuList(): MenuList
     {
         if (is_null($this->cache)) {
             return new MenuList();
         }
-        $collection = $this->cache->get(__CLASS__);
-        if (is_null($collection)) {
+        $menuList = $this->cache->get(__CLASS__);
+        if (is_null($menuList)) {
             return new MenuList();
         }
-        return $collection;
+        return $menuList;
     }
 
     /**
-     * @param MenuList $collection
+     * @param MenuList $menuList
      * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    private function storeCollection(MenuList $collection): bool
+    private function storeMenuList(MenuList $menuList): bool
     {
         if (is_null($this->cache)) {
             return false;
         }
-        $collection->fromCache = true;
-        return $this->cache->set(__CLASS__, $collection);
+        $menuList->fromCache = true;
+        return $this->cache->set(__CLASS__, $menuList);
     }
 
 

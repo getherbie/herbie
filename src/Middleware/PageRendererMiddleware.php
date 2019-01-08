@@ -16,7 +16,7 @@ use Herbie\Config;
 use Herbie\Environment;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
-use Herbie\Menu\RootPath;
+use Herbie\Menu\MenuTrail;
 use Herbie\Page;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Site;
@@ -68,9 +68,9 @@ class PageRendererMiddleware implements MiddlewareInterface
      */
     private $menuTree;
     /**
-     * @var RootPath
+     * @var MenuTrail
      */
-    private $menuRootPath;
+    private $menuTrail;
 
     /**
      * PageRendererMiddleware constructor.
@@ -83,7 +83,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param DataRepositoryInterface $dataRepository
      * @param MenuList $menuList
      * @param MenuTree $menuTree
-     * @param RootPath $menuRootPath
+     * @param MenuTrail $menuTrail
      */
     public function __construct(
         CacheInterface $cache,
@@ -95,7 +95,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         DataRepositoryInterface $dataRepository,
         MenuList $menuList,
         MenuTree $menuTree,
-        RootPath $menuRootPath
+        MenuTrail $menuTrail
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
@@ -106,7 +106,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->dataRepository = $dataRepository;
         $this->menuList = $menuList;
         $this->menuTree = $menuTree;
-        $this->menuRootPath = $menuRootPath;
+        $this->menuTrail = $menuTrail;
     }
 
     /**
@@ -153,7 +153,7 @@ class PageRendererMiddleware implements MiddlewareInterface
                     $this->dataRepository,
                     $this->menuList,
                     $this->menuTree,
-                    $this->menuRootPath
+                    $this->menuTrail
                 ),
                 'page' => $page
             ];

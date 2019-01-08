@@ -23,7 +23,7 @@ use Herbie\Menu\MenuList;
 class UrlMatcher
 {
     /**
-     * @var MenuList Collection of all pages.
+     * @var MenuList List of all pages.
      */
     private $menuList;
 

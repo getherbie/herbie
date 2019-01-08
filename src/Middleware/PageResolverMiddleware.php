@@ -76,7 +76,7 @@ class PageResolverMiddleware implements MiddlewareInterface
         $menuItem = $this->urlMatcher->match($route);
         $path = $menuItem->getPath();
         $page = $this->pageRepository->find($path);
-        #$this->herbie->setPage($page);
+        $page->setRoute($menuItem->getRoute()); // inject route
         $request = $request->withAttribute(Page::class, $page);
         return $handler->handle($request);
     }

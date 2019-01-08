@@ -11,7 +11,7 @@ namespace Herbie;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
-use Herbie\Menu\RootPath;
+use Herbie\Menu\MenuTrail;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Url\UrlGenerator;
 use Twig_Environment;
@@ -42,14 +42,13 @@ class TwigRenderer
      */
     private $twig;
     private $alias;
-    private $request;
     private $urlGenerator;
     private $translator;
     private $slugGenerator;
     private $assets;
     private $menuList;
     private $menuTree;
-    private $menuRootPath;
+    private $menuTrail;
     private $dataRepository;
     private $eventManager;
 
@@ -62,7 +61,7 @@ class TwigRenderer
      * @param Assets $assets
      * @param MenuList $menuList
      * @param MenuTree $menuTree
-     * @param RootPath $menuRootPath
+     * @param MenuTrail $menuTrail
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
@@ -76,7 +75,7 @@ class TwigRenderer
         Assets $assets,
         MenuList $menuList,
         MenuTree $menuTree,
-        RootPath $menuRootPath,
+        MenuTrail $menuTrail,
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
@@ -92,7 +91,7 @@ class TwigRenderer
         $this->assets = $assets;
         $this->menuList = $menuList;
         $this->menuTree = $menuTree;
-        $this->menuRootPath = $menuRootPath;
+        $this->menuTrail = $menuTrail;
         $this->environment = $environment;
         $this->dataRepository = $dataRepository;
         $this->eventManager = $eventManager;
@@ -122,7 +121,7 @@ class TwigRenderer
             $this->assets,
             $this->menuList,
             $this->menuTree,
-            $this->menuRootPath,
+            $this->menuTrail,
             $this->environment,
             $this->dataRepository,
             $this->translator,

@@ -136,7 +136,7 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Shuffle the items in the collection.
+     * Shuffle the items in the list.
      *
      * @return MenuList
      */

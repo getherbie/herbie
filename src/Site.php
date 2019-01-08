@@ -15,7 +15,7 @@ namespace Herbie;
 
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
-use Herbie\Menu\RootPath;
+use Herbie\Menu\MenuTrail;
 use Herbie\Repository\DataRepositoryInterface;
 
 /**
@@ -44,9 +44,9 @@ class Site
     private $menuTree;
 
     /**
-     * @var RootPath
+     * @var MenuTrail
      */
-    private $menuRootPath;
+    private $menuTrail;
 
     /**
      * Site constructor.
@@ -54,20 +54,20 @@ class Site
      * @param DataRepositoryInterface $dataRepository
      * @param MenuList $menuList
      * @param MenuTree $menuTree
-     * @param RootPath $menuRootPath
+     * @param MenuTrail $menuTrail
      */
     public function __construct(
         Config $config,
         DataRepositoryInterface $dataRepository,
         MenuList $menuList,
         MenuTree $menuTree,
-        RootPath $menuRootPath
+        MenuTrail $menuTrail
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
         $this->menuList = $menuList;
         $this->menuTree = $menuTree;
-        $this->menuRootPath = $menuRootPath;
+        $this->menuTrail = $menuTrail;
     }
 
     /**
@@ -88,6 +88,7 @@ class Site
 
     /**
      * @return MenuList
+     * TODO fix method name
      */
     public function getMenu(): MenuList
     {
@@ -96,6 +97,7 @@ class Site
 
     /**
      * @return MenuTree
+     * TODO fix method name
      */
     public function getTree(): MenuTree
     {
@@ -104,6 +106,7 @@ class Site
 
     /**
      * @return MenuTree
+     * TODO fix method name
      */
     public function getPageTree(): MenuTree
     {
@@ -111,11 +114,12 @@ class Site
     }
 
     /**
-     * @return RootPath
+     * @return MenuTrail
+     * TODO fix method name
      */
-    public function getRootPath(): RootPath
+    public function getRootPath(): MenuTrail
     {
-        return $this->menuRootPath;
+        return $this->menuTrail;
     }
 
     /**

@@ -15,7 +15,7 @@ use Exception;
 use Herbie\Menu;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
-use Herbie\Menu\RootPath;
+use Herbie\Menu\MenuTrail;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Url\UrlGenerator;
 use Twig_Extension;
@@ -33,7 +33,7 @@ class TwigExtension extends Twig_Extension
     private $assets;
     private $menuList;
     private $menuTree;
-    private $menuRootPath;
+    private $menuTrail;
     private $environment;
     private $dataRepository;
     private $twigRenderer;
@@ -47,7 +47,7 @@ class TwigExtension extends Twig_Extension
      * @param Assets $assets
      * @param MenuList $menuList
      * @param MenuTree $menuTree
-     * @param RootPath $menuRootPath
+     * @param MenuTrail $menuTrail
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
@@ -61,7 +61,7 @@ class TwigExtension extends Twig_Extension
         Assets $assets,
         MenuList $menuList,
         MenuTree $menuTree,
-        RootPath $menuRootPath,
+        MenuTrail $menuTrail,
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
@@ -75,7 +75,7 @@ class TwigExtension extends Twig_Extension
         $this->assets = $assets;
         $this->menuList = $menuList;
         $this->menuTree = $menuTree;
-        $this->menuRootPath = $menuRootPath;
+        $this->menuTrail = $menuTrail;
         $this->environment = $environment;
         $this->twigRenderer = $twigRenderer;
         $this->dataRepository = $dataRepository;
@@ -347,7 +347,7 @@ class TwigExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->getMenuPageRootPath() as $item) {
+        foreach ($this->menuTrail as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
 
@@ -457,7 +457,7 @@ class TwigExtension extends Twig_Extension
         $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
-        $count = count($this->menuRootPath);
+        $count = count($this->menuTrail);
 
         $titles = [];
 
@@ -465,7 +465,7 @@ class TwigExtension extends Twig_Extension
             $titles[] = $siteTitle;
         }
 
-        foreach ($this->menuRootPath as $item) {
+        foreach ($this->menuTrail as $item) {
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }

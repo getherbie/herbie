@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Herbie\Menu;
 
-class RootPath implements \IteratorAggregate, \Countable
+class MenuTrail implements \IteratorAggregate, \Countable
 {
 
     /**
      * @var MenuList
      */
-    private $collection;
+    private $menuList;
 
     /**
      * @var string
@@ -32,20 +32,20 @@ class RootPath implements \IteratorAggregate, \Countable
     private $items;
 
     /**
-     * @param MenuList $collection
+     * @param MenuList $menuList
      * @param string $route
      */
-    public function __construct(MenuList $collection, string $route)
+    public function __construct(MenuList $menuList, string $route)
     {
-        $this->collection = $collection;
+        $this->menuList = $menuList;
         $this->route = $route;
-        $this->items = $this->buildRootPath();
+        $this->items = $this->buildMenuTrail();
     }
 
     /**
      * @return array
      */
-    private function buildRootPath(): array
+    private function buildMenuTrail(): array
     {
         $items = [];
 
@@ -56,7 +56,7 @@ class RootPath implements \IteratorAggregate, \Countable
             $route .= $delim . $segment;
             $delim = '/';
 
-            $item = $this->collection->getItem($route);
+            $item = $this->menuList->getItem($route);
             if (isset($item)) {
                 $items[] = $item;
             }

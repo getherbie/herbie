@@ -354,6 +354,66 @@ trait MenuItemTrait
         return isset($this->data['modified']) ? $this->data['modified'] : '';
     }
 
+    public function getTwig(): int
+    {
+        return isset($this->data['twig']) ? $this->data['twig'] : 0;
+    }
+
+    public function setTwig(int $twig): void
+    {
+        $this->data['twig'] = abs($twig);
+    }
+
+    public function getKeepExtension(): int
+    {
+        return isset($this->data['keep_extension']) ? $this->data['keep_extension'] : 0;
+    }
+
+    public function setKeepExtension(int $keepExtension): void
+    {
+        $this->data['keep_extension'] = abs($keepExtension);
+    }
+
+    public function getContentType(): string
+    {
+        return isset($this->data['content_type']) ? $this->data['content_type'] : 'text/html';
+    }
+
+    public function setContentType(string $contentType): void
+    {
+        $this->data['content_type'] = string($contentType);
+    }
+
+    public function getNoCache(): int
+    {
+        return isset($this->data['nocache']) ? $this->data['nocache'] : 0;
+    }
+
+    public function setNoCache(int $noCache): void
+    {
+        $this->data['nocache'] = abs($noCache);
+    }
+
+    public function getHidden(): int
+    {
+        return isset($this->data['hidden']) ? $this->data['hidden'] : 0;
+    }
+
+    public function setHidden(int $hidden): void
+    {
+        $this->data['hidden'] = abs($hidden);
+    }
+
+    public function getExcerpt(): string
+    {
+        return isset($this->data['excerpt']) ? $this->data['excerpt'] : '';
+    }
+
+    public function setExcerpt(string $excerpt): void
+    {
+        $this->data['excerpt'] = trim($excerpt);
+    }
+
     /**
      * @return array
      */
@@ -397,7 +457,7 @@ trait MenuItemTrait
      * @param string $route
      * @return bool
      */
-    public function routeInRootPath(string $route): bool
+    public function routeInMenuTrail(string $route): bool
     {
         $current = $this->getRoute();
         if (empty($route) || empty($current)) {
