@@ -20,6 +20,8 @@ use Herbie\Menu\MenuItemTrait;
  */
 class Page
 {
+    use MenuItemTrait;
+
     /**
      * @var string
      */
@@ -30,8 +32,6 @@ class Page
      */
     private $parent;
 
-    use MenuItemTrait;
-
     /**
      * @var array
      */
@@ -40,17 +40,33 @@ class Page
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getId(): string
     {
-        return $this->data['title'] ?? '';
+        return $this->id;
+    }
+
+    /**
+     * @param $id
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     /**
      * @return string
      */
-    public function getPath(): string
+    public function getParent(): string
     {
-        return isset($this->data['path']) ? $this->data['path'] : '';
+        return $this->parent;
+    }
+
+    /**
+     * @param string $parent
+     */
+    public function setParent(string $parent): void
+    {
+        $this->parent = $parent;
     }
 
     /**
@@ -76,55 +92,6 @@ class Page
     }
 
     /**
-     * @param $id
-     */
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @param string $parent
-     */
-    public function setParent(string $parent): void
-    {
-        $this->parent = $parent;
-    }
-
-    /**
-     * @param array $data
-     * @throws \LogicException
-     */
-    public function setData(array $data): void
-    {
-        if (array_key_exists('segments', $data)) {
-            throw new \LogicException("Field segments is not allowed.");
-        }
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
-        }
-    }
-
-    /**
-     * @param string $format
-     */
-    public function setFormat(string $format): void
-    {
-        switch ($format) {
-            case 'md':
-            case 'markdown':
-                $format = 'markdown';
-                break;
-            case 'textile':
-                $format = 'textile';
-                break;
-            default:
-                $format = 'raw';
-        }
-        $this->data['format'] = $format;
-    }
-
-    /**
      * @param array $segments
      */
     public function setSegments(array $segments = []): void
@@ -133,11 +100,21 @@ class Page
     }
 
     /**
-     * @return array
+     * Overwrites MenuItemTrait::setData()
+     * @param array $data
+     * @throws \LogicException
      */
-    public function getData(): array
+    public function setData(array $data): void
     {
-        return $this->data;
+        if (array_key_exists('segments', $data)) {
+            throw new \LogicException("Field segments is not allowed.");
+        }
+        if (array_key_exists('data', $data)) {
+            throw new \LogicException("Field data is not allowed.");
+        }
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
     }
 
     /**
@@ -146,6 +123,8 @@ class Page
     public function toArray(): array
     {
         return [
+            'id' => $this->id,
+            'parent' => $this->parent,
             'data' => $this->data,
             'segments' => $this->segments
         ];
@@ -167,6 +146,14 @@ class Page
     }
 
     /**
+     * @return \Throwable
+     */
+    public function getError(): \Throwable
+    {
+        return $this->data['error'];
+    }
+
+    /**
      * @param \Throwable $e
      */
     public function setError(\Throwable $e): void
@@ -185,7 +172,7 @@ class Page
      */
     public function getDefaultBlocksPath(): string
     {
-        $pathinfo = pathinfo($this->path);
-        return $pathinfo['dirname'] . '/_' . $pathinfo['filename'];
+        $pathInfo = pathinfo($this->getPath());
+        return $pathInfo['dirname'] . '/_' . $pathInfo['filename'];
     }
 }

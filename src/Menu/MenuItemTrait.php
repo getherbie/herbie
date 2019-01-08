@@ -28,14 +28,81 @@ trait MenuItemTrait
         // default / required fields
         $this->data = [
             'title' => '',
+            'route' => '',
+            'path' => '',
+            'format' => '',
+            'date' => '',
             'layout' => 'default',
             'content_type' => 'text/html',
             'authors' => [],
             'categories' => [],
             'tags' => [],
-            'menu' => ''
+            'menu' => '',
+            'modified' => '',
+            'created' => '',
+            'error' => []
         ];
         $this->setData($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->data['title'] ?? '';
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->data['title'] = trim($title);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute(): string
+    {
+        return trim($this->data['route']);
+    }
+    /**
+     * @return string
+     * TODO do we need this?
+     */
+    public function __getRoute(): string
+    {
+        $route = trim(basename($this->getPath()), '/');
+        $route = preg_replace('/^([0-9]{4})-([0-9]{2})-([0-9]{2})(.*)$/', '\\1/\\2/\\3\\4', $route);
+
+        // Endung entfernen
+        $pos = strrpos($route, '.');
+        if ($pos !== false) {
+            $route = substr($route, 0, $pos);
+        }
+
+        if (empty($this->blogRoute)) {
+            return $route;
+        }
+        return $this->blogRoute . '/' . $route;
+    }
+
+    /**
+     * @param string $route
+     */
+    public function setRoute(string $route): void
+    {
+        $this->data['route'] = $route;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParentRoute(): string
+    {
+        return trim(dirname($this->getRoute()), '.');
     }
 
     /**
@@ -44,6 +111,49 @@ trait MenuItemTrait
     public function getPath(): string
     {
         return isset($this->data['path']) ? $this->data['path'] : '';
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath(string $path): void
+    {
+        $this->data['path'] = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat(): string
+    {
+        return $this->data['format'];
+    }
+
+    /**
+     * @param string $format
+     */
+    public function setFormat(string $format): void
+    {
+        switch ($format) {
+            case 'md':
+            case 'markdown':
+                $format = 'markdown';
+                break;
+            case 'textile':
+                $format = 'textile';
+                break;
+            default:
+                $format = 'raw';
+        }
+        $this->data['format'] = $format;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate(): string
+    {
+        return isset($this->data['date']) ? $this->data['date'] : '';
     }
 
     /**
@@ -229,11 +339,79 @@ trait MenuItemTrait
     }
 
     /**
+     * @param string $modified
+     */
+    public function setModified(string $modified): void
+    {
+        $this->data['modified'] = $modified;
+    }
+
+    /**
      * @return string
      */
     public function getModified(): string
     {
         return isset($this->data['modified']) ? $this->data['modified'] : '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     * @throws \LogicException
+     */
+    public function setData(array $data): void
+    {
+        if (array_key_exists('data', $data)) {
+            throw new \LogicException("Field data is not allowed.");
+        }
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStartPage(): bool
+    {
+        return $this->getRoute() == '';
+    }
+
+    /**
+     * @param string $route
+     * @return bool
+     */
+    public function routeEquals(string $route): bool
+    {
+        return $this->getRoute() == $route;
+    }
+
+    /**
+     * @param string $route
+     * @return bool
+     */
+    public function routeInRootPath(string $route): bool
+    {
+        $current = $this->getRoute();
+        if (empty($route) || empty($current)) {
+            return false;
+        }
+        return 0 === strpos($route, $current);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStaticPage(): bool
+    {
+        return 0 === strpos($this->getPath(), '@page');
     }
 
     /**
@@ -283,7 +461,6 @@ trait MenuItemTrait
         }
     }
 
-
     /**
      * @return string
      */
@@ -306,8 +483,7 @@ trait MenuItemTrait
      */
     private function slugify(string $slug): string
     {
+        // TODO use SlugGeneratorInterface
         return strtolower($slug);
-        // TODO
-        return $this->herbie->getSlugGenerator()->generate($slug);
     }
 }
