@@ -8,9 +8,7 @@
 
 namespace Herbie;
 
-use Zend\EventManager\EventManagerInterface;
-
 interface PluginInterface
 {
-    public function attach(EventManagerInterface $events, $priority = 1);
+    public function attach(EventManager $events, int $priority = 1);
 }

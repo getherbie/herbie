@@ -37,8 +37,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerInterface;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
@@ -152,7 +150,7 @@ class Application
                 $c[Environment::class],
                 $c[DataRepositoryInterface::class],
                 $c[Translator::class],
-                $c[EventManagerInterface::class]
+                $c[EventManager::class]
             );
             return $twig;
         };
@@ -211,15 +209,17 @@ class Application
             return $builder;
         };
 
-        $c[EventManagerInterface::class] = function () {
-            return new EventManager();
+        $c[EventManager::class] = function () {
+            $zendEventManager = new \Zend\EventManager\EventManager();
+            $zendEventManager->setEventPrototype(new Event());
+            return new EventManager($zendEventManager);
         };
 
         $c[PluginManager::class] = function ($c) {
             $enabled = $c[Config::class]->get('plugins.enable', []);
             $path = $c[Config::class]->get('plugins.path');
             $enabledSysPlugins = $c[Config::class]->get('sysplugins.enable');
-            return new PluginManager($c[EventManagerInterface::class], $enabled, $path, $enabledSysPlugins, $c);
+            return new PluginManager($c[EventManager::class], $enabled, $path, $enabledSysPlugins, $c);
         };
 
         $c[UrlGenerator::class] = function ($c) {
@@ -367,11 +367,11 @@ class Application
     }
 
     /**
-     * @return EventManagerInterface
+     * @return EventManager
      */
     public function getEventManager()
     {
-        return $this->container->get(EventManagerInterface::class);
+        return $this->container->get(EventManager::class);
     }
 
     /**

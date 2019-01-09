@@ -17,12 +17,11 @@ use Herbie\Exception\SystemException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
-use Zend\EventManager\EventManagerInterface;
 
 class PluginManager
 {
     /**
-     * @var
+     * @var EventManager
      */
     private $eventManager;
 
@@ -40,11 +39,15 @@ class PluginManager
 
     /** @var array */
     private $enabledSysPlugins;
+
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
      * PluginManager constructor.
-     * @param EventManagerInterface $eventManager
+     * @param EventManager $eventManager
      * @param array $enabledPlugins
      * @param string $path
      * @param array $enabledSysPlugins
@@ -52,7 +55,7 @@ class PluginManager
      * @throws SystemException
      */
     public function __construct(
-        EventManagerInterface $eventManager,
+        EventManager $eventManager,
         array $enabledPlugins,
         string $path,
         array $enabledSysPlugins,

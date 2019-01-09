@@ -40,6 +40,11 @@ trait MenuItemTrait
             'menu' => '',
             'modified' => '',
             'created' => '',
+            'nocache' => 0,
+            'hidden' => 0,
+            'excerpt' => '',
+            'twig' => 0,
+            'keep_extension' => 0,
             'error' => []
         ];
         $this->setData($data);

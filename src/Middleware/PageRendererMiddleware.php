@@ -14,6 +14,7 @@ namespace Herbie\Middleware;
 
 use Herbie\Config;
 use Herbie\Environment;
+use Herbie\EventManager;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\MenuTrail;
@@ -28,7 +29,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
-use Zend\EventManager\EventManagerInterface;
 
 class PageRendererMiddleware implements MiddlewareInterface
 {
@@ -77,7 +77,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param CacheInterface $cache
      * @param Environment $environment
      * @param HttpFactory $httpFactory
-     * @param EventManagerInterface $eventManager
+     * @param EventManager $eventManager
      * @param TwigRenderer $twigRenderer
      * @param Config $config
      * @param DataRepositoryInterface $dataRepository
@@ -89,7 +89,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         CacheInterface $cache,
         Environment $environment,
         HttpFactory $httpFactory,
-        EventManagerInterface $eventManager,
+        EventManager $eventManager,
         TwigRenderer $twigRenderer,
         Config $config,
         DataRepositoryInterface $dataRepository,

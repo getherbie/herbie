@@ -21,7 +21,6 @@ use Twig_Function;
 use Twig_Loader_Array;
 use Twig_Loader_Filesystem;
 use Twig_Test;
-use Zend\EventManager\EventManagerInterface;
 
 class TwigRenderer
 {
@@ -65,7 +64,7 @@ class TwigRenderer
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
-     * @param EventManagerInterface $eventManager
+     * @param EventManager $eventManager
      */
     public function __construct(
         Alias $alias,
@@ -79,7 +78,7 @@ class TwigRenderer
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
-        EventManagerInterface $eventManager
+        EventManager $eventManager
     ) {
         $this->initialized = false;
         $this->environment = $environment;
