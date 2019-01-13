@@ -1,6 +1,7 @@
 ---
 title: Contact
 nocache: 1
+twig: 1
 simplecontact:
     subject: "Subject"
     recipient: "blackhole@example.com"
@@ -9,7 +10,7 @@ simplecontact:
         label: "Your name"
         placeholder:
       email:
-        label: "Your e-Mail"
+        label: "Your email"
         placeholder:
       message:
         label: "Your message"
@@ -28,9 +29,9 @@ simplecontact:
       invalid_email: "The given email is invalid"
 ---
 
-<h1>Contact</h1>
+# Contact
 
-[simplecontact]
+{{ simplecontact() }}
 
 
 --- sidebar ---

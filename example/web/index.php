@@ -9,6 +9,12 @@
  * file that was distributed with this source code.
  */
 
+if (php_sapi_name() == 'cli-server') {
+    if (preg_match('/\.(?:js|css)$/', $_SERVER["REQUEST_URI"])) {
+        return false;
+    }
+}
+
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use Herbie\Middleware\ResponseTimeMiddleware;
@@ -41,7 +47,7 @@ $app->setMiddlewares([
     ResponseTimeMiddleware::class,
     CustomHeader::class,
     new CustomHeader(2),
-    function(ServerRequestInterface $request, RequestHandlerInterface $next) {
+    function (ServerRequestInterface $request, RequestHandlerInterface $next) {
         $request = $request->withAttribute('X-Custom-Attribute-3', time());
         $response = $next->handle($request);
         return $response->withHeader('X-Custom-Header-3', time());

@@ -6,6 +6,8 @@ categories: [Feature,Plugin]
 author: Herbie
 ---
 
+# Redirect Plugin
+
 Mit dem neuen Redirect-Plugin kannst du auf einer beliebigen Seite eine Weiterleitung zu einer URL vornehmen.
 Das Plugin installierst du mit Hilfe von Composer und aktivierst es dann in der Konfigurationsdatei.
 

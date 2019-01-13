@@ -1,6 +1,6 @@
 ---
-title: Features / Vars
-menu: Vars
+title: Variables
+menu: Variables
 format: md
 twig: 1
 date: 2019-01-04
@@ -13,78 +13,86 @@ nocache: 1
 hidden: 0
 custom1: My custom var 1
 custom2: My custom var 2
-excerpt: An overview about global, site and page vars.
+excerpt: An overview about all global, site and page variables.
 ---
 
 # Variables
 
-[page.excerpt]
+{{ page.excerpt }}
 
 ## Global Variables
 
-| Twig Variable | Output |
-|:-------------- |:-------|
-| {{ '{{ route }}' }} | {{ route }} |  
-| {{ '{{ theme }}' }} | {{ theme }} |  
-| {{ '{{ baseUrl }}' }} | {{ baseUrl }} |  
+| Variable | Example | Type |
+|:-------------- |:-------|:-----|
+| {{ '{{ route }}' }} | {{ route }} | string |  
+| {{ '{{ theme }}' }} | {{ theme }} | string |  
+| {{ '{{ baseUrl }}' }} | {{ baseUrl }} | string |  
 
 
 ## Site Variables
 
-| Twig Variable | Output |
-|:-------------- |:-------|
-| {{ '{{ site.charset }}' }} | {{ site.charset }} |  
-| {{ '{{ site.language }}' }} | {{ site.language }} |  
-| {{ '{{ site.locale }}' }} | {{ site.locale }} |  
-| {{ '{{ site.time }}' }} | {{ site.time }} | 
-| {{ '{{ site.modified }}' }} | {{ site.modified }} |  
+| Variable | Example | Type |
+|:-------------- |:-------|:-----|
+| {{ '{{ site.charset }}' }} | {{ site.charset }} | string |  
+| {{ '{{ site.language }}' }} | {{ site.language }} | string |  
+| {{ '{{ site.locale }}' }} | {{ site.locale }} | string |
+| {{ '{{ site.time }}' }} | {{ site.time }} | string |
+| {{ '{{ site.modified }}' }} | {{ site.modified }} | string |  
+| {{ '{{ site.data }}' }} | get all data | array |
+| {{ '{{ site.data.&lt;name&gt; }}' }} | get data for "name" | array |  
+| {{ '{{ site.menu }}' }} | get menu list | array |
+| {{ '{{ site.tree }}' }} | get menu tree | array (tree) |
+| {{ '{{ site.rootPath }}' }} | get menu trail | array |  
 
 
-## Page Vars
+## Page Variables
+
+<!--
 
 ### As Shortcodes
 
-| Shortcode     | Output |
-|:------------- |:-------|
-| [[page.title]] | [page.title] |
-| [[page.layout]] | [page.layout] |  
-| [[page.format]] | [page.format] |
-| [[page.date]] | [page.date] |
-| [[page.keep_extension]] | [page.keep_extension] |  
-| [[page.content_type]] | [page.content_type] |
-| [[page.authors]] | [page.authors join=", "] | 
-| [[page.categories]] | [page.categories join=", "] |  
-| [[page.tags]] | [page.tags join=", "] |
-| [[page.path]] | [page.path] |
-| [[page.route]] | [page.route] |  
-| [[page.nocache]] | [page.nocache] |  
-| [[page.hidden]] | [page.hidden] |
-| [[page.custom1]] | [page.custom1] |  
-| [[page.custom2]] | [page.custom2] |
+| Shortcode     | Example | Type |
+|:------------- |:-------|:------|
+| [[page.title]] | [page.title] | string |
+| [[page.layout]] | [page.layout] | string |  
+| [[page.format]] | [page.format] | string |
+| [[page.date]] | [page.date] | string |
+| [[page.keep_extension]] | [page.keep_extension] | int |  
+| [[page.content_type]] | [page.content_type] | string |
+| [[page.authors]] | [page.authors join=", "] | array | 
+| [[page.categories]] | [page.categories join=", "] | array |  
+| [[page.tags]] | [page.tags join=", "] | array |
+| [[page.path]] | [page.path] | string |
+| [[page.route]] | [page.route] | string |  
+| [[page.nocache]] | [page.nocache] | int |  
+| [[page.hidden]] | [page.hidden] | int |
+| [[page.custom1]] | [page.custom1] | mixed |  
+| [[page.custom2]] | [page.custom2] | mixed |
 
 
 ### As Twig Variables
 
-Twig vars are normally used in layout templates.
-But the can also be used in page content.
+Twig variables are normally used in layout templates.
+But they can also be used in page content.
+-->
 
-| Twig Variable | Output |
-|:-------------- |:-------|
-| {{ '{{ page.title }}' }} | {{ page.title }} |  
-| {{ '{{ page.layout }}' }} | {{ page.layout }} |  
-| {{ '{{ page.format }}' }} | {{ page.format }} |  
-| {{ '{{ page.date }}' }} | {{ page.date }} |  
-| {{ '{{ page.keep_extension }}' }} | {{ page.keep_extension }} |  
-| {{ '{{ page.content_type }}' }} | {{ page.content_type }} |  
-| {{ '{{ page.authors }}' }} | {{ page.authors|join(', ') }} |  
-| {{ '{{ page.categories }}' }} | {{ page.categories|join(', ') }} |  
-| {{ '{{ page.tags }}' }} | {{ page.tags|join(', ') }} |  
-| {{ '{{ page.path }}' }} | {{ page.path }} |  
-| {{ '{{ page.route }}' }} | {{ page.route }} |  
-| {{ '{{ page.nocache }}' }} | {{ page.nocache }} |  
-| {{ '{{ page.hidden }}' }} | {{ page.hidden }} |  
-| {{ '{{ page.custom1 }}' }} | {{ page.custom1 }} |  
-| {{ '{{ page.custom2 }}' }} | {{ page.custom2 }} |  
+| Variable | Example | Type |
+|:-------------- |:-------|:-----|
+| {{ '{{ page.title }}' }} | {{ page.title }} | string |  
+| {{ '{{ page.layout }}' }} | {{ page.layout }} | string |  
+| {{ '{{ page.format }}' }} | {{ page.format }} | string |  
+| {{ '{{ page.date }}' }} | {{ page.date }} | string |  
+| {{ '{{ page.keep_extension }}' }} | {{ page.keep_extension }} | int |  
+| {{ '{{ page.content_type }}' }} | {{ page.content_type }} | string |  
+| {{ '{{ page.authors }}' }} | {{ page.authors|join(', ') }} | array |  
+| {{ '{{ page.categories }}' }} | {{ page.categories|join(', ') }} | array |  
+| {{ '{{ page.tags }}' }} | {{ page.tags|join(', ') }} | array |  
+| {{ '{{ page.path }}' }} | {{ page.path }} | string |  
+| {{ '{{ page.route }}' }} | {{ page.route }} | string |  
+| {{ '{{ page.nocache }}' }} | {{ page.nocache }} | int |  
+| {{ '{{ page.hidden }}' }} | {{ page.hidden }} | int |  
+| {{ '{{ page.custom1 }}' }} | {{ page.custom1 }} | mixed |  
+| {{ '{{ page.custom2 }}' }} | {{ page.custom2 }} | mixed |  
 
 
 <style>

@@ -1,0 +1,21 @@
+-
+    name: filesize
+    code: 'int 12345678|filesize'
+    desc: 'Wandelt eine Grössenangabe in Bytes in ein von Menschen lesbares Format um (B, KB, MB, GB, TB, PB).'
+    return: [string, 'Die umgewandelte Grösse im lesbaren Format']
+-
+    name: strftime
+    code: 'string date|strftime([string format = "%x" ])'
+    desc: 'Formatiert eine Zeit-/Datumsangabe nach den lokalen Einstellungen.'
+    params: [{ name: format, type: string, desc: 'Das Datumformat. Es werden die Formatierungszeichen der gleichnamigen PHP-Funktion genutzt.', default: '%x' }]
+    return: [string, 'Die formatierte Zeit-/Datumsangabe']
+-
+    name: urlify
+    code: 'string "Ein normaler String mit Leerzeichen, Ümläuten und (?!&#) Sonderzeichen."|urlify'
+    desc: 'Wandelt einen String in einen URL-optimierten String um.'
+    return: [string, 'Der umgewandelte String']
+-
+    name: visible
+    code: 'string site.pageTree|visible'
+    desc: 'Filtert den Seitenbaum nach sichtbaren und aktiven Seiten.'
+    return: [string, 'Der gefilterte Seitenbaum']

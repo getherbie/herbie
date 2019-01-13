@@ -334,11 +334,11 @@ class MenuList implements \IteratorAggregate, \Countable
             return $this->items;
         }
 
-        $date = null;
-        $category = null;
-        $tag = null;
-        $author = null;
-        $filteredByLabel = null;
+        $date = '';
+        $category = '';
+        $tag = '';
+        $author = '';
+        $filteredByLabel = '';
 
         // filter by year and month
         if (preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {

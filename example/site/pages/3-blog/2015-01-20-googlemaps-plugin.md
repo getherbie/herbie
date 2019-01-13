@@ -7,6 +7,8 @@ author: Herbie
 image: google-maps-plugin.gif
 ---
 
+# Google Maps Plugin
+
 Mit dem Google Maps Plugin bettest du Karten ganz einfach in deine Website ein. Falls der Browser kein JavaScript
 unterstützt, wird als Fallback ein statisches Google Maps-Bild eingebunden. Aktuell steht ein Shortcode zur Verfügung,
 mit der zur angegebenen Adresse der passende Kartenausschnitt angezeigt wird. Hier sind ein paar Beispiele:

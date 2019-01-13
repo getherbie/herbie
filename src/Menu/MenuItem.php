@@ -13,7 +13,42 @@ declare(strict_types=1);
 
 namespace Herbie\Menu;
 
-class MenuItem
+class MenuItem implements \ArrayAccess
 {
     use MenuItemTrait;
+
+    /**
+     * @param mixed $offset
+     * @return bool|void
+     */
+    public function offsetExists($offset)
+    {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return mixed|void
+     */
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset)
+    {
+        // TODO implement
+    }
 }

@@ -1,0 +1,34 @@
+---
+title: Homepage
+layout: home
+twig: 1
+---
+
+--- left ---
+
+<h2>Welcome to Herbie</h2>
+<p>
+    With Herbie you are able to create a fully functional website or blog in a short amount of time and with little effort.
+    Herbie is based on proven libraries and concepts and supports several PHP Standards Recommendations.
+    It uses Twig as Templating Engine and offers a huge amount of variables, functions, filters and tests.
+    It comes with an event and plugin manager based on Zend\EventManager to ensure extensibility and portability.
+    And it offers some really useful plugins all managed by Composer & Packagist.
+</p>
+<p>Hungry for more? Give it a try!</p>
+
+<h2>Lates blog posts</h2>
+
+{% for item in site.menu|filter("layout=default", "nocache=0", "limit=1") %}
+<p><strong>{{ link(item.route, item.title) }}</strong><br>{{ item.excerpt }}</p>
+{% endfor %}
+
+{% for item in site.menu|filter("nocache=1", "limit=3") %}
+<p><strong>{{ link(item.route, item.title) }}</strong></p>
+{% endfor %}
+
+--- right ---
+
+<h2>Lates blog posts</h2>
+{% for item in site.menu|filter("layout=blog", "nocache=0", "sort=-path", "limit=3") %}
+    <p><strong>{{ link(item.route, item.title) }}</strong><br>{{ item.excerpt }}</p>
+{% endfor %}

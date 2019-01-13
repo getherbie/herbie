@@ -7,7 +7,8 @@
                 <div class="pure-u-1 content">
                     {% if error.code == 404 %}
                         <h1>Page not found</h1>
-                        <p>Oops, something got wrong! The page or ressource could not be found.</p>
+                        <p>Oops, something got wrong! The page or resource could not be found.</p>
+                        <p>{{ error.message }}</p>
                     {% else %}
                         <h1>Error</h1>
                         <p>An error happend.</p>

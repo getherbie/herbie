@@ -99,6 +99,7 @@ class TwigExtension extends Twig_Extension
             new Twig_Filter('strftime', [$this, 'filterStrftime']),
             new Twig_Filter('urlify', [$this, 'filterUrlify'], ['is_safe' => ['html']]),
             new Twig_Filter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
+            new Twig_Filter('filter', [$this, 'filterFilter'], ['is_variadic' => true])
         ];
     }
 
@@ -126,7 +127,10 @@ class TwigExtension extends Twig_Extension
             new Twig_Function('redirect', [$this, 'functionRedirect'], $options),
             new Twig_Function('sitemap', [$this, 'functionSitemap'], $options),
             new Twig_Function('translate', [$this, 'functionTranslate'], $options),
-            new Twig_Function('url', [$this, 'functionUrl'], $options)
+            new Twig_Function('url', [$this, 'functionUrl'], $options),
+            new Twig_Function('listing', [$this, 'functionListing'], $options),
+            new Twig_Function('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
+            new Twig_Function('file', [$this, 'functionFile'], $options)
         ];
     }
 
@@ -233,6 +237,14 @@ class TwigExtension extends Twig_Extension
     {
         $treeIterator = new Menu\Iterator\TreeIterator($tree);
         return new Menu\Iterator\FilterIterator($treeIterator);
+    }
+
+    public function filterFilter(\Traversable $iterator, array $selectors = [])
+    {
+        $selector = new Selector(get_class($iterator));
+        $items = $iterator->getItems();
+        $filtered = $selector->find($selectors, $items);
+        return $filtered;
     }
 
     /**
@@ -611,6 +623,79 @@ class TwigExtension extends Twig_Extension
     public function functionUrl($route)
     {
         return $this->urlGenerator->generate($route);
+    }
+
+    public function functionListing(
+        $path = '@widget/listing.twig',
+        $filter = '',
+        $sort = '',
+        $shuffle = false,
+        $limit = 10,
+        $pagination = true
+    ) {
+
+        $menuList = $this->menuList;
+
+        if (!empty($filter)) {
+            list($field, $value) = explode('|', $filter);
+            $menuList = $menuList->filter($field, $value);
+        }
+
+        if (!empty($sort)) {
+            list($field, $direction) = explode('|', $sort);
+            $menuList = $menuList->sort($field, $direction);
+        }
+
+        if (1 == (int)$shuffle) {
+            $menuList = $menuList->shuffle();
+        }
+
+        // filter pages with empty title
+        $menuList = $menuList->filter(function (\Herbie\Menu\MenuItem $page) {
+            return !empty($page->title);
+        });
+
+        $pagination = new \Herbie\Pagination($menuList);
+        $pagination->setLimit($limit);
+
+        return $this->twigRenderer->renderTemplate($path, ['pagination' => $pagination]);
+    }
+
+    public function functionSnippet(string $path, array $options = [])
+    {
+        return $this->twigRenderer->renderTemplate($path, $options);
+    }
+
+    public function functionFile()
+    {
+        $this->add('file', function ($path, $info = '', $text = '', array $attributes = []) {
+
+            $attributes['alt'] = $attributes['alt'] ?? '';
+
+            if (!empty($info)) {
+                $fileInfo = $this->getFileInfo($path);
+            }
+
+            $replace = [
+                '{href}' => $path,
+                '{attribs}' => $this->buildHtmlAttributes($attributes),
+                '{text}' => empty($text) ? $path : $text,
+                '{info}' => empty($fileInfo) ? '' : sprintf('<span class="file-info">%s</span>', $fileInfo)
+            ];
+            return strtr('<a href="{href}" {attribs}>{text}</a>{info}', $replace);
+        });
+    }
+
+    private function getFileInfo($path)
+    {
+        if (!is_readable($path)) {
+            return '';
+        }
+        $replace = [
+            '{size}' => $this->filterFilesize(filesize($path)),
+            '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
+        ];
+        return strtr(' ({extension}, {size})', $replace);
     }
 
     /**

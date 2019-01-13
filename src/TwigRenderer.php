@@ -19,6 +19,7 @@ use Twig_Extension_Debug;
 use Twig_Filter;
 use Twig_Function;
 use Twig_Loader_Array;
+use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Test;
 
@@ -91,7 +92,6 @@ class TwigRenderer
         $this->menuList = $menuList;
         $this->menuTree = $menuTree;
         $this->menuTrail = $menuTrail;
-        $this->environment = $environment;
         $this->dataRepository = $dataRepository;
         $this->eventManager = $eventManager;
     }
@@ -161,33 +161,20 @@ class TwigRenderer
         */
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
+
+        $this->renderString('huhu test');
     }
 
     /**
      * @param string $string
      * @param array $context
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws \Throwable
      */
     public function renderString(string $string, array $context = []): string
     {
-        $name = '__render_string__';
-
-        // get current loader
-        $currentLoader = $this->twig->getLoader();
-
-        // set loader chain with new array loader
-        $this->twig->setLoader(new Twig_Loader_Array([$name => $string]));
-
-        // render string
-        $context = array_merge($context, $this->getContext());
-        $rendered = $this->twig->render($name, $context);
-
-        // set current loader
-        $this->twig->setLoader($currentLoader);
-        return $rendered;
+        $context = array_merge($this->getContext(), $context);
+        return $this->twig->render($string, $context);
     }
 
     /**
@@ -200,8 +187,28 @@ class TwigRenderer
      */
     public function renderTemplate(string $name, array $context = []): string
     {
-        $context = array_merge($context, $this->getContext());
+        $context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
+    }
+
+    /**
+     * @return array
+     */
+    public function getContext()
+    {
+        return [
+            'route' => $this->environment->getRoute(),
+            'baseUrl' => $this->environment->getBaseUrl(),
+            'theme' => $this->config->get('theme'),
+            'site' => new Site(
+                $this->config,
+                $this->dataRepository,
+                $this->menuList,
+                $this->menuTree,
+                $this->menuTrail
+            ),
+            'page' => null // will be set by page render middleware
+        ];
     }
 
     /**
@@ -226,18 +233,6 @@ class TwigRenderer
     public function addTest(Twig_Test $test)
     {
         $this->twig->addTest($test);
-    }
-
-    /**
-     * @return array
-     */
-    private function getContext()
-    {
-        return [
-            'route' => $this->environment->getRoute(),
-            'baseUrl' => $this->environment->getBaseUrl(),
-            'theme' => $this->config->get('theme')
-        ];
     }
 
     /**
@@ -284,7 +279,8 @@ class TwigRenderer
             $paths[] = $this->config->get('layouts.path') . '/default';
         }
 
-        $loader = new Twig_Loader_Filesystem($paths);
+        $loader1 = new TwigStringLoader();
+        $loader2 = new Twig_Loader_Filesystem($paths);
 
         // namespaces
         $namespaces = [
@@ -295,10 +291,11 @@ class TwigRenderer
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
-                $loader->addPath($path, $namespace);
+                $loader2->addPath($path, $namespace);
             }
         }
 
+        $loader = new Twig_Loader_Chain([$loader1, $loader2]);
         return $loader;
     }
 

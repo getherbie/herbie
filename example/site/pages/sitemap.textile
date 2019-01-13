@@ -3,6 +3,6 @@ title: Sitemap
 twig: 1
 ---
 
-# Sitemap
+h1. Sitemap
 
 {{ sitemap() }}

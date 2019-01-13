@@ -6,6 +6,8 @@ categories: [Feature,Release]
 author: Herbie
 ---
 
+# Blocks- und Listing-Shortcodes
+
 Mit Version 0.8.2 wurden zwei neue Shortcodes eingeführt: Blocks und Listing. Mit dem `blocks`-Shortcode wird es 
 möglich, Seiten aus mehrenen Blocks (=spezielle Unterseiten) zusammen zu bauen. Somit können mehrspaltige oder andere 
 komplexe Layouts einfach umgesetzt werden. Blocks sind im Prinzip normale Seiten mit eigenem Layout.

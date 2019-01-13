@@ -27,6 +27,18 @@ class HttpException extends Exception
 
     /**
      * @param string $path
+     * @param string|null $format
+     * @return static
+     */
+    public static function fileNotFound(string $path, string $format = null): HttpException
+    {
+        $format = $format ?? 'File `%s` not found';
+        $message = sprintf($format, $path);
+        return new HttpException($message, 404);
+    }
+
+    /**
+     * @param string $path
      * @param string $method
      * @param array $allowed
      * @param string|null $format

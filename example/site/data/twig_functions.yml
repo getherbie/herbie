@@ -1,0 +1,107 @@
+-
+    name: absurl
+    code: 'string absurl(string route)'
+    desc: 'Gibt zu einer bestimmten Route die absolute URL aus.'
+    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }]
+    return: [string, 'Die absolute URL zu einer Route.']
+-
+    name: addcss
+    code: 'addcss(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
+    desc: 'Fügt ein CSS-Asset hinzu.'
+    params: [{ name: paths, type: string|array, desc: 'Ein oder mehrere Pfade zu CSS-Ressourcen.', default: '' }, { name: attr, type: array, desc: 'Attribute für das HTML-Tag.', default: '[]' }, { name: group, type: string, desc: 'Ein Name zur Gruppierung des CSS.', default: 'null' }, { name: raw, type: bool, desc: 'Gibt das CSS direkt aus anstatt als Link.', default: 'false' }, { name: pos, type: int, desc: 'Beeinflusst die Reihenfolge der Ausgabe.', default: '-1' }]
+    return: [void]
+-
+    name: addjs
+    code: 'addjs(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
+    desc: 'Fügt ein Js-Asset hinzu.'
+    params: [{ name: paths, type: string|array, desc: 'Ein oder mehrere Pfade zu JavaScript-Ressourcen.', default: '' }, { name: attr, type: array, desc: 'Attribute für das HTML-Tag.', default: '[]' }, { name: group, type: string, desc: 'Ein Name zur Gruppierung des JavaScript.', default: 'null' }, { name: raw, type: bool, desc: 'Gibt das JavaScript direkt aus anstatt als Link.', default: 'false' }, { name: pos, type: int, desc: 'Beeinflusst die Reihenfolge der Ausgabe.', default: '-1' }]
+    return: [void]
+-
+    name: asciitree
+    code: 'string asciitree([array options = {}])'
+    desc: 'Erstellt für alle Seiten der Website einen textbasierten (=Ascii) Baum. Alle Parameter werden als assoziatives Array übergeben.'
+    params: [{ name: route, type: string, desc: 'Gibt den Baum ab der angegebenen Route aus.', default: '""' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }, { name: maxDepth, type: int, desc: 'Definiert die maximale Tiefe der Verschachtelung.', default: '-1' }, { name: class, type: string, desc: 'Der CSS-Klassenname.', default: sitemap }]
+    return: [string, 'Der Baum der Website als Ascii-Text']
+-
+    name: bodyclass
+    code: 'string bodyclass()'
+    desc: 'Gibt CSS-Klassen zurück, die für das class-Attribut des body-Tags genutzt werden können.'
+    return: [string, 'Die CSS-Klassen für das body-Tag']
+-
+    name: breadcrumb
+    code: 'string breadcrumb([array options = {}])'
+    desc: 'Gibt für die aktuelle Seite einen vollständigen Brotkümelpfad aus. Alle Parameter werden als assoziatives Array übergeben.'
+    params: [{ name: delim, type: string, desc: 'Der Trenner.', default: '""' }, { name: homeLink, type: string, desc: 'Der Link zur Homepage', default: 'null' }, { name: reverse, type: bool, desc: 'Ob der Pfad umgekehrt ausgegeben werden soll.', default: 'false' }]
+    return: [string, 'Der generierte Brotkümelpfad']
+-
+    name: config
+    code: 'string config(string name[, mixed default = null])'
+    desc: 'Gibt den Wert einer bestimmten Konfiguration-Einstellung aus.'
+    params: [{ name: name, type: int, desc: 'Der Name der Konfigurations-Einstellung.', default: '' }, { name: default, type: mixed, desc: 'Der Defaultwert, falls keine Konfiguration vorhanden.', default: 'null' }]
+    return: [mixed, 'Die Konfigurations-Einstellung']
+-
+    name: image
+    code: 'string image(string src [, string width = ''''][, string height = ''''][, string alt = ''''][, string class = ''''])'
+    desc: 'Gibt ein IMG-Tag aus.'
+    params: [{ name: src, type: string, desc: 'Der relative Pfad zur Bilddatei.', default: '' }, { name: width, type: string, desc: 'Die Breite des Bildes.', default: '""' }, { name: height, type: string, desc: 'Die Höhe des Bildes.', default: '""' }, { name: alt, type: string, desc: 'Der ALT-Text des Bildes.', default: '""' }, { name: class, type: string, desc: 'Das HTML-Attribut class.', default: '""' }]
+    return: [string, 'Das IMG HTML-Tag']
+-
+    name: link
+    code: 'string link(string route, string label [, array htmlAttributes = {}])'
+    desc: 'Gibt zu einer bestimmten Route einen HTML-Link mit dem Label und den Attributen aus.'
+    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }, { name: label, type: string, desc: 'Das Label.', default: '' }, { name: htmlAttributes, type: array, desc: 'Die HTML-Attribute als assoziatives Array.', default: '' }]
+    return: [string, 'Der Link zu einer Route']
+-
+    name: menu
+    code: 'string menu([array options = {}])'
+    desc: 'Gibt ein Menü der Seiten der Website als verschachtelte HTML-Liste zurück. Alle Parameter werden als assoziatives Array übergeben.'
+    params: [{ name: route, type: string, desc: 'Gibt das Menü ab der angegebenen Route aus.', default: 'null' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }]
+    return: [string, 'Das Menü als HTML-Liste']
+-
+    name: outputcss
+    code: 'string outputcss([string group])'
+    desc: 'Gibt die CSS-Assets für eine bestimmte Gruppe zurück.'
+    params: [{ name: group, type: string, desc: 'Das gruppierte CSS.', default: 'null' }]
+    return: [string, 'Die CSS-Assets']
+-
+    name: outputjs
+    code: 'string outputjs([string group])'
+    desc: 'Gibt die JavaScript-Assets für eine bestimmte Gruppe zurück.'
+    params: [{ name: group, type: string, desc: 'Das gruppierte JavaScript.', default: 'null' }]
+    return: [string, 'Die JavaScript-Assets']
+-
+    name: pagetitle
+    code: 'string pagetitle([array options = {}])'
+    desc: 'Gibt den Seitentitel der Website SEO-optimiert aus. Alle Parameter werden als assoziatives Array übergeben.'
+    params: [{ name: delim, type: string, desc: 'Der Trenner.', default: / }, { name: siteTitle, type: string, desc: 'Der Titel der Website.', default: 'null' }, { name: rootTitle, type: string, desc: 'Der Titel der Rootseite der Website.', default: 'null' }, { name: reverse, type: bool, desc: 'Ob der Pfad umgekehrt ausgegeben werden soll.', default: 'false' }]
+    return: [string, 'Der Seitentitel der Website']
+-
+    name: pager
+    code: 'string pager([string limit = ""][, string template = "{prev}{next}"][, string linkClass = ""][, string prevPageLabel = ""][, string nextPageLabel = ""][, string prevPageIcon = ""][, string nextPageIcon = ""])'
+    desc: 'Erstellt eine Paginierung mit Links zur vorherigen und nächsten Seite (im Seitenbaum). Alle Parameter sind optional und werden als benannte Parameter übergeben.'
+    params: [{ name: limit, type: string, desc: 'Beschränkt die Anwendung auf einen bestimmten Bereich des Seitenbaums.', default: '' }, { name: template, type: string, desc: 'Das Template.', default: '{prev}{next}' }, { name: linkClass, type: string, desc: 'Die CSS-Klasse der Links.', default: '' }, { name: prevPageLabel, type: string, desc: 'Das Label des Links zur vorherigen Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: nextPageLabel, type: string, desc: 'Das Label des Links zur nächsten Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: prevPageIcon, type: string, desc: 'Das Icon des Links zur vorherigen Seite.', default: '' }, { name: nextPageIcon, type: string, desc: 'Das Icon des Links zur nächsten Seite.', default: '' }]
+    return: [string, 'Der generierte HTML-Code']
+-
+    name: redirect
+    code: 'string redirect(string route [, int status = 302])'
+    desc: 'Leitet zur internen Seite mit der entsprechenden Route weiter und sendet einen gültigen Statuscode.'
+    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }, { name: status, type: int, desc: 'Der Statuscode.', default: '302' }]
+    return: [void, '']
+-
+    name: sitemap
+    code: 'string sitemap([array options = {}])'
+    desc: 'Erstellt für alle Seiten der Website eine Sitemap basierend auf einer unsortierten HTML-Liste. Alle Parameter werden als assoziatives Array übergeben.'
+    params: [{ name: route, type: string, desc: 'Gibt die Sitemap ab der angegebenen Route aus.', default: '""' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }, { name: maxDepth, type: int, desc: 'Definiert die maximale Tiefe der Verschachtelung.', default: '-1' }, { name: class, type: string, desc: 'Der CSS-Klassenname.', default: sitemap }]
+    return: [string, 'Die Sitemap der Website als HTML-Liste']
+-
+    name: translate
+    code: ''
+    desc: 'To be done'
+    params: []
+    return: []
+-
+    name: url
+    code: 'string url(string route)'
+    desc: 'Gibt zu einer bestimmten Route die URL aus.'
+    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }]
+    return: [string, 'Die URL zu einer Route.']

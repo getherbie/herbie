@@ -148,6 +148,10 @@ class PageRendererMiddleware implements MiddlewareInterface
 
         if (null === $rendered) {
             $context = [
+                /*
+                'route' => $this->environment->getRoute(),
+                'baseUrl' => $this->environment->getBaseUrl(),
+                'theme' => $this->config->get('theme'),
                 'site' => new Site(
                     $this->config,
                     $this->dataRepository,
@@ -155,6 +159,7 @@ class PageRendererMiddleware implements MiddlewareInterface
                     $this->menuTree,
                     $this->menuTrail
                 ),
+                */
                 'page' => $page
             ];
 

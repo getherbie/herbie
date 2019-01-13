@@ -1,0 +1,12 @@
+---
+title: Search
+nocache: 1
+hidden: 1
+twig: 1
+---
+
+h1. Search
+
+{{ simplesearch_form() }}
+
+{{ simplesearch_results() }}

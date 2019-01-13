@@ -20,6 +20,7 @@ use Herbie\Menu\MenuBuilder;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\MenuTrail;
+use Herbie\Middleware\DownloadMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageRendererMiddleware;
@@ -134,7 +135,8 @@ class Application
             '@plugin' => $config->get('plugins.path'),
             '@site' => $this->sitePath,
             '@vendor' => $this->vendorDir,
-            '@web' => $config->get('web.path')
+            '@web' => $config->get('web.path'),
+            '@widget' => $config->get('app.path') . '/../templates/widgets'
         ]);
 
         $c[TwigRenderer::class] = function ($c) {
@@ -298,6 +300,7 @@ class Application
             ],
             $this->middlewares,
             [
+                new DownloadMiddleware($this->getConfig(), $this->getAlias()),
                 new PageResolverMiddleware(
                     $this,
                     $this->getEnvironment(),
