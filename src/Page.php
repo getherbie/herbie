@@ -131,43 +131,6 @@ class Page
     }
 
     /**
-     * Get the http status code depending on a set error code.
-     * @return int
-     */
-    public function getStatusCode(): int
-    {
-        if (empty($this->data['error'])) {
-            return 200;
-        }
-        if (empty($this->data['error']['code'])) {
-            return 500;
-        }
-        return $this->data['error']['code'];
-    }
-
-    /**
-     * @return \Throwable
-     */
-    public function getError(): \Throwable
-    {
-        return $this->data['error'];
-    }
-
-    /**
-     * @param \Throwable $e
-     */
-    public function setError(\Throwable $e): void
-    {
-        $this->data['error'] = [
-            'message' => $e->getMessage(),
-            'code' => $e->getCode(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ];
-    }
-
-    /**
      * @return string
      */
     public function getDefaultBlocksPath(): string

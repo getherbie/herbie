@@ -29,6 +29,7 @@ trait MenuItemTrait
         $this->data = [
             'title' => '',
             'route' => '',
+            'type' => 'page',
             'path' => '',
             'format' => '',
             'date' => '',
@@ -44,8 +45,7 @@ trait MenuItemTrait
             'hidden' => 0,
             'excerpt' => '',
             'twig' => 0,
-            'keep_extension' => 0,
-            'error' => []
+            'keep_extension' => 0
         ];
         $this->setData($data);
     }
@@ -64,6 +64,22 @@ trait MenuItemTrait
     public function setTitle(string $title): void
     {
         $this->data['title'] = trim($title);
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->data['type'] ?? '';
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->data['type'] = trim($type);
     }
 
     /**

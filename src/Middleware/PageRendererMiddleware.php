@@ -131,8 +131,11 @@ class PageRendererMiddleware implements MiddlewareInterface
     /**
      * @param Page $page
      * @return ResponseInterface
-     * @throws \Exception
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     private function renderPage(Page $page): ResponseInterface
     {
@@ -194,7 +197,7 @@ class PageRendererMiddleware implements MiddlewareInterface
             $rendered = $content->get();
         }
 
-        $response = $this->httpFactory->createResponse($page->getStatusCode());
+        $response = $this->httpFactory->createResponse(200);
         $response->getBody()->write($rendered);
         $response->withHeader('Content-Type', $page->content_type);
 
