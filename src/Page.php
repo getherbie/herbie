@@ -118,19 +118,6 @@ class Page
     }
 
     /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'parent' => $this->parent,
-            'data' => $this->data,
-            'segments' => $this->segments
-        ];
-    }
-
-    /**
      * @return string
      */
     public function getDefaultBlocksPath(): string

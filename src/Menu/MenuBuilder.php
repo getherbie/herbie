@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Herbie\Menu;
 
+use Herbie\Config;
 use Herbie\Menu\Iterator\FileFilterCallback;
 use Herbie\Menu\Iterator\RecursiveDirectoryIterator;
 use Herbie\Menu\Iterator\SortableIterator;
@@ -32,9 +33,9 @@ class MenuBuilder
     private $cache;
 
     /**
-     * @var array
+     * @var string
      */
-    private $paths;
+    private $path;
 
     /**
      * @var array
@@ -48,14 +49,13 @@ class MenuBuilder
 
     /**
      * @param FlatfilePersistenceInterface $flatfilePersistence
-     * @param array $paths
-     * @param array $extensions
+     * @param Config $config
      */
-    public function __construct(FlatfilePersistenceInterface $flatfilePersistence, array $paths, array $extensions)
+    public function __construct(FlatfilePersistenceInterface $flatfilePersistence, Config $config)
     {
         $this->flatfilePersistence = $flatfilePersistence;
-        $this->paths = $paths;
-        $this->extensions = $extensions;
+        $this->path = $config->paths->pages;
+        $this->extensions = $config->fileExtensions->pages->toArray();
         $this->indexFiles = [];
     }
 
@@ -83,27 +83,25 @@ class MenuBuilder
     {
         $menuList = $this->restoreMenuList();
         if (!$menuList->fromCache) {
-            foreach ($this->paths as $alias => $path) {
-                $this->indexFiles = [];
-                foreach ($this->getIterator($path) as $fileInfo) {
-                    // index file as describer for parent folder
-                    if ($fileInfo->isDir()) {
-                        // get first index file only
-                        foreach (glob($fileInfo->getPathname() . '/*index.*') as $indexFile) {
-                            $this->indexFiles[] = $indexFile;
-                            $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
-                            $item = $this->createItem($relPathname, $alias);
-                            $menuList->addItem($item);
-                            break;
-                        }
-                        // other files
-                    } else {
-                        if (!$this->isValid($fileInfo->getPathname(), $fileInfo->getExtension())) {
-                            continue;
-                        }
-                        $item = $this->createItem($fileInfo->getRelativePathname(), $alias);
+            $this->indexFiles = [];
+            foreach ($this->getIterator($this->path) as $fileInfo) {
+                // index file as describer for parent folder
+                if ($fileInfo->isDir()) {
+                    // get first index file only
+                    foreach (glob($fileInfo->getPathname() . '/*index.*') as $indexFile) {
+                        $this->indexFiles[] = $indexFile;
+                        $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
+                        $item = $this->createItem($relPathname, '@page');
                         $menuList->addItem($item);
+                        break;
                     }
+                    // other files
+                } else {
+                    if (!$this->isValid($fileInfo->getPathname(), $fileInfo->getExtension())) {
+                        continue;
+                    }
+                    $item = $this->createItem($fileInfo->getRelativePathname(), '@page');
+                    $menuList->addItem($item);
                 }
             }
             $this->storeMenuList($menuList);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Herbie\Url;
 
+use Herbie\Config;
 use Herbie\Environment;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -40,13 +41,13 @@ class UrlGenerator
      * Constructor
      * @param ServerRequestInterface $request The request object.
      * @param Environment $environment
-     * @param bool $niceUrls Whether to generate nice URLs.
+     * @param Config $config
      */
-    public function __construct(ServerRequestInterface $request, Environment $environment, bool $niceUrls)
+    public function __construct(ServerRequestInterface $request, Environment $environment, Config $config)
     {
         $this->request = $request;
         $this->environment = $environment;
-        $this->niceUrls = $niceUrls;
+        $this->niceUrls = $config->niceUrls;
     }
 
     /**

@@ -13,40 +13,59 @@ declare(strict_types=1);
 
 namespace Herbie\Menu;
 
+use function Herbie\camelize;
+
 trait MenuItemTrait
 {
-    /**
-     * @var array
-     */
-    private $data = [];
+    private $authors;
+    private $categories;
+    private $content_type;
+    private $created;
+    private $customData;
+    private $date;
+    private $excerpt;
+    private $format;
+    private $hidden;
+    private $keep_extension;
+    private $layout;
+    private $menu;
+    private $modified;
+    private $nocache;
+    private $path;
+    private $route;
+    private $tags;
+    private $title;
+    private $type;
+    private $twig;
 
     /**
      * @param array $data
      */
     public function __construct(array $data = [])
     {
-        // default / required fields
-        $this->data = [
-            'title' => '',
-            'route' => '',
-            'type' => 'page',
-            'path' => '',
-            'format' => '',
-            'date' => '',
-            'layout' => 'default',
-            'content_type' => 'text/html',
-            'authors' => [],
-            'categories' => [],
-            'tags' => [],
-            'menu' => '',
-            'modified' => '',
-            'created' => '',
-            'nocache' => 0,
-            'hidden' => 0,
-            'excerpt' => '',
-            'twig' => 0,
-            'keep_extension' => 0
-        ];
+        // set defaults
+        $this->title = '';
+        $this->route = '';
+        $this->type = 'page';
+        $this->path = '';
+        $this->format = '';
+        $this->date = '';
+        $this->layout = 'default';
+        $this->content_type = 'text/html';
+        $this->authors = [];
+        $this->categories = [];
+        $this->tags = [];
+        $this->menu = '';
+        $this->modified = '';
+        $this->created = '';
+        $this->nocache = 0;
+        $this->hidden = 0;
+        $this->excerpt = '';
+        $this->twig = 1;
+        $this->keep_extension = 0;
+        $this->customData = [];
+
+        // set values
         $this->setData($data);
     }
 
@@ -55,7 +74,7 @@ trait MenuItemTrait
      */
     public function getTitle(): string
     {
-        return $this->data['title'] ?? '';
+        return $this->title;
     }
 
     /**
@@ -63,7 +82,7 @@ trait MenuItemTrait
      */
     public function setTitle(string $title): void
     {
-        $this->data['title'] = trim($title);
+        $this->title = trim($title);
     }
 
     /**
@@ -71,7 +90,7 @@ trait MenuItemTrait
      */
     public function getType(): string
     {
-        return $this->data['type'] ?? '';
+        return $this->type;
     }
 
     /**
@@ -79,7 +98,39 @@ trait MenuItemTrait
      */
     public function setType(string $type): void
     {
-        $this->data['type'] = trim($type);
+        $this->type = trim($type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLayout(): string
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout(string $layout): void
+    {
+        $this->layout = trim($layout);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMenu(): string
+    {
+        return $this->menu;
+    }
+
+    /**
+     * @param string $menu
+     */
+    public function setMenu(string $menu): void
+    {
+        $this->menu = trim($menu);
     }
 
     /**
@@ -87,8 +138,9 @@ trait MenuItemTrait
      */
     public function getRoute(): string
     {
-        return trim($this->data['route']);
+        return trim($this->route);
     }
+
     /**
      * @return string
      * TODO do we need this?
@@ -115,7 +167,7 @@ trait MenuItemTrait
      */
     public function setRoute(string $route): void
     {
-        $this->data['route'] = $route;
+        $this->route = trim($route);
     }
 
     /**
@@ -131,7 +183,7 @@ trait MenuItemTrait
      */
     public function getPath(): string
     {
-        return isset($this->data['path']) ? $this->data['path'] : '';
+        return $this->path;
     }
 
     /**
@@ -139,7 +191,7 @@ trait MenuItemTrait
      */
     public function setPath(string $path): void
     {
-        $this->data['path'] = $path;
+        $this->path = trim($path);
     }
 
     /**
@@ -147,7 +199,7 @@ trait MenuItemTrait
      */
     public function getFormat(): string
     {
-        return $this->data['format'];
+        return $this->format;
     }
 
     /**
@@ -155,7 +207,7 @@ trait MenuItemTrait
      */
     public function setFormat(string $format): void
     {
-        switch ($format) {
+        switch (trim($format)) {
             case 'md':
             case 'markdown':
                 $format = 'markdown';
@@ -166,7 +218,7 @@ trait MenuItemTrait
             default:
                 $format = 'raw';
         }
-        $this->data['format'] = $format;
+        $this->format = $format;
     }
 
     /**
@@ -174,15 +226,15 @@ trait MenuItemTrait
      */
     public function getDate(): string
     {
-        return isset($this->data['date']) ? $this->data['date'] : '';
+        return $this->date;
     }
 
     /**
-     * @param string $date
+     * @param mixed $date
      */
     public function setDate($date): void
     {
-        $this->data['date'] = is_numeric($date) ? date('c', $date) : $date;
+        $this->date = is_numeric($date) ? date('c', $date) : trim($date);
     }
 
     /**
@@ -190,10 +242,10 @@ trait MenuItemTrait
      */
     public function getMenuTitle(): string
     {
-        if (!empty($this->data['menu'])) {
-            return $this->data['menu'];
+        if (!empty($this->menu)) {
+            return $this->menu;
         }
-        return $this->data['title'];
+        return $this->title;
     }
 
     /**
@@ -203,7 +255,7 @@ trait MenuItemTrait
     public function getAuthor(string $author): string
     {
         $author = $this->slugify($author);
-        foreach ($this->data['authors'] as $a) {
+        foreach ($this->authors as $a) {
             if ($this->slugify($a) == $author) {
                 return $a;
             }
@@ -216,7 +268,7 @@ trait MenuItemTrait
      */
     public function getAuthors(): array
     {
-        return $this->data['authors'];
+        return $this->authors;
     }
 
     /**
@@ -226,7 +278,7 @@ trait MenuItemTrait
     public function getCategory(string $category): string
     {
         $category = $this->slugify($category);
-        foreach ($this->data['categories'] as $c) {
+        foreach ($this->categories as $c) {
             if ($this->slugify($c) == $category) {
                 return $c;
             }
@@ -239,7 +291,7 @@ trait MenuItemTrait
      */
     public function getCategories(): array
     {
-        return $this->data['categories'];
+        return $this->categories;
     }
 
     /**
@@ -247,7 +299,7 @@ trait MenuItemTrait
      */
     public function getTags(): array
     {
-        return isset($this->data['tags']) ? $this->data['tags'] : [];
+        return $this->tags;
     }
 
     /**
@@ -270,7 +322,9 @@ trait MenuItemTrait
      */
     public function setCategories(array $categories): void
     {
-        $this->data['categories'] = array_unique($categories);
+        $categories = array_map('trim', $categories);
+        $categories = array_unique($categories);
+        $this->categories = $categories;
     }
 
     /**
@@ -278,7 +332,10 @@ trait MenuItemTrait
      */
     public function setCategory(string $category): void
     {
-        $this->data['categories'][] = $category;
+        $category = trim($category);
+        if (!in_array($category, $this->categories)) {
+            $this->categories[] = $category;
+        }
     }
 
     /**
@@ -286,7 +343,9 @@ trait MenuItemTrait
      */
     public function setTags(array $tags): void
     {
-        $this->data['tags'] = array_unique($tags);
+        $tags = array_map('trim', $tags);
+        $tags = array_unique($tags);
+        $this->tags = $tags;
     }
 
     /**
@@ -294,7 +353,10 @@ trait MenuItemTrait
      */
     public function setTag(string $tag): void
     {
-        $this->data['tags'][] = $tag;
+        $tag = trim($tag);
+        if (!in_array($tag, $this->tags)) {
+            $this->tags[] = $tag;
+        }
     }
 
 
@@ -303,7 +365,9 @@ trait MenuItemTrait
      */
     public function setAuthors(array $authors): void
     {
-        $this->data['authors'] = array_unique($authors);
+        $authors = array_map('trim', $authors);
+        $authors = array_unique($authors);
+        $this->authors = $authors;
     }
 
     /**
@@ -311,7 +375,10 @@ trait MenuItemTrait
      */
     public function setAuthor(string $author): void
     {
-        $this->data['authors'][] = $author;
+        $author = trim($author);
+        if (!in_array($author, $this->authors)) {
+            $this->authors[] = $author;
+        }
     }
 
     /**
@@ -321,7 +388,7 @@ trait MenuItemTrait
     public function hasAuthor(string $author): bool
     {
         $author = $this->slugify($author);
-        foreach ($this->data['authors'] as $c) {
+        foreach ($this->authors as $c) {
             if ($this->slugify($c) == $author) {
                 return true;
             }
@@ -336,7 +403,7 @@ trait MenuItemTrait
     public function hasCategory(string $category): bool
     {
         $category = $this->slugify($category);
-        foreach ($this->data['categories'] as $c) {
+        foreach ($this->categories as $c) {
             if ($this->slugify($c) == $category) {
                 return true;
             }
@@ -364,7 +431,7 @@ trait MenuItemTrait
      */
     public function setModified(string $modified): void
     {
-        $this->data['modified'] = $modified;
+        $this->modified = $modified;
     }
 
     /**
@@ -372,82 +439,74 @@ trait MenuItemTrait
      */
     public function getModified(): string
     {
-        return isset($this->data['modified']) ? $this->data['modified'] : '';
+        return $this->modified;
     }
 
     public function getTwig(): int
     {
-        return isset($this->data['twig']) ? $this->data['twig'] : 0;
+        return $this->twig;
     }
 
     public function setTwig(int $twig): void
     {
-        $this->data['twig'] = abs($twig);
+        $this->twig = abs($twig);
     }
 
     public function getKeepExtension(): int
     {
-        return isset($this->data['keep_extension']) ? $this->data['keep_extension'] : 0;
+        return $this->keep_extension;
     }
 
     public function setKeepExtension(int $keepExtension): void
     {
-        $this->data['keep_extension'] = abs($keepExtension);
+        $this->keep_extension = abs($keepExtension);
     }
 
     public function getContentType(): string
     {
-        return isset($this->data['content_type']) ? $this->data['content_type'] : 'text/html';
+        return $this->content_type;
     }
 
     public function setContentType(string $contentType): void
     {
-        $this->data['content_type'] = string($contentType);
+        $this->content_type = trim($contentType);
     }
 
     public function getNoCache(): int
     {
-        return isset($this->data['nocache']) ? $this->data['nocache'] : 0;
+        return $this->nocache;
     }
 
     public function setNoCache(int $noCache): void
     {
-        $this->data['nocache'] = abs($noCache);
+        $this->nocache = abs($noCache);
     }
 
     public function getHidden(): int
     {
-        return isset($this->data['hidden']) ? $this->data['hidden'] : 0;
+        return $this->hidden;
     }
 
     public function setHidden(int $hidden): void
     {
-        $this->data['hidden'] = abs($hidden);
+        $this->hidden = abs($hidden);
     }
 
     public function getExcerpt(): string
     {
-        return isset($this->data['excerpt']) ? $this->data['excerpt'] : '';
+        return $this->excerpt;
     }
 
     public function setExcerpt(string $excerpt): void
     {
-        $this->data['excerpt'] = trim($excerpt);
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
+        $this->excerpt = trim($excerpt);
     }
 
     /**
      * @param array $data
      * @throws \LogicException
      */
-    public function setData(array $data): void
+    private function setData(array $data): void
     {
         if (array_key_exists('data', $data)) {
             throw new \LogicException("Field data is not allowed.");
@@ -502,11 +561,11 @@ trait MenuItemTrait
      */
     public function __get(string $name)
     {
-        $getter = 'get' . $name;
+        $getter = 'get' . camelize($name);
         if (method_exists($this, $getter)) {
             return $this->$getter();
-        } elseif (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
+        } elseif (array_key_exists($name, $this->customData)) {
+            return $this->customData[$name];
         } else {
             throw new \LogicException("Field {$name} does not exist.");
         }
@@ -518,11 +577,11 @@ trait MenuItemTrait
      */
     public function __isset(string $name): bool
     {
-        $getter = 'get' . $name;
+        $getter = 'get' . camelize($name);
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->data)) {
-            return $this->data[$name] !== null;
+        } elseif (array_key_exists($name, $this->customData)) {
+            return $this->customData[$name] !== null;
         } else {
             return false;
         }
@@ -534,11 +593,11 @@ trait MenuItemTrait
      */
     public function __set(string $name, $value): void
     {
-        $setter = 'set' . $name;
+        $setter = 'set' . camelize($name);
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } else {
-            $this->data[$name] = $value;
+            $this->customData[$name] = $value;
         }
     }
 
@@ -547,7 +606,7 @@ trait MenuItemTrait
      */
     public function __toString(): string
     {
-        return $this->data['title'];
+        return $this->title;
     }
 
     /**
@@ -555,7 +614,14 @@ trait MenuItemTrait
      */
     public function toArray(): array
     {
-        return $this->data;
+        $array = [];
+        foreach (get_object_vars($this) as $name => $value) {
+            $method = 'get' . camelize($name);
+            if (method_exists($this, $method)) {
+                $array[$name] = $this->$method();
+            }
+        }
+        return $array;
     }
 
     /**

@@ -30,17 +30,14 @@ class Translator
     private $messages;
 
     /**
+     * Translator constructor.
      * @param string $language
-     * @param array $paths
      */
-    public function __construct(string $language, array $paths = [])
+    public function __construct(string $language)
     {
         $this->language = $language;
         $this->paths = [];
         $this->messages = [];
-        foreach ($paths as $key => $path) {
-            $this->addPath($key, $path);
-        }
     }
 
     /**

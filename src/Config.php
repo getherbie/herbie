@@ -1,268 +1,410 @@
 <?php
-
 /**
- * This file is part of Herbie.
+ * @see       https://github.com/zendframework/zend-config for the canonical source repository
+ * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-config/blob/master/LICENSE.md New BSD License
  *
- * (c) Thomas Breuss <https://www.tebe.ch>
+ * Copyright (c) 2005-2018, Zend Technologies USA, Inc. All rights reserved.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ * disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * Neither the name of Zend Technologies USA, Inc. nor the names of its contributors may be used to endorse or promote
+ * products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 declare(strict_types=1);
 
 namespace Herbie;
 
-class Config
+use ArrayAccess;
+use Countable;
+use InvalidArgumentException;
+use Iterator;
+use RuntimeException;
+
+/**
+ * Provides a property based interface to an array.
+ * The data are read-only unless $allowModifications is set to true
+ * on construction.
+ *
+ * Implements Countable, Iterator and ArrayAccess
+ * to facilitate easy access to the data.
+ */
+class Config implements Countable, Iterator, ArrayAccess
 {
     /**
+     * Whether modifications to configuration data are allowed.
+     *
+     * @var bool
+     */
+    protected $allowModifications;
+
+    /**
+     * Data within the configuration.
+     *
      * @var array
      */
-    private $items;
+    protected $data = [];
 
     /**
-     * @var string
+     * Used when unsetting values during iteration to ensure we do not skip
+     * the next element.
+     *
+     * @var bool
      */
-    private $appPath;
+    protected $skipNextIteration;
 
     /**
-     * @var string
+     * Constructor.
+     *
+     * Data is read-only unless $allowModifications is set to true
+     * on construction.
+     *
+     * @param  array   $array
+     * @param  bool $allowModifications
      */
-    private $webPath;
-
-    /**
-     * @var string
-     */
-    private $webUrl;
-
-    /**
-     * @var string
-     */
-    private $sitePath;
-
-    /**
-     * @param string $sitePath
-     * @param string $webPath
-     * @param string $webUrl
-     */
-    public function __construct(string $sitePath, string $webPath, string $webUrl)
+    public function __construct(array $array, $allowModifications = false)
     {
-        $this->appPath  = realpath(__DIR__);
-        $this->sitePath = $sitePath;
-        $this->webPath  = $webPath;
-        $this->webUrl   = preg_replace('#\/?index.php#', '', $webUrl);
-        $this->items = [];
-        $this->loadConfig(false);
-    }
+        $this->allowModifications = (bool) $allowModifications;
 
-    private function loadConfig(bool $useCache = true): void
-    {
-        if ($useCache) {
-            $cacheFile = $this->sitePath . '/runtime/cache/config.php';
-            if (is_file($cacheFile)) {
-                $this->items = require($cacheFile);
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $this->data[$key] = new static($value, $this->allowModifications);
             } else {
-                $this->loadMainFile();
-                $this->loadPluginFiles();
-                file_put_contents($cacheFile, '<?php return '.var_export($this->items, true).';');
+                $this->data[$key] = $value;
             }
-        } else {
-            $this->loadMainFile();
-            $this->loadPluginFiles();
         }
     }
 
     /**
-     * Get value by using dot notation for nested arrays.
+     * Retrieve a value and return $default if there is no element set.
      *
-     * @example $value = $config->get('twig.extend.functions');
-     *
-     * @param string $name
-     * @param mixed $default
+     * @param  string $name
+     * @param  mixed  $default
      * @return mixed
      */
-    public function get(string $name, $default = null)
+    public function get($name, $default = null)
     {
-        $path = explode('.', $name);
-        $current = $this->items;
-        foreach ($path as $field) {
-            if (isset($current) && isset($current[$field])) {
-                $current = $current[$field];
-            } elseif (is_array($current) && isset($current[$field])) {
-                $current = $current[$field];
-            } else {
-                return $default;
-            }
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         }
 
-        return $current;
-    }
-
-    /**
-     * Push an element onto the end of array by using dot notation for nested arrays. Creates a new array if it
-     * does not exist.
-     *
-     * @example $config->push('pages.extra_paths', '@plugin/test/pages');
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return int
-     */
-    public function push(string $name, $value): int
-    {
-        $path = explode('.', $name);
-        $current = &$this->items;
-        foreach ($path as $field) {
-            if (is_array($current)) {
-                if (!isset($current[$field])) {
-                    $current[$field] = [];
-                }
-                $current = &$current[$field];
-            }
-        }
-        $current[] = $value;
-        return count($current);
-    }
-
-    /**
-     * Set value by using dot notation for nested arrays.
-     *
-     * @example $value = $config->set('twig.cache', false);
-     *
-     * @param string $name
-     * @param mixed $value
-     */
-    public function set(string $name, $value): void
-    {
-        $path = explode('.', $name);
-        $current = &$this->items;
-        foreach ($path as $field) {
-            if (is_array($current)) {
-                // Handle objects.
-                if (!isset($current[$field])) {
-                    $current[$field] = [];
-                }
-                $current = &$current[$field];
-            } else {
-                // Handle arrays and scalars.
-                if (!is_array($current)) {
-                    $current = [$field => []];
-                } elseif (!isset($current[$field])) {
-                    $current[$field] = [];
-                }
-                $current = &$current[$field];
-            }
-        }
-
-        $current = $value;
-    }
-
-    /**
-     * @param string $name
-     * @return boolean
-     */
-    public function isEmpty(string $name): bool
-    {
-        $value = $this->get($name);
-        return empty($value);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return $this->items;
-    }
-
-    /**
-     * @param array $default
-     * @param array $override
-     * @return array
-     */
-    private function merge(array $default, array $override): array
-    {
-        foreach ($override as $key => $value) {
-            if (is_array($value)) {
-                $array = isset($default[$key]) ? $default[$key] : [];
-                $default[$key] = $this->merge($array, $override[$key]);
-            } else {
-                $default[$key] = $value;
-            }
-        }
         return $default;
     }
 
     /**
+     * Magic function so that $obj->value will work.
      *
+     * @param  string $name
+     * @return mixed
      */
-    private function loadMainFile(): void
+    public function __get($name)
     {
-        // vars used in config files
-        $APP_PATH = $this->appPath;
-        $SITE_PATH = $this->sitePath;
-        $WEB_PATH = $this->webPath;
-        $WEB_URL = $this->webUrl;
-
-        $defaults = require(__DIR__ . '/../config/defaults.php');
-        if (is_file($this->sitePath . '/config/main.php')) {
-            $userConfig = require($this->sitePath . '/config/main.php');
-            $defaults = $this->merge($defaults, $userConfig);
-        } elseif (is_file($this->sitePath . '/config/main.yml')) {
-            $content = file_get_contents($this->sitePath . '/config/main.yml');
-            $content = $this->replaceConstants($content);
-            $userConfig = Yaml::parse($content);
-            $defaults = $this->merge($defaults, $userConfig);
-        }
-        $this->items = $defaults;
+        return $this->get($name);
     }
 
     /**
+     * Set a value in the config.
+     *
+     * Only allow setting of a property if $allowModifications  was set to true
+     * on construction. Otherwise, throw an exception.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     * @return void
+     * @throws Exception\RuntimeException
      */
-    private function loadPluginFiles(): void
+    public function __set($name, $value)
     {
-        $dir = $this->sitePath . '/config/plugins';
-        if (is_readable($dir)) {
-            $files = scandir($dir);
-            foreach ($files as $file) {
-                if ($file == '.' || $file == '..') {
-                    continue;
+        if ($this->allowModifications) {
+            if (is_array($value)) {
+                $value = new static($value, true);
+            }
+
+            if (null === $name) {
+                $this->data[] = $value;
+            } else {
+                $this->data[$name] = $value;
+            }
+        } else {
+            throw new RuntimeException('Config is read only');
+        }
+    }
+
+    /**
+     * Deep clone of this instance to ensure that nested Zend\Configs are also
+     * cloned.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $array = [];
+
+        foreach ($this->data as $key => $value) {
+            if ($value instanceof self) {
+                $array[$key] = clone $value;
+            } else {
+                $array[$key] = $value;
+            }
+        }
+
+        $this->data = $array;
+    }
+
+    /**
+     * Return an associative array of the stored data.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = [];
+        $data  = $this->data;
+
+        /** @var self $value */
+        foreach ($data as $key => $value) {
+            if ($value instanceof self) {
+                $array[$key] = $value->toArray();
+            } else {
+                $array[$key] = $value;
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * isset() overloading
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    /**
+     * unset() overloading
+     *
+     * @param  string $name
+     * @return void
+     * @throws Exception\InvalidArgumentException
+     */
+    public function __unset($name)
+    {
+        if (! $this->allowModifications) {
+            throw new InvalidArgumentException('Config is read only');
+        } elseif (isset($this->data[$name])) {
+            unset($this->data[$name]);
+            $this->skipNextIteration = true;
+        }
+    }
+
+    /**
+     * count(): defined by Countable interface.
+     *
+     * @see    Countable::count()
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->data);
+    }
+
+    /**
+     * current(): defined by Iterator interface.
+     *
+     * @see    Iterator::current()
+     * @return mixed
+     */
+    public function current()
+    {
+        $this->skipNextIteration = false;
+        return current($this->data);
+    }
+
+    /**
+     * key(): defined by Iterator interface.
+     *
+     * @see    Iterator::key()
+     * @return mixed
+     */
+    public function key()
+    {
+        return key($this->data);
+    }
+
+    /**
+     * next(): defined by Iterator interface.
+     *
+     * @see    Iterator::next()
+     * @return void
+     */
+    public function next()
+    {
+        if ($this->skipNextIteration) {
+            $this->skipNextIteration = false;
+            return;
+        }
+
+        next($this->data);
+    }
+
+    /**
+     * rewind(): defined by Iterator interface.
+     *
+     * @see    Iterator::rewind()
+     * @return void
+     */
+    public function rewind()
+    {
+        $this->skipNextIteration = false;
+        reset($this->data);
+    }
+
+    /**
+     * valid(): defined by Iterator interface.
+     *
+     * @see    Iterator::valid()
+     * @return bool
+     */
+    public function valid()
+    {
+        return ($this->key() !== null);
+    }
+
+    /**
+     * offsetExists(): defined by ArrayAccess interface.
+     *
+     * @see    ArrayAccess::offsetExists()
+     * @param  mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * offsetGet(): defined by ArrayAccess interface.
+     *
+     * @see    ArrayAccess::offsetGet()
+     * @param  mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    /**
+     * offsetSet(): defined by ArrayAccess interface.
+     *
+     * @see    ArrayAccess::offsetSet()
+     * @param  mixed $offset
+     * @param  mixed $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * offsetUnset(): defined by ArrayAccess interface.
+     *
+     * @see    ArrayAccess::offsetUnset()
+     * @param  mixed $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        $this->__unset($offset);
+    }
+
+    /**
+     * Merge another Config with this one.
+     *
+     * For duplicate keys, the following will be performed:
+     * - Nested Configs will be recursively merged.
+     * - Items in $merge with INTEGER keys will be appended.
+     * - Items in $merge with STRING keys will overwrite current values.
+     *
+     * @param  Config $merge
+     * @return self
+     */
+    public function merge(Config $merge)
+    {
+        /** @var Config $value */
+        foreach ($merge as $key => $value) {
+            if (array_key_exists($key, $this->data)) {
+                if (is_int($key)) {
+                    $this->data[] = $value;
+                } elseif ($value instanceof self && $this->data[$key] instanceof self) {
+                    $this->data[$key]->merge($value);
+                } else {
+                    if ($value instanceof self) {
+                        $this->data[$key] = new static($value->toArray(), $this->allowModifications);
+                    } else {
+                        $this->data[$key] = $value;
+                    }
                 }
-                $basename = pathinfo($file, PATHINFO_FILENAME);
-                $content = $this->loadFile($dir . '/' . $file);
-                $this->set('plugins.config.' . $basename, Yaml::parse($content));
+            } else {
+                if ($value instanceof self) {
+                    $this->data[$key] = new static($value->toArray(), $this->allowModifications);
+                } else {
+                    $this->data[$key] = $value;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Prevent any more modifications being made to this instance.
+     *
+     * Useful after merge() has been used to merge multiple Config objects
+     * into one object which should then not be modified again.
+     *
+     * @return void
+     */
+    public function setReadOnly()
+    {
+        $this->allowModifications = false;
+
+        /** @var Config $value */
+        foreach ($this->data as $value) {
+            if ($value instanceof self) {
+                $value->setReadOnly();
             }
         }
     }
 
     /**
-     * @param string $file
-     * @return string
+     * Returns whether this Config object is read only or not.
+     *
+     * @return bool
      */
-    private function loadFile(string $file): string
+    public function isReadOnly()
     {
-        $content = file_get_contents($file);
-        return $this->replaceConstants($content);
-    }
-
-    /**
-     * @param string $string
-     * @return string
-     */
-    private function replaceConstants(string $string): string
-    {
-        return str_replace(
-            ['APP_PATH', 'WEB_PATH', 'WEB_URL', 'SITE_PATH'],
-            [$this->appPath, $this->webPath, $this->webUrl, $this->sitePath],
-            $string
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function __debugInfo(): array
-    {
-        return call_user_func('get_object_vars', $this);
+        return ! $this->allowModifications;
     }
 }

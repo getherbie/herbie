@@ -1,7 +1,6 @@
 ---
 title: Contact
 nocache: 1
-twig: 1
 simplecontact:
     subject: "Subject"
     recipient: "blackhole@example.com"
@@ -29,18 +28,17 @@ simplecontact:
       invalid_email: "The given email is invalid"
 ---
 
-# Contact
+<h1>Contact</h1>
 
 {{ simplecontact() }}
 
-
 --- sidebar ---
 
-### Adresse
+<h3>Address</h3>
 
-John Doe    
-3020 Basel
-Switzerland
+<p>John Doe<br>
+3020 Basel<br>
+Switzerland</p>
 
-<mail@johndoe.com>  
-<http://www.example.com>  
+<p><a href="mailto:mail@johndoe.com">mail@johndoe.com</a><br>
+<a href="http://www.example.com">http://www.example.com</a></p>

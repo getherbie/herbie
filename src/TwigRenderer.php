@@ -6,6 +6,8 @@
  * Time: 08:52
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
@@ -104,11 +106,11 @@ class TwigRenderer
         $loader = $this->getTwigFilesystemLoader();
 
         $this->twig = new Twig_Environment($loader, [
-            'debug' => $this->config->get('twig.debug'),
-            'cache' => $this->config->get('twig.cache')
+            'debug' => $this->config->twig->debug,
+            'cache' => $this->config->twig->cache
         ]);
 
-        if (!$this->config->isEmpty('twig.debug')) {
+        if (!empty($this->config->twig->debug)) {
             $this->twig->addExtension(new Twig_Extension_Debug());
         }
 
@@ -199,7 +201,7 @@ class TwigRenderer
         return [
             'route' => $this->environment->getRoute(),
             'baseUrl' => $this->environment->getBaseUrl(),
-            'theme' => $this->config->get('theme'),
+            'theme' => $this->config->theme,
             'site' => new Site(
                 $this->config,
                 $this->dataRepository,
@@ -240,23 +242,20 @@ class TwigRenderer
      */
     private function addTwigPlugins()
     {
-        if ($this->config->isEmpty('twig.extend')) {
-            return;
-        }
         // Functions
-        $dir = $this->config->get('twig.extend.functions');
+        $dir = $this->config->paths->twig->functions;
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFunction($included);
         }
         // Filters
-        $dir = $this->config->get('twig.extend.filters');
+        $dir = $this->config->paths->twig->filters;
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFilter($included);
         }
         // Tests
-        $dir = $this->config->get('twig.extend.tests');
+        $dir = $this->config->paths->twig->tests;
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addTest($included);
@@ -270,13 +269,13 @@ class TwigRenderer
     private function getTwigFilesystemLoader()
     {
         $paths = [];
-        if ($this->config->isEmpty('theme')) {
-            $paths[] = $this->config->get('layouts.path');
-        } elseif ($this->config->get('theme') == 'default') {
-            $paths[] = $this->config->get('layouts.path') . '/default';
+        if (empty($this->config->theme)) {
+            $paths[] = $this->config->paths->layouts;
+        } elseif ($this->config->theme === 'default') {
+            $paths[] = $this->config->paths->layouts . '/default';
         } else {
-            $paths[] = $this->config->get('layouts.path') . '/' . $this->config->get('theme');
-            $paths[] = $this->config->get('layouts.path') . '/default';
+            $paths[] = $this->config->paths->layouts . '/' . $this->config->theme;
+            $paths[] = $this->config->paths->layouts . '/default';
         }
 
         $loader1 = new TwigStringLoader();
@@ -284,10 +283,10 @@ class TwigRenderer
 
         // namespaces
         $namespaces = [
-            'plugin' => $this->config->get('plugins.path'),
-            'page' => $this->config->get('pages.path'),
-            'site' => $this->config->get('site.path'),
-            'widget' => $this->config->get('app.path') . '/../templates/widgets'
+            'plugin' => $this->config->paths->plugins,
+            'page' => $this->config->paths->pages,
+            'site' => $this->config->paths->site,
+            'widget' => $this->config->paths->app . '/../templates/widgets'
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {

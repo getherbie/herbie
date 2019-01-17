@@ -6,6 +6,8 @@
  * Time: 19:53
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 interface PluginInterface

@@ -18,8 +18,8 @@ use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
 use Herbie\Menu\MenuBuilder;
 use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTree;
 use Herbie\Menu\MenuTrail;
+use Herbie\Menu\MenuTree;
 use Herbie\Middleware\DownloadMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
@@ -77,69 +77,120 @@ class Application
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
-        $this->sitePath = $this->normalizePath($sitePath);
-        $this->vendorDir = $this->normalizePath($vendorDir);
+        $this->sitePath = normalize_path($sitePath);
+        $this->vendorDir = normalize_path($vendorDir);
         $this->middlewares = [];
         $this->init();
     }
 
     /**
-     * @param string $path
-     * @return string
-     * @throws \Exception
-     */
-    private function normalizePath(string $path)
-    {
-        $realpath = realpath($path);
-        if ($realpath === false) {
-            $message = sprintf('Could not normalize path "%s"', $path);
-            throw SystemException::serverError($message);
-        }
-        return rtrim($realpath, '/');
-    }
-
-    /**
      * Initialize the application.
+     * @throws SystemException
      */
     private function init()
     {
         $errorHandler = new ErrorHandler();
         $errorHandler->register($this->sitePath . '/runtime/log');
+        $this->container = $this->initContainer();
 
-        $this->container = $c = new Container();
-
-        $c[Environment::class] = $environment = new Environment();
-
-        $c[Config::class] = $config = new Config(
-            $this->sitePath,
-            dirname($_SERVER['SCRIPT_FILENAME']),
-            $environment->getBaseUrl()
-        );
-
-        setlocale(LC_ALL, $c[Config::class]->get('locale'));
+        setlocale(LC_ALL, $this->container->get(Config::class)->get('locale'));
 
         // Add custom PSR-4 plugin path to Composer autoloader
-        $pluginsPath = $c[Config::class]->get('plugins.path');
+        $pluginsPath = $this->container->get(Config::class)->paths->plugins;
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
+    }
 
-        $c[HttpFactory::class] = new HttpFactory();
+    /**
+     * Initializes and returns container
+     * @return Container
+     */
+    private function initContainer(): Container
+    {
+        $c = new Container();
 
-        $c[ServerRequestInterface::class] = $c[HttpFactory::class]->createServerRequestFromGlobals();
+        $c[Environment::class] = function () {
+            return new Environment();
+        };
 
-        $c[Alias::class] = new Alias([
-            '@app' => $config->get('app.path'),
-            '@asset' => $this->sitePath . '/assets',
-            '@media' => $config->get('media.path'),
-            '@page' => $config->get('pages.path'),
-            '@plugin' => $config->get('plugins.path'),
-            '@site' => $this->sitePath,
-            '@vendor' => $this->vendorDir,
-            '@web' => $config->get('web.path'),
-            '@widget' => $config->get('app.path') . '/../templates/widgets'
-        ]);
+        $c[Config::class] = function (Container $c) {
 
-        $c[TwigRenderer::class] = function ($c) {
+            $APP_PATH = rtrim(__DIR__, '/');
+            $SITE_PATH = rtrim($this->sitePath, '/');
+            $WEB_PATH = rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/');
+            $WEB_URL = rtrim($c->get(Environment::class)->getBaseUrl(), '/');
+
+            $consts = [
+                'APP_PATH' => $APP_PATH,
+                'WEB_PATH' => $WEB_PATH,
+                'WEB_URL' => $WEB_URL,
+                'SITE_PATH' => $SITE_PATH
+            ];
+
+            // config default
+            $defaults = require(__DIR__ . '/../config/test.php');
+            $config = new Config($defaults);
+
+            // config user
+            if (is_file($this->sitePath . '/config/test.php')) {
+                $array = require($this->sitePath . '/config/test.php');
+            } elseif (is_file($this->sitePath . '/config/test.yml')) {
+                $content = file_get_contents($this->sitePath . '/config/test.yml');
+                $content = str_replace(array_keys($consts), array_values($consts), $content);
+                $array = Yaml::parse($content);
+            }
+            $userConfig = new Config($array);
+
+            // config plugins
+            $array = [];
+            $dir = $userConfig->paths->plugins ?? $config->paths->plugins;
+            if (is_readable($dir)) {
+                $files = scandir($dir);
+                foreach ($files as $file) {
+                    if (substr($file, 0, 1) === '.') {
+                        continue;
+                    }
+                    $configFile = $dir . '/' . $file . '/config.yml';
+                    if (is_file($configFile)) {
+                        $content = file_get_contents($configFile);
+                        $content = str_replace(array_keys($consts), array_values($consts), $content);
+                        $array['plugins'][$file] = Yaml::parse($content);
+                    } else {
+                        $array['plugins'][$file] = [];
+                    }
+                }
+            }
+            $config->merge(new Config($array));
+
+            $config->merge($userConfig);
+
+            return $config;
+        };
+
+        $c[HttpFactory::class] = function () {
+            return new HttpFactory();
+        };
+
+        $c[ServerRequestInterface::class] = function (Container $c) {
+            return $c[HttpFactory::class]->createServerRequestFromGlobals();
+        };
+
+        $c[Alias::class] = function (Container $c) {
+            $config = $c->get(Config::class);
+            return new Alias([
+                '@app' => $config->paths->app,
+                '@asset' => $this->sitePath . '/assets',
+                '@media' => $config->paths->media,
+                '@page' => $config->paths->pages,
+                '@plugin' => $config->paths->plugins,
+                '@site' => $this->sitePath,
+                '@vendor' => $this->vendorDir,
+                '@web' => $config->paths->web,
+                '@widget' => $config->paths->app . '/../templates/widgets'
+            ]);
+        };
+
+        $c[TwigRenderer::class] = function (Container $c) {
             $twig = new TwigRenderer(
                 $c[Alias::class],
                 $c[Config::class],
@@ -157,7 +208,7 @@ class Application
             return $twig;
         };
 
-        $c[SlugGeneratorInterface::class] = function ($c) {
+        $c[SlugGeneratorInterface::class] = function (Container $c) {
             $locale = $c[Config::class]->get('language');
             $options = new SlugOptions([
                 'locale' => $locale,
@@ -166,27 +217,24 @@ class Application
             return new SlugGenerator($options);
         };
 
-        $c[Assets::class] = function ($c) {
-            return new Assets($c[Alias::class], $c[Config::class]->get('web.url'));
+        $c[Assets::class] = function (Container $c) {
+            return new Assets($c[Alias::class], $c[Environment::class]);
         };
 
         $c[Cache::class] = function () {
             return new Cache();
         };
 
-        $c[DataRepositoryInterface::class] = function ($c) {
-            $dataRepository = new YamlDataRepository(
-                $c[Config::class]->get('data.path'),
-                $c[Config::class]->get('data.extensions')
-            );
+        $c[DataRepositoryInterface::class] = function (Container $c) {
+            $dataRepository = new YamlDataRepository($c[Config::class]);
             return $dataRepository;
         };
 
-        $c[FlatfilePersistenceInterface::class] = function ($c) {
+        $c[FlatfilePersistenceInterface::class] = function (Container $c) {
             return new FlatfilePagePersistence($c[Alias::class]);
         };
 
-        $c[PageRepositoryInterface::class] = function ($c) {
+        $c[PageRepositoryInterface::class] = function (Container $c) {
             $pageRepository = new FlatfilePageRepository(
                 $c[FlatfilePersistenceInterface::class],
                 new PageFactory()
@@ -194,19 +242,10 @@ class Application
             return $pageRepository;
         };
 
-        $c[MenuBuilder::class] = function ($c) {
-
-            $paths = [];
-            $paths['@page'] = $this->normalizePath($c[Config::class]->get('pages.path'));
-            foreach ($c[Config::class]->get('pages.extra_paths', []) as $alias) {
-                $paths[$alias] = $c[Alias::class]->get($alias);
-            }
-            $extensions = $c[Config::class]->get('pages.extensions', []);
-
+        $c[MenuBuilder::class] = function (Container $c) {
             $builder = new MenuBuilder(
                 $c[FlatfilePersistenceInterface::class],
-                $paths,
-                $extensions
+                $c[Config::class]
             );
             return $builder;
         };
@@ -217,53 +256,85 @@ class Application
             return new EventManager($zendEventManager);
         };
 
-        $c[PluginManager::class] = function ($c) {
-            $enabled = $c[Config::class]->get('plugins.enable', []);
-            $path = $c[Config::class]->get('plugins.path');
-            $enabledSysPlugins = $c[Config::class]->get('sysplugins.enable');
-            return new PluginManager($c[EventManager::class], $enabled, $path, $enabledSysPlugins, $c);
+        $c[PluginManager::class] = function (Container $c) {
+            return new PluginManager($c[EventManager::class], $c[Config::class], $c);
         };
 
-        $c[UrlGenerator::class] = function ($c) {
+        $c[UrlGenerator::class] = function (Container $c) {
             return new UrlGenerator(
                 $c[ServerRequestInterface::class],
                 $c[Environment::class],
-                $c[Config::class]->get('nice_urls', false)
+                $c[Config::class]
             );
         };
 
-        $c[MenuList::class] = function ($c) {
+        $c[MenuList::class] = function (Container $c) {
             $cache = $c[Cache::class];
             $c[MenuBuilder::class]->setCache($cache);
             return $c[MenuBuilder::class]->buildMenuList();
         };
 
-        $c[MenuTree::class] = function ($c) {
+        $c[MenuTree::class] = function (Container $c) {
             return MenuTree::buildTree($c[MenuList::class]);
         };
 
-        $c[MenuTrail::class] = function ($c) {
-            $menuTrail = new MenuTrail(
-                $c[MenuList::class],
-                $c[Environment::class]->getRoute()
-            );
-            return $menuTrail;
+        $c[MenuTrail::class] = function (Container $c) {
+            return new MenuTrail($c[MenuList::class], $c[Environment::class]);
         };
 
-        $c[Translator::class] = function ($c) {
-            $translator = new Translator($c[Config::class]->get('language'), [
-                'app' => $c[Alias::class]->get('@app/../messages')
-            ]);
+        $c[Translator::class] = function (Container $c) {
+            $translator = new Translator($c[Config::class]->language);
+            $translator->addPath('app', $c[Config::class]->paths->messages);
             foreach ($c[PluginManager::class]->getPluginPaths() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
-            $translator->init();
             return $translator;
         };
 
-        $c[UrlMatcher::class] = function ($c) {
+        $c[UrlMatcher::class] = function (Container $c) {
             return new UrlMatcher($c[MenuList::class]);
         };
+
+        $c[MiddlewareDispatcher::class] = function (Container $c) {
+            $middlewares = array_merge(
+                [
+                    new ErrorHandlerMiddleware(
+                        $c->get(TwigRenderer::class)
+                    )
+                ],
+                $this->middlewares,
+                [
+                    new DownloadMiddleware(
+                        $c->get(Config::class),
+                        $c->get(Alias::class)
+                    ),
+                    new PageResolverMiddleware(
+                        $this,
+                        $c->get(Environment::class),
+                        $c->get(PageRepositoryInterface::class),
+                        $c->get(UrlMatcher::class)
+                    )
+                ],
+                $c->get(PluginManager::class)->getMiddlewares(),
+                [
+                    new PageRendererMiddleware(
+                        $c->get(Cache::class),
+                        $c->get(Environment::class),
+                        $c->get(HttpFactory::class),
+                        $c->get(EventManager::class),
+                        $c->get(TwigRenderer::class),
+                        $c->get(Config::class),
+                        $c->get(DataRepositoryInterface::class),
+                        $c->get(MenuList::class),
+                        $c->get(MenuTree::class),
+                        $c->get(MenuTrail::class)
+                    )
+                ]
+            );
+            return new MiddlewareDispatcher($middlewares);
+        };
+
+        return $c;
     }
 
     /**
@@ -275,8 +346,10 @@ class Application
         // Init PluginManager
         $this->getPluginManager()->init();
 
-        $middlewares = $this->getMiddlewares();
-        $dispatcher = new MiddlewareDispatcher($middlewares);
+        // Init Translator
+        $this->getTranslator()->init();
+
+        $dispatcher = $this->container->get(MiddlewareDispatcher::class);
         $request = $this->container->get(ServerRequestInterface::class);
         $response = $dispatcher->dispatch($request);
 
@@ -288,43 +361,18 @@ class Application
     }
 
     /**
-     * @return array
+     * @param ResponseInterface $response
      */
-    private function getMiddlewares(): array
+    private function emitResponse(ResponseInterface $response): void
     {
-        $middlewares = array_merge(
-            [
-                new ErrorHandlerMiddleware(
-                    $this->getTwigRenderer()
-                )
-            ],
-            $this->middlewares,
-            [
-                new DownloadMiddleware($this->getConfig(), $this->getAlias()),
-                new PageResolverMiddleware(
-                    $this,
-                    $this->getEnvironment(),
-                    $this->getPageRepository(),
-                    $this->getUrlMatcher()
-                )
-            ],
-            $this->getPluginManager()->getMiddlewares(),
-            [
-                new PageRendererMiddleware(
-                    $this->getPageCache(),
-                    $this->getEnvironment(),
-                    $this->getHttpFactory(),
-                    $this->getEventManager(),
-                    $this->getTwigRenderer(),
-                    $this->getConfig(),
-                    $this->getDataRepository(),
-                    $this->getMenuList(),
-                    $this->getMenuTree(),
-                    $this->getMenuTrail()
-                )
-            ]
-        );
-        return $middlewares;
+        $statusCode = $response->getStatusCode();
+        http_response_code($statusCode);
+        foreach ($response->getHeaders() as $k => $values) {
+            foreach ($values as $v) {
+                header(sprintf('%s: %s', $k, $v), false);
+            }
+        }
+        echo $response->getBody();
     }
 
     /**
@@ -375,21 +423,6 @@ class Application
     public function getEventManager()
     {
         return $this->container->get(EventManager::class);
-    }
-
-    /**
-     * @param ResponseInterface $response
-     */
-    private function emitResponse(ResponseInterface $response): void
-    {
-        $statusCode = $response->getStatusCode();
-        http_response_code($statusCode);
-        foreach ($response->getHeaders() as $k => $values) {
-            foreach ($values as $v) {
-                header(sprintf('%s: %s', $k, $v), false);
-            }
-        }
-        echo $response->getBody();
     }
 
     /**

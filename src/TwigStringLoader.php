@@ -6,6 +6,8 @@
  * Time: 16:14
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 use Twig_Error_Loader;

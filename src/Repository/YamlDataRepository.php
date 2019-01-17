@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
+use Herbie\Config;
 use Herbie\Exception\SystemException;
 use Herbie\Yaml;
 
@@ -26,12 +27,15 @@ class YamlDataRepository implements DataRepositoryInterface
     private $extensions;
 
     /**
-     * @param string $path
-     * @param array $extensions
-     * @throws \Exception
+     * YamlDataRepository constructor.
+     * @param Config $config
+     * @throws SystemException
      */
-    public function __construct(string $path, array $extensions = [])
+    public function __construct(Config $config)
     {
+        $path = strval($config->paths->data);
+        $extensions = $config->fileExtensions->data->toArray();
+
         if (!is_dir($path)) {
             throw SystemException::directoryNotExist($path);
         }

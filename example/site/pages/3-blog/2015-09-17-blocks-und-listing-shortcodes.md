@@ -4,6 +4,7 @@ layout: blog
 excerpt: 'Mit Version 0.8.2 wurden zwei neue Shortcodes eingeführt, die es in sich haben. Mit "Blocks" erstellst du komplexe Layouts und mit "Listings" Listendarstellungen beliebiger Seiten.' 
 categories: [Feature,Release]
 author: Herbie
+type: blog
 ---
 
 # Blocks- und Listing-Shortcodes

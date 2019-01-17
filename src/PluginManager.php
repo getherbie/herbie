@@ -25,20 +25,25 @@ class PluginManager
      */
     private $eventManager;
 
-    /** @var array */
-    private $enabledPlugins;
+    /**
+     * @var Config
+     */
+    private $config;
 
-    /** @var string */
-    private $path;
+    /**
+     * @var string
+     */
+    private $pluginsPath;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $loadedPlugins;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $pluginPaths;
-
-    /** @var array */
-    private $enabledSysPlugins;
 
     /**
      * @var ContainerInterface
@@ -48,29 +53,21 @@ class PluginManager
     /**
      * PluginManager constructor.
      * @param EventManager $eventManager
-     * @param array $enabledPlugins
-     * @param string $path
-     * @param array $enabledSysPlugins
+     * @param Config $config
      * @param ContainerInterface $container
      * @throws SystemException
      */
     public function __construct(
         EventManager $eventManager,
-        array $enabledPlugins,
-        string $path,
-        array $enabledSysPlugins,
+        Config $config,
         ContainerInterface $container
     ) {
         $this->eventManager = $eventManager;
-        $this->enabledPlugins = $enabledPlugins;
-        $this->path = realpath($path);
+        $this->config = $config;
+        $this->container = $container;
+        $this->pluginsPath = normalize_path($config->paths->plugins);
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
-        $this->enabledSysPlugins = $enabledSysPlugins;
-        $this->container = $container;
-        if (false === $this->path) {
-            throw SystemException::directoryNotExist($path);
-        }
     }
 
     /**
@@ -80,14 +77,14 @@ class PluginManager
     {
         // add sys plugins first
         $priority = 900;
-        foreach ($this->enabledSysPlugins as $key) {
-            $this->loadPlugin($this->path, $key, $priority);
+        foreach ($this->config->enabledSysPlugins as $key) {
+            $this->loadPlugin($this->pluginsPath, $key, $priority);
         }
 
         // add third-party plugins
         $priority = 700;
-        foreach ($this->enabledPlugins as $key) {
-            $this->loadPlugin($this->path, $key, $priority);
+        foreach ($this->config->enabledPlugins as $key) {
+            $this->loadPlugin($this->pluginsPath, $key, $priority);
         }
 
         $this->eventManager->trigger('onPluginsInitialized', $this);

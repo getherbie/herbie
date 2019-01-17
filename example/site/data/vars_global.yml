@@ -1,0 +1,16 @@
+-
+  key:  route
+  desc: "Die angefragte Seite, z.B. `doku/vars`."
+  type: string
+-
+  key:  site
+  desc: "Projektweite Variablen."
+  type: Object
+-
+  key:  page
+  desc: "Variablen, die der aktuellen Seite zugeordnet werden."
+  type: Object
+-
+  key:  theme
+  desc: "Das in der Konfiguration definierte Theme."
+  type: string

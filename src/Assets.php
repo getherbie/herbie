@@ -74,13 +74,13 @@ class Assets
 
     /**
      * @param Alias $alias
-     * @param string $baseUrl
+     * @param Environment $environment
      */
-    public function __construct(Alias $alias, string $baseUrl)
+    public function __construct(Alias $alias, Environment $environment)
     {
         $this->alias = $alias;
         $this->assetsPath = $alias->get('@web') . $this->assetsDir;
-        $this->assetsUrl = rtrim($baseUrl, '/') . $this->assetsDir;
+        $this->assetsUrl = $environment->getBasePath() . $this->assetsDir;
     }
 
     /**

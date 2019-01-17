@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie\Menu;
 
+use Herbie\Environment;
+
 class MenuTrail implements \IteratorAggregate, \Countable
 {
 
@@ -33,12 +35,12 @@ class MenuTrail implements \IteratorAggregate, \Countable
 
     /**
      * @param MenuList $menuList
-     * @param string $route
+     * @param Environment $environment
      */
-    public function __construct(MenuList $menuList, string $route)
+    public function __construct(MenuList $menuList, Environment $environment)
     {
         $this->menuList = $menuList;
-        $this->route = $route;
+        $this->route = $environment->getRoute();
         $this->items = $this->buildMenuTrail();
     }
 

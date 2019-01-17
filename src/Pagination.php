@@ -45,7 +45,7 @@ class Pagination implements \IteratorAggregate, \Countable
         if ($page > $calculated) {
             $page = $calculated;
         }
-        return $page;
+        return intval($page);
     }
 
     /**

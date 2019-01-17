@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
@@ -386,6 +388,7 @@ class TwigExtension extends Twig_Extension
      */
     public function functionConfig($name, $default = null)
     {
+        // TODO
         return $this->config->get($name, $default);
     }
 
@@ -626,12 +629,12 @@ class TwigExtension extends Twig_Extension
     }
 
     public function functionListing(
-        $path = '@widget/listing.twig',
-        $filter = '',
-        $sort = '',
-        $shuffle = false,
-        $limit = 10,
-        $pagination = true
+        string $path = '@widget/listing.twig',
+        string $filter = '',
+        string $sort = '',
+        bool $shuffle = false,
+        int $limit = 10,
+        bool $pagination = true
     ) {
 
         $menuList = $this->menuList;

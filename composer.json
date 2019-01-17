@@ -10,9 +10,7 @@
         "ausi/slug-generator": "^1.1",
         "getherbie/composer": "^1.0",
         "getherbie/plugin-markdown": "dev-master",
-        "getherbie/plugin-shortcode": "dev-master",
         "getherbie/plugin-textile": "dev-master",
-        "getherbie/plugin-twig": "dev-master",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
@@ -26,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "Herbie\\": "src"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",

@@ -115,9 +115,11 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      * @throws \Exception
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
+        /** @var Page $page */
         $page = $request->getAttribute(Page::class, false);
 
         if (!$page) {
@@ -174,7 +176,7 @@ class PageRendererMiddleware implements MiddlewareInterface
                 } else {
                     $renderedContent = new StringValue($this->twigRenderer->renderString($content, $context));
                 }
-                $this->eventManager->trigger('onRenderContent', $renderedContent, $page->getData());
+                $this->eventManager->trigger('onRenderContent', $renderedContent, $page->toArray());
                 $renderedSegments[$segmentId] = $renderedContent->get();
             }
 
@@ -183,7 +185,7 @@ class PageRendererMiddleware implements MiddlewareInterface
             if (empty($page->layout)) {
                 $content->set(implode('', $renderedSegments));
             } else {
-                $extension = trim($this->config->get('layouts.extension'));
+                $extension = trim($this->config->fileExtensions->layouts);
                 $name = empty($extension) ? $page->layout : sprintf('%s.%s', $page->layout, $extension);
                 $content->set($this->twigRenderer->renderTemplate($name, array_merge([
                     'content' => $renderedSegments
