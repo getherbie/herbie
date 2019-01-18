@@ -47,7 +47,7 @@ class UrlGenerator
     {
         $this->request = $request;
         $this->environment = $environment;
-        $this->niceUrls = $config->niceUrls;
+        $this->niceUrls = $config['niceUrls'];
     }
 
     /**

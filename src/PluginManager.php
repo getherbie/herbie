@@ -65,7 +65,7 @@ class PluginManager
         $this->eventManager = $eventManager;
         $this->config = $config;
         $this->container = $container;
-        $this->pluginsPath = normalize_path($config->paths->plugins);
+        $this->pluginsPath = normalize_path($config['paths']['plugins']);
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
     }
@@ -77,13 +77,13 @@ class PluginManager
     {
         // add sys plugins first
         $priority = 900;
-        foreach ($this->config->enabledSysPlugins as $key) {
+        foreach ($this->config['enabledSysPlugins'] as $key) {
             $this->loadPlugin($this->pluginsPath, $key, $priority);
         }
 
         // add third-party plugins
         $priority = 700;
-        foreach ($this->config->enabledPlugins as $key) {
+        foreach ($this->config['enabledPlugins'] as $key) {
             $this->loadPlugin($this->pluginsPath, $key, $priority);
         }
 

@@ -19,16 +19,16 @@ class MenuItem implements \ArrayAccess
 
     /**
      * @param mixed $offset
-     * @return bool|void
+     * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->__isset($offset);
     }
 
     /**
      * @param mixed $offset
-     * @return mixed|void
+     * @return mixed
      */
     public function offsetGet($offset)
     {
@@ -38,16 +38,18 @@ class MenuItem implements \ArrayAccess
     /**
      * @param mixed $offset
      * @param mixed $value
+     * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->__set($offset, $value);
     }
 
     /**
      * @param mixed $offset
+     * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         // TODO implement
     }

@@ -33,8 +33,8 @@ class YamlDataRepository implements DataRepositoryInterface
      */
     public function __construct(Config $config)
     {
-        $path = strval($config->paths->data);
-        $extensions = $config->fileExtensions->data->toArray();
+        $path = strval($config['paths']['data']);
+        $extensions = $config['fileExtensions']['data']->toArray();
 
         if (!is_dir($path)) {
             throw SystemException::directoryNotExist($path);

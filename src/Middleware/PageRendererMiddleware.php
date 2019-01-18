@@ -16,11 +16,10 @@ use Herbie\Config;
 use Herbie\Environment;
 use Herbie\EventManager;
 use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTree;
 use Herbie\Menu\MenuTrail;
+use Herbie\Menu\MenuTree;
 use Herbie\Page;
 use Herbie\Repository\DataRepositoryInterface;
-use Herbie\Site;
 use Herbie\StringValue;
 use Herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
@@ -52,21 +51,31 @@ class PageRendererMiddleware implements MiddlewareInterface
      */
     private $eventManager;
 
+    /**
+     * @var TwigRenderer
+     */
     private $twigRenderer;
 
+    /**
+     * @var Config
+     */
     private $config;
+
     /**
      * @var DataRepositoryInterface
      */
     private $dataRepository;
+
     /**
      * @var MenuList
      */
     private $menuList;
+
     /**
      * @var MenuTree
      */
     private $menuTree;
+
     /**
      * @var MenuTrail
      */
@@ -96,7 +105,8 @@ class PageRendererMiddleware implements MiddlewareInterface
         MenuList $menuList,
         MenuTree $menuTree,
         MenuTrail $menuTrail
-    ) {
+    )
+    {
         $this->cache = $cache;
         $this->environment = $environment;
         $this->httpFactory = $httpFactory;
@@ -117,7 +127,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Throwable
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page $page */
         $page = $request->getAttribute(Page::class, false);
@@ -156,7 +166,7 @@ class PageRendererMiddleware implements MiddlewareInterface
                 /*
                 'route' => $this->environment->getRoute(),
                 'baseUrl' => $this->environment->getBaseUrl(),
-                'theme' => $this->config->get('theme'),
+                'theme' => $this->config['theme'],
                 'site' => new Site(
                     $this->config,
                     $this->dataRepository,
@@ -185,7 +195,7 @@ class PageRendererMiddleware implements MiddlewareInterface
             if (empty($page->layout)) {
                 $content->set(implode('', $renderedSegments));
             } else {
-                $extension = trim($this->config->fileExtensions->layouts);
+                $extension = trim($this->config['fileExtensions']['layouts']);
                 $name = empty($extension) ? $page->layout : sprintf('%s.%s', $page->layout, $extension);
                 $content->set($this->twigRenderer->renderTemplate($name, array_merge([
                     'content' => $renderedSegments

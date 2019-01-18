@@ -15,6 +15,7 @@ namespace Herbie;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Exception;
 use Herbie\Menu;
+use Herbie\Menu\MenuItem;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTree;
 use Herbie\Menu\MenuTrail;
@@ -171,17 +172,6 @@ class TwigExtension extends Twig_Extension
         $url = $this->urlGenerator->generate($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
         return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
-    }
-
-    /**
-     * @param string $message
-     * @return string
-     */
-    private function renderError($message)
-    {
-        $style = 'background:red;color:white;padding:4px;margin:2em 0';
-        $message = 'Error: ' . $message;
-        return sprintf('<div style="%s">%s</div>', $style, $message);
     }
 
     /**
@@ -654,11 +644,11 @@ class TwigExtension extends Twig_Extension
         }
 
         // filter pages with empty title
-        $menuList = $menuList->filter(function (\Herbie\Menu\MenuItem $page) {
+        $menuList = $menuList->filter(function (MenuItem $page) {
             return !empty($page->title);
         });
 
-        $pagination = new \Herbie\Pagination($menuList);
+        $pagination = new Pagination($menuList);
         $pagination->setLimit($limit);
 
         return $this->twigRenderer->renderTemplate($path, ['pagination' => $pagination]);

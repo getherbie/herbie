@@ -127,7 +127,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * @param  string $name
      * @param  mixed  $value
      * @return void
-     * @throws Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function __set($name, $value)
     {
@@ -205,7 +205,7 @@ class Config implements Countable, Iterator, ArrayAccess
      *
      * @param  string $name
      * @return void
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __unset($name)
     {

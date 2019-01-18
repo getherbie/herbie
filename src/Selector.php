@@ -93,7 +93,6 @@ class Selector
                 $return[] = $item;
                 $i++;
             }
-
         }
 
         return $return;
@@ -133,7 +132,7 @@ class Selector
      */
     public function get($selector, &$data)
     {
-        $object = $this->find($selector, $data, 1)->first();
+        $object = $this->find($selector, $data)->first();
         return $object;
     }
 

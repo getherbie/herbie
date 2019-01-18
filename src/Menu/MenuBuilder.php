@@ -57,11 +57,14 @@ class MenuBuilder
      * @param Config $config
      * @param MenuFactory $menuFactory
      */
-    public function __construct(FlatfilePersistenceInterface $flatfilePersistence, Config $config, MenuFactory $menuFactory)
-    {
+    public function __construct(
+        FlatfilePersistenceInterface $flatfilePersistence,
+        Config $config,
+        MenuFactory $menuFactory
+    ) {
         $this->flatfilePersistence = $flatfilePersistence;
-        $this->path = $config->paths->pages;
-        $this->extensions = $config->fileExtensions->pages->toArray();
+        $this->path = $config['paths']['pages'];
+        $this->extensions = $config['fileExtensions']['pages']->toArray();
         $this->indexFiles = [];
         $this->menuFactory = $menuFactory;
     }

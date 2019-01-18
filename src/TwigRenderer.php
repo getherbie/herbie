@@ -17,16 +17,19 @@ use Herbie\Menu\MenuTrail;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Url\UrlGenerator;
 use Twig_Environment;
+use Twig_Error_Loader;
 use Twig_Extension_Debug;
 use Twig_Filter;
 use Twig_Function;
-use Twig_Loader_Array;
-use Twig_Loader_Chain;
+use Twig_Loader_Chain as Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Test;
 
 class TwigRenderer
 {
+    /**
+     * @var bool
+     */
     private $initialized;
 
     /**
@@ -43,15 +46,55 @@ class TwigRenderer
      * @var Twig_Environment
      */
     private $twig;
+
+    /**
+     * @var Alias
+     */
     private $alias;
+
+    /**
+     * @var UrlGenerator
+     */
     private $urlGenerator;
+
+    /**
+     * @var Translator
+     */
     private $translator;
+
+    /**
+     * @var SlugGeneratorInterface
+     */
     private $slugGenerator;
+
+    /**
+     * @var Assets
+     */
     private $assets;
+
+    /**
+     * @var MenuList
+     */
     private $menuList;
+
+    /**
+     * @var MenuTree
+     */
     private $menuTree;
+
+    /**
+     * @var MenuTrail
+     */
     private $menuTrail;
+
+    /**
+     * @var DataRepositoryInterface
+     */
     private $dataRepository;
+
+    /**
+     * @var EventManager
+     */
     private $eventManager;
 
     /**
@@ -99,18 +142,19 @@ class TwigRenderer
     }
 
     /**
-     * @throws \Twig_Error_Loader
+     * @throws Twig_Error_Loader
+     * @throws \Throwable
      */
     public function init(): void
     {
         $loader = $this->getTwigFilesystemLoader();
 
         $this->twig = new Twig_Environment($loader, [
-            'debug' => $this->config->twig->debug,
-            'cache' => $this->config->twig->cache
+            'debug' => $this->config['twig']['debug'],
+            'cache' => $this->config['twig']['cache']
         ]);
 
-        if (!empty($this->config->twig->debug)) {
+        if (!empty($this->config['twig']['debug'])) {
             $this->twig->addExtension(new Twig_Extension_Debug());
         }
 
@@ -183,7 +227,7 @@ class TwigRenderer
      * @param string $name
      * @param array $context
      * @return string
-     * @throws \Twig_Error_Loader
+     * @throws Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
@@ -196,12 +240,12 @@ class TwigRenderer
     /**
      * @return array
      */
-    public function getContext()
+    public function getContext(): array
     {
         return [
             'route' => $this->environment->getRoute(),
             'baseUrl' => $this->environment->getBaseUrl(),
-            'theme' => $this->config->theme,
+            'theme' => $this->config['theme'],
             'site' => new Site(
                 $this->config,
                 $this->dataRepository,
@@ -216,7 +260,7 @@ class TwigRenderer
     /**
      * @param Twig_Function $function
      */
-    public function addFunction(Twig_Function $function)
+    public function addFunction(Twig_Function $function): void
     {
         $this->twig->addFunction($function);
     }
@@ -224,7 +268,7 @@ class TwigRenderer
     /**
      * @param Twig_Filter $filter
      */
-    public function addFilter(Twig_Filter $filter)
+    public function addFilter(Twig_Filter $filter): void
     {
         $this->twig->addFilter($filter);
     }
@@ -232,7 +276,7 @@ class TwigRenderer
     /**
      * @param Twig_Test $test
      */
-    public function addTest(Twig_Test $test)
+    public function addTest(Twig_Test $test): void
     {
         $this->twig->addTest($test);
     }
@@ -240,22 +284,22 @@ class TwigRenderer
     /**
      * @return void
      */
-    private function addTwigPlugins()
+    private function addTwigPlugins(): void
     {
         // Functions
-        $dir = $this->config->paths->twig->functions;
+        $dir = $this->config['paths']['twig']['functions'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFunction($included);
         }
         // Filters
-        $dir = $this->config->paths->twig->filters;
+        $dir = $this->config['paths']['twig']['filters'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFilter($included);
         }
         // Tests
-        $dir = $this->config->paths->twig->tests;
+        $dir = $this->config['paths']['twig']['tests'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addTest($included);
@@ -263,19 +307,19 @@ class TwigRenderer
     }
 
     /**
-     * @return Twig_Loader_Filesystem
-     * @throws \Twig_Error_Loader
+     * @throws Twig_Loader_Chain
+     * @throws Twig_Error_Loader
      */
-    private function getTwigFilesystemLoader()
+    private function getTwigFilesystemLoader(): Twig_Loader_Chain
     {
         $paths = [];
-        if (empty($this->config->theme)) {
-            $paths[] = $this->config->paths->layouts;
-        } elseif ($this->config->theme === 'default') {
-            $paths[] = $this->config->paths->layouts . '/default';
+        if (empty($this->config['theme'])) {
+            $paths[] = $this->config['paths']['layouts'];
+        } elseif ($this->config['theme'] === 'default') {
+            $paths[] = $this->config['paths']['layouts'] . '/default';
         } else {
-            $paths[] = $this->config->paths->layouts . '/' . $this->config->theme;
-            $paths[] = $this->config->paths->layouts . '/default';
+            $paths[] = $this->config['paths']['layouts'] . '/' . $this->config['theme'];
+            $paths[] = $this->config['paths']['layouts'] . '/default';
         }
 
         $loader1 = new TwigStringLoader();
@@ -283,10 +327,10 @@ class TwigRenderer
 
         // namespaces
         $namespaces = [
-            'plugin' => $this->config->paths->plugins,
-            'page' => $this->config->paths->pages,
-            'site' => $this->config->paths->site,
-            'widget' => $this->config->paths->app . '/../templates/widgets'
+            'plugin' => $this->config['paths']['plugins'],
+            'page' => $this->config['paths']['pages'],
+            'site' => $this->config['paths']['site'],
+            'widget' => $this->config['paths']['app'] . '/../templates/widgets'
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
@@ -302,7 +346,7 @@ class TwigRenderer
      * @param string $file
      * @return string
      */
-    private function includePhpFile($file)
+    private function includePhpFile(string $file): string
     {
         return include($file);
     }
@@ -311,7 +355,7 @@ class TwigRenderer
      * @param string $dir
      * @return array
      */
-    private function readPhpFiles($dir)
+    private function readPhpFiles(string $dir): array
     {
         $dir = rtrim($dir, '/');
         if (empty($dir) || !is_readable($dir)) {
@@ -321,7 +365,10 @@ class TwigRenderer
         return glob($pattern);
     }
 
-    public function isInitialized()
+    /**
+     * @return bool
+     */
+    public function isInitialized(): bool
     {
         return $this->initialized;
     }

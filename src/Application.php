@@ -42,13 +42,6 @@ use Tebe\HttpFactory\HttpFactory;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
-define('HERBIE', [
-    'DEBUG' => true,
-    'ROOT' => __DIR__
-]);
-
-print_r(HERBIE['DEBUG']);
-
 class Application
 {
     /**
@@ -151,7 +144,7 @@ class Application
 
             // config plugins
             $array = [];
-            $dir = $userConfig->paths->plugins ?? $config->paths->plugins;
+            $dir = $userConfig['paths']['plugins'] ?? $config['paths']['plugins'];
             if (is_readable($dir)) {
                 $files = scandir($dir);
                 foreach ($files as $file) {
@@ -186,15 +179,15 @@ class Application
         $c[Alias::class] = function (Container $c) {
             $config = $c->get(Config::class);
             return new Alias([
-                '@app' => $config->paths->app,
+                '@app' => $config['paths']['app'],
                 '@asset' => $this->sitePath . '/assets',
-                '@media' => $config->paths->media,
-                '@page' => $config->paths->pages,
-                '@plugin' => $config->paths->plugins,
+                '@media' => $config['paths']['media'],
+                '@page' => $config['paths']['pages'],
+                '@plugin' => $config['paths']['plugins'],
                 '@site' => $this->sitePath,
                 '@vendor' => $this->vendorDir,
-                '@web' => $config->paths->web,
-                '@widget' => $config->paths->app . '/../templates/widgets'
+                '@web' => $config['paths']['web'],
+                '@widget' => $config['paths']['app'] . '/../templates/widgets'
             ]);
         };
 

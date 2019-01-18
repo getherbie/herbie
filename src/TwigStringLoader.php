@@ -16,11 +16,11 @@ use Twig_Source;
 
 class TwigStringLoader implements Twig_LoaderInterface
 {
-
-    public function __construct()
-    {
-    }
-
+    /**
+     * @param string $name
+     * @return Twig_Source
+     * @throws Twig_Error_Loader
+     */
     public function getSourceContext($name)
     {
         if (true === $this->isLayoutTemplate($name)) {
@@ -29,23 +29,40 @@ class TwigStringLoader implements Twig_LoaderInterface
         return new Twig_Source($name, $name);
     }
 
-    public function exists($name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function exists($name): bool
     {
         $bool = $this->isLayoutTemplate($name);
         return !$bool;
     }
 
-    public function getCacheKey($name)
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function getCacheKey($name): string
     {
         return md5($name);
     }
 
-    public function isFresh($name, $time)
+    /**
+     * @param string $name
+     * @param int $time
+     * @return bool
+     */
+    public function isFresh($name, $time): bool
     {
         return true;
     }
 
-    public function isLayoutTemplate($name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isLayoutTemplate(string $name): bool
     {
         $pos = strrpos($name, '.');
         if ($pos !== false) {
@@ -57,5 +74,4 @@ class TwigStringLoader implements Twig_LoaderInterface
         }
         return false;
     }
-
 }
