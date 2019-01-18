@@ -17,6 +17,7 @@ use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
 use Herbie\Menu\MenuBuilder;
+use Herbie\Menu\MenuFactory;
 use Herbie\Menu\MenuList;
 use Herbie\Menu\MenuTrail;
 use Herbie\Menu\MenuTree;
@@ -40,6 +41,13 @@ use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
+
+define('HERBIE', [
+    'DEBUG' => true,
+    'ROOT' => __DIR__
+]);
+
+print_r(HERBIE['DEBUG']);
 
 class Application
 {
@@ -245,7 +253,8 @@ class Application
         $c[MenuBuilder::class] = function (Container $c) {
             $builder = new MenuBuilder(
                 $c[FlatfilePersistenceInterface::class],
-                $c[Config::class]
+                $c[Config::class],
+                new MenuFactory()
             );
             return $builder;
         };

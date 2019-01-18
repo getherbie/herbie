@@ -20,7 +20,7 @@ class PageFactory
      * @param array $segments
      * @return Page
      */
-    public function __invoke(string $id, string $parent, array $data, array $segments): Page
+    public function newInstance(string $id, string $parent, array $data, array $segments): Page
     {
         $page = new Page();
         $page->setId($id);

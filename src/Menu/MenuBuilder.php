@@ -48,15 +48,22 @@ class MenuBuilder
     private $indexFiles;
 
     /**
+     * @var MenuFactory
+     */
+    private $menuFactory;
+
+    /**
      * @param FlatfilePersistenceInterface $flatfilePersistence
      * @param Config $config
+     * @param MenuFactory $menuFactory
      */
-    public function __construct(FlatfilePersistenceInterface $flatfilePersistence, Config $config)
+    public function __construct(FlatfilePersistenceInterface $flatfilePersistence, Config $config, MenuFactory $menuFactory)
     {
         $this->flatfilePersistence = $flatfilePersistence;
         $this->path = $config->paths->pages;
         $this->extensions = $config->fileExtensions->pages->toArray();
         $this->indexFiles = [];
+        $this->menuFactory = $menuFactory;
     }
 
     /**
@@ -116,11 +123,11 @@ class MenuBuilder
     private function restoreMenuList(): MenuList
     {
         if (is_null($this->cache)) {
-            return new MenuList();
+            return $this->menuFactory->newMenuList();
         }
         $menuList = $this->cache->get(__CLASS__);
         if (is_null($menuList)) {
-            return new MenuList();
+            return $this->menuFactory->newMenuList();
         }
         return $menuList;
     }
@@ -186,7 +193,7 @@ class MenuBuilder
             $page['data']['route'] = $this->createRoute($relativePath, $trimExtension);
         }
 
-        $item = new MenuItem($page['data']);
+        $item = $this->menuFactory->newMenuItem($page['data']);
         return $item;
     }
 
