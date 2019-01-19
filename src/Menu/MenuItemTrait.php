@@ -175,7 +175,8 @@ trait MenuItemTrait
      */
     public function getParentRoute(): string
     {
-        return trim(dirname($this->getRoute()), '.');
+        $parentRoute = trim(dirname($this->getRoute()), '.');
+        return $parentRoute;
     }
 
     /**

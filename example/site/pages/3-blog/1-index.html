@@ -5,14 +5,7 @@ layout: blog
 
 <h1>Blog</h1>
 
-{% set items = site.menu.filterItems(route) %}
-{% set filteredBy = site.menu.filteredBy %}
-
-{% if filteredBy %}
-<div class="posts-filteredby">
-    <span>{{ filteredBy.label }} <strong>{{ filteredBy.value }}</strong>.</span>
-</div>
-{% endif %}
+{% set items = site.menu.filterItems('blog', 'blog', routeParams) %}
 
 <div class="posts">
     {% for item in items %}
@@ -37,11 +30,8 @@ layout: blog
     </section>
     {% else %}
     <section class="post">
-        <header class="post-header">
-            <h2 class="post-title">Blog</h2>
-        </header>
         <div class="post-description">
-            <p>Es sind noch keine Blogposts erfasst.</p>
+            <p>Es sind keine Blogposts vorhanden.</p>
         </div>
     </section>
     {% endfor %}

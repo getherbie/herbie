@@ -36,6 +36,16 @@ return [
         'media' => $WEB_URL . '/media',
         'web' => $WEB_URL . '/',
     ],
+    'urlManager' => [
+        'rules' => [
+            'blog/author/{author}' => 'blog',
+            'blog/category/{category}' => 'blog',
+            'blog/tag/{tag}' => 'blog',
+            'blog/{year}/{month}/{day}' => 'blog',
+            'blog/{year}/{month}' => 'blog',
+            'blog/{year}' => 'blog'
+        ]
+    ],
     'fileExtensions' => [
         'data' => ['yml', 'yaml'],
         'layouts' => 'html',

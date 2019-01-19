@@ -105,8 +105,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         MenuList $menuList,
         MenuTree $menuTree,
         MenuTrail $menuTrail
-    )
-    {
+    ) {
         $this->cache = $cache;
         $this->environment = $environment;
         $this->httpFactory = $httpFactory;
@@ -130,18 +129,22 @@ class PageRendererMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page $page */
-        $page = $request->getAttribute(Page::class, false);
+        $page = $request->getAttribute('HERBIE_PAGE', null);
+
+        /** @var array $routeParams */
+        $routeParams = $request->getAttribute('HERBIE_ROUTE_PARAMS', []);
 
         if (!$page) {
             $message = sprintf('Server request attribute "%s" doesn\'t exist', Page::class);
             throw new \InvalidArgumentException($message);
         }
 
-        return $this->renderPage($page);
+        return $this->renderPage($page, $routeParams);
     }
 
     /**
      * @param Page $page
+     * @param array $routeParams
      * @return ResponseInterface
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Throwable
@@ -149,7 +152,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    private function renderPage(Page $page): ResponseInterface
+    private function renderPage(Page $page, array $routeParams): ResponseInterface
     {
         // initialize as late as possible
         $this->twigRenderer->init();
@@ -163,19 +166,8 @@ class PageRendererMiddleware implements MiddlewareInterface
 
         if (null === $rendered) {
             $context = [
-                /*
-                'route' => $this->environment->getRoute(),
-                'baseUrl' => $this->environment->getBaseUrl(),
-                'theme' => $this->config['theme'],
-                'site' => new Site(
-                    $this->config,
-                    $this->dataRepository,
-                    $this->menuList,
-                    $this->menuTree,
-                    $this->menuTrail
-                ),
-                */
-                'page' => $page
+                'page' => $page,
+                'routeParams' => $routeParams
             ];
 
             // Render segments

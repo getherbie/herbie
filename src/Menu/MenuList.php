@@ -21,11 +21,6 @@ class MenuList implements \IteratorAggregate, \Countable
     private $items = [];
 
     /**
-     * @var string
-     */
-    private $blogRoute = 'blog';
-
-    /**
      * @var array
      */
     private $filteredBy = [];
@@ -185,14 +180,6 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return string
-     */
-    public function getBlogRoute(): string
-    {
-        return $this->blogRoute;
-    }
-
-    /**
      * @return array
      */
     public function getFilteredBy(): array
@@ -323,102 +310,40 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param string $route
-     * @return array
+     * @param string $type
+     * @param string $parentRoute
+     * @param array $params
+     * @return MenuList
      */
-    public function filterItems(string $route): array
+    public function filterItems(string $type, string $parentRoute, array $params): MenuList
     {
-        $pathInfo = $this->getBlogPathInfo($route);
-        if (empty($pathInfo)) {
-            // No filtering, return all
-            return $this->items;
-        }
-
-        $date = '';
-        $category = '';
-        $tag = '';
-        $author = '';
-        $filteredByLabel = '';
-
-        // filter by year and month
-        if (preg_match('/^.*([0-9]{4})\/([0-9]{2})$/', $pathInfo, $matches)) {
-            $date = urldecode($matches[1] . '-' . $matches[2]);
-            $filteredByLabel = 'Archiv für den Monat';
-            // filter by year
-        } elseif (preg_match('/^.*([0-9]{4})$/', $pathInfo, $matches)) {
-            $date = urldecode($matches[1]);
-            $filteredByLabel = 'Archiv für das Jahr';
-            // filter by category
-        } elseif (preg_match('/^category\/(.+)$/', $pathInfo, $matches)) {
-            $category = urldecode($matches[1]);
-            // filter by tag
-        } elseif (preg_match('/^tag\/(.+)$/', $pathInfo, $matches)) {
-            $tag = urldecode($matches[1]);
-            // filter by author
-        } elseif (preg_match('/^author\/(.+)$/', $pathInfo, $matches)) {
-            $author = urldecode($matches[1]);
-        } else {
-            // Invalid filter setting, return empty array
-            return [];
-        }
-
         $items = [];
 
         foreach ($this->items as $item) {
-            if (0 === strpos($item->date, $date . '-')) {
-                $this->filteredBy = [
-                    'label' => $filteredByLabel,
-                    'value' => $date
-                ];
+            if ($item->getType() !== $type) {
+                continue;
+            }
+            if ($item->getParentRoute() !== $parentRoute) {
+                continue;
+            }
+            if (empty($params)) {
                 $items[] = $item;
                 continue;
             }
-            if ($item->hasCategory($category)) {
+            if (isset($params['category']) && $item->hasCategory($params['category'])) {
                 $items[] = $item;
-                $this->filteredBy = [
-                    'label' => 'Archiv für die Kategorie',
-                    'value' => $item->getCategory($category)
-                ];
                 continue;
             }
-            if ($item->hasTag($tag)) {
+            if (isset($params['tag']) && $item->hasTag($params['tag'])) {
                 $items[] = $item;
-                $this->filteredBy = [
-                    'label' => 'Archiv für das Schlagwort',
-                    'value' => $item->getTag($tag)
-                ];
                 continue;
             }
-            if ($item->hasAuthor($author)) {
+            if (isset($params['author']) && $item->hasAuthor($params['author'])) {
                 $items[] = $item;
-                $this->filteredBy = [
-                    'label' => 'Archiv für den Author',
-                    'value' => $item->getAuthor($author)
-                ];
                 continue;
             }
         }
 
-        // Return filtered items
-        return $items;
-    }
-
-    /**
-     * @param string $route
-     * @return string
-     */
-    private function getBlogPathInfo(string $route): string
-    {
-        $segments = explode('/', $route);
-        if (empty($segments)) {
-            return '';
-        }
-
-        $blogRoute = trim($this->blogRoute, '/');
-        if ($segments[0] == $blogRoute) {
-            array_shift($segments);
-        }
-
-        return implode('/', $segments);
+        return new static($items);
     }
 }

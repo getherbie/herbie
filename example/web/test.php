@@ -1,14 +1,5 @@
 <?php
 
-use Herbie\ZendConfig;
+$config = (require 'config.php')('/app', '/site', '/web', '/');
 
-require_once(__DIR__ . '/../../vendor/autoload.php');
-
-$APP_PATH = '';
-$SITE_PATH = '';
-$WEB_PATH = '';
-$WEB_URL = '';
-$data = require '../../config/test.php';
-$config = new ZendConfig($data);
-
-print_r($config->fileExtensions->toArray());
+print_r($config);

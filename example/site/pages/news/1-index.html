@@ -5,5 +5,5 @@ title: News
 <h1>News</h1>
 
 {% for item in site.menu|filter("type=news", "sort=-date") %}
-<p><strong>{{ link(item.route, item.title) }}</strong><br>{{ item.excerpt }}</p>
+    <p><strong>{{ link(item.route, item.title) }}</strong><br>{{ item.excerpt }}</p>
 {% endfor %}

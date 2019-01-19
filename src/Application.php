@@ -294,7 +294,7 @@ class Application
         };
 
         $c[UrlMatcher::class] = function (Container $c) {
-            return new UrlMatcher($c[MenuList::class]);
+            return new UrlMatcher($c[MenuList::class], $c[Config::class]->urlManager);
         };
 
         $c[MiddlewareDispatcher::class] = function (Container $c) {

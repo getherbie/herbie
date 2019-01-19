@@ -244,6 +244,7 @@ class TwigRenderer
     {
         return [
             'route' => $this->environment->getRoute(),
+            'routeParams' => [],
             'baseUrl' => $this->environment->getBaseUrl(),
             'theme' => $this->config['theme'],
             'site' => new Site(

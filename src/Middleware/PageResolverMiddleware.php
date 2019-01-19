@@ -14,7 +14,6 @@ namespace Herbie\Middleware;
 
 use Herbie\Application;
 use Herbie\Environment;
-use Herbie\Page;
 use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Url\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
@@ -73,11 +72,12 @@ class PageResolverMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $this->environment->getRoute();
-        $menuItem = $this->urlMatcher->match($route);
-        $path = $menuItem->getPath();
-        $page = $this->pageRepository->find($path);
-        $page->setRoute($menuItem->getRoute()); // inject route
-        $request = $request->withAttribute(Page::class, $page);
+        $matchedRoute = $this->urlMatcher->match($route);
+        $page = $this->pageRepository->find($matchedRoute['path']);
+        $page->setRoute($matchedRoute['route']); // inject route
+        $request = $request
+            ->withAttribute('HERBIE_PAGE', $page)
+            ->withAttribute('HERBIE_ROUTE_PARAMS', $matchedRoute['params']);
         return $handler->handle($request);
     }
 }

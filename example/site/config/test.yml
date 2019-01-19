@@ -1,5 +1,5 @@
-language: de
-locale: de_DE
+language: en
+locale: en_EN
 niceUrls: true
 fileExtensions:
   layouts: 'twig'
