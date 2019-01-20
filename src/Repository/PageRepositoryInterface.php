@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
-use Herbie\Page;
+use Herbie\Page\Page;
 
 interface PageRepositoryInterface
 {

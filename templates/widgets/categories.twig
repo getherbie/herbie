@@ -1,0 +1,21 @@
+{# initialize variables #}
+{% set pageRoute = pageRoute ? pageRoute : '' %}
+{% set pageType = pageType ? pageType : null %}
+{% set showCount = showCount ? showCount : false %}
+{% set title = title ? title : 'Categories' %}
+
+{# get categories by page type #}
+{% set categories = site.pageList.categories(pageType) %}
+
+{# render markup #}
+{% if categories|length > 0 %}
+    <div class="widget-blog widget-blog-categories">
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for category, count in categories %}
+                {% set route = pageRoute ~ '/category/' ~ category|lower %}
+                <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

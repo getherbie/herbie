@@ -4,6 +4,7 @@ layout: blog
 excerpt: Mit dem Google Maps Plugin bettest du Karten ganz einfach in deine Website ein.  
 categories: [Feature,Plugin]
 author: Herbie
+tags: [Plugin]
 image: google-maps-plugin.gif
 type: blog
 ---

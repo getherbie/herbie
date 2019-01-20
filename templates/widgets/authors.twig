@@ -1,0 +1,21 @@
+{# initialize variables #}
+{% set pageRoute = pageRoute ? pageRoute : '' %}
+{% set pageType = pageType ? pageType : null %}
+{% set showCount = showCount ? showCount : false %}
+{% set title = title ? title : 'Authors' %}
+
+{# get authors by page type #}
+{% set authors = site.pageList.getAuthors(pageType) %}
+
+{# render markup #}
+{% if authors|length > 0 %}
+    <div class="widget-blog widget-blog-authors">
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for author, count in authors %}
+                {% set route = pageRoute ~ '/author/' ~ author|lower %}
+                <li>{{ link(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

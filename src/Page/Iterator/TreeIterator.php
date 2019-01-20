@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu\Iterator;
+namespace Herbie\Page\Iterator;
 
-use Herbie\Menu\MenuItem;
-use Herbie\Menu\MenuTree;
+use Herbie\Page\PageItem;
+use Herbie\Page\PageTree;
 
 class TreeIterator implements \RecursiveIterator
 {
@@ -56,9 +56,9 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return MenuTree
+     * @return PageTree
      */
-    public function current(): MenuTree
+    public function current(): PageTree
     {
         return $this->children[$this->position];
     }
@@ -96,9 +96,9 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return MenuItem
+     * @return PageItem
      */
-    public function getMenuItem(): MenuItem
+    public function getMenuItem(): PageItem
     {
         return $this->children[$this->position]->getMenuItem();
     }

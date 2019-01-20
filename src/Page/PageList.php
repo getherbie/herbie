@@ -11,19 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
-class MenuList implements \IteratorAggregate, \Countable
+class PageList implements \IteratorAggregate, \Countable
 {
     /**
-     * @var MenuItem[]
+     * @var PageItem[]
      */
     private $items = [];
-
-    /**
-     * @var array
-     */
-    private $filteredBy = [];
 
     /**
      * @var bool
@@ -32,7 +27,7 @@ class MenuList implements \IteratorAggregate, \Countable
 
     /**
      * MenuList constructor.
-     * @param MenuItem[] $items
+     * @param PageItem[] $items
      */
     public function __construct(array $items = [])
     {
@@ -40,9 +35,9 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param MenuItem $item
+     * @param PageItem $item
      */
-    public function addItem(MenuItem $item): void
+    public function addItem(PageItem $item): void
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -58,9 +53,9 @@ class MenuList implements \IteratorAggregate, \Countable
 
     /**
      * @param string $route
-     * @return MenuItem|null
+     * @return PageItem|null
      */
-    public function getItem($route): ?MenuItem
+    public function getItem($route): ?PageItem
     {
         return isset($this->items[$route]) ? $this->items[$route] : null;
     }
@@ -82,9 +77,9 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return MenuItem
+     * @return PageItem
      */
-    public function getRandom(): MenuItem
+    public function getRandom(): PageItem
     {
         $routes = array_keys($this->items);
         $index = mt_rand(0, $this->count()-1);
@@ -95,9 +90,9 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @param string $value
      * @param string $key
-     * @return MenuItem|null
+     * @return PageItem|null
      */
-    public function find($value, $key): ?MenuItem
+    public function find($value, $key): ?PageItem
     {
         foreach ($this->items as $item) {
             if ($item->$key == $value) {
@@ -112,9 +107,9 @@ class MenuList implements \IteratorAggregate, \Countable
      *
      * @param callable|null $key
      * @param mixed $value
-     * @return MenuList
+     * @return PageList
      */
-    public function filter($key = null, $value = null): MenuList
+    public function filter($key = null, $value = null): PageList
     {
         if (is_callable($key)) {
             return new static(array_filter($this->items, $key));
@@ -133,9 +128,9 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * Shuffle the items in the list.
      *
-     * @return MenuList
+     * @return PageList
      */
-    public function shuffle(): MenuList
+    public function shuffle(): PageList
     {
         $items = $this->items;
         shuffle($items);
@@ -153,9 +148,9 @@ class MenuList implements \IteratorAggregate, \Countable
     /**
      * @param callable|string|null $mixed
      * @param string $direction
-     * @return MenuList
+     * @return PageList
      */
-    public function sort($mixed = null, $direction = 'asc'): MenuList
+    public function sort($mixed = null, $direction = 'asc'): PageList
     {
         $items = $this->items;
 
@@ -180,88 +175,63 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
+     * @param string|null $type
      * @return array
      */
-    public function getFilteredBy(): array
+    public function getAuthors(?string $type = null): array
     {
-        return $this->filteredBy;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAuthors(): array
-    {
-        $authors = [];
-        foreach ($this->items as $item) {
-            foreach ($item->authors as $author) {
-                if (array_key_exists($author, $authors)) {
-                    $count = $authors[$author] + 1;
-                } else {
-                    $count = 1;
-                }
-                $authors[$author] = $count;
-            }
-        }
+        $type = is_null($type) ? '__all__' : $type;
+        $authorsPerType = $this->createXxx('authors');
+        $authors = $authorsPerType[$type] ?? [];
         ksort($authors);
         return $authors;
     }
 
     /**
+     * @param string|null $type
      * @return array
      */
-    public function getCategories(): array
+    public function getCategories(?string $type = null): array
     {
-        $categories = [];
-        foreach ($this->items as $item) {
-            foreach ($item->categories as $category) {
-                if (array_key_exists($category, $categories)) {
-                    $count = $categories[$category] + 1;
-                } else {
-                    $count = 1;
-                }
-                $categories[$category] = $count;
-            }
-        }
+        $type = is_null($type) ? '__all__' : $type;
+        $categoriesPerType = $this->createXxx('categories');
+        $categories = $categoriesPerType[$type] ?? [];
         ksort($categories);
         return $categories;
     }
 
     /**
      * @param int $limit
+     * @param string|null $type
      * @return array
      */
-    public function getRecent(int $limit): array
+    public function getRecent(int $limit, ?string $type = null): array
     {
         $limit = intval($limit);
         $items = [];
         $i = 0;
-        foreach ($this->items as $item) {
+        foreach ($this->items as $pageItem) {
+            if ($type && ($pageItem->getType() !== $type)) {
+                continue;
+            }
             if ($i >= $limit) {
                 break;
             }
-            $items[] = $item;
+            $items[] = $pageItem;
             $i++;
         }
         return $items;
     }
 
     /**
+     * @param string|null $type
      * @return array
      */
-    public function getTags(): array
+    public function getTags(?string $type = null): array
     {
-        $tags = [];
-        foreach ($this->items as $item) {
-            foreach ($item->tags as $tag) {
-                if (array_key_exists($tag, $tags)) {
-                    $count = $tags[$tag] + 1;
-                } else {
-                    $count = 1;
-                }
-                $tags[$tag] = $count;
-            }
-        }
+        $type = is_null($type) ? '__all__' : $type;
+        $tagsPerType = $this->createXxx('tags');
+        $tags = $tagsPerType[$type] ?? [];
         ksort($tags);
         return $tags;
     }
@@ -285,37 +255,59 @@ class MenuList implements \IteratorAggregate, \Countable
     }
 
     /**
+     * @param string|null $type
      * @return array
      */
-    public function getMonths(): array
+    public function getMonths(?string $type = null): array
     {
-        $items = [];
-        foreach ($this->items as $item) {
-            $year = substr($item->date, 0, 4);
-            $month = substr($item->date, 5, 2);
+        $type = is_null($type) ? '__all__' : $type;
+
+        // get items
+        $items = ['__all__' => []];
+        foreach ($this->items as $pageItem) {
+            $pageType = $pageItem->getType();
+
+            $year = substr($pageItem->date, 0, 4);
+            $month = substr($pageItem->date, 5, 2);
             $key = $year . '-' . $month;
-            if (array_key_exists($key, $items)) {
-                $count = $items[$key]['count'] + 1;
-            } else {
-                $count = 1;
-            }
-            $items[$key] = [
+
+            $item = [
                 'year' => $year,
                 'month' => $month,
-                'date' => $item->date,
-                'count' => $count
+                'date' => $pageItem->date,
+                'count' => 1
             ];
+
+            // for all
+            if (isset($items['__all__'][$key])) {
+                $items['__all__'][$key]['count']++;
+            } else {
+                $items['__all__'][$key] = $item;
+            }
+
+            if (!isset($items[$pageType])) {
+                $items[$pageType] = [];
+            }
+            // per type
+            if (isset($items[$pageType][$key])) {
+                $items[$pageType][$key]['count']++;
+            } else {
+                $items[$pageType][$key] = $item;
+            }
         }
-        return $items;
+
+        $months = $items[$type] ?? [];
+        krsort($months);
+        return $months;
     }
 
     /**
      * @param string $type
      * @param string $parentRoute
      * @param array $params
-     * @return MenuList
+     * @return PageList
      */
-    public function filterItems(string $type, string $parentRoute, array $params): MenuList
+    public function filterItems(string $type, string $parentRoute, array $params): PageList
     {
         $items = [];
 
@@ -342,8 +334,60 @@ class MenuList implements \IteratorAggregate, \Countable
                 $items[] = $item;
                 continue;
             }
+            if (isset($params['year'], $params['month'], $params['day'])) {
+                $date = sprintf('%s-%s-%s', $params['year'], $params['month'], $params['day']);
+                if ($item->getDate() == $date) {
+                    $items[] = $item;
+                }
+                continue;
+            }
+            if (isset($params['year'], $params['month'])) {
+                $date = substr($item->getDate(), 0, 7);
+                $month = sprintf('%s-%s', $params['year'], $params['month']);
+                if ($date == $month) {
+                    $items[] = $item;
+                }
+                continue;
+            }
+            if (isset($params['year'])) {
+                if (substr($item->getDate(), 0, 4) == $params['year']) {
+                    $items[] = $item;
+                }
+                continue;
+            }
         }
 
         return new static($items);
+    }
+
+    /**
+     * @param string $dataType
+     * @return array
+     */
+    private function createXxx(string $dataType): array
+    {
+        $items = ['__all__' => []];
+        foreach ($this->items as $pageItem) {
+            $pageType = $pageItem->getType();
+            foreach ($pageItem->{$dataType} as $item) {
+                // for all
+                if (isset($items['__all__'][$item])) {
+                    $items['__all__'][$item]++;
+                } else {
+                    $items['__all__'][$item] = 1;
+                }
+
+                if (!isset($items[$pageType])) {
+                    $items[$pageType] = [];
+                }
+                // per type
+                if (isset($items[$pageType][$item])) {
+                    $items[$pageType][$item]++;
+                } else {
+                    $items[$pageType][$item] = 1;
+                }
+            }
+        }
+        return $items;
     }
 }

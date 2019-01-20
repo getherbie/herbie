@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu\Iterator;
+namespace Herbie\Page\Iterator;
 
-use Herbie\Menu\MenuTree;
+use Herbie\Page\PageTree;
 
 class FilterCallback
 {
@@ -33,10 +33,10 @@ class FilterCallback
     }
 
     /**
-     * @param MenuTree $current
+     * @param PageTree $current
      * @return int
      */
-    public function call(MenuTree $current): int
+    public function call(PageTree $current): int
     {
         $menuItem = $current->getMenuItem();
 

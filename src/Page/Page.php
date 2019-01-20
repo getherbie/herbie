@@ -11,16 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
-
-use Herbie\Menu\MenuItemTrait;
+namespace Herbie\Page;
 
 /**
  * Stores the page.
  */
 class Page
 {
-    use MenuItemTrait;
+    use PageItemTrait;
 
     /**
      * @var string

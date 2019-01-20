@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
-class MenuTree extends \Herbie\Node
+class PageTree extends \Herbie\Node
 {
     /**
      * @return string
@@ -24,10 +24,10 @@ class MenuTree extends \Herbie\Node
     }
 
     /**
-     * @param MenuList $menuList
-     * @return MenuTree
+     * @param PageList $menuList
+     * @return PageTree
      */
-    public static function buildTree(MenuList $menuList): MenuTree
+    public static function buildTree(PageList $menuList): PageTree
     {
         $tree = new self();
         foreach ($menuList as $menuItem) {
@@ -50,7 +50,7 @@ class MenuTree extends \Herbie\Node
 
     /**
      * @param string $route
-     * @return MenuTree|bool
+     * @return PageTree|bool
      */
     public function findByRoute(string $route)
     {
@@ -73,7 +73,7 @@ class MenuTree extends \Herbie\Node
     /**
      * @param string $name
      * @param mixed $value
-     * @return MenuTree|bool
+     * @return PageTree|bool
      */
     public function findBy(string $name, $value)
     {

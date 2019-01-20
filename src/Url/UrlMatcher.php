@@ -15,7 +15,7 @@ namespace Herbie\Url;
 
 use Herbie\Config;
 use Herbie\Exception\HttpException;
-use Herbie\Menu\MenuList;
+use Herbie\Page\PageList;
 
 /**
  * The URLMatcher matches a given route and returns the path to a valid page file.
@@ -23,9 +23,9 @@ use Herbie\Menu\MenuList;
 class UrlMatcher
 {
     /**
-     * @var MenuList List of all pages.
+     * @var PageList List of all pages.
      */
-    private $menuList;
+    private $pageList;
     /**
      * @var Config
      */
@@ -33,11 +33,12 @@ class UrlMatcher
 
     /**
      * Constructor
-     * @param MenuList $menuList List of all pages
+     * @param PageList $pageList List of all pages
+     * @param Config $config
      */
-    public function __construct(MenuList $menuList, Config $config)
+    public function __construct(PageList $pageList, Config $config)
     {
-        $this->menuList = $menuList;
+        $this->pageList = $pageList;
         $this->config = $config;
     }
 
@@ -50,7 +51,7 @@ class UrlMatcher
     public function match(string $route): array
     {
         // match by normal route
-        $item = $this->menuList->getItem($route);
+        $item = $this->pageList->getItem($route);
         if (isset($item)) {
             return [
                 'route' => $item->getRoute(),
@@ -62,7 +63,7 @@ class UrlMatcher
         // match by url rules
         $matchedRoute = $this->matchRules($route);
         if ($matchedRoute) {
-            $item = $this->menuList->getItem($matchedRoute['route']);
+            $item = $this->pageList->getItem($matchedRoute['route']);
             if (isset($item)) {
                 return [
                     'route' => $item->getRoute(),
@@ -78,12 +79,17 @@ class UrlMatcher
     /**
      * @param string $route
      * @return array|null
+     * @throws \Exception
      */
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
-        foreach ($this->config->rules as $ruleRegex => $ruleRoute) {
-            $regex = $this->getRegex($ruleRegex);
+        foreach ($this->config->rules->toArray() as $rule) {
+            if (count($rule) < 2) {
+                throw new \Exception(sprintf('Invalid rule %s', $rule[0]));
+            }
+            $constraints = $rule[2] ?? [];
+            $regex = $this->getRegex($rule[0], $constraints);
             if (!$regex) {
                 continue;
             }
@@ -93,8 +99,8 @@ class UrlMatcher
                     array_flip(array_filter(array_keys($matches), 'is_string'))
                 );
                 $matchedRoute = [
-                    'rule' => $ruleRegex,
-                    'route' => $ruleRoute,
+                    'rule' => $rule[0],
+                    'route' => $rule[1],
                     'params' => $params
                 ];
                 break;
@@ -107,9 +113,27 @@ class UrlMatcher
      * @param $pattern
      * @return string
      * @see https://stackoverflow.com/questions/30130913/how-to-do-url-matching-regex-for-routing-framework
+     * @see https://laravel.com/docs/5.7/routing
      */
-    private function getRegex($pattern): ?string
+    private function getRegex($pattern, array $replacements): ?string
     {
+        $string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function ($matches) use ($replacements) {
+            if (count($matches) === 2) {
+                $name = $matches[1];
+                if (empty($replacements[$name])) {
+                    return "(?<" . $name . ">[a-zA-Z0-9\_\-]+)";
+                }
+                return "(?<" . $name . ">" . $replacements[$name] . ")";
+            }
+            return '';
+        }, $pattern);
+
+        // Add start and end matching
+        $patternAsRegex = "@^" . $string . "$@D";
+
+        return $patternAsRegex;
+
+
         if (preg_match('/[^-:\/_{}()a-zA-Z\d]/', $pattern)) {
             return null; // Invalid pattern
         }

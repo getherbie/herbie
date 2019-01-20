@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu\Renderer;
+namespace Herbie\Page\Renderer;
 
 class AsciiTree extends \RecursiveTreeIterator
 {

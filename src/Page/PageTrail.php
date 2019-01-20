@@ -11,17 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
 use Herbie\Environment;
 
-class MenuTrail implements \IteratorAggregate, \Countable
+class PageTrail implements \IteratorAggregate, \Countable
 {
 
     /**
-     * @var MenuList
+     * @var PageList
      */
-    private $menuList;
+    private $pageList;
 
     /**
      * @var string
@@ -34,20 +34,20 @@ class MenuTrail implements \IteratorAggregate, \Countable
     private $items;
 
     /**
-     * @param MenuList $menuList
+     * @param PageList $pageList
      * @param Environment $environment
      */
-    public function __construct(MenuList $menuList, Environment $environment)
+    public function __construct(PageList $pageList, Environment $environment)
     {
-        $this->menuList = $menuList;
+        $this->pageList = $pageList;
         $this->route = $environment->getRoute();
-        $this->items = $this->buildMenuTrail();
+        $this->items = $this->buildPageTrail();
     }
 
     /**
      * @return array
      */
-    private function buildMenuTrail(): array
+    private function buildPageTrail(): array
     {
         $items = [];
 
@@ -58,7 +58,7 @@ class MenuTrail implements \IteratorAggregate, \Countable
             $route .= $delim . $segment;
             $delim = '/';
 
-            $item = $this->menuList->getItem($route);
+            $item = $this->pageList->getItem($route);
             if (isset($item)) {
                 $items[] = $item;
             }

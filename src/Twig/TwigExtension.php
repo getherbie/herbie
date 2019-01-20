@@ -10,16 +10,23 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace Herbie\Twig;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Exception;
-use Herbie\Menu;
-use Herbie\Menu\MenuItem;
-use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTree;
-use Herbie\Menu\MenuTrail;
+use Herbie\Alias;
+use Herbie\Assets;
+use Herbie\Config;
+use Herbie\Environment;
+use Herbie\Page;
+use Herbie\Page\PageItem;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTree;
+use Herbie\Page\PageTrail;
+use Herbie\Pagination;
 use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Selector;
+use Herbie\Translator;
 use Herbie\Url\UrlGenerator;
 use Twig_Extension;
 use Twig_Filter;
@@ -34,9 +41,9 @@ class TwigExtension extends Twig_Extension
     private $translator;
     private $slugGenerator;
     private $assets;
-    private $menuList;
-    private $menuTree;
-    private $menuTrail;
+    private $pageList;
+    private $pageTree;
+    private $pageTrail;
     private $environment;
     private $dataRepository;
     private $twigRenderer;
@@ -48,9 +55,9 @@ class TwigExtension extends Twig_Extension
      * @param UrlGenerator $urlGenerator
      * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
-     * @param MenuList $menuList
-     * @param MenuTree $menuTree
-     * @param MenuTrail $menuTrail
+     * @param PageList $pageList
+     * @param PageTree $pageTree
+     * @param PageTrail $pageTrail
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
@@ -62,9 +69,9 @@ class TwigExtension extends Twig_Extension
         UrlGenerator $urlGenerator,
         SlugGeneratorInterface $slugGenerator,
         Assets $assets,
-        MenuList $menuList,
-        MenuTree $menuTree,
-        MenuTrail $menuTrail,
+        PageList $pageList,
+        PageTree $pageTree,
+        PageTrail $pageTrail,
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
@@ -76,9 +83,9 @@ class TwigExtension extends Twig_Extension
         $this->translator = $translator;
         $this->slugGenerator = $slugGenerator;
         $this->assets = $assets;
-        $this->menuList = $menuList;
-        $this->menuTree = $menuTree;
-        $this->menuTrail = $menuTrail;
+        $this->pageList = $pageList;
+        $this->pageTree = $pageTree;
+        $this->pageTrail = $pageTrail;
         $this->environment = $environment;
         $this->twigRenderer = $twigRenderer;
         $this->dataRepository = $dataRepository;
@@ -222,13 +229,13 @@ class TwigExtension extends Twig_Extension
     }
 
     /**
-     * @param Menu\MenuTree $tree
-     * @return Menu\Iterator\FilterIterator
+     * @param Page\PageTree $tree
+     * @return Page\Iterator\FilterIterator
      */
     public function filterVisible($tree)
     {
-        $treeIterator = new Menu\Iterator\TreeIterator($tree);
-        return new Menu\Iterator\FilterIterator($treeIterator);
+        $treeIterator = new Page\Iterator\TreeIterator($tree);
+        return new Page\Iterator\FilterIterator($treeIterator);
     }
 
     public function filterFilter(\Traversable $iterator, array $selectors = [])
@@ -302,12 +309,12 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->menuTree->findByRoute($route);
-        $treeIterator = new Menu\Iterator\TreeIterator($branch);
-        $filterIterator = new Menu\Iterator\FilterIterator($treeIterator);
+        $branch = $this->pageTree->findByRoute($route);
+        $treeIterator = new Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $asciiTree = new Menu\Renderer\AsciiTree($filterIterator);
+        $asciiTree = new Page\Renderer\AsciiTree($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
     }
@@ -351,7 +358,7 @@ class TwigExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->menuTrail as $item) {
+        foreach ($this->pageTrail as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
 
@@ -430,18 +437,18 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'menu';
 
-        $branch = $this->menuTree->findByRoute($route);
-        $treeIterator = new Menu\Iterator\TreeIterator($branch);
+        $branch = $this->pageTree->findByRoute($route);
+        $treeIterator = new Page\Iterator\TreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
         $routeLine = $this->environment->getRouteLine();
-        $callback = [new Menu\Iterator\FilterCallback($routeLine), 'call'];
+        $callback = [new Page\Iterator\FilterCallback($routeLine), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
-        $htmlTree = new Menu\Renderer\HtmlTree($filterIterator);
+        $htmlTree = new Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function (Menu\MenuTree $node) {
+        $htmlTree->itemCallback = function (Page\PageTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
@@ -462,7 +469,7 @@ class TwigExtension extends Twig_Extension
         $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
-        $count = count($this->menuTrail);
+        $count = count($this->pageTrail);
 
         $titles = [];
 
@@ -470,7 +477,7 @@ class TwigExtension extends Twig_Extension
             $titles[] = $siteTitle;
         }
 
-        foreach ($this->menuTrail as $item) {
+        foreach ($this->pageTrail as $item) {
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
@@ -504,7 +511,7 @@ class TwigExtension extends Twig_Extension
         $nextPageIcon = ''
     ) {
         $route = $this->environment->getRoute();
-        $iterator = $this->menuList->getIterator();
+        $iterator = $this->pageList->getIterator();
 
         $prev = null;
         $cur = null;
@@ -582,15 +589,15 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->menuTree->findByRoute($route);
-        $treeIterator = new Menu\Iterator\TreeIterator($branch);
-        $filterIterator = new Menu\Iterator\FilterIterator($treeIterator);
+        $branch = $this->pageTree->findByRoute($route);
+        $treeIterator = new Page\Iterator\TreeIterator($branch);
+        $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $htmlTree = new Menu\Renderer\HtmlTree($filterIterator);
+        $htmlTree = new Page\Renderer\HtmlTree($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function (Menu\MenuTree $node) {
+        $htmlTree->itemCallback = function (Page\PageTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
@@ -627,28 +634,28 @@ class TwigExtension extends Twig_Extension
         bool $pagination = true
     ) {
 
-        $menuList = $this->menuList;
+        $pageList = $this->pageList;
 
         if (!empty($filter)) {
             list($field, $value) = explode('|', $filter);
-            $menuList = $menuList->filter($field, $value);
+            $pageList = $pageList->filter($field, $value);
         }
 
         if (!empty($sort)) {
             list($field, $direction) = explode('|', $sort);
-            $menuList = $menuList->sort($field, $direction);
+            $pageList = $pageList->sort($field, $direction);
         }
 
         if (1 == (int)$shuffle) {
-            $menuList = $menuList->shuffle();
+            $pageList = $pageList->shuffle();
         }
 
         // filter pages with empty title
-        $menuList = $menuList->filter(function (MenuItem $page) {
+        $pageList = $pageList->filter(function (PageItem $page) {
             return !empty($page->title);
         });
 
-        $pagination = new Pagination($menuList);
+        $pagination = new Pagination($pageList);
         $pagination->setLimit($limit);
 
         return $this->twigRenderer->renderTemplate($path, ['pagination' => $pagination]);

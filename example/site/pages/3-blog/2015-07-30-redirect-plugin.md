@@ -4,6 +4,7 @@ layout: blog
 excerpt: Mit dem Redirect-Plugin kannst du auf Basis der Seiteneigenschaften eine Weiterleitung vornehmen. 
 categories: [Feature,Plugin]
 author: Herbie
+tags: [Plugin]
 type: blog
 ---
 

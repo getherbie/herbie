@@ -8,13 +8,21 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace Herbie\Twig;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
-use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTree;
-use Herbie\Menu\MenuTrail;
+use Herbie\Alias;
+use Herbie\Assets;
+use Herbie\Config;
+use Herbie\Environment;
+use Herbie\EventManager;
+use Herbie\Exception\SystemException;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTree;
+use Herbie\Page\PageTrail;
 use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Site;
+use Herbie\Translator;
 use Herbie\Url\UrlGenerator;
 use Twig_Environment;
 use Twig_Error_Loader;
@@ -73,19 +81,19 @@ class TwigRenderer
     private $assets;
 
     /**
-     * @var MenuList
+     * @var PageList
      */
-    private $menuList;
+    private $pageList;
 
     /**
-     * @var MenuTree
+     * @var PageTree
      */
-    private $menuTree;
+    private $pageTree;
 
     /**
-     * @var MenuTrail
+     * @var PageTrail
      */
-    private $menuTrail;
+    private $pageTrail;
 
     /**
      * @var DataRepositoryInterface
@@ -104,9 +112,9 @@ class TwigRenderer
      * @param UrlGenerator $urlGenerator
      * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
-     * @param MenuList $menuList
-     * @param MenuTree $menuTree
-     * @param MenuTrail $menuTrail
+     * @param PageList $pageList
+     * @param PageTree $pageTree
+     * @param PageTrail $pageTrail
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
@@ -118,9 +126,9 @@ class TwigRenderer
         UrlGenerator $urlGenerator,
         SlugGeneratorInterface $slugGenerator,
         Assets $assets,
-        MenuList $menuList,
-        MenuTree $menuTree,
-        MenuTrail $menuTrail,
+        PageList $pageList,
+        PageTree $pageTree,
+        PageTrail $pageTrail,
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
@@ -134,9 +142,9 @@ class TwigRenderer
         $this->translator = $translator;
         $this->slugGenerator = $slugGenerator;
         $this->assets = $assets;
-        $this->menuList = $menuList;
-        $this->menuTree = $menuTree;
-        $this->menuTrail = $menuTrail;
+        $this->pageList = $pageList;
+        $this->pageTree = $pageTree;
+        $this->pageTrail = $pageTrail;
         $this->dataRepository = $dataRepository;
         $this->eventManager = $eventManager;
     }
@@ -149,9 +157,18 @@ class TwigRenderer
     {
         $loader = $this->getTwigFilesystemLoader();
 
+        $cache = false;
+        if (!empty($this->config['twig']['cache'])) {
+            $cachePath = $this->config['paths']['site'] . '/runtime/cache/twig';
+            if (!is_dir($cachePath)) {
+                throw SystemException::directoryNotExist($cachePath);
+            }
+            $cache = $cachePath;
+        }
+
         $this->twig = new Twig_Environment($loader, [
             'debug' => $this->config['twig']['debug'],
-            'cache' => $this->config['twig']['cache']
+            'cache' => $cache
         ]);
 
         if (!empty($this->config['twig']['debug'])) {
@@ -164,9 +181,9 @@ class TwigRenderer
             $this->urlGenerator,
             $this->slugGenerator,
             $this->assets,
-            $this->menuList,
-            $this->menuTree,
-            $this->menuTrail,
+            $this->pageList,
+            $this->pageTree,
+            $this->pageTrail,
             $this->environment,
             $this->dataRepository,
             $this->translator,
@@ -250,9 +267,9 @@ class TwigRenderer
             'site' => new Site(
                 $this->config,
                 $this->dataRepository,
-                $this->menuList,
-                $this->menuTree,
-                $this->menuTrail
+                $this->pageList,
+                $this->pageTree,
+                $this->pageTrail
             ),
             'page' => null // will be set by page render middleware
         ];
@@ -288,19 +305,19 @@ class TwigRenderer
     private function addTwigPlugins(): void
     {
         // Functions
-        $dir = $this->config['paths']['twig']['functions'];
+        $dir = $this->config['twig']['functionsPath'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFunction($included);
         }
         // Filters
-        $dir = $this->config['paths']['twig']['filters'];
+        $dir = $this->config['twig']['filtersPath'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addFilter($included);
         }
         // Tests
-        $dir = $this->config['paths']['twig']['tests'];
+        $dir = $this->config['twig']['testsPath'];
         foreach ($this->readPhpFiles($dir) as $file) {
             $included = $this->includePhpFile($file);
             $this->twig->addTest($included);

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Herbie\Middleware;
 
 use ErrorException;
-use Herbie\TwigRenderer;
+use Herbie\Twig\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -40,6 +40,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {

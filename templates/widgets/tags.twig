@@ -1,0 +1,21 @@
+{# initialize variables #}
+{% set pageRoute = pageRoute ? pageRoute : '' %}
+{% set pageType = pageType ? pageType : null %}
+{% set showCount = showCount ? showCount : false %}
+{% set title = title ? title : 'Tags' %}
+
+{# get tags by page type #}
+{% set tags = site.pageList.getTags(pageType) %}
+
+{# render markup #}
+{% if tags|length > 0 %}
+    <div class="widget-blog widget-blog-tags">
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for tag, count in tags %}
+                {% set route = pageRoute ~ '/tag/' ~ tag|lower %}
+                <li>{{ link(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

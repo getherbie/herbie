@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
-class MenuItem implements \ArrayAccess
+class PageItem implements \ArrayAccess
 {
-    use MenuItemTrait;
+    use PageItemTrait;
 
     /**
      * @param mixed $offset

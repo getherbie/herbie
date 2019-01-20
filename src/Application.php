@@ -16,11 +16,11 @@ use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
-use Herbie\Menu\MenuBuilder;
-use Herbie\Menu\MenuFactory;
-use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTrail;
-use Herbie\Menu\MenuTree;
+use Herbie\Page\PageBuilder;
+use Herbie\Page\PageFactory;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTrail;
+use Herbie\Page\PageTree;
 use Herbie\Middleware\DownloadMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
@@ -32,6 +32,7 @@ use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Repository\FlatfilePageRepository;
 use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Repository\YamlDataRepository;
+use Herbie\Twig\TwigRenderer;
 use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
 use Psr\Container\ContainerInterface;
@@ -198,9 +199,9 @@ class Application
                 $c[UrlGenerator::class],
                 $c[SlugGeneratorInterface::class],
                 $c[Assets::class],
-                $c[MenuList::class],
-                $c[MenuTree::class],
-                $c[MenuTrail::class],
+                $c[PageList::class],
+                $c[PageTree::class],
+                $c[PageTrail::class],
                 $c[Environment::class],
                 $c[DataRepositoryInterface::class],
                 $c[Translator::class],
@@ -243,11 +244,11 @@ class Application
             return $pageRepository;
         };
 
-        $c[MenuBuilder::class] = function (Container $c) {
-            $builder = new MenuBuilder(
+        $c[PageBuilder::class] = function (Container $c) {
+            $builder = new PageBuilder(
                 $c[FlatfilePersistenceInterface::class],
                 $c[Config::class],
-                new MenuFactory()
+                new PageFactory()
             );
             return $builder;
         };
@@ -270,18 +271,18 @@ class Application
             );
         };
 
-        $c[MenuList::class] = function (Container $c) {
+        $c[PageList::class] = function (Container $c) {
             $cache = $c[Cache::class];
-            $c[MenuBuilder::class]->setCache($cache);
-            return $c[MenuBuilder::class]->buildMenuList();
+            $c[PageBuilder::class]->setCache($cache);
+            return $c[PageBuilder::class]->buildPageList();
         };
 
-        $c[MenuTree::class] = function (Container $c) {
-            return MenuTree::buildTree($c[MenuList::class]);
+        $c[PageTree::class] = function (Container $c) {
+            return PageTree::buildTree($c[PageList::class]);
         };
 
-        $c[MenuTrail::class] = function (Container $c) {
-            return new MenuTrail($c[MenuList::class], $c[Environment::class]);
+        $c[PageTrail::class] = function (Container $c) {
+            return new PageTrail($c[PageList::class], $c[Environment::class]);
         };
 
         $c[Translator::class] = function (Container $c) {
@@ -294,7 +295,7 @@ class Application
         };
 
         $c[UrlMatcher::class] = function (Container $c) {
-            return new UrlMatcher($c[MenuList::class], $c[Config::class]->urlManager);
+            return new UrlMatcher($c[PageList::class], $c[Config::class]->urlManager);
         };
 
         $c[MiddlewareDispatcher::class] = function (Container $c) {
@@ -327,9 +328,9 @@ class Application
                         $c->get(TwigRenderer::class),
                         $c->get(Config::class),
                         $c->get(DataRepositoryInterface::class),
-                        $c->get(MenuList::class),
-                        $c->get(MenuTree::class),
-                        $c->get(MenuTrail::class)
+                        $c->get(PageList::class),
+                        $c->get(PageTree::class),
+                        $c->get(PageTrail::class)
                     )
                 ]
             );
@@ -478,19 +479,19 @@ class Application
     }
 
     /**
-     * @return MenuTrail
+     * @return PageTrail
      */
-    public function getMenuTrail()
+    public function getPageTrail()
     {
-        return $this->container->get(MenuTrail::class);
+        return $this->container->get(PageTrail::class);
     }
 
     /**
-     * @return MenuTree
+     * @return PageTree
      */
-    public function getMenuTree()
+    public function getPageTree()
     {
-        return $this->container->get(MenuTree::class);
+        return $this->container->get(PageTree::class);
     }
 
     /**
@@ -510,11 +511,11 @@ class Application
     }
 
     /**
-     * @return MenuList
+     * @return PageList
      */
-    public function getMenuList()
+    public function getPageList()
     {
-        return $this->container->get(MenuList::class);
+        return $this->container->get(PageList::class);
     }
 
     /**

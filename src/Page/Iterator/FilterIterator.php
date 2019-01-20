@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu\Iterator;
+namespace Herbie\Page\Iterator;
 
 class FilterIterator extends \RecursiveFilterIterator
 {

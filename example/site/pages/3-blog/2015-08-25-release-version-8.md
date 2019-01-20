@@ -3,6 +3,7 @@ title: Version 0.8.0 veröffentlicht
 layout: blog
 excerpt: Das 0.8.0 Release bringt deutliche Verbesserungen. Viele Funktionen sind hinzugekommen, Shortcode, Twig und Markdown wurden als Systemplugins in den Core verschoben, der Code optimiert und die Dokumentation vervollständigt.
 categories: [Feature,Release]
+tags: [Feature]
 author: Herbie
 type: blog
 ---

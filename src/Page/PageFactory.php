@@ -2,17 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: thomas
- * Date: 01.01.19
- * Time: 11:30
+ * Date: 2019-01-18
+ * Time: 06:53
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace Herbie\Page;
 
 class PageFactory
 {
-
     /**
      * @param string $id
      * @param string $parent
@@ -20,7 +19,7 @@ class PageFactory
      * @param array $segments
      * @return Page
      */
-    public function newInstance(string $id, string $parent, array $data, array $segments): Page
+    public function newPage(string $id, string $parent, array $data, array $segments): Page
     {
         $page = new Page();
         $page->setId($id);
@@ -28,5 +27,15 @@ class PageFactory
         $page->setData($data);
         $page->setSegments($segments);
         return $page;
+    }
+
+    public function newPageItem(array $data = [])
+    {
+        return new PageItem($data);
+    }
+
+    public function newPageList(array $items = [])
+    {
+        return new PageList($items);
     }
 }

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace Herbie\Twig;
 
 use Twig_Error_Loader;
 use Twig_LoaderInterface;

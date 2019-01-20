@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
-use Herbie\Page;
-use Herbie\PageFactory;
+use Herbie\Page\Page;
+use Herbie\Page\PageFactory;
 use Herbie\Persistence\FlatfilePersistenceInterface;
 
 class FlatfilePageRepository implements PageRepositoryInterface
@@ -87,7 +87,7 @@ class FlatfilePageRepository implements PageRepositoryInterface
      */
     private function createPage(array $data): Page
     {
-        return $this->pageFactory->newInstance(
+        return $this->pageFactory->newPage(
             $data['id'],
             $data['parent'],
             $data['data'],

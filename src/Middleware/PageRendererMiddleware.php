@@ -15,13 +15,13 @@ namespace Herbie\Middleware;
 use Herbie\Config;
 use Herbie\Environment;
 use Herbie\EventManager;
-use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTrail;
-use Herbie\Menu\MenuTree;
-use Herbie\Page;
+use Herbie\Page\Page;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTrail;
+use Herbie\Page\PageTree;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\StringValue;
-use Herbie\TwigRenderer;
+use Herbie\Twig\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -67,19 +67,19 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $dataRepository;
 
     /**
-     * @var MenuList
+     * @var PageList
      */
-    private $menuList;
+    private $pageList;
 
     /**
-     * @var MenuTree
+     * @var PageTree
      */
-    private $menuTree;
+    private $pageTree;
 
     /**
-     * @var MenuTrail
+     * @var PageTrail
      */
-    private $menuTrail;
+    private $pageTrail;
 
     /**
      * PageRendererMiddleware constructor.
@@ -90,9 +90,9 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param TwigRenderer $twigRenderer
      * @param Config $config
      * @param DataRepositoryInterface $dataRepository
-     * @param MenuList $menuList
-     * @param MenuTree $menuTree
-     * @param MenuTrail $menuTrail
+     * @param PageList $pageList
+     * @param PageTree $pageTree
+     * @param PageTrail $pageTrail
      */
     public function __construct(
         CacheInterface $cache,
@@ -102,9 +102,9 @@ class PageRendererMiddleware implements MiddlewareInterface
         TwigRenderer $twigRenderer,
         Config $config,
         DataRepositoryInterface $dataRepository,
-        MenuList $menuList,
-        MenuTree $menuTree,
-        MenuTrail $menuTrail
+        PageList $pageList,
+        PageTree $pageTree,
+        PageTrail $pageTrail
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
@@ -113,9 +113,9 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->twigRenderer = $twigRenderer;
         $this->config = $config;
         $this->dataRepository = $dataRepository;
-        $this->menuList = $menuList;
-        $this->menuTree = $menuTree;
-        $this->menuTrail = $menuTrail;
+        $this->pageList = $pageList;
+        $this->pageTree = $pageTree;
+        $this->pageTrail = $pageTrail;
     }
 
     /**
@@ -129,15 +129,18 @@ class PageRendererMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page $page */
-        $page = $request->getAttribute('HERBIE_PAGE', null);
+        $page = $request->getAttribute(PageResolverMiddleware::REQUEST_ATTRIBUTE_PAGE, null);
 
-        /** @var array $routeParams */
-        $routeParams = $request->getAttribute('HERBIE_ROUTE_PARAMS', []);
-
-        if (!$page) {
-            $message = sprintf('Server request attribute "%s" doesn\'t exist', Page::class);
+        if (is_null($page)) {
+            $message = sprintf(
+                'Server request attribute "%s" not set',
+                PageResolverMiddleware::REQUEST_ATTRIBUTE_PAGE
+            );
             throw new \InvalidArgumentException($message);
         }
+
+        /** @var array $routeParams */
+        $routeParams = $request->getAttribute(PageResolverMiddleware::REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
 
         return $this->renderPage($page, $routeParams);
     }

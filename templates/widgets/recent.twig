@@ -1,0 +1,24 @@
+{# initialize variables #}
+{% set dateFormat = dateFormat ? dateFormat : '%e. %B %Y' %}
+{% set limit = limit ? limit : 5 %}
+{% set pageType = pageType ? pageType : null %}
+{% set showDate = showDate ? showDate : false %}
+{% set title = title ? title : 'Recent posts' %}
+
+{# get recent pages by page type #}
+{% set recentPages = site.pageList.getRecent(limit, pageType) %}
+
+{# render markup #}
+{% if recentPages|length > 0 %}
+    <div class="widget-blog widget-blog-recent-posts">
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for pageItem in recentPages %}
+                <li>
+                    {{ link(pageItem.route, pageItem.title) }}
+                    {% if showDate %}<br>{{ pageItem.date|strftime(dateFormat) }}{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

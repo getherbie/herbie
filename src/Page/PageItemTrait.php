@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
 use function Herbie\camelize;
 
-trait MenuItemTrait
+trait PageItemTrait
 {
     private $authors;
     private $categories;
@@ -538,7 +538,7 @@ trait MenuItemTrait
      * @param string $route
      * @return bool
      */
-    public function routeInMenuTrail(string $route): bool
+    public function routeInPageTrail(string $route): bool
     {
         $current = $this->getRoute();
         if (empty($route) || empty($current)) {

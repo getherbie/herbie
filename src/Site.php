@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Herbie\Menu\MenuList;
-use Herbie\Menu\MenuTree;
-use Herbie\Menu\MenuTrail;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTree;
+use Herbie\Page\PageTrail;
 use Herbie\Repository\DataRepositoryInterface;
 
 /**
@@ -34,40 +34,40 @@ class Site
     private $dataRepository;
 
     /**
-     * @var MenuList
+     * @var PageList
      */
-    private $menuList;
+    private $pageList;
 
     /**
-     * @var MenuTree
+     * @var PageTree
      */
-    private $menuTree;
+    private $pageTree;
 
     /**
-     * @var MenuTrail
+     * @var PageTrail
      */
-    private $menuTrail;
+    private $pageTrail;
 
     /**
      * Site constructor.
      * @param Config $config
      * @param DataRepositoryInterface $dataRepository
-     * @param MenuList $menuList
-     * @param MenuTree $menuTree
-     * @param MenuTrail $menuTrail
+     * @param PageList $pageList
+     * @param PageTree $pageTree
+     * @param PageTrail $pageTrail
      */
     public function __construct(
         Config $config,
         DataRepositoryInterface $dataRepository,
-        MenuList $menuList,
-        MenuTree $menuTree,
-        MenuTrail $menuTrail
+        PageList $pageList,
+        PageTree $pageTree,
+        PageTrail $pageTrail
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
-        $this->menuList = $menuList;
-        $this->menuTree = $menuTree;
-        $this->menuTrail = $menuTrail;
+        $this->pageList = $pageList;
+        $this->pageTree = $pageTree;
+        $this->pageTrail = $pageTrail;
     }
 
     /**
@@ -87,39 +87,27 @@ class Site
     }
 
     /**
-     * @return MenuList
-     * TODO fix method name
+     * @return PageList
      */
-    public function getMenu(): MenuList
+    public function getPageList(): PageList
     {
-        return $this->menuList;
+        return $this->pageList;
     }
 
     /**
-     * @return MenuTree
-     * TODO fix method name
+     * @return PageTree
      */
-    public function getTree(): MenuTree
+    public function getPageTree(): PageTree
     {
-        return $this->menuTree;
+        return $this->pageTree;
     }
 
     /**
-     * @return MenuTree
-     * TODO fix method name
+     * @return PageTrail
      */
-    public function getPageTree(): MenuTree
+    public function getPageTrail(): PageTrail
     {
-        return $this->menuTree;
-    }
-
-    /**
-     * @return MenuTrail
-     * TODO fix method name
-     */
-    public function getRootPath(): MenuTrail
-    {
-        return $this->menuTrail;
+        return $this->pageTrail;
     }
 
     /**
@@ -128,7 +116,7 @@ class Site
     public function getModified(): string
     {
         $lastModified = 0;
-        foreach ($this->menuList as $item) {
+        foreach ($this->pageList as $item) {
             $modified = strtotime($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;

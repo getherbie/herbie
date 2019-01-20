@@ -24,12 +24,6 @@ return [
         'pages' => $SITE_PATH . '/pages',
         'plugins' => $SITE_PATH . '/plugins',
         'site' => $SITE_PATH,
-        'twig' => [
-            'cache' => $SITE_PATH . '/cache/twig',
-            'functions' => $SITE_PATH . '/twig/functions',
-            'filters' => $SITE_PATH . '/twig/filters',
-            'tests' => $SITE_PATH . '/twig/tests',
-        ],
         'web' => $WEB_PATH
     ],
     'urls' => [
@@ -38,12 +32,12 @@ return [
     ],
     'urlManager' => [
         'rules' => [
-            'blog/author/{author}' => 'blog',
-            'blog/category/{category}' => 'blog',
-            'blog/tag/{tag}' => 'blog',
-            'blog/{year}/{month}/{day}' => 'blog',
-            'blog/{year}/{month}' => 'blog',
-            'blog/{year}' => 'blog'
+            ['blog/author/{author}', 'blog'],
+            ['blog/category/{category}', 'blog'],
+            ['blog/tag/{tag}', 'blog'],
+            ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
+            ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
+            ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
         ]
     ],
     'fileExtensions' => [
@@ -57,11 +51,14 @@ return [
             'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
             'audio' => 'mp3,m4a,wav,aiff,midi'
         ],
-        'pages' => ['txt','md','markdown','textile','htm','html','rss','xml'],
+        'pages' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
     ],
     'twig' => [
         'debug' => false,
         'cache' => false,
+        'functionsPath' => $SITE_PATH . '/twig/functions',
+        'filtersPath' => $SITE_PATH . '/twig/filters',
+        'testsPath' => $SITE_PATH . '/twig/tests'
     ],
     'plugins' => [],
     'enabledPlugins' => [],

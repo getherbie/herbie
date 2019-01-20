@@ -1,0 +1,22 @@
+{# initialize variables #}
+{% set pageRoute = pageRoute ? pageRoute : '' %}
+{% set pageType = pageType ? pageType : null %}
+{% set showCount = showCount ? showCount : false %}
+{% set title = title ? title : 'Archives' %}
+
+{# get months by page type #}
+{% set months = site.pageList.getMonths(pageType) %}
+
+{# render markup #}
+{% if months|length > 0 %}
+    <div class="widget-blog widget-blog-archives">
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for item in months %}
+                {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
+                {% set label = item.date|strftime('%B %Y') %}
+                <li>{{ link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

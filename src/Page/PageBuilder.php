@@ -11,16 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Herbie\Menu;
+namespace Herbie\Page;
 
 use Herbie\Config;
-use Herbie\Menu\Iterator\FileFilterCallback;
-use Herbie\Menu\Iterator\RecursiveDirectoryIterator;
-use Herbie\Menu\Iterator\SortableIterator;
+use Herbie\Page\Iterator\FileFilterCallback;
+use Herbie\Page\Iterator\RecursiveDirectoryIterator;
+use Herbie\Page\Iterator\SortableIterator;
 use Herbie\Persistence\FlatfilePersistenceInterface;
 use Psr\SimpleCache\CacheInterface;
 
-class MenuBuilder
+class PageBuilder
 {
     /**
      * @var FlatfilePersistenceInterface
@@ -48,25 +48,25 @@ class MenuBuilder
     private $indexFiles;
 
     /**
-     * @var MenuFactory
+     * @var PageFactory
      */
-    private $menuFactory;
+    private $pageFactory;
 
     /**
      * @param FlatfilePersistenceInterface $flatfilePersistence
      * @param Config $config
-     * @param MenuFactory $menuFactory
+     * @param PageFactory $pageFactory
      */
     public function __construct(
         FlatfilePersistenceInterface $flatfilePersistence,
         Config $config,
-        MenuFactory $menuFactory
+        PageFactory $pageFactory
     ) {
         $this->flatfilePersistence = $flatfilePersistence;
         $this->path = $config['paths']['pages'];
         $this->extensions = $config['fileExtensions']['pages']->toArray();
         $this->indexFiles = [];
-        $this->menuFactory = $menuFactory;
+        $this->pageFactory = $pageFactory;
     }
 
     /**
@@ -86,12 +86,12 @@ class MenuBuilder
     }
 
     /**
-     * @return MenuList
+     * @return PageList
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function buildMenuList(): MenuList
+    public function buildPageList(): PageList
     {
-        $menuList = $this->restoreMenuList();
+        $menuList = $this->restorePageList();
         if (!$menuList->fromCache) {
             $this->indexFiles = [];
             foreach ($this->getIterator($this->path) as $fileInfo) {
@@ -101,7 +101,7 @@ class MenuBuilder
                     foreach (glob($fileInfo->getPathname() . '/*index.*') as $indexFile) {
                         $this->indexFiles[] = $indexFile;
                         $relPathname = $fileInfo->getRelativePathname() . '/' . basename($indexFile);
-                        $item = $this->createItem($relPathname, '@page');
+                        $item = $this->createPageItem($relPathname, '@page');
                         $menuList->addItem($item);
                         break;
                     }
@@ -110,37 +110,37 @@ class MenuBuilder
                     if (!$this->isValid($fileInfo->getPathname(), $fileInfo->getExtension())) {
                         continue;
                     }
-                    $item = $this->createItem($fileInfo->getRelativePathname(), '@page');
+                    $item = $this->createPageItem($fileInfo->getRelativePathname(), '@page');
                     $menuList->addItem($item);
                 }
             }
-            $this->storeMenuList($menuList);
+            $this->storePageList($menuList);
         }
         return $menuList;
     }
 
     /**
-     * @return MenuList
+     * @return PageList
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    private function restoreMenuList(): MenuList
+    private function restorePageList(): PageList
     {
         if (is_null($this->cache)) {
-            return $this->menuFactory->newMenuList();
+            return $this->pageFactory->newPageList();
         }
         $menuList = $this->cache->get(__CLASS__);
         if (is_null($menuList)) {
-            return $this->menuFactory->newMenuList();
+            return $this->pageFactory->newPageList();
         }
         return $menuList;
     }
 
     /**
-     * @param MenuList $menuList
+     * @param PageList $menuList
      * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    private function storeMenuList(MenuList $menuList): bool
+    private function storePageList(PageList $menuList): bool
     {
         if (is_null($this->cache)) {
             return false;
@@ -184,9 +184,9 @@ class MenuBuilder
     /**
      * @param string $relativePath
      * @param string $alias
-     * @return MenuItem
+     * @return PageItem
      */
-    private function createItem(string $relativePath, string $alias): MenuItem
+    private function createPageItem(string $relativePath, string $alias): PageItem
     {
         $page = $this->flatfilePersistence->findById($alias . '/' . $relativePath);
 
@@ -196,7 +196,7 @@ class MenuBuilder
             $page['data']['route'] = $this->createRoute($relativePath, $trimExtension);
         }
 
-        $item = $this->menuFactory->newMenuItem($page['data']);
+        $item = $this->pageFactory->newPageItem($page['data']);
         return $item;
     }
 
