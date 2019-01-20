@@ -265,8 +265,14 @@ class Application
             );
         };
 
-        $c[Event::class] = function () {
-            return new Event();
+        $c[\Zend\EventManager\Event::class] = function () {
+            return new \Zend\EventManager\Event();
+        };
+
+        $c[Event::class] = function (Container $c) {
+            return new Event(
+                $c->get(\Zend\EventManager\Event::class)
+            );
         };
 
         $c[EventManager::class] = function (Container $c) {

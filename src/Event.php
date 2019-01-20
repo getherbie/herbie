@@ -6,6 +6,7 @@ namespace Herbie;
 
 use ArrayAccess;
 use InvalidArgumentException;
+use Zend\EventManager\Event as ZendEvent;
 use Zend\EventManager\EventInterface;
 
 /**
@@ -17,23 +18,17 @@ use Zend\EventManager\EventInterface;
 class Event implements EventInterface
 {
     /**
-     * @var \Zend\EventManager\Event
+     * @var ZendEvent
      */
     protected $event;
 
     /**
-     * Constructor
-     *
-     * Accept a target and its parameters.
-     *
-     * @param  string $name Event name
-     * @param  string|object $target
-     * @param  array|ArrayAccess $params
+     * Event constructor.
+     * @param ZendEvent $event
      */
-    public function __construct($name = null, $target = null, $params = null)
+    public function __construct(ZendEvent $event)
     {
-        // TODO use dependency injection
-        $this->event = new \Zend\EventManager\Event($name, $target, $params);
+        $this->event = $event;
     }
 
     /**
