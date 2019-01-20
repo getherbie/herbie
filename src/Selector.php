@@ -292,6 +292,7 @@ class Selector
 
     /**
      * @param callable|string $sort
+     * @param $items
      * @return bool
      */
     public function sort($sort, &$items)

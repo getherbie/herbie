@@ -363,6 +363,7 @@ class PageList implements \IteratorAggregate, \Countable
     /**
      * @param string $dataType
      * @return array
+     * @TODO rename method name
      */
     private function createXxx(string $dataType): array
     {

@@ -111,6 +111,7 @@ class UrlMatcher
 
     /**
      * @param $pattern
+     * @param array $replacements
      * @return string
      * @see https://stackoverflow.com/questions/30130913/how-to-do-url-matching-regex-for-routing-framework
      * @see https://laravel.com/docs/5.7/routing
@@ -130,34 +131,6 @@ class UrlMatcher
 
         // Add start and end matching
         $patternAsRegex = "@^" . $string . "$@D";
-
-        return $patternAsRegex;
-
-
-        if (preg_match('/[^-:\/_{}()a-zA-Z\d]/', $pattern)) {
-            return null; // Invalid pattern
-        }
-
-        // Turn "(/)" into "/?"
-        $pattern = preg_replace('#\(/\)#', '/?', $pattern);
-
-        // Create capture group for ":parameter"
-        $allowedParamChars = '[a-zA-Z0-9\_\-]+';
-        $pattern = preg_replace(
-            '/:(' . $allowedParamChars . ')/',   # Replace ":parameter"
-            '(?<$1>' . $allowedParamChars . ')', # with "(?<parameter>[a-zA-Z0-9\_\-]+)"
-            $pattern
-        );
-
-        // Create capture group for '{parameter}'
-        $pattern = preg_replace(
-            '/{(' . $allowedParamChars . ')}/',    # Replace "{parameter}"
-            '(?<$1>' . $allowedParamChars . ')', # with "(?<parameter>[a-zA-Z0-9\_\-]+)"
-            $pattern
-        );
-
-        // Add start and end matching
-        $patternAsRegex = "@^" . $pattern . "$@D";
 
         return $patternAsRegex;
     }

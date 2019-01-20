@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie\Page;
 
+use Herbie\StringValue;
+
 /**
  * Stores the page.
  */

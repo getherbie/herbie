@@ -139,6 +139,8 @@ class Application
                 $content = file_get_contents($this->sitePath . '/config/test.yml');
                 $content = str_replace(array_keys($consts), array_values($consts), $content);
                 $array = Yaml::parse($content);
+            } else {
+                $array = [];
             }
             $userConfig = new Config($array);
 
