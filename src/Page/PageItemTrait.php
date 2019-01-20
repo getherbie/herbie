@@ -142,27 +142,6 @@ trait PageItemTrait
     }
 
     /**
-     * @return string
-     * TODO do we need this?
-     */
-    public function __getRoute(): string
-    {
-        $route = trim(basename($this->getPath()), '/');
-        $route = preg_replace('/^([0-9]{4})-([0-9]{2})-([0-9]{2})(.*)$/', '\\1/\\2/\\3\\4', $route);
-
-        // Endung entfernen
-        $pos = strrpos($route, '.');
-        if ($pos !== false) {
-            $route = substr($route, 0, $pos);
-        }
-
-        if (empty($this->blogRoute)) {
-            return $route;
-        }
-        return $this->blogRoute . '/' . $route;
-    }
-
-    /**
      * @param string $route
      */
     public function setRoute(string $route): void
