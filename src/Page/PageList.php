@@ -181,7 +181,7 @@ class PageList implements \IteratorAggregate, \Countable
     public function getAuthors(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
-        $authorsPerType = $this->createXxx('authors');
+        $authorsPerType = $this->createTaxonomyFor('authors');
         $authors = $authorsPerType[$type] ?? [];
         ksort($authors);
         return $authors;
@@ -194,7 +194,7 @@ class PageList implements \IteratorAggregate, \Countable
     public function getCategories(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
-        $categoriesPerType = $this->createXxx('categories');
+        $categoriesPerType = $this->createTaxonomyFor('categories');
         $categories = $categoriesPerType[$type] ?? [];
         ksort($categories);
         return $categories;
@@ -230,7 +230,7 @@ class PageList implements \IteratorAggregate, \Countable
     public function getTags(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
-        $tagsPerType = $this->createXxx('tags');
+        $tagsPerType = $this->createTaxonomyFor('tags');
         $tags = $tagsPerType[$type] ?? [];
         ksort($tags);
         return $tags;
@@ -363,9 +363,8 @@ class PageList implements \IteratorAggregate, \Countable
     /**
      * @param string $dataType
      * @return array
-     * @TODO rename method name
      */
-    private function createXxx(string $dataType): array
+    private function createTaxonomyFor(string $dataType): array
     {
         $items = ['__all__' => []];
         foreach ($this->items as $pageItem) {
