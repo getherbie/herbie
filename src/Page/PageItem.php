@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie\Page;
 
+use BadMethodCallException;
+
 class PageItem implements \ArrayAccess
 {
     use PageItemTrait;
@@ -51,6 +53,6 @@ class PageItem implements \ArrayAccess
      */
     public function offsetUnset($offset): void
     {
-        // TODO implement
+        throw new BadMethodCallException('Unset is not supported');
     }
 }
