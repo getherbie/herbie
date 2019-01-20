@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
 use Herbie\Page\PageBuilder;
@@ -197,7 +196,7 @@ class Application
                 $c[Alias::class],
                 $c[Config::class],
                 $c[UrlGenerator::class],
-                $c[SlugGeneratorInterface::class],
+                $c[SlugGenerator::class],
                 $c[Assets::class],
                 $c[PageList::class],
                 $c[PageTree::class],
@@ -210,17 +209,23 @@ class Application
             return $twig;
         };
 
-        $c[SlugGeneratorInterface::class] = function (Container $c) {
+        $c[SlugOptions::class] = function (Container $c) {
             $locale = $c[Config::class]->get('language');
-            $options = new SlugOptions([
+            return new SlugOptions([
                 'locale' => $locale,
                 'delimiter' => '-'
             ]);
-            return new SlugGenerator($options);
+        };
+
+        $c[SlugGenerator::class] = function (Container $c) {
+            return new SlugGenerator($c[SlugOptions::class]);
         };
 
         $c[Assets::class] = function (Container $c) {
-            return new Assets($c[Alias::class], $c[Environment::class]);
+            return new Assets(
+                $c[Alias::class],
+                $c[Environment::class]
+            );
         };
 
         $c[Cache::class] = function () {
@@ -228,39 +233,52 @@ class Application
         };
 
         $c[DataRepositoryInterface::class] = function (Container $c) {
-            $dataRepository = new YamlDataRepository($c[Config::class]);
-            return $dataRepository;
+            return new YamlDataRepository(
+                $c[Config::class]
+            );
         };
 
         $c[FlatfilePersistenceInterface::class] = function (Container $c) {
-            return new FlatfilePagePersistence($c[Alias::class]);
+            return new FlatfilePagePersistence(
+                $c[Alias::class]
+            );
+        };
+
+        $c[PageFactory::class] = function () {
+            return new PageFactory();
         };
 
         $c[PageRepositoryInterface::class] = function (Container $c) {
-            $pageRepository = new FlatfilePageRepository(
+            return new FlatfilePageRepository(
                 $c[FlatfilePersistenceInterface::class],
-                new PageFactory()
+                $c[PageFactory::class]
             );
-            return $pageRepository;
         };
 
         $c[PageBuilder::class] = function (Container $c) {
-            $builder = new PageBuilder(
+            return new PageBuilder(
                 $c[FlatfilePersistenceInterface::class],
                 $c[Config::class],
-                new PageFactory()
+                $c[PageFactory::class]
             );
-            return $builder;
         };
 
-        $c[EventManager::class] = function () {
-            $zendEventManager = new \Zend\EventManager\EventManager();
-            $zendEventManager->setEventPrototype(new Event());
+        $c[Event::class] = function () {
+            return new Event();
+        };
+
+        $c[EventManager::class] = function (Container $c) {
+            $zendEventManager = new \Zend\EventManager\EventManager(); // TODO get from container
+            $zendEventManager->setEventPrototype($c[Event::class]);
             return new EventManager($zendEventManager);
         };
 
         $c[PluginManager::class] = function (Container $c) {
-            return new PluginManager($c[EventManager::class], $c[Config::class], $c);
+            return new PluginManager(
+                $c[EventManager::class],
+                $c[Config::class],
+                $c
+            );
         };
 
         $c[UrlGenerator::class] = function (Container $c) {
@@ -273,16 +291,21 @@ class Application
 
         $c[PageList::class] = function (Container $c) {
             $cache = $c[Cache::class];
-            $c[PageBuilder::class]->setCache($cache);
+            $c[PageBuilder::class]->setCache($cache); // TODO inject cache interface properly
             return $c[PageBuilder::class]->buildPageList();
         };
 
         $c[PageTree::class] = function (Container $c) {
-            return PageTree::buildTree($c[PageList::class]);
+            return PageTree::buildTree(
+                $c[PageList::class]
+            );
         };
 
         $c[PageTrail::class] = function (Container $c) {
-            return new PageTrail($c[PageList::class], $c[Environment::class]);
+            return new PageTrail(
+                $c[PageList::class],
+                $c[Environment::class]
+            );
         };
 
         $c[Translator::class] = function (Container $c) {
@@ -295,43 +318,62 @@ class Application
         };
 
         $c[UrlMatcher::class] = function (Container $c) {
-            return new UrlMatcher($c[PageList::class], $c[Config::class]->urlManager);
+            return new UrlMatcher(
+                $c[PageList::class],
+                $c[Config::class]->urlManager
+            );
+        };
+
+        $c[ErrorHandlerMiddleware::class] = function (Container $c) {
+            return new ErrorHandlerMiddleware(
+                $c->get(TwigRenderer::class)
+            );
+        };
+
+        $c[DownloadMiddleware::class] = function (Container $c) {
+            return new DownloadMiddleware(
+                $c->get(Config::class),
+                $c->get(Alias::class)
+            );
+        };
+
+        $c[PageResolverMiddleware::class] = function (Container $c) {
+            return new PageResolverMiddleware(
+                $this,
+                $c->get(Environment::class),
+                $c->get(PageRepositoryInterface::class),
+                $c->get(UrlMatcher::class)
+            );
+        };
+
+        $c[PageRendererMiddleware::class] = function (Container $c) {
+            return new PageRendererMiddleware(
+                $c->get(Cache::class),
+                $c->get(Environment::class),
+                $c->get(HttpFactory::class),
+                $c->get(EventManager::class),
+                $c->get(TwigRenderer::class),
+                $c->get(Config::class),
+                $c->get(DataRepositoryInterface::class),
+                $c->get(PageList::class),
+                $c->get(PageTree::class),
+                $c->get(PageTrail::class)
+            );
         };
 
         $c[MiddlewareDispatcher::class] = function (Container $c) {
             $middlewares = array_merge(
                 [
-                    new ErrorHandlerMiddleware(
-                        $c->get(TwigRenderer::class)
-                    )
+                    $c->get(ErrorHandlerMiddleware::class)
                 ],
                 $this->middlewares,
                 [
-                    new DownloadMiddleware(
-                        $c->get(Config::class),
-                        $c->get(Alias::class)
-                    ),
-                    new PageResolverMiddleware(
-                        $this,
-                        $c->get(Environment::class),
-                        $c->get(PageRepositoryInterface::class),
-                        $c->get(UrlMatcher::class)
-                    )
+                    $c->get(DownloadMiddleware::class),
+                    $c->get(PageResolverMiddleware::class)
                 ],
                 $c->get(PluginManager::class)->getMiddlewares(),
                 [
-                    new PageRendererMiddleware(
-                        $c->get(Cache::class),
-                        $c->get(Environment::class),
-                        $c->get(HttpFactory::class),
-                        $c->get(EventManager::class),
-                        $c->get(TwigRenderer::class),
-                        $c->get(Config::class),
-                        $c->get(DataRepositoryInterface::class),
-                        $c->get(PageList::class),
-                        $c->get(PageTree::class),
-                        $c->get(PageTrail::class)
-                    )
+                    $c->get(PageRendererMiddleware::class)
                 ]
             );
             return new MiddlewareDispatcher($middlewares);
@@ -527,11 +569,11 @@ class Application
     }
 
     /**
-     * @return SlugGeneratorInterface
+     * @return SlugGenerator
      */
     public function getSlugGenerator()
     {
-        return $this->container->get(SlugGeneratorInterface::class);
+        return $this->container->get(SlugGenerator::class);
     }
 
     /**
