@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Herbie\Middleware;
 
-use Herbie\Application;
 use Herbie\Environment;
 use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Url\UrlMatcher;
@@ -32,11 +31,6 @@ class PageResolverMiddleware implements MiddlewareInterface
     private $environment;
 
     /**
-     * @var Application
-     */
-    private $herbie;
-
-    /**
      * @var UrlMatcher
      */
     private $urlMatcher;
@@ -48,19 +42,15 @@ class PageResolverMiddleware implements MiddlewareInterface
 
     /**
      * PageResolverMiddleware constructor.
-     * @param Application $herbie
      * @param Environment $environment
      * @param PageRepositoryInterface $pageRepository
      * @param UrlMatcher $urlMatcher
      */
-    // TODO dont inject Application
     public function __construct(
-        Application $herbie,
         Environment $environment,
         PageRepositoryInterface $pageRepository,
         UrlMatcher $urlMatcher
     ) {
-        $this->herbie = $herbie;
         $this->environment = $environment;
         $this->urlMatcher = $urlMatcher;
         $this->pageRepository = $pageRepository;

@@ -341,7 +341,6 @@ class Application
 
         $c[PageResolverMiddleware::class] = function (Container $c) {
             return new PageResolverMiddleware(
-                $this,
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class),
                 $c->get(UrlMatcher::class)
