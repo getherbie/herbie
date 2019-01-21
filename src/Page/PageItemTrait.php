@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie\Page;
 
+use Ausi\SlugGenerator\SlugGenerator;
+use BadMethodCallException;
 use function Herbie\camelize;
 
 trait PageItemTrait
@@ -37,6 +39,11 @@ trait PageItemTrait
     private $title;
     private $type;
     private $twig;
+
+    /**
+     * @var SlugGenerator
+     */
+    private static $slugGenerator;
 
     /**
      * @param array $data
@@ -610,7 +617,17 @@ trait PageItemTrait
      */
     private function slugify(string $slug): string
     {
-        // TODO use SlugGeneratorInterface
-        return strtolower($slug);
+        return static::$slugGenerator->generate($slug);
+    }
+
+    /**
+     * @param SlugGenerator $slugGenerator
+     */
+    public static function setSlugGenerator(SlugGenerator $slugGenerator)
+    {
+        if (!empty(static::$slugGenerator)) {
+            throw new BadMethodCallException('SlugGenerator already set');
+        }
+        static::$slugGenerator = $slugGenerator;
     }
 }

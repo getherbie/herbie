@@ -13,7 +13,7 @@
         <h4>{{ title }}</h4>
         <ul>
             {% for author, count in authors %}
-                {% set route = pageRoute ~ '/author/' ~ author|lower %}
+                {% set route = pageRoute ~ '/author/' ~ author|slugify %}
                 <li>{{ link(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
             {% endfor %}
         </ul>

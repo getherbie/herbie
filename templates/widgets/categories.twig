@@ -13,7 +13,7 @@
         <h4>{{ title }}</h4>
         <ul>
             {% for category, count in categories %}
-                {% set route = pageRoute ~ '/category/' ~ category|lower %}
+                {% set route = pageRoute ~ '/category/' ~ category|slugify %}
                 <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
             {% endfor %}
         </ul>

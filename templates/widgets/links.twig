@@ -13,7 +13,7 @@
         <i class="fa fa-folder-open"></i>
         {% set delim = '' %}
             {% for category in categories %}
-                {%- set route = pageRoute ~ '/category/' ~ category|urlify -%}
+                {%- set route = pageRoute ~ '/category/' ~ category|slugify -%}
                 {{ delim|raw }}{{ link(route, category) }}
                 {%- set delim = '<span class="delim">, </span>' -%}
             {% endfor %}
@@ -30,7 +30,7 @@
         <i class="fa fa-tags"></i>
         {% set delim = '' %}
                 {% for tag in tags %}
-                    {%- set route = pageRoute ~ '/tag/' ~ tag|urlify -%}
+                    {%- set route = pageRoute ~ '/tag/' ~ tag|slugify -%}
                     {{ delim|raw }}{{ link(route, tag) }}
                     {%- set delim = '<span class="delim">, </span>' -%}
                 {% endfor %}
@@ -47,7 +47,7 @@
         <i class="fa fa-user"></i>
         {% set delim = '' %}
                 {% for author in authors %}
-                    {%- set route = pageRoute ~ '/author/' ~ author|urlify -%}
+                    {%- set route = pageRoute ~ '/author/' ~ author|slugify -%}
                     {{ delim|raw }}{{ link(route, author) }}
                     {%- set delim = '<span class="delim">, </span>' -%}
                 {% endfor %}

@@ -10,8 +10,8 @@
     params: [{ name: format, type: string, desc: 'Das Datumformat. Es werden die Formatierungszeichen der gleichnamigen PHP-Funktion genutzt.', default: '%x' }]
     return: [string, 'Die formatierte Zeit-/Datumsangabe']
 -
-    name: urlify
-    code: 'string "Ein normaler String mit Leerzeichen, Ümläuten und (?!&#) Sonderzeichen."|urlify'
+    name: slugify
+    code: 'string "Ein normaler String mit Leerzeichen, Ümläuten und (?!&#) Sonderzeichen."|slugify'
     desc: 'Wandelt einen String in einen URL-optimierten String um.'
     return: [string, 'Der umgewandelte String']
 -

@@ -107,7 +107,7 @@ class TwigExtension extends Twig_Extension
         return [
             new Twig_Filter('filesize', [$this, 'filterFilesize'], ['is_safe' => ['html']]),
             new Twig_Filter('strftime', [$this, 'filterStrftime']),
-            new Twig_Filter('urlify', [$this, 'filterUrlify'], ['is_safe' => ['html']]),
+            new Twig_Filter('slugify', [$this, 'filterSlugify'], ['is_safe' => ['html']]),
             new Twig_Filter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
             new Twig_Filter('filter', [$this, 'filterFilter'], ['is_variadic' => true])
         ];
@@ -222,7 +222,7 @@ class TwigExtension extends Twig_Extension
      * @param $url
      * @return string
      */
-    public function filterUrlify($url)
+    public function filterSlugify($url)
     {
         return $this->slugGenerator->generate($url);
     }

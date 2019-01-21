@@ -15,8 +15,10 @@ namespace Herbie;
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
+use Herbie\Page\Page;
 use Herbie\Page\PageBuilder;
 use Herbie\Page\PageFactory;
+use Herbie\Page\PageItem;
 use Herbie\Page\PageList;
 use Herbie\Page\PageTrail;
 use Herbie\Page\PageTree;
@@ -100,6 +102,10 @@ class Application
         $pluginsPath = $this->container->get(Config::class)->paths->plugins;
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
+
+        // Set slug generator to page and page item
+        PageItem::setSlugGenerator($this->getSlugGenerator());
+        Page::setSlugGenerator($this->getSlugGenerator());
     }
 
     /**
