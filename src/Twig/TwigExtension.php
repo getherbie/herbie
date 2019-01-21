@@ -123,7 +123,6 @@ class TwigExtension extends Twig_Extension
             new Twig_Function('absurl', [$this, 'functionAbsUrl'], $options),
             new Twig_Function('addcss', [$this, 'functionAddCss'], $options),
             new Twig_Function('addjs', [$this, 'functionAddJs'], $options),
-            new Twig_Function('config', [$this, 'functionConfig'], $options),
             new Twig_Function('outputcss', [$this, 'functionOutputCss'], $options),
             new Twig_Function('outputjs', [$this, 'functionOutputJs'], $options),
             new Twig_Function('asciitree', [$this, 'functionAsciiTree'], $options),
@@ -376,17 +375,6 @@ class TwigExtension extends Twig_Extension
         $html .= '</ul>';
 
         return $html;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $default
-     * @return mixed
-     */
-    public function functionConfig($name, $default = null)
-    {
-        // TODO
-        return $this->config->get($name, $default);
     }
 
     /**

@@ -271,7 +271,8 @@ class TwigRenderer
                 $this->pageTree,
                 $this->pageTrail
             ),
-            'page' => null // will be set by page render middleware
+            'page' => null, // will be set by page render middleware,
+            'config' => $this->config->toArray()
         ];
     }
 
