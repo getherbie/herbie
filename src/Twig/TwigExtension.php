@@ -133,7 +133,6 @@ class TwigExtension extends Twig_Extension
             new Twig_Function('menu', [$this, 'functionMenu'], $options),
             new Twig_Function('pagetitle', [$this, 'functionPageTitle'], $options),
             new Twig_Function('pager', [$this, 'functionPager'], $options),
-            new Twig_Function('redirect', [$this, 'functionRedirect'], $options),
             new Twig_Function('sitemap', [$this, 'functionSitemap'], $options),
             new Twig_Function('translate', [$this, 'functionTranslate'], $options),
             new Twig_Function('url', [$this, 'functionUrl'], $options),
@@ -550,19 +549,6 @@ class TwigExtension extends Twig_Extension
         }
 
         return strtr($template, $replacements);
-    }
-
-    /**
-     * @param string $route
-     * @param int $status
-     * @return void
-     */
-    public function functionRedirect($route, $status = 302)
-    {
-        $url = $this->urlGenerator->generateAbsolute($route);
-        // TODO replace undefined class
-        $response = new RedirectResponse($url, $status);
-        $response->send();
     }
 
     /**

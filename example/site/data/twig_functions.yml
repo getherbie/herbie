@@ -82,12 +82,6 @@
     params: [{ name: limit, type: string, desc: 'Beschränkt die Anwendung auf einen bestimmten Bereich des Seitenbaums.', default: '' }, { name: template, type: string, desc: 'Das Template.', default: '{prev}{next}' }, { name: linkClass, type: string, desc: 'Die CSS-Klasse der Links.', default: '' }, { name: prevPageLabel, type: string, desc: 'Das Label des Links zur vorherigen Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: nextPageLabel, type: string, desc: 'Das Label des Links zur nächsten Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: prevPageIcon, type: string, desc: 'Das Icon des Links zur vorherigen Seite.', default: '' }, { name: nextPageIcon, type: string, desc: 'Das Icon des Links zur nächsten Seite.', default: '' }]
     return: [string, 'Der generierte HTML-Code']
 -
-    name: redirect
-    code: 'string redirect(string route [, int status = 302])'
-    desc: 'Leitet zur internen Seite mit der entsprechenden Route weiter und sendet einen gültigen Statuscode.'
-    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }, { name: status, type: int, desc: 'Der Statuscode.', default: '302' }]
-    return: [void, '']
--
     name: sitemap
     code: 'string sitemap([array options = {}])'
     desc: 'Erstellt für alle Seiten der Website eine Sitemap basierend auf einer unsortierten HTML-Liste. Alle Parameter werden als assoziatives Array übergeben.'

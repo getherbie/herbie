@@ -15,6 +15,7 @@ namespace Herbie\Middleware;
 use Herbie\Config;
 use Herbie\Environment;
 use Herbie\EventManager;
+use Herbie\Exception\SystemException;
 use Herbie\Page\Page;
 use Herbie\Page\PageList;
 use Herbie\Page\PageTrail;
@@ -22,6 +23,7 @@ use Herbie\Page\PageTree;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\StringValue;
 use Herbie\Twig\TwigRenderer;
+use Herbie\Url\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -83,6 +85,11 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $pageTrail;
 
     /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    /**
      * PageRendererMiddleware constructor.
      * @param CacheInterface $cache
      * @param Environment $environment
@@ -105,7 +112,8 @@ class PageRendererMiddleware implements MiddlewareInterface
         DataRepositoryInterface $dataRepository,
         PageList $pageList,
         PageTree $pageTree,
-        PageTrail $pageTrail
+        PageTrail $pageTrail,
+        UrlGenerator $urlGenerator
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
@@ -117,6 +125,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->pageList = $pageList;
         $this->pageTree = $pageTree;
         $this->pageTrail = $pageTrail;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -158,6 +167,13 @@ class PageRendererMiddleware implements MiddlewareInterface
      */
     private function renderPage(Page $page, array $routeParams): ResponseInterface
     {
+        $redirect = $page->getRedirect();
+
+        if (!empty($redirect)) {
+            $response = $this->createRedirectResponse($redirect);
+            return $response;
+        }
+
         // initialize as late as possible
         $this->twigRenderer->init();
 
@@ -206,9 +222,28 @@ class PageRendererMiddleware implements MiddlewareInterface
         }
 
         $response = $this->httpFactory->createResponse(200);
+
         $response->getBody()->write($rendered);
         $response->withHeader('Content-Type', $page->content_type);
 
+        return $response;
+    }
+
+    /**
+     * @param array $redirect
+     * @return ResponseInterface
+     * @throws SystemException
+     */
+    private function createRedirectResponse(array $redirect)
+    {
+        if (strpos($redirect['url'], 'http') === 0) { // A valid URL? Take it.
+            $location = $redirect['url'];
+        } else {
+            $location = $this->urlGenerator->generate($redirect['url']); // A internal route? Generate URL.
+        }
+        $response = $this->httpFactory
+            ->createResponse($redirect['status'])
+            ->withHeader('Location', $location);
         return $response;
     }
 }

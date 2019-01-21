@@ -370,7 +370,8 @@ class Application
                 $c->get(DataRepositoryInterface::class),
                 $c->get(PageList::class),
                 $c->get(PageTree::class),
-                $c->get(PageTrail::class)
+                $c->get(PageTrail::class),
+                $c->get(UrlGenerator::class)
             );
         };
 

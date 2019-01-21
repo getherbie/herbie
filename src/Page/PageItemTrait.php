@@ -16,6 +16,7 @@ namespace Herbie\Page;
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
 use function Herbie\camelize;
+use InvalidArgumentException;
 
 trait PageItemTrait
 {
@@ -34,6 +35,7 @@ trait PageItemTrait
     private $modified;
     private $nocache;
     private $path;
+    private $redirect;
     private $route;
     private $tags;
     private $title;
@@ -71,6 +73,7 @@ trait PageItemTrait
         $this->twig = 1;
         $this->keep_extension = 0;
         $this->customData = [];
+        $this->redirect = [];
 
         // set values
         $this->setData($data);
@@ -138,6 +141,36 @@ trait PageItemTrait
     public function setMenu(string $menu): void
     {
         $this->menu = trim($menu);
+    }
+
+    /**
+     * @return array
+     */
+    public function getRedirect(): array
+    {
+        return $this->redirect;
+    }
+
+    /**
+     * @param array|string $redirect
+     */
+    public function setRedirect($redirect): void
+    {
+        if (is_string($redirect)) {
+            $redirectArray = [
+                'status' => 302,
+                'url' => $redirect
+            ];
+        } else {
+            $redirectArray = $redirect;
+        }
+        foreach ($redirectArray as $key => $value) {
+            if (!in_array($key, ['url', 'status'])) {
+                $message = sprintf('Key "%s" not allowed', $key);
+                throw new InvalidArgumentException($message);
+            }
+        }
+        $this->redirect = $redirectArray;
     }
 
     /**
