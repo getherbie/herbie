@@ -45,7 +45,7 @@
   desc: "Der Pfad zur entsprechenden Datei. Wird von Herbie automatisch vorgefüllt."
   type: string
 -
-  key:  page.nocache
+  key:  page.cached
   desc: "Das Caching der Seite wird deaktiviert, falls dieses Flag gesetzt ist."
   type: bool
 -

@@ -180,7 +180,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $rendered = null;
 
         $cacheId = 'page-' . $this->environment->getRoute();
-        if (empty($page->nocache)) {
+        if (!empty($page->cached)) {
             $rendered = $this->cache->get($cacheId);
         }
 
@@ -215,7 +215,7 @@ class PageRendererMiddleware implements MiddlewareInterface
                 $this->eventManager->trigger('onRenderLayout', $content, ['page' => $page]);
             }
 
-            if (empty($page->nocache)) {
+            if (!empty($page->cached)) {
                 $this->cache->set($cacheId, $content->get());
             }
             $rendered = $content->get();

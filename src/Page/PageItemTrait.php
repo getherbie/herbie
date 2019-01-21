@@ -33,7 +33,7 @@ trait PageItemTrait
     private $layout;
     private $menu;
     private $modified;
-    private $nocache;
+    private $cached;
     private $path;
     private $redirect;
     private $route;
@@ -67,7 +67,7 @@ trait PageItemTrait
         $this->menu = '';
         $this->modified = '';
         $this->created = '';
-        $this->nocache = 0;
+        $this->cached = 1;
         $this->hidden = 0;
         $this->excerpt = '';
         $this->twig = 1;
@@ -492,14 +492,14 @@ trait PageItemTrait
         $this->content_type = trim($contentType);
     }
 
-    public function getNoCache(): int
+    public function getCached(): int
     {
-        return $this->nocache;
+        return $this->cached;
     }
 
-    public function setNoCache(int $noCache): void
+    public function setCached(int $cached): void
     {
-        $this->nocache = abs($noCache);
+        $this->cached = abs($cached);
     }
 
     public function getHidden(): int

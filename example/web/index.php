@@ -59,3 +59,5 @@ $app->setMiddlewares([
 //$app->setPageCache($fileCache);
 
 $app->run();
+
+print_r($app->getPageList());
