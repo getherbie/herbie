@@ -349,7 +349,7 @@ class TwigRenderer
             'plugin' => $this->config['paths']['plugins'],
             'page' => $this->config['paths']['pages'],
             'site' => $this->config['paths']['site'],
-            'widget' => $this->config['paths']['app'] . '/../templates/widgets'
+            'snippet' => $this->config['paths']['app'] . '/../templates/snippets'
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {

@@ -195,7 +195,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
         // suppress E_WARNING since we throw an exception on error
         $contents = @file_get_contents($path);
         if (false === $contents) {
-            throw HttpException::notFound('Page "' . $path . '" does not exist');
+            throw HttpException::notFound('File "' . $path . '" does not exist');
         }
         return $contents;
     }

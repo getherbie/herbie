@@ -1,44 +1,44 @@
 -
-  key:  charset
+  key:  site.charset
   desc: "Der Zeichensatz (Default: utf-8)"
   type: string
 -
-  key:  language
+  key:  site.language
   desc: "Die Sprache als zweistelliger Code (Default: de)"
   type: string
 -
-  key:  locale
+  key:  site.locale
   desc: "Die Locale-Einstellungen (Default: de_DE)"
   type: string
 -
-  key:  time
+  key:  site.time
   desc: "Die aktuelle Zeit im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
   type: string
 -
-  key:  created
+  key:  site.created
   desc: "Die Zeit der zuletzt erstellten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
   type: string
 -
-  key:  modified
+  key:  site.modified
   desc: "Die Zeit der zuletzt geänderten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
   type: string
 -
-  key:  menu
+  key:  site.menu
   desc: "Ein Menu als Liste aller vorhandenen Seiten."
   type: Traversable
 -
-  key:  tree
+  key:  site.tree
   desc: "Ein Menu als Baumstruktur aller vorhandenen Seiten."
   type: Traversable
 -
-  key:  posts
+  key:  site.posts
   desc: "Ein Menu als Liste aller Blogposts."
   type: Traversable
 -
-  key:  rootPath
+  key:  site.rootPath
   desc: "Ein Menu als Liste aller Seiten von der Wurzel bis zur aktuellen Seite."
   type: Traversable
 -
-  key:  data.<NAME>
+  key:  site.data.<NAME>
   desc: "Projektweite Datenstrukturen, die im Verzeichnis `site/data` abgelegt sind."
   type: mixed

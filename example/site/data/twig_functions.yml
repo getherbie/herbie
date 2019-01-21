@@ -34,12 +34,6 @@
     params: [{ name: delim, type: string, desc: 'Der Trenner.', default: '""' }, { name: homeLink, type: string, desc: 'Der Link zur Homepage', default: 'null' }, { name: reverse, type: bool, desc: 'Ob der Pfad umgekehrt ausgegeben werden soll.', default: 'false' }]
     return: [string, 'Der generierte Brotkümelpfad']
 -
-    name: config
-    code: 'string config(string name[, mixed default = null])'
-    desc: 'Gibt den Wert einer bestimmten Konfiguration-Einstellung aus.'
-    params: [{ name: name, type: int, desc: 'Der Name der Konfigurations-Einstellung.', default: '' }, { name: default, type: mixed, desc: 'Der Defaultwert, falls keine Konfiguration vorhanden.', default: 'null' }]
-    return: [mixed, 'Die Konfigurations-Einstellung']
--
     name: image
     code: 'string image(string src [, string width = ''''][, string height = ''''][, string alt = ''''][, string class = ''''])'
     desc: 'Gibt ein IMG-Tag aus.'
@@ -99,3 +93,21 @@
     desc: 'Gibt zu einer bestimmten Route die URL aus.'
     params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }]
     return: [string, 'Die URL zu einer Route.']
+-
+    name: listing
+    code: ''
+    desc: ''
+    params: []
+    return: []
+-
+    name: snippet
+    code: ''
+    desc: ''
+    params: []
+    return: []
+-
+    name: file
+    code: ''
+    desc: ''
+    params: []
+    return: []

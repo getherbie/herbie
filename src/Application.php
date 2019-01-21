@@ -195,7 +195,7 @@ class Application
                 '@site' => $this->sitePath,
                 '@vendor' => $this->vendorDir,
                 '@web' => $config['paths']['web'],
-                '@widget' => $config['paths']['app'] . '/../templates/widgets'
+                '@snippet' => $config['paths']['app'] . '/../templates/snippets'
             ]);
         };
 

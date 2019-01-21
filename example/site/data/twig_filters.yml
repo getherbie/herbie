@@ -19,3 +19,8 @@
     code: 'string site.pageTree|visible'
     desc: 'Filtert den Seitenbaum nach sichtbaren und aktiven Seiten.'
     return: [string, 'Der gefilterte Seitenbaum']
+-
+    name: filter
+    code: 'string site.pageList|filter()'
+    desc: ''
+    return: [iterator, '']

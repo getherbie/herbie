@@ -600,7 +600,7 @@ class TwigExtension extends Twig_Extension
     }
 
     public function functionListing(
-        string $path = '@widget/listing.twig',
+        string $path = '@snippet/listing.twig',
         string $filter = '',
         string $sort = '',
         bool $shuffle = false,

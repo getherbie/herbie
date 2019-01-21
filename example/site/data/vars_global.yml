@@ -3,6 +3,14 @@
   desc: "Die angefragte Seite, z.B. `doku/vars`."
   type: string
 -
+  key:  routeParams
+  desc: ""
+  type: array
+-
+  key:  baseUrl
+  desc: ""
+  type: string
+-
   key:  site
   desc: "Projektweite Variablen."
   type: Object
@@ -14,3 +22,7 @@
   key:  theme
   desc: "Das in der Konfiguration definierte Theme."
   type: string
+-
+  key:  config
+  desc: ""
+  type: array

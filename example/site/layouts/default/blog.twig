@@ -8,18 +8,18 @@
                     <div class="content">
                         {{ content.default|raw }}
                         <div class="blog-meta">
-                            {{ include('@widget/links.twig', { pageRoute: 'blog', page: page }) }}
+                            {{ include('@snippet/links.twig', { pageRoute: 'blog', page: page }) }}
                         </div>
                     </div>
                 </div>
                 <div class="pure-u-1 pure-u-md-1-3">
                     <div class="sidebar">
                         {{ include('includes/simplesearch.twig') }}
-                        {{ include('@widget/recent.twig', { pageType:'blog', title: 'Recent Posts', showDate:false, limit:3 }) }}
-                        {{ include('@widget/categories.twig', { pageRoute: 'blog', pageType:'blog', title: 'Categories', showCount:true }) }}
-                        {{ include('@widget/tags.twig', { pageRoute: 'blog', pageType:'blog', title: 'Tags', showCount:true }) }}
-                        {{ include('@widget/authors.twig', { pageRoute: 'blog', pageType:'blog', title: 'Authors', showCount:true }) }}
-                        {{ include('@widget/archives.twig', { pageRoute: 'blog', pageType:'blog', title: 'Archive', showCount:true }) }}
+                        {{ include('@snippet/recent.twig', { pageType:'blog', title: 'Recent Posts', showDate:false, limit:3 }) }}
+                        {{ include('@snippet/categories.twig', { pageRoute: 'blog', pageType:'blog', title: 'Categories', showCount:true }) }}
+                        {{ include('@snippet/tags.twig', { pageRoute: 'blog', pageType:'blog', title: 'Tags', showCount:true }) }}
+                        {{ include('@snippet/authors.twig', { pageRoute: 'blog', pageType:'blog', title: 'Authors', showCount:true }) }}
+                        {{ include('@snippet/archives.twig', { pageRoute: 'blog', pageType:'blog', title: 'Archive', showCount:true }) }}
                     </div>
                 </div>
             </div>

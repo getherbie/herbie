@@ -1,62 +1,62 @@
 -
-  key:  title
+  key:  page.title
   desc: "Der Titel der Seite."
   type: string
 -
-  key:  layout
+  key:  page.layout
   desc: "Definiert das Layout, mit welchem die Seite angezeigt werden soll. Gib das Layout inklusive Dateiendung an. Layout-Dateien müssen im Ordner `site/layouts/` abgelegt sein."
   type: string
 -
-  key:  format
+  key:  page.format
   desc: "Der Formatierer, z.B. Markdown oder Textile. Wird von Herbie abhängig von der Dateiendung vorgefüllt. Eine Datei mit der Endung .md bekommt den Markdown-Formatierer, eine mit der Endung .textile den Textile-Formatierer."
   type: string
 -
-  key:  date
+  key:  page.date
   desc: "Das Datum der Seite. Dies ist ein explizit gesetztes Datum oder das Modifikationsdatum der Datei."
   type: string
 -
-  key:  keep_extension
+  key:  page.keep_extension
   desc: "Gibt an, ob für die URL die Dateiendung angezeigt werden soll"
   default: false
   type: bool
 -
-  key:  menu
+  key:  page.menu
   desc: "Wird in Navigationen wie Sitemap oder Breadcrumbs als Text angezeigt. Wenn leer, wird der normale Seitentitel angezeigt."
   type: string
 -
-  key:  content_type
+  key:  page.content_type
   desc: "Definiert den Content-Type der Seite. Damit werden die HTTP Headers vor der Ausgabe der Seite korrekt gesetzt."
   default: text/html
   type: string
 -
-  key:  authors
+  key:  page.authors
   desc: "Der oder die Autoren des Posts."
   type: array
 -
-  key:  categories
+  key:  page.categories
   desc: "Eine oder mehrere Kategorien, denen der Post zugeordnet ist."
   type: array
 -
-  key:  tags
+  key:  page.tags
   desc: "Ein oder mehrere Tags, denen der Post zugeordnet ist."
   type: array
 -
-  key:  path
+  key:  page.path
   desc: "Der Pfad zur entsprechenden Datei. Wird von Herbie automatisch vorgefüllt."
   type: string
 -
-  key:  nocache
+  key:  page.nocache
   desc: "Das Caching der Seite wird deaktiviert, falls dieses Flag gesetzt ist."
   type: bool
 -
-  key:  hidden
+  key:  page.hidden
   desc: "Steuert die Sichtbarkeit einer Seite in Menüs."
   type: bool
 -
-  key:  twig
+  key:  page.twig
   desc: "Wenn diese Flag gesetzt ist, werden die Inhalte der Seite zusätzlich (und zuerst) mit Twig gerendert."
   type: bool
 -
-  key:  <NAME>
+  key:  page.<NAME>
   desc: "Beliebig viele eigene Variablen."
   type: mixed
