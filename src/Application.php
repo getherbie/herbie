@@ -281,10 +281,18 @@ class Application
             );
         };
 
+        $c[\Zend\EventManager\EventManager::class] = function (Container $c) {
+            $zendEventManager = new \Zend\EventManager\EventManager();
+            $zendEventManager->setEventPrototype(
+                $c->get(Event::class)
+            );
+            return $zendEventManager;
+        };
+
         $c[EventManager::class] = function (Container $c) {
-            $zendEventManager = new \Zend\EventManager\EventManager(); // TODO get from container
-            $zendEventManager->setEventPrototype($c[Event::class]);
-            return new EventManager($zendEventManager);
+            return new EventManager(
+                $c->get(\Zend\EventManager\EventManager::class)
+            );
         };
 
         $c[PluginManager::class] = function (Container $c) {
