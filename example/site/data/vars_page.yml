@@ -1,18 +1,47 @@
 -
-  key:  page.title
-  desc: "Der Titel der Seite."
+  key:  page.authors
+  desc: "Der oder die Autoren des Posts."
+  type: array
+-
+  key:  page.cached
+  desc: "Das Caching der Seite wird deaktiviert, falls dieses Flag gesetzt ist."
+  type: bool
+-
+  key:  page.categories
+  desc: "Eine oder mehrere Kategorien, denen der Post zugeordnet ist."
+  type: array
+-
+  key:  page.content_type
+  desc: "Definiert den Content-Type der Seite. Damit werden die HTTP Headers vor der Ausgabe der Seite korrekt gesetzt."
+  default: text/html
   type: string
 -
-  key:  page.layout
-  desc: "Definiert das Layout, mit welchem die Seite angezeigt werden soll. Gib das Layout inklusive Dateiendung an. Layout-Dateien müssen im Ordner `site/layouts/` abgelegt sein."
+  key:  page.modified
+  desc: "The modification time of the page"
+  type: string
+-
+  key:  page.created
+  desc: "The creation time of the page"
+  type: string
+-
+  key:  page.date
+  desc: "Das Datum der Seite. Dies ist ein explizit gesetztes Datum oder das Modifikationsdatum der Datei."
+  type: string
+-
+  key:  page.excerpt
+  desc: "The exceprt of the page body"
   type: string
 -
   key:  page.format
   desc: "Der Formatierer, z.B. Markdown oder Textile. Wird von Herbie abhängig von der Dateiendung vorgefüllt. Eine Datei mit der Endung .md bekommt den Markdown-Formatierer, eine mit der Endung .textile den Textile-Formatierer."
   type: string
 -
-  key:  page.date
-  desc: "Das Datum der Seite. Dies ist ein explizit gesetztes Datum oder das Modifikationsdatum der Datei."
+  key:  page.hidden
+  desc: "Steuert die Sichtbarkeit einer Seite in Menüs."
+  type: bool
+-
+  key:  page.id
+  desc: "ID"
   type: string
 -
   key:  page.keep_extension
@@ -20,42 +49,49 @@
   default: false
   type: bool
 -
+  key:  page.layout
+  desc: "The layout. Gib das Layout inklusive Dateiendung an. Layout-Dateien müssen im Ordner `site/layouts/` abgelegt sein."
+  type: string
+-
   key:  page.menu
   desc: "Wird in Navigationen wie Sitemap oder Breadcrumbs als Text angezeigt. Wenn leer, wird der normale Seitentitel angezeigt."
   type: string
 -
-  key:  page.content_type
-  desc: "Definiert den Content-Type der Seite. Damit werden die HTTP Headers vor der Ausgabe der Seite korrekt gesetzt."
-  default: text/html
+  key:  page.parent
+  desc: "The parent route"
   type: string
 -
-  key:  page.authors
-  desc: "Der oder die Autoren des Posts."
+  key:  page.path
+  desc: "Der Pfad zur entsprechenden Datei. Wird von Herbie automatisch vorgefüllt."
+  type: string
+-
+  key:  page.redirect
+  desc: "Redirect data"
   type: array
 -
-  key:  page.categories
-  desc: "Eine oder mehrere Kategorien, denen der Post zugeordnet ist."
+  key:  page.route
+  desc: "The route to the page."
+  type: string
+-
+  key:  page.segments
+  desc: "The page content"
   type: array
 -
   key:  page.tags
   desc: "Ein oder mehrere Tags, denen der Post zugeordnet ist."
   type: array
 -
-  key:  page.path
-  desc: "Der Pfad zur entsprechenden Datei. Wird von Herbie automatisch vorgefüllt."
+  key:  page.title
+  desc: "The title of the page."
   type: string
--
-  key:  page.cached
-  desc: "Das Caching der Seite wird deaktiviert, falls dieses Flag gesetzt ist."
-  type: bool
--
-  key:  page.hidden
-  desc: "Steuert die Sichtbarkeit einer Seite in Menüs."
-  type: bool
 -
   key:  page.twig
   desc: "Wenn diese Flag gesetzt ist, werden die Inhalte der Seite zusätzlich (und zuerst) mit Twig gerendert."
   type: bool
+-
+  key:  page.type
+  desc: "The page type (default: page)"
+  type: string
 -
   key:  page.<NAME>
   desc: "Beliebig viele eigene Variablen."

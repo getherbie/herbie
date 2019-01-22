@@ -1,10 +1,10 @@
 -
   name: readable
   code: <string> is readable
-  desc: Testet, ob der gegebene Alias oder Pfad existiert und lesbar ist.
+  desc: Tests if the given alias or path exists and is readable.
   return: [bool]
 -
   name: writable
   code: <string> is writable
-  desc: Testet, ob der gegebene Alias oder Pfad existiert und schreibbar ist.
+  desc: Tests if the given alias or path exists and is writable.
   return: [bool]

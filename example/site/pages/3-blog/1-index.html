@@ -5,6 +5,8 @@ layout: blog
 
 <h1>Blog</h1>
 
+{{ include('@snippet/filters.twig', {}) }}
+
 {% set items = site.pageList.filterItems('blog', 'blog', routeParams) %}
 
 <div class="posts">

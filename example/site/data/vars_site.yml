@@ -1,44 +1,40 @@
 -
   key:  site.charset
-  desc: "Der Zeichensatz (Default: utf-8)"
-  type: string
--
-  key:  site.language
-  desc: "Die Sprache als zweistelliger Code (Default: de)"
-  type: string
--
-  key:  site.locale
-  desc: "Die Locale-Einstellungen (Default: de_DE)"
-  type: string
--
-  key:  site.time
-  desc: "Die aktuelle Zeit im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
+  desc: "The charset (default: utf-8)"
   type: string
 -
   key:  site.created
-  desc: "Die Zeit der zuletzt erstellten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
+  desc: "The time of the last recent created page in ISO-8601 format (2004-02-12T15:19:21+00:00)."
+  type: string
+-
+  key:  site.data.<NAME>
+  desc: "Project wide data structures, which are located in `site/data`."
+  type: mixed
+-
+  key:  site.language
+  desc: "The language as 2-digit ISO-code (default: de)"
+  type: string
+-
+  key:  site.locale
+  desc: "The locale settings (default: de_DE)"
   type: string
 -
   key:  site.modified
-  desc: "Die Zeit der zuletzt geänderten Seite im ISO 8601 Format (2004-02-12T15:19:21+00:00)."
+  desc: "The time of the last modified page in ISO-8601 format (2004-02-12T15:19:21+00:00)."
   type: string
 -
-  key:  site.menu
-  desc: "Ein Menu als Liste aller vorhandenen Seiten."
+  key:  site.pageList
+  desc: "A list of all available pages."
   type: Traversable
 -
-  key:  site.tree
-  desc: "Ein Menu als Baumstruktur aller vorhandenen Seiten."
+  key:  site.pageTrail
+  desc: "A trail from the current page up to the root page."
   type: Traversable
 -
-  key:  site.posts
-  desc: "Ein Menu als Liste aller Blogposts."
+  key:  site.pageTree
+  desc: "A tree of all available pages."
   type: Traversable
 -
-  key:  site.rootPath
-  desc: "Ein Menu als Liste aller Seiten von der Wurzel bis zur aktuellen Seite."
-  type: Traversable
--
-  key:  site.data.<NAME>
-  desc: "Projektweite Datenstrukturen, die im Verzeichnis `site/data` abgelegt sind."
-  type: mixed
+  key:  site.time
+  desc: "The current time in ISO-8601 format (2004-02-12T15:19:21+00:00)."
+  type: string

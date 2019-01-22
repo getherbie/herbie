@@ -1,113 +1,113 @@
 -
     name: absurl
     code: 'string absurl(string route)'
-    desc: 'Gibt zu einer bestimmten Route die absolute URL aus.'
-    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }]
-    return: [string, 'Die absolute URL zu einer Route.']
+    desc: 'Returns the absolute URL for a given route.'
+    params: [{ name: route, type: string, desc: 'The route to a page.', default: '' }]
+    return: [string, 'The absolute URL.']
 -
     name: addcss
     code: 'addcss(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
-    desc: 'Fügt ein CSS-Asset hinzu.'
-    params: [{ name: paths, type: string|array, desc: 'Ein oder mehrere Pfade zu CSS-Ressourcen.', default: '' }, { name: attr, type: array, desc: 'Attribute für das HTML-Tag.', default: '[]' }, { name: group, type: string, desc: 'Ein Name zur Gruppierung des CSS.', default: 'null' }, { name: raw, type: bool, desc: 'Gibt das CSS direkt aus anstatt als Link.', default: 'false' }, { name: pos, type: int, desc: 'Beeinflusst die Reihenfolge der Ausgabe.', default: '-1' }]
+    desc: 'Adds a CSS asset to the html page.'
+    params: [{ name: paths, type: string|array, desc: 'One or more paths to CSS resources.', default: '' }, { name: attr, type: array, desc: 'Attribute for the HTML tag.', default: '[]' }, { name: group, type: string, desc: 'A name to group the CSS.', default: 'null' }, { name: raw, type: bool, desc: 'Returns CSS directly instead of in a link.', default: 'false' }, { name: pos, type: int, desc: 'The sort order of the CSS asset.', default: '-1' }]
     return: [void]
 -
     name: addjs
     code: 'addjs(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
-    desc: 'Fügt ein Js-Asset hinzu.'
-    params: [{ name: paths, type: string|array, desc: 'Ein oder mehrere Pfade zu JavaScript-Ressourcen.', default: '' }, { name: attr, type: array, desc: 'Attribute für das HTML-Tag.', default: '[]' }, { name: group, type: string, desc: 'Ein Name zur Gruppierung des JavaScript.', default: 'null' }, { name: raw, type: bool, desc: 'Gibt das JavaScript direkt aus anstatt als Link.', default: 'false' }, { name: pos, type: int, desc: 'Beeinflusst die Reihenfolge der Ausgabe.', default: '-1' }]
+    desc: 'Adds a JavaScript asset to the html page.'
+    params: [{ name: paths, type: string|array, desc: 'One or more paths to JavaScript resources.', default: '' }, { name: attr, type: array, desc: 'Attribute for the HTML-Tag.', default: '[]' }, { name: group, type: string, desc: 'A name to group the JavaScript.', default: 'null' }, { name: raw, type: bool, desc: 'Returns JavaScript directly instead of a link.', default: 'false' }, { name: pos, type: int, desc: 'The sort order of the JavaScript asset.', default: '-1' }]
     return: [void]
 -
     name: asciitree
     code: 'string asciitree([array options = {}])'
-    desc: 'Erstellt für alle Seiten der Website einen textbasierten (=Ascii) Baum. Alle Parameter werden als assoziatives Array übergeben.'
-    params: [{ name: route, type: string, desc: 'Gibt den Baum ab der angegebenen Route aus.', default: '""' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }, { name: maxDepth, type: int, desc: 'Definiert die maximale Tiefe der Verschachtelung.', default: '-1' }, { name: class, type: string, desc: 'Der CSS-Klassenname.', default: sitemap }]
-    return: [string, 'Der Baum der Website als Ascii-Text']
+    desc: 'Creates a text based (=ascii) tree of all pages. All parameters are passed as an associative array.'
+    params: [{ name: route, type: string, desc: 'The tree from the given route.', default: '""' }, { name: showHidden, type: bool, desc: 'Show hidden pages.', default: 'false' }, { name: maxDepth, type: int, desc: 'The max. tree level.', default: '-1' }, { name: class, type: string, desc: 'The CSS class name.', default: sitemap }]
+    return: [string, 'The tree rendered as ascii text']
 -
     name: bodyclass
     code: 'string bodyclass()'
-    desc: 'Gibt CSS-Klassen zurück, die für das class-Attribut des body-Tags genutzt werden können.'
-    return: [string, 'Die CSS-Klassen für das body-Tag']
+    desc: 'Returns a string with CSS classes, to be used within the class attribute of the body tag.'
+    return: [string, 'The string with CSS classes']
 -
     name: breadcrumb
     code: 'string breadcrumb([array options = {}])'
-    desc: 'Gibt für die aktuelle Seite einen vollständigen Brotkümelpfad aus. Alle Parameter werden als assoziatives Array übergeben.'
-    params: [{ name: delim, type: string, desc: 'Der Trenner.', default: '""' }, { name: homeLink, type: string, desc: 'Der Link zur Homepage', default: 'null' }, { name: reverse, type: bool, desc: 'Ob der Pfad umgekehrt ausgegeben werden soll.', default: 'false' }]
-    return: [string, 'Der generierte Brotkümelpfad']
+    desc: 'Returns a breadcrumb path for the given page. All parameters are passed as an associative array.'
+    params: [{ name: delim, type: string, desc: 'The delim.', default: '""' }, { name: homeLink, type: string, desc: 'The link to the homepage', default: 'null' }, { name: reverse, type: bool, desc: 'Reverse the breadcrumb.', default: 'false' }]
+    return: [string, 'The breadcrumb path as HTMl']
+-
+    name: file
+    code: ''
+    desc: 'To be done.'
+    params: []
+    return: []
 -
     name: image
     code: 'string image(string src [, string width = ''''][, string height = ''''][, string alt = ''''][, string class = ''''])'
-    desc: 'Gibt ein IMG-Tag aus.'
-    params: [{ name: src, type: string, desc: 'Der relative Pfad zur Bilddatei.', default: '' }, { name: width, type: string, desc: 'Die Breite des Bildes.', default: '""' }, { name: height, type: string, desc: 'Die Höhe des Bildes.', default: '""' }, { name: alt, type: string, desc: 'Der ALT-Text des Bildes.', default: '""' }, { name: class, type: string, desc: 'Das HTML-Attribut class.', default: '""' }]
-    return: [string, 'Das IMG HTML-Tag']
+    desc: 'Returns an image markup tag.'
+    params: [{ name: src, type: string, desc: 'The relative path to the image file.', default: '' }, { name: width, type: string, desc: 'The width of the image.', default: '""' }, { name: height, type: string, desc: 'The height of the image.', default: '""' }, { name: alt, type: string, desc: 'The alt text of the image.', default: '""' }, { name: class, type: string, desc: 'The html attribute class.', default: '""' }]
+    return: [string, 'The image markup']
 -
     name: link
     code: 'string link(string route, string label [, array htmlAttributes = {}])'
-    desc: 'Gibt zu einer bestimmten Route einen HTML-Link mit dem Label und den Attributen aus.'
-    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }, { name: label, type: string, desc: 'Das Label.', default: '' }, { name: htmlAttributes, type: array, desc: 'Die HTML-Attribute als assoziatives Array.', default: '' }]
-    return: [string, 'Der Link zu einer Route']
+    desc: 'Returns a html link with label and attributes for a given route.'
+    params: [{ name: route, type: string, desc: 'The route to a page.', default: '' }, { name: label, type: string, desc: 'The label.', default: '' }, { name: htmlAttributes, type: array, desc: 'The html attributes are passed as an associative array.', default: '' }]
+    return: [string, 'The link to a route']
+-
+    name: listing
+    code: ''
+    desc: 'To be done.'
+    params: []
+    return: []
 -
     name: menu
     code: 'string menu([array options = {}])'
-    desc: 'Gibt ein Menü der Seiten der Website als verschachtelte HTML-Liste zurück. Alle Parameter werden als assoziatives Array übergeben.'
-    params: [{ name: route, type: string, desc: 'Gibt das Menü ab der angegebenen Route aus.', default: 'null' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }]
-    return: [string, 'Das Menü als HTML-Liste']
+    desc: 'Returns a html menu as unordered list. All parameters are passed as an associative array.'
+    params: [{ name: route, type: string, desc: 'The menu from the given route.', default: 'null' }, { name: showHidden, type: bool, desc: 'Show hidden pages.', default: 'false' }]
+    return: [string, 'The menu as unordered list']
 -
     name: outputcss
     code: 'string outputcss([string group])'
-    desc: 'Gibt die CSS-Assets für eine bestimmte Gruppe zurück.'
-    params: [{ name: group, type: string, desc: 'Das gruppierte CSS.', default: 'null' }]
-    return: [string, 'Die CSS-Assets']
+    desc: 'Outputs the CSS assets for a given group.'
+    params: [{ name: group, type: string, desc: 'The grouped CSS.', default: 'null' }]
+    return: [string, 'The CSS assets']
 -
     name: outputjs
     code: 'string outputjs([string group])'
-    desc: 'Gibt die JavaScript-Assets für eine bestimmte Gruppe zurück.'
-    params: [{ name: group, type: string, desc: 'Das gruppierte JavaScript.', default: 'null' }]
-    return: [string, 'Die JavaScript-Assets']
--
-    name: pagetitle
-    code: 'string pagetitle([array options = {}])'
-    desc: 'Gibt den Seitentitel der Website SEO-optimiert aus. Alle Parameter werden als assoziatives Array übergeben.'
-    params: [{ name: delim, type: string, desc: 'Der Trenner.', default: / }, { name: siteTitle, type: string, desc: 'Der Titel der Website.', default: 'null' }, { name: rootTitle, type: string, desc: 'Der Titel der Rootseite der Website.', default: 'null' }, { name: reverse, type: bool, desc: 'Ob der Pfad umgekehrt ausgegeben werden soll.', default: 'false' }]
-    return: [string, 'Der Seitentitel der Website']
+    desc: 'Outputs the JavaScript assets for a given group.'
+    params: [{ name: group, type: string, desc: 'The grouped JavaScript.', default: 'null' }]
+    return: [string, 'The JavaScript assets']
 -
     name: pager
     code: 'string pager([string limit = ""][, string template = "{prev}{next}"][, string linkClass = ""][, string prevPageLabel = ""][, string nextPageLabel = ""][, string prevPageIcon = ""][, string nextPageIcon = ""])'
-    desc: 'Erstellt eine Paginierung mit Links zur vorherigen und nächsten Seite (im Seitenbaum). Alle Parameter sind optional und werden als benannte Parameter übergeben.'
-    params: [{ name: limit, type: string, desc: 'Beschränkt die Anwendung auf einen bestimmten Bereich des Seitenbaums.', default: '' }, { name: template, type: string, desc: 'Das Template.', default: '{prev}{next}' }, { name: linkClass, type: string, desc: 'Die CSS-Klasse der Links.', default: '' }, { name: prevPageLabel, type: string, desc: 'Das Label des Links zur vorherigen Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: nextPageLabel, type: string, desc: 'Das Label des Links zur nächsten Seite. Wenn leer wird der Seitentitel angezeigt.', default: '' }, { name: prevPageIcon, type: string, desc: 'Das Icon des Links zur vorherigen Seite.', default: '' }, { name: nextPageIcon, type: string, desc: 'Das Icon des Links zur nächsten Seite.', default: '' }]
-    return: [string, 'Der generierte HTML-Code']
+    desc: 'Creates a pagination with links to the previous an next page within the current page branch. All parameters are optional and passed as named parameters (see twig).'
+    params: [{ name: limit, type: string, desc: 'Limits the pagination to a certain branch of the page tree.', default: '' }, { name: template, type: string, desc: 'The template.', default: '{prev}{next}' }, { name: linkClass, type: string, desc: 'The CSS class names for the links.', default: '' }, { name: prevPageLabel, type: string, desc: 'The label for the "previous" link. If empty the page title will be shown.', default: '' }, { name: nextPageLabel, type: string, desc: 'The label for the "next" link. If empty the page title will be shown.', default: '' }, { name: prevPageIcon, type: string, desc: 'The icon for the "previous" link.', default: '' }, { name: nextPageIcon, type: string, desc: 'The icon for the "next" link.', default: '' }]
+    return: [string, 'The generated markup']
+-
+    name: pagetitle
+    code: 'string pagetitle([array options = {}])'
+    desc: 'Returns the SEO optimized page title of the website. All parameters are passed as an associative array.'
+    params: [{ name: delim, type: string, desc: 'The delim.', default: / }, { name: siteTitle, type: string, desc: 'The title of the website.', default: 'null' }, { name: rootTitle, type: string, desc: 'The title of the root page of the website.', default: 'null' }, { name: reverse, type: bool, desc: 'Reverse the page title "path".', default: 'false' }]
+    return: [string, 'The page title of the website']
+-
+    name: snippet
+    code: ''
+    desc: 'To be done.'
+    params: []
+    return: []
 -
     name: sitemap
     code: 'string sitemap([array options = {}])'
-    desc: 'Erstellt für alle Seiten der Website eine Sitemap basierend auf einer unsortierten HTML-Liste. Alle Parameter werden als assoziatives Array übergeben.'
-    params: [{ name: route, type: string, desc: 'Gibt die Sitemap ab der angegebenen Route aus.', default: '""' }, { name: showHidden, type: bool, desc: 'Definiert ob versteckte Seiten angezeigt werden sollen.', default: 'false' }, { name: maxDepth, type: int, desc: 'Definiert die maximale Tiefe der Verschachtelung.', default: '-1' }, { name: class, type: string, desc: 'Der CSS-Klassenname.', default: sitemap }]
-    return: [string, 'Die Sitemap der Website als HTML-Liste']
+    desc: 'Creates a simple sitemap for all pages of the website based on an unordered list. All parameters are passed as an associative array.'
+    params: [{ name: route, type: string, desc: 'Limits the sitemap to a certain branch of the page tree.', default: '""' }, { name: showHidden, type: bool, desc: 'Show hidden pages.', default: 'false' }, { name: maxDepth, type: int, desc: 'The max. level of the sitemap.', default: '-1' }, { name: class, type: string, desc: 'The CSS class name.', default: sitemap }]
+    return: [string, 'The generated markup']
 -
     name: translate
-    code: ''
-    desc: 'To be done'
+    code: 'string translate(string category, string message, array params={})'
+    desc: 'Translates a string according to the configuration and locale settings.'
     params: []
     return: []
 -
     name: url
     code: 'string url(string route)'
-    desc: 'Gibt zu einer bestimmten Route die URL aus.'
-    params: [{ name: route, type: string, desc: 'Die Route zu einer Seite.', default: '' }]
-    return: [string, 'Die URL zu einer Route.']
--
-    name: listing
-    code: ''
-    desc: ''
-    params: []
-    return: []
--
-    name: snippet
-    code: ''
-    desc: ''
-    params: []
-    return: []
--
-    name: file
-    code: ''
-    desc: ''
-    params: []
-    return: []
+    desc: 'Returns the (relative) URL to a given route.'
+    params: [{ name: route, type: string, desc: 'The route to a page.', default: '' }]
+    return: [string, 'The relative URL.']

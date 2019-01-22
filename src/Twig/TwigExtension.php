@@ -600,15 +600,13 @@ class TwigExtension extends Twig_Extension
     }
 
     public function functionListing(
+        PageList $pageList,
         string $path = '@snippet/listing.twig',
         string $filter = '',
         string $sort = '',
         bool $shuffle = false,
-        int $limit = 10,
-        bool $pagination = true
+        int $limit = 10
     ) {
-
-        $pageList = $this->pageList;
 
         if (!empty($filter)) {
             list($field, $value) = explode('|', $filter);

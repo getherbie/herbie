@@ -408,7 +408,7 @@ trait PageItemTrait
     public function hasAuthor(string $author): bool
     {
         $author = $this->slugify($author);
-        foreach ($this->authors as $c) {
+        foreach ($this->getAuthors() as $c) {
             if ($this->slugify($c) == $author) {
                 return true;
             }
@@ -423,7 +423,7 @@ trait PageItemTrait
     public function hasCategory(string $category): bool
     {
         $category = $this->slugify($category);
-        foreach ($this->categories as $c) {
+        foreach ($this->getCategories() as $c) {
             if ($this->slugify($c) == $category) {
                 return true;
             }
