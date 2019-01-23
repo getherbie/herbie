@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Herbie\Persistence;
 
-interface FlatfilePersistenceInterface
+interface PagePersistenceInterface
 {
     /**
      * @param string $id

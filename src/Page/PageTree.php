@@ -24,23 +24,6 @@ class PageTree extends \Herbie\Node
     }
 
     /**
-     * @param PageList $menuList
-     * @return PageTree
-     */
-    public static function buildTree(PageList $menuList): PageTree
-    {
-        $tree = new self();
-        foreach ($menuList as $menuItem) {
-            $route = $menuItem->getParentRoute();
-            $node = $tree->findByRoute($route);
-            if ($node) {
-                $node->addChild(new self($menuItem));
-            }
-        }
-        return $tree;
-    }
-
-    /**
      * @return mixed
      */
     public function getMenuItem()

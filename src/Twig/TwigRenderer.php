@@ -10,20 +10,11 @@ declare(strict_types=1);
 
 namespace Herbie\Twig;
 
-use Ausi\SlugGenerator\SlugGeneratorInterface;
-use Herbie\Alias;
-use Herbie\Assets;
 use Herbie\Config;
 use Herbie\Environment;
 use Herbie\EventManager;
 use Herbie\Exception\SystemException;
-use Herbie\Page\PageList;
-use Herbie\Page\PageTree;
-use Herbie\Page\PageTrail;
-use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Site;
-use Herbie\Translator;
-use Herbie\Url\UrlGenerator;
 use Twig_Environment;
 use Twig_Error_Loader;
 use Twig_Extension_Debug;
@@ -56,97 +47,41 @@ class TwigRenderer
     private $twig;
 
     /**
-     * @var Alias
-     */
-    private $alias;
-
-    /**
-     * @var UrlGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * @var Translator
-     */
-    private $translator;
-
-    /**
-     * @var SlugGeneratorInterface
-     */
-    private $slugGenerator;
-
-    /**
-     * @var Assets
-     */
-    private $assets;
-
-    /**
-     * @var PageList
-     */
-    private $pageList;
-
-    /**
-     * @var PageTree
-     */
-    private $pageTree;
-
-    /**
-     * @var PageTrail
-     */
-    private $pageTrail;
-
-    /**
-     * @var DataRepositoryInterface
-     */
-    private $dataRepository;
-
-    /**
      * @var EventManager
      */
     private $eventManager;
 
     /**
+     * @var TwigExtension
+     */
+    private $twigExtension;
+
+    /**
+     * @var Site
+     */
+    private $site;
+
+    /**
      * TwigRenderer constructor.
-     * @param Alias $alias
      * @param Config $config
-     * @param UrlGenerator $urlGenerator
-     * @param SlugGeneratorInterface $slugGenerator
-     * @param Assets $assets
-     * @param PageList $pageList
-     * @param PageTree $pageTree
-     * @param PageTrail $pageTrail
      * @param Environment $environment
-     * @param DataRepositoryInterface $dataRepository
-     * @param Translator $translator
      * @param EventManager $eventManager
+     * @param TwigExtension $twigExtension
+     * @param Site $site
      */
     public function __construct(
-        Alias $alias,
         Config $config,
-        UrlGenerator $urlGenerator,
-        SlugGeneratorInterface $slugGenerator,
-        Assets $assets,
-        PageList $pageList,
-        PageTree $pageTree,
-        PageTrail $pageTrail,
         Environment $environment,
-        DataRepositoryInterface $dataRepository,
-        Translator $translator,
-        EventManager $eventManager
+        EventManager $eventManager,
+        TwigExtension $twigExtension,
+        Site $site
     ) {
         $this->initialized = false;
         $this->environment = $environment;
-        $this->alias = $alias;
         $this->config = $config;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
-        $this->slugGenerator = $slugGenerator;
-        $this->assets = $assets;
-        $this->pageList = $pageList;
-        $this->pageTree = $pageTree;
-        $this->pageTrail = $pageTrail;
-        $this->dataRepository = $dataRepository;
         $this->eventManager = $eventManager;
+        $this->twigExtension = $twigExtension;
+        $this->site = $site;
     }
 
     /**
@@ -175,22 +110,8 @@ class TwigRenderer
             $this->twig->addExtension(new Twig_Extension_Debug());
         }
 
-        $herbieExtension = new TwigExtension(
-            $this->alias,
-            $this->config,
-            $this->urlGenerator,
-            $this->slugGenerator,
-            $this->assets,
-            $this->pageList,
-            $this->pageTree,
-            $this->pageTrail,
-            $this->environment,
-            $this->dataRepository,
-            $this->translator,
-            $this
-        );
-
-        $this->twig->addExtension($herbieExtension);
+        $this->twigExtension->setTwigRenderer($this);
+        $this->twig->addExtension($this->twigExtension);
 
         $this->addTwigPlugins();
 
@@ -224,8 +145,6 @@ class TwigRenderer
         */
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
-
-        $this->renderString('huhu test');
     }
 
     /**
@@ -261,17 +180,11 @@ class TwigRenderer
     {
         return [
             'route' => $this->environment->getRoute(),
-            'routeParams' => [],
+            'routeParams' => [], // will be set by page renderer middleware
             'baseUrl' => $this->environment->getBaseUrl(),
             'theme' => $this->config['theme'],
-            'site' => new Site(
-                $this->config,
-                $this->dataRepository,
-                $this->pageList,
-                $this->pageTree,
-                $this->pageTrail
-            ),
-            'page' => null, // will be set by page render middleware,
+            'site' => $this->site,
+            'page' => null, // will be set by page renderer middleware
             'config' => $this->config->toArray()
         ];
     }

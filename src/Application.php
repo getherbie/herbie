@@ -15,24 +15,21 @@ namespace Herbie;
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
 use Herbie\Exception\SystemException;
-use Herbie\Page\Page;
-use Herbie\Page\PageBuilder;
-use Herbie\Page\PageFactory;
-use Herbie\Page\PageItem;
-use Herbie\Page\PageList;
-use Herbie\Page\PageTrail;
-use Herbie\Page\PageTree;
 use Herbie\Middleware\DownloadMiddleware;
 use Herbie\Middleware\ErrorHandlerMiddleware;
 use Herbie\Middleware\MiddlewareDispatcher;
 use Herbie\Middleware\PageRendererMiddleware;
 use Herbie\Middleware\PageResolverMiddleware;
+use Herbie\Page\Page;
+use Herbie\Page\PageFactory;
+use Herbie\Page\PageItem;
 use Herbie\Persistence\FlatfilePagePersistence;
-use Herbie\Persistence\FlatfilePersistenceInterface;
+use Herbie\Persistence\PagePersistenceInterface;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Repository\FlatfilePageRepository;
 use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Repository\YamlDataRepository;
+use Herbie\Twig\TwigExtension;
 use Herbie\Twig\TwigRenderer;
 use Herbie\Url\UrlGenerator;
 use Herbie\Url\UrlMatcher;
@@ -200,21 +197,35 @@ class Application
         });
 
         $c->set(TwigRenderer::class, function (Container $c) {
-            $twig = new TwigRenderer(
+            return new TwigRenderer(
+                $c->get(Config::class),
+                $c->get(Environment::class),
+                $c->get(EventManager::class),
+                $c->get(TwigExtension::class),
+                $c->get(Site::class)
+            );
+        });
+
+        $c->set(TwigExtension::class, function (Container $c) {
+            return new TwigExtension(
                 $c->get(Alias::class),
                 $c->get(Config::class),
                 $c->get(UrlGenerator::class),
                 $c->get(SlugGenerator::class),
                 $c->get(Assets::class),
-                $c->get(PageList::class),
-                $c->get(PageTree::class),
-                $c->get(PageTrail::class),
                 $c->get(Environment::class),
                 $c->get(DataRepositoryInterface::class),
                 $c->get(Translator::class),
-                $c->get(EventManager::class)
+                $c->get(PageRepositoryInterface::class)
             );
-            return $twig;
+        });
+
+        $c->set(Site::class, function (Container $c) {
+            return new Site(
+                $c->get(Config::class),
+                $c->get(DataRepositoryInterface::class),
+                $c->get(PageRepositoryInterface::class)
+            );
         });
 
         $c->set(SlugOptions::class, function (Container $c) {
@@ -248,9 +259,10 @@ class Application
             );
         });
 
-        $c->set(FlatfilePersistenceInterface::class, function (Container $c) {
+        $c->set(PagePersistenceInterface::class, function (Container $c) {
             return new FlatfilePagePersistence(
-                $c->get(Alias::class)
+                $c->get(Alias::class),
+                $c->get(Config::class)
             );
         });
 
@@ -260,16 +272,10 @@ class Application
 
         $c->set(PageRepositoryInterface::class, function (Container $c) {
             return new FlatfilePageRepository(
-                $c->get(FlatfilePersistenceInterface::class),
-                $c->get(PageFactory::class)
-            );
-        });
-
-        $c->set(PageBuilder::class, function (Container $c) {
-            return new PageBuilder(
-                $c->get(FlatfilePersistenceInterface::class),
-                $c->get(Config::class),
-                $c->get(PageFactory::class)
+                $c->get(PagePersistenceInterface::class),
+                $c->get(PageFactory::class),
+                $c->get(Cache::class),
+                $c->get(Environment::class)
             );
         });
 
@@ -313,25 +319,6 @@ class Application
             );
         });
 
-        $c->set(PageList::class, function (Container $c) {
-            $cache = $c->get(Cache::class);
-            $c->get(PageBuilder::class)->setCache($cache); // TODO inject cache interface properly
-            return $c->get(PageBuilder::class)->buildPageList();
-        });
-
-        $c->set(PageTree::class, function (Container $c) {
-            return PageTree::buildTree(
-                $c->get(PageList::class)
-            );
-        });
-
-        $c->set(PageTrail::class, function (Container $c) {
-            return new PageTrail(
-                $c->get(PageList::class),
-                $c->get(Environment::class)
-            );
-        });
-
         $c->set(Translator::class, function (Container $c) {
             $translator = new Translator($c->get(Config::class)->language);
             $translator->addPath('app', $c->get(Config::class)->paths->messages);
@@ -343,8 +330,8 @@ class Application
 
         $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
-                $c->get(PageList::class),
-                $c->get(Config::class)->urlManager
+                $c->get(Config::class)->urlManager,
+                $c->get(PageRepositoryInterface::class)
             );
         });
 
@@ -377,10 +364,6 @@ class Application
                 $c->get(EventManager::class),
                 $c->get(TwigRenderer::class),
                 $c->get(Config::class),
-                $c->get(DataRepositoryInterface::class),
-                $c->get(PageList::class),
-                $c->get(PageTree::class),
-                $c->get(PageTrail::class),
                 $c->get(UrlGenerator::class)
             );
         });
@@ -545,22 +528,6 @@ class Application
     }
 
     /**
-     * @return PageTrail
-     */
-    public function getPageTrail()
-    {
-        return $this->container->get(PageTrail::class);
-    }
-
-    /**
-     * @return PageTree
-     */
-    public function getPageTree()
-    {
-        return $this->container->get(PageTree::class);
-    }
-
-    /**
      * @return HttpFactory
      */
     public function getHttpFactory()
@@ -574,14 +541,6 @@ class Application
     public function getTranslator()
     {
         return $this->container->get(Translator::class);
-    }
-
-    /**
-     * @return PageList
-     */
-    public function getPageList()
-    {
-        return $this->container->get(PageList::class);
     }
 
     /**

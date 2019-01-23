@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Herbie\Persistence;
 
-class XmlPagePersistence implements FlatfilePersistenceInterface
+class XmlPagePersistence implements PagePersistenceInterface
 {
 
     /**

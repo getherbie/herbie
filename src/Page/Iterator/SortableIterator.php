@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Herbie\Page\Iterator;
 
+use \SplFileInfo;
+
 class SortableIterator implements \IteratorAggregate
 {
 

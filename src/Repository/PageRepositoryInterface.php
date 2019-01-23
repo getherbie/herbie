@@ -11,6 +11,9 @@ declare(strict_types=1);
 namespace Herbie\Repository;
 
 use Herbie\Page\Page;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTrail;
+use Herbie\Page\PageTree;
 
 interface PageRepositoryInterface
 {
@@ -21,9 +24,19 @@ interface PageRepositoryInterface
     public function find(string $id): ?Page;
 
     /**
-     * @return array
+     * @return PageList
      */
-    public function findAll(): array;
+    public function findAll(): PageList;
+
+    /**
+     * @return PageTree
+     */
+    public function buildTree(): PageTree;
+
+    /**
+     * @return PageTrail
+     */
+    public function buildTrail(): PageTrail;
 
     /**
      * @param Page $page

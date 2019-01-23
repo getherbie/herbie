@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Herbie\Page;
 
+use Herbie\Environment;
+
 class PageFactory
 {
     /**
@@ -29,13 +31,48 @@ class PageFactory
         return $page;
     }
 
+    /**
+     * @param array $data
+     * @return PageItem
+     */
     public function newPageItem(array $data = [])
     {
         return new PageItem($data);
     }
 
+    /**
+     * @param array $items
+     * @return PageList
+     */
     public function newPageList(array $items = [])
     {
         return new PageList($items);
+    }
+
+    /**
+     * @param PageList $pageList
+     * @return PageTree
+     */
+    public function newPageTree(PageList $pageList): PageTree
+    {
+        $tree = new PageTree();
+        foreach ($pageList as $pageItem) {
+            $route = $pageItem->getParentRoute();
+            $node = $tree->findByRoute($route);
+            if ($node) {
+                $node->addChild(new PageTree($pageItem));
+            }
+        }
+        return $tree;
+    }
+
+    /**
+     * @param PageList $pageList
+     * @param Environment $environment
+     * @return PageTrail
+     */
+    public function newPageTrail(PageList $pageList, Environment $environment): PageTrail
+    {
+        return new PageTrail($pageList, $environment);
     }
 }

@@ -17,10 +17,6 @@ use Herbie\Environment;
 use Herbie\EventManager;
 use Herbie\Exception\SystemException;
 use Herbie\Page\Page;
-use Herbie\Page\PageList;
-use Herbie\Page\PageTrail;
-use Herbie\Page\PageTree;
-use Herbie\Repository\DataRepositoryInterface;
 use Herbie\StringValue;
 use Herbie\Twig\TwigRenderer;
 use Herbie\Url\UrlGenerator;
@@ -65,26 +61,6 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $config;
 
     /**
-     * @var DataRepositoryInterface
-     */
-    private $dataRepository;
-
-    /**
-     * @var PageList
-     */
-    private $pageList;
-
-    /**
-     * @var PageTree
-     */
-    private $pageTree;
-
-    /**
-     * @var PageTrail
-     */
-    private $pageTrail;
-
-    /**
      * @var UrlGenerator
      */
     private $urlGenerator;
@@ -97,10 +73,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param EventManager $eventManager
      * @param TwigRenderer $twigRenderer
      * @param Config $config
-     * @param DataRepositoryInterface $dataRepository
-     * @param PageList $pageList
-     * @param PageTree $pageTree
-     * @param PageTrail $pageTrail
+     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         CacheInterface $cache,
@@ -109,10 +82,6 @@ class PageRendererMiddleware implements MiddlewareInterface
         EventManager $eventManager,
         TwigRenderer $twigRenderer,
         Config $config,
-        DataRepositoryInterface $dataRepository,
-        PageList $pageList,
-        PageTree $pageTree,
-        PageTrail $pageTrail,
         UrlGenerator $urlGenerator
     ) {
         $this->cache = $cache;
@@ -121,10 +90,6 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->eventManager = $eventManager;
         $this->twigRenderer = $twigRenderer;
         $this->config = $config;
-        $this->dataRepository = $dataRepository;
-        $this->pageList = $pageList;
-        $this->pageTree = $pageTree;
-        $this->pageTrail = $pageTrail;
         $this->urlGenerator = $urlGenerator;
     }
 

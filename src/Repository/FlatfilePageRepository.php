@@ -10,14 +10,19 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
+use Herbie\Cache;
+use Herbie\Environment;
 use Herbie\Page\Page;
 use Herbie\Page\PageFactory;
-use Herbie\Persistence\FlatfilePersistenceInterface;
+use Herbie\Page\PageList;
+use Herbie\Page\PageTrail;
+use Herbie\Page\PageTree;
+use Herbie\Persistence\PagePersistenceInterface;
 
 class FlatfilePageRepository implements PageRepositoryInterface
 {
     /**
-     * @var FlatfilePersistenceInterface
+     * @var PagePersistenceInterface
      */
     private $pagePersistence;
 
@@ -27,14 +32,33 @@ class FlatfilePageRepository implements PageRepositoryInterface
     private $pageFactory;
 
     /**
-     * FlatfilePageRepository constructor.
-     * @param FlatfilePersistenceInterface $pagePersistence
-     * @param PageFactory $pageFactory
+     * @var Cache
      */
-    public function __construct(FlatfilePersistenceInterface $pagePersistence, PageFactory $pageFactory)
+    private $cache;
+
+    /**
+     * @var PageList
+     */
+    private $pageList;
+    /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
+     * FlatfilePageRepository constructor.
+     * @param PagePersistenceInterface $pagePersistence
+     * @param PageFactory $pageFactory
+     * @param Cache $cache
+     * @param Environment $environment
+     */
+    public function __construct(PagePersistenceInterface $pagePersistence, PageFactory $pageFactory, Cache $cache, Environment $environment)
     {
         $this->pagePersistence = $pagePersistence;
         $this->pageFactory = $pageFactory;
+        $this->cache = $cache;
+        $this->pageList = null;
+        $this->environment = $environment;
     }
 
     /**
@@ -50,15 +74,39 @@ class FlatfilePageRepository implements PageRepositoryInterface
     }
 
     /**
-     * @return array
+     * @return PageList
      */
-    public function findAll(): array
+    public function findAll(): PageList
     {
-        $pages = [];
-        foreach ($this->pagePersistence->findAll() as $id => $row) {
-            $pages[$id] = $this->createPage($row);
+        if (is_null($this->pageList)) {
+            $this->pageList = $this->pageFactory->newPageList();
+            foreach ($this->pagePersistence->findAll() as $id => $data) {
+                $pageItem = $this->pageFactory->newPageItem($data['data']);
+                $this->pageList->addItem($pageItem);
+            }
         }
-        return $pages;
+        return $this->pageList;
+    }
+
+    /**
+     * @return PageTree
+     */
+    public function buildTree(): PageTree
+    {
+        return $this->pageFactory->newPageTree(
+            $this->findAll()
+        );
+    }
+
+    /**
+     * @return PageTrail
+     */
+    public function buildTrail(): PageTrail
+    {
+        return $this->pageFactory->newPageTrail(
+            $this->findAll(),
+            $this->environment
+        );
     }
 
     /**

@@ -17,6 +17,7 @@ use Herbie\Page\PageList;
 use Herbie\Page\PageTree;
 use Herbie\Page\PageTrail;
 use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Repository\PageRepositoryInterface;
 
 /**
  * Stores the site.
@@ -34,40 +35,24 @@ class Site
     private $dataRepository;
 
     /**
-     * @var PageList
+     * @var PageRepositoryInterface
      */
-    private $pageList;
-
-    /**
-     * @var PageTree
-     */
-    private $pageTree;
-
-    /**
-     * @var PageTrail
-     */
-    private $pageTrail;
+    private $pageRepository;
 
     /**
      * Site constructor.
      * @param Config $config
      * @param DataRepositoryInterface $dataRepository
-     * @param PageList $pageList
-     * @param PageTree $pageTree
-     * @param PageTrail $pageTrail
+     * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
         Config $config,
         DataRepositoryInterface $dataRepository,
-        PageList $pageList,
-        PageTree $pageTree,
-        PageTrail $pageTrail
+        PageRepositoryInterface $pageRepository
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
-        $this->pageList = $pageList;
-        $this->pageTree = $pageTree;
-        $this->pageTrail = $pageTrail;
+        $this->pageRepository = $pageRepository;
     }
 
     /**
@@ -91,7 +76,7 @@ class Site
      */
     public function getPageList(): PageList
     {
-        return $this->pageList;
+        return $this->pageRepository->findAll();
     }
 
     /**
@@ -99,7 +84,7 @@ class Site
      */
     public function getPageTree(): PageTree
     {
-        return $this->pageTree;
+        return $this->pageRepository->buildTree();
     }
 
     /**
@@ -107,7 +92,7 @@ class Site
      */
     public function getPageTrail(): PageTrail
     {
-        return $this->pageTrail;
+        return $this->pageRepository->buildTrail();
     }
 
     /**
@@ -116,7 +101,7 @@ class Site
     public function getModified(): string
     {
         $lastModified = 0;
-        foreach ($this->pageList as $item) {
+        foreach ($this->pageRepository->findAll() as $item) {
             $modified = strtotime($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;

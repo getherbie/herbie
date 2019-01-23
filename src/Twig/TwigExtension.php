@@ -21,10 +21,9 @@ use Herbie\Environment;
 use Herbie\Page;
 use Herbie\Page\PageItem;
 use Herbie\Page\PageList;
-use Herbie\Page\PageTree;
-use Herbie\Page\PageTrail;
 use Herbie\Pagination;
 use Herbie\Repository\DataRepositoryInterface;
+use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Selector;
 use Herbie\Translator;
 use Herbie\Url\UrlGenerator;
@@ -41,12 +40,13 @@ class TwigExtension extends Twig_Extension
     private $translator;
     private $slugGenerator;
     private $assets;
-    private $pageList;
-    private $pageTree;
-    private $pageTrail;
     private $environment;
     private $dataRepository;
     private $twigRenderer;
+    /**
+     * @var PageRepositoryInterface
+     */
+    private $pageRepository;
 
     /**
      * TwigExtension constructor.
@@ -55,13 +55,10 @@ class TwigExtension extends Twig_Extension
      * @param UrlGenerator $urlGenerator
      * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
-     * @param PageList $pageList
-     * @param PageTree $pageTree
-     * @param PageTrail $pageTrail
      * @param Environment $environment
      * @param DataRepositoryInterface $dataRepository
      * @param Translator $translator
-     * @param TwigRenderer $twigRenderer
+     * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
         Alias $alias,
@@ -69,13 +66,10 @@ class TwigExtension extends Twig_Extension
         UrlGenerator $urlGenerator,
         SlugGeneratorInterface $slugGenerator,
         Assets $assets,
-        PageList $pageList,
-        PageTree $pageTree,
-        PageTrail $pageTrail,
         Environment $environment,
         DataRepositoryInterface $dataRepository,
         Translator $translator,
-        TwigRenderer $twigRenderer
+        PageRepositoryInterface $pageRepository
     ) {
         $this->alias = $alias;
         $this->config = $config;
@@ -83,12 +77,17 @@ class TwigExtension extends Twig_Extension
         $this->translator = $translator;
         $this->slugGenerator = $slugGenerator;
         $this->assets = $assets;
-        $this->pageList = $pageList;
-        $this->pageTree = $pageTree;
-        $this->pageTrail = $pageTrail;
         $this->environment = $environment;
-        $this->twigRenderer = $twigRenderer;
         $this->dataRepository = $dataRepository;
+        $this->pageRepository = $pageRepository;
+    }
+
+    /**
+     * @param TwigRenderer $twigRenderer
+     */
+    public function setTwigRenderer(TwigRenderer $twigRenderer)
+    {
+        $this->twigRenderer = $twigRenderer;
     }
 
     /**
@@ -307,7 +306,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->pageTree->findByRoute($route);
+        $branch = $this->pageRepository->buildTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
         $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
@@ -356,7 +355,7 @@ class TwigExtension extends Twig_Extension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->pageTrail as $item) {
+        foreach ($this->pageRepository->buildTrail() as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
 
@@ -424,7 +423,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'menu';
 
-        $branch = $this->pageTree->findByRoute($route);
+        $branch = $this->pageRepository->buildTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
@@ -456,7 +455,8 @@ class TwigExtension extends Twig_Extension
         $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
-        $count = count($this->pageTrail);
+        $pageTrail = $this->pageRepository->buildTrail();
+        $count = count($pageTrail);
 
         $titles = [];
 
@@ -464,7 +464,7 @@ class TwigExtension extends Twig_Extension
             $titles[] = $siteTitle;
         }
 
-        foreach ($this->pageTrail as $item) {
+        foreach ($pageTrail as $item) {
             if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
@@ -498,7 +498,7 @@ class TwigExtension extends Twig_Extension
         $nextPageIcon = ''
     ) {
         $route = $this->environment->getRoute();
-        $iterator = $this->pageList->getIterator();
+        $iterator = $this->pageRepository->findAll()->getIterator();
 
         $prev = null;
         $cur = null;
@@ -563,7 +563,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->pageTree->findByRoute($route);
+        $branch = $this->pageRepository->buildTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
         $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);

@@ -15,7 +15,7 @@ namespace Herbie\Url;
 
 use Herbie\Config;
 use Herbie\Exception\HttpException;
-use Herbie\Page\PageList;
+use Herbie\Repository\PageRepositoryInterface;
 
 /**
  * The URLMatcher matches a given route and returns the path to a valid page file.
@@ -23,23 +23,23 @@ use Herbie\Page\PageList;
 class UrlMatcher
 {
     /**
-     * @var PageList List of all pages.
-     */
-    private $pageList;
-    /**
      * @var Config
      */
     private $config;
+    /**
+     * @var PageRepositoryInterface
+     */
+    private $pageRepository;
 
     /**
      * Constructor
-     * @param PageList $pageList List of all pages
      * @param Config $config
+     * @param PageRepositoryInterface $pageRepository
      */
-    public function __construct(PageList $pageList, Config $config)
+    public function __construct(Config $config, PageRepositoryInterface $pageRepository)
     {
-        $this->pageList = $pageList;
         $this->config = $config;
+        $this->pageRepository = $pageRepository;
     }
 
     /**
@@ -50,8 +50,10 @@ class UrlMatcher
      */
     public function match(string $route): array
     {
+        $pageList = $this->pageRepository->findAll();
+
         // match by normal route
-        $item = $this->pageList->getItem($route);
+        $item = $pageList->getItem($route);
         if (isset($item)) {
             return [
                 'route' => $item->getRoute(),
@@ -63,7 +65,7 @@ class UrlMatcher
         // match by url rules
         $matchedRoute = $this->matchRules($route);
         if ($matchedRoute) {
-            $item = $this->pageList->getItem($matchedRoute['route']);
+            $item = $pageList->getItem($matchedRoute['route']);
             if (isset($item)) {
                 return [
                     'route' => $item->getRoute(),

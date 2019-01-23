@@ -14,8 +14,11 @@ declare(strict_types=1);
 namespace Herbie\Persistence;
 
 use Herbie\Alias;
+use Herbie\Config;
 use Herbie\Exception\HttpException;
+use Herbie\Page\Iterator\SortableIterator;
 use Herbie\Yaml;
+use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -23,7 +26,7 @@ use SplFileInfo;
 /**
  * Loads the whole page.
  */
-class FlatfilePagePersistence implements FlatfilePersistenceInterface
+class FlatfilePagePersistence implements PagePersistenceInterface
 {
     /**
      * @var Alias
@@ -31,11 +34,18 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
     private $alias;
 
     /**
-     * @param Alias $alias
+     * @var Config
      */
-    public function __construct(Alias $alias)
+    private $config;
+
+    /**
+     * @param Alias $alias
+     * @param Config $config
+     */
+    public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
+        $this->config = $config;
     }
 
     /**
@@ -49,10 +59,48 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
         return $data;
     }
 
-    // TODO
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function findAll(): array
     {
-        return [];
+        $path = $this->config->paths->pages;
+        $extensions = $this->config->fileExtensions->pages->toArray();
+
+        $recDirectoryIt = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
+
+        $callback = function (SplFileInfo $current, $key, $iterator) use ($extensions) {
+            // Allow recursion
+            if ($iterator->hasChildren()) {
+                return true;
+            }
+            if (strpos($current->getFilename(), '.') === 0) {
+                return false;
+            }
+            // Check for file extensions
+            if (in_array($current->getExtension(), $extensions)) {
+                return true;
+            }
+            return false;
+        };
+
+        $recCallbackFilterIt = new RecursiveCallbackFilterIterator($recDirectoryIt, $callback);
+        $recIteratorIt = new RecursiveIteratorIterator($recCallbackFilterIt);
+        $sortIt = new SortableIterator($recIteratorIt, SortableIterator::SORT_BY_NAME);
+
+        $items = [];
+        foreach ($sortIt as $fileInfo) {
+            /** @var SplFileInfo $fileInfo */
+            $data = $this->readFile($fileInfo->getPathname());
+            if (!isset($data['data']['route'])) {
+                $relPath = str_replace($path, '', $fileInfo->getPathname());
+                $data['data']['route'] = $this->createRoute($relPath, true);
+            }
+            $items[] = $data;
+        }
+
+        return $items;
     }
 
     /**
@@ -67,7 +115,7 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
         $content = $this->readFileContent($path);
         list($yaml, $segments) = $this->parseFileContent($content);
 
-        $data = (array) Yaml::parse($yaml);
+        $data = Yaml::parse($yaml);
 
         if ($addDefFields) {
             $basename = basename($path);
@@ -246,5 +294,45 @@ class FlatfilePagePersistence implements FlatfilePersistenceInterface
         }
 
         return $mapping;
+    }
+
+
+    /**
+     * @param string $path
+     * @param bool $trimExtension
+     * @return string
+     */
+    private function createRoute(string $path, bool $trimExtension = false): string
+    {
+        // strip left unix AND windows dir separator
+        $route = ltrim($path, '\/');
+
+        // remove leading numbers (sorting) from url segments
+        $segments = explode('/', $route);
+
+        if (isset($segments[0])) {
+            if (substr($segments[0], 0, 1) === '@') {
+                unset($segments[0]);
+            }
+        }
+
+        foreach ($segments as $i => $segment) {
+            if (!preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $segment)) {
+                $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
+            }
+        }
+        $imploded = implode('/', $segments);
+
+        // trim extension
+        $pos = strrpos($imploded, '.');
+        if ($trimExtension && ($pos !== false)) {
+            $imploded = substr($imploded, 0, $pos);
+        }
+
+        // remove last "/index" from route
+        $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
+
+        // handle index route
+        return ($route == 'index') ? '' : $route;
     }
 }

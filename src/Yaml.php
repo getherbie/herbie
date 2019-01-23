@@ -29,7 +29,8 @@ class Yaml
      */
     public static function parse(string $input): array
     {
-        return sfYaml::parse($input);
+        $parsed = sfYaml::parse($input);
+        return (array)$parsed;
     }
 
     /**
