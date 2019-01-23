@@ -180,7 +180,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $rendered = null;
 
         $cacheId = 'page-' . $this->environment->getRoute();
-        if (!empty($page->cached)) {
+        if (!empty($page->getCached())) {
             $rendered = $this->cache->get($cacheId);
         }
 
@@ -193,7 +193,7 @@ class PageRendererMiddleware implements MiddlewareInterface
             // Render segments
             $renderedSegments = [];
             foreach ($page->getSegments() as $segmentId => $content) {
-                if (empty($page->twig)) {
+                if (empty($page->getTwig())) {
                     $renderedContent = new StringValue($content);
                 } else {
                     $renderedContent = new StringValue($this->twigRenderer->renderString($content, $context));
@@ -204,18 +204,18 @@ class PageRendererMiddleware implements MiddlewareInterface
 
             $content = new StringValue();
 
-            if (empty($page->layout)) {
+            if (empty($page->getLayout())) {
                 $content->set(implode('', $renderedSegments));
             } else {
                 $extension = trim($this->config['fileExtensions']['layouts']);
-                $name = empty($extension) ? $page->layout : sprintf('%s.%s', $page->layout, $extension);
+                $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
                 $content->set($this->twigRenderer->renderTemplate($name, array_merge([
                     'content' => $renderedSegments
                 ], $context)));
                 $this->eventManager->trigger('onRenderLayout', $content, ['page' => $page]);
             }
 
-            if (!empty($page->cached)) {
+            if (!empty($page->getCached())) {
                 $this->cache->set($cacheId, $content->get());
             }
             $rendered = $content->get();
@@ -224,7 +224,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $response = $this->httpFactory->createResponse(200);
 
         $response->getBody()->write($rendered);
-        $response->withHeader('Content-Type', $page->content_type);
+        $response->withHeader('Content-Type', $page->getContentType());
 
         return $response;
     }

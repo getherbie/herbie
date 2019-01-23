@@ -326,7 +326,7 @@ class TwigExtension extends Twig_Extension
         if (empty($route)) {
             $route = 'index';
         }
-        $layout = ''; //$this->page->layout;
+        $layout = ''; //$this->page->getLayout();
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
@@ -624,7 +624,7 @@ class TwigExtension extends Twig_Extension
 
         // filter pages with empty title
         $pageList = $pageList->filter(function (PageItem $page) {
-            return !empty($page->title);
+            return !empty($page->getTitle());
         });
 
         $pagination = new Pagination($pageList);
