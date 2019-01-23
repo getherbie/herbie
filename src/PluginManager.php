@@ -58,16 +58,16 @@ class PluginManager
      * @throws SystemException
      */
     public function __construct(
-        EventManager $eventManager,
         Config $config,
+        EventManager $eventManager,
         ContainerInterface $container
     ) {
-        $this->eventManager = $eventManager;
         $this->config = $config;
         $this->container = $container;
-        $this->pluginsPath = normalize_path($config['paths']['plugins']);
+        $this->eventManager = $eventManager;
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
+        $this->pluginsPath = normalize_path($config['paths']['plugins']);
     }
 
     /**

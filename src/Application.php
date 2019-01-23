@@ -201,22 +201,22 @@ class Application
                 $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
-                $c->get(TwigExtension::class),
-                $c->get(Site::class)
+                $c->get(Site::class),
+                $c->get(TwigExtension::class)
             );
         });
 
         $c->set(TwigExtension::class, function (Container $c) {
             return new TwigExtension(
                 $c->get(Alias::class),
-                $c->get(Config::class),
-                $c->get(UrlGenerator::class),
-                $c->get(SlugGenerator::class),
                 $c->get(Assets::class),
-                $c->get(Environment::class),
+                $c->get(Config::class),
                 $c->get(DataRepositoryInterface::class),
+                $c->get(Environment::class),
+                $c->get(PageRepositoryInterface::class),
+                $c->get(SlugGenerator::class),
                 $c->get(Translator::class),
-                $c->get(PageRepositoryInterface::class)
+                $c->get(UrlGenerator::class)
             );
         });
 
@@ -272,10 +272,9 @@ class Application
 
         $c->set(PageRepositoryInterface::class, function (Container $c) {
             return new FlatfilePageRepository(
-                $c->get(PagePersistenceInterface::class),
+                $c->get(Environment::class),
                 $c->get(PageFactory::class),
-                $c->get(Cache::class),
-                $c->get(Environment::class)
+                $c->get(PagePersistenceInterface::class)
             );
         });
 
@@ -305,17 +304,17 @@ class Application
 
         $c->set(PluginManager::class, function (Container $c) {
             return new PluginManager(
-                $c->get(EventManager::class),
                 $c->get(Config::class),
+                $c->get(EventManager::class),
                 $c
             );
         });
 
         $c->set(UrlGenerator::class, function (Container $c) {
             return new UrlGenerator(
-                $c->get(ServerRequestInterface::class),
+                $c->get(Config::class),
                 $c->get(Environment::class),
-                $c->get(Config::class)
+                $c->get(ServerRequestInterface::class)
             );
         });
 
@@ -343,8 +342,8 @@ class Application
 
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
-                $c->get(Config::class),
-                $c->get(Alias::class)
+                $c->get(Alias::class),
+                $c->get(Config::class)
             );
         });
 
@@ -359,11 +358,11 @@ class Application
         $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
                 $c->get(Cache::class),
-                $c->get(Environment::class),
-                $c->get(HttpFactory::class),
-                $c->get(EventManager::class),
-                $c->get(TwigRenderer::class),
                 $c->get(Config::class),
+                $c->get(Environment::class),
+                $c->get(EventManager::class),
+                $c->get(HttpFactory::class),
+                $c->get(TwigRenderer::class),
                 $c->get(UrlGenerator::class)
             );
         });

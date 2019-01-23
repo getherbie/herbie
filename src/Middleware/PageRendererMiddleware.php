@@ -68,20 +68,20 @@ class PageRendererMiddleware implements MiddlewareInterface
     /**
      * PageRendererMiddleware constructor.
      * @param CacheInterface $cache
-     * @param Environment $environment
-     * @param HttpFactory $httpFactory
-     * @param EventManager $eventManager
-     * @param TwigRenderer $twigRenderer
      * @param Config $config
+     * @param Environment $environment
+     * @param EventManager $eventManager
+     * @param HttpFactory $httpFactory
+     * @param TwigRenderer $twigRenderer
      * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         CacheInterface $cache,
-        Environment $environment,
-        HttpFactory $httpFactory,
-        EventManager $eventManager,
-        TwigRenderer $twigRenderer,
         Config $config,
+        Environment $environment,
+        EventManager $eventManager,
+        HttpFactory $httpFactory,
+        TwigRenderer $twigRenderer,
         UrlGenerator $urlGenerator
     ) {
         $this->cache = $cache;

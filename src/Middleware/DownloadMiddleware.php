@@ -42,13 +42,13 @@ class DownloadMiddleware implements MiddlewareInterface
 
     /**
      * DownloadMiddleware constructor.
-     * @param Config $config
      * @param Alias $alias
+     * @param Config $config
      */
-    public function __construct(Config $config, Alias $alias)
+    public function __construct(Alias $alias, Config $config)
     {
-        $this->config = $config;
         $this->alias = $alias;
+        $this->config = $config;
         $this->mapping = [
             '/download/' => '@site/media/'
         ];

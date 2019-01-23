@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
-use Herbie\Cache;
 use Herbie\Environment;
 use Herbie\Page\Page;
 use Herbie\Page\PageFactory;
@@ -22,9 +21,9 @@ use Herbie\Persistence\PagePersistenceInterface;
 class FlatfilePageRepository implements PageRepositoryInterface
 {
     /**
-     * @var PagePersistenceInterface
+     * @var Environment
      */
-    private $pagePersistence;
+    private $environment;
 
     /**
      * @var PageFactory
@@ -32,33 +31,27 @@ class FlatfilePageRepository implements PageRepositoryInterface
     private $pageFactory;
 
     /**
-     * @var Cache
-     */
-    private $cache;
-
-    /**
      * @var PageList
      */
     private $pageList;
+
     /**
-     * @var Environment
+     * @var PagePersistenceInterface
      */
-    private $environment;
+    private $pagePersistence;
 
     /**
      * FlatfilePageRepository constructor.
-     * @param PagePersistenceInterface $pagePersistence
-     * @param PageFactory $pageFactory
-     * @param Cache $cache
      * @param Environment $environment
+     * @param PageFactory $pageFactory
+     * @param PagePersistenceInterface $pagePersistence
      */
-    public function __construct(PagePersistenceInterface $pagePersistence, PageFactory $pageFactory, Cache $cache, Environment $environment)
+    public function __construct(Environment $environment, PageFactory $pageFactory, PagePersistenceInterface $pagePersistence)
     {
-        $this->pagePersistence = $pagePersistence;
-        $this->pageFactory = $pageFactory;
-        $this->cache = $cache;
-        $this->pageList = null;
         $this->environment = $environment;
+        $this->pageFactory = $pageFactory;
+        $this->pageList = null;
+        $this->pagePersistence = $pagePersistence;
     }
 
     /**

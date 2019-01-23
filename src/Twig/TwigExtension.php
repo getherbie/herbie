@@ -51,25 +51,25 @@ class TwigExtension extends Twig_Extension
     /**
      * TwigExtension constructor.
      * @param Alias $alias
-     * @param Config $config
-     * @param UrlGenerator $urlGenerator
-     * @param SlugGeneratorInterface $slugGenerator
      * @param Assets $assets
-     * @param Environment $environment
+     * @param Config $config
      * @param DataRepositoryInterface $dataRepository
-     * @param Translator $translator
+     * @param Environment $environment
      * @param PageRepositoryInterface $pageRepository
+     * @param SlugGeneratorInterface $slugGenerator
+     * @param Translator $translator
+     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         Alias $alias,
-        Config $config,
-        UrlGenerator $urlGenerator,
-        SlugGeneratorInterface $slugGenerator,
         Assets $assets,
-        Environment $environment,
+        Config $config,
         DataRepositoryInterface $dataRepository,
+        Environment $environment,
+        PageRepositoryInterface $pageRepository,
+        SlugGeneratorInterface $slugGenerator,
         Translator $translator,
-        PageRepositoryInterface $pageRepository
+        UrlGenerator $urlGenerator
     ) {
         $this->alias = $alias;
         $this->config = $config;
