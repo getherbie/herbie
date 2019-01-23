@@ -16,7 +16,7 @@ namespace Herbie;
 use Psr\Container\ContainerInterface;
 use Psr\Log\InvalidArgumentException;
 
-class Container implements \ArrayAccess, ContainerInterface
+class Container implements ContainerInterface
 {
     /**
      * @var array
@@ -61,7 +61,7 @@ class Container implements \ArrayAccess, ContainerInterface
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    private function offsetExists($offset): bool
     {
         return isset($this->frozen[$offset]) || isset($this->values[$offset]);
     }
@@ -71,7 +71,7 @@ class Container implements \ArrayAccess, ContainerInterface
      * @return mixed
      * @throws \Exception
      */
-    public function offsetGet($offset)
+    private function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
             $message = sprintf('Object "%s" is not stored in container', $offset);
@@ -96,7 +96,7 @@ class Container implements \ArrayAccess, ContainerInterface
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value): void
+    private function offsetSet($offset, $value): void
     {
         $this->values[$offset] = $value;
     }
@@ -104,7 +104,7 @@ class Container implements \ArrayAccess, ContainerInterface
     /**
      * @param mixed $offset
      */
-    public function offsetUnset($offset): void
+    private function offsetUnset($offset): void
     {
         unset($this->frozen[$offset]);
         unset($this->values[$offset]);

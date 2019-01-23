@@ -116,11 +116,11 @@ class Application
     {
         $c = new Container();
 
-        $c[Environment::class] = function () {
+        $c->set(Environment::class, function () {
             return new Environment();
-        };
+        });
 
-        $c[Config::class] = function (Container $c) {
+        $c->set(Config::class, function (Container $c) {
 
             $APP_PATH = rtrim(__DIR__, '/');
             $SITE_PATH = rtrim($this->sitePath, '/');
@@ -174,17 +174,17 @@ class Application
             $config->merge($userConfig);
 
             return $config;
-        };
+        });
 
-        $c[HttpFactory::class] = function () {
+        $c->set(HttpFactory::class, function () {
             return new HttpFactory();
-        };
+        });
 
-        $c[ServerRequestInterface::class] = function (Container $c) {
-            return $c[HttpFactory::class]->createServerRequestFromGlobals();
-        };
+        $c->set(ServerRequestInterface::class, function (Container $c) {
+            return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
+        });
 
-        $c[Alias::class] = function (Container $c) {
+        $c->set(Alias::class, function (Container $c) {
             $config = $c->get(Config::class);
             return new Alias([
                 '@app' => $config['paths']['app'],
@@ -197,177 +197,179 @@ class Application
                 '@web' => $config['paths']['web'],
                 '@snippet' => $config['paths']['app'] . '/../templates/snippets'
             ]);
-        };
+        });
 
-        $c[TwigRenderer::class] = function (Container $c) {
+        $c->set(TwigRenderer::class, function (Container $c) {
             $twig = new TwigRenderer(
-                $c[Alias::class],
-                $c[Config::class],
-                $c[UrlGenerator::class],
-                $c[SlugGenerator::class],
-                $c[Assets::class],
-                $c[PageList::class],
-                $c[PageTree::class],
-                $c[PageTrail::class],
-                $c[Environment::class],
-                $c[DataRepositoryInterface::class],
-                $c[Translator::class],
-                $c[EventManager::class]
+                $c->get(Alias::class),
+                $c->get(Config::class),
+                $c->get(UrlGenerator::class),
+                $c->get(SlugGenerator::class),
+                $c->get(Assets::class),
+                $c->get(PageList::class),
+                $c->get(PageTree::class),
+                $c->get(PageTrail::class),
+                $c->get(Environment::class),
+                $c->get(DataRepositoryInterface::class),
+                $c->get(Translator::class),
+                $c->get(EventManager::class)
             );
             return $twig;
-        };
+        });
 
-        $c[SlugOptions::class] = function (Container $c) {
-            $locale = $c[Config::class]->get('language');
+        $c->set(SlugOptions::class, function (Container $c) {
+            $locale = $c->get(Config::class)->get('language');
             return new SlugOptions([
                 'locale' => $locale,
                 'delimiter' => '-'
             ]);
-        };
+        });
 
-        $c[SlugGenerator::class] = function (Container $c) {
-            return new SlugGenerator($c[SlugOptions::class]);
-        };
+        $c->set(SlugGenerator::class, function (Container $c) {
+            return new SlugGenerator(
+                $c->get(SlugOptions::class)
+            );
+        });
 
-        $c[Assets::class] = function (Container $c) {
+        $c->set(Assets::class, function (Container $c) {
             return new Assets(
-                $c[Alias::class],
-                $c[Environment::class]
+                $c->get(Alias::class),
+                $c->get(Environment::class)
             );
-        };
+        });
 
-        $c[Cache::class] = function () {
+        $c->set(Cache::class, function () {
             return new Cache();
-        };
+        });
 
-        $c[DataRepositoryInterface::class] = function (Container $c) {
+        $c->set(DataRepositoryInterface::class, function (Container $c) {
             return new YamlDataRepository(
-                $c[Config::class]
+                $c->get(Config::class)
             );
-        };
+        });
 
-        $c[FlatfilePersistenceInterface::class] = function (Container $c) {
+        $c->set(FlatfilePersistenceInterface::class, function (Container $c) {
             return new FlatfilePagePersistence(
-                $c[Alias::class]
+                $c->get(Alias::class)
             );
-        };
+        });
 
-        $c[PageFactory::class] = function () {
+        $c->set(PageFactory::class, function () {
             return new PageFactory();
-        };
+        });
 
-        $c[PageRepositoryInterface::class] = function (Container $c) {
+        $c->set(PageRepositoryInterface::class, function (Container $c) {
             return new FlatfilePageRepository(
-                $c[FlatfilePersistenceInterface::class],
-                $c[PageFactory::class]
+                $c->get(FlatfilePersistenceInterface::class),
+                $c->get(PageFactory::class)
             );
-        };
+        });
 
-        $c[PageBuilder::class] = function (Container $c) {
+        $c->set(PageBuilder::class, function (Container $c) {
             return new PageBuilder(
-                $c[FlatfilePersistenceInterface::class],
-                $c[Config::class],
-                $c[PageFactory::class]
+                $c->get(FlatfilePersistenceInterface::class),
+                $c->get(Config::class),
+                $c->get(PageFactory::class)
             );
-        };
+        });
 
-        $c[\Zend\EventManager\Event::class] = function () {
+        $c->set(\Zend\EventManager\Event::class, function () {
             return new \Zend\EventManager\Event();
-        };
+        });
 
-        $c[Event::class] = function (Container $c) {
+        $c->set(Event::class, function (Container $c) {
             return new Event(
                 $c->get(\Zend\EventManager\Event::class)
             );
-        };
+        });
 
-        $c[\Zend\EventManager\EventManager::class] = function (Container $c) {
+        $c->set(\Zend\EventManager\EventManager::class, function (Container $c) {
             $zendEventManager = new \Zend\EventManager\EventManager();
             $zendEventManager->setEventPrototype(
                 $c->get(Event::class)
             );
             return $zendEventManager;
-        };
+        });
 
-        $c[EventManager::class] = function (Container $c) {
+        $c->set(EventManager::class, function (Container $c) {
             return new EventManager(
                 $c->get(\Zend\EventManager\EventManager::class)
             );
-        };
+        });
 
-        $c[PluginManager::class] = function (Container $c) {
+        $c->set(PluginManager::class, function (Container $c) {
             return new PluginManager(
-                $c[EventManager::class],
-                $c[Config::class],
+                $c->get(EventManager::class),
+                $c->get(Config::class),
                 $c
             );
-        };
+        });
 
-        $c[UrlGenerator::class] = function (Container $c) {
+        $c->set(UrlGenerator::class, function (Container $c) {
             return new UrlGenerator(
-                $c[ServerRequestInterface::class],
-                $c[Environment::class],
-                $c[Config::class]
+                $c->get(ServerRequestInterface::class),
+                $c->get(Environment::class),
+                $c->get(Config::class)
             );
-        };
+        });
 
-        $c[PageList::class] = function (Container $c) {
-            $cache = $c[Cache::class];
-            $c[PageBuilder::class]->setCache($cache); // TODO inject cache interface properly
-            return $c[PageBuilder::class]->buildPageList();
-        };
+        $c->set(PageList::class, function (Container $c) {
+            $cache = $c->get(Cache::class);
+            $c->get(PageBuilder::class)->setCache($cache); // TODO inject cache interface properly
+            return $c->get(PageBuilder::class)->buildPageList();
+        });
 
-        $c[PageTree::class] = function (Container $c) {
+        $c->set(PageTree::class, function (Container $c) {
             return PageTree::buildTree(
-                $c[PageList::class]
+                $c->get(PageList::class)
             );
-        };
+        });
 
-        $c[PageTrail::class] = function (Container $c) {
+        $c->set(PageTrail::class, function (Container $c) {
             return new PageTrail(
-                $c[PageList::class],
-                $c[Environment::class]
+                $c->get(PageList::class),
+                $c->get(Environment::class)
             );
-        };
+        });
 
-        $c[Translator::class] = function (Container $c) {
-            $translator = new Translator($c[Config::class]->language);
-            $translator->addPath('app', $c[Config::class]->paths->messages);
-            foreach ($c[PluginManager::class]->getPluginPaths() as $key => $dir) {
+        $c->set(Translator::class, function (Container $c) {
+            $translator = new Translator($c->get(Config::class)->language);
+            $translator->addPath('app', $c->get(Config::class)->paths->messages);
+            foreach ($c->get(PluginManager::class)->getPluginPaths() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
             return $translator;
-        };
+        });
 
-        $c[UrlMatcher::class] = function (Container $c) {
+        $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
-                $c[PageList::class],
-                $c[Config::class]->urlManager
+                $c->get(PageList::class),
+                $c->get(Config::class)->urlManager
             );
-        };
+        });
 
-        $c[ErrorHandlerMiddleware::class] = function (Container $c) {
+        $c->set(ErrorHandlerMiddleware::class, function (Container $c) {
             return new ErrorHandlerMiddleware(
                 $c->get(TwigRenderer::class)
             );
-        };
+        });
 
-        $c[DownloadMiddleware::class] = function (Container $c) {
+        $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Config::class),
                 $c->get(Alias::class)
             );
-        };
+        });
 
-        $c[PageResolverMiddleware::class] = function (Container $c) {
+        $c->set(PageResolverMiddleware::class, function (Container $c) {
             return new PageResolverMiddleware(
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class),
                 $c->get(UrlMatcher::class)
             );
-        };
+        });
 
-        $c[PageRendererMiddleware::class] = function (Container $c) {
+        $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
                 $c->get(Cache::class),
                 $c->get(Environment::class),
@@ -381,9 +383,9 @@ class Application
                 $c->get(PageTrail::class),
                 $c->get(UrlGenerator::class)
             );
-        };
+        });
 
-        $c[MiddlewareDispatcher::class] = function (Container $c) {
+        $c->set(MiddlewareDispatcher::class, function (Container $c) {
             $middlewares = array_merge(
                 [
                     $c->get(ErrorHandlerMiddleware::class)
@@ -399,7 +401,7 @@ class Application
                 ]
             );
             return new MiddlewareDispatcher($middlewares);
-        };
+        });
 
         return $c;
     }
