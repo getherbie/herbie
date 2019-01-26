@@ -35,6 +35,11 @@ class Site
     private $dataRepository;
 
     /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
      * @var PageRepositoryInterface
      */
     private $pageRepository;
@@ -43,16 +48,19 @@ class Site
      * Site constructor.
      * @param Config $config
      * @param DataRepositoryInterface $dataRepository
+     * @param Environment $environment
      * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
         Config $config,
         DataRepositoryInterface $dataRepository,
+        Environment $environment,
         PageRepositoryInterface $pageRepository
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
         $this->pageRepository = $pageRepository;
+        $this->environment = $environment;
     }
 
     /**
@@ -84,7 +92,7 @@ class Site
      */
     public function getPageTree(): PageTree
     {
-        return $this->pageRepository->buildTree();
+        return $this->getPageList()->getPageTree();
     }
 
     /**
@@ -92,7 +100,8 @@ class Site
      */
     public function getPageTrail(): PageTrail
     {
-        return $this->pageRepository->buildTrail();
+        $route = $this->environment->getRoute();
+        return $this->getPageList()->getPageTrail($route);
     }
 
     /**

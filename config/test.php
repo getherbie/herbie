@@ -62,5 +62,5 @@ return [
     ],
     'plugins' => [],
     'enabledPlugins' => [],
-    'enabledSysPlugins' => ['markdown', 'textile']
+    'enabledSysPlugins' => []
 ];

@@ -17,6 +17,7 @@ if (php_sapi_name() == 'cli-server') {
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
+use Herbie\Middleware\HttpBasicAuthMiddleware;
 use Herbie\Middleware\ResponseTimeMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -43,7 +44,8 @@ class CustomHeader implements MiddlewareInterface {
 }
 
 $app = new Herbie\Application('../site', '../../vendor');
-$app->setMiddlewares([
+
+$app->setApplicationMiddlewares([
     ResponseTimeMiddleware::class,
     CustomHeader::class,
     new CustomHeader(2),
@@ -57,5 +59,19 @@ $app->setMiddlewares([
 //$fileCache = new Anax\Cache\FileCache();
 //$fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
 //$app->setPageCache($fileCache);
+
+$app->setRouteMiddlewares([
+   'blog/2015-07-30' => function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+       $request = $request->withAttribute('X-Custom-Attribute-BLOG', time());
+       $response = $next->handle($request);
+       return $response->withHeader('X-Custom-Header-BLOG', time());
+   },
+    'features' => function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+        $request = $request->withAttribute('X-Custom-Attribute-FEATURES', time());
+        $response = $next->handle($request);
+        return $response->withHeader('X-Custom-Header-FEATURES', time());
+    },
+    'news/january' => new HttpBasicAuthMiddleware(['user' => 'pass'])
+]);
 
 $app->run();

@@ -13,58 +13,20 @@ declare(strict_types=1);
 
 namespace Herbie\Page;
 
-use Herbie\Environment;
-
 class PageTrail implements \IteratorAggregate, \Countable
 {
-
-    /**
-     * @var PageList
-     */
-    private $pageList;
-
-    /**
-     * @var string
-     */
-    private $route;
-
     /**
      * @var array
      */
     private $items;
 
     /**
-     * @param PageList $pageList
-     * @param Environment $environment
+     * PageTrail constructor.
+     * @param array $items
      */
-    public function __construct(PageList $pageList, Environment $environment)
+    public function __construct(array $items)
     {
-        $this->pageList = $pageList;
-        $this->route = $environment->getRoute();
-        $this->items = $this->buildPageTrail();
-    }
-
-    /**
-     * @return array
-     */
-    private function buildPageTrail(): array
-    {
-        $items = [];
-
-        $segments = explode('/', rtrim($this->route, '/'));
-        $route = '';
-        $delim = '';
-        foreach ($segments as $segment) {
-            $route .= $delim . $segment;
-            $delim = '/';
-
-            $item = $this->pageList->getItem($route);
-            if (isset($item)) {
-                $items[] = $item;
-            }
-        }
-
-        return $items;
+        $this->items = $items;
     }
 
     /**

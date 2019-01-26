@@ -67,12 +67,11 @@ class PageFactory
     }
 
     /**
-     * @param PageList $pageList
-     * @param Environment $environment
+     * @param $pageItems
      * @return PageTrail
      */
-    public function newPageTrail(PageList $pageList, Environment $environment): PageTrail
+    public function newPageTrail($pageItems): PageTrail
     {
-        return new PageTrail($pageList, $environment);
+        return new PageTrail($pageItems);
     }
 }

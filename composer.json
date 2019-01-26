@@ -9,8 +9,6 @@
         "php": "^7.1.3",
         "ausi/slug-generator": "^1.1",
         "getherbie/composer": "^1.0",
-        "getherbie/plugin-markdown": "dev-master",
-        "getherbie/plugin-textile": "dev-master",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
@@ -45,31 +43,5 @@
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
         "phpunit": "./vendor/bin/phpunit"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/simplecontact"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/simplesearch"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/markdown"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/shortcode"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/textile"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/getherbie-plugin/twig"
-        }
-    ]
+    }
 }

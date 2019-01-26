@@ -306,7 +306,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->pageRepository->buildTree()->findByRoute($route);
+        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
         $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
@@ -423,7 +423,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'menu';
 
-        $branch = $this->pageRepository->buildTree()->findByRoute($route);
+        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
@@ -455,7 +455,8 @@ class TwigExtension extends Twig_Extension
         $rootTitle = isset($rootTitle) ? $rootTitle : null;
         $reverse = isset($reverse) ? (bool) $reverse : false;
 
-        $pageTrail = $this->pageRepository->buildTrail();
+        $route = $this->environment->getRoute();
+        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         $count = count($pageTrail);
 
         $titles = [];
@@ -563,7 +564,7 @@ class TwigExtension extends Twig_Extension
         $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
         $class = isset($class) ? (string)$class : 'sitemap';
 
-        $branch = $this->pageRepository->buildTree()->findByRoute($route);
+        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
         $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);

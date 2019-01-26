@@ -12,8 +12,6 @@ namespace Herbie\Repository;
 
 use Herbie\Page\Page;
 use Herbie\Page\PageList;
-use Herbie\Page\PageTrail;
-use Herbie\Page\PageTree;
 
 interface PageRepositoryInterface
 {
@@ -27,16 +25,6 @@ interface PageRepositoryInterface
      * @return PageList
      */
     public function findAll(): PageList;
-
-    /**
-     * @return PageTree
-     */
-    public function buildTree(): PageTree;
-
-    /**
-     * @return PageTrail
-     */
-    public function buildTrail(): PageTrail;
 
     /**
      * @param Page $page

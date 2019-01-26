@@ -68,7 +68,12 @@ class Application
     /**
      * @var array
      */
-    private $middlewares;
+    private $applicationMiddlewares;
+
+    /**
+     * @var array
+     */
+    private $routeMiddlewares;
 
     /**
      * @param string $sitePath
@@ -79,7 +84,8 @@ class Application
     {
         $this->sitePath = normalize_path($sitePath);
         $this->vendorDir = normalize_path($vendorDir);
-        $this->middlewares = [];
+        $this->applicationMiddlewares = [];
+        $this->routeMiddlewares = [];
         $this->init();
     }
 
@@ -113,8 +119,30 @@ class Application
     {
         $c = new Container();
 
-        $c->set(Environment::class, function () {
-            return new Environment();
+        $c->set(Alias::class, function (Container $c) {
+            $config = $c->get(Config::class);
+            return new Alias([
+                '@app' => $config['paths']['app'],
+                '@asset' => $this->sitePath . '/assets',
+                '@media' => $config['paths']['media'],
+                '@page' => $config['paths']['pages'],
+                '@plugin' => $config['paths']['plugins'],
+                '@site' => $this->sitePath,
+                '@vendor' => $this->vendorDir,
+                '@web' => $config['paths']['web'],
+                '@snippet' => $config['paths']['app'] . '/../templates/snippets'
+            ]);
+        });
+
+        $c->set(Assets::class, function (Container $c) {
+            return new Assets(
+                $c->get(Alias::class),
+                $c->get(Environment::class)
+            );
+        });
+
+        $c->set(Cache::class, function () {
+            return new Cache();
         });
 
         $c->set(Config::class, function (Container $c) {
@@ -173,37 +201,147 @@ class Application
             return $config;
         });
 
+        $c->set(DataRepositoryInterface::class, function (Container $c) {
+            return new YamlDataRepository(
+                $c->get(Config::class)
+            );
+        });
+
+        $c->set(DownloadMiddleware::class, function (Container $c) {
+            return new DownloadMiddleware(
+                $c->get(Alias::class),
+                $c->get(Config::class)
+            );
+        });
+
+        $c->set(Environment::class, function () {
+            return new Environment();
+        });
+
+        $c->set(ErrorHandlerMiddleware::class, function (Container $c) {
+            return new ErrorHandlerMiddleware(
+                $c->get(TwigRenderer::class)
+            );
+        });
+
+        $c->set(Event::class, function (Container $c) {
+            return new Event(
+                $c->get(\Zend\EventManager\Event::class)
+            );
+        });
+
+        $c->set(EventManager::class, function (Container $c) {
+            return new EventManager(
+                $c->get(\Zend\EventManager\EventManager::class)
+            );
+        });
+
         $c->set(HttpFactory::class, function () {
             return new HttpFactory();
+        });
+
+        $c->set(MiddlewareDispatcher::class, function (Container $c) {
+            $pageMiddlewares = array_merge(
+                [
+                    $c->get(ErrorHandlerMiddleware::class)
+                ],
+                $this->applicationMiddlewares,
+                [
+                    $c->get(DownloadMiddleware::class),
+                    $c->get(PageResolverMiddleware::class)
+                ],
+                $c->get(PluginManager::class)->getMiddlewares(),
+                [
+                    $c->get(PageRendererMiddleware::class)
+                ]
+            );
+            return new MiddlewareDispatcher(
+                $pageMiddlewares,
+                $this->routeMiddlewares,
+                $c->get(Environment::class)->getRoute()
+            );
+        });
+
+        $c->set(PageFactory::class, function () {
+            return new PageFactory();
+        });
+
+        $c->set(PagePersistenceInterface::class, function (Container $c) {
+            return new FlatfilePagePersistence(
+                $c->get(Alias::class),
+                $c->get(Config::class)
+            );
+        });
+
+        $c->set(PageRendererMiddleware::class, function (Container $c) {
+            return new PageRendererMiddleware(
+                $c->get(Cache::class),
+                $c->get(Config::class),
+                $c->get(Environment::class),
+                $c->get(EventManager::class),
+                $c->get(HttpFactory::class),
+                $c->get(TwigRenderer::class),
+                $c->get(UrlGenerator::class)
+            );
+        });
+
+        $c->set(PageRepositoryInterface::class, function (Container $c) {
+            return new FlatfilePageRepository(
+                $c->get(PageFactory::class),
+                $c->get(PagePersistenceInterface::class)
+            );
+        });
+
+        $c->set(PageResolverMiddleware::class, function (Container $c) {
+            return new PageResolverMiddleware(
+                $c->get(Environment::class),
+                $c->get(PageRepositoryInterface::class),
+                $c->get(UrlMatcher::class)
+            );
+        });
+
+        $c->set(PluginManager::class, function (Container $c) {
+            return new PluginManager(
+                $c->get(Config::class),
+                $c->get(EventManager::class),
+                $c
+            );
         });
 
         $c->set(ServerRequestInterface::class, function (Container $c) {
             return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
         });
 
-        $c->set(Alias::class, function (Container $c) {
-            $config = $c->get(Config::class);
-            return new Alias([
-                '@app' => $config['paths']['app'],
-                '@asset' => $this->sitePath . '/assets',
-                '@media' => $config['paths']['media'],
-                '@page' => $config['paths']['pages'],
-                '@plugin' => $config['paths']['plugins'],
-                '@site' => $this->sitePath,
-                '@vendor' => $this->vendorDir,
-                '@web' => $config['paths']['web'],
-                '@snippet' => $config['paths']['app'] . '/../templates/snippets'
+        $c->set(Site::class, function (Container $c) {
+            return new Site(
+                $c->get(Config::class),
+                $c->get(DataRepositoryInterface::class),
+                $c->get(Environment::class),
+                $c->get(PageRepositoryInterface::class)
+            );
+        });
+
+        $c->set(SlugGenerator::class, function (Container $c) {
+            return new SlugGenerator(
+                $c->get(SlugOptions::class)
+            );
+        });
+
+        $c->set(SlugOptions::class, function (Container $c) {
+            $locale = $c->get(Config::class)->get('language');
+            return new SlugOptions([
+                'locale' => $locale,
+                'delimiter' => '-'
             ]);
         });
 
-        $c->set(TwigRenderer::class, function (Container $c) {
-            return new TwigRenderer(
-                $c->get(Config::class),
-                $c->get(Environment::class),
-                $c->get(EventManager::class),
-                $c->get(Site::class),
-                $c->get(TwigExtension::class)
-            );
+        $c->set(Translator::class, function (Container $c) {
+            $translator = new Translator($c->get(Config::class)->language);
+            $translator->addPath('app', $c->get(Config::class)->paths->messages);
+            foreach ($c->get(PluginManager::class)->getPluginPaths() as $key => $dir) {
+                $translator->addPath($key, $dir . '/messages');
+            }
+            return $translator;
         });
 
         $c->set(TwigExtension::class, function (Container $c) {
@@ -220,93 +358,13 @@ class Application
             );
         });
 
-        $c->set(Site::class, function (Container $c) {
-            return new Site(
+        $c->set(TwigRenderer::class, function (Container $c) {
+            return new TwigRenderer(
                 $c->get(Config::class),
-                $c->get(DataRepositoryInterface::class),
-                $c->get(PageRepositoryInterface::class)
-            );
-        });
-
-        $c->set(SlugOptions::class, function (Container $c) {
-            $locale = $c->get(Config::class)->get('language');
-            return new SlugOptions([
-                'locale' => $locale,
-                'delimiter' => '-'
-            ]);
-        });
-
-        $c->set(SlugGenerator::class, function (Container $c) {
-            return new SlugGenerator(
-                $c->get(SlugOptions::class)
-            );
-        });
-
-        $c->set(Assets::class, function (Container $c) {
-            return new Assets(
-                $c->get(Alias::class),
-                $c->get(Environment::class)
-            );
-        });
-
-        $c->set(Cache::class, function () {
-            return new Cache();
-        });
-
-        $c->set(DataRepositoryInterface::class, function (Container $c) {
-            return new YamlDataRepository(
-                $c->get(Config::class)
-            );
-        });
-
-        $c->set(PagePersistenceInterface::class, function (Container $c) {
-            return new FlatfilePagePersistence(
-                $c->get(Alias::class),
-                $c->get(Config::class)
-            );
-        });
-
-        $c->set(PageFactory::class, function () {
-            return new PageFactory();
-        });
-
-        $c->set(PageRepositoryInterface::class, function (Container $c) {
-            return new FlatfilePageRepository(
                 $c->get(Environment::class),
-                $c->get(PageFactory::class),
-                $c->get(PagePersistenceInterface::class)
-            );
-        });
-
-        $c->set(\Zend\EventManager\Event::class, function () {
-            return new \Zend\EventManager\Event();
-        });
-
-        $c->set(Event::class, function (Container $c) {
-            return new Event(
-                $c->get(\Zend\EventManager\Event::class)
-            );
-        });
-
-        $c->set(\Zend\EventManager\EventManager::class, function (Container $c) {
-            $zendEventManager = new \Zend\EventManager\EventManager();
-            $zendEventManager->setEventPrototype(
-                $c->get(Event::class)
-            );
-            return $zendEventManager;
-        });
-
-        $c->set(EventManager::class, function (Container $c) {
-            return new EventManager(
-                $c->get(\Zend\EventManager\EventManager::class)
-            );
-        });
-
-        $c->set(PluginManager::class, function (Container $c) {
-            return new PluginManager(
-                $c->get(Config::class),
                 $c->get(EventManager::class),
-                $c
+                $c->get(Site::class),
+                $c->get(TwigExtension::class)
             );
         });
 
@@ -318,15 +376,6 @@ class Application
             );
         });
 
-        $c->set(Translator::class, function (Container $c) {
-            $translator = new Translator($c->get(Config::class)->language);
-            $translator->addPath('app', $c->get(Config::class)->paths->messages);
-            foreach ($c->get(PluginManager::class)->getPluginPaths() as $key => $dir) {
-                $translator->addPath($key, $dir . '/messages');
-            }
-            return $translator;
-        });
-
         $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
                 $c->get(Config::class)->urlManager,
@@ -334,55 +383,16 @@ class Application
             );
         });
 
-        $c->set(ErrorHandlerMiddleware::class, function (Container $c) {
-            return new ErrorHandlerMiddleware(
-                $c->get(TwigRenderer::class)
-            );
+        $c->set(\Zend\EventManager\Event::class, function () {
+            return new \Zend\EventManager\Event();
         });
 
-        $c->set(DownloadMiddleware::class, function (Container $c) {
-            return new DownloadMiddleware(
-                $c->get(Alias::class),
-                $c->get(Config::class)
+        $c->set(\Zend\EventManager\EventManager::class, function (Container $c) {
+            $zendEventManager = new \Zend\EventManager\EventManager();
+            $zendEventManager->setEventPrototype(
+                $c->get(Event::class)
             );
-        });
-
-        $c->set(PageResolverMiddleware::class, function (Container $c) {
-            return new PageResolverMiddleware(
-                $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class),
-                $c->get(UrlMatcher::class)
-            );
-        });
-
-        $c->set(PageRendererMiddleware::class, function (Container $c) {
-            return new PageRendererMiddleware(
-                $c->get(Cache::class),
-                $c->get(Config::class),
-                $c->get(Environment::class),
-                $c->get(EventManager::class),
-                $c->get(HttpFactory::class),
-                $c->get(TwigRenderer::class),
-                $c->get(UrlGenerator::class)
-            );
-        });
-
-        $c->set(MiddlewareDispatcher::class, function (Container $c) {
-            $middlewares = array_merge(
-                [
-                    $c->get(ErrorHandlerMiddleware::class)
-                ],
-                $this->middlewares,
-                [
-                    $c->get(DownloadMiddleware::class),
-                    $c->get(PageResolverMiddleware::class)
-                ],
-                $c->get(PluginManager::class)->getMiddlewares(),
-                [
-                    $c->get(PageRendererMiddleware::class)
-                ]
-            );
-            return new MiddlewareDispatcher($middlewares);
+            return $zendEventManager;
         });
 
         return $c;
@@ -427,12 +437,22 @@ class Application
     }
 
     /**
-     * @param array $middlewares
+     * @param array $applicationMiddlewares
      * @return Application
      */
-    public function setMiddlewares(array $middlewares)
+    public function setApplicationMiddlewares(array $applicationMiddlewares)
     {
-        $this->middlewares = $middlewares;
+        $this->applicationMiddlewares = $applicationMiddlewares;
+        return $this;
+    }
+
+    /**
+     * @param array $routeMiddlewares
+     * @return $this
+     */
+    public function setRouteMiddlewares(array $routeMiddlewares)
+    {
+        $this->routeMiddlewares = $routeMiddlewares;
         return $this;
     }
 

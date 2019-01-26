@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Herbie\Repository;
 
 use Herbie\Page\Page;
+use Herbie\Page\PageList;
 
 class XmlPageRepository implements PageRepositoryInterface
 {
@@ -26,9 +27,9 @@ class XmlPageRepository implements PageRepositoryInterface
     }
 
     /**
-     * @return array
+     * @return PageList
      */
-    public function findAll(): array
+    public function findAll(): PageList
     {
         // TODO: Implement findAll() method.
         return [];

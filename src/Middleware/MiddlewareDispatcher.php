@@ -24,11 +24,13 @@ class MiddlewareDispatcher implements RequestHandlerInterface
 
     /**
      * Dispatcher constructor.
-     * @param MiddlewareInterface[] $middlewares
+     * @param array $appMiddlewares
+     * @param array $routeMiddleware
+     * @param string $route
      */
-    public function __construct(array $middlewares)
+    public function __construct(array $appMiddlewares, array $routeMiddleware, string $route)
     {
-        $this->middlewares = $middlewares;
+        $this->middlewares = $this->composeMiddlewares($appMiddlewares, $routeMiddleware, $route);
     }
 
     /**
@@ -69,5 +71,37 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         }
 
         return $current;
+    }
+
+    /**
+     * @param array $appMiddlewares
+     * @param array $routeMiddlewares
+     * @param string $route
+     * @return array
+     */
+    private function composeMiddlewares(array $appMiddlewares, array $routeMiddlewares, string $route): array
+    {
+        if (empty($routeMiddlewares)) {
+            return $appMiddlewares;
+        }
+        $pageRendererMiddleware = array_pop($appMiddlewares);
+        foreach ($routeMiddlewares as $regex => $middleware) {
+            if (preg_match('#' . $regex . '#', $route)) {
+                $appMiddlewares[] = $middleware;
+            }
+            /*
+            if (substr($middlewareRoute, -1) === '*') {
+                if (strpos($route, substr($middlewareRoute, 0, -1)) === 0) {
+                    $appMiddlewares[] = $middleware;
+                }
+            } else {
+                if ($route === $middlewareRoute) {
+                    $appMiddlewares[] = $middleware;
+                }
+            }
+            */
+        }
+        $appMiddlewares[] = $pageRendererMiddleware;
+        return $appMiddlewares;
     }
 }

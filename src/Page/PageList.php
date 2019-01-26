@@ -21,9 +21,14 @@ class PageList implements \IteratorAggregate, \Countable
     private $items = [];
 
     /**
-     * @var bool
+     * @var PageTrail
      */
-    public $fromCache = false;
+    private $pageTrail = null;
+
+    /**
+     * @var PageTree
+     */
+    private $pageTree = null;
 
     /**
      * MenuList constructor.
@@ -389,5 +394,42 @@ class PageList implements \IteratorAggregate, \Countable
             }
         }
         return $items;
+    }
+
+    /**
+     * @return PageTree
+     */
+    public function getPageTree(): PageTree
+    {
+        if (is_null($this->pageTree)) {
+            $this->pageTree = (new PageFactory)->newPageTree($this);
+        }
+        return $this->pageTree;
+    }
+
+    /**
+     * @param string $requestRoute
+     * @return PageTrail
+     */
+    public function getPageTrail(string $requestRoute): PageTrail
+    {
+        if (is_null($this->pageTrail)) {
+            $items = [];
+
+            $segments = explode('/', rtrim($requestRoute, '/'));
+            $route = '';
+            $delim = '';
+            foreach ($segments as $segment) {
+                $route .= $delim . $segment;
+                $delim = '/';
+
+                $item = $this->getItem($route);
+                if (isset($item)) {
+                    $items[] = $item;
+                }
+            }
+            $this->pageTrail = (new PageFactory)->newPageTrail($items);
+        }
+        return $this->pageTrail;
     }
 }

@@ -10,21 +10,13 @@ declare(strict_types=1);
 
 namespace Herbie\Repository;
 
-use Herbie\Environment;
 use Herbie\Page\Page;
 use Herbie\Page\PageFactory;
 use Herbie\Page\PageList;
-use Herbie\Page\PageTrail;
-use Herbie\Page\PageTree;
 use Herbie\Persistence\PagePersistenceInterface;
 
 class FlatfilePageRepository implements PageRepositoryInterface
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
-
     /**
      * @var PageFactory
      */
@@ -42,13 +34,11 @@ class FlatfilePageRepository implements PageRepositoryInterface
 
     /**
      * FlatfilePageRepository constructor.
-     * @param Environment $environment
      * @param PageFactory $pageFactory
      * @param PagePersistenceInterface $pagePersistence
      */
-    public function __construct(Environment $environment, PageFactory $pageFactory, PagePersistenceInterface $pagePersistence)
+    public function __construct(PageFactory $pageFactory, PagePersistenceInterface $pagePersistence)
     {
-        $this->environment = $environment;
         $this->pageFactory = $pageFactory;
         $this->pageList = null;
         $this->pagePersistence = $pagePersistence;
@@ -79,27 +69,6 @@ class FlatfilePageRepository implements PageRepositoryInterface
             }
         }
         return $this->pageList;
-    }
-
-    /**
-     * @return PageTree
-     */
-    public function buildTree(): PageTree
-    {
-        return $this->pageFactory->newPageTree(
-            $this->findAll()
-        );
-    }
-
-    /**
-     * @return PageTrail
-     */
-    public function buildTrail(): PageTrail
-    {
-        return $this->pageFactory->newPageTrail(
-            $this->findAll(),
-            $this->environment
-        );
     }
 
     /**
