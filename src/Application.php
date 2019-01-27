@@ -107,8 +107,8 @@ class Application
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
 
         // Set slug generator to page and page item
-        PageItem::setSlugGenerator($this->getSlugGenerator());
-        Page::setSlugGenerator($this->getSlugGenerator());
+        PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
+        Page::setSlugGenerator($this->container->get(SlugGenerator::class));
     }
 
     /**
@@ -410,8 +410,8 @@ class Application
         // Init Translator
         $this->getTranslator()->init();
 
-        $dispatcher = $this->container->get(MiddlewareDispatcher::class);
-        $request = $this->container->get(ServerRequestInterface::class);
+        $dispatcher = $this->getMiddlewareDispatcher();
+        $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
         $this->getEventManager()->trigger('onResponseGenerated', $response);
@@ -457,78 +457,6 @@ class Application
     }
 
     /**
-     * @return Environment
-     */
-    public function getEnvironment()
-    {
-        return $this->container->get(Environment::class);
-    }
-
-    /**
-     * @return UrlMatcher
-     */
-    public function getUrlMatcher()
-    {
-        return $this->container->get(UrlMatcher::class);
-    }
-
-    /**
-     * @return PageRepositoryInterface
-     */
-    public function getPageRepository()
-    {
-        return $this->container->get(PageRepositoryInterface::class);
-    }
-
-    /**
-     * @return PluginManager
-     */
-    public function getPluginManager()
-    {
-        return $this->container->get(PluginManager::class);
-    }
-
-    /**
-     * @return EventManager
-     */
-    public function getEventManager()
-    {
-        return $this->container->get(EventManager::class);
-    }
-
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return $this->container->get(Config::class);
-    }
-
-    /**
-     * @return Alias
-     */
-    public function getAlias()
-    {
-        return $this->container->get(Alias::class);
-    }
-
-    /**
-     * @return UrlGenerator
-     */
-    public function getUrlGenerator()
-    {
-        return $this->container->get(UrlGenerator::class);
-    }
-
-    /**
-     * @return CacheInterface
-     */
-    public function getPageCache()
-    {
-        return $this->container->get(Cache::class);
-    }
-
-    /**
      * @param CacheInterface $cache
      * @return Application
      */
@@ -539,50 +467,84 @@ class Application
     }
 
     /**
-     * @return Assets
+     * @param \Twig_Filter $twigFilter
+     * @return Application
      */
-    public function getAssets()
+    public function addTwigFilter(\Twig_Filter $twigFilter): Application
     {
-        return $this->container->get(Assets::class);
+        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addFilter($twigFilter);
+        });
+        return $this;
     }
 
     /**
-     * @return HttpFactory
+     * @param \Twig_Function $twigFunction
+     * @return Application
      */
-    public function getHttpFactory()
+    public function addTwigFunction(\Twig_Function $twigFunction): Application
     {
-        return $this->container->get(HttpFactory::class);
+        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFunction) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addFunction($twigFunction);
+        });
+        return $this;
     }
 
     /**
-     * @return Translator
+     * @param \Twig_Test $twigTest
+     * @return Application
      */
-    public function getTranslator()
+    public function addTwigTest(\Twig_Test $twigTest): Application
+    {
+        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigTest) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addTest($twigTest);
+        });
+        return $this;
+    }
+
+    /**
+     * @return PluginManager
+     */
+    private function getPluginManager()
+    {
+        return $this->container->get(PluginManager::class);
+    }
+
+    /**
+     * @return EventManager
+     */
+    private function getTranslator()
     {
         return $this->container->get(Translator::class);
     }
 
     /**
-     * @return DataRepositoryInterface
+     * @return MiddlewareDispatcher
      */
-    public function getDataRepository()
+    private function getMiddlewareDispatcher()
     {
-        return $this->container->get(DataRepositoryInterface::class);
+        return $this->container->get(MiddlewareDispatcher::class);
     }
 
     /**
-     * @return SlugGenerator
+     * @return ServerRequestInterface
      */
-    public function getSlugGenerator()
+    private function getServerRequest()
     {
-        return $this->container->get(SlugGenerator::class);
+        return $this->container->get(ServerRequestInterface::class);
     }
 
     /**
-     * @return TwigRenderer
+     * @return EventManager
      */
-    public function getTwigRenderer()
+    private function getEventManager()
     {
-        return $this->container->get(TwigRenderer::class);
+        return $this->container->get(EventManager::class);
     }
 }
