@@ -19,14 +19,17 @@ use Herbie\Assets;
 use Herbie\Config;
 use Herbie\Environment;
 use Herbie\Page;
+use Herbie\Page\Iterator\FilterIterator;
 use Herbie\Page\PageItem;
 use Herbie\Page\PageList;
+use Herbie\Page\PageTree;
 use Herbie\Pagination;
 use Herbie\Repository\DataRepositoryInterface;
 use Herbie\Repository\PageRepositoryInterface;
 use Herbie\Selector;
 use Herbie\Translator;
 use Herbie\Url\UrlGenerator;
+use Traversable;
 use Twig_Extension;
 use Twig_Filter;
 use Twig_Function;
@@ -34,18 +37,34 @@ use Twig_Test;
 
 class TwigExtension extends Twig_Extension
 {
+    /** @var Alias */
     private $alias;
+
+    /** @var Config */
     private $config;
+
+    /** @var UrlGenerator */
     private $urlGenerator;
+
+    /** @var Translator */
     private $translator;
+
+    /** @var SlugGeneratorInterface */
     private $slugGenerator;
+
+    /** @var Assets */
     private $assets;
+
+    /** @var Environment */
     private $environment;
+
+    /** @var DataRepositoryInterface */
     private $dataRepository;
+
+    /** @var TwigRenderer */
     private $twigRenderer;
-    /**
-     * @var PageRepositoryInterface
-     */
+
+    /** @var PageRepositoryInterface */
     private $pageRepository;
 
     /**
@@ -85,23 +104,15 @@ class TwigExtension extends Twig_Extension
     /**
      * @param TwigRenderer $twigRenderer
      */
-    public function setTwigRenderer(TwigRenderer $twigRenderer)
+    public function setTwigRenderer(TwigRenderer $twigRenderer): void
     {
         $this->twigRenderer = $twigRenderer;
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'herbie';
-    }
-
-    /**
      * @return array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new Twig_Filter('filesize', [$this, 'filterFilesize'], ['is_safe' => ['html']]),
@@ -115,7 +126,7 @@ class TwigExtension extends Twig_Extension
     /**
      * @return array
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         $options = ['is_safe' => ['html']];
         return [
@@ -144,7 +155,7 @@ class TwigExtension extends Twig_Extension
     /**
      * @return array
      */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new Twig_Test('readable', [$this, 'testIsReadable']),
@@ -156,7 +167,7 @@ class TwigExtension extends Twig_Extension
      * @param array $htmlOptions
      * @return string
      */
-    private function buildHtmlAttributes($htmlOptions = [])
+    private function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
         foreach ($htmlOptions as $key => $value) {
@@ -171,7 +182,7 @@ class TwigExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    private function createLink($route, $label, $htmlAttributes = [])
+    private function createLink(string $route, string $label, array $htmlAttributes = []): string
     {
         $url = $this->urlGenerator->generate($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
@@ -182,7 +193,7 @@ class TwigExtension extends Twig_Extension
      * @param integer $size
      * @return string
      */
-    public function filterFilesize($size)
+    public function filterFilesize(int $size): string
     {
         if ($size <= 0) {
             return '0';
@@ -199,12 +210,38 @@ class TwigExtension extends Twig_Extension
     }
 
     /**
+     * @param Traversable $iterator
+     * @param array $selectors
+     * @return array
+     * @throws Exception
+     * @todo Implement und document this twig filter
+     */
+    public function filterFilter(Traversable $iterator, array $selectors = []): array
+    {
+        $selector = new Selector(get_class($iterator));
+        $items = $iterator->getItems();
+        $filtered = $selector->find($selectors, $items);
+        return $filtered;
+    }
+
+    /**
+     * Creates a web friendly URL (slug) from a string.
+     *
+     * @param string $url
+     * @return string
+     */
+    public function filterSlugify(string $url): string
+    {
+        return $this->slugGenerator->generate($url);
+    }
+
+    /**
      * @param string $date
      * @param string $format
      * @return string
      * @throws Exception
      */
-    public function filterStrftime($date, $format = '%x')
+    public function filterStrftime(string $date, string $format = '%x'): string
     {
         // timestamp?
         if (is_numeric($date)) {
@@ -215,39 +252,20 @@ class TwigExtension extends Twig_Extension
     }
 
     /**
-     * Creates a web friendly URL (slug) from a string.
-     *
-     * @param $url
-     * @return string
+     * @param PageTree $tree
+     * @return FilterIterator
      */
-    public function filterSlugify($url)
-    {
-        return $this->slugGenerator->generate($url);
-    }
-
-    /**
-     * @param Page\PageTree $tree
-     * @return Page\Iterator\FilterIterator
-     */
-    public function filterVisible($tree)
+    public function filterVisible(PageTree $tree): FilterIterator
     {
         $treeIterator = new Page\Iterator\TreeIterator($tree);
-        return new Page\Iterator\FilterIterator($treeIterator);
-    }
-
-    public function filterFilter(\Traversable $iterator, array $selectors = [])
-    {
-        $selector = new Selector(get_class($iterator));
-        $items = $iterator->getItems();
-        $filtered = $selector->find($selectors, $items);
-        return $filtered;
+        return new FilterIterator($treeIterator);
     }
 
     /**
      * @param string $route
      * @return string
      */
-    public function functionAbsUrl($route)
+    public function functionAbsUrl(string $route): string
     {
         return $this->urlGenerator->generateAbsolute($route);
     }
@@ -259,8 +277,13 @@ class TwigExtension extends Twig_Extension
      * @param bool $raw
      * @param int $pos
      */
-    public function functionAddCss($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1)
-    {
+    public function functionAddCss(
+        $paths,
+        array $attr = [],
+        string $group = null,
+        bool $raw = false,
+        int $pos = 1
+    ): void {
         $this->assets->addCss($paths, $attr, $group, $raw, $pos);
     }
 
@@ -271,44 +294,52 @@ class TwigExtension extends Twig_Extension
      * @param bool $raw
      * @param int $pos
      */
-    public function functionAddJs($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1)
-    {
+    public function functionAddJs(
+        $paths,
+        array $attr = [],
+        ?string $group = null,
+        bool $raw = false,
+        int $pos = 1
+    ): void {
         $this->assets->addJs($paths, $attr, $group, $raw, $pos);
     }
 
     /**
      * @param string $group
-     * @return void
+     * @return string
      */
-    public function functionOutputCss($group = null): void
+    public function functionOutputCss(?string $group = null): string
     {
-        $this->assets->outputCss($group);
+        return $this->assets->outputCss($group);
     }
 
     /**
      * @param string $group
-     * @return void
+     * @return string
      */
-    public function functionOutputJs($group = null): void
+    public function functionOutputJs(?string $group = null): string
     {
-        $this->assets->outputJs($group);
+        return $this->assets->outputJs($group);
     }
 
     /**
-     * @param array $options
+     * @param string $route
+     * @param int $maxDepth
+     * @param bool $showHidden
+     * @param string $class
      * @return string
      */
-    public function functionAsciiTree(array $options = [])
-    {
-        extract($options); // showHidden, route, maxDepth, class
-        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
-        $route = isset($route) ? (string)$route : '';
-        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
-        $class = isset($class) ? (string)$class : 'sitemap';
+    public function functionAsciiTree(
+        string $route = '',
+        int $maxDepth = -1,
+        bool $showHidden = false,
+        string $class = 'sitemap'
+    ): string {
 
+        // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
-        $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator = new FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
         $asciiTree = new Page\Renderer\AsciiTree($filterIterator);
@@ -319,28 +350,31 @@ class TwigExtension extends Twig_Extension
     /**
      * @return string
      */
-    public function functionBodyClass()
+    public function functionBodyClass(): string
     {
         $route = trim($this->environment->getRoute(), '/');
         if (empty($route)) {
             $route = 'index';
         }
+        // TODO retrieve page layout (available as request attribute HERBIE_PAGE)
         $layout = ''; //$this->page->getLayout();
         $class = sprintf('page-%s layout-%s', $route, $layout);
         return str_replace(['/', '.'], '-', $class);
     }
 
     /**
-     * @param array $options
+     * @param string $delim
+     * @param array|string $homeLink
+     * @param bool $reverse
      * @return string
      */
-    public function functionBreadcrumb(array $options = [])
-    {
-        // Options
-        extract($options);
-        $delim = isset($delim) ? $delim : '';
-        $homeLink = isset($homeLink) ? $homeLink : null;
-        $reverse = isset($reverse) ? (bool) $reverse : false;
+    public function functionBreadcrumb(
+        string $delim = '',
+        $homeLink = '',
+        bool $reverse = false
+    ): string {
+
+        // TODO use string type for param $homeLink (like "route|label")
 
         $links = [];
 
@@ -383,8 +417,13 @@ class TwigExtension extends Twig_Extension
      * @param string $class
      * @return string
      */
-    public function functionImage($src, $width = 0, $height = 0, $alt = '', $class = '')
-    {
+    public function functionImage(
+        string $src,
+        int $width = 0,
+        int $height = 0,
+        string $alt = '',
+        string $class = ''
+    ): string {
         $attribs = [];
         $attribs['src'] = $this->environment->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
@@ -406,23 +445,26 @@ class TwigExtension extends Twig_Extension
      * @param array $htmlAttributes
      * @return string
      */
-    public function functionLink($route, $label, $htmlAttributes = [])
+    public function functionLink(string $route, string $label, array $htmlAttributes = []): string
     {
         return $this->createLink($route, $label, $htmlAttributes);
     }
 
     /**
-     * @param array $options
+     * @param string $route
+     * @param int $maxDepth
+     * @param bool $showHidden
+     * @param string $class
      * @return string
      */
-    public function functionMenu(array $options = [])
-    {
-        extract($options); // showHidden, route, maxDepth, class
-        $showHidden = isset($showHidden) ? (bool)$showHidden : false;
-        $route = isset($route) ? (string)$route : '';
-        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
-        $class = isset($class) ? (string)$class : 'menu';
+    public function functionMenu(
+        string $route = '',
+        int $maxDepth = -1,
+        bool $showHidden = false,
+        string $class = 'menu'
+    ): string {
 
+        // TODO use $showHidden parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
 
@@ -443,17 +485,18 @@ class TwigExtension extends Twig_Extension
     }
 
     /**
-     * @param array $options
+     * @param string $delim
+     * @param string $siteTitle
+     * @param string $rootTitle
+     * @param bool $reverse
      * @return string
      */
-    public function functionPagetitle(array $options = [])
-    {
-        extract($options); // delim, siteTite, rootTitle, reverse
-
-        $delim = isset($delim) ? $delim : ' / ';
-        $siteTitle = isset($siteTitle) ? $siteTitle : null;
-        $rootTitle = isset($rootTitle) ? $rootTitle : null;
-        $reverse = isset($reverse) ? (bool) $reverse : false;
+    public function functionPagetitle(
+        string $delim = '/',
+        string $siteTitle = '',
+        string $rootTitle = '',
+        bool $reverse = false
+    ): string {
 
         $route = $this->environment->getRoute();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
@@ -490,14 +533,14 @@ class TwigExtension extends Twig_Extension
      * @return string
      */
     public function functionPager(
-        $limit = '',
-        $template = '{prev}{next}',
-        $linkClass = '',
-        $nextPageLabel = '',
-        $prevPageLabel = '',
-        $prevPageIcon = '',
-        $nextPageIcon = ''
-    ) {
+        string $limit = '',
+        string $template = '{prev}{next}',
+        string $linkClass = '',
+        string $nextPageLabel = '',
+        string $prevPageLabel = '',
+        string $prevPageIcon = '',
+        string $nextPageIcon = ''
+    ): string {
         $route = $this->environment->getRoute();
         $iterator = $this->pageRepository->findAll()->getIterator();
 
@@ -553,20 +596,21 @@ class TwigExtension extends Twig_Extension
     }
 
     /**
-     * @param array $options
+     * @param int $maxDepth
+     * @param string $route
+     * @param bool $showHidden
+     * @param string $class
      * @return string
      */
-    public function functionSitemap(array $options = [])
-    {
-        extract($options); // showHidden, route, maxDepth, class
-        $showHidden = isset($showHidden) ? (bool) $showHidden : false;
-        $route = isset($route) ? (string)$route : '';
-        $maxDepth = isset($maxDepth) ? (int)$maxDepth : -1;
-        $class = isset($class) ? (string)$class : 'sitemap';
-
+    public function functionSitemap(
+        $maxDepth = -1,
+        $route = '',
+        $showHidden = false,
+        $class = 'sitemap'
+    ) {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
-        $filterIterator = new Page\Iterator\FilterIterator($treeIterator);
+        $filterIterator = new FilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
         $htmlTree = new Page\Renderer\HtmlTree($filterIterator);
@@ -586,7 +630,7 @@ class TwigExtension extends Twig_Extension
      * @param array $params
      * @return string
      */
-    public function functionTranslate($category, $message, array $params = [])
+    public function functionTranslate(string $category, string $message, array $params = []): string
     {
         return $this->translator->translate($category, $message, $params);
     }
@@ -595,19 +639,33 @@ class TwigExtension extends Twig_Extension
      * @param string $route
      * @return string
      */
-    public function functionUrl($route)
+    public function functionUrl(string $route): string
     {
         return $this->urlGenerator->generate($route);
     }
 
+    /**
+     * @param PageList $pageList
+     * @param string $filter
+     * @param string $sort
+     * @param bool $shuffle
+     * @param int $limit
+     * @param string $template
+     * @return string
+     * @throws Exception
+     */
     public function functionListing(
-        PageList $pageList,
-        string $path = '@snippet/listing.twig',
+        PageList $pageList = null,
         string $filter = '',
         string $sort = '',
         bool $shuffle = false,
-        int $limit = 10
-    ) {
+        int $limit = 10,
+        string $template = '@snippet/listing.twig'
+    ) : string {
+
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
 
         if (!empty($filter)) {
             list($field, $value) = explode('|', $filter);
@@ -631,35 +689,52 @@ class TwigExtension extends Twig_Extension
         $pagination = new Pagination($pageList);
         $pagination->setLimit($limit);
 
-        return $this->twigRenderer->renderTemplate($path, ['pagination' => $pagination]);
+        return $this->twigRenderer->renderTemplate($template, ['pagination' => $pagination]);
     }
 
-    public function functionSnippet(string $path, array $options = [])
+    /**
+     * @param string $path
+     * @param array $options
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionSnippet(string $path, array $options = []): string
     {
+        // TODO fix transformation of variadic camelCase to snake_case keys
         return $this->twigRenderer->renderTemplate($path, $options);
     }
 
-    public function functionFile()
+    /**
+     * @param string $path
+     * @param string $label
+     * @param bool $info
+     * @param array $attributes
+     * @return string
+     */
+    public function functionFile(string $path, string $label = '', bool $info = false, array $attributes = []): string
     {
-        $this->add('file', function ($path, $info = '', $text = '', array $attributes = []) {
+        $attributes['alt'] = $attributes['alt'] ?? '';
 
-            $attributes['alt'] = $attributes['alt'] ?? '';
+        if (!empty($info)) {
+            $fileInfo = $this->getFileInfo($path);
+        }
 
-            if (!empty($info)) {
-                $fileInfo = $this->getFileInfo($path);
-            }
-
-            $replace = [
-                '{href}' => $path,
-                '{attribs}' => $this->buildHtmlAttributes($attributes),
-                '{text}' => empty($text) ? $path : $text,
-                '{info}' => empty($fileInfo) ? '' : sprintf('<span class="file-info">%s</span>', $fileInfo)
-            ];
-            return strtr('<a href="{href}" {attribs}>{text}</a>{info}', $replace);
-        });
+        $replace = [
+            '{href}' => $path,
+            '{attribs}' => $this->buildHtmlAttributes($attributes),
+            '{label}' => empty($label) ? basename($path) : $label,
+            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="file-info">%s</span>', $fileInfo)
+        ];
+        return strtr('<a href="{href}" {attribs}>{label}</a>{info}', $replace);
     }
 
-    private function getFileInfo($path)
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function getFileInfo(string $path): string
     {
         if (!is_readable($path)) {
             return '';
@@ -675,7 +750,7 @@ class TwigExtension extends Twig_Extension
      * @param string $alias
      * @return bool
      */
-    public function testIsReadable($alias)
+    public function testIsReadable(string $alias): bool
     {
         if (!is_string($alias) || empty($alias)) {
             return false;
@@ -688,7 +763,7 @@ class TwigExtension extends Twig_Extension
      * @param string $alias
      * @return bool
      */
-    public function testIsWritable($alias)
+    public function testIsWritable(string $alias): bool
     {
         if (!is_string($alias) || empty($alias)) {
             return false;

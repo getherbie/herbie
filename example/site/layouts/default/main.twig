@@ -13,7 +13,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ pagetitle({delim:' / ', siteTitle:'Herbie Flat-File CMS & Blog', rootTitle: 'Herbie - A simple Flat-File CMS and Blogsystem', reverse:true}) }}</title>
+    <title>{{ pagetitle(delim=' / ', siteTitle='Herbie Flat-File CMS & Blog', rootTitle='Herbie - A simple Flat-File CMS and Blogsystem', reverse=true) }}</title>
     <base href="{{ baseUrl }}">
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="{{ baseUrl }}/feed.rss">
     {{ outputcss() }}
@@ -41,7 +41,7 @@
                 <div class="pure-u-2-5 pure-u-md-4-5 text-right pure-hidden-phone">
                     <div class="topmenu" id="topmenu">
                         <div id="topmenu-inner">
-                            {{ menu({class:"pure-menu pure-menu-open pure-menu-horizontal"}) }}
+                            {{ menu(class="pure-menu pure-menu-open pure-menu-horizontal") }}
                         </div>
                     </div>
                 </div>

@@ -6,6 +6,7 @@ categories: [Feature,Plugin]
 author: Herbie
 tags: [Plugin]
 type: blog
+hidden: 1
 ---
 
 # Redirect Plugin

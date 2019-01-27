@@ -5,18 +5,18 @@ elements:
       name: spam
       type: hidden
     -
-      name: vorname
+      name: firstname
       type: text
-      label: Vorname
+      label: First name
     -
-      name: nachname
+      name: lastname
       type: text
-      label: Nachname
+      label: Last name
     -
       name: email
       type: text
-      label: E-Mail
+      label: Email
 buttons:
     -
       name: submit
-      label: Absenden
+      label: Send

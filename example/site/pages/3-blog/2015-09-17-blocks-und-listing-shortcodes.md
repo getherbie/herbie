@@ -6,6 +6,7 @@ categories: [Feature,Release]
 tags: [Feature]
 author: Herbie
 type: blog
+hidden: 1
 ---
 
 # Blocks- und Listing-Shortcodes

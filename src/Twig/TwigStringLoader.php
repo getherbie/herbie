@@ -21,7 +21,7 @@ class TwigStringLoader implements Twig_LoaderInterface
      * @return Twig_Source
      * @throws Twig_Error_Loader
      */
-    public function getSourceContext($name)
+    public function getSourceContext($name): Twig_Source
     {
         if (true === $this->isLayoutTemplate($name)) {
             throw new Twig_Error_Loader(sprintf('Template "%s" does not exist.', $name));

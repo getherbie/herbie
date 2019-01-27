@@ -115,36 +115,42 @@ class Assets
 
     /**
      * @param string $group
+     * @return string
      */
-    public function outputCss(string $group = null): void
+    public function outputCss(string $group = null): string
     {
         $this->sort();
         $this->publish();
+        $return = '';
         foreach ($this->collect(self::TYPE_CSS, $group) as $asset) {
             if (empty($asset['raw'])) {
                 $href = $this->buildUrl($asset['path']);
-                echo sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
+                $return .= sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
             } else {
-                echo sprintf('<style>%s</style>', $asset['path']);
+                $return .= sprintf('<style>%s</style>', $asset['path']);
             }
         }
+        return $return;
     }
 
     /**
      * @param string $group
+     * @return string
      */
-    public function outputJs(string $group = null): void
+    public function outputJs(string $group = null): string
     {
         $this->sort();
         $this->publish();
+        $return = '';
         foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
             if (empty($asset['raw'])) {
                 $href = $this->buildUrl($asset['path']);
-                echo sprintf('<script src="%s"></script>', $href);
+                $return .= sprintf('<script src="%s"></script>', $href);
             } else {
-                echo sprintf('<script>%s</script>', $asset['path']);
+                $return .= sprintf('<script>%s</script>', $asset['path']);
             }
         }
+        return $return;
     }
 
     /**

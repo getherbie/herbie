@@ -7,6 +7,7 @@ author: Herbie
 tags: [Plugin]
 image: google-maps-plugin.gif
 type: blog
+hidden: 1
 ---
 
 <h1>Google Maps Plugin</h1>

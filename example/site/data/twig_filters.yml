@@ -11,13 +11,14 @@
 -
     name: slugify
     code: 'string "E string with spaces, Umlauts or special characters (?!&#)."|slugify'
-    desc: 'Returns a string slug for using as an URL.'
+    desc: 'Returns a string slug for using as URL segment.'
     return: [string, 'The slugified string']
 -
     name: strftime
     code: 'string date|strftime([string format = "%x" ])'
     desc: 'Formats a local time/date according to locale settings. This is a wrapper for the same-named PHP function.'
-    params: [{ name: format, type: string, desc: 'The format, see http://php.net/strftime', default: '%x' }]
+    params:
+        { name: format, type: string, desc: 'The format, see http://php.net/strftime', default: '%x' }
     return: [string, 'The formatted time or date']
 -
     name: visible
