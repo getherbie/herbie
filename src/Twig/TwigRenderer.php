@@ -115,34 +115,6 @@ class TwigRenderer
 
         $this->addTwigPlugins();
 
-        /*
-        foreach (Hook::trigger(Hook::CONFIG, 'addTwigFunction') as $function) {
-            try {
-                list($name, $callable, $options) = $function;
-                $this->twig->addFunction(new \Twig_SimpleFunction($name, $callable, (array)$options));
-            } catch (\Exception $e) {
-                ; //do nothing else yet
-            }
-        }
-
-        foreach (Hook::trigger(Hook::CONFIG, 'addTwigFilter') as $filter) {
-            try {
-                list($name, $callable, $options) = $filter;
-                $this->twig->addFilter(new \Twig_SimpleFilter($name, $callable, (array)$options));
-            } catch (\Exception $e) {
-                ; //do nothing else yet
-            }
-        }
-
-        foreach (Hook::trigger(Hook::CONFIG, 'addTwigTest') as $test) {
-            try {
-                list($name, $callable, $options) = $test;
-                $this->twig->addTest(new \Twig_SimpleTest($name, $callable, (array)$options));
-            } catch (\Exception $e) {
-                ; //do nothing else yet
-            }
-        }
-        */
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
     }
@@ -220,21 +192,21 @@ class TwigRenderer
     {
         // Functions
         $dir = $this->config['twig']['functionsPath'];
-        foreach ($this->readPhpFiles($dir) as $file) {
-            $included = $this->includePhpFile($file);
-            $this->twig->addFunction($included);
+        foreach ($this->globPhpFiles($dir) as $file) {
+            $twigFunction = $this->includePhpFile($file);
+            $this->twig->addFunction($twigFunction);
         }
         // Filters
         $dir = $this->config['twig']['filtersPath'];
-        foreach ($this->readPhpFiles($dir) as $file) {
-            $included = $this->includePhpFile($file);
-            $this->twig->addFilter($included);
+        foreach ($this->globPhpFiles($dir) as $file) {
+            $twigFilter = $this->includePhpFile($file);
+            $this->twig->addFilter($twigFilter);
         }
         // Tests
         $dir = $this->config['twig']['testsPath'];
-        foreach ($this->readPhpFiles($dir) as $file) {
-            $included = $this->includePhpFile($file);
-            $this->twig->addTest($included);
+        foreach ($this->globPhpFiles($dir) as $file) {
+            $twigTest = $this->includePhpFile($file);
+            $this->twig->addTest($twigTest);
         }
     }
 
@@ -276,9 +248,9 @@ class TwigRenderer
 
     /**
      * @param string $file
-     * @return string
+     * @return object
      */
-    private function includePhpFile(string $file): string
+    private function includePhpFile(string $file): object
     {
         return include($file);
     }
@@ -287,7 +259,7 @@ class TwigRenderer
      * @param string $dir
      * @return array
      */
-    private function readPhpFiles(string $dir): array
+    private function globPhpFiles(string $dir): array
     {
         $dir = rtrim($dir, '/');
         if (empty($dir) || !is_readable($dir)) {
