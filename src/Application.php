@@ -437,22 +437,17 @@ class Application
     }
 
     /**
-     * @param array $applicationMiddlewares
+     * @param $middlewareOrPath
+     * @param null $middleware
      * @return Application
      */
-    public function setApplicationMiddlewares(array $applicationMiddlewares)
+    public function addMiddleware($middlewareOrPath, $middleware = null) : Application
     {
-        $this->applicationMiddlewares = $applicationMiddlewares;
-        return $this;
-    }
-
-    /**
-     * @param array $routeMiddlewares
-     * @return $this
-     */
-    public function setRouteMiddlewares(array $routeMiddlewares)
-    {
-        $this->routeMiddlewares = $routeMiddlewares;
+        if ($middleware) {
+            $this->routeMiddlewares[$middlewareOrPath] = $middleware;
+        } else {
+            $this->applicationMiddlewares[] = $middlewareOrPath;
+        }
         return $this;
     }
 

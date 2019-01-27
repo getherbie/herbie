@@ -19,14 +19,15 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use Herbie\Middleware\HttpBasicAuthMiddleware;
 use Herbie\Middleware\ResponseTimeMiddleware;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 define('HERBIE_DEBUG', true);
 
-class CustomHeader implements MiddlewareInterface {
+class CustomHeader implements MiddlewareInterface
+{
 
     private $count;
 
@@ -35,7 +36,7 @@ class CustomHeader implements MiddlewareInterface {
         $this->count = $count;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $request = $request->withAttribute('X-Custom-Attribute-' . $this->count, time());
         $response = $handler->handle($request);
@@ -45,33 +46,42 @@ class CustomHeader implements MiddlewareInterface {
 
 $app = new Herbie\Application('../site', '../../vendor');
 
-$app->setApplicationMiddlewares([
-    ResponseTimeMiddleware::class,
-    CustomHeader::class,
-    new CustomHeader(2),
-    function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-        $request = $request->withAttribute('X-Custom-Attribute-3', time());
-        $response = $next->handle($request);
-        return $response->withHeader('X-Custom-Header-3', time());
-    },
-]);
+// Cache
+// $fileCache = new Anax\Cache\FileCache();
+// $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
+// $app->setPageCache($fileCache);
 
-//$fileCache = new Anax\Cache\FileCache();
-//$fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
-//$app->setPageCache($fileCache);
+// Middlewares
+$app->addMiddleware(ResponseTimeMiddleware::class);
+$app->addMiddleware(CustomHeader::class);
+$app->addMiddleware(new CustomHeader(2));
+$app->addMiddleware(function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+    $request = $request->withAttribute('X-Custom-Attribute-3', time());
+    $response = $next->handle($request);
+    return $response->withHeader('X-Custom-Header-3', time());
+});
+$app->addMiddleware('blog/2015-07-30', function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+    $request = $request->withAttribute('X-Custom-Attribute-BLOG', time());
+    $response = $next->handle($request);
+    return $response->withHeader('X-Custom-Header-BLOG', time());
+});
+$app->addMiddleware('features', function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+    $request = $request->withAttribute('X-Custom-Attribute-FEATURES', time());
+    $response = $next->handle($request);
+    return $response->withHeader('X-Custom-Header-FEATURES', time());
+});
+$app->addMiddleware('news/january', new HttpBasicAuthMiddleware(['user' => 'pass']));
 
-$app->setRouteMiddlewares([
-   'blog/2015-07-30' => function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-       $request = $request->withAttribute('X-Custom-Attribute-BLOG', time());
-       $response = $next->handle($request);
-       return $response->withHeader('X-Custom-Header-BLOG', time());
-   },
-    'features' => function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-        $request = $request->withAttribute('X-Custom-Attribute-FEATURES', time());
-        $response = $next->handle($request);
-        return $response->withHeader('X-Custom-Header-FEATURES', time());
-    },
-    'news/january' => new HttpBasicAuthMiddleware(['user' => 'pass'])
-]);
+// Twig
+$app->addTwigFunction(new Twig_Function('myfunction', function () {
+    return 'My Function';
+}));
+$app->addTwigFilter(new Twig_Filter('myfilter', function () {
+    return 'My Filter';
+}));
+$app->addTwigTest(new Twig_Test('mytest', function () {
+    return true;
+}));
 
+// Run
 $app->run();
