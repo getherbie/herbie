@@ -11,7 +11,7 @@ use Herbie\Exception\SystemException;
  * @param string $separator
  * @return string
  */
-function camelize($input, $separator = '_')
+function camelize(string $input, string $separator = '_'): string
 {
     return str_replace($separator, '', ucwords($input, $separator));
 }
@@ -21,7 +21,7 @@ function camelize($input, $separator = '_')
  * @return string
  * @throws SystemException
  */
-function normalize_path(string $path)
+function normalize_path(string $path): string
 {
     $realpath = realpath($path);
     if ($realpath === false) {
