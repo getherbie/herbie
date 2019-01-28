@@ -10,4 +10,4 @@ title: News
 
 --- sidebar ---
 
-{{ include('@snippet/recent.twig', { pageType:'news', title: 'Recent News', showDate:false }) }}
+{{ pages_recent(limit=3, pageType='news', showDate=false, title="Recent News") }}

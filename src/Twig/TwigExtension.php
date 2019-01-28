@@ -116,10 +116,10 @@ class TwigExtension extends Twig_Extension
     {
         return [
             new Twig_Filter('filesize', [$this, 'filterFilesize'], ['is_safe' => ['html']]),
-            new Twig_Filter('strftime', [$this, 'filterStrftime']),
+            new Twig_Filter('filter', [$this, 'filterFilter'], ['is_variadic' => true]),
             new Twig_Filter('slugify', [$this, 'filterSlugify'], ['is_safe' => ['html']]),
-            new Twig_Filter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']]),
-            new Twig_Filter('filter', [$this, 'filterFilter'], ['is_variadic' => true])
+            new Twig_Filter('strftime', [$this, 'filterStrftime']),
+            new Twig_Filter('visible', [$this, 'filterVisible'], ['is_safe' => ['html']])
         ];
     }
 
@@ -133,22 +133,29 @@ class TwigExtension extends Twig_Extension
             new Twig_Function('absurl', [$this, 'functionAbsUrl'], $options),
             new Twig_Function('addcss', [$this, 'functionAddCss'], $options),
             new Twig_Function('addjs', [$this, 'functionAddJs'], $options),
-            new Twig_Function('outputcss', [$this, 'functionOutputCss'], $options),
-            new Twig_Function('outputjs', [$this, 'functionOutputJs'], $options),
             new Twig_Function('asciitree', [$this, 'functionAsciiTree'], $options),
             new Twig_Function('bodyclass', [$this, 'functionBodyClass'], $options),
             new Twig_Function('breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new Twig_Function('file', [$this, 'functionFile'], $options),
             new Twig_Function('image', [$this, 'functionImage'], $options),
             new Twig_Function('link', [$this, 'functionLink'], $options),
+            new Twig_Function('listing', [$this, 'functionListing'], $options),
             new Twig_Function('menu', [$this, 'functionMenu'], $options),
-            new Twig_Function('pagetitle', [$this, 'functionPageTitle'], $options),
+            new Twig_Function('outputcss', [$this, 'functionOutputCss'], $options),
+            new Twig_Function('outputjs', [$this, 'functionOutputJs'], $options),
+            new Twig_Function('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
             new Twig_Function('pager', [$this, 'functionPager'], $options),
+            new Twig_Function('pages_filtered', [$this, 'functionPagesFiltered'], $options),
+            new Twig_Function('pages_recent', [$this, 'functionPagesRecent'], $options),
+            new Twig_Function('pagetitle', [$this, 'functionPageTitle'], $options),
             new Twig_Function('sitemap', [$this, 'functionSitemap'], $options),
+            new Twig_Function('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
+            new Twig_Function('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
+            new Twig_Function('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
+            new Twig_Function('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
+            new Twig_Function('taxonomy_tags', [$this, 'functionTaxonomyTags'], $options),
             new Twig_Function('translate', [$this, 'functionTranslate'], $options),
             new Twig_Function('url', [$this, 'functionUrl'], $options),
-            new Twig_Function('listing', [$this, 'functionListing'], $options),
-            new Twig_Function('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
-            new Twig_Function('file', [$this, 'functionFile'], $options)
         ];
     }
 
@@ -320,6 +327,58 @@ class TwigExtension extends Twig_Extension
     public function functionOutputJs(?string $group = null): string
     {
         return $this->assets->outputJs($group);
+    }
+
+    /**
+     * @param $routeParams
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionPagesFiltered(
+        $routeParams,
+        string $template = '@template/pages/filtered.twig'
+    ): string {
+        return $this->twigRenderer->renderTemplate($template, [
+            'routeParams' => $routeParams
+        ]);
+    }
+
+    /**
+     * @param PageList|null $pageList
+     * @param string $dateFormat
+     * @param int $limit
+     * @param string|null $pageType
+     * @param bool $showDate
+     * @param string $title
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionPagesRecent(
+        PageList $pageList = null,
+        string $dateFormat = '%e. %B %Y',
+        int $limit = 5,
+        string $pageType = null,
+        bool $showDate = false,
+        string $title = 'Recent posts',
+        string $template = '@template/pages/recent.twig'
+    ): string {
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
+        $recentPages = $pageList->getRecent($limit, $pageType);
+        return $this->twigRenderer->renderTemplate($template, [
+            'recentPages' => $recentPages,
+            'dateFormat' => $dateFormat,
+            'pageType' => $pageType,
+            'showDate' => $showDate,
+            'title' => $title
+        ]);
     }
 
     /**
@@ -522,6 +581,23 @@ class TwigExtension extends Twig_Extension
         return implode($delim, $titles);
     }
 
+    public function functionPageTaxonomies(
+        Page\Page $page,
+        string $pageRoute = '',
+        bool $renderAuthors = true,
+        bool $renderCategories = true,
+        bool $renderTags = true,
+        string $template = '@template/page/taxonomies.twig'
+    ): string {
+        return $this->twigRenderer->renderTemplate($template, [
+            'page' => $page,
+            'pageRoute' => $pageRoute,
+            'renderAuthors' => $renderAuthors,
+            'renderCategories' => $renderCategories,
+            'renderTags' => $renderTags
+        ]);
+    }
+
     /**
      * @param string $limit
      * @param string $template
@@ -561,7 +637,7 @@ class TwigExtension extends Twig_Extension
             }
         }
 
-        $position = count($keys)-2;
+        $position = count($keys) - 2;
         if ($position >= 0) {
             $iterator->seek($position);
             $prev = $iterator->current();
@@ -607,7 +683,7 @@ class TwigExtension extends Twig_Extension
         $route = '',
         $showHidden = false,
         $class = 'sitemap'
-    ) {
+    ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new Page\Iterator\TreeIterator($branch);
         $filterIterator = new FilterIterator($treeIterator);
@@ -661,7 +737,7 @@ class TwigExtension extends Twig_Extension
         bool $shuffle = false,
         int $limit = 10,
         string $template = '@snippet/listing.twig'
-    ) : string {
+    ): string {
 
         if (is_null($pageList)) {
             $pageList = $this->pageRepository->findAll();
@@ -704,6 +780,138 @@ class TwigExtension extends Twig_Extension
     {
         // TODO fix transformation of variadic camelCase to snake_case keys
         return $this->twigRenderer->renderTemplate($path, $options);
+    }
+
+    /**
+     * @param PageList|null $pageList
+     * @param string $pageRoute
+     * @param string $pageType
+     * @param bool $showCount
+     * @param string $title
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionTaxonomyArchive(
+        PageList $pageList = null,
+        string $pageRoute = '',
+        string $pageType = '',
+        bool $showCount = false,
+        string $title = 'Archive',
+        string $template = '@template/taxonomy/archive.twig'
+    ): string {
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
+        $months = $pageList->getMonths($pageType);
+        return $this->twigRenderer->renderTemplate($template, [
+            'months' => $months,
+            'pageRoute' => $pageRoute,
+            'pageType' => $pageType,
+            'showCount' => $showCount,
+            'title' => $title
+        ]);
+    }
+
+    /**
+     * @param PageList|null $pageList
+     * @param string $pageRoute
+     * @param string $pageType
+     * @param bool $showCount
+     * @param string $title
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionTaxonomyAuthors(
+        PageList $pageList = null,
+        string $pageRoute = '',
+        string $pageType = '',
+        bool $showCount = false,
+        string $title = 'Authors',
+        string $template = '@template/taxonomy/authors.twig'
+    ): string {
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
+        $authors = $pageList->getAuthors($pageType);
+        return $this->twigRenderer->renderTemplate($template, [
+            'authors' => $authors,
+            'pageRoute' => $pageRoute,
+            'pageType' => $pageType,
+            'showCount' => $showCount,
+            'title' => $title
+        ]);
+    }
+
+    /**
+     * @param PageList|null $pageList
+     * @param string $pageRoute
+     * @param string $pageType
+     * @param bool $showCount
+     * @param string $title
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionTaxonomyCategories(
+        PageList $pageList = null,
+        string $pageRoute = '',
+        string $pageType = '',
+        bool $showCount = false,
+        string $title = 'Categories',
+        string $template = '@template/taxonomy/categories.twig'
+    ): string {
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
+        $categories = $pageList->getCategories($pageType);
+        return $this->twigRenderer->renderTemplate($template, [
+            'categories' => $categories,
+            'pageRoute' => $pageRoute,
+            'pageType' => $pageType,
+            'showCount' => $showCount,
+            'title' => $title
+        ]);
+    }
+
+    /**
+     * @param PageList|null $pageList
+     * @param string $pageRoute
+     * @param string $pageType
+     * @param bool $showCount
+     * @param string $title
+     * @param string $template
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function functionTaxonomyTags(
+        PageList $pageList = null,
+        string $pageRoute = '',
+        string $pageType = '',
+        bool $showCount = false,
+        string $title = 'Tags',
+        string $template = '@template/taxonomy/tags.twig'
+    ): string {
+        if (is_null($pageList)) {
+            $pageList = $this->pageRepository->findAll();
+        }
+        $tags = $pageList->getTags($pageType);
+        return $this->twigRenderer->renderTemplate($template, [
+            'pageRoute' => $pageRoute,
+            'pageType' => $pageType,
+            'showCount' => $showCount,
+            'tags' => $tags,
+            'title' => $title
+        ]);
     }
 
     /**
