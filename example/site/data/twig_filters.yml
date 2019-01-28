@@ -18,7 +18,7 @@
     code: 'string date|strftime([string format = "%x" ])'
     desc: 'Formats a local time/date according to locale settings. This is a wrapper for the same-named PHP function.'
     params:
-        { name: format, type: string, desc: 'The format, see http://php.net/strftime', default: '%x' }
+        - { name: format, type: string, desc: 'The format, see http://php.net/strftime', default: '%x' }
     return: [string, 'The formatted time or date']
 -
     name: visible
