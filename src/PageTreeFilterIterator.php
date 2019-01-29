@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class FilterIterator extends \RecursiveFilterIterator
+class PageTreeFilterIterator extends \RecursiveFilterIterator
 {
     /**
      * @var boolean

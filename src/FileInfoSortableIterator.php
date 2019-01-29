@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class SortableIterator implements \IteratorAggregate
+class FileInfoSortableIterator implements \IteratorAggregate
 {
 
     const SORT_BY_NAME = 1;

@@ -246,12 +246,12 @@ class TwigExtension extends Twig_Extension
 
     /**
      * @param PageTree $tree
-     * @return FilterIterator
+     * @return PageTreeFilterIterator
      */
-    public function filterVisible(PageTree $tree): FilterIterator
+    public function filterVisible(PageTree $tree): PageTreeFilterIterator
     {
-        $treeIterator = new TreeIterator($tree);
-        return new FilterIterator($treeIterator);
+        $treeIterator = new PageTreeIterator($tree);
+        return new PageTreeFilterIterator($treeIterator);
     }
 
     /**
@@ -383,8 +383,8 @@ class TwigExtension extends Twig_Extension
 
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        $treeIterator = new TreeIterator($branch);
-        $filterIterator = new FilterIterator($treeIterator);
+        $treeIterator = new PageTreeIterator($branch);
+        $filterIterator = new PageTreeFilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
         $asciiTree = new AsciiTreeRenderer($filterIterator);
@@ -511,11 +511,11 @@ class TwigExtension extends Twig_Extension
 
         // TODO use $showHidden parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        $treeIterator = new TreeIterator($branch);
+        $treeIterator = new PageTreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
         $routeLine = $this->environment->getRouteLine();
-        $callback = [new FilterCallback($routeLine), 'call'];
+        $callback = [new PageTreeFilterCallback($routeLine), 'call'];
         $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
 
         $htmlTree = new HtmlTreeRenderer($filterIterator);
@@ -671,8 +671,8 @@ class TwigExtension extends Twig_Extension
         $class = 'sitemap'
     ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        $treeIterator = new TreeIterator($branch);
-        $filterIterator = new FilterIterator($treeIterator);
+        $treeIterator = new PageTreeIterator($branch);
+        $filterIterator = new PageTreeFilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
         $htmlTree = new HtmlTreeRenderer($filterIterator);

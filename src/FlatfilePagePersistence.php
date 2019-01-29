@@ -77,7 +77,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
 
         $recCallbackFilterIt = new \RecursiveCallbackFilterIterator($recDirectoryIt, $callback);
         $recIteratorIt = new \RecursiveIteratorIterator($recCallbackFilterIt);
-        $sortIt = new SortableIterator($recIteratorIt, SortableIterator::SORT_BY_NAME);
+        $sortIt = new FileInfoSortableIterator($recIteratorIt, FileInfoSortableIterator::SORT_BY_NAME);
 
         $items = [];
         foreach ($sortIt as $fileInfo) {

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class FilterCallback
+class PageTreeFilterCallback
 {
 
     /**

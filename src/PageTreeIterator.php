@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class TreeIterator implements \RecursiveIterator
+class PageTreeIterator implements \RecursiveIterator
 {
     /**
      * @var array
@@ -25,11 +25,11 @@ class TreeIterator implements \RecursiveIterator
     private $position = 0;
 
     /**
-     * @param mixed $context
+     * @param PageTree|array $context
      */
     public function __construct($context)
     {
-        if (is_object($context)) {
+        if ($context instanceof PageTree) {
             $this->children = $context->getChildren();
         } elseif (is_array($context)) {
             $this->children = $context;
@@ -37,7 +37,7 @@ class TreeIterator implements \RecursiveIterator
     }
 
     /**
-     * @return TreeIterator
+     * @return PageTreeIterator
      */
     public function getChildren()
     {
