@@ -9,7 +9,7 @@ $replacements = [
     'day' => '[0-9]{2}'
 ];
 
-$string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function($matches) use ($replacements) {
+$string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function ($matches) use ($replacements) {
     if (count($matches) === 2) {
         $name = $matches[1];
         if (empty($replacements[$name])) {

@@ -14,30 +14,14 @@ namespace Herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
-use Herbie\Exception\SystemException;
-use Herbie\Middleware\DownloadMiddleware;
-use Herbie\Middleware\ErrorHandlerMiddleware;
-use Herbie\Middleware\MiddlewareDispatcher;
-use Herbie\Middleware\PageRendererMiddleware;
-use Herbie\Middleware\PageResolverMiddleware;
-use Herbie\Page\Page;
-use Herbie\Page\PageFactory;
-use Herbie\Page\PageItem;
-use Herbie\Persistence\FlatfilePagePersistence;
-use Herbie\Persistence\PagePersistenceInterface;
-use Herbie\Repository\DataRepositoryInterface;
-use Herbie\Repository\FlatfilePageRepository;
-use Herbie\Repository\PageRepositoryInterface;
-use Herbie\Repository\YamlDataRepository;
-use Herbie\Twig\TwigExtension;
-use Herbie\Twig\TwigRenderer;
-use Herbie\Url\UrlGenerator;
-use Herbie\Url\UrlMatcher;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
+use Twig_Filter;
+use Twig_Function;
+use Twig_Test;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 
@@ -99,10 +83,10 @@ class Application
         $errorHandler->register($this->sitePath . '/runtime/log');
         $this->container = $this->initContainer();
 
-        setlocale(LC_ALL, $this->container->get(Config::class)->get('locale'));
+        setlocale(LC_ALL, $this->container->get(Configuration::class)->get('locale'));
 
         // Add custom PSR-4 plugin path to Composer autoloader
-        $pluginsPath = $this->container->get(Config::class)->paths->plugins;
+        $pluginsPath = $this->container->get(Configuration::class)->paths->plugins;
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
 
@@ -120,7 +104,7 @@ class Application
         $c = new Container();
 
         $c->set(Alias::class, function (Container $c) {
-            $config = $c->get(Config::class);
+            $config = $c->get(Configuration::class);
             return new Alias([
                 '@app' => $config['paths']['app'],
                 '@asset' => $this->sitePath . '/assets',
@@ -145,7 +129,7 @@ class Application
             return new Cache();
         });
 
-        $c->set(Config::class, function (Container $c) {
+        $c->set(Configuration::class, function (Container $c) {
 
             $APP_PATH = rtrim(__DIR__, '/');
             $SITE_PATH = rtrim($this->sitePath, '/');
@@ -161,7 +145,7 @@ class Application
 
             // config default
             $defaults = require(__DIR__ . '/../config/test.php');
-            $config = new Config($defaults);
+            $config = new Configuration($defaults);
 
             // config user
             if (is_file($this->sitePath . '/config/test.php')) {
@@ -173,7 +157,7 @@ class Application
             } else {
                 $array = [];
             }
-            $userConfig = new Config($array);
+            $userConfig = new Configuration($array);
 
             // config plugins
             $array = [];
@@ -194,7 +178,7 @@ class Application
                     }
                 }
             }
-            $config->merge(new Config($array));
+            $config->merge(new Configuration($array));
 
             $config->merge($userConfig);
 
@@ -203,14 +187,14 @@ class Application
 
         $c->set(DataRepositoryInterface::class, function (Container $c) {
             return new YamlDataRepository(
-                $c->get(Config::class)
+                $c->get(Configuration::class)
             );
         });
 
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
-                $c->get(Config::class)
+                $c->get(Configuration::class)
             );
         });
 
@@ -269,14 +253,14 @@ class Application
         $c->set(PagePersistenceInterface::class, function (Container $c) {
             return new FlatfilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(Config::class)
+                $c->get(Configuration::class)
             );
         });
 
         $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
                 $c->get(Cache::class),
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(HttpFactory::class),
@@ -302,7 +286,7 @@ class Application
 
         $c->set(PluginManager::class, function (Container $c) {
             return new PluginManager(
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(EventManager::class),
                 $c
             );
@@ -314,7 +298,7 @@ class Application
 
         $c->set(Site::class, function (Container $c) {
             return new Site(
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(DataRepositoryInterface::class),
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class)
@@ -328,7 +312,7 @@ class Application
         });
 
         $c->set(SlugOptions::class, function (Container $c) {
-            $locale = $c->get(Config::class)->get('language');
+            $locale = $c->get(Configuration::class)->get('language');
             return new SlugOptions([
                 'locale' => $locale,
                 'delimiter' => '-'
@@ -336,8 +320,8 @@ class Application
         });
 
         $c->set(Translator::class, function (Container $c) {
-            $translator = new Translator($c->get(Config::class)->language);
-            $translator->addPath('app', $c->get(Config::class)->paths->messages);
+            $translator = new Translator($c->get(Configuration::class)->language);
+            $translator->addPath('app', $c->get(Configuration::class)->paths->messages);
             foreach ($c->get(PluginManager::class)->getPluginPaths() as $key => $dir) {
                 $translator->addPath($key, $dir . '/messages');
             }
@@ -348,7 +332,7 @@ class Application
             return new TwigExtension(
                 $c->get(Alias::class),
                 $c->get(Assets::class),
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(DataRepositoryInterface::class),
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class),
@@ -360,7 +344,7 @@ class Application
 
         $c->set(TwigRenderer::class, function (Container $c) {
             return new TwigRenderer(
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(Site::class),
@@ -370,7 +354,7 @@ class Application
 
         $c->set(UrlGenerator::class, function (Container $c) {
             return new UrlGenerator(
-                $c->get(Config::class),
+                $c->get(Configuration::class),
                 $c->get(Environment::class),
                 $c->get(ServerRequestInterface::class)
             );
@@ -378,7 +362,7 @@ class Application
 
         $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
-                $c->get(Config::class)->urlManager,
+                $c->get(Configuration::class)->urlManager,
                 $c->get(PageRepositoryInterface::class)
             );
         });
@@ -462,10 +446,10 @@ class Application
     }
 
     /**
-     * @param \Twig_Filter $twigFilter
+     * @param Twig_Filter $twigFilter
      * @return Application
      */
-    public function addTwigFilter(\Twig_Filter $twigFilter): Application
+    public function addTwigFilter(Twig_Filter $twigFilter): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
             /** @var TwigRenderer $twig */
@@ -476,10 +460,10 @@ class Application
     }
 
     /**
-     * @param \Twig_Function $twigFunction
+     * @param Twig_Function $twigFunction
      * @return Application
      */
-    public function addTwigFunction(\Twig_Function $twigFunction): Application
+    public function addTwigFunction(Twig_Function $twigFunction): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFunction) {
             /** @var TwigRenderer $twig */
@@ -490,10 +474,10 @@ class Application
     }
 
     /**
-     * @param \Twig_Test $twigTest
+     * @param Twig_Test $twigTest
      * @return Application
      */
-    public function addTwigTest(\Twig_Test $twigTest): Application
+    public function addTwigTest(Twig_Test $twigTest): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigTest) {
             /** @var TwigRenderer $twig */
@@ -512,7 +496,7 @@ class Application
     }
 
     /**
-     * @return EventManager
+     * @return Translator
      */
     private function getTranslator()
     {

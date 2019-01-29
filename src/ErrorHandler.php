@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use ErrorException;
-use Herbie\Exception\SystemException;
-use Throwable;
-
 /**
  * @see http://stackoverflow.com/questions/2561235/best-possible-php-error-class
  */
@@ -62,7 +58,7 @@ class ErrorHandler
      * @param string $file
      * @param int $line
      * @return bool
-     * @throws ErrorException
+     * @throws \ErrorException
      */
     public function handleError(int $code, string $message, string $file, int $line): bool
     {
@@ -73,14 +69,14 @@ class ErrorHandler
 
         // disable error capturing to avoid recursive errors
         restore_error_handler();
-        throw new ErrorException($message, 500, $code, $file, $line);
+        throw new \ErrorException($message, 500, $code, $file, $line);
     }
 
     /**
      * Handles an exception
-     * @param Throwable $exception
+     * @param \Throwable $exception
      */
-    public function handleUncaughtException(Throwable $exception): void
+    public function handleUncaughtException(\Throwable $exception): void
     {
         $this->sendHttpHeader();
         echo '<pre>'.$this->convertExceptionToString($exception).'</pre>';
@@ -95,7 +91,7 @@ class ErrorHandler
         $error = error_get_last();
         if ($this->isFatalError($error)) {
             $this->sendHttpHeader();
-            $exception = new ErrorException(
+            $exception = new \ErrorException(
                 $error['message'],
                 $error['type'],
                 $error['type'],
@@ -109,12 +105,12 @@ class ErrorHandler
 
     /**
      * Converts an exception into a simple string.
-     * @param Throwable $exception the exception being converted
+     * @param \Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      */
-    public function convertExceptionToString(Throwable $exception): string
+    public function convertExceptionToString(\Throwable $exception): string
     {
-        if ($exception instanceof Throwable && !HERBIE_DEBUG) {
+        if ($exception instanceof \Throwable && !HERBIE_DEBUG) {
             $message = get_class($exception) . ": {$exception->getMessage()}";
         } elseif (HERBIE_DEBUG) {
             $message = $exception->getMessage() . "\n\n"

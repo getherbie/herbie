@@ -13,19 +13,13 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Herbie\Page\PageList;
-use Herbie\Page\PageTree;
-use Herbie\Page\PageTrail;
-use Herbie\Repository\DataRepositoryInterface;
-use Herbie\Repository\PageRepositoryInterface;
-
 /**
  * Stores the site.
  */
 class Site
 {
     /**
-     * @var Config
+     * @var Configuration
      */
     private $config;
 
@@ -46,13 +40,13 @@ class Site
 
     /**
      * Site constructor.
-     * @param Config $config
+     * @param Configuration $config
      * @param DataRepositoryInterface $dataRepository
      * @param Environment $environment
      * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
-        Config $config,
+        Configuration $config,
         DataRepositoryInterface $dataRepository,
         Environment $environment,
         PageRepositoryInterface $pageRepository

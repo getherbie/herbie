@@ -17,8 +17,8 @@ if (php_sapi_name() == 'cli-server') {
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
-use Herbie\Middleware\HttpBasicAuthMiddleware;
-use Herbie\Middleware\ResponseTimeMiddleware;
+use Herbie\HttpBasicAuthMiddleware;
+use Herbie\ResponseTimeMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

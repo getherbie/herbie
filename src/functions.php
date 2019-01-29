@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Herbie\Exception\SystemException;
-
 /**
  * @param string $input
  * @param string $separator

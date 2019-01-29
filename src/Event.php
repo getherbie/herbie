@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use ArrayAccess;
-use InvalidArgumentException;
 use Zend\EventManager\Event as ZendEvent;
 use Zend\EventManager\EventInterface;
 
@@ -58,8 +56,8 @@ class Event implements EventInterface
      *
      * Overwrites parameters
      *
-     * @param  array|ArrayAccess|object $params
-     * @throws InvalidArgumentException
+     * @param  array|\ArrayAccess|object $params
+     * @throws \InvalidArgumentException
      */
     public function setParams($params)
     {
@@ -69,7 +67,7 @@ class Event implements EventInterface
     /**
      * Get all parameters
      *
-     * @return array|object|ArrayAccess
+     * @return array|object|\ArrayAccess
      */
     public function getParams()
     {

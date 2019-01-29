@@ -23,7 +23,7 @@ class Assets
     const TYPE_JS = 1;
 
     /**
-     * @var \Herbie\Alias
+     * @var Alias
      */
     private $alias;
 

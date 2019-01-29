@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Herbie\Exception\SystemException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use ReflectionClass;
 
 class PluginManager
 {
@@ -26,7 +24,7 @@ class PluginManager
     private $eventManager;
 
     /**
-     * @var Config
+     * @var Configuration
      */
     private $config;
 
@@ -53,12 +51,12 @@ class PluginManager
     /**
      * PluginManager constructor.
      * @param EventManager $eventManager
-     * @param Config $config
+     * @param Configuration $config
      * @param ContainerInterface $container
      * @throws SystemException
      */
     public function __construct(
-        Config $config,
+        Configuration $config,
         EventManager $eventManager,
         ContainerInterface $container
     ) {
@@ -104,7 +102,7 @@ class PluginManager
 
             $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
 
-            $class = new ReflectionClass($className);
+            $class = new \ReflectionClass($className);
 
             $constructor = $class->getConstructor();
             $constructorParams = [];
