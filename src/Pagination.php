@@ -29,7 +29,8 @@ class Pagination implements \IteratorAggregate, \Countable
         } elseif ($items instanceof \IteratorAggregate) {
             $this->items = (array)$items->getIterator();
         } else {
-            throw new \Exception('The param $items must be an array or an object implementing \IteratorAggregate.', 500);
+            $message = 'The param $items must be an array or an object implementing \IteratorAggregate.';
+            throw new \Exception($message, 500);
         }
         $this->setLimit($limit);
         $this->name = $name;

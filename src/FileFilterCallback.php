@@ -31,7 +31,7 @@ class FileFilterCallback
 
     /**
      *
-     * @param FileInfo $file
+     * @param \SplFileInfo $file
      * @return bool
      */
     public function call(\SplFileInfo $file): bool

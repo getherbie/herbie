@@ -17,7 +17,7 @@ use Twig_Error_Syntax;
 use Twig_Extension_Debug;
 use Twig_Filter;
 use Twig_Function;
-use Twig_Loader_Chain as Twig_Loader_Chain;
+use Twig_Loader_Chain;
 use Twig_Loader_Filesystem;
 use Twig_Test;
 

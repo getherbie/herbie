@@ -33,7 +33,7 @@ class PageTree extends AbstractNode
 
     /**
      * @param string $route
-     * @return PageTree|bool
+     * @return AbstractNode|bool
      */
     public function findByRoute(string $route)
     {
@@ -45,7 +45,7 @@ class PageTree extends AbstractNode
             return $this;
         }
         foreach ($this->getChildren() as $child) {
-            /** @var PageTree $child */
+            /** @var AbstractNode $child */
             $node = $child->findByRoute($route);
             if ($node) {
                 return $node;
@@ -57,7 +57,7 @@ class PageTree extends AbstractNode
     /**
      * @param string $name
      * @param mixed $value
-     * @return PageTree|bool
+     * @return AbstractNode|bool
      */
     public function findBy(string $name, $value)
     {
@@ -66,7 +66,7 @@ class PageTree extends AbstractNode
             return $this;
         }
         foreach ($this->getChildren() as $child) {
-            /** @var PageTree $child */
+            /** @var AbstractNode $child */
             $node = $child->findBy($name, $value);
             if ($node) {
                 return $node;
