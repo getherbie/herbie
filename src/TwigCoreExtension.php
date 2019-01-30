@@ -21,7 +21,8 @@ use Twig_Filter;
 use Twig_Function;
 use Twig_Test;
 
-class TwigExtension extends Twig_Extension
+// TODO identify and move functions, filters and tests to TwigPlusExtension
+class TwigCoreExtension extends Twig_Extension
 {
     /** @var Alias */
     private $alias;

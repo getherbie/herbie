@@ -328,8 +328,8 @@ class Application
             return $translator;
         });
 
-        $c->set(TwigExtension::class, function (Container $c) {
-            return new TwigExtension(
+        $c->set(TwigCoreExtension::class, function (Container $c) {
+            return new TwigCoreExtension(
                 $c->get(Alias::class),
                 $c->get(Assets::class),
                 $c->get(Configuration::class),
@@ -348,7 +348,7 @@ class Application
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(Site::class),
-                $c->get(TwigExtension::class)
+                $c->get(TwigCoreExtension::class)
             );
         });
 

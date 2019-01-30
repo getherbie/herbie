@@ -49,7 +49,7 @@ class TwigRenderer
     private $eventManager;
 
     /**
-     * @var TwigExtension
+     * @var TwigCoreExtension
      */
     private $twigExtension;
 
@@ -64,14 +64,14 @@ class TwigRenderer
      * @param Environment $environment
      * @param EventManager $eventManager
      * @param Site $site
-     * @param TwigExtension $twigExtension
+     * @param TwigCoreExtension $twigExtension
      */
     public function __construct(
         Configuration $config,
         Environment $environment,
         EventManager $eventManager,
         Site $site,
-        TwigExtension $twigExtension
+        TwigCoreExtension $twigExtension
     ) {
         $this->initialized = false;
         $this->environment = $environment;
