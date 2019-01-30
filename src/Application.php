@@ -288,7 +288,7 @@ class Application
             return new PluginManager(
                 $c->get(Configuration::class),
                 $c->get(EventManager::class),
-                $c
+                $c // needed for DI in plugins
             );
         });
 
@@ -332,12 +332,17 @@ class Application
             return new TwigCoreExtension(
                 $c->get(Alias::class),
                 $c->get(Assets::class),
-                $c->get(Configuration::class),
-                $c->get(DataRepositoryInterface::class),
                 $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class),
                 $c->get(SlugGenerator::class),
                 $c->get(Translator::class),
+                $c->get(UrlGenerator::class)
+            );
+        });
+
+        $c->set(TwigPlusExtension::class, function (Container $c) {
+            return new TwigPlusExtension(
+                $c->get(Environment::class),
+                $c->get(PageRepositoryInterface::class),
                 $c->get(UrlGenerator::class)
             );
         });
@@ -348,7 +353,8 @@ class Application
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(Site::class),
-                $c->get(TwigCoreExtension::class)
+                $c->get(TwigCoreExtension::class),
+                $c->get(TwigPlusExtension::class)
             );
         });
 

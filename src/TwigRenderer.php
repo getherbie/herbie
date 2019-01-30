@@ -51,12 +51,17 @@ class TwigRenderer
     /**
      * @var TwigCoreExtension
      */
-    private $twigExtension;
+    private $twigCoreExtension;
 
     /**
      * @var Site
      */
     private $site;
+
+    /**
+     * @var TwigPlusExtension
+     */
+    private $twigPlusExtension;
 
     /**
      * TwigRenderer constructor.
@@ -65,20 +70,23 @@ class TwigRenderer
      * @param EventManager $eventManager
      * @param Site $site
      * @param TwigCoreExtension $twigExtension
+     * @param TwigPlusExtension $twigPlusExtension
      */
     public function __construct(
         Configuration $config,
         Environment $environment,
         EventManager $eventManager,
         Site $site,
-        TwigCoreExtension $twigExtension
+        TwigCoreExtension $twigExtension,
+        TwigPlusExtension $twigPlusExtension
     ) {
         $this->initialized = false;
         $this->environment = $environment;
         $this->config = $config;
         $this->eventManager = $eventManager;
-        $this->twigExtension = $twigExtension;
+        $this->twigCoreExtension = $twigExtension;
         $this->site = $site;
+        $this->twigPlusExtension = $twigPlusExtension;
     }
 
     /**
@@ -107,8 +115,11 @@ class TwigRenderer
             $this->twig->addExtension(new Twig_Extension_Debug());
         }
 
-        $this->twigExtension->setTwigRenderer($this);
-        $this->twig->addExtension($this->twigExtension);
+        $this->twigCoreExtension->setTwigRenderer($this);
+        $this->twig->addExtension($this->twigCoreExtension);
+
+        $this->twigPlusExtension->setTwigRenderer($this);
+        $this->twig->addExtension($this->twigPlusExtension);
 
         $this->addTwigPlugins();
 
@@ -120,7 +131,9 @@ class TwigRenderer
      * @param string $string
      * @param array $context
      * @return string
-     * @throws \Throwable
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
      */
     public function renderString(string $string, array $context = []): string
     {
