@@ -231,12 +231,12 @@ class TwigRenderer
     {
         $paths = [];
         if (empty($this->config['theme'])) {
-            $paths[] = $this->config['paths']['layouts'];
+            $paths[] = $this->config['paths']['themes'];
         } elseif ($this->config['theme'] === 'default') {
-            $paths[] = $this->config['paths']['layouts'] . '/default';
+            $paths[] = $this->config['paths']['themes'] . '/default';
         } else {
-            $paths[] = $this->config['paths']['layouts'] . '/' . $this->config['theme'];
-            $paths[] = $this->config['paths']['layouts'] . '/default';
+            $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
+            $paths[] = $this->config['paths']['themes'] . '/default';
         }
 
         $loader1 = new TwigStringLoader();

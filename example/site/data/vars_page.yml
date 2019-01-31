@@ -50,7 +50,7 @@
   type: bool
 -
   key:  page.layout
-  desc: "The layout as basename (without file extension). Layout files are located in folder `site/layouts/`."
+  desc: "The layout as basename (without file extension). Layout files are located in folder `site/themes/`."
   type: string
 -
   key:  page.menu
