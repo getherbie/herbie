@@ -94,7 +94,6 @@ class TwigCoreExtension extends Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new Twig_Function('absurl', [$this, 'functionAbsUrl']),
             new Twig_Function('addcss', [$this, 'functionAddCss']),
             new Twig_Function('addjs', [$this, 'functionAddJs']),
             new Twig_Function('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
@@ -217,15 +216,6 @@ class TwigCoreExtension extends Twig_Extension
     }
 
     /**
-     * @param string $route
-     * @return string
-     */
-    public function functionAbsUrl(string $route): string
-    {
-        return $this->urlGenerator->generateAbsolute($route);
-    }
-
-    /**
      * @param array|string $paths
      * @param array $attr
      * @param string $group
@@ -331,10 +321,14 @@ class TwigCoreExtension extends Twig_Extension
 
     /**
      * @param string $route
+     * @param bool $absolute
      * @return string
      */
-    public function functionUrl(string $route): string
+    public function functionUrl(string $route, bool $absolute = false): string
     {
+        if ($absolute) {
+            return $this->urlGenerator->generateAbsolute($route);
+        }
         return $this->urlGenerator->generate($route);
     }
 
