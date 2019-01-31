@@ -10,61 +10,57 @@
  */
 
 return [
-    'app' => [
-        'path' => $APP_PATH
-    ],
-    'site' => [
-        'path' => $SITE_PATH
-    ],
-    'web' => [
-        'path' => $WEB_PATH,
-        'url' => $WEB_URL
-    ],
-    'media' => [
-        'path' => $WEB_PATH . '/media',
-        'url' => $WEB_URL . '/media',
-        'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
-        'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
-        'archives' => 'zip,tar,gz,gzip,tgz',
-        'code' => 'js,css,html,xml,json',
-        'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
-        'audio' => 'mp3,m4a,wav,aiff,midi'
-    ],
-    'layouts' => [
-        'path' => $SITE_PATH . '/layouts',
-        'extension' => 'html'
-    ],
-    'theme' => 'default',
-    'pages' => [
-        'path' => $SITE_PATH . '/pages',
-        'extensions' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
-        'extra_paths' => []
-    ],
-    'data' => [
-        'path' => $SITE_PATH . '/data',
-        'extensions' => ['yml', 'yaml']
-    ],
-    'nice_urls' => false,
-    'twig' => [
-        'debug' => false,
-        'cache' => false, //$SITE_PATH . '/cache/twig',
-        'extend' => [
-            'functions' => $SITE_PATH . '/twig/functions',
-            'filters' => $SITE_PATH . '/twig/filters',
-            'tests' => $SITE_PATH . '/twig/tests',
-        ],
-        'parse_content' => true,
-        'content_container_class' => 'placeholder'
-    ],
     'language' => 'de',
     'locale' => 'de_DE.UTF-8',
     'charset' => 'UTF-8',
-    'plugins' => [
-        'path' => $SITE_PATH . '/plugins',
-        'enable' => [],
-        'config' => []
+    'theme' => 'default',
+    'niceUrls' => false,
+    'paths' => [
+        'app' => $APP_PATH,
+        'data' => $SITE_PATH . '/data',
+        'messages' => $APP_PATH . '/../messages',
+        'media' => $WEB_PATH . '/media',
+        'pages' => $SITE_PATH . '/pages',
+        'plugins' => $SITE_PATH . '/plugins',
+        'site' => $SITE_PATH,
+        'themes' => $SITE_PATH . '/themes',
+        'web' => $WEB_PATH
     ],
-    'sysplugins' => [
-        'enable' => []
-    ]
+    'urls' => [
+        'media' => $WEB_URL . '/media',
+        'web' => $WEB_URL . '/',
+    ],
+    'urlManager' => [
+        'rules' => [
+            ['blog/author/{author}', 'blog'],
+            ['blog/category/{category}', 'blog'],
+            ['blog/tag/{tag}', 'blog'],
+            ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
+            ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
+            ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
+        ]
+    ],
+    'fileExtensions' => [
+        'data' => ['yml', 'yaml'],
+        'layouts' => 'html',
+        'media' => [
+            'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
+            'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
+            'archives' => 'zip,tar,gz,gzip,tgz',
+            'code' => 'js,css,html,xml,json',
+            'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
+            'audio' => 'mp3,m4a,wav,aiff,midi'
+        ],
+        'pages' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+    ],
+    'twig' => [
+        'debug' => false,
+        'cache' => false,
+        'functionsPath' => $SITE_PATH . '/twig/functions',
+        'filtersPath' => $SITE_PATH . '/twig/filters',
+        'testsPath' => $SITE_PATH . '/twig/tests'
+    ],
+    'plugins' => [],
+    'enabledPlugins' => [],
+    'enabledSysPlugins' => []
 ];

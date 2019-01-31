@@ -144,14 +144,14 @@ class Application
             ];
 
             // config default
-            $defaults = require(__DIR__ . '/../config/test.php');
+            $defaults = require(__DIR__ . '/../config/defaults.php');
             $config = new Configuration($defaults);
 
             // config user
-            if (is_file($this->sitePath . '/config/test.php')) {
-                $array = require($this->sitePath . '/config/test.php');
-            } elseif (is_file($this->sitePath . '/config/test.yml')) {
-                $content = file_get_contents($this->sitePath . '/config/test.yml');
+            if (is_file($this->sitePath . '/config/main.php')) {
+                $array = require($this->sitePath . '/config/main.php');
+            } elseif (is_file($this->sitePath . '/config/main.yml')) {
+                $content = file_get_contents($this->sitePath . '/config/main.yml');
                 $content = str_replace(array_keys($consts), array_values($consts), $content);
                 $array = Yaml::parse($content);
             } else {
