@@ -1,0 +1,6 @@
+-
+  name: renderContent
+  desc: 'Renders content'
+-
+  name: renderLayout
+  desc: 'Renders layout'
