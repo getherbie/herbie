@@ -33,7 +33,7 @@ class ErrorHandler
             throw SystemException::directoryNotWritable($logDir);
         }
 
-        ini_set('display_errors', '0');
+        ini_set('display_errors', HERBIE_DEBUG ? '1': '0');
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
