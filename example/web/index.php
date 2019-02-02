@@ -17,6 +17,7 @@ if (php_sapi_name() == 'cli-server') {
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
+use Herbie\Event;
 use Herbie\HttpBasicAuthMiddleware;
 use Herbie\ResponseTimeMiddleware;
 use Psr\Http\Message\ResponseInterface;
@@ -41,6 +42,14 @@ class CustomHeader implements MiddlewareInterface
         $request = $request->withAttribute('X-Custom-Attribute-' . $this->count, time());
         $response = $handler->handle($request);
         return $response->withHeader('X-Custom-Header-' . $this->count, time());
+    }
+}
+
+class TestFilter
+{
+    public function __invoke(string $content, array $args, $chain)
+    {
+        return $chain->next($content, $args, $chain);
     }
 }
 
@@ -82,6 +91,17 @@ $app->addTwigFilter(new Twig_Filter('myfilter', function () {
 $app->addTwigTest(new Twig_Test('mytest', function () {
     return true;
 }));
+
+// Filters
+$app->attachFilter('renderContent', function (string $content, array $args, $chain) {
+    // do something with content
+    return $chain->next($content, $args, $chain);
+});
+$app->attachFilter('renderLayout', function (string $content, array $args, $chain) {
+    // do something with content
+    return $chain->next($content, $args, $chain);
+});
+$app->attachFilter('renderContent', new TestFilter());
 
 // Run
 $app->run();

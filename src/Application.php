@@ -40,6 +40,11 @@ class Application
     private $container;
 
     /**
+     * @var array
+     */
+    private $filters;
+
+    /**
      * @var string
      */
     private $sitePath;
@@ -185,6 +190,12 @@ class Application
             return $config;
         });
 
+        $c->set(ContentRendererFilter::class, function (Container $c) {
+            return new ContentRendererFilter(
+                $c->get(TwigRenderer::class)
+            );
+        });
+
         $c->set(DataRepositoryInterface::class, function (Container $c) {
             return new YamlDataRepository(
                 $c->get(Configuration::class)
@@ -220,8 +231,33 @@ class Application
             );
         });
 
+        $c->set(FilterChainManager::class, function (Container $c) {
+            $manager = new FilterChainManager();
+            $manager->attach('renderContent', $c->get(ContentRendererFilter::class));
+            $manager->attach('renderLayout', $c->get(LayoutRendererFilter::class));
+            foreach ($this->filters as $filterName => $filtersPerName) {
+                foreach ($filtersPerName as $filter) {
+                    $manager->attach($filterName, $filter);
+                }
+            }
+            $manager->attach('renderContent', function (string $content) {
+                return $content;
+            });
+            $manager->attach('renderLayout', function (string $content) {
+                return $content;
+            });
+            return $manager;
+        });
+
         $c->set(HttpFactory::class, function () {
             return new HttpFactory();
+        });
+
+        $c->set(LayoutRendererFilter::class, function (Container $c) {
+            return new LayoutRendererFilter(
+                $c->get(Configuration::class),
+                $c->get(TwigRenderer::class)
+            );
         });
 
         $c->set(MiddlewareDispatcher::class, function (Container $c) {
@@ -263,8 +299,8 @@ class Application
                 $c->get(Configuration::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
+                $c->get(FilterChainManager::class),
                 $c->get(HttpFactory::class),
-                $c->get(TwigRenderer::class),
                 $c->get(UrlGenerator::class)
             );
         });
@@ -404,11 +440,12 @@ class Application
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
-        $this->getEventManager()->trigger('onResponseGenerated', $response);
+        $responseCollection = $this->getEventManager()->trigger('onResponseGenerated', $response);
+        $response = $responseCollection->last();
 
         $this->emitResponse($response);
 
-        $this->getEventManager()->trigger('onResponseRendered');
+        $this->getEventManager()->trigger('onResponseEmitted');
     }
 
     /**
@@ -480,6 +517,32 @@ class Application
     }
 
     /**
+     * @param string $filterName
+     * @param callable $filter
+     * @return Application
+     */
+    public function attachFilter(string $filterName, callable $filter)
+    {
+        if (!isset($this->filters[$filterName])) {
+            $this->filters[$filterName] = [];
+        }
+        $this->filters[$filterName] = $filter;
+        return $this;
+    }
+
+    /**
+     * @param string $eventName
+     * @param callable $listener
+     * @param int $priority
+     * @return Application
+     */
+    public function attachListener(string $eventName, callable $listener, int $priority = 1)
+    {
+        $this->getEventManager()->attach($eventName, $listener, $priority);
+        return $this;
+    }
+
+    /**
      * @param Twig_Test $twigTest
      * @return Application
      */
@@ -531,5 +594,13 @@ class Application
     private function getEventManager()
     {
         return $this->container->get(EventManager::class);
+    }
+
+    /**
+     * @return FilterChainManager
+     */
+    private function getFilterManager()
+    {
+        return $this->container->get(FilterChainManager::class);
     }
 }

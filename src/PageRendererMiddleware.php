@@ -18,9 +18,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
 use Zend\EventManager\EventManagerInterface;
 
 class PageRendererMiddleware implements MiddlewareInterface
@@ -46,9 +43,9 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $eventManager;
 
     /**
-     * @var TwigRenderer
+     * @var FilterChainManager
      */
-    private $twigRenderer;
+    private $filterChainManager;
 
     /**
      * @var Configuration
@@ -66,8 +63,8 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param Configuration $config
      * @param Environment $environment
      * @param EventManager $eventManager
+     * @param FilterChainManager $filterChainManager
      * @param HttpFactory $httpFactory
-     * @param TwigRenderer $twigRenderer
      * @param UrlGenerator $urlGenerator
      */
     public function __construct(
@@ -75,15 +72,15 @@ class PageRendererMiddleware implements MiddlewareInterface
         Configuration $config,
         Environment $environment,
         EventManager $eventManager,
+        FilterChainManager $filterChainManager,
         HttpFactory $httpFactory,
-        TwigRenderer $twigRenderer,
         UrlGenerator $urlGenerator
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
-        $this->twigRenderer = $twigRenderer;
+        $this->filterChainManager = $filterChainManager;
         $this->config = $config;
         $this->urlGenerator = $urlGenerator;
     }
@@ -95,6 +92,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @throws \Exception
      * @throws \Psr\SimpleCache\\InvalidArgumentException
      * @throws \Throwable
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -119,12 +117,8 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param Page $page
      * @param array $routeParams
      * @return ResponseInterface
-     * @throws \Psr\SimpleCache\\InvalidArgumentException
-     * @throws \Throwable
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
      */
     private function renderPage(Page $page, array $routeParams): ResponseInterface
     {
@@ -134,9 +128,6 @@ class PageRendererMiddleware implements MiddlewareInterface
             $response = $this->createRedirectResponse($redirect);
             return $response;
         }
-
-        // initialize as late as possible
-        $this->twigRenderer->init();
 
         $rendered = null;
 
@@ -151,35 +142,29 @@ class PageRendererMiddleware implements MiddlewareInterface
                 'routeParams' => $routeParams
             ];
 
-            // Render segments
-            $renderedSegments = [];
-            foreach ($page->getSegments() as $segmentId => $content) {
-                if (empty($page->getTwig())) {
-                    $renderedContent = new StringValue($content);
-                } else {
-                    $renderedContent = new StringValue($this->twigRenderer->renderString($content, $context));
-                }
-                $this->eventManager->trigger('onRenderContent', $renderedContent, $page->toArray());
-                $renderedSegments[$segmentId] = $renderedContent->get();
+            // render segments
+            $segments = [];
+            foreach ($page->getSegments() as $segmentId => $segment) {
+                $renderedSegment = (string)$this->filterChainManager->execute('renderContent', $segment, $context);
+                $segments[$segmentId] = $renderedSegment;
             }
+            $this->eventManager->trigger('onContentRendered', $segments, $page->toArray());
 
-            $content = new StringValue();
-
+            // render layout
+            $content = '';
             if (empty($page->getLayout())) {
-                $content->set(implode('', $renderedSegments));
+                $content = implode('', $segments);
             } else {
-                $extension = trim($this->config['fileExtensions']['layouts']);
-                $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
-                $content->set($this->twigRenderer->renderTemplate($name, array_merge([
-                    'content' => $renderedSegments
-                ], $context)));
-                $this->eventManager->trigger('onRenderLayout', $content, ['page' => $page]);
+                $content = (string)$this->filterChainManager->execute('renderLayout', $content, array_merge([
+                    'content' => $segments
+                ], $context));
             }
+            $this->eventManager->trigger('onLayoutRendered', $content, ['page' => $page]);
 
             if (!empty($page->getCached())) {
-                $this->cache->set($cacheId, $content->get());
+                $this->cache->set($cacheId, $content);
             }
-            $rendered = $content->get();
+            $rendered = $content;
         }
 
         $response = $this->httpFactory->createResponse(200);

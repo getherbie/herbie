@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Herbie;
 
 use Zend\EventManager\EventManager as EventManagerAlias;
+use Zend\EventManager\ResponseCollection;
 
 class EventManager
 {
@@ -43,10 +44,10 @@ class EventManager
      * @param string $eventName
      * @param null $target
      * @param array $argv
-     * @return void
+     * @return ResponseCollection
      */
-    public function trigger(string $eventName, $target = null, array $argv = []): void
+    public function trigger(string $eventName, $target = null, array $argv = []): ResponseCollection
     {
-        $this->eventManager->trigger($eventName, $target, $argv);
+        return $this->eventManager->trigger($eventName, $target, $argv);
     }
 }

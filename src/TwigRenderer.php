@@ -95,6 +95,11 @@ class TwigRenderer
      */
     public function init(): void
     {
+        // initialize only once
+        if ($this->isInitialized()) {
+            return;
+        }
+
         $loader = $this->getTwigFilesystemLoader();
 
         $cache = false;
