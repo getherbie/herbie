@@ -78,15 +78,15 @@ class Page
     /**
      *
      * @param string $id
-     * @return StringValue
+     * @return string
      */
-    public function getSegment(string $id): StringValue
+    public function getSegment(string $id): string
     {
-        $segment = new StringValue();
+        $segment = '';
         if (array_key_exists($id, $this->segments)) {
-            $segment->set($this->segments[$id]);
+            $segment = $this->segments[$id];
         }
-        return $segment;
+        return strval($segment);
     }
 
     /**
