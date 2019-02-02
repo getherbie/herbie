@@ -440,8 +440,7 @@ class Application
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
-        $responseCollection = $this->getEventManager()->trigger('onResponseGenerated', $response);
-        $response = $responseCollection->last();
+        $this->getEventManager()->trigger('onResponseGenerated', $response);
 
         $this->emitResponse($response);
 
