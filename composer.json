@@ -5,6 +5,8 @@
     "keywords": ["herbie", "flat-file", "cms", "blog"],
     "type": "library",
     "license":"BSD-3-Clause",
+    "prefer-stable" : true,
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.1.3",
         "ausi/slug-generator": "^1.1",
