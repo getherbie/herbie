@@ -202,6 +202,10 @@ class Application
             );
         });
 
+        $c->set(DefaultStringFilter::class, function () {
+            return new DefaultStringFilter();
+        });
+
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
@@ -240,12 +244,8 @@ class Application
                     $manager->attach($filterName, $filter);
                 }
             }
-            $manager->attach('renderContent', function (string $content) {
-                return $content;
-            });
-            $manager->attach('renderLayout', function (string $content) {
-                return $content;
-            });
+            $manager->attach('renderContent', $c->get(DefaultStringFilter::class));
+            $manager->attach('renderLayout', $c->get(DefaultStringFilter::class));
             return $manager;
         });
 
@@ -593,13 +593,5 @@ class Application
     private function getEventManager()
     {
         return $this->container->get(EventManager::class);
-    }
-
-    /**
-     * @return FilterChainManager
-     */
-    private function getFilterManager()
-    {
-        return $this->container->get(FilterChainManager::class);
     }
 }
