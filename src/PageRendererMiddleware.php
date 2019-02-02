@@ -97,18 +97,18 @@ class PageRendererMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page $page */
-        $page = $request->getAttribute(PageResolverMiddleware::REQUEST_ATTRIBUTE_PAGE, null);
+        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
 
         if (is_null($page)) {
             $message = sprintf(
                 'Server request attribute "%s" not set',
-                PageResolverMiddleware::REQUEST_ATTRIBUTE_PAGE
+                HERBIE_REQUEST_ATTRIBUTE_PAGE
             );
             throw new \InvalidArgumentException($message);
         }
 
         /** @var array $routeParams */
-        $routeParams = $request->getAttribute(PageResolverMiddleware::REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
+        $routeParams = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
 
         return $this->renderPage($page, $routeParams);
     }

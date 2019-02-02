@@ -19,9 +19,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PageResolverMiddleware implements MiddlewareInterface
 {
-    const REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
-    const REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
-
     /**
      * @var Environment
      */
@@ -66,8 +63,8 @@ class PageResolverMiddleware implements MiddlewareInterface
         $page = $this->pageRepository->find($matchedRoute['path']);
         $page->setRoute($matchedRoute['route']); // inject route
         $request = $request
-            ->withAttribute(self::REQUEST_ATTRIBUTE_PAGE, $page)
-            ->withAttribute(self::REQUEST_ATTRIBUTE_ROUTE_PARAMS, $matchedRoute['params']);
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $matchedRoute['params']);
         return $handler->handle($request);
     }
 }

@@ -24,16 +24,12 @@ use Twig_Function;
 use Twig_Test;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
+define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
+define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
+define('HERBIE_VERSION', '2.0.0');
 
 class Application
 {
-    /**
-     * Herbie version
-     * @see http://php.net/version-compare
-     * @var string
-     */
-    const VERSION = '2.0.0';
-
     /**
      * @var ContainerInterface
      */

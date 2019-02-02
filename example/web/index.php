@@ -17,15 +17,14 @@ if (php_sapi_name() == 'cli-server') {
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
-use Herbie\Event;
+define('HERBIE_DEBUG', 1);
+
 use Herbie\HttpBasicAuthMiddleware;
 use Herbie\ResponseTimeMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-define('HERBIE_DEBUG', true);
 
 class CustomHeader implements MiddlewareInterface
 {
