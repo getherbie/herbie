@@ -521,7 +521,7 @@ class Application
         if (!isset($this->filters[$filterName])) {
             $this->filters[$filterName] = [];
         }
-        $this->filters[$filterName] = $filter;
+        $this->filters[$filterName][] = $filter;
         return $this;
     }
 
