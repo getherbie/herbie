@@ -34,7 +34,7 @@ class PageTreeFilterCallback
      * @param PageTree $current
      * @return int
      */
-    public function call(PageTree $current): int
+    public function __invoke(PageTree $current): int
     {
         $menuItem = $current->getMenuItem();
 

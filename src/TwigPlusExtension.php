@@ -110,7 +110,7 @@ class TwigPlusExtension extends Twig_Extension
         $filterIterator = new PageTreeFilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $asciiTree = new AsciiTreeRenderer($filterIterator);
+        $asciiTree = new PageTreeAsciiRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
     }
@@ -245,10 +245,10 @@ class TwigPlusExtension extends Twig_Extension
 
         // using FilterCallback for better filtering of nested items
         $routeLine = $this->environment->getRouteLine();
-        $callback = [new PageTreeFilterCallback($routeLine), 'call'];
-        $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $callback);
+        $filterCallback = new PageTreeFilterCallback($routeLine);
+        $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $filterCallback);
 
-        $htmlTree = new HtmlTreeRenderer($filterIterator);
+        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
         $htmlTree->itemCallback = function (PageTree $node) {
@@ -457,7 +457,7 @@ class TwigPlusExtension extends Twig_Extension
         $filterIterator = new PageTreeFilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $htmlTree = new HtmlTreeRenderer($filterIterator);
+        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
         $htmlTree->itemCallback = function (PageTree $node) {

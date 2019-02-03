@@ -34,7 +34,7 @@ class FileInfoFilterCallback
      * @param \SplFileInfo $file
      * @return bool
      */
-    public function call(\SplFileInfo $file): bool
+    public function __invoke(\SplFileInfo $file): bool
     {
         $firstChar = substr($file->getFilename(), 0, 1);
         if (in_array($firstChar, ['.', '_'])) {
