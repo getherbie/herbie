@@ -1,6 +1,6 @@
 -
-  name: onPlugin<name>Attached
-  desc: 'Triggered after plugin with name <name> was attached'
+  name: onPlugin<NAME>Attached
+  desc: 'Triggered after plugin with <NAME> was attached'
   order: 1
 -
   name: onPluginsAttached

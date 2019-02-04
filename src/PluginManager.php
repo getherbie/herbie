@@ -70,6 +70,11 @@ class PluginManager
     private $translator;
 
     /**
+     * @var array
+     */
+    private $middlewares;
+
+    /**
      * PluginManager constructor.
      * @param Configuration $config
      * @param EventManager $eventManager
@@ -233,13 +238,14 @@ class PluginManager
      */
     private function addTwigFilter(string $name, callable $callable, array $options = []): callable
     {
-        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($name, $callable, $options) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFilter(
                 new Twig_Filter($name, $callable, $options)
             );
-        });
+        };
+        return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
     /**
@@ -250,13 +256,14 @@ class PluginManager
      */
     private function addTwigFunction(string $name, callable $callable, array $options = []): callable
     {
-        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($name, $callable, $options) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFunction(
                 new Twig_Function($name, $callable, $options)
             );
-        });
+        };
+        return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
     /**
@@ -267,12 +274,13 @@ class PluginManager
      */
     private function addTwigTest(string $name, callable $callable, array $options = []): callable
     {
-        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($name, $callable, $options) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addTest(
                 new Twig_Test($name, $callable, $options)
             );
-        });
+        };
+        return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 }

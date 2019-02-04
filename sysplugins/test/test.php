@@ -8,7 +8,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Zend\EventManager\Filter\FilterIterator;
 
-class TestPlugin implements PluginInterface
+class TestPlugin extends Plugin
 {
     /**
      * @var LoggerInterface
@@ -22,10 +22,6 @@ class TestPlugin implements PluginInterface
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
-
-    public function attach(): void
-    {
     }
 
     /**
