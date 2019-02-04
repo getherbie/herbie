@@ -47,6 +47,11 @@ class PluginManager
     private $pluginPaths;
 
     /**
+     * @var string
+     */
+    private $sysPluginsPath;
+
+    /**
      * @var ContainerInterface
      */
     private $container;
@@ -88,6 +93,7 @@ class PluginManager
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
         $this->pluginsPath = normalize_path($config['paths']['plugins']);
+        $this->sysPluginsPath = normalize_path($config['paths']['sysPlugins']);
         $this->filterChainManager = $filterChainManager;
         $this->twigRenderer = $twigRenderer;
         $this->middlewares = [];
@@ -101,7 +107,7 @@ class PluginManager
     {
         // add sys plugins first
         foreach ($this->config['enabledSysPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key);
+            $this->loadPlugin($this->sysPluginsPath, $key);
         }
 
         // add third-party plugins
@@ -109,7 +115,7 @@ class PluginManager
             $this->loadPlugin($this->pluginsPath, $key);
         }
 
-        $this->eventManager->trigger('onPluginsInitialized', $this);
+        $this->eventManager->trigger('onPluginsAttached', $this);
     }
 
     /**
@@ -138,9 +144,6 @@ class PluginManager
 
             /** @var PluginInterface $plugin */
             $plugin = new $className(...$constructorParams);
-            if (method_exists($plugin, 'attach')) {
-                $plugin->attach($this->eventManager);
-            }
 
             foreach ($plugin->getEvents() as $event) {
                 $this->attachListener(...$event);
@@ -160,6 +163,11 @@ class PluginManager
             foreach ($plugin->getTwigTests() as $twigTest) {
                 $this->addTwigTest(...$twigTest);
             }
+
+            $plugin->attach();
+
+            $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
+            $this->eventManager->trigger($eventName, $plugin);
 
             $this->translator->addPath($key, $path . '/messages');
 

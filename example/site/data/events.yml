@@ -1,24 +1,28 @@
 -
-  name: onPluginsInitialized
-  desc: 'Triggered after plugins where initialized'
+  name: onPlugin<name>Attached
+  desc: 'Triggered after plugin with name <name> was attached'
   order: 1
+-
+  name: onPluginsAttached
+  desc: 'Triggered after plugins where attached'
+  order: 2
 -
   name: onTwigInitialized
   desc: 'Triggered after twig was initialized'
-  order: 2
+  order: 3
 -
   name: onContentRendered
   desc: 'Triggered after content was rendered'
-  order: 3
+  order: 4
 -
   name: onLayoutRendered
   desc: 'Triggered after layout was rendered'
-  order: 4
+  order: 5
 -
   name: onResponseGenerated
   desc: 'Triggered after HTTP Response was generated'
-  order: 5
+  order: 6
 -
   name: onResponseEmitted
   desc: 'Triggered after HTTP Response was emitted'
-  order: 6
+  order: 7

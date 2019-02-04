@@ -12,6 +12,8 @@ namespace Herbie;
 
 interface PluginInterface
 {
+    public function attach(): void;
+
     /**
      * @return array
      */

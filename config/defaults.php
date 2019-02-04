@@ -23,6 +23,7 @@ return [
         'pages' => $SITE_PATH . '/pages',
         'plugins' => $SITE_PATH . '/plugins',
         'site' => $SITE_PATH,
+        'sysPlugins' => $APP_PATH . '/../sysplugins',
         'themes' => $SITE_PATH . '/themes',
         'web' => $WEB_PATH
     ],
