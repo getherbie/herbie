@@ -7,8 +7,8 @@ paths:
   plugins: APP_PATH/../site/plugins
 twig:
   debug: true
-enabledPlugins: []
-  #- simplecontact
-  #- simplesearch
+enabledPlugins:
+  - simplecontact
+  - simplesearch
 enabledSysPlugins:
   - test

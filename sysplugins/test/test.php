@@ -1,7 +1,9 @@
 <?php
 
-namespace Herbie;
+namespace herbie\plugin\test;
 
+use Herbie\Event;
+use Herbie\Plugin;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

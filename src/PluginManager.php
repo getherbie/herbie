@@ -134,7 +134,7 @@ class PluginManager
         if (is_readable($pluginPath)) {
             require($pluginPath);
 
-            $className = 'Herbie\\' . ucfirst($key) . 'Plugin';
+            $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
 
             $class = new \ReflectionClass($className);
 
