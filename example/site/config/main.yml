@@ -8,5 +8,6 @@ paths:
 twig:
   debug: true
 enabledPlugins:
-  - simplecontact
-  - simplesearch
+  #- simplecontact
+  #- simplesearch
+  - test

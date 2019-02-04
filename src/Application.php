@@ -17,6 +17,9 @@ use Ausi\SlugGenerator\SlugOptions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 use Twig_Filter;
@@ -28,7 +31,7 @@ define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 
-class Application
+class Application implements LoggerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -233,15 +236,13 @@ class Application
 
         $c->set(FilterChainManager::class, function (Container $c) {
             $manager = new FilterChainManager();
-            $manager->attach('renderContent', $c->get(ContentRendererFilter::class));
+            $manager->attach('renderSegment', $c->get(ContentRendererFilter::class));
             $manager->attach('renderLayout', $c->get(LayoutRendererFilter::class));
             foreach ($this->filters as $filterName => $filtersPerName) {
                 foreach ($filtersPerName as $filter) {
                     $manager->attach($filterName, $filter);
                 }
             }
-            $manager->attach('renderContent', $c->get(DefaultStringFilter::class));
-            $manager->attach('renderLayout', $c->get(DefaultStringFilter::class));
             return $manager;
         });
 
@@ -254,6 +255,10 @@ class Application
                 $c->get(Configuration::class),
                 $c->get(TwigRenderer::class)
             );
+        });
+
+        $c->set(LoggerInterface::class, function (Container $c) {
+            return new NullLogger();
         });
 
         $c->set(MiddlewareDispatcher::class, function (Container $c) {
@@ -320,6 +325,9 @@ class Application
             return new PluginManager(
                 $c->get(Configuration::class),
                 $c->get(EventManager::class),
+                $c->get(FilterChainManager::class),
+                $c->get(Translator::class),
+                $c->get(TwigRenderer::class),
                 $c // needed for DI in plugins
             );
         });
@@ -354,9 +362,6 @@ class Application
         $c->set(Translator::class, function (Container $c) {
             $translator = new Translator($c->get(Configuration::class)->language);
             $translator->addPath('app', $c->get(Configuration::class)->paths->messages);
-            foreach ($c->get(PluginManager::class)->getPluginPaths() as $key => $dir) {
-                $translator->addPath($key, $dir . '/messages');
-            }
             return $translator;
         });
 
@@ -423,15 +428,16 @@ class Application
     /**
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function run()
     {
-        // Init PluginManager
+        // init components
         $this->getPluginManager()->init();
-
-        // Init Translator
+        $this->getTwigRenderer()->init();
         $this->getTranslator()->init();
 
+        // dispatch middlewares
         $dispatcher = $this->getMiddlewareDispatcher();
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
@@ -470,6 +476,16 @@ class Application
         } else {
             $this->applicationMiddlewares[] = $middlewareOrPath;
         }
+        return $this;
+    }
+
+    /**
+     * @param LoggerInterface $interface
+     * @return Application
+     */
+    public function setLogger(LoggerInterface $interface): Application
+    {
+        $this->container->set(LoggerInterface::class, $interface);
         return $this;
     }
 
@@ -565,6 +581,14 @@ class Application
     private function getTranslator()
     {
         return $this->container->get(Translator::class);
+    }
+
+    /**
+     * @return TwigRenderer
+     */
+    private function getTwigRenderer()
+    {
+        return $this->container->get(TwigRenderer::class);
     }
 
     /**

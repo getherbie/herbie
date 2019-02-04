@@ -15,6 +15,9 @@ namespace Herbie;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Twig_Filter;
+use Twig_Function;
+use Twig_Test;
 
 class PluginManager
 {
@@ -49,15 +52,34 @@ class PluginManager
     private $container;
 
     /**
+     * @var FilterChainManager
+     */
+    private $filterChainManager;
+    /**
+     * @var TwigRenderer
+     */
+    private $twigRenderer;
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
      * PluginManager constructor.
-     * @param EventManager $eventManager
      * @param Configuration $config
+     * @param EventManager $eventManager
      * @param ContainerInterface $container
+     * @param FilterChainManager $filterChainManager
+     * @param Translator $translator
+     * @param TwigRenderer $twigRenderer
      * @throws SystemException
      */
     public function __construct(
         Configuration $config,
         EventManager $eventManager,
+        FilterChainManager $filterChainManager,
+        Translator $translator,
+        TwigRenderer $twigRenderer,
         ContainerInterface $container
     ) {
         $this->config = $config;
@@ -66,6 +88,10 @@ class PluginManager
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
         $this->pluginsPath = normalize_path($config['paths']['plugins']);
+        $this->filterChainManager = $filterChainManager;
+        $this->twigRenderer = $twigRenderer;
+        $this->middlewares = [];
+        $this->translator = $translator;
     }
 
     /**
@@ -74,15 +100,13 @@ class PluginManager
     public function init(): void
     {
         // add sys plugins first
-        $priority = 900;
         foreach ($this->config['enabledSysPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key, $priority);
+            $this->loadPlugin($this->pluginsPath, $key);
         }
 
         // add third-party plugins
-        $priority = 700;
         foreach ($this->config['enabledPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key, $priority);
+            $this->loadPlugin($this->pluginsPath, $key);
         }
 
         $this->eventManager->trigger('onPluginsInitialized', $this);
@@ -91,16 +115,15 @@ class PluginManager
     /**
      * @param string $path
      * @param string $key
-     * @param int $priority
      * @throws \ReflectionException
      */
-    private function loadPlugin(string $path, string $key, int $priority): void
+    private function loadPlugin(string $path, string $key): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
             require($pluginPath);
 
-            $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
+            $className = 'Herbie\\' . ucfirst($key) . 'Plugin';
 
             $class = new \ReflectionClass($className);
 
@@ -115,7 +138,30 @@ class PluginManager
 
             /** @var PluginInterface $plugin */
             $plugin = new $className(...$constructorParams);
-            $plugin->attach($this->eventManager, $priority);
+            if (method_exists($plugin, 'attach')) {
+                $plugin->attach($this->eventManager);
+            }
+
+            foreach ($plugin->getEvents() as $event) {
+                $this->attachListener(...$event);
+            }
+            foreach ($plugin->getFilters() as $filter) {
+                $this->attachFilter(...$filter);
+            }
+            foreach ($plugin->getMiddlewares() as $middleware) {
+                $this->middlewares[] = $middleware;
+            }
+            foreach ($plugin->getTwigFilters() as $twigFilter) {
+                $this->addTwigFilter(...$twigFilter);
+            }
+            foreach ($plugin->getTwigFunctions() as $twigFunction) {
+                $this->addTwigFunction(...$twigFunction);
+            }
+            foreach ($plugin->getTwigTests() as $twigTest) {
+                $this->addTwigTest(...$twigTest);
+            }
+
+            $this->translator->addPath($key, $path . '/messages');
 
             $this->loadedPlugins[$key] = $plugin;
             $this->pluginPaths[$key] = dirname($pluginPath);
@@ -135,13 +181,12 @@ class PluginManager
      */
     public function getMiddlewares(): array
     {
-        $middlewares = [];
         foreach ($this->loadedPlugins as $plugin) {
             if ($plugin instanceof MiddlewareInterface) {
-                $middlewares[] = $plugin;
+                $this->middlewares[] = $plugin;
             }
         }
-        return $middlewares;
+        return $this->middlewares;
     }
 
     /**
@@ -150,5 +195,76 @@ class PluginManager
     public function getPluginPaths(): array
     {
         return $this->pluginPaths;
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     * @param int $priority
+     */
+    private function attachFilter(string $name, callable $callable, int $priority = 1): void
+    {
+        $this->filterChainManager->attach($name, $callable, $priority);
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     * @param int $priority
+     */
+    private function attachListener(string $name, callable $callable, int $priority = 1): void
+    {
+        $this->eventManager->attach($name, $callable, $priority);
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     * @param array $options
+     * @return callable
+     */
+    private function addTwigFilter(string $name, callable $callable, array $options = []): callable
+    {
+        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addFilter(
+                new Twig_Filter($name, $callable, $options)
+            );
+        });
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     * @param array $options
+     * @return callable
+     */
+    private function addTwigFunction(string $name, callable $callable, array $options = []): callable
+    {
+        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addFunction(
+                new Twig_Function($name, $callable, $options)
+            );
+        });
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     * @param array $options
+     * @return callable
+     */
+    private function addTwigTest(string $name, callable $callable, array $options = []): callable
+    {
+        return $this->eventManager->attach('onTwigInitialized', function ($event) use ($name, $callable, $options) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addTest(
+                new Twig_Test($name, $callable, $options)
+            );
+        });
     }
 }

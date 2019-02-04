@@ -13,12 +13,14 @@ excerpt: All available events and filters.
 <table class="pure-table pure-table-horizontal" width="100%">
     <thead>
     <tr>
-        <th width="25%">Name</th>
+        <th width="5%"></th>
+        <th width="20%">Name</th>
         <th width="75%">Description</th>
     </tr>
     </thead>
     {% for event in site.data.events %}
         <tr>
+            <td>{{ event.order }}</td>
             <td>{{ event.name }}</td>
             <td>{{ event.desc }}</td>
         </tr>
@@ -33,12 +35,14 @@ excerpt: All available events and filters.
 <table class="pure-table pure-table-horizontal" width="100%">
     <thead>
     <tr>
-        <th width="25%">Name</th>
+        <th width="5%"></th>
+        <th width="20%">Name</th>
         <th width="75%">Description</th>
     </tr>
     </thead>
     {% for filter in site.data.filters %}
     <tr>
+        <td>{{ filter.order }}</td>
         <td>{{ filter.name }}</td>
         <td>{{ filter.desc }}</td>
     </tr>

@@ -145,7 +145,7 @@ class PageRendererMiddleware implements MiddlewareInterface
             // render segments
             $segments = [];
             foreach ($page->getSegments() as $segmentId => $segment) {
-                $renderedSegment = (string)$this->filterChainManager->execute('renderContent', $segment, $context);
+                $renderedSegment = (string)$this->filterChainManager->execute('renderSegment', $segment, $context);
                 $segments[$segmentId] = $renderedSegment;
             }
             $this->eventManager->trigger('onContentRendered', $segments, $page->toArray());

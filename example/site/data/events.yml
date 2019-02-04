@@ -1,18 +1,24 @@
 -
-  name: onContentRendered
-  desc: 'Triggered after content was rendered'
--
-  name: onLayoutRendered
-  desc: 'Triggered after layout was rendered'
--
   name: onPluginsInitialized
   desc: 'Triggered after plugins where initialized'
--
-  name: onResponseEmitted
-  desc: 'Triggered after HTTP Response was emitted'
--
-  name: onResponseGenerated
-  desc: 'Triggered after HTTP Response was generated'
+  order: 1
 -
   name: onTwigInitialized
   desc: 'Triggered after twig was initialized'
+  order: 2
+-
+  name: onContentRendered
+  desc: 'Triggered after content was rendered'
+  order: 3
+-
+  name: onLayoutRendered
+  desc: 'Triggered after layout was rendered'
+  order: 4
+-
+  name: onResponseGenerated
+  desc: 'Triggered after HTTP Response was generated'
+  order: 5
+-
+  name: onResponseEmitted
+  desc: 'Triggered after HTTP Response was emitted'
+  order: 6

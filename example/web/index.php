@@ -54,6 +54,14 @@ class TestFilter
 
 $app = new Herbie\Application('../site', '../../vendor');
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+// create a log channel
+$logger = new Logger('name');
+$logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::INFO));
+$app->setLogger($logger);
+
 // Cache
 // $fileCache = new Anax\Cache\FileCache();
 // $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
@@ -92,7 +100,7 @@ $app->addTwigTest(new Twig_Test('mytest', function () {
 }));
 
 // Filters
-$app->attachFilter('renderContent', function (string $content, array $args, $chain) {
+$app->attachFilter('renderSegment', function (string $content, array $args, $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
@@ -100,7 +108,7 @@ $app->attachFilter('renderLayout', function (string $content, array $args, $chai
     // do something with content
     return $chain->next($content, $args, $chain);
 });
-$app->attachFilter('renderContent', new TestFilter());
+$app->attachFilter('renderSegment', new TestFilter());
 
 // Run
 $app->run();

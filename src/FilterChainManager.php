@@ -13,10 +13,11 @@ class FilterChainManager
     /**
      * @param string $filterName
      * @param callable $listener
+     * @param int $priority
      */
-    public function attach(string $filterName, callable $listener)
+    public function attach(string $filterName, callable $listener, int $priority = 1)
     {
-        $this->getFilters($filterName)->attach($listener);
+        $this->getFilters($filterName)->attach($listener, $priority);
     }
 
     /**
@@ -28,6 +29,7 @@ class FilterChainManager
     public function execute(string $filterName, $subject, array $context)
     {
         $filterChain = $this->getFilters($filterName);
+        $filterChain->attach($this->getDefaultFilter($filterName));
         return $filterChain->run($subject, $context);
     }
 
@@ -41,5 +43,19 @@ class FilterChainManager
             $this->filters[$filterName] = new FilterChain();
         }
         return $this->filters[$filterName];
+    }
+
+    /**
+     * @param string $filterName
+     * @return \Closure
+     */
+    private function getDefaultFilter(string $filterName)
+    {
+        switch ($filterName) {
+            default:
+                return function (string $content) {
+                    return $content;
+                };
+        }
     }
 }
