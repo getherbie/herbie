@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Zend\EventManager\FilterChain;
-
 class FilterChainManager
 {
     private $filters = [];
@@ -13,11 +11,10 @@ class FilterChainManager
     /**
      * @param string $filterName
      * @param callable $listener
-     * @param int $priority
      */
-    public function attach(string $filterName, callable $listener, int $priority = 1)
+    public function attach(string $filterName, callable $listener)
     {
-        $this->getFilters($filterName)->attach($listener, $priority);
+        $this->getFilters($filterName)->attach($listener);
     }
 
     /**
@@ -30,6 +27,7 @@ class FilterChainManager
     {
         $filterChain = $this->getFilters($filterName);
         $filterChain->attach($this->getDefaultFilter($filterName));
+        $filterChain->rewind();
         return $filterChain->run($subject, $context);
     }
 

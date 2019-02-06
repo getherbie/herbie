@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Zend\EventManager\Filter\FilterIterator;
-
 class LayoutRendererFilter
 {
     /**

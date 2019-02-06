@@ -3,12 +3,12 @@
 namespace herbie\plugin\test;
 
 use Herbie\Event;
+use Herbie\FilterIterator;
 use Herbie\Plugin;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use Zend\EventManager\Filter\FilterIterator;
 
 class TestPlugin extends Plugin
 {
