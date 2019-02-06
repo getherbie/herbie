@@ -1,6 +1,6 @@
 <?php
 
-namespace herbie\plugin\test;
+namespace herbie\plugin\dummy;
 
 use Herbie\Event;
 use Herbie\Filter;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class TestPlugin extends Plugin
+class DummyPlugin extends Plugin
 {
     /**
      * @var LoggerInterface
@@ -59,7 +59,7 @@ class TestPlugin extends Plugin
     public function getMiddlewares(): array
     {
         return [
-            [$this, 'testMiddleware']
+            [$this, 'dummyMiddleware']
         ];
     }
 
@@ -69,7 +69,7 @@ class TestPlugin extends Plugin
     public function getTwigFilters(): array
     {
         return [
-            ['test', [$this, 'twigTestFilter']]
+            ['test', [$this, 'twigDummyFilter']]
         ];
     }
 
@@ -79,7 +79,7 @@ class TestPlugin extends Plugin
     public function getTwigFunctions(): array
     {
         return [
-            ['test', [$this, 'twigTestFunction']]
+            ['test', [$this, 'twigDummyFunction']]
         ];
     }
 
@@ -89,7 +89,7 @@ class TestPlugin extends Plugin
     public function getTwigTests(): array
     {
         return [
-            ['test', [$this, 'twigTestTest']]
+            ['test', [$this, 'twigDummyTest']]
         ];
     }
 
@@ -146,7 +146,7 @@ class TestPlugin extends Plugin
      * @param RequestHandlerInterface $next
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function testMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
+    public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->info(__METHOD__);
         $request = $request->withAttribute('X-TestPlugin', time());
@@ -154,17 +154,17 @@ class TestPlugin extends Plugin
         return $response->withHeader('X-TestPlugin', time());
     }
 
-    public function twigTestFilter()
+    public function twigDummyFilter()
     {
         $this->logger->info(__METHOD__);
     }
 
-    public function twigTestFunction()
+    public function twigDummyFunction()
     {
         $this->logger->info(__METHOD__);
     }
 
-    public function twigTestTest()
+    public function twigDummyTest()
     {
         $this->logger->info(__METHOD__);
     }
