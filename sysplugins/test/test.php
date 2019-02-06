@@ -48,6 +48,7 @@ class TestPlugin extends Plugin
     {
         return [
             ['renderSegment', [$this, 'renderSegment']],
+            ['renderContent', [$this, 'renderContent']],
             ['renderLayout', [$this, 'renderLayout']]
         ];
     }
@@ -93,6 +94,12 @@ class TestPlugin extends Plugin
     }
 
     public function renderSegment(string $context, array $params, FilterIterator $chain)
+    {
+        $this->logger->info(__METHOD__);
+        return $chain->next($context, $params, $chain);
+    }
+
+    public function renderContent(array $context, array $params, FilterIterator $chain)
     {
         $this->logger->info(__METHOD__);
         return $chain->next($context, $params, $chain);

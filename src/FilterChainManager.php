@@ -53,7 +53,7 @@ class FilterChainManager
     {
         switch ($filterName) {
             default:
-                return function (string $content) {
+                return function ($content) {
                     return $content;
                 };
         }

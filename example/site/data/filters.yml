@@ -1,8 +1,12 @@
 -
   name: renderSegment
-  desc: 'Renders content segment'
+  desc: 'Renders segment'
   order: 1
+-
+  name: renderContent
+  desc: 'Renders content'
+  order: 2
 -
   name: renderLayout
   desc: 'Renders layout'
-  order: 2
+  order: 3
