@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class ContentRendererFilter
+class RenderSegmentFilter
 {
     /**
      * @var TwigRenderer

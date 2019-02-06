@@ -3,7 +3,7 @@
 namespace herbie\plugin\test;
 
 use Herbie\Event;
-use Herbie\FilterIterator;
+use Herbie\Filter;
 use Herbie\Plugin;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -93,22 +93,22 @@ class TestPlugin extends Plugin
         ];
     }
 
-    public function renderSegment(string $context, array $params, FilterIterator $chain)
+    public function renderSegment(string $context, array $params, Filter $filter)
     {
         $this->logger->info(__METHOD__);
-        return $chain->next($context, $params, $chain);
+        return $filter->next($context, $params, $filter);
     }
 
-    public function renderContent(array $context, array $params, FilterIterator $chain)
+    public function renderContent(array $context, array $params, Filter $filter)
     {
         $this->logger->info(__METHOD__);
-        return $chain->next($context, $params, $chain);
+        return $filter->next($context, $params, $filter);
     }
 
-    public function renderLayout(string $context, array $params, FilterIterator $chain)
+    public function renderLayout(string $context, array $params, Filter $filter)
     {
         $this->logger->info(__METHOD__);
-        return $chain->next($context, $params, $chain);
+        return $filter->next($context, $params, $filter);
     }
 
     public function onContentRendered(Event $event)

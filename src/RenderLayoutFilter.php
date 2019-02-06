@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class LayoutRendererFilter
+class RenderLayoutFilter
 {
     /**
      * @var Configuration

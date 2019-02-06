@@ -189,8 +189,8 @@ class Application implements LoggerAwareInterface
             return $config;
         });
 
-        $c->set(ContentRendererFilter::class, function (Container $c) {
-            return new ContentRendererFilter(
+        $c->set(RenderSegmentFilter::class, function (Container $c) {
+            return new RenderSegmentFilter(
                 $c->get(TwigRenderer::class)
             );
         });
@@ -236,8 +236,8 @@ class Application implements LoggerAwareInterface
 
         $c->set(FilterChainManager::class, function (Container $c) {
             $manager = new FilterChainManager();
-            $manager->attach('renderSegment', $c->get(ContentRendererFilter::class));
-            $manager->attach('renderLayout', $c->get(LayoutRendererFilter::class));
+            $manager->attach('renderSegment', $c->get(RenderSegmentFilter::class));
+            $manager->attach('renderLayout', $c->get(RenderLayoutFilter::class));
             foreach ($this->filters as $filterName => $filtersPerName) {
                 foreach ($filtersPerName as $filter) {
                     $manager->attach($filterName, $filter);
@@ -250,8 +250,8 @@ class Application implements LoggerAwareInterface
             return new HttpFactory();
         });
 
-        $c->set(LayoutRendererFilter::class, function (Container $c) {
-            return new LayoutRendererFilter(
+        $c->set(RenderLayoutFilter::class, function (Container $c) {
+            return new RenderLayoutFilter(
                 $c->get(Configuration::class),
                 $c->get(TwigRenderer::class)
             );
