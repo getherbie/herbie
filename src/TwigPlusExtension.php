@@ -110,7 +110,7 @@ class TwigPlusExtension extends Twig_Extension
         $filterIterator = new PageTreeFilterIterator($treeIterator);
         $filterIterator->setEnabled(!$showHidden);
 
-        $asciiTree = new PageTreeAsciiRenderer($filterIterator);
+        $asciiTree = new PageTreeTextRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
     }

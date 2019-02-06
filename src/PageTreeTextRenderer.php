@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class PageTreeAsciiRenderer extends \RecursiveTreeIterator
+class PageTreeTextRenderer extends \RecursiveTreeIterator
 {
 
     /**
