@@ -11,4 +11,4 @@ enabledPlugins:
   - simplecontact
   - simplesearch
 enabledSysPlugins:
-  - test
+  - dummy

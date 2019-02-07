@@ -4,88 +4,72 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-use Zend\EventManager\Event as ZendEvent;
-use Zend\EventManager\EventInterface;
-
 /**
- * Representation of an event
- *
- * Encapsulates the target context and parameters passed, and provides some
- * behavior for interacting with the event manager.
+ * Class Event
+ * @package Herbie
  */
 class Event implements EventInterface
 {
-    /**
-     * @var ZendEvent
-     */
-    protected $event;
+    /** @var string */
+    private $name;
+    /** @var mixed */
+    private $target;
+    /** @var array */
+    private $params;
+    /** @var bool */
+    private $stopPropagation;
 
     /**
      * Event constructor.
-     * @param ZendEvent $event
      */
-    public function __construct(ZendEvent $event)
+    public function __construct()
     {
-        $this->event = $event;
+        $this->name = '';
+        $this->target = null;
+        $this->params = [];
+        $this->stopPropagation = false;
     }
 
     /**
-     * Get event name
-     *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->event->getName();
+        return $this->name;
     }
 
     /**
-     * Get the event target
-     *
-     * This may be either an object, or the name of a static method.
-     *
-     * @return string|object
+     * @return mixed
      */
     public function getTarget()
     {
-        return $this->event->getTarget();
+        return $this->target;
     }
 
     /**
-     * Set parameters
-     *
-     * Overwrites parameters
-     *
-     * @param  array|\ArrayAccess|object $params
-     * @throws \InvalidArgumentException
+     * @param array $params
      */
-    public function setParams($params)
+    public function setParams(array $params): void
     {
-        $this->event->setParams($params);
+        $this->params = $params;
     }
 
     /**
-     * Get all parameters
-     *
-     * @return array|object|\ArrayAccess
+     * @return array
      */
-    public function getParams()
+    public function getParams(): array
     {
-        return $this->event->getParams();
+        return $this->params;
     }
 
     /**
-     * Get an individual parameter
-     *
-     * If the parameter does not exist, the $default value will be returned.
-     *
-     * @param  string|int $name
-     * @param  mixed $default
-     * @return mixed
+     * @param string $name
+     * @param null $default
+     * @return mixed|null
      */
-    public function getParam($name, $default = null)
+    public function getParam(string $name, $default = null)
     {
-        return $this->event->getParam($name, $default);
+        return $this->params[$name] ?? $default;
     }
 
     /**
@@ -93,49 +77,41 @@ class Event implements EventInterface
      *
      * @param  string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
-        $this->event->setName($name);
+        $this->name = $name;
     }
 
     /**
-     * Set the event target/context
-     *
-     * @param  null|string|object $target
+     * @param mixed $target
      */
-    public function setTarget($target)
+    public function setTarget($target): void
     {
-        $this->event->setTarget($target);
+        $this->target = $target;
     }
 
     /**
-     * Set an individual parameter to a value
-     *
-     * @param  string|int $name
-     * @param  mixed $value
+     * @param string $name
+     * @param mixed $value
      */
-    public function setParam($name, $value)
+    public function setParam(string $name, $value): void
     {
-        $this->event->setParam($name, $value);
+        $this->params[$name] = $value;
     }
 
     /**
-     * Stop further event propagation
-     *
-     * @param  bool $flag
+     * @param bool $flag
      */
-    public function stopPropagation($flag = true)
+    public function stopPropagation(bool $flag = true): void
     {
-        $this->event->stopPropagation($flag);
+        $this->stopPropagation = $flag;
     }
 
     /**
-     * Is propagation stopped?
-     *
      * @return bool
      */
-    public function propagationIsStopped()
+    public function propagationIsStopped(): bool
     {
-        return $this->event->propagationIsStopped();
+        return $this->stopPropagation;
     }
 }

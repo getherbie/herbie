@@ -222,16 +222,8 @@ class Application implements LoggerAwareInterface
             );
         });
 
-        $c->set(Event::class, function (Container $c) {
-            return new Event(
-                $c->get(\Zend\EventManager\Event::class)
-            );
-        });
-
-        $c->set(EventManager::class, function (Container $c) {
-            return new EventManager(
-                $c->get(\Zend\EventManager\EventManager::class)
-            );
+        $c->set(EventManager::class, function () {
+            return new EventManager(new Event());
         });
 
         $c->set(FilterChainManager::class, function (Container $c) {
@@ -408,18 +400,6 @@ class Application implements LoggerAwareInterface
                 $c->get(Configuration::class)->urlManager,
                 $c->get(PageRepositoryInterface::class)
             );
-        });
-
-        $c->set(\Zend\EventManager\Event::class, function () {
-            return new \Zend\EventManager\Event();
-        });
-
-        $c->set(\Zend\EventManager\EventManager::class, function (Container $c) {
-            $zendEventManager = new \Zend\EventManager\EventManager();
-            $zendEventManager->setEventPrototype(
-                $c->get(Event::class)
-            );
-            return $zendEventManager;
         });
 
         return $c;
