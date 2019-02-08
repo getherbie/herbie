@@ -1,0 +1,106 @@
+{% macro filters(routeParams) %}
+
+    {% if routeParams %}
+
+        {% if routeParams.author %}
+
+            <p>Filtered by Author "{{ routeParams.author }}"</p>
+
+        {% elseif routeParams.category %}
+
+            <p>Filtered by Category "{{ routeParams.category }}"</p>
+
+        {% elseif routeParams.tag %}
+
+            <p>Filtered by Tag "{{ routeParams.tag }}"</p>
+
+        {% elseif routeParams.year and routeParams.month and routeParams.day %}
+
+            <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
+
+        {% elseif routeParams.year and routeParams.month %}
+
+            <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
+
+        {% elseif routeParams.year %}
+
+            <p>Filtered by Year "{{ routeParams.year }}"</p>
+
+        {% endif %}
+
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro links(page, options) %}
+
+    {% set defaults = {
+        'pageRoute': '',
+        'renderAuthors': true,
+        'renderCategories': true,
+        'renderTags': true,
+    } %}
+
+    {% set options = defaults|merge(options|default({})) %}
+
+    {% if options.renderCategories and options.renderTags and options.renderAuthors %}
+
+        <div class="blog-meta">
+
+            {# render markup for categories #}
+            {% if options.renderCategories %}
+                {% set categories = page.getCategories() %}
+                {% if categories %}
+                    <span class="links-categories">
+                <span class="label">Categories:</span>
+                <i class="fa fa-folder-open"></i>
+                {% set delim = '' %}
+                        {% for category in categories %}
+                            {%- set route = options.pageRoute ~ '/category/' ~ category|slugify -%}
+                            {{ delim|raw }}{{ link(route, category) }}
+                            {%- set delim = '<span class="delim">, </span>' -%}
+                        {% endfor %}
+                </span>
+                {% endif %}
+            {% endif %}
+
+            {# render markup for tags #}
+            {% if options.renderTags %}
+                {% set tags = page.getTags() %}
+                {% if tags %}
+                    <span class="links-tags">
+                <span class="label">Tags:</span>
+                <i class="fa fa-tags"></i>
+                {% set delim = '' %}
+                        {% for tag in tags %}
+                            {%- set route = options.pageRoute ~ '/tag/' ~ tag|slugify -%}
+                            {{ delim|raw }}{{ link(route, tag) }}
+                            {%- set delim = '<span class="delim">, </span>' -%}
+                        {% endfor %}
+                </span>
+                {% endif %}
+            {% endif %}
+
+            {# render markup for authors #}
+            {% if options.renderAuthors %}
+                {% set authors = page.getAuthors() %}
+                {% if authors %}
+                    <span class="links-authors">
+                <span class="label">Authors:</span>
+                <i class="fa fa-user"></i>
+                {% set delim = '' %}
+                        {% for author in authors %}
+                            {%- set route = options.pageRoute ~ '/author/' ~ author|slugify -%}
+                            {{ delim|raw }}{{ link(route, author) }}
+                            {%- set delim = '<span class="delim">, </span>' -%}
+                        {% endfor %}
+                </span>
+                {% endif %}
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+{% endmacro %}

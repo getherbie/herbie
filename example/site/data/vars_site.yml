@@ -1,0 +1,40 @@
+-
+  key:  site.charset
+  desc: "The charset (default: utf-8)"
+  type: string
+-
+  key:  site.created
+  desc: "The time of the last recent created page in ISO-8601 format (2004-02-12T15:19:21+00:00)."
+  type: string
+-
+  key:  site.data.<NAME>
+  desc: "Project wide data structures, which are located in `site/data`."
+  type: mixed
+-
+  key:  site.language
+  desc: "The language as 2-digit ISO-code (default: de)"
+  type: string
+-
+  key:  site.locale
+  desc: "The locale settings (default: de_DE)"
+  type: string
+-
+  key:  site.modified
+  desc: "The time of the last modified page in ISO-8601 format (2004-02-12T15:19:21+00:00)."
+  type: string
+-
+  key:  site.pageList
+  desc: "A list of all available pages."
+  type: Traversable
+-
+  key:  site.pageTrail
+  desc: "A trail from the current page up to the root page."
+  type: Traversable
+-
+  key:  site.pageTree
+  desc: "A tree of all available pages."
+  type: Traversable
+-
+  key:  site.time
+  desc: "The current time in ISO-8601 format (2004-02-12T15:19:21+00:00)."
+  type: string

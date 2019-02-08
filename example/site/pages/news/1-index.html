@@ -1,0 +1,13 @@
+---
+title: News
+---
+
+<h1>News</h1>
+
+{% for item in site.pageList|filter("type=news", "sort=-date") %}
+    <p><strong>{{ link(item.route, item.title) }}</strong><br>{{ item.excerpt }}</p>
+{% endfor %}
+
+--- sidebar ---
+
+{{ pages_recent(limit=3, pageType='news', showDate=false, title="Recent News") }}

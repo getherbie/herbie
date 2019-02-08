@@ -1,0 +1,29 @@
+{% if routeParams %}
+
+    {% if routeParams.author %}
+
+        <p>Filtered by Author "{{ routeParams.author }}"</p>
+
+    {% elseif routeParams.category %}
+
+        <p>Filtered by Category "{{ routeParams.category }}"</p>
+
+    {% elseif routeParams.tag %}
+
+        <p>Filtered by Tag "{{ routeParams.tag }}"</p>
+
+    {% elseif routeParams.year and routeParams.month and routeParams.day %}
+
+        <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
+
+    {% elseif routeParams.year and routeParams.month %}
+
+        <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
+
+    {% elseif routeParams.year %}
+
+        <p>Filtered by Year "{{ routeParams.year }}"</p>
+
+    {% endif %}
+
+{% endif %}

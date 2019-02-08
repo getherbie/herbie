@@ -1,0 +1,44 @@
+---
+title: Contact
+cached: 0
+simplecontact:
+    subject: "Subject"
+    recipient: "blackhole@example.com"
+    fields:
+      name:
+        label: "Your name"
+        placeholder:
+      email:
+        label: "Your email"
+        placeholder:
+      message:
+        label: "Your message"
+        placeholder:
+      antispam:
+        label: "Antispam"
+        placeholder:
+      submit:
+        label: "Send form"
+    messages:
+      success: "Thank you! Please note that your message was not sent."
+      error: "Oops! There was a problem. Please enter all fields below and try again."
+      fail: "Oops!  There was a problem. The message could not be sent."
+    errors:
+      empty_field: "Required field"
+      invalid_email: "The given email is invalid"
+---
+
+<h1>Contact</h1>
+
+{{ simplecontact() }}
+
+--- sidebar ---
+
+<h3>Address</h3>
+
+<p>John Doe<br>
+3020 Basel<br>
+Switzerland</p>
+
+<p><a href="mailto:mail@johndoe.com">mail@johndoe.com</a><br>
+<a href="http://www.example.com">http://www.example.com</a></p>

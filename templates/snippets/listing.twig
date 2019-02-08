@@ -1,0 +1,27 @@
+<div class="listing">
+    <section>
+        {% for menuitem in pagination %}
+            <article>
+                <h2>{{ link(menuitem.route, menuitem.getMenuTitle()) }}</h2>
+                {% if menuitem.image %}
+                    <div class="page-image">
+                        <a href="{{ url(menuitem.route) }}"><img class="pure-img" src="{{ menuitem.image }}" alt=""/></a>
+                    </div>
+                {% endif %}
+                <p>{{ menuitem.excerpt }}</p>
+            </article>
+        {% else %}
+            <p>Es sind noch keine Einträge erfasst.</p>
+        {% endfor %}
+    </section>
+    <nav class="pagination">
+        {% if pagination.hasPrevPage() %}
+            <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getPrevPage() }}"><i class="fa fa-chevron-left"></i>
+                Vorherige Seite</a>
+        {% endif %}
+        {% if pagination.hasNextPage() %}
+            <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getNextPage() }}">Nächste Seite
+                <i class="fa fa-chevron-right"></i></a>
+        {% endif %}
+    </nav>
+</div>

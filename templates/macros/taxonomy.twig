@@ -1,0 +1,107 @@
+{% macro archives(pageList, pageRoute, pageType, showCount, title) %}
+
+    {# initialize variables #}
+    {% set pageRoute = pageRoute|default('') %}
+    {% set pageType = pageType|default('page') %}
+    {% set showCount = showCount|default(false) %}
+    {% set title = title|default('Archives') %}
+
+    {# get months by page type #}
+    {% set months = pageList.getMonths(pageType) %}
+
+    {# render markup #}
+    {% if months|length > 0 %}
+        <div class="widget-blog widget-blog-archives">
+            <h4>{{ title }}</h4>
+            <ul>
+                {% for item in months %}
+                    {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
+                    {% set label = item.date|strftime('%B %Y') %}
+                    <li>{{ link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro authors(pageList, pageRoute, pageType, showCount, title) %}
+
+    {# initialize variables #}
+    {% set pageRoute = pageRoute|default('') %}
+    {% set pageType = pageType|default('page') %}
+    {% set showCount = showCount|default(false) %}
+    {% set title = title|default('Authors') %}
+
+    {# get authors by page type #}
+    {% set authors = pageList.getAuthors(pageType) %}
+
+    {# render markup #}
+    {% if authors|length > 0 %}
+        <div class="widget-blog widget-blog-authors">
+            <h4>{{ title }}</h4>
+            <ul>
+                {% for author, count in authors %}
+                    {% set route = pageRoute ~ '/author/' ~ author|slugify %}
+                    <li>{{ link(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro categories(pageList, pageRoute, pageType, showCount, title) %}
+
+    {# initialize variables #}
+    {% set pageRoute = pageRoute|default('') %}
+    {% set pageType = pageType|default('page') %}
+    {% set showCount = showCount|default(false) %}
+    {% set title = title|default('Categories') %}
+
+    {# get categories by page type #}
+    {% set categories = pageList.categories(pageType) %}
+
+    {# render markup #}
+    {% if categories|length > 0 %}
+        <div class="widget-blog widget-blog-categories">
+            <h4>{{ title }}</h4>
+            <ul>
+                {% for category, count in categories %}
+                    {% set route = pageRoute ~ '/category/' ~ category|slugify %}
+                    <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro tags(pageList, pageRoute, pageType, showCount, title) %}
+
+    {# initialize variables #}
+    {% set pageRoute = pageRoute|default('') %}
+    {% set pageType = pageType|default('page') %}
+    {% set showCount = showCount|default(false) %}
+    {% set title = title|default('Tags') %}
+
+    {# get tags by page type #}
+    {% set tags = pageList.getTags(pageType) %}
+
+    {# render markup #}
+    {% if tags|length > 0 %}
+        <div class="widget-blog widget-blog-tags">
+            <h4>{{ title }}</h4>
+            <ul>
+                {% for tag, count in tags %}
+                    {% set route = pageRoute ~ '/tag/' ~ tag|slugify %}
+                    <li>{{ link(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endmacro %}

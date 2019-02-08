@@ -1,0 +1,14 @@
+language: en
+locale: en_EN
+niceUrls: true
+fileExtensions:
+  layouts: 'twig'
+paths:
+  plugins: APP_PATH/../site/plugins
+twig:
+  debug: true
+enabledPlugins:
+  - simplecontact
+  - simplesearch
+enabledSysPlugins:
+  - dummy

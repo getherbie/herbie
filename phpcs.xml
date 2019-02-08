@@ -13,12 +13,7 @@
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
     <!-- Paths to check -->
-    <file>src/config</file>
-    <file>src/messages</file>
-    <file>src/plugins/markdown/markdown.php</file>
-    <file>src/plugins/shortcode</file>
-    <file>src/plugins/textile/textile.php</file>
-    <file>src/plugins/twig/classes</file>
-    <file>src/plugins/twig/twig.php</file>
-    <file>src/system</file>
+    <file>config</file>
+    <file>messages</file>
+    <file>src</file>
 </ruleset>

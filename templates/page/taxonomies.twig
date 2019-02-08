@@ -1,0 +1,58 @@
+{% if renderCategories and renderTags and renderAuthors %}
+
+    <div class="blog-meta">
+
+        {# render markup for categories #}
+        {% if renderCategories %}
+            {% set categories = page.getCategories() %}
+            {% if categories %}
+                <span class="links-categories">
+                <span class="label">Categories:</span>
+                <i class="fa fa-folder-open"></i>
+                {% set delim = '' %}
+                    {% for category in categories %}
+                        {%- set route = pageRoute ~ '/category/' ~ category|slugify -%}
+                        {{ delim|raw }}{{ link(route, category) }}
+                        {%- set delim = '<span class="delim">, </span>' -%}
+                    {% endfor %}
+                </span>
+            {% endif %}
+        {% endif %}
+
+        {# render markup for tags #}
+        {% if renderTags %}
+            {% set tags = page.getTags() %}
+            {% if tags %}
+                <span class="links-tags">
+                <span class="label">Tags:</span>
+                <i class="fa fa-tags"></i>
+                {% set delim = '' %}
+                    {% for tag in tags %}
+                        {%- set route = pageRoute ~ '/tag/' ~ tag|slugify -%}
+                        {{ delim|raw }}{{ link(route, tag) }}
+                        {%- set delim = '<span class="delim">, </span>' -%}
+                    {% endfor %}
+                </span>
+            {% endif %}
+        {% endif %}
+
+        {# render markup for authors #}
+        {% if renderAuthors %}
+            {% set authors = page.getAuthors() %}
+            {% if authors %}
+                <span class="links-authors">
+                <span class="label">Authors:</span>
+                <i class="fa fa-user"></i>
+                {% set delim = '' %}
+                    {% for author in authors %}
+                        {%- set route = pageRoute ~ '/author/' ~ author|slugify -%}
+                        {{ delim|raw }}{{ link(route, author) }}
+                        {%- set delim = '<span class="delim">, </span>' -%}
+                    {% endfor %}
+                </span>
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+{% endif %}

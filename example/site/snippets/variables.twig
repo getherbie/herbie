@@ -1,0 +1,16 @@
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+    <tr>
+        <th width="25%">Variable</th>
+        <th width="65%">Description</th>
+        <th width="10%">Type</th>
+    </tr>
+    </thead>
+    {% for data in attribute(site.data, type) %}
+        <tr>
+            <td><code>{{ data.key }}</code></td>
+            <td markdown="1">{{ data.desc|raw }}</td>
+            <td>{{ data.type }}</td>
+        </tr>
+    {% endfor %}
+</table>

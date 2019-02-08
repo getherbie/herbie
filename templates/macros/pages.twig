@@ -1,0 +1,33 @@
+{% macro recent(pageList, options) %}
+
+    {% set defaults = {
+        'dateFormat': '%e. %B %Y',
+        'limit': 5,
+        'pageType': null,
+        'showDate': false,
+        'title': 'Recent posts'
+    } %}
+
+    {% set options = options|default({}) %}
+
+    {% set options = defaults|merge(options) %}
+
+    {# get recent pages by page type #}
+    {% set recentPages = pageList.getRecent(options.limit, options.pageType) %}
+
+    {# render markup #}
+    {% if recentPages|length > 0 %}
+        <div class="widget-blog widget-blog-recent-posts">
+            <h4>{{ options.title }}</h4>
+            <ul>
+                {% for pageItem in recentPages %}
+                    <li>
+                        {{ link(pageItem.route, pageItem.title) }}
+                        {% if options.showDate %}<br>{{ pageItem.date|strftime(options.dateFormat) }}{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endmacro %}

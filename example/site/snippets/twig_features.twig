@@ -1,0 +1,34 @@
+{% for item in attribute(site.data, type) %}
+<div class="doc-function">
+    <h4>{{ attribute(item, 'name') }}</h4>
+    <p>
+        {{ attribute(item, 'desc') }}
+        {% set see = attribute(item, 'see') %}
+        {% if see %}
+            See: <a target="_blank" href="{{ see[0] }}">{{ see[1] }}</a>
+        {% endif %}
+    </p>
+    <table class="pure-table pure-table-horizontal">
+        <tr class="code">
+            <td>Parameter</td>
+            <td>Type</td>
+            <td>Description</td>
+            <td>Default</td>
+        </tr>
+        {% for param in item.params %}
+        <tr class="param">
+            <td>{{ param.name }}</td>
+            <td>{{ param.type }}</td>
+            <td>{{ param.desc }}</td>
+            <td>{{ param.default }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="return">
+            <td>[return]</td>
+            <td>{{ item.return.0 }}</td>
+            <td colspan="2">{{ item.return.1 }}</td>
+        </tr>
+    </table>
+    {# <pre><code>{{ attribute(item, 'code') }}</code></pre> #}
+</div>
+{% endfor %}

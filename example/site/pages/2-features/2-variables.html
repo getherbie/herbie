@@ -1,0 +1,35 @@
+---
+title: Twig Variables
+menu: Twig Variables
+format: md
+date: 2019-01-04
+keep_extension: 0
+content_type: text/html
+authors: [Shakespeare, Dickens, Wilde]
+categories: [Crime, Arts, Literature]
+tags: [Biography, Crime, Arts]
+cached: 0
+hidden: 0
+custom1: My custom var 1
+custom2: My custom var 2
+excerpt: An overview about all available Twig variables.
+---
+
+<h1>Variables</h1>
+
+{{ page.excerpt }}
+
+
+<h2>Global Variables</h2>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_global")|raw }}
+
+
+<h2>Site Variables</h2>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_site")|raw }}
+
+
+<h2>Page Variables</h2>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_page")|raw }}

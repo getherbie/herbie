@@ -1,28 +1,10 @@
 .idea
 
-# apigen docs dir
-/docs
-
 # composer vendor dir
 /vendor
 
-# composer itself
-composer.phar
-
 # composer lock files
-composer.lock
+/composer.lock
 
-# cache folders
-cache/data/
-cache/page/
-cache/twig/
-
-# applications
-/apps
-
-# Tests
-/src/Tests
-
-# twig test and doc folders
-src/plugins/twig/vendor/twig/twig/doc/
-src/plugins/twig/vendor/twig/twig/test/
+# site folder
+/site
