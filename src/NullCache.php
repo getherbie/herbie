@@ -6,7 +6,7 @@ namespace Herbie;
 
 use Psr\SimpleCache\CacheInterface;
 
-class Cache implements CacheInterface
+class NullCache implements CacheInterface
 {
     /**
      * @param string $key
@@ -26,7 +26,7 @@ class Cache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -53,7 +53,9 @@ class Cache implements CacheInterface
      */
     public function getMultiple($keys, $default = null)
     {
-        return [];
+        foreach ($keys as $key) {
+            yield $key => $default;
+        }
     }
 
     /**
@@ -63,7 +65,7 @@ class Cache implements CacheInterface
      */
     public function setMultiple($values, $ttl = null)
     {
-        return true;
+        return false;
     }
 
     /**

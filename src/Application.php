@@ -19,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 use Twig_Filter;
@@ -129,8 +128,8 @@ class Application implements LoggerAwareInterface
             );
         });
 
-        $c->set(Cache::class, function () {
-            return new Cache();
+        $c->set(CacheInterface::class, function () {
+            return new NullCache();
         });
 
         $c->set(Configuration::class, function (Container $c) {
@@ -189,12 +188,6 @@ class Application implements LoggerAwareInterface
             return $config;
         });
 
-        $c->set(RenderSegmentFilter::class, function (Container $c) {
-            return new RenderSegmentFilter(
-                $c->get(TwigRenderer::class)
-            );
-        });
-
         $c->set(DataRepositoryInterface::class, function (Container $c) {
             return new YamlDataRepository(
                 $c->get(Configuration::class)
@@ -242,13 +235,6 @@ class Application implements LoggerAwareInterface
             return new HttpFactory();
         });
 
-        $c->set(RenderLayoutFilter::class, function (Container $c) {
-            return new RenderLayoutFilter(
-                $c->get(Configuration::class),
-                $c->get(TwigRenderer::class)
-            );
-        });
-
         $c->set(LoggerInterface::class, function (Container $c) {
             return new NullLogger();
         });
@@ -288,7 +274,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
-                $c->get(Cache::class),
+                $c->get(CacheInterface::class),
                 $c->get(Configuration::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
@@ -321,6 +307,19 @@ class Application implements LoggerAwareInterface
                 $c->get(Translator::class),
                 $c->get(TwigRenderer::class),
                 $c // needed for DI in plugins
+            );
+        });
+
+        $c->set(RenderLayoutFilter::class, function (Container $c) {
+            return new RenderLayoutFilter(
+                $c->get(Configuration::class),
+                $c->get(TwigRenderer::class)
+            );
+        });
+
+        $c->set(RenderSegmentFilter::class, function (Container $c) {
+            return new RenderSegmentFilter(
+                $c->get(TwigRenderer::class)
             );
         });
 
@@ -473,9 +472,9 @@ class Application implements LoggerAwareInterface
      * @param CacheInterface $cache
      * @return Application
      */
-    public function setPageCache(CacheInterface $cache)
+    public function setCache(CacheInterface $cache)
     {
-        $this->container->set(Cache::class, $cache);
+        $this->container->set(NullCache::class, $cache);
         return $this;
     }
 

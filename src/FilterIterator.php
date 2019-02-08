@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Herbie;
 
-class FilterIterator implements \Iterator, \Countable, Filter
+class FilterIterator implements \Iterator, \Countable, FilterInterface
 {
     private $position = 0;
 
@@ -30,10 +30,10 @@ class FilterIterator implements \Iterator, \Countable, Filter
     /**
      * @param mixed|null $context
      * @param array $params
-     * @param Filter|null $filters
+     * @param FilterInterface|null $filters
      * @return mixed|null
      */
-    public function next($context = null, array $params = [], Filter $filters = null)
+    public function next($context = null, array $params = [], FilterInterface $filters = null)
     {
         if (is_null($context) || is_null($filters)) {
             return null;
