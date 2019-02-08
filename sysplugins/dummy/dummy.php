@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace herbie\plugin\dummy;
 
-use Herbie\Event;
-use Herbie\Filter;
-use Herbie\Plugin;
+use Herbie\EventInterface;
+use Herbie\FilterInterface;
+use Herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class DummyPlugin extends Plugin
+class DummyPlugin implements PluginInterface
 {
     /**
      * @var LoggerInterface
@@ -28,11 +28,17 @@ class DummyPlugin extends Plugin
         $this->logger = $logger;
     }
 
+    public function attach(): void
+    {
+        $this->logger->debug(__METHOD__);
+    }
+
     /**
      * @return array
      */
     public function getEvents(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             ['onContentRendered', [$this, 'onContentRendered']],
             ['onLayoutRendered', [$this, 'onLayoutRendered']],
@@ -48,6 +54,7 @@ class DummyPlugin extends Plugin
      */
     public function getFilters(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             ['renderSegment', [$this, 'renderSegment']],
             ['renderContent', [$this, 'renderContent']],
@@ -60,6 +67,7 @@ class DummyPlugin extends Plugin
      */
     public function getMiddlewares(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             [$this, 'dummyMiddleware']
         ];
@@ -70,6 +78,7 @@ class DummyPlugin extends Plugin
      */
     public function getTwigFilters(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             ['test', [$this, 'twigDummyFilter']]
         ];
@@ -80,6 +89,7 @@ class DummyPlugin extends Plugin
      */
     public function getTwigFunctions(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             ['test', [$this, 'twigDummyFunction']]
         ];
@@ -90,57 +100,58 @@ class DummyPlugin extends Plugin
      */
     public function getTwigTests(): array
     {
+        $this->logger->debug(__METHOD__);
         return [
             ['test', [$this, 'twigDummyTest']]
         ];
     }
 
-    public function renderSegment(string $context, array $params, Filter $filter)
+    public function renderSegment(string $context, array $params, FilterInterface $filter)
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderContent(array $context, array $params, Filter $filter)
+    public function renderContent(array $context, array $params, FilterInterface $filter)
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderLayout(string $context, array $params, Filter $filter)
+    public function renderLayout(string $context, array $params, FilterInterface $filter)
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function onContentRendered(Event $event)
+    public function onContentRendered(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
-    public function onLayoutRendered(Event $event)
+    public function onLayoutRendered(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
-    public function onPluginsAttached(Event $event)
+    public function onPluginsAttached(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
-    public function onResponseEmitted(Event $event)
+    public function onResponseEmitted(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
-    public function onResponseGenerated(Event $event)
+    public function onResponseGenerated(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
-    public function onTwigInitialized(Event $event)
+    public function onTwigInitialized(EventInterface $event)
     {
-        $this->logger->info($event->getName());
+        $this->logger->debug(__METHOD__);
     }
 
     /**
@@ -150,7 +161,7 @@ class DummyPlugin extends Plugin
      */
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
         $request = $request->withAttribute('X-TestPlugin', time());
         $response = $next->handle($request);
         return $response->withHeader('X-TestPlugin', time());
@@ -158,16 +169,16 @@ class DummyPlugin extends Plugin
 
     public function twigDummyFilter()
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
     }
 
     public function twigDummyFunction()
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
     }
 
     public function twigDummyTest()
     {
-        $this->logger->info(__METHOD__);
+        $this->logger->debug(__METHOD__);
     }
 }
