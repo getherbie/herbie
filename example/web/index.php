@@ -19,47 +19,18 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 
 define('HERBIE_DEBUG', 1);
 
+use Example\CustomHeader;
+use Example\TestFilter;
 use Herbie\HttpBasicAuthMiddleware;
 use Herbie\ResponseTimeMiddleware;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
-class CustomHeader implements MiddlewareInterface
-{
-
-    private $count;
-
-    public function __construct($count = 1)
-    {
-        $this->count = $count;
-    }
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        $request = $request->withAttribute('X-Custom-Attribute-' . $this->count, time());
-        $response = $handler->handle($request);
-        return $response->withHeader('X-Custom-Header-' . $this->count, time());
-    }
-}
-
-class TestFilter
-{
-    public function __invoke(string $content, array $args, $chain)
-    {
-        return $chain->next($content, $args, $chain);
-    }
-}
-
-$app = new Herbie\Application('../site', '../../vendor');
-
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+$app = new Herbie\Application('../site', '../../vendor');
+
 // create a log channel
-$logger = new Logger('name');
-$logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::INFO));
+$logger = new Logger('herbie');
+$logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::DEBUG));
 $app->setLogger($logger);
 
 // Cache
@@ -68,24 +39,12 @@ $app->setLogger($logger);
 // $app->setPageCache($fileCache);
 
 // Middlewares
-$app->addMiddleware(ResponseTimeMiddleware::class);
-$app->addMiddleware(CustomHeader::class);
-$app->addMiddleware(new CustomHeader(2));
-$app->addMiddleware(function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-    $request = $request->withAttribute('X-Custom-Attribute-3', time());
-    $response = $next->handle($request);
-    return $response->withHeader('X-Custom-Header-3', time());
-});
-$app->addMiddleware('blog/2015-07-30', function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-    $request = $request->withAttribute('X-Custom-Attribute-BLOG', time());
-    $response = $next->handle($request);
-    return $response->withHeader('X-Custom-Header-BLOG', time());
-});
-$app->addMiddleware('features', function (ServerRequestInterface $request, RequestHandlerInterface $next) {
-    $request = $request->withAttribute('X-Custom-Attribute-FEATURES', time());
-    $response = $next->handle($request);
-    return $response->withHeader('X-Custom-Header-FEATURES', time());
-});
+$app->addMiddleware(new ResponseTimeMiddleware());
+$app->addMiddleware(new CustomHeader('one'));
+$app->addMiddleware(new CustomHeader('two'));
+$app->addMiddleware(new CustomHeader('three'));
+$app->addMiddleware('blog/2015-07-30', new CustomHeader('blog'));
+$app->addMiddleware('features', new CustomHeader('features'));
 $app->addMiddleware('news/january', new HttpBasicAuthMiddleware(['user' => 'pass']));
 
 // Twig
