@@ -80,8 +80,20 @@ class Application implements LoggerAwareInterface
      */
     private function init()
     {
-        $errorHandler = new ErrorHandler();
-        $errorHandler->register($this->sitePath . '/runtime/log');
+        $logDir = $this->sitePath . '/runtime/log';
+        if (!is_dir($logDir)) {
+            throw SystemException::directoryNotExist($logDir);
+        }
+        if (!is_writable($logDir)) {
+            throw SystemException::directoryNotWritable($logDir);
+        }
+
+        ini_set('display_errors', HERBIE_DEBUG ? '1': '0');
+        ini_set('log_errors', '1');
+        ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
+
+        set_exception_handler(new ExceptionHandler());
+
         $this->container = $this->initContainer();
 
         setlocale(LC_ALL, $this->container->get(Configuration::class)->get('locale'));
@@ -424,6 +436,8 @@ class Application implements LoggerAwareInterface
         $this->emitResponse($response);
 
         $this->getEventManager()->trigger('onResponseEmitted');
+
+        exit(0);
     }
 
     /**

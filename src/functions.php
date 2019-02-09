@@ -34,3 +34,32 @@ function normalize_path(string $path): string
     }
     return rtrim($realpath, '/');
 }
+
+/**
+ * @param \Throwable $exception
+ * @return string
+ */
+function render_exception(\Throwable $exception): string
+{
+    if (HERBIE_DEBUG) {
+        $format = "Uncatched Exception: %s\n\n%s [%s] in %s on line %s\n\nStack trace:\n%s";
+        $message = sprintf(
+            $format,
+            $exception->getMessage(),
+            get_class($exception),
+            $exception->getCode(),
+            $exception->getFile(),
+            $exception->getLine(),
+            $exception->getTraceAsString()
+        );
+
+        // remove path
+        $path = realpath(__DIR__ . '/../../');
+        $message = str_replace($path, '', $message);
+    } else {
+        $format = 'Uncatched Exception: %s';
+        $message = sprintf($format, $exception->getMessage());
+    }
+
+    return sprintf('<pre>%s</pre>', $message);
+}
