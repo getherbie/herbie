@@ -7,8 +7,8 @@ excerpt: All available events and filters.
 
 <h3>Events</h3>
 <p>
-    Herbie is based on the <a href="https://docs.zendframework.com/zend-eventmanager/">EventManager</a> component by Zend.
-    The following events are triggered during the application lifecyle.
+    Herbie is using an event manager inspired by Zend's <a href="https://docs.zendframework.com/zend-eventmanager/">EventManager</a> component.
+    During the application lifecycle the following events are triggered.
 </p>
 <table class="pure-table pure-table-horizontal" width="100%">
     <thead>
@@ -29,8 +29,8 @@ excerpt: All available events and filters.
 
 <h3>Filters</h3>
 <p>
-    Herbie is using <a href="https://docs.zendframework.com/zend-eventmanager/intercepting-filters/">Intercepting Filters</a> for providing a mechanism to alter the workflow of the rendering process.
-    The following filters are used during the application lifecyle.
+    Herbie is using an intercepting filter inspired by Zend's <a href="https://docs.zendframework.com/zend-eventmanager/intercepting-filters/">FilterChain</a> for providing a mechanism to alter the workflow of the rendering process.
+    During the application lifecycle The following filters are used.
 </p>
 <table class="pure-table pure-table-horizontal" width="100%">
     <thead>
@@ -50,5 +50,5 @@ excerpt: All available events and filters.
 </table>
 
 <p>The given architecture allows you to attach your own listeners and filters.
-    This can be done in your custom Herbie plugin or in the bootstrap PHP file.
+    This can be done in your custom Herbie plugin or in the <code>index.php</code> bootstrap file.
 </p>
