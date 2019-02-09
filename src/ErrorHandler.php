@@ -35,7 +35,6 @@ class ErrorHandler
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
         set_exception_handler([$this, 'handleUncaughtException']);
-        set_error_handler([$this, 'handleError'], error_reporting());
         register_shutdown_function([$this, 'handleFatalError']);
     }
 
@@ -46,27 +45,6 @@ class ErrorHandler
     {
         restore_error_handler();
         restore_exception_handler();
-    }
-
-    /**
-     * Handles a normal error
-     * @param int $code
-     * @param string $message
-     * @param string $file
-     * @param int $line
-     * @return bool
-     * @throws \ErrorException
-     */
-    public function handleError(int $code, string $message, string $file, int $line): bool
-    {
-        // error was suppressed with the @-operator
-        if (0 === error_reporting()) {
-            return false;
-        }
-
-        // disable error capturing to avoid recursive errors
-        restore_error_handler();
-        throw new \ErrorException($message, 500, $code, $file, $line);
     }
 
     /**
