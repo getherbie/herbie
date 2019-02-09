@@ -112,12 +112,12 @@ class PluginManager
     {
         // add sys plugins first
         foreach ($this->config['enabledSysPlugins'] as $key) {
-            $this->loadPlugin($this->sysPluginsPath, $key);
+            $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugin\\');
         }
 
         // add third-party plugins
         foreach ($this->config['enabledPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key);
+            $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugin\\');
         }
 
         $this->eventManager->trigger('onPluginsAttached', $this);
@@ -128,13 +128,13 @@ class PluginManager
      * @param string $key
      * @throws \ReflectionException
      */
-    private function loadPlugin(string $path, string $key): void
+    private function loadPlugin(string $path, string $key, string $namespace): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
             require($pluginPath);
 
-            $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
+            $className = $namespace . $key . '\\' . ucfirst($key) . 'Plugin';
 
             $class = new \ReflectionClass($className);
 
