@@ -12,6 +12,8 @@
     <rule ref="PSR2"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
+    <exclude-pattern>*\.(css|js)</exclude-pattern>
+
     <!-- Paths to check -->
     <file>config</file>
     <file>messages</file>
