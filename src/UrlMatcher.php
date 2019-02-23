@@ -68,7 +68,7 @@ class UrlMatcher
             }
         }
 
-        throw HttpException::notFound('Page "' . $route . '" not found');
+        return [];
     }
 
     /**

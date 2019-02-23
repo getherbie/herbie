@@ -58,11 +58,20 @@ class PageResolverMiddleware implements MiddlewareInterface
     {
         $route = $this->environment->getRoute();
         $matchedRoute = $this->urlMatcher->match($route);
-        $page = $this->pageRepository->find($matchedRoute['path']);
-        $page->setRoute($matchedRoute['route']); // inject route
+
+        if (empty($matchedRoute)) {
+            $page = null;
+            $routeParams = [];
+        } else {
+            $page = $this->pageRepository->find($matchedRoute['path']);
+            $page->setRoute($matchedRoute['route']); // inject route
+            $routeParams = $matchedRoute['params'];
+        }
+
         $request = $request
             ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
-            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $matchedRoute['params']);
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
         return $handler->handle($request);
     }
 }

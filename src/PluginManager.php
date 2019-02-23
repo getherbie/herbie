@@ -109,12 +109,12 @@ class PluginManager
     {
         // add sys plugins first
         foreach ($this->config['enabledSysPlugins'] as $key) {
-            $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugin\\');
+            $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
         }
 
         // add third-party plugins
         foreach ($this->config['enabledPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugin\\');
+            $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
         }
 
         $this->eventManager->trigger('onPluginsAttached', $this);

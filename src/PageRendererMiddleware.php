@@ -98,11 +98,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
 
         if (is_null($page)) {
-            $message = sprintf(
-                'Server request attribute "%s" not set',
-                HERBIE_REQUEST_ATTRIBUTE_PAGE
-            );
-            throw new \InvalidArgumentException($message);
+            throw HttpException::notFound('Page "' . $this->environment->getRoute() . '" not found');
         }
 
         /** @var array $routeParams */
