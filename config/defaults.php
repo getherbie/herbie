@@ -16,7 +16,7 @@ return [
         'app' => $APP_PATH,
         'data' => $SITE_PATH . '/data',
         'messages' => $APP_PATH . '/../messages',
-        'media' => $WEB_PATH . '/media',
+        'media' => $SITE_PATH . '/media',
         'pages' => $SITE_PATH . '/pages',
         'plugins' => $SITE_PATH . '/plugins',
         'site' => $SITE_PATH,
@@ -60,5 +60,5 @@ return [
     ],
     'plugins' => [],
     'enabledPlugins' => [],
-    'enabledSysPlugins' => []
+    'enabledSysPlugins' => ['adminpanel']
 ];
