@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Herbie\\": "src",
+            "herbie\\": "src",
             "herbie\\sysplugins\\": "sysplugins"
         },
         "files": [
@@ -31,7 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Example\\": "example/src"
+            "example\\": "example/src"
         }
     },
     "require-dev": {

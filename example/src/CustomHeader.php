@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Example;
+namespace example;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;

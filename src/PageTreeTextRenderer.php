@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 class PageTreeTextRenderer extends \RecursiveTreeIterator
 {

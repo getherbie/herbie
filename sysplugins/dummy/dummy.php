@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace herbie\sysplugins\dummy;
 
-use Herbie\EventInterface;
-use Herbie\FilterInterface;
-use Herbie\PluginInterface;
+use herbie\EventInterface;
+use herbie\FilterInterface;
+use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

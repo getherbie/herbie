@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Herbie;
+namespace herbie;
 
 use Psr\Log\AbstractLogger;
 

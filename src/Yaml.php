@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Symfony\Component\Yaml\Yaml as sfYaml;
 

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Twig_Extension;
