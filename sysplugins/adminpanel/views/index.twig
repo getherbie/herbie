@@ -1,0 +1,54 @@
+{#
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}<h1>Index</h1>{% endblock %}
+
+{% block content %}
+
+    <p>Tools / IndexAction</p>
+
+{% endblock %}
+#}
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adminpanel</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
+    <!--<![endif]-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/sysplugins/adminpanel/layouts/main.css">
+    <style>
+        body {
+            font-size: 14px;
+        }
+        .form-add-folder {
+            display:inline-block;
+        }
+        .form-upload {
+            display:inline-block;
+            margin-left: 0.12rem;
+        }
+        #file_upload {
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+        .media__table {
+            margin-top: 0.5rem;
+        }
+    </style>
+    <script>
+        const WEB_URL = '{{ url('/') }}';
+    </script>
+</head>
+<body>
+<script src="/sysplugins/adminpanel/frontend/bin/app.js"></script>
+</body>
+</html>

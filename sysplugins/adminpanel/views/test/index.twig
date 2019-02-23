@@ -1,0 +1,50 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}<h1>Test</h1>{% endblock %}
+
+{% block content %}
+    <div data-controller="test">
+        <div class="pure-form">
+            <input class="pure-input" data-target="test.name" type="text" data-action="keydown->test#addWithKeyboard">
+            <button class="pure-button" data-action="click->test#add">Add</button>
+        </div>
+        <br>
+        <table id="test-table" class="pure-table pure-table-horizontal">
+            <thead>
+            <tr>
+                <th width="99%">Type</th>
+                <th width="1%"></th>
+            </tr>
+            </thead>
+            <tbody id="test-tbody">
+            <tr>
+                <td>Foo</td>
+                <td>
+                    <button class="pure-button button-small" data-action="click->test#delete">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Bar</td>
+                <td>
+                    <button class="pure-button button-small" data-action="click->test#delete">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Baz</td>
+                <td>
+                    <button class="pure-button button-small" data-action="click->test#delete">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p id="test-empty-table" class="hidden">No Entries</p>
+        <template id="test-row">
+            <tr>
+                <td></td>
+                <td>
+                    <button class="pure-button button-small" data-action="click->test#delete">Delete</button>
+                </td>
+            </tr>
+        </template>
+    </div>
+{% endblock %}
