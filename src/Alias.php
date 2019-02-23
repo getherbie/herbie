@@ -37,6 +37,9 @@ class Alias
      */
     public function set(string $alias, string $path): void
     {
+        if (strncmp($alias, '@', 1) <> 0) {
+            throw new \InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
+        }
         if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
