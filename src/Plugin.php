@@ -12,11 +12,6 @@ namespace herbie;
 
 abstract class Plugin implements PluginInterface
 {
-
-    public function attach(): void
-    {
-    }
-
     /**
      * @return array
      */

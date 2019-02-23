@@ -34,11 +34,6 @@ class DummyPlugin implements PluginInterface
         $this->logger = $logger;
     }
 
-    public function attach(): void
-    {
-        $this->logger->debug(__METHOD__);
-    }
-
     /**
      * @return array
      */

@@ -166,8 +166,6 @@ class PluginManager
                 $this->addTwigTest(...$twigTest);
             }
 
-            $plugin->attach();
-
             $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
             $this->eventManager->trigger($eventName, $plugin);
 
