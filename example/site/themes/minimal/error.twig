@@ -1,0 +1,42 @@
+{# render error according error code #}
+{% if error.code == 404 %}
+
+    <h1>Page not found</h1>
+    <p>Oops, something got wrong! The page or resource could not be found.</p>
+
+{% else %}
+
+    <h1>Server Error</h1>
+    <p>An error occurred.</p>
+
+{% endif %}
+
+{# render error details in debug mode only #}
+
+{% if constant('HERBIE_DEBUG') > 0 %}
+
+    <table class="pure-table pure-table-horizontal" width="100%" style="table-layout: fixed;">
+        <tr>
+            <td width="10%">Code</td>
+            <td width="90%">{{ error.code }}</td>
+        </tr>
+        <tr>
+            <td>Message</td>
+            <td>{{ error.message }}</td>
+        </tr>
+        <tr>
+            <td>File</td>
+            <td>{{ error.file }}</td>
+        </tr>
+        <tr>
+            <td>Line</td>
+            <td>{{ error.line }}</td>
+        </tr>
+        <tr>
+            <td>Trace</td>
+            <td>
+                <div style="white-space: pre;overflow:auto">{{ error.traceAsString }}</div>
+            </td>
+        </tr>
+    </table>
+{% endif %}

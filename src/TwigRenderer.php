@@ -241,7 +241,6 @@ class TwigRenderer
             $paths[] = $this->config['paths']['themes'] . '/default';
         } else {
             $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
-            $paths[] = $this->config['paths']['themes'] . '/default';
         }
 
         $loader1 = new TwigStringLoader();
