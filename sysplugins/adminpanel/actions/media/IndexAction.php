@@ -8,8 +8,8 @@
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
-use Herbie\Alias;
-use Herbie\FileInfo;
+use herbie\Alias;
+use herbie\FileInfo;
 use herbie\sysplugins\adminpanel\classes\DirectoryDotFilter;
 use herbie\sysplugins\adminpanel\classes\DirectoryIterator;
 use Psr\Http\Message\ServerRequestInterface;

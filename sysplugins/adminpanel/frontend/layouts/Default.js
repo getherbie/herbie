@@ -30,7 +30,7 @@ export default {
                             m("a.pure-menu-link[href='/example/web']", {}, "Frontend")
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/example/web?logout=1']", {}, "Logout")
+                            m("a.pure-menu-link[href='/logout']", {oncreate: m.route.link}, "Logout")
                         ]),
                     ])
                 ])

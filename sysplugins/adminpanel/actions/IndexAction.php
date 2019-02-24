@@ -8,7 +8,7 @@
 
 namespace herbie\sysplugins\adminpanel\actions;
 
-use Herbie\TwigRenderer;
+use herbie\TwigRenderer;
 
 class IndexAction
 {

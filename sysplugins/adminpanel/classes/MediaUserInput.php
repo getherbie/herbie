@@ -9,7 +9,7 @@
 namespace herbie\sysplugins\adminpanel\classes;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Herbie\Alias;
+use herbie\Alias;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 

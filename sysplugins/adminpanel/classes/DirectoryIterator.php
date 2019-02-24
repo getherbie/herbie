@@ -11,7 +11,7 @@
 
 namespace herbie\sysplugins\adminpanel\classes;
 
-use Herbie\FileInfo;
+use herbie\FileInfo;
 
 class DirectoryIterator extends \DirectoryIterator
 {

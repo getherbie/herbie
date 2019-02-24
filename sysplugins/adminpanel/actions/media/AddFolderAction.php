@@ -8,7 +8,7 @@
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
-use Herbie\Alias;
+use herbie\Alias;
 use herbie\sysplugins\adminpanel\classes\MediaUserInput;
 
 class AddFolderAction

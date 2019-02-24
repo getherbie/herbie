@@ -2,7 +2,7 @@
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
-use Herbie\Alias;
+use herbie\Alias;
 use Psr\Http\Message\ServerRequestInterface;
 
 class DeleteFolderAction
