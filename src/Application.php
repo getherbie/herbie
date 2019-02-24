@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Ausi\SlugGenerator\SlugOptions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -376,17 +375,11 @@ class Application implements LoggerAwareInterface
         });
 
         $c->set(SlugGenerator::class, function (Container $c) {
-            return new SlugGenerator(
-                $c->get(SlugOptions::class)
-            );
-        });
-
-        $c->set(SlugOptions::class, function (Container $c) {
-            $locale = $c->get(Configuration::class)->get('language');
-            return new SlugOptions([
-                'locale' => $locale,
+            $options = [
+                'locale' => $c->get(Configuration::class)->get('language'),
                 'delimiter' => '-'
-            ]);
+            ];
+            return new SlugGenerator($options);
         });
 
         $c->set(Translator::class, function (Container $c) {
