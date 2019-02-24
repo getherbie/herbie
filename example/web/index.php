@@ -16,14 +16,15 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 
 define('HERBIE_DEBUG', 1);
 
-use Example\CustomHeader;
-use Example\TestFilter;
-use Herbie\HttpBasicAuthMiddleware;
-use Herbie\ResponseTimeMiddleware;
+use example\CustomHeader;
+use example\TestFilter;
+use herbie\Application;
+use herbie\HttpBasicAuthMiddleware;
+use herbie\ResponseTimeMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-$app = new Herbie\Application('../site', '../../vendor');
+$app = new Application('../site', '../../vendor');
 
 // create a log channel
 $logger = new Logger('herbie');

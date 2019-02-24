@@ -8,12 +8,10 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 interface PluginInterface
 {
-    public function attach(): void;
-
     /**
      * @return array
      */

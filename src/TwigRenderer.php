@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Twig_Environment;
 use Twig_Error_Loader;
@@ -241,7 +241,6 @@ class TwigRenderer
             $paths[] = $this->config['paths']['themes'] . '/default';
         } else {
             $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
-            $paths[] = $this->config['paths']['themes'] . '/default';
         }
 
         $loader1 = new TwigStringLoader();
