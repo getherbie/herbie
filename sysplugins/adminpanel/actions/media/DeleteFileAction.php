@@ -1,15 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 11:26
- */
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
 use herbie\Alias;
 use herbie\sysplugins\adminpanel\classes\MediaUserInput;
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class DeleteFileAction
@@ -29,15 +25,33 @@ class DeleteFileAction
      */
     private $userInput;
 
-    public function __construct(ServerRequestInterface $request, Alias $alias, MediaUserInput $userInput)
+    /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * DeleteFileAction constructor.
+     * @param Alias $alias
+     * @param MediaUserInput $userInput
+     * @param PayloadFactory $payloadFactory
+     * @param ServerRequestInterface $request
+     */
+    public function __construct(Alias $alias, MediaUserInput $userInput, PayloadFactory $payloadFactory, ServerRequestInterface $request)
     {
-        $this->request = $request;
         $this->alias = $alias;
+        $this->payloadFactory = $payloadFactory;
         $this->userInput = $userInput;
+        $this->request = $request;
     }
 
-    public function __invoke()
+    /**
+     * @return Payload
+     */
+    public function __invoke(): Payload
     {
+        $payload = $this->payloadFactory->newInstance();
+
         $input = json_decode($this->request->getBody(), true);
         $file = $input['file'] ?? '';
 
@@ -47,15 +61,20 @@ class DeleteFileAction
         $path = $this->alias->get('@media/' . $file);
 
         if (!is_file($path) || !is_writable($path)) {
-            throw new \Exception('Kein gueltiger pfad: ' . $path);
+            return $payload
+                ->setStatus(Payload::NOT_VALID)
+                ->setOutput(['message' => 'Kein gueltiger pfad: ' . $path]);
         }
 
         $success = unlink($path);
 
         if (!$success) {
-            throw new \Exception('Could not delete file');
+            return $payload
+                ->setStatus(Payload::ERROR)
+                ->setOutput(['message' => 'Could not delete file']);
         }
 
-        return [true];
+        return $payload
+            ->setStatus(Payload::SUCCESS);
     }
 }

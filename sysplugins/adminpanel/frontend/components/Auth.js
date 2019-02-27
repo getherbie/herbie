@@ -4,14 +4,14 @@ let Auth = {
     username: "",
     password: "",
 
-    setUsername: function(value) {
+    setUsername(value) {
         Auth.username = value
     },
-    setPassword: function(value) {
+    setPassword(value) {
         Auth.password = value
     },
-    login: function() {
-        m.request({
+    login() {
+        return m.request({
             method: "POST",
             url: WEB_URL + "/adminpanel/auth",
             data: {username: Auth.username, password: Auth.password}
@@ -20,7 +20,7 @@ let Auth = {
             m.route.set("/")
         })
     },
-    logout: function() {
+    logout() {
         Auth.username = '';
         Auth.password = '';
         localStorage.removeItem("auth-token");

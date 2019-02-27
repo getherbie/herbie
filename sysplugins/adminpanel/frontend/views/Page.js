@@ -1,9 +1,9 @@
 import m from "mithril";
 
 export default {
-    oninit: function () {
+    oninit() {
     },
-    view: function () {
+    view() {
         let html = '<h1>Page</h1>';
         return m.trust(html)
     }

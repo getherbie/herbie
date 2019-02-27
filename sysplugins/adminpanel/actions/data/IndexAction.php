@@ -1,29 +1,34 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 10:54
- */
 
 namespace herbie\sysplugins\adminpanel\actions\data;
 
-use Herbie\TwigRenderer;
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 
 class IndexAction
 {
     /**
-     * @var TwigRenderer
+     * @var PayloadFactory
      */
-    private $twig;
+    private $payloadFactory;
 
-    public function __construct(TwigRenderer $twig)
+    /**
+     * IndexAction constructor.
+     * @param PayloadFactory $payloadFactory
+     */
+    public function __construct(PayloadFactory $payloadFactory)
     {
-        $this->twig = $twig;
+        $this->payloadFactory = $payloadFactory;
     }
 
-    public function __invoke()
+    /**
+     * @return Payload
+     */
+    public function __invoke(): Payload
     {
-        return $this->twig->renderTemplate('@sysplugin/adminpanel/views/data/index.twig');
+        $payload = $this->payloadFactory->newInstance();
+        return $payload
+            ->setStatus(Payload::FOUND)
+            ->setOutput([]);
     }
 }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 11:26
- */
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
@@ -12,27 +6,41 @@ use herbie\Alias;
 use herbie\FileInfo;
 use herbie\sysplugins\adminpanel\classes\DirectoryDotFilter;
 use herbie\sysplugins\adminpanel\classes\DirectoryIterator;
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class IndexAction
 {
     /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-    /**
      * @var Alias
      */
     private $alias;
 
-    public function __construct(ServerRequestInterface $request, Alias $alias)
+    /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * @var ServerRequestInterface
+     */
+    private $request;
+
+    public function __construct(Alias $alias, PayloadFactory $payloadFactory, ServerRequestInterface $request)
     {
-        $this->request = $request;
         $this->alias = $alias;
+        $this->payloadFactory = $payloadFactory;
+        $this->request = $request;
     }
 
+    /**
+     * @return Payload
+     */
     public function __invoke()
     {
+        $payload = $this->payloadFactory->newInstance();
+
         $params = $this->request->getQueryParams();
         $dir = $params['dir'] ?? '';
         $dir = str_replace(['../', '..', './', '.'], '', trim($dir, '/'));
@@ -58,14 +66,21 @@ class IndexAction
         }
         */
 
-        return [
-            'currentDir' => $dir,
-            'parentDir' => str_replace('.', '', dirname($dir)),
-            'entries' => $this->getFiles($path, $root),
-            #'root' => $root
-        ];
+        return $payload
+            ->setStatus(Payload::SUCCESS)
+            ->setOutput([
+                'currentDir' => $dir,
+                'parentDir' => str_replace('.', '', dirname($dir)),
+                'entries' => $this->getFiles($path, $root),
+                #'root' => $root
+            ]);
     }
 
+    /**
+     * @param string $path
+     * @param string $root
+     * @return array
+     */
     private function getFiles(string $path, string $root): array
     {
         $iterator = [];

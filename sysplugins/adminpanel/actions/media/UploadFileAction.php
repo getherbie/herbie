@@ -1,15 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 11:26
- */
 
 namespace herbie\sysplugins\adminpanel\actions\media;
 
 use herbie\Alias;
 use herbie\sysplugins\adminpanel\classes\MediaUserInput;
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 
 class UploadFileAction
 {
@@ -24,30 +20,51 @@ class UploadFileAction
     private $userInput;
 
     /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
      * UploadFileAction constructor.
      * @param Alias $alias
      * @param MediaUserInput $userInput
+     * @param PayloadFactory $payloadFactory
      */
-    public function __construct(Alias $alias, MediaUserInput $userInput)
+    public function __construct(Alias $alias, MediaUserInput $userInput, PayloadFactory $payloadFactory)
     {
         $this->alias = $alias;
         $this->userInput = $userInput;
+        $this->payloadFactory = $payloadFactory;
     }
 
-    public function __invoke()
+    /**
+     * @return Payload
+     */
+    public function __invoke(): Payload
     {
-        $currentDir = $this->userInput->getCurrentDir();
-        $uploadFile = $this->userInput->getUploadFile();
-        $clientFileName = $this->userInput->sanitizeClientFilename($uploadFile->getClientFilename());
-        $targetPath = sprintf('%s/%s/%s', $this->alias->get('@media'), $currentDir, $clientFileName);
+        $payload = $this->payloadFactory->newInstance();
 
-        $uploadFile->moveTo($targetPath);
+        try {
+            $currentDir = $this->userInput->getCurrentDir();
+            $uploadFile = $this->userInput->getUploadFile();
+            $clientFileName = $this->userInput->sanitizeClientFilename($uploadFile->getClientFilename());
+            $targetPath = sprintf('%s/%s/%s', $this->alias->get('@media'), $currentDir, $clientFileName);
 
-        return [
-            'type' => 'file',
-            'path' => $currentDir . '/' . $clientFileName,
-            'name' => $clientFileName,
-            'size' => $uploadFile->getSize()
-        ];
+            $uploadFile->moveTo($targetPath);
+
+            $payload
+                ->setStatus(Payload::SUCCESS)
+                ->setOutput([
+                    'type' => 'file',
+                    'path' => $currentDir . '/' . $clientFileName,
+                    'name' => $clientFileName,
+                    'size' => $uploadFile->getSize()
+                ]);
+
+        } catch (\Throwable $t) {
+            return $payload
+                ->setStatus(Payload::ERROR)
+                ->setOutput($t);
+        }
     }
 }

@@ -1,13 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 10:54
- */
 
 namespace herbie\sysplugins\adminpanel\actions\test;
 
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AddAction
@@ -16,36 +12,41 @@ class AddAction
      * @var ServerRequestInterface
      */
     private $request;
+    /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
 
-    public function __construct(ServerRequestInterface $request)
+    /**
+     * AddAction constructor.
+     * @param ServerRequestInterface $request
+     * @param PayloadFactory $payloadFactory
+     */
+    public function __construct(ServerRequestInterface $request, PayloadFactory $payloadFactory)
     {
         $this->request = $request;
+        $this->payloadFactory = $payloadFactory;
     }
 
     /**
-     * @return array
-     * @see https://stackoverflow.com/questions/3290182/rest-http-status-codes-for-failed-validation-or-invalid-duplicate
+     * @return Payload
      */
-    public function __invoke()
+    public function __invoke(): Payload
     {
+        $payload = $this->payloadFactory->newInstance();
+
         $input = json_decode($this->request->getBody(), true);
         $name = $input['name'] ?? '';
         $name = trim($name);
 
-        $errors = [];
-
         if (empty($name)) {
-            $errors['name'][] = 'Name is required';
+            return $payload
+                ->setStatus(Payload::NOT_VALID)
+                ->setOutput(['message' => 'Name is required']);
         }
 
-        if (!empty($errors)) {
-            header($_SERVER["SERVER_PROTOCOL"] . ' 400 Bad Request');
-            return ['errors' => $errors];
-        }
-
-        return [
-            'name' => $name
-        ];
+        return $payload
+            ->setStatus(Payload::FOUND)
+            ->setOutput(['name' => $name]);
     }
-
 }

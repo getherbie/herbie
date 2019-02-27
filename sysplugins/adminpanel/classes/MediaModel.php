@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-21
- * Time: 06:27
- */
 
 namespace herbie\sysplugins\adminpanel\classes;
 

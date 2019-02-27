@@ -4,7 +4,12 @@ import ErrorHandler from "../components/ErrorHandler";
 
 export default {
     folderName: '',
-    oninit: Media.loadList,
+    oninit() {
+        Media.loadList()
+            .catch((error) => {
+                ErrorHandler.show(error)
+            })
+    },
     view() {
         return [
             m("h1", "Dateiablage"),

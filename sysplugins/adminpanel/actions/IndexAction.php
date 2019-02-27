@@ -1,13 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-02-10
- * Time: 10:54
- */
 
 namespace herbie\sysplugins\adminpanel\actions;
 
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 use herbie\TwigRenderer;
 
 class IndexAction
@@ -17,13 +13,38 @@ class IndexAction
      */
     private $twig;
 
-    public function __construct(TwigRenderer $twig)
+    /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * IndexAction constructor.
+     * @param PayloadFactory $payloadFactory
+     * @param TwigRenderer $twig
+     */
+    public function __construct(PayloadFactory $payloadFactory, TwigRenderer $twig)
     {
         $this->twig = $twig;
+        $this->payloadFactory = $payloadFactory;
     }
 
-    public function __invoke()
+    /**
+     * @return Payload
+     */
+    public function __invoke(): Payload
     {
-        return $this->twig->renderTemplate('@sysplugin/adminpanel/views/index.twig');
+        $payload = $this->payloadFactory->newInstance();
+
+        try {
+            $output = $this->twig->renderTemplate('@sysplugin/adminpanel/views/index.twig');
+            return $payload
+                ->setStatus(Payload::FOUND)
+                ->setOutput($output);
+        } catch (\Throwable $t) {
+            return $payload
+                ->setStatus(Payload::ERROR)
+                ->setOutput($t);
+        }
     }
 }

@@ -5,7 +5,10 @@ let Test = {
     loadList() {
         return m.request({
             method: "GET",
-            url: WEB_URL + "/adminpanel/test"
+            url: WEB_URL + "/adminpanel/test",
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("auth-token")
+            }
         }).then((result) => {
             Test.list = result
         })
@@ -14,7 +17,10 @@ let Test = {
         return m.request({
             method: "POST",
             url: WEB_URL + "/adminpanel/test/add",
-            data: entry
+            data: entry,
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("auth-token")
+            }
         }).then(() => {
             Test.list.push(entry)
         });
@@ -22,7 +28,10 @@ let Test = {
     remove(index) {
         return m.request({
             method: "DELETE",
-            url: WEB_URL + "/adminpanel/test/" + index
+            url: WEB_URL + "/adminpanel/test/" + index,
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("auth-token")
+            }
         }).then(() => {
             Test.list.splice(index, 1)
         })

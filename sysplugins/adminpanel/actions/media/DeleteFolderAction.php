@@ -3,41 +3,66 @@
 namespace herbie\sysplugins\adminpanel\actions\media;
 
 use herbie\Alias;
+use herbie\sysplugins\adminpanel\classes\Payload;
+use herbie\sysplugins\adminpanel\classes\PayloadFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class DeleteFolderAction
 {
     /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-    /**
      * @var Alias
      */
     private $alias;
 
-    public function __construct(ServerRequestInterface $request, Alias $alias)
+    /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * @var ServerRequestInterface
+     */
+    private $request;
+
+    /**
+     * DeleteFolderAction constructor.
+     * @param Alias $alias
+     * @param PayloadFactory $payloadFactory
+     * @param ServerRequestInterface $request
+     */
+    public function __construct(Alias $alias, PayloadFactory $payloadFactory, ServerRequestInterface $request)
     {
-        $this->request = $request;
         $this->alias = $alias;
+        $this->payloadFactory = $payloadFactory;
+        $this->request = $request;
     }
 
-    public function __invoke()
+    /**
+     * @return Payload
+     */
+    public function __invoke(): Payload
     {
+        $payload = $this->payloadFactory->newInstance();
+
         $input = json_decode($this->request->getBody(), true);
         $file = $input['folder'] ?? '';
         $path = $this->alias->get('@media/' . $file);
 
         if (!is_dir($path) || !is_writable($path)) {
-            throw new \Exception('Kein gueltiger pfad: ' . $path);
+            return $payload
+                ->setStatus(Payload::NOT_VALID)
+                ->setOutput(['message' => 'Kein gueltiger pfad: ' . $path]);
         }
 
         $success = @rmdir($path);
 
         if (!$success) {
-            throw new \Exception('Could not delete folder: ' . $path);
+            return $payload
+                ->setStatus(Payload::ERROR)
+                ->setOutput(['message' => 'Could not delete folder: ' . $path]);
         }
 
-        return [true];
+        return $payload
+            ->setStatus(Payload::SUCCESS);
     }
 }

@@ -1,10 +1,16 @@
 import m from "mithril";
 import Test from "../models/Test";
+import ErrorHandler from "../components/ErrorHandler";
 
 export default {
     name: "",
     error: "",
-    oninit: Test.loadList,
+    oninit() {
+        Test.loadList()
+            .catch((error) => {
+                ErrorHandler.show(error)
+            })
+    },
     view() {
         return [
             m("h1", "Test"),
@@ -78,12 +84,18 @@ export default {
                 this.name = "";
             })
             .catch((error) => {
-                this.error = error.response.errors.name[0]
+                ErrorHandler.show(error)
             });
+            /*.catch((error) => {
+                this.error = error.response.errors.name[0]
+            });*/
     },
     remove(index) {
         if (confirm('Delete row?')) {
-            Test.remove(index);
+            Test.remove(index)
+                .catch((error) => {
+                    ErrorHandler.show(error)
+                })
         }
     }
 }
