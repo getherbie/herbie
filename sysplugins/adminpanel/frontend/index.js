@@ -12,6 +12,8 @@ import Media from "./views/Media";
 import Tools from "./views/Tools";
 import Index from "./views/Index";
 import Test from "./views/Test";
+import Error from "./views/Error";
+
 
 // components
 import Auth from "./components/Auth";
@@ -82,9 +84,9 @@ m.route(document.body, "/", {
     },
     "/:404...": {
         render() {
-            document.title = "Fehler // " + PAGE_TITLE;
+            document.title = "Error // " + PAGE_TITLE;
             setActiveMenuItem();
-            return m(DefaultLayout, m(Error))
+            return m(LoginLayout, m(Error))
         }
     }
 });

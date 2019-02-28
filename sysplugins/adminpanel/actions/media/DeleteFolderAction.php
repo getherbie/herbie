@@ -51,7 +51,7 @@ class DeleteFolderAction
         if (!is_dir($path) || !is_writable($path)) {
             return $payload
                 ->setStatus(Payload::NOT_VALID)
-                ->setOutput(['message' => 'Kein gueltiger pfad: ' . $path]);
+                ->setOutput(['message' => 'Kein gueltiger pfad: ' . $file]);
         }
 
         $success = @rmdir($path);
@@ -59,7 +59,7 @@ class DeleteFolderAction
         if (!$success) {
             return $payload
                 ->setStatus(Payload::ERROR)
-                ->setOutput(['message' => 'Could not delete folder: ' . $path]);
+                ->setOutput(['message' => 'Could not delete folder: ' . $file]);
         }
 
         return $payload

@@ -52,7 +52,7 @@ class UploadFileAction
 
             $uploadFile->moveTo($targetPath);
 
-            $payload
+            return $payload
                 ->setStatus(Payload::SUCCESS)
                 ->setOutput([
                     'type' => 'file',
