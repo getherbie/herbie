@@ -39,7 +39,7 @@ export default {
                 }, "Login"),
             ]),
             m(".link", [
-                m("a[href='/" + WEB_URL + "']", {}, "To website")
+                m("a[href='" + WEB_URL + "']", {}, "To website")
             ])
         ]
     },

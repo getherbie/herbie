@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack index.js --output bin/app.js -d --watch"
+    "start": "webpack index.js --output bin/app.js -d --watch",
+    "build": "webpack index.js --output bin/app.js -p"
   },
   "keywords": [],
   "author": "",
