@@ -21,8 +21,20 @@ export default class extends Stimulus.Controller {
                 // "Content-Type": "application/x-www-form-urlencoded",
             },
             body: JSON.stringify(params)
-        }).then((response) => {
-            return response.json();
+        }).then(response => {
+
+            return response.json()
+                .then(json => {
+                    if (!response.ok) {
+                        const error = Object.assign({}, json, {
+                            status: response.status,
+                            statusText: response.statusText,
+                        });
+                        return Promise.reject(error);
+                    }
+                    return json;
+                });
+
         }).then((data) => {
 
             // Tabelle mit dem existierenden HTML tbody und der Zeile (row) aus dem template Element instantiieren
@@ -36,6 +48,12 @@ export default class extends Stimulus.Controller {
             table.appendChild(clone);
 
             this.name = '';
+            this.setVisibility();
+
+        }).catch(error => {
+
+            console.log(error);
+
         });
     }
 
@@ -44,15 +62,26 @@ export default class extends Stimulus.Controller {
             fetch('test/' + '29', {
                 method: 'POST',
                 body: {id: 'test'}
-            }).then(function (response) {
+            }).then(response => {
                 return JSON.stringify(response.json());
-            }).then(function (success) {
+            }).then(success => {
                 if (success) {
                     let closest = event.target.closest('tr');
-                    closest.style.display = 'none';
-                    console.log('okay');
+                    closest.classList.add('hidden');
+                    this.setVisibility();
                 }
             });
+        }
+    }
+
+    setVisibility() {
+        let trs = document.querySelectorAll("#test-tbody tr:not(.hidden)");
+        if (trs.length > 0) {
+            document.getElementById("test-table").classList.remove('hidden');
+            document.getElementById("test-empty-table").classList.add('hidden');
+        } else {
+            document.getElementById("test-table").classList.add('hidden');
+            document.getElementById("test-empty-table").classList.remove('hidden');
         }
     }
 

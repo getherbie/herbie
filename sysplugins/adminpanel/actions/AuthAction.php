@@ -38,6 +38,7 @@ class AuthAction
         $input = json_decode($this->request->getBody(), true);
 
         if (($input['username'] == 'demo') && ($input['password'] == 'demo')) {
+            setcookie('HERBIE_FRONTEND_PANEL', 1, 0, '/');
             $token = $this->generateToken();
             return $payload
                 ->setStatus(Payload::AUTHENTICATED)

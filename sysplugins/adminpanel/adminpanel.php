@@ -6,6 +6,7 @@ use AltoRouter;
 use Ausi\SlugGenerator\SlugGenerator;
 use Firebase\JWT\JWT;
 use herbie\Alias;
+use herbie\Assets;
 use herbie\Configuration;
 use herbie\Environment;
 use herbie\HttpException;
@@ -25,33 +26,50 @@ use Tebe\HttpFactory\HttpFactory;
 class AdminpanelPlugin extends Plugin
 {
     /**
-     * @var Environment
+     * @var Assets
      */
-    private $environment;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private $assets;
+
     /**
      * @var Configuration
      */
     private $config;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
+     * @var
+     */
+    private $request;
+
     /**
      * @var TwigRenderer
      */
     private $twig;
 
-    private $request;
-
     /**
      * AdminpanelPlugin constructor.
-     * @param Environment $environment
-     * @param ContainerInterface $container
+     * @param Assets $assets
      * @param Configuration $config
+     * @param ContainerInterface $container
+     * @param Environment $environment
      * @param TwigRenderer $twig
      */
-    public function __construct(Environment $environment, ContainerInterface $container, Configuration $config, TwigRenderer $twig)
-    {
+    public function __construct(
+        Assets $assets,
+        Configuration $config,
+        ContainerInterface $container,
+        Environment $environment,
+        TwigRenderer $twig
+    ) {
         $this->environment = $environment;
         $this->container = $container;
         $this->config = $config;
@@ -64,9 +82,12 @@ class AdminpanelPlugin extends Plugin
                 $c->get(SlugGenerator::class)
             );
         });
+
         $this->container->set(PayloadFactory::class, function () {
             return new PayloadFactory();
         });
+
+        $this->assets = $assets;
     }
 
     /**
@@ -88,6 +109,8 @@ class AdminpanelPlugin extends Plugin
      */
     public function adminpanelModule(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
+        $this->assets->addCss('@sysplugin/adminpanel/assets/main.css');
+
         $this->request = $request;
 
         $requestedRoute = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE);
@@ -201,6 +224,11 @@ class AdminpanelPlugin extends Plugin
     public function frontendPanel(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $response = $next->handle($request);
+
+        $cookies = $request->getCookieParams();
+        if (empty($cookies['HERBIE_FRONTEND_PANEL'])) {
+            return $response;
+        }
 
         // prepend adminpanel to html body
         $panel = $this->twig->renderTemplate('@sysplugin/adminpanel/views/panel.twig');

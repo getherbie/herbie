@@ -24,6 +24,7 @@ let Auth = {
         Auth.username = '';
         Auth.password = '';
         localStorage.removeItem("auth-token");
+        document.cookie = 'HERBIE_FRONTEND_PANEL=; Max-Age=-99999999; Path=/';
     }
 }
 
