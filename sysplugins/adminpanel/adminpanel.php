@@ -109,8 +109,6 @@ class AdminpanelPlugin extends Plugin
      */
     public function adminpanelModule(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
-        $this->assets->addCss('@sysplugin/adminpanel/assets/main.css');
-
         $this->request = $request;
 
         $requestedRoute = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE);
@@ -119,6 +117,11 @@ class AdminpanelPlugin extends Plugin
 
         if (strpos($requestedRoute, $route) === false) {
             return $next->handle($request);
+        }
+
+        $this->assets->addCss('@sysplugin/adminpanel/assets/main.css', [], 'adminpanel');
+        if (!HERBIE_DEBUG) {
+            $this->assets->addJs('@sysplugin/adminpanel/frontend/bin/app.js', [], 'adminpanel');
         }
 
         $webUser = $this->getUserFromToken();

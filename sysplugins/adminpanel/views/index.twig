@@ -32,12 +32,16 @@
             margin-top: 0.5rem;
         }
     </style>
-    {{ outputcss() }}
+    {{ outputcss('adminpanel') }}
     <script>
         const WEB_URL = '{{ url('/') }}';
     </script>
 </head>
 <body>
-<script src="/sysplugins/adminpanel/frontend/bin/app.js"></script>
+{% if constant('HERBIE_DEBUG') %}
+    <script src="/sysplugins/adminpanel/frontend/bin/app-dev.js"></script>
+{% else %}
+    {{ outputjs('adminpanel') }}
+{% endif %}
 </body>
 </html>
