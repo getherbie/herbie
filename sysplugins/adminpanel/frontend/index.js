@@ -17,14 +17,15 @@ import Error from "./views/Error";
 
 // components
 import Auth from "./components/Auth";
+import t from "./components/Translate";
 
-const PAGE_TITLE = "Adminpanel";
+const PAGE_TITLE = t("Adminpanel");
 
 m.route(document.body, "/", {
     "/": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Index // " + PAGE_TITLE;
+            document.title = t("Index") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__index a');
             return m(DefaultLayout, m(Index))
         }
@@ -32,7 +33,7 @@ m.route(document.body, "/", {
     "/page": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Page // " + PAGE_TITLE;
+            document.title = t("Page") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__test a');
             return m(DefaultLayout, m(Page))
         }
@@ -40,7 +41,7 @@ m.route(document.body, "/", {
     "/data": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Data // " + PAGE_TITLE;
+            document.title = t("Data") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__test a');
             return m(DefaultLayout, m(Data))
         }
@@ -48,7 +49,7 @@ m.route(document.body, "/", {
     "/media": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Media // " + PAGE_TITLE;
+            document.title = t("Media") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__test a');
             return m(DefaultLayout, m(Media))
         }
@@ -56,7 +57,7 @@ m.route(document.body, "/", {
     "/tools": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Tools // " + PAGE_TITLE;
+            document.title = t("Tools") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__test a');
             return m(DefaultLayout, m(Tools))
         }
@@ -64,14 +65,14 @@ m.route(document.body, "/", {
     "/test": {
         onmatch: onMatchHandler,
         render() {
-            document.title = "Test // " + PAGE_TITLE;
+            document.title = t("Test") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__test a');
             return m(DefaultLayout, m(Test, {}))
         }
     },
     "/login": {
         render() {
-            document.title = "Login // " + PAGE_TITLE;
+            document.title = t("Login") + " / " + PAGE_TITLE;
             setActiveMenuItem('.site-navigation__login a');
             return m(LoginLayout, m(Login, {}))
         }
@@ -84,12 +85,16 @@ m.route(document.body, "/", {
     },
     "/:404...": {
         render() {
-            document.title = "Error // " + PAGE_TITLE;
+            document.title = t("Error") + " / " + PAGE_TITLE;
             setActiveMenuItem();
             return m(LoginLayout, m(Error))
         }
     }
 });
+
+function __(key) {
+    return key;
+}
 
 function onMatchHandler() {
     if (!localStorage.getItem("auth-token")) m.route.set("/login")

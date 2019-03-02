@@ -1,10 +1,12 @@
 import m from "mithril";
+import t from "../components/Translate"
 
 export default {
     oninit() {
     },
     view() {
-        let html = '<h1>Page</h1>';
-        return m.trust(html)
+        return [
+            m("h1", t("Pages"))
+        ]
     }
 }

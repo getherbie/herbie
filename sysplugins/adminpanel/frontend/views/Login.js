@@ -1,4 +1,5 @@
 import m from "mithril";
+import t from "../components/Translate"
 import Auth from "../components/Auth"
 import ErrorHandler from "../components/ErrorHandler";
 
@@ -6,40 +7,46 @@ export default {
     view() {
         return [
             m(".pure-form", [
-                m(".test", [
-                    m("input.pure-input-1[type=text][placeholder=Username][required]", {
+                m("div", [
+                    m("input.pure-input-1", {
                         oninput: (e) => {
                             Auth.setUsername(e.target.value)
                         },
                         onkeyup: (e) => {
-                            if (e.keyCode == 13) {
+                            if (e.keyCode === 13) {
                                 this.login()
                             }
                             e.redraw = false
                         },
+                        placeholder: t("Username"),
+                        required: true,
+                        type: "text",
                         value: Auth.username
                     })
                 ]),
-                m(".test", [
-                    m("input.pure-input-1[type=password][placeholder=Password][required]", {
+                m("div", [
+                    m("input.pure-input-1", {
                         oninput: (e) => {
                             Auth.setPassword(e.target.value)
                         },
                         onkeyup: (e) => {
-                            if (e.keyCode == 13) {
+                            if (e.keyCode === 13) {
                                 this.login()
                             }
                             e.redraw = false
                         },
+                        placeholder: t("Password"),
+                        required: true,
+                        type: "text",
                         value: Auth.password
                     })
                 ]),
-                m("button.pure-button[type=button]", {
+                m("button.pure-button", {
                     onclick: () => this.login()
                 }, "Login"),
             ]),
-            m(".link", [
-                m("a[href='" + WEB_URL + "']", {}, "To website")
+            m("div", [
+                m("a[href='" + WEB_URL + "']", {}, t("To website"))
             ])
         ]
     },

@@ -1,4 +1,5 @@
 import m from "mithril";
+import t from "../components/Translate"
 import Media from "../models/Media";
 import ErrorHandler from "../components/ErrorHandler";
 
@@ -12,13 +13,13 @@ export default {
     },
     view() {
         return [
-            m("h1", "Dateiablage"),
+            m("h1", t("Files")),
             this.renderTable()
         ];
     },
     renderTable() {
         if (Media.list.length === 0) {
-            return m("div", "No test entries");
+            return m("div", t("No entries"));
         }
         return [
             m("div.media__forms", [
@@ -29,9 +30,9 @@ export default {
                 m("thead", [
                     m("tr", [
                         m("th.icon[width=1%]"),
-                        m("th.title[width=55%]", "Datei"),
-                        m("th[width=20%]", "Grösse"),
-                        m("th[width=20%]", "Art"),
+                        m("th.title[width=55%]", t("File")),
+                        m("th[width=20%]", t("Size")),
+                        m("th[width=20%]", t("Type")),
                         m("th[width=4%]"),
                     ])
                 ]),
@@ -57,7 +58,6 @@ export default {
                     m("a[href='#']", {
                         onclick: (e) => {
                             e.preventDefault()
-                            //m.route.set("/media", { dir: test.path})
                             Media.currentDir = test.path;
                             Media.loadList()
                                 .catch((error) => {
@@ -73,7 +73,7 @@ export default {
                         onclick: (e) => {
                             this.removeDir(index)
                         }
-                    }, "Delete")
+                    }, t("Delete"))
                 ])
             ])
         ]
@@ -92,7 +92,7 @@ export default {
                         onclick: (e) => {
                             this.removeFile(index)
                         }
-                    }, "Delete")
+                    }, t("Delete"))
                 ])
             ])
         ]
@@ -104,10 +104,6 @@ export default {
                     this.folderName = e.target.value
                     e.redraw = false
                 },
-                /*onkeypress: (e) => {
-                    this.error = ""
-                    e.redraw = false
-                },*/
                 onkeyup: (e) => {
                     if (e.keyCode == 13) {
                         this.folderName = e.target.value
@@ -121,9 +117,8 @@ export default {
                     onclick: (e) => {
                         this.addFolder(this.folderName)
                     }
-                }, "Order erstellen"
-            ),
-            //m("button.cancel.pure-button", "Abbrechen"),
+                }, t("Add folder")
+            )
         ]);
     },
     uploadFileForm() {
@@ -132,9 +127,11 @@ export default {
                 onclick: (e) => {
                     document.getElementById("file_upload").click();
                 },
-                }, "Dateien hochladen"
+                }, t("Upload file")
             ),
-            m("input#file_upload[type=file][name=file_upload]", {
+            m("input#file_upload", {
+                type: "file",
+                name: "file_upload",
                 onchange: this.uploadFile
             })
         ]);
@@ -161,7 +158,7 @@ export default {
         }
     },
     removeDir(index) {
-        if (confirm('Delete folder?')) {
+        if (confirm(t('Delete folder?'))) {
             Media.removeFolder(index)
                 .catch((error) => {
                     ErrorHandler.show(error);
@@ -169,7 +166,7 @@ export default {
         }
     },
     removeFile(index) {
-        if (confirm('Delete file?')) {
+        if (confirm(t('Delete file?'))) {
             Media.removeFile(index)
                 .catch((error) => {
                     ErrorHandler.show(error);
@@ -186,7 +183,7 @@ export default {
         this.folderName = "";
     },
     uploadFile(e) {
-        var file = e.target.files[0]
+        let file = e.target.files[0]
         Media.uploadFile(file)
             .catch((error) => {
                 ErrorHandler.show(error)

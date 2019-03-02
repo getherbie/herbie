@@ -1,4 +1,5 @@
 import m from "mithril"
+import t from "../components/Translate"
 
 export default {
     view: function (vnode) {
@@ -11,26 +12,26 @@ export default {
                     m("a.pure-menu-heading[href='/']", {oncreate: m.route.link}, "HERBIE"),
                     m("ul.pure-menu-list", [
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/page']", {oncreate: m.route.link}, "Page")
+                            m("a.pure-menu-link[href='/page']", {oncreate: m.route.link}, t("Page"))
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/data']", {oncreate: m.route.link}, "Data")
+                            m("a.pure-menu-link[href='/data']", {oncreate: m.route.link}, t("Data"))
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/media']", {oncreate: m.route.link}, "Media")
+                            m("a.pure-menu-link[href='/media']", {oncreate: m.route.link}, t("Media"))
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/tools']", {oncreate: m.route.link}, "Tools")
+                            m("a.pure-menu-link[href='/tools']", {oncreate: m.route.link}, t("Tools"))
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/test']", {oncreate: m.route.link}, "Test")
+                            m("a.pure-menu-link[href='/test']", {oncreate: m.route.link}, t("Test"))
                         ]),
                         m("li.pure-menu-item", {}, "-"),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='" + WEB_URL + "']", {}, "Frontend")
+                            m("a.pure-menu-link[href='" + WEB_URL + "']", {}, t("Frontend"))
                         ]),
                         m("li.pure-menu-item", [
-                            m("a.pure-menu-link[href='/logout']", {oncreate: m.route.link}, "Logout")
+                            m("a.pure-menu-link[href='/logout']", {oncreate: m.route.link}, t("Logout"))
                         ]),
                     ])
                 ])

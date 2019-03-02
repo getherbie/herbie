@@ -52,7 +52,7 @@ let Media = {
         })
     },
     uploadFile(file) {
-        var data = new FormData()
+        let data = new FormData()
         data.append("uploadFile", file)
         data.append('currentDir', this.currentDir)
         return m.request({

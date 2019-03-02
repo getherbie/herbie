@@ -1,4 +1,5 @@
 import m from "mithril";
+import t from "../components/Translate"
 import Test from "../models/Test";
 import ErrorHandler from "../components/ErrorHandler";
 
@@ -13,7 +14,7 @@ export default {
     },
     view() {
         return [
-            m("h1", "Test"),
+            m("h1", t("Test")),
             m("div.pure-form", [
                 m("input.pure-input[data-target=test.name]", {
                     oninput: (e) => {
@@ -37,7 +38,7 @@ export default {
                     onclick: (e) => {
                         this.add()
                     }
-                }, "Add"),
+                }, t("Add")),
             ]),
             this.renderError(),
             m("br"),
@@ -52,12 +53,12 @@ export default {
     },
     renderTable() {
         if (Test.list.length === 0) {
-            return m("div", "No test entries");
+            return m("div", t("No entries"));
         }
         return m("table#test-table.pure-table.pure-table-horizontal", [
             m("thead", [
                 m("tr", [
-                    m("th[width=99%]", "Type"),
+                    m("th[width=99%]", t("Type")),
                     m("th[width=1%]"),
                 ])
             ]),
@@ -69,7 +70,7 @@ export default {
                             onclick: (e) => {
                                 this.remove(index)
                             }
-                        }, "Delete")
+                        }, t("Delete"))
                     ])
                 ])
             }))
@@ -91,7 +92,7 @@ export default {
             });*/
     },
     remove(index) {
-        if (confirm('Delete row?')) {
+        if (confirm(t("Delete entry?"))) {
             Test.remove(index)
                 .catch((error) => {
                     ErrorHandler.show(error)
