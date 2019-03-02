@@ -12,26 +12,6 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
     <!--<![endif]-->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-size: 14px;
-        }
-        .form-add-folder {
-            display:inline-block;
-        }
-        .form-upload {
-            display:inline-block;
-            margin-left: 0.12rem;
-        }
-        #file_upload {
-            visibility: hidden;
-            width: 0;
-            height: 0;
-        }
-        .media__table {
-            margin-top: 0.5rem;
-        }
-    </style>
     {{ outputcss('adminpanel') }}
     <script>
         const WEB_URL = '{{ url('/') }}';
