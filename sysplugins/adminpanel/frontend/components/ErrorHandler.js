@@ -6,6 +6,11 @@ const ErrorHandler = {
         if (error.code == 401) {
             m.route.set("/login");
         }
+        /*
+        let el = document.getElementById('flashError');
+        el.innerText = error.response.message;
+        el.classList.remove('hidden');
+        */
         alert(error.response.message);
     }
 }

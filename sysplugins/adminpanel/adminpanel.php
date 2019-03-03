@@ -156,6 +156,8 @@ class AdminpanelPlugin extends Plugin
 
         // tools
         $router->map('GET', $route . '/tools', actions\tools\IndexAction::class, 'tools/index');
+        $router->map('POST', $route . '/tools/emptyfolder', actions\tools\EmptyFolderAction::class, 'tools/emptyfolder');
+        $router->map('POST', $route . '/tools/formatconfig', actions\tools\FormatConfigAction::class, 'tools/formatconfig');
 
         $response = HttpFactory::instance()->createResponse(200);
 
