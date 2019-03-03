@@ -10,5 +10,5 @@
  */
 
 return new Twig_Function('hello', function ($name) {
-    return "Hallo {$name}!";
+    return "Hello {$name}!";
 });

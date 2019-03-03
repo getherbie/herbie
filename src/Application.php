@@ -2,18 +2,15 @@
 /**
  * This file is part of Herbie.
  *
- * (c) Thomas Breuss <https://www.tebe.ch>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Ausi\SlugGenerator\SlugOptions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +24,7 @@ use Twig_Test;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
+define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 
@@ -82,8 +80,23 @@ class Application implements LoggerAwareInterface
      */
     private function init()
     {
-        $errorHandler = new ErrorHandler();
-        $errorHandler->register($this->sitePath . '/runtime/log');
+        $logDir = $this->sitePath . '/runtime/log';
+
+        ini_set('display_errors', HERBIE_DEBUG ? '1': '0');
+        ini_set('log_errors', '1');
+        ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
+        error_reporting(E_ALL);
+
+        #register_shutdown_function(new FatalErrorHandler());
+        set_exception_handler(new ExceptionHandler());
+
+        if (!is_dir($logDir)) {
+            throw SystemException::directoryNotExist($logDir);
+        }
+        if (!is_writable($logDir)) {
+            throw SystemException::directoryNotWritable($logDir);
+        }
+
         $this->container = $this->initContainer();
 
         setlocale(LC_ALL, $this->container->get(Configuration::class)->get('locale'));
@@ -106,6 +119,10 @@ class Application implements LoggerAwareInterface
     {
         $c = new Container();
 
+        $c->set(ContainerInterface::class, function (Container $c) {
+            return $c;
+        });
+
         $c->set(Alias::class, function (Container $c) {
             $config = $c->get(Configuration::class);
             return new Alias([
@@ -115,6 +132,7 @@ class Application implements LoggerAwareInterface
                 '@page' => $config['paths']['pages'],
                 '@plugin' => $config['paths']['plugins'],
                 '@site' => $this->sitePath,
+                '@sysplugin' => $config['paths']['sysPlugins'],
                 '@vendor' => $this->vendorDir,
                 '@web' => $config['paths']['web'],
                 '@snippet' => $config['paths']['app'] . '/../templates/snippets'
@@ -181,6 +199,26 @@ class Application implements LoggerAwareInterface
                     }
                 }
             }
+
+            // sysplugins config
+            $dir = $userConfig['paths']['sysPlugins'] ?? $config['paths']['sysPlugins'];
+            if (is_readable($dir)) {
+                $files = scandir($dir);
+                foreach ($files as $file) {
+                    if (substr($file, 0, 1) === '.') {
+                        continue;
+                    }
+                    $configFile = $dir . '/' . $file . '/config.yml';
+                    if (is_file($configFile)) {
+                        $content = file_get_contents($configFile);
+                        $content = str_replace(array_keys($consts), array_values($consts), $content);
+                        $array['plugins'][$file] = Yaml::parse($content);
+                    } else {
+                        $array['plugins'][$file] = [];
+                    }
+                }
+            }
+
             $config->merge(new Configuration($array));
 
             $config->merge($userConfig);
@@ -337,17 +375,11 @@ class Application implements LoggerAwareInterface
         });
 
         $c->set(SlugGenerator::class, function (Container $c) {
-            return new SlugGenerator(
-                $c->get(SlugOptions::class)
-            );
-        });
-
-        $c->set(SlugOptions::class, function (Container $c) {
-            $locale = $c->get(Configuration::class)->get('language');
-            return new SlugOptions([
-                'locale' => $locale,
+            $options = [
+                'locale' => $c->get(Configuration::class)->get('language'),
                 'delimiter' => '-'
-            ]);
+            ];
+            return new SlugGenerator($options);
         });
 
         $c->set(Translator::class, function (Container $c) {
@@ -426,6 +458,8 @@ class Application implements LoggerAwareInterface
         $this->emitResponse($response);
 
         $this->getEventManager()->trigger('onResponseEmitted');
+
+        exit(0);
     }
 
     /**

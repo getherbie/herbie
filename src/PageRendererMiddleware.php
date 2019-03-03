@@ -2,15 +2,13 @@
 /**
  * This file is part of Herbie.
  *
- * (c) Thomas Breuss <www.tebe.ch>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -100,11 +98,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
 
         if (is_null($page)) {
-            $message = sprintf(
-                'Server request attribute "%s" not set',
-                HERBIE_REQUEST_ATTRIBUTE_PAGE
-            );
-            throw new \InvalidArgumentException($message);
+            throw HttpException::notFound('Page "' . $this->environment->getRoute() . '" not found');
         }
 
         /** @var array $routeParams */

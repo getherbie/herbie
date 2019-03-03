@@ -2,15 +2,13 @@
 /**
  * This file is part of Herbie.
  *
- * (c) Thomas Breuss <www.tebe.ch>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -60,11 +58,20 @@ class PageResolverMiddleware implements MiddlewareInterface
     {
         $route = $this->environment->getRoute();
         $matchedRoute = $this->urlMatcher->match($route);
-        $page = $this->pageRepository->find($matchedRoute['path']);
-        $page->setRoute($matchedRoute['route']); // inject route
+
+        if (empty($matchedRoute)) {
+            $page = null;
+            $routeParams = [];
+        } else {
+            $page = $this->pageRepository->find($matchedRoute['path']);
+            $page->setRoute($matchedRoute['route']); // inject route
+            $routeParams = $matchedRoute['params'];
+        }
+
         $request = $request
             ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
-            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $matchedRoute['params']);
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
+            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
         return $handler->handle($request);
     }
 }

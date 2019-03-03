@@ -1,14 +1,14 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: thomas
- * Date: 31.12.18
- * Time: 15:14
+ * This file is part of Herbie.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 interface PageRepositoryInterface
 {

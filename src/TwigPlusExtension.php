@@ -2,15 +2,13 @@
 /**
  * This file is part of Herbie.
  *
- * (c) Thomas Breuss <https://www.tebe.ch>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Twig_Error_Loader;
 use Twig_Error_Runtime;
@@ -64,7 +62,7 @@ class TwigPlusExtension extends Twig_Extension
         $options = ['is_safe' => ['html']];
         return [
             new Twig_Function('asciitree', [$this, 'functionAsciiTree'], $options),
-            new Twig_Function('bodyclass', [$this, 'functionBodyClass']),
+            new Twig_Function('bodyclass', [$this, 'functionBodyClass'], ['needs_context' => true]),
             new Twig_Function('breadcrumb', [$this, 'functionBreadcrumb'], $options),
             new Twig_Function('listing', [$this, 'functionListing'], $options),
             new Twig_Function('menu', [$this, 'functionMenu'], $options),
@@ -116,17 +114,33 @@ class TwigPlusExtension extends Twig_Extension
     }
 
     /**
+     * @param array $context
      * @return string
      */
-    public function functionBodyClass(): string
+    public function functionBodyClass(array $context): string
     {
-        $route = trim($this->environment->getRoute(), '/');
-        if (empty($route)) {
-            $route = 'index';
+        $page = 'error';
+        if (isset($context['page'])) {
+            $route = $context['page']->getRoute();
+            $page = !empty($route) ? $route : 'index';
         }
-        // TODO retrieve page layout (available as request attribute HERBIE_PAGE)
-        $layout = ''; //$this->page->getLayout();
-        $class = sprintf('page-%s layout-%s', $route, $layout);
+
+        $layout = 'default';
+        if (isset($context['page'])) {
+            $layout = $context['page']->getLayout();
+        }
+
+        $theme = 'default';
+        if (!empty($context['theme'])) {
+            $theme = $context['theme'];
+        }
+
+        $language = 'en';
+        if (isset($context['site'])) {
+            $language = $context['site']->getLanguage();
+        }
+
+        $class = sprintf('page-%s theme-%s layout-%s language-%s', $page, $theme, $layout, $language);
         return str_replace(['/', '.'], '-', $class);
     }
 

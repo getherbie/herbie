@@ -1,14 +1,14 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: thomas
- * Date: 2019-01-06
- * Time: 08:52
+ * This file is part of Herbie.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Twig_Environment;
 use Twig_Error_Loader;
@@ -241,7 +241,6 @@ class TwigRenderer
             $paths[] = $this->config['paths']['themes'] . '/default';
         } else {
             $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
-            $paths[] = $this->config['paths']['themes'] . '/default';
         }
 
         $loader1 = new TwigStringLoader();
@@ -253,6 +252,7 @@ class TwigRenderer
             'page' => $this->config['paths']['pages'],
             'site' => $this->config['paths']['site'],
             'snippet' => $this->config['paths']['app'] . '/../templates/snippets',
+            'sysplugin' => $this->config['paths']['sysPlugins'],
             'template' => $this->config['paths']['app'] . '/../templates'
         ];
         foreach ($namespaces as $namespace => $path) {

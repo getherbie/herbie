@@ -1,9 +1,6 @@
 <?php
-
 /**
  * This file is part of Herbie.
- *
- * (c) Thomas Breuss <https://www.tebe.ch>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -112,12 +109,12 @@ class PluginManager
     {
         // add sys plugins first
         foreach ($this->config['enabledSysPlugins'] as $key) {
-            $this->loadPlugin($this->sysPluginsPath, $key);
+            $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
         }
 
         // add third-party plugins
         foreach ($this->config['enabledPlugins'] as $key) {
-            $this->loadPlugin($this->pluginsPath, $key);
+            $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
         }
 
         $this->eventManager->trigger('onPluginsAttached', $this);
@@ -128,13 +125,13 @@ class PluginManager
      * @param string $key
      * @throws \ReflectionException
      */
-    private function loadPlugin(string $path, string $key): void
+    private function loadPlugin(string $path, string $key, string $namespace): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
         if (is_readable($pluginPath)) {
             require($pluginPath);
 
-            $className = 'herbie\\plugin\\' . $key . '\\' . ucfirst($key) . 'Plugin';
+            $className = $namespace . $key . '\\' . ucfirst($key) . 'Plugin';
 
             $class = new \ReflectionClass($className);
 
@@ -168,8 +165,6 @@ class PluginManager
             foreach ($plugin->getTwigTests() as $twigTest) {
                 $this->addTwigTest(...$twigTest);
             }
-
-            $plugin->attach();
 
             $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
             $this->eventManager->trigger($eventName, $plugin);

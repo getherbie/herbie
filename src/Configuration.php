@@ -29,7 +29,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 /**
  * Provides a property based interface to an array.

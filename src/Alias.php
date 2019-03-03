@@ -1,9 +1,6 @@
 <?php
-
 /**
  * This file is part of Herbie.
- *
- * (c) Thomas Breuss <https://www.tebe.ch>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Herbie;
+namespace herbie;
 
 class Alias
 {
@@ -40,6 +37,9 @@ class Alias
      */
     public function set(string $alias, string $path): void
     {
+        if (strncmp($alias, '@', 1) <> 0) {
+            throw new \InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
+        }
         if (array_key_exists($alias, $this->aliases)) {
             throw new \Exception("Alias {$alias} already set, use update instead.");
         }
