@@ -23,14 +23,16 @@ class JsonPayloadMiddleware implements MiddlewareInterface
 
         if (stripos($contentType, 'application/json') === 0) {
             $json = (string)$request->getBody();
-            $data = json_decode($json, true);
-            $code = json_last_error();
-            if ($code !== JSON_ERROR_NONE) {
-                // This can be modified for PHP 7.3 when it is stable:
-                // https://ayesh.me/Upgrade-PHP-7.3#json-exceptions
-                throw new \Exception(sprintf('JSON: %s', json_last_error_msg()), $code);
+            if (!empty($json)) {
+                $data = json_decode($json, true);
+                $code = json_last_error();
+                if ($code !== JSON_ERROR_NONE) {
+                    // This can be modified for PHP 7.3 when it is stable:
+                    // https://ayesh.me/Upgrade-PHP-7.3#json-exceptions
+                    throw new \Exception(sprintf('JSON: %s', json_last_error_msg()), $code);
+                }
+                $request = $request->withParsedBody($data);
             }
-            $request = $request->withParsedBody($data);
         }
 
         return $next->handle($request);

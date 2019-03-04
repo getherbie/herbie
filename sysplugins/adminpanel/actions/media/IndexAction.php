@@ -27,6 +27,12 @@ class IndexAction
      */
     private $request;
 
+    /**
+     * IndexAction constructor.
+     * @param Alias $alias
+     * @param PayloadFactory $payloadFactory
+     * @param ServerRequestInterface $request
+     */
     public function __construct(Alias $alias, PayloadFactory $payloadFactory, ServerRequestInterface $request)
     {
         $this->alias = $alias;
@@ -46,25 +52,6 @@ class IndexAction
         $dir = str_replace(['../', '..', './', '.'], '', trim($dir, '/'));
         $path = $this->alias->get('@media/' . $dir);
         $root = $this->alias->get('@media');
-
-        /*
-        $entries = [];
-        foreach (array_diff(scandir($path), ['..', '.']) as $i => $entry) {
-            $filepath = $path . $entry;
-            if (!file_exists($filepath)) {
-                throw \Exception('File not exists');
-            }
-            $type = is_dir($filepath) ? 'dir' : 'file';
-            $info = pathinfo($filepath);
-            $entries[] = [
-                'type' => $type,
-                'path' => '',
-                'name' => $entry,
-                'size' => 0,
-                'ext' => ($type == 'file') ? $info['extension'] : ''
-            ];
-        }
-        */
 
         return $payload
             ->setStatus(Payload::SUCCESS)

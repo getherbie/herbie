@@ -18,6 +18,7 @@ export default {
                             }
                             e.redraw = false
                         },
+                        autofocus: true,
                         placeholder: t("Username"),
                         required: true,
                         type: "text",

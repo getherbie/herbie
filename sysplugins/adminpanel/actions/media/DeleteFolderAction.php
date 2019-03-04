@@ -44,7 +44,7 @@ class DeleteFolderAction
     {
         $payload = $this->payloadFactory->newInstance();
 
-        $input = json_decode($this->request->getBody(), true);
+        $input = $this->request->getParsedBody();
         $file = $input['folder'] ?? '';
         $path = $this->alias->get('@media/' . $file);
 

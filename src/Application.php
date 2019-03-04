@@ -274,6 +274,10 @@ class Application implements LoggerAwareInterface
             return new HttpFactory();
         });
 
+        $c->set(JsonPayloadMiddleware::class, function () {
+            return new JsonPayloadMiddleware();
+        });
+
         $c->set(LoggerInterface::class, function (Container $c) {
             return new NullLogger();
         });
@@ -281,7 +285,8 @@ class Application implements LoggerAwareInterface
         $c->set(MiddlewareDispatcher::class, function (Container $c) {
             $pageMiddlewares = array_merge(
                 [
-                    $c->get(ErrorHandlerMiddleware::class)
+                    $c->get(ErrorHandlerMiddleware::class),
+                    $c->get(JsonPayloadMiddleware::class)
                 ],
                 $this->applicationMiddlewares,
                 [

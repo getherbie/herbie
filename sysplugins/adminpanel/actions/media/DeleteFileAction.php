@@ -52,12 +52,8 @@ class DeleteFileAction
     {
         $payload = $this->payloadFactory->newInstance();
 
-        $input = json_decode($this->request->getBody(), true);
+        $input = $this->request->getParsedBody();
         $file = $input['file'] ?? '';
-
-        $mediaRootPath = $this->alias->get('@media/');
-        $deleteFile = $this->userInput->getDeleteFile();
-
         $path = $this->alias->get('@media/' . $file);
 
         if (!is_file($path) || !is_writable($path)) {

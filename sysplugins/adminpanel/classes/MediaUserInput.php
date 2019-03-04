@@ -36,7 +36,7 @@ class MediaUserInput
      */
     public function getFolderName(): string
     {
-        $input = json_decode($this->request->getBody(), true);
+        $input = $this->request->getParsedBody();
         $folderName = strtolower(trim($input['folderName']));
         $folderName = preg_replace('/[^a-z0-9_-]+/', '-', $folderName);
         $folderName = trim($folderName);
@@ -45,13 +45,7 @@ class MediaUserInput
 
     public function getCurrentDir(): string
     {
-        $contentType = $this->request->getHeaderLine('Content-Type');
-        if (strpos($contentType, 'application/json') !== false) {
-            $input = json_decode($this->request->getBody(), true);
-        } else {
-            $input = $this->request->getParsedBody();
-        }
-
+        $input = $this->request->getParsedBody();
         $mediaPath = $this->alias->get('@media/');
         $currentDir = trim($input['currentDir']);
 
@@ -79,7 +73,7 @@ class MediaUserInput
 
     public function getDeleteFile()
     {
-        $input = json_decode($this->request->getBody(), true);
+        $input = $this->request->getParsedBody();
         $file = $input['file'] ?? '';
         return $file;
     }

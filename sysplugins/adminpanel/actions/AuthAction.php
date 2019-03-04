@@ -5,28 +5,29 @@ namespace herbie\sysplugins\adminpanel\actions;
 use Firebase\JWT\JWT;
 use herbie\sysplugins\adminpanel\classes\Payload;
 use herbie\sysplugins\adminpanel\classes\PayloadFactory;
-use Psr\Http\Message\ServerRequestInterface;
+use herbie\sysplugins\adminpanel\classes\UserInput;
 
 class AuthAction
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
     /**
      * @var PayloadFactory
      */
     private $payloadFactory;
 
     /**
+     * @var UserInput
+     */
+    private $userInput;
+
+    /**
      * AuthAction constructor.
      * @param PayloadFactory $payloadFactory
-     * @param ServerRequestInterface $request
+     * @param UserInput $userInput
      */
-    public function __construct(PayloadFactory $payloadFactory, ServerRequestInterface $request)
+    public function __construct(PayloadFactory $payloadFactory, UserInput $userInput)
     {
-        $this->request = $request;
         $this->payloadFactory = $payloadFactory;
+        $this->userInput = $userInput;
     }
 
     /**
@@ -35,9 +36,11 @@ class AuthAction
     public function __invoke(): Payload
     {
         $payload = $this->payloadFactory->newInstance();
-        $input = json_decode($this->request->getBody(), true);
 
-        if (($input['username'] == 'demo') && ($input['password'] == 'demo')) {
+        $username = $this->userInput->getBodyParam('username', FILTER_SANITIZE_STRING);
+        $password = $this->userInput->getBodyParam('password', FILTER_SANITIZE_STRING);
+
+        if (($username == 'demo') && ($password == 'demo')) {
             setcookie('HERBIE_FRONTEND_PANEL', 1, 0, '/');
             $token = $this->generateToken();
             return $payload

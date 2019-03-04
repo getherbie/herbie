@@ -14,6 +14,7 @@ use herbie\Plugin;
 use herbie\sysplugins\adminpanel\classes\MediaUserInput;
 use herbie\sysplugins\adminpanel\classes\Payload;
 use herbie\sysplugins\adminpanel\classes\PayloadFactory;
+use herbie\sysplugins\adminpanel\classes\UserInput;
 use herbie\sysplugins\adminpanel\classes\WebUser;
 use herbie\SystemException;
 use herbie\TwigRenderer;
@@ -83,6 +84,12 @@ class AdminpanelPlugin extends Plugin
             );
         });
 
+        $this->container->set(UserInput::class, function (ContainerInterface $c) {
+            return new UserInput(
+                $c->get(ServerRequestInterface::class)
+            );
+        });
+
         $this->container->set(PayloadFactory::class, function () {
             return new PayloadFactory();
         });
@@ -109,6 +116,8 @@ class AdminpanelPlugin extends Plugin
      */
     public function adminpanelModule(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
+        $this->container->set(ServerRequestInterface::class, $request);
+
         $this->request = $request;
 
         $requestedRoute = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE);

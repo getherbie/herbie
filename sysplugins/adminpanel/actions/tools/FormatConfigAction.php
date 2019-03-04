@@ -5,37 +5,37 @@ namespace herbie\sysplugins\adminpanel\actions\tools;
 use herbie\Alias;
 use herbie\sysplugins\adminpanel\classes\Payload;
 use herbie\sysplugins\adminpanel\classes\PayloadFactory;
+use herbie\sysplugins\adminpanel\classes\UserInput;
 use herbie\Yaml;
-use Psr\Http\Message\ServerRequestInterface;
 
 class FormatConfigAction
 {
-    /**
-     * @var PayloadFactory
-     */
-    private $payloadFactory;
-
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
     /**
      * @var Alias
      */
     private $alias;
 
     /**
+     * @var PayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * @var UserInput
+     */
+    private $userInput;
+
+    /**
      * IndexAction constructor.
      * @param Alias $alias
      * @param PayloadFactory $payloadFactory
-     * @param ServerRequestInterface $request
+     * @param UserInput $userInput
      */
-    public function __construct(Alias $alias, PayloadFactory $payloadFactory, ServerRequestInterface $request)
+    public function __construct(Alias $alias, PayloadFactory $payloadFactory, UserInput $userInput)
     {
-        $this->payloadFactory = $payloadFactory;
-        $this->request = $request;
         $this->alias = $alias;
+        $this->payloadFactory = $payloadFactory;
+        $this->userInput = $userInput;
     }
 
     /**
@@ -44,9 +44,8 @@ class FormatConfigAction
     public function __invoke(): Payload
     {
         $payload = $this->payloadFactory->newInstance();
-        $input = json_decode($this->request->getBody(), true);
-        $alias = strtolower(trim($input['alias']));
-        $path = $this->alias->get($alias);
+        $alias = $this->userInput->getBodyParam('alias', FILTER_SANITIZE_STRING);
+        $path = $this->alias->get(trim($alias));
         $success = $this->formatConfig($path);
         if ($success) {
             return $payload
@@ -70,5 +69,4 @@ class FormatConfigAction
         }
         return true;
     }
-
 }

@@ -6,7 +6,7 @@ use herbie\Alias;
 use function herbie\empty_folder;
 use herbie\sysplugins\adminpanel\classes\Payload;
 use herbie\sysplugins\adminpanel\classes\PayloadFactory;
-use Psr\Http\Message\ServerRequestInterface;
+use herbie\sysplugins\adminpanel\classes\UserInput;
 
 class EmptyFolderAction
 {
@@ -21,21 +21,21 @@ class EmptyFolderAction
     private $payloadFactory;
 
     /**
-     * @var ServerRequestInterface
+     * @var UserInput
      */
-    private $request;
+    private $userInput;
 
     /**
      * IndexAction constructor.
      * @param Alias $alias
      * @param PayloadFactory $payloadFactory
-     * @param ServerRequestInterface $request
+     * @param UserInput $userInput
      */
-    public function __construct(Alias $alias, PayloadFactory $payloadFactory, ServerRequestInterface $request)
+    public function __construct(Alias $alias, PayloadFactory $payloadFactory, UserInput $userInput)
     {
-        $this->payloadFactory = $payloadFactory;
-        $this->request = $request;
         $this->alias = $alias;
+        $this->payloadFactory = $payloadFactory;
+        $this->userInput = $userInput;
     }
 
     /**
@@ -44,12 +44,12 @@ class EmptyFolderAction
     public function __invoke(): Payload
     {
         $payload = $this->payloadFactory->newInstance();
-        $input = json_decode($this->request->getBody(), true);
-        $alias = strtolower(trim($input['alias']));
-        $path = $this->alias->get($alias);
+        $alias = $this->userInput->getBodyParam('alias', FILTER_SANITIZE_STRING);
+        $path = $this->alias->get(trim($alias));
         empty_folder($path);
         return $payload
             ->setStatus(Payload::SUCCESS)
             ->setOutput(['count' => 0]);
     }
+
 }

@@ -4,28 +4,30 @@ namespace herbie\sysplugins\adminpanel\actions\test;
 
 use herbie\sysplugins\adminpanel\classes\Payload;
 use herbie\sysplugins\adminpanel\classes\PayloadFactory;
+use herbie\sysplugins\adminpanel\classes\UserInput;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AddAction
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
     /**
      * @var PayloadFactory
      */
     private $payloadFactory;
 
     /**
-     * AddAction constructor.
-     * @param ServerRequestInterface $request
-     * @param PayloadFactory $payloadFactory
+     * @var UserInput
      */
-    public function __construct(ServerRequestInterface $request, PayloadFactory $payloadFactory)
+    private $userInput;
+
+    /**
+     * AddAction constructor.
+     * @param PayloadFactory $payloadFactory
+     * @param UserInput $userInput
+     */
+    public function __construct(PayloadFactory $payloadFactory, UserInput $userInput)
     {
-        $this->request = $request;
         $this->payloadFactory = $payloadFactory;
+        $this->userInput = $userInput;
     }
 
     /**
@@ -35,8 +37,7 @@ class AddAction
     {
         $payload = $this->payloadFactory->newInstance();
 
-        $input = json_decode($this->request->getBody(), true);
-        $name = $input['name'] ?? '';
+        $name = $this->userInput->getBodyParam('name', FILTER_SANITIZE_STRING);
         $name = trim($name);
 
         if (empty($name)) {
