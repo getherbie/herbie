@@ -239,7 +239,7 @@ class Application implements LoggerAwareInterface
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
-                $c->get(Configuration::class)
+                $c->get(Configuration::class)->components->downloadMiddleware
             );
         });
 
@@ -428,7 +428,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
-                $c->get(Configuration::class)->urlManager,
+                $c->get(Configuration::class)->components->urlMatcher,
                 $c->get(PageRepositoryInterface::class)
             );
         });

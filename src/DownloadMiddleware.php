@@ -19,20 +19,20 @@ use Tebe\HttpFactory\HttpFactory;
 
 class DownloadMiddleware implements MiddlewareInterface
 {
-
-    /**
-     * @var Configuration
-     */
-    private $config;
     /**
      * @var Alias
      */
     private $alias;
 
     /**
-     * @var array
+     * @var string
      */
-    private $mapping;
+    private $baseUrl;
+
+    /**
+     * @var string
+     */
+    private $storagePath;
 
     /**
      * DownloadMiddleware constructor.
@@ -42,10 +42,8 @@ class DownloadMiddleware implements MiddlewareInterface
     public function __construct(Alias $alias, Configuration $config)
     {
         $this->alias = $alias;
-        $this->config = $config;
-        $this->mapping = [
-            '/download/' => '@site/media/'
-        ];
+        $this->baseUrl = rtrim($config->baseUrl, '/') . '/';
+        $this->storagePath = rtrim($config->storagePath, '/') . '/';
     }
 
     /**
@@ -88,11 +86,9 @@ class DownloadMiddleware implements MiddlewareInterface
     private function isDownloadRequest(UriInterface $uri)
     {
         $uriPath = $uri->getPath();
-        foreach (array_keys($this->mapping) as $prefix) {
-            $pos = strpos($uriPath, $prefix);
-            if ($pos === 0) {
-                return true;
-            }
+        $pos = strpos($uriPath, $this->baseUrl);
+        if ($pos === 0) {
+            return true;
         }
         return false;
     }
@@ -105,12 +101,10 @@ class DownloadMiddleware implements MiddlewareInterface
     private function getFilePath(UriInterface $uri)
     {
         $uriPath = $uri->getPath();
-        foreach ($this->mapping as $prefix => $alias) {
-            $pos = strpos($uriPath, $prefix);
-            if ($pos === 0) {
-                 $filePath = $alias . substr($uriPath, strlen($prefix));
-                 return $this->alias->get($filePath);
-            }
+        $pos = strpos($uriPath, $this->baseUrl);
+        if ($pos === 0) {
+            $filePath = $this->storagePath . substr($uriPath, strlen($this->baseUrl));
+            return $this->alias->get($filePath);
         }
         throw SystemException::fileNotExist($uriPath);
     }

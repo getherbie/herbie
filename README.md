@@ -39,7 +39,7 @@ Composer creates your website in the `myproject` folder and installs all depende
 Go to the web directory and start PHPs built-in web server.
 
     $ cd myproject/web
-    $ php -S localhost:8888
+    $ php -S localhost:8888 index.php
 
 Now, open <http://localhost:8888> in your browser. You should then see your first Herbie website. 
 
