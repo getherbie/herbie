@@ -28,16 +28,6 @@ return [
         'media' => $WEB_URL . '/media',
         'web' => $WEB_URL . '/',
     ],
-    'urlManager' => [
-        'rules' => [
-            ['blog/author/{author}', 'blog'],
-            ['blog/category/{category}', 'blog'],
-            ['blog/tag/{tag}', 'blog'],
-            ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
-            ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
-            ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
-        ]
-    ],
     'fileExtensions' => [
         'data' => ['yml', 'yaml'],
         'layouts' => 'html',
@@ -50,6 +40,22 @@ return [
             'audio' => 'mp3,m4a,wav,aiff,midi'
         ],
         'pages' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+    ],
+    'components' => [
+        'downloadMiddleware' => [
+            'baseUrl' => '/download/',
+            'storagePath' => '@site/media',
+        ],
+        'urlMatcher' => [
+            'rules' => [
+                ['blog/author/{author}', 'blog'],
+                ['blog/category/{category}', 'blog'],
+                ['blog/tag/{tag}', 'blog'],
+                ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
+                ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
+                ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
+            ]
+        ]
     ],
     'twig' => [
         'debug' => false,

@@ -94,6 +94,10 @@ class TwigCoreExtension extends Twig_Extension
         return [
             new Twig_Function('addcss', [$this, 'functionAddCss']),
             new Twig_Function('addjs', [$this, 'functionAddJs']),
+            new Twig_Function('download', [$this, 'functionDownload'], [
+                'is_safe' => ['html'],
+                'needs_context' => true
+            ]),
             new Twig_Function('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
             new Twig_Function('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
             new Twig_Function('link', [$this, 'functionLink'], ['is_safe' => ['html']]),
@@ -248,6 +252,46 @@ class TwigCoreExtension extends Twig_Extension
     }
 
     /**
+     * @param array $context
+     * @param string $path
+     * @param string $label
+     * @param bool $info
+     * @param array $attributes
+     * @return string
+     */
+    public function functionDownload(
+        array $context,
+        string $path,
+        string $label = '',
+        bool $info = false,
+        array $attributes = []
+    ): string {
+        $attributes['alt'] = $attributes['alt'] ?? '';
+        $attributes['class'] = $attributes['class'] ?? 'link__label';
+
+        // get config from download middleware
+        $config = $context['config']['components']['downloadMiddleware'];
+        $baseUrl = rtrim($config['baseUrl'], '/') . '/';
+        $storagePath = rtrim($config['storagePath'], '/') . '/';
+
+        // combine url and path
+        $href = $baseUrl . $path;
+        $path = $this->alias->get($storagePath . $path);
+
+        if (!empty($info)) {
+            $fileInfo = $this->getFileInfo($path);
+        }
+
+        $replace = [
+            '{href}' => $href,
+            '{attribs}' => $this->buildHtmlAttributes($attributes),
+            '{label}' => empty($label) ? basename($path) : $label,
+            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
+        ];
+        return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+    }
+
+    /**
      * @param string $group
      * @return string
      */
@@ -340,6 +384,7 @@ class TwigCoreExtension extends Twig_Extension
     public function functionFile(string $path, string $label = '', bool $info = false, array $attributes = []): string
     {
         $attributes['alt'] = $attributes['alt'] ?? '';
+        $attributes['class'] = $attributes['class'] ?? 'link__label';
 
         if (!empty($info)) {
             $fileInfo = $this->getFileInfo($path);
@@ -349,9 +394,9 @@ class TwigCoreExtension extends Twig_Extension
             '{href}' => $path,
             '{attribs}' => $this->buildHtmlAttributes($attributes),
             '{label}' => empty($label) ? basename($path) : $label,
-            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="file-info">%s</span>', $fileInfo)
+            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
         ];
-        return strtr('<a href="{href}" {attribs}>{label}</a>{info}', $replace);
+        return strtr('<span class="link link--file"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
     /**
