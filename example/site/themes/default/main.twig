@@ -43,7 +43,7 @@
                                     {% for item in site.data.menu %}
                                         {% set active = (item.route == route) ? 'pure-menu-selected' : '' %}
                                         <li class="pure-menu-item {{ active }}">
-                                            <a class="pure-menu-link" href="{{ url(item.route) }}">{{ item.label }}</a>
+                                            {{ link(item.route, item.label, {class:"pure-menu-link"}) }}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -89,8 +89,8 @@
             <div class="pure-u-1 pure-u-md-1-4">
                 <h3>Code</h3>
                 <ul>
-                    <li><a target="_blank" href="https://www.github.com/getherbie">Herbie at GitHub</a></li>
-                    <li><a target="_blank" href="https://packagist.org/packages/getherbie/">Herbie at Packagist</a></li>
+                    <li>{{ link('https://www.github.com/getherbie', 'Herbie at GitHub', {target:"_blank"}) }}</li>
+                    <li>{{ link('https://packagist.org/packages/getherbie/', 'Herbie at Packagist', {target:"_blank"}) }}</li>
                 </ul>
             </div>
         </div>

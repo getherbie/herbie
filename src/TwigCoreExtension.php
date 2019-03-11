@@ -105,6 +105,7 @@ class TwigCoreExtension extends Twig_Extension
             new Twig_Function('outputjs', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
             new Twig_Function('translate', [$this, 'functionTranslate']),
             new Twig_Function('url', [$this, 'functionUrl']),
+            new Twig_Function('mail', [$this, 'functionMail'], ['is_safe' => ['html']])
         ];
     }
 
@@ -135,14 +136,32 @@ class TwigCoreExtension extends Twig_Extension
     /**
      * @param string $route
      * @param string $label
-     * @param array $htmlAttributes
+     * @param array $attribs
      * @return string
      */
-    private function createLink(string $route, string $label, array $htmlAttributes = []): string
+    private function createLink(string $route, string $label, array $attribs = []): string
     {
-        $url = $this->urlGenerator->generate($route);
-        $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
-        return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
+        $scheme = parse_url($route, PHP_URL_SCHEME);
+        if (is_null($scheme)) {
+            $class = 'link--internal';
+            $href = $this->urlGenerator->generate($route);
+        } else {
+            $class = 'link--external';
+            $href = $route;
+        }
+
+        $attribs['class'] = $attribs['class'] ?? '';
+        $attribs['class'] = trim($attribs['class'] . ' link__label');
+
+        $replace = [
+            '{class}' => $class,
+            '{href}' => $href,
+            '{attribs}' => $this->buildHtmlAttributes($attribs),
+            '{label}' => $label,
+        ];
+
+        $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
+        return strtr($template, $replace);
     }
 
     /**
@@ -256,7 +275,7 @@ class TwigCoreExtension extends Twig_Extension
      * @param string $path
      * @param string $label
      * @param bool $info
-     * @param array $attributes
+     * @param array $attribs
      * @return string
      */
     public function functionDownload(
@@ -264,10 +283,10 @@ class TwigCoreExtension extends Twig_Extension
         string $path,
         string $label = '',
         bool $info = false,
-        array $attributes = []
+        array $attribs = []
     ): string {
-        $attributes['alt'] = $attributes['alt'] ?? '';
-        $attributes['class'] = $attributes['class'] ?? 'link__label';
+        $attribs['alt'] = $attribs['alt'] ?? '';
+        $attribs['class'] = $attribs['class'] ?? 'link__label';
 
         // get config from download middleware
         $config = $context['config']['components']['downloadMiddleware'];
@@ -284,11 +303,31 @@ class TwigCoreExtension extends Twig_Extension
 
         $replace = [
             '{href}' => $href,
-            '{attribs}' => $this->buildHtmlAttributes($attributes),
+            '{attribs}' => $this->buildHtmlAttributes($attribs),
             '{label}' => empty($label) ? basename($path) : $label,
             '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
         ];
         return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+    }
+
+    /**
+     * @param string $email
+     * @param string $label
+     * @param array $attribs
+     * @return string
+     */
+    public function functionMail(string $email, string $label, array $attribs = []): string
+    {
+        $attribs['class'] = $attribs['class'] ?? 'link__label';
+
+        $replace = [
+            '{href}' => $email,
+            '{attribs}' => $this->buildHtmlAttributes($attribs),
+            '{label}' => $label,
+        ];
+
+        $template = '<span class="link link--mailto"><a href="mailto:{href}" {attribs}>{label}</a></span>';
+        return strtr($template, $replace);
     }
 
     /**
@@ -342,12 +381,12 @@ class TwigCoreExtension extends Twig_Extension
     /**
      * @param string $route
      * @param string $label
-     * @param array $htmlAttributes
+     * @param array $attribs
      * @return string
      */
-    public function functionLink(string $route, string $label, array $htmlAttributes = []): string
+    public function functionLink(string $route, string $label, array $attribs = []): string
     {
-        return $this->createLink($route, $label, $htmlAttributes);
+        return $this->createLink($route, $label, $attribs);
     }
 
     /**
@@ -378,13 +417,13 @@ class TwigCoreExtension extends Twig_Extension
      * @param string $path
      * @param string $label
      * @param bool $info
-     * @param array $attributes
+     * @param array $attribs
      * @return string
      */
-    public function functionFile(string $path, string $label = '', bool $info = false, array $attributes = []): string
+    public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
-        $attributes['alt'] = $attributes['alt'] ?? '';
-        $attributes['class'] = $attributes['class'] ?? 'link__label';
+        $attribs['alt'] = $attribs['alt'] ?? '';
+        $attribs['class'] = $attribs['class'] ?? 'link__label';
 
         if (!empty($info)) {
             $fileInfo = $this->getFileInfo($path);
@@ -392,7 +431,7 @@ class TwigCoreExtension extends Twig_Extension
 
         $replace = [
             '{href}' => $path,
-            '{attribs}' => $this->buildHtmlAttributes($attributes),
+            '{attribs}' => $this->buildHtmlAttributes($attribs),
             '{label}' => empty($label) ? basename($path) : $label,
             '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
         ];

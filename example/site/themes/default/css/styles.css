@@ -384,6 +384,27 @@ span.e {
 }
 
 
+.imagine--file-not-found {
+    text-align: center;
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    background-color:#eee;
+}
+
+.imagine--file-not-found:before {
+    content: "We're sorry, this image is broken";
+    display: block;
+    margin-bottom: 10px;
+}
+
+.imagine--file-not-found:after {
+    content: "(url: " attr(src) ")";
+    display: block;
+    font-size: 12px;
+}
+
 /* Media Queries */
 @media (min-width:980px) {
 }

@@ -59,7 +59,7 @@
         - { name: path, type: string, desc: 'The path to the file.', default: '' }
         - { name: label, type: string, desc: 'The label for the html tag.', default: '"' }
         - { name: info, type: bool, desc: 'If true file info will be added after the link', default: 'false' }
-        - { name: attributes, type: array, desc: 'One or more html attributes.', default: '[ ]' }
+        - { name: attribs, type: array, desc: 'One or more html attributes.', default: '[ ]' }
     return: []
 -
     name: image
@@ -70,16 +70,16 @@
         - { name: width, type: int, desc: 'The width of the image.', default: '0' }
         - { name: height, type: int, desc: 'The height of the image.', default: '0' }
         - { name: alt, type: string, desc: 'The alt text of the image.', default: '""' }
-        - { name: class, type: string, desc: 'The html attribute class.', default: '""' }
+        - { name: class, type: string, desc: 'The html class attribute.', default: '""' }
     return: [string, 'The image markup']
 -
     name: link
-    code: 'string link(string route, string label [, array htmlAttributes = {}])'
+    code: 'string link(string route, string label [, array attribs = {}])'
     desc: 'Returns a html link with label and attributes for a given route.'
     params:
-        - { name: route, type: string, desc: 'The route to a page.', default: '' }
+        - { name: route, type: string, desc: 'The route or the URL to a page.', default: '' }
         - { name: label, type: string, desc: 'The label.', default: '' }
-        - { name: htmlAttributes, type: array, desc: 'The html attributes passed as an associative array.', default: '' }
+        - { name: attribs, type: array, desc: 'The html attributes passed as an associative array.', default: '' }
     return: [string, 'The link to a route']
 -
     name: listing

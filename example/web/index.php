@@ -7,7 +7,7 @@
  */
 
 if (php_sapi_name() == 'cli-server') {
-    if (preg_match('/\.(?:js|css)$/', $_SERVER["REQUEST_URI"])) {
+    if (preg_match('/\.(?:js|css|gif|jpg|jpeg|png)$/', $_SERVER["REQUEST_URI"])) {
         return false;
     }
 }

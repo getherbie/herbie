@@ -124,6 +124,7 @@ class PluginManager
      * @param string $path
      * @param string $key
      * @throws \ReflectionException
+     * @throws SystemException
      */
     private function loadPlugin(string $path, string $key, string $namespace): void
     {
@@ -139,6 +140,9 @@ class PluginManager
             $constructorParams = [];
             if ($constructor) {
                 foreach ($constructor->getParameters() as $param) {
+                    if ($param->getType() === null) {
+                        throw SystemException::serverError('Only objects can be injected in ' . $className);
+                    }
                     $classNameToInject = $param->getClass()->getName();
                     $constructorParams[] = $this->container->get($classNameToInject);
                 };
