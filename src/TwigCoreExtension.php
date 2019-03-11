@@ -105,6 +105,7 @@ class TwigCoreExtension extends Twig_Extension
             new Twig_Function('outputjs', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
             new Twig_Function('translate', [$this, 'functionTranslate']),
             new Twig_Function('url', [$this, 'functionUrl']),
+            new Twig_Function('mail', [$this, 'functionMail'], ['is_safe' => ['html']])
         ];
     }
 
@@ -140,9 +141,27 @@ class TwigCoreExtension extends Twig_Extension
      */
     private function createLink(string $route, string $label, array $htmlAttributes = []): string
     {
-        $url = $this->urlGenerator->generate($route);
-        $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
-        return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
+        $scheme = parse_url($route, PHP_URL_SCHEME);
+        if (is_null($scheme)) {
+            $class = 'link--internal';
+            $href = $this->urlGenerator->generate($route);
+        } else {
+            $class = 'link--external';
+            $href = $route;
+        }
+
+        $htmlAttributes['class'] = $htmlAttributes['class'] ?? '';
+        $htmlAttributes['class'] = trim($htmlAttributes['class'] . ' link__label');
+
+        $replace = [
+            '{class}' => $class,
+            '{href}' => $href,
+            '{attribs}' => $this->buildHtmlAttributes($htmlAttributes),
+            '{label}' => $label,
+        ];
+
+        $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
+        return strtr($template, $replace);
     }
 
     /**
@@ -289,6 +308,20 @@ class TwigCoreExtension extends Twig_Extension
             '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
         ];
         return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+    }
+
+    public function functionMail(string $email, string $label, array $htmlAttributes = []): string
+    {
+        $htmlAttributes['class'] = $htmlAttributes['class'] ?? 'link__label';
+
+        $replace = [
+            '{href}' => $email,
+            '{attribs}' => $this->buildHtmlAttributes($htmlAttributes),
+            '{label}' => $label,
+        ];
+
+        $template = '<span class="link link--mailto"><a href="mailto:{href}" {attribs}>{label}</a></span>';
+        return strtr($template, $replace);
     }
 
     /**
