@@ -66,5 +66,5 @@ return [
     ],
     'plugins' => [],
     'enabledPlugins' => [],
-    'enabledSysPlugins' => ['adminpanel']
+    'enabledSysPlugins' => ['adminpanel', 'imagine']
 ];

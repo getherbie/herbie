@@ -18,7 +18,8 @@
         "symfony/yaml": "^4.2",
         "tebe/http-factory": "^1.1",
         "twig/twig": "^2.0",
-        "psr/log": "^1.1"
+        "psr/log": "^1.1",
+        "imagine/imagine": "^1.2"
     },
     "autoload": {
         "psr-4": {
