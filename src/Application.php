@@ -43,6 +43,11 @@ class Application implements LoggerAwareInterface
     /**
      * @var string
      */
+    private $appPath;
+
+    /**
+     * @var string
+     */
     private $sitePath;
 
     /**
@@ -67,6 +72,7 @@ class Application implements LoggerAwareInterface
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
+        $this->appPath = normalize_path(dirname(__DIR__));
         $this->sitePath = normalize_path($sitePath);
         $this->vendorDir = normalize_path($vendorDir);
         $this->applicationMiddlewares = [];
@@ -135,7 +141,7 @@ class Application implements LoggerAwareInterface
                 '@sysplugin' => $config['paths']['sysPlugins'],
                 '@vendor' => $this->vendorDir,
                 '@web' => $config['paths']['web'],
-                '@snippet' => $config['paths']['app'] . '/../templates/snippets'
+                '@snippet' => $config['paths']['app'] . '/templates/snippets'
             ]);
         });
 
@@ -152,7 +158,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(Configuration::class, function (Container $c) {
 
-            $APP_PATH = rtrim(__DIR__, '/');
+            $APP_PATH = rtrim($this->appPath, '/');
             $SITE_PATH = rtrim($this->sitePath, '/');
             $WEB_PATH = rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/');
             $WEB_URL = rtrim($c->get(Environment::class)->getBaseUrl(), '/');
@@ -165,7 +171,7 @@ class Application implements LoggerAwareInterface
             ];
 
             // config default
-            $defaults = require(__DIR__ . '/../config/defaults.php');
+            $defaults = require($this->appPath . '/config/defaults.php');
             $config = new Configuration($defaults);
 
             // config user
