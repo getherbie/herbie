@@ -6,8 +6,8 @@
         - { name: route, type: string, desc: 'The route to a page.', default: '' }
     return: [string, 'The absolute URL.']
 -
-    name: addcss
-    code: 'addcss(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
+    name: add_css
+    code: 'add_css(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
     desc: 'Adds a CSS asset to the html page.'
     params:
         - { name: paths, type: string|array, desc: 'One or more paths to CSS resources.', default: '' }
@@ -17,8 +17,8 @@
         - { name: pos, type: int, desc: 'The sort order of the CSS asset.', default: '-1' }
     return: [void]
 -
-    name: addjs
-    code: 'addjs(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
+    name: add_js
+    code: 'add_js(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])'
     desc: 'Adds a JavaScript asset to the html page.'
     params:
         - { name: paths, type: string|array, desc: 'One or more paths to JavaScript resources.', default: '' }
@@ -28,8 +28,8 @@
         - { name: pos, type: int, desc: 'The sort order of the JavaScript asset.', default: '-1' }
     return: [void]
 -
-    name: asciitree
-    code: 'string asciitree([array options = {}])'
+    name: ascii_tree
+    code: 'string ascii_tree([array options = {}])'
     desc: 'Creates a text based (=ascii) tree of all pages. All parameters are optional and passed as named parameters.'
     params:
         - { name: route, type: string, desc: 'The tree from the given route.', default: '""' }
@@ -38,8 +38,8 @@
         - { name: class, type: string, desc: 'The CSS class name.', default: sitemap }
     return: [string, 'The tree rendered as ascii text']
 -
-    name: bodyclass
-    code: 'string bodyclass()'
+    name: body_class
+    code: 'string body_class()'
     desc: 'Returns a string with CSS classes, to be used within the class attribute of the body tag.'
     return: [string, 'The string with CSS classes']
 -
@@ -73,8 +73,8 @@
         - { name: class, type: string, desc: 'The html class attribute.', default: '""' }
     return: [string, 'The image markup']
 -
-    name: link
-    code: 'string link(string route, string label [, array attribs = {}])'
+    name: page_link
+    code: 'string page_link(string route, string label [, array attribs = {}])'
     desc: 'Returns a html link with label and attributes for a given route.'
     params:
         - { name: route, type: string, desc: 'The route or the URL to a page.', default: '' }
@@ -104,15 +104,15 @@
         - { name: class, type: string, desc: 'The CSS class for the menu.', default: 'menu' }
     return: [string, 'The menu as unordered list']
 -
-    name: outputcss
-    code: 'string outputcss([string group])'
+    name: output_css
+    code: 'string output_css([string group])'
     desc: 'Outputs the CSS assets for a given group.'
     params:
         - { name: group, type: string, desc: 'The grouped CSS.', default: 'null' }
     return: [void, 'The CSS assets']
 -
-    name: outputjs
-    code: 'string outputjs([string group])'
+    name: output_js
+    code: 'string output_js([string group])'
     desc: 'Outputs the JavaScript assets for a given group.'
     params:
         - { name: group, type: string, desc: 'The grouped JavaScript.', default: 'null' }
@@ -131,8 +131,8 @@
         - { name: nextPageIcon, type: string, desc: 'The icon for the "next" link.', default: '' }
     return: [string, 'The generated markup']
 -
-    name: pagetitle
-    code: 'string pagetitle([array options = {}])'
+    name: page_title
+    code: 'string page_title([array options = {}])'
     desc: 'Returns the SEO optimized page title of the website. All parameters are optional and passed as an named parameters.'
     params:
         - { name: delim, type: string, desc: 'The delim.', default: / }

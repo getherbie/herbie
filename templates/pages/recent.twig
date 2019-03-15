@@ -4,7 +4,7 @@
         <ul>
             {% for pageItem in recentPages %}
                 <li>
-                    {{ link(pageItem.route, pageItem.title) }}
+                    {{ page_link(pageItem.route, pageItem.title) }}
                     {% if showDate %}<br>{{ pageItem.date|strftime(dateFormat) }}{% endif %}
                 </li>
             {% endfor %}

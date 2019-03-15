@@ -26,7 +26,7 @@ class DummyPlugin implements PluginInterface
     private $logger;
 
     /**
-     * TestPlugin constructor.
+     * DummyPlugin constructor.
      * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
@@ -81,7 +81,7 @@ class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['test', [$this, 'twigDummyFilter']]
+            ['dummy', [$this, 'twigDummyFilter']]
         ];
     }
 
@@ -92,7 +92,7 @@ class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['test', [$this, 'twigDummyFunction']]
+            ['dummy', [$this, 'twigDummyFunction']]
         ];
     }
 
@@ -103,7 +103,7 @@ class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['test', [$this, 'twigDummyTest']]
+            ['dummy', [$this, 'twigDummyTest']]
         ];
     }
 
@@ -163,9 +163,9 @@ class DummyPlugin implements PluginInterface
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
-        $request = $request->withAttribute('X-TestPlugin', time());
+        $request = $request->withAttribute('X-DummyPlugin', time());
         $response = $next->handle($request);
-        return $response->withHeader('X-TestPlugin', time());
+        return $response->withHeader('X-DummyPlugin', time());
     }
 
     public function twigDummyFilter()
