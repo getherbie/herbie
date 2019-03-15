@@ -4,7 +4,7 @@
         <ul>
             {% for category, count in categories %}
                 {% set route = pageRoute ~ '/category/' ~ category|slugify %}
-                <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                <li>{{ page_link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
             {% endfor %}
         </ul>
     </div>

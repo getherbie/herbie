@@ -17,7 +17,7 @@
                 {% for item in months %}
                     {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
                     {% set label = item.date|strftime('%B %Y') %}
-                    <li>{{ link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+                    <li>{{ page_link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
                 {% endfor %}
             </ul>
         </div>
@@ -44,7 +44,7 @@
             <ul>
                 {% for author, count in authors %}
                     {% set route = pageRoute ~ '/author/' ~ author|slugify %}
-                    <li>{{ link(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                    <li>{{ page_link(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
                 {% endfor %}
             </ul>
         </div>
@@ -71,7 +71,7 @@
             <ul>
                 {% for category, count in categories %}
                     {% set route = pageRoute ~ '/category/' ~ category|slugify %}
-                    <li>{{ link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                    <li>{{ page_link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
                 {% endfor %}
             </ul>
         </div>
@@ -98,7 +98,7 @@
             <ul>
                 {% for tag, count in tags %}
                     {% set route = pageRoute ~ '/tag/' ~ tag|slugify %}
-                    <li>{{ link(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                    <li>{{ page_link(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
                 {% endfor %}
             </ul>
         </div>

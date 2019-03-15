@@ -1,6 +1,6 @@
 {% spaceless %}
-    {{ addcss('@site/themes/default/css/styles.css') }}
-    {{ addjs('@site/themes/default/js/scripts.js') }}
+    {{ add_css('@site/themes/default/css/styles.css') }}
+    {{ add_js('@site/themes/default/js/scripts.js') }}
 {% endspaceless %}
 <!DOCTYPE html>
 <html lang="{{ site.language }}">
@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ pagetitle(delim=' / ', siteTitle='Herbie Flat-File CMS & Blog', rootTitle='Herbie - A simple Flat-File CMS and Blogsystem', reverse=true) }}</title>
+    <title>{{ page_title(delim=' / ', siteTitle='Herbie Flat-File CMS & Blog', rootTitle='Herbie - A simple Flat-File CMS and Blogsystem', reverse=true) }}</title>
     <base href="{{ baseUrl }}">
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
     <!--[if lte IE 8]>
@@ -19,9 +19,9 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <!--<![endif]-->
-    {{ outputcss() }}
+    {{ output_css() }}
 </head>
-<body class="{{ bodyclass() }}">
+<body class="{{ body_class() }}">
 <div class="header">
     <div class="container">
         <div class="inner-container">
@@ -33,7 +33,7 @@
             </div>
             <div class="pure-g">
                 <div class="pure-u-3-5 pure-u-md-1-5">
-                    <h1 class="brand-title">{{ link('index', '<span class="e">E</span> Herbie') }}</h1>
+                    <h1 class="brand-title">{{ page_link('index', '<span class="e">E</span> Herbie') }}</h1>
                 </div>
                 <div class="pure-u-2-5 pure-u-md-4-5 text-right pure-hidden-phone">
                     <div class="topmenu" id="topmenu">
@@ -43,7 +43,7 @@
                                     {% for item in site.data.menu %}
                                         {% set active = (item.route == route) ? 'pure-menu-selected' : '' %}
                                         <li class="pure-menu-item {{ active }}">
-                                            {{ link(item.route, item.label, {class:"pure-menu-link"}) }}
+                                            {{ page_link(item.route, item.label, {class:"pure-menu-link"}) }}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -81,16 +81,16 @@
             <div class="pure-u-1 pure-u-md-1-4 footer-links">
                 <h3>Links</h3>
                 <ul>
-                    <li>{{ link('sitemap', 'Sitemap') }}</li>
-                    <li>{{ link('contact', 'Contact') }}</li>
-                    <li>{{ link('search', 'Search') }}</li>
+                    <li>{{ page_link('sitemap', 'Sitemap') }}</li>
+                    <li>{{ page_link('contact', 'Contact') }}</li>
+                    <li>{{ page_link('search', 'Search') }}</li>
                 </ul>
             </div>
             <div class="pure-u-1 pure-u-md-1-4">
                 <h3>Code</h3>
                 <ul>
-                    <li>{{ link('https://www.github.com/getherbie', 'Herbie at GitHub', {target:"_blank"}) }}</li>
-                    <li>{{ link('https://packagist.org/packages/getherbie/', 'Herbie at Packagist', {target:"_blank"}) }}</li>
+                    <li>{{ page_link('https://www.github.com/getherbie', 'Herbie at GitHub', {target:"_blank"}) }}</li>
+                    <li>{{ page_link('https://packagist.org/packages/getherbie/', 'Herbie at Packagist', {target:"_blank"}) }}</li>
                 </ul>
             </div>
         </div>
@@ -102,6 +102,6 @@
         </div>
     </div>
 </div>
-{{ outputjs() }}
+{{ output_js() }}
 </body>
 </html>

@@ -22,7 +22,7 @@
             <ul>
                 {% for pageItem in recentPages %}
                     <li>
-                        {{ link(pageItem.route, pageItem.title) }}
+                        {{ page_link(pageItem.route, pageItem.title) }}
                         {% if options.showDate %}<br>{{ pageItem.date|strftime(options.dateFormat) }}{% endif %}
                     </li>
                 {% endfor %}

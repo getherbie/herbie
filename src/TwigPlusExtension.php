@@ -61,8 +61,8 @@ class TwigPlusExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_Function('asciitree', [$this, 'functionAsciiTree'], $options),
-            new Twig_Function('bodyclass', [$this, 'functionBodyClass'], ['needs_context' => true]),
+            new Twig_Function('ascii_tree', [$this, 'functionAsciiTree'], $options),
+            new Twig_Function('body_class', [$this, 'functionBodyClass'], ['needs_context' => true]),
             new Twig_Function('breadcrumb', [$this, 'functionBreadcrumb'], $options),
             new Twig_Function('listing', [$this, 'functionListing'], $options),
             new Twig_Function('menu', [$this, 'functionMenu'], $options),
@@ -70,7 +70,7 @@ class TwigPlusExtension extends Twig_Extension
             new Twig_Function('pager', [$this, 'functionPager'], $options),
             new Twig_Function('pages_filtered', [$this, 'functionPagesFiltered'], $options),
             new Twig_Function('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new Twig_Function('pagetitle', [$this, 'functionPageTitle']),
+            new Twig_Function('page_title', [$this, 'functionPageTitle']),
             new Twig_Function('sitemap', [$this, 'functionSitemap'], $options),
             new Twig_Function('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
             new Twig_Function('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),

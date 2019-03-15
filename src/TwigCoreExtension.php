@@ -92,20 +92,20 @@ class TwigCoreExtension extends Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new Twig_Function('addcss', [$this, 'functionAddCss']),
-            new Twig_Function('addjs', [$this, 'functionAddJs']),
-            new Twig_Function('download', [$this, 'functionDownload'], [
+            new Twig_Function('add_css', [$this, 'functionAddCss']),
+            new Twig_Function('add_js', [$this, 'functionAddJs']),
+            new Twig_Function('file_link', [$this, 'functionFileLink'], [
                 'is_safe' => ['html'],
                 'needs_context' => true
             ]),
-            new Twig_Function('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
+            #new Twig_Function('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
             new Twig_Function('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
-            new Twig_Function('link', [$this, 'functionLink'], ['is_safe' => ['html']]),
-            new Twig_Function('outputcss', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
-            new Twig_Function('outputjs', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
+            new Twig_Function('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
+            new Twig_Function('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
+            new Twig_Function('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
             new Twig_Function('translate', [$this, 'functionTranslate']),
             new Twig_Function('url', [$this, 'functionUrl']),
-            new Twig_Function('mail', [$this, 'functionMail'], ['is_safe' => ['html']])
+            new Twig_Function('mail_link', [$this, 'functionMailLink'], ['is_safe' => ['html']])
         ];
     }
 
@@ -131,37 +131,6 @@ class TwigCoreExtension extends Twig_Extension
             $attributes .= $key . '="' . $value . '" ';
         }
         return trim($attributes);
-    }
-
-    /**
-     * @param string $route
-     * @param string $label
-     * @param array $attribs
-     * @return string
-     */
-    private function createLink(string $route, string $label, array $attribs = []): string
-    {
-        $scheme = parse_url($route, PHP_URL_SCHEME);
-        if (is_null($scheme)) {
-            $class = 'link--internal';
-            $href = $this->urlGenerator->generate($route);
-        } else {
-            $class = 'link--external';
-            $href = $route;
-        }
-
-        $attribs['class'] = $attribs['class'] ?? '';
-        $attribs['class'] = trim($attribs['class'] . ' link__label');
-
-        $replace = [
-            '{class}' => $class,
-            '{href}' => $href,
-            '{attribs}' => $this->buildHtmlAttributes($attribs),
-            '{label}' => $label,
-        ];
-
-        $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
-        return strtr($template, $replace);
     }
 
     /**
@@ -278,7 +247,7 @@ class TwigCoreExtension extends Twig_Extension
      * @param array $attribs
      * @return string
      */
-    public function functionDownload(
+    public function functionFileLink(
         array $context,
         string $path,
         string $label = '',
@@ -316,7 +285,7 @@ class TwigCoreExtension extends Twig_Extension
      * @param array $attribs
      * @return string
      */
-    public function functionMail(string $email, string $label, array $attribs = []): string
+    public function functionMailLink(string $email, string $label, array $attribs = []): string
     {
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
@@ -384,9 +353,29 @@ class TwigCoreExtension extends Twig_Extension
      * @param array $attribs
      * @return string
      */
-    public function functionLink(string $route, string $label, array $attribs = []): string
+    public function functionPageLink(string $route, string $label, array $attribs = []): string
     {
-        return $this->createLink($route, $label, $attribs);
+        $scheme = parse_url($route, PHP_URL_SCHEME);
+        if (is_null($scheme)) {
+            $class = 'link--internal';
+            $href = $this->urlGenerator->generate($route);
+        } else {
+            $class = 'link--external';
+            $href = $route;
+        }
+
+        $attribs['class'] = $attribs['class'] ?? '';
+        $attribs['class'] = trim($attribs['class'] . ' link__label');
+
+        $replace = [
+            '{class}' => $class,
+            '{href}' => $href,
+            '{attribs}' => $this->buildHtmlAttributes($attribs),
+            '{label}' => $label,
+        ];
+
+        $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
+        return strtr($template, $replace);
     }
 
     /**

@@ -5,7 +5,7 @@
             {% for item in months %}
                 {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
                 {% set label = item.date|strftime('%B %Y') %}
-                <li>{{ link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+                <li>{{ page_link(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
             {% endfor %}
         </ul>
     </div>

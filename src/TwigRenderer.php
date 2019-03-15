@@ -251,9 +251,9 @@ class TwigRenderer
             'plugin' => $this->config['paths']['plugins'],
             'page' => $this->config['paths']['pages'],
             'site' => $this->config['paths']['site'],
-            'snippet' => $this->config['paths']['app'] . '/../templates/snippets',
+            'snippet' => $this->config['paths']['app'] . '/templates/snippets',
             'sysplugin' => $this->config['paths']['sysPlugins'],
-            'template' => $this->config['paths']['app'] . '/../templates'
+            'template' => $this->config['paths']['app'] . '/templates'
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
