@@ -10,13 +10,13 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
-use Twig_Extension;
-use Twig_Function;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class TwigPlusExtension extends Twig_Extension
+class TwigPlusExtension extends AbstractExtension
 {
     /**
      * @var Environment
@@ -61,22 +61,22 @@ class TwigPlusExtension extends Twig_Extension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new Twig_Function('ascii_tree', [$this, 'functionAsciiTree'], $options),
-            new Twig_Function('body_class', [$this, 'functionBodyClass'], ['needs_context' => true]),
-            new Twig_Function('breadcrumb', [$this, 'functionBreadcrumb'], $options),
-            new Twig_Function('listing', [$this, 'functionListing'], $options),
-            new Twig_Function('menu', [$this, 'functionMenu'], $options),
-            new Twig_Function('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
-            new Twig_Function('pager', [$this, 'functionPager'], $options),
-            new Twig_Function('pages_filtered', [$this, 'functionPagesFiltered'], $options),
-            new Twig_Function('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new Twig_Function('page_title', [$this, 'functionPageTitle']),
-            new Twig_Function('sitemap', [$this, 'functionSitemap'], $options),
-            new Twig_Function('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
-            new Twig_Function('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
-            new Twig_Function('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
-            new Twig_Function('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
-            new Twig_Function('taxonomy_tags', [$this, 'functionTaxonomyTags'], $options)
+            new TwigFunction('ascii_tree', [$this, 'functionAsciiTree'], $options),
+            new TwigFunction('body_class', [$this, 'functionBodyClass'], ['needs_context' => true]),
+            new TwigFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new TwigFunction('listing', [$this, 'functionListing'], $options),
+            new TwigFunction('menu', [$this, 'functionMenu'], $options),
+            new TwigFunction('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
+            new TwigFunction('pager', [$this, 'functionPager'], $options),
+            new TwigFunction('pages_filtered', [$this, 'functionPagesFiltered'], $options),
+            new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
+            new TwigFunction('page_title', [$this, 'functionPageTitle']),
+            new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
+            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
+            new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
+            new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
+            new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
+            new TwigFunction('taxonomy_tags', [$this, 'functionTaxonomyTags'], $options)
         ];
     }
 
@@ -367,9 +367,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param $routeParams
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionPagesFiltered(
         $routeParams,
@@ -389,9 +389,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $title
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionPagesRecent(
         PageList $pageList = null,
@@ -486,9 +486,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $path
      * @param array $options
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionSnippet(string $path, array $options = []): string
     {
@@ -504,9 +504,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $title
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionTaxonomyArchive(
         PageList $pageList = null,
@@ -537,9 +537,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $title
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionTaxonomyAuthors(
         PageList $pageList = null,
@@ -570,9 +570,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $title
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionTaxonomyCategories(
         PageList $pageList = null,
@@ -603,9 +603,9 @@ class TwigPlusExtension extends Twig_Extension
      * @param string $title
      * @param string $template
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionTaxonomyTags(
         PageList $pageList = null,

@@ -10,23 +10,23 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Twig_Error_Loader;
-use Twig_LoaderInterface;
-use Twig_Source;
+use Twig\Error\LoaderError;
+use Twig\Loader\LoaderInterface;
+use Twig\Source;
 
-class TwigStringLoader implements Twig_LoaderInterface
+class TwigStringLoader implements LoaderInterface
 {
     /**
      * @param string $name
-     * @return Twig_Source
-     * @throws Twig_Error_Loader
+     * @return Source
+     * @throws LoaderError
      */
-    public function getSourceContext($name): Twig_Source
+    public function getSourceContext($name): Source
     {
         if (true === $this->isLayoutTemplate($name)) {
-            throw new Twig_Error_Loader(sprintf('Template "%s" does not exist.', $name));
+            throw new LoaderError(sprintf('Template "%s" does not exist.', $name));
         }
-        return new Twig_Source($name, $name);
+        return new Source($name, $name);
     }
 
     /**

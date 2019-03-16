@@ -12,9 +12,9 @@ namespace herbie;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Twig_Filter;
-use Twig_Function;
-use Twig_Test;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 class PluginManager
 {
@@ -251,7 +251,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFilter(
-                new Twig_Filter($name, $callable, $options)
+                new TwigFilter($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
@@ -269,7 +269,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFunction(
-                new Twig_Function($name, $callable, $options)
+                new TwigFunction($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
@@ -287,7 +287,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addTest(
-                new Twig_Test($name, $callable, $options)
+                new TwigTest($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);

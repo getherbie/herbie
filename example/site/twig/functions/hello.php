@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
-return new Twig_Function('hello', function ($name) {
+use Twig\TwigFunction;
+
+return new TwigFunction('hello', function ($name) {
     return "Hello {$name}!";
 });

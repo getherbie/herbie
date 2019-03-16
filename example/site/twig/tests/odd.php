@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
-return new Twig_Test('odd', function ($value) {
+use Twig\TwigTest;
+
+return new TwigTest('odd', function ($value) {
     return ($value % 2) != 0;
 });

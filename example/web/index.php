@@ -23,6 +23,9 @@ use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 $app = new Application('../site', '../../vendor');
 
@@ -46,13 +49,13 @@ $app->addMiddleware('features', new CustomHeader('features'));
 $app->addMiddleware('news/january', new HttpBasicAuthMiddleware(['user' => 'pass']));
 
 // Twig
-$app->addTwigFunction(new Twig_Function('myfunction', function () {
+$app->addTwigFunction(new TwigFunction('myfunction', function () {
     return 'My Function';
 }));
-$app->addTwigFilter(new Twig_Filter('myfilter', function () {
+$app->addTwigFilter(new TwigFilter('myfilter', function () {
     return 'My Filter';
 }));
-$app->addTwigTest(new Twig_Test('mytest', function () {
+$app->addTwigTest(new TwigTest('mytest', function () {
     return true;
 }));
 

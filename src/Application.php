@@ -18,9 +18,9 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
-use Twig_Filter;
-use Twig_Function;
-use Twig_Test;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
 define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
@@ -521,10 +521,10 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @param Twig_Filter $twigFilter
+     * @param TwigFilter $twigFilter
      * @return Application
      */
-    public function addTwigFilter(Twig_Filter $twigFilter): Application
+    public function addTwigFilter(TwigFilter $twigFilter): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
             /** @var TwigRenderer $twig */
@@ -535,10 +535,10 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @param Twig_Function $twigFunction
+     * @param TwigFunction $twigFunction
      * @return Application
      */
-    public function addTwigFunction(Twig_Function $twigFunction): Application
+    public function addTwigFunction(TwigFunction $twigFunction): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFunction) {
             /** @var TwigRenderer $twig */
@@ -575,10 +575,10 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @param Twig_Test $twigTest
+     * @param TwigTest $twigTest
      * @return Application
      */
-    public function addTwigTest(Twig_Test $twigTest): Application
+    public function addTwigTest(TwigTest $twigTest): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigTest) {
             /** @var TwigRenderer $twig */
