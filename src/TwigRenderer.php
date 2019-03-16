@@ -10,16 +10,16 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Twig_Environment;
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
-use Twig_Extension_Debug;
-use Twig_Filter;
-use Twig_Function;
-use Twig_Loader_Chain;
-use Twig_Loader_Filesystem;
-use Twig_Test;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\ChainLoader;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
+use Twig\Environment as TwigEnvironment;
 
 class TwigRenderer
 {
@@ -39,7 +39,7 @@ class TwigRenderer
     private $environment;
 
     /**
-     * @var Twig_Environment
+     * @var \Twig\Environment
      */
     private $twig;
 
@@ -90,7 +90,7 @@ class TwigRenderer
     }
 
     /**
-     * @throws Twig_Error_Loader
+     * @throws LoaderError
      * @throws \Throwable
      */
     public function init(): void
@@ -111,13 +111,13 @@ class TwigRenderer
             $cache = $cachePath;
         }
 
-        $this->twig = new Twig_Environment($loader, [
+        $this->twig = new TwigEnvironment($loader, [
             'debug' => $this->config['twig']['debug'],
             'cache' => $cache
         ]);
 
         if (!empty($this->config['twig']['debug'])) {
-            $this->twig->addExtension(new Twig_Extension_Debug());
+            $this->twig->addExtension(new DebugExtension());
         }
 
         $this->twigCoreExtension->setTwigRenderer($this);
@@ -136,9 +136,9 @@ class TwigRenderer
      * @param string $string
      * @param array $context
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderString(string $string, array $context = []): string
     {
@@ -150,9 +150,9 @@ class TwigRenderer
      * @param string $name
      * @param array $context
      * @return string
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderTemplate(string $name, array $context = []): string
     {
@@ -177,25 +177,25 @@ class TwigRenderer
     }
 
     /**
-     * @param Twig_Function $function
+     * @param TwigFunction $function
      */
-    public function addFunction(Twig_Function $function): void
+    public function addFunction(TwigFunction $function): void
     {
         $this->twig->addFunction($function);
     }
 
     /**
-     * @param Twig_Filter $filter
+     * @param TwigFilter $filter
      */
-    public function addFilter(Twig_Filter $filter): void
+    public function addFilter(TwigFilter $filter): void
     {
         $this->twig->addFilter($filter);
     }
 
     /**
-     * @param Twig_Test $test
+     * @param TwigTest $test
      */
-    public function addTest(Twig_Test $test): void
+    public function addTest(TwigTest $test): void
     {
         $this->twig->addTest($test);
     }
@@ -208,31 +208,31 @@ class TwigRenderer
         // Functions
         $dir = $this->config['twig']['functionsPath'];
         foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var Twig_Function $twigFunction */
+            /** @var TwigFunction $twigFunction */
             $twigFunction = $this->includePhpFile($file);
             $this->twig->addFunction($twigFunction);
         }
         // Filters
         $dir = $this->config['twig']['filtersPath'];
         foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var Twig_Filter $twigFilter */
+            /** @var TwigFilter $twigFilter */
             $twigFilter = $this->includePhpFile($file);
             $this->twig->addFilter($twigFilter);
         }
         // Tests
         $dir = $this->config['twig']['testsPath'];
         foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var Twig_Test $twigTest */
+            /** @var TwigTest $twigTest */
             $twigTest = $this->includePhpFile($file);
             $this->twig->addTest($twigTest);
         }
     }
 
     /**
-     * @throws Twig_Loader_Chain
-     * @throws Twig_Error_Loader
+     * @throws ChainLoader
+     * @throws LoaderError
      */
-    private function getTwigFilesystemLoader(): Twig_Loader_Chain
+    private function getTwigFilesystemLoader(): ChainLoader
     {
         $paths = [];
         if (empty($this->config['theme'])) {
@@ -244,7 +244,7 @@ class TwigRenderer
         }
 
         $loader1 = new TwigStringLoader();
-        $loader2 = new Twig_Loader_Filesystem($paths);
+        $loader2 = new FilesystemLoader($paths);
 
         // namespaces
         $namespaces = [
@@ -261,7 +261,7 @@ class TwigRenderer
             }
         }
 
-        $loader = new Twig_Loader_Chain([$loader1, $loader2]);
+        $loader = new ChainLoader([$loader1, $loader2]);
         return $loader;
     }
 

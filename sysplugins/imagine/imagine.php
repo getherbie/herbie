@@ -57,7 +57,7 @@ class ImaginePlugin extends Plugin
     /**
      * @return array
      */
-    public function getTwigFilters(): array
+    public function twigFilters(): array
     {
         return [
             ['imagine', [$this, 'imagineFilter']]
@@ -67,7 +67,7 @@ class ImaginePlugin extends Plugin
     /**
      * @return array
      */
-    public function getTwigFunctions(): array
+    public function twigFunctions(): array
     {
         return [
             ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]]
@@ -138,12 +138,12 @@ class ImaginePlugin extends Plugin
         $attribs['class'] = $attribs['class'] ?? 'imagine';
 
         if (!is_file($abspath)) {
-            return new \Twig_Markup('', 'utf8');
+            return new \Twig\Markup('', 'utf8');
         }
 
         $sanatizedFilter = $this->sanatizeFilterName($filter);
 
-        return new \Twig_Markup(
+        return new \Twig\Markup(
             $this->basePath . $this->applyFilter($path, $sanatizedFilter),
             'utf8'
         );

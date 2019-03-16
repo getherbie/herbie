@@ -12,9 +12,9 @@ namespace herbie;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Twig_Filter;
-use Twig_Function;
-use Twig_Test;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 class PluginManager
 {
@@ -151,22 +151,32 @@ class PluginManager
             /** @var PluginInterface $plugin */
             $plugin = new $className(...$constructorParams);
 
-            foreach ($plugin->getEvents() as $event) {
+            if (!$plugin instanceof PluginInterface) {
+                // TODO throw error?
+                return;
+            }
+
+            if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
+                // TODO throw error?
+                return;
+            }
+
+            foreach ($plugin->events() as $event) {
                 $this->attachListener(...$event);
             }
-            foreach ($plugin->getFilters() as $filter) {
+            foreach ($plugin->filters() as $filter) {
                 $this->attachFilter(...$filter);
             }
-            foreach ($plugin->getMiddlewares() as $middleware) {
+            foreach ($plugin->middlewares() as $middleware) {
                 $this->middlewares[] = $middleware;
             }
-            foreach ($plugin->getTwigFilters() as $twigFilter) {
+            foreach ($plugin->twigFilters() as $twigFilter) {
                 $this->addTwigFilter(...$twigFilter);
             }
-            foreach ($plugin->getTwigFunctions() as $twigFunction) {
+            foreach ($plugin->twigFunctions() as $twigFunction) {
                 $this->addTwigFunction(...$twigFunction);
             }
-            foreach ($plugin->getTwigTests() as $twigTest) {
+            foreach ($plugin->twigTests() as $twigTest) {
                 $this->addTwigTest(...$twigTest);
             }
 
@@ -241,7 +251,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFilter(
-                new Twig_Filter($name, $callable, $options)
+                new TwigFilter($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
@@ -259,7 +269,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFunction(
-                new Twig_Function($name, $callable, $options)
+                new TwigFunction($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
@@ -277,7 +287,7 @@ class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addTest(
-                new Twig_Test($name, $callable, $options)
+                new TwigTest($name, $callable, $options)
             );
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);

@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGeneratorInterface;
-use Twig_Extension;
-use Twig_Filter;
-use Twig_Function;
-use Twig_Test;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
-class TwigCoreExtension extends Twig_Extension
+class TwigCoreExtension extends AbstractExtension
 {
     /** @var Alias */
     private $alias;
@@ -78,11 +78,11 @@ class TwigCoreExtension extends Twig_Extension
     public function getFilters(): array
     {
         return [
-            new Twig_Filter('filesize', [$this, 'filterFilesize']),
-            new Twig_Filter('filter', [$this, 'filterFilter'], ['is_variadic' => true]),
-            new Twig_Filter('slugify', [$this, 'filterSlugify']),
-            new Twig_Filter('strftime', [$this, 'filterStrftime']),
-            new Twig_Filter('visible', [$this, 'filterVisible'])
+            new TwigFilter('filesize', [$this, 'filterFilesize']),
+            new TwigFilter('filter', [$this, 'filterFilter'], ['is_variadic' => true]),
+            new TwigFilter('slugify', [$this, 'filterSlugify']),
+            new TwigFilter('strftime', [$this, 'filterStrftime']),
+            new TwigFilter('visible', [$this, 'filterVisible'])
         ];
     }
 
@@ -92,20 +92,20 @@ class TwigCoreExtension extends Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new Twig_Function('add_css', [$this, 'functionAddCss']),
-            new Twig_Function('add_js', [$this, 'functionAddJs']),
-            new Twig_Function('file_link', [$this, 'functionFileLink'], [
+            new TwigFunction('add_css', [$this, 'functionAddCss']),
+            new TwigFunction('add_js', [$this, 'functionAddJs']),
+            new TwigFunction('file_link', [$this, 'functionFileLink'], [
                 'is_safe' => ['html'],
                 'needs_context' => true
             ]),
-            #new Twig_Function('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
-            new Twig_Function('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
-            new Twig_Function('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
-            new Twig_Function('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
-            new Twig_Function('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
-            new Twig_Function('translate', [$this, 'functionTranslate']),
-            new Twig_Function('url', [$this, 'functionUrl']),
-            new Twig_Function('mail_link', [$this, 'functionMailLink'], ['is_safe' => ['html']])
+            #new TwigFunction('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
+            new TwigFunction('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
+            new TwigFunction('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
+            new TwigFunction('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
+            new TwigFunction('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
+            new TwigFunction('translate', [$this, 'functionTranslate']),
+            new TwigFunction('url', [$this, 'functionUrl']),
+            new TwigFunction('mail_link', [$this, 'functionMailLink'], ['is_safe' => ['html']])
         ];
     }
 
@@ -115,8 +115,8 @@ class TwigCoreExtension extends Twig_Extension
     public function getTests(): array
     {
         return [
-            new Twig_Test('readable', [$this, 'testIsReadable']),
-            new Twig_Test('writable', [$this, 'testIsWritable'])
+            new TwigTest('readable', [$this, 'testIsReadable']),
+            new TwigTest('writable', [$this, 'testIsWritable'])
         ];
     }
 

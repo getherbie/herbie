@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
-return new Twig_Filter('reverse', function ($string) {
+use Twig\TwigFilter;
+
+return new TwigFilter('reverse', function ($string) {
     return strrev($string);
 });

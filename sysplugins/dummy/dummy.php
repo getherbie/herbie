@@ -35,9 +35,17 @@ class DummyPlugin implements PluginInterface
     }
 
     /**
+     * @return int
+     */
+    public function apiVersion(): int
+    {
+        return 2;
+    }
+
+    /**
      * @return array
      */
-    public function getEvents(): array
+    public function events(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -53,7 +61,7 @@ class DummyPlugin implements PluginInterface
     /**
      * @return array
      */
-    public function getFilters(): array
+    public function filters(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -66,7 +74,7 @@ class DummyPlugin implements PluginInterface
     /**
      * @return array
      */
-    public function getMiddlewares(): array
+    public function middlewares(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -77,7 +85,7 @@ class DummyPlugin implements PluginInterface
     /**
      * @return array
      */
-    public function getTwigFilters(): array
+    public function twigFilters(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -88,7 +96,7 @@ class DummyPlugin implements PluginInterface
     /**
      * @return array
      */
-    public function getTwigFunctions(): array
+    public function twigFunctions(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -99,7 +107,7 @@ class DummyPlugin implements PluginInterface
     /**
      * @return array
      */
-    public function getTwigTests(): array
+    public function twigTests(): array
     {
         $this->logger->debug(__METHOD__);
         return [

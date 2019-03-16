@@ -4,8 +4,6 @@ theme: default
 niceUrls: true
 fileExtensions:
   layouts: 'twig'
-paths:
-  plugins: APP_PATH/site/plugins
 twig:
   debug: true
 enabledPlugins:
