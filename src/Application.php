@@ -72,6 +72,7 @@ class Application implements LoggerAwareInterface
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
+        $this->filters = [];
         $this->appPath = normalize_path(dirname(__DIR__));
         $this->sitePath = normalize_path($sitePath);
         $this->vendorDir = normalize_path($vendorDir);
