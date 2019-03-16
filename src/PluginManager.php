@@ -151,22 +151,32 @@ class PluginManager
             /** @var PluginInterface $plugin */
             $plugin = new $className(...$constructorParams);
 
-            foreach ($plugin->getEvents() as $event) {
+            if (!$plugin instanceof PluginInterface) {
+                // TODO throw error?
+                return;
+            }
+
+            if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
+                // TODO throw error?
+                return;
+            }
+
+            foreach ($plugin->events() as $event) {
                 $this->attachListener(...$event);
             }
-            foreach ($plugin->getFilters() as $filter) {
+            foreach ($plugin->filters() as $filter) {
                 $this->attachFilter(...$filter);
             }
-            foreach ($plugin->getMiddlewares() as $middleware) {
+            foreach ($plugin->middlewares() as $middleware) {
                 $this->middlewares[] = $middleware;
             }
-            foreach ($plugin->getTwigFilters() as $twigFilter) {
+            foreach ($plugin->twigFilters() as $twigFilter) {
                 $this->addTwigFilter(...$twigFilter);
             }
-            foreach ($plugin->getTwigFunctions() as $twigFunction) {
+            foreach ($plugin->twigFunctions() as $twigFunction) {
                 $this->addTwigFunction(...$twigFunction);
             }
-            foreach ($plugin->getTwigTests() as $twigTest) {
+            foreach ($plugin->twigTests() as $twigTest) {
                 $this->addTwigTest(...$twigTest);
             }
 

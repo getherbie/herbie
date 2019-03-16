@@ -13,32 +13,37 @@ namespace herbie;
 interface PluginInterface
 {
     /**
-     * @return array
+     * @return int
      */
-    public function getEvents(): array;
+    public function apiVersion(): int;
 
     /**
      * @return array
      */
-    public function getFilters(): array;
+    public function events(): array;
 
     /**
      * @return array
      */
-    public function getMiddlewares(): array;
+    public function filters(): array;
 
     /**
      * @return array
      */
-    public function getTwigFilters(): array;
+    public function middlewares(): array;
 
     /**
      * @return array
      */
-    public function getTwigFunctions(): array;
+    public function twigFilters(): array;
 
     /**
      * @return array
      */
-    public function getTwigTests(): array;
+    public function twigFunctions(): array;
+
+    /**
+     * @return array
+     */
+    public function twigTests(): array;
 }

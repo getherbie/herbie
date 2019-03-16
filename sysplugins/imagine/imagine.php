@@ -57,7 +57,7 @@ class ImaginePlugin extends Plugin
     /**
      * @return array
      */
-    public function getTwigFilters(): array
+    public function twigFilters(): array
     {
         return [
             ['imagine', [$this, 'imagineFilter']]
@@ -67,7 +67,7 @@ class ImaginePlugin extends Plugin
     /**
      * @return array
      */
-    public function getTwigFunctions(): array
+    public function twigFunctions(): array
     {
         return [
             ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]]
