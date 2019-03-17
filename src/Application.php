@@ -71,21 +71,27 @@ class Application implements LoggerAwareInterface
      * @param $sitePath
      * @param string $vendorDir
      * @throws SystemException
+     * @throws \BadMethodCallException
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {
+        #register_shutdown_function(new FatalErrorHandler());
+        set_exception_handler(new UncaughtExceptionHandler());
+
         $this->filters = [];
         $this->appPath = normalize_path(dirname(__DIR__));
         $this->sitePath = normalize_path($sitePath);
         $this->vendorDir = normalize_path($vendorDir);
         $this->applicationMiddlewares = [];
         $this->routeMiddlewares = [];
+
         $this->init();
     }
 
     /**
      * Initialize the application.
      * @throws SystemException
+     * @throws \BadMethodCallException
      */
     private function init()
     {
@@ -95,9 +101,6 @@ class Application implements LoggerAwareInterface
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
         error_reporting(E_ALL);
-
-        #register_shutdown_function(new FatalErrorHandler());
-        set_exception_handler(new ExceptionHandler());
 
         if (!is_dir($logDir)) {
             throw SystemException::directoryNotExist($logDir);

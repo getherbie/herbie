@@ -8,7 +8,7 @@
 
 namespace herbie;
 
-class ExceptionHandler
+class UncaughtExceptionHandler
 {
     /**
      * @param \Throwable $exception
