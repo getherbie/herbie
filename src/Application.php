@@ -67,9 +67,10 @@ class Application implements LoggerAwareInterface
     private $routeMiddlewares;
 
     /**
-     * @param string $sitePath
+     * Application constructor.
+     * @param $sitePath
      * @param string $vendorDir
-     * @throws \Exception
+     * @throws SystemException
      */
     public function __construct($sitePath, $vendorDir = '../vendor')
     {

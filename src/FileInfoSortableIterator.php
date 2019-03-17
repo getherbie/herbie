@@ -32,7 +32,6 @@ class FileInfoSortableIterator implements \IteratorAggregate
     /**
      * @param \Traversable $iterator
      * @param int|callable $sort
-     * @throws \InvalidArgumentException
      */
     public function __construct(\Traversable $iterator, $sort)
     {
