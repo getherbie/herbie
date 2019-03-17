@@ -523,7 +523,7 @@ trait PageItemTrait
     private function setData(array $data): void
     {
         if (array_key_exists('data', $data)) {
-            throw new \LogicException("Field data is not allowed.");
+            throw new \InvalidArgumentException("Field data is not allowed.");
         }
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
@@ -581,7 +581,7 @@ trait PageItemTrait
         } elseif (array_key_exists($name, $this->customData)) {
             return $this->customData[$name];
         } else {
-            throw new \LogicException("Field {$name} does not exist.");
+            throw new \InvalidArgumentException("Field {$name} does not exist.");
         }
     }
 

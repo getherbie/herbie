@@ -16,7 +16,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
-use Zend\EventManager\EventManagerInterface;
 
 class PageRendererMiddleware implements MiddlewareInterface
 {
@@ -36,7 +35,7 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $httpFactory;
 
     /**
-     * @var EventManagerInterface
+     * @var EventManager
      */
     private $eventManager;
 
@@ -98,7 +97,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
 
         if (is_null($page)) {
-            throw HttpException::notFound('Page "' . $this->environment->getRoute() . '" not found');
+            throw HttpException::notFound($this->environment->getRoute());
         }
 
         /** @var array $routeParams */

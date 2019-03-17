@@ -28,7 +28,6 @@ class Container implements ContainerInterface
     /**
      * @param string $id
      * @return mixed
-     * @throws \Exception
      */
     public function get($id)
     {
@@ -66,7 +65,6 @@ class Container implements ContainerInterface
     /**
      * @param mixed $offset
      * @return mixed
-     * @throws \Exception
      */
     private function offsetGet($offset)
     {

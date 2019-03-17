@@ -96,7 +96,6 @@ class DownloadMiddleware implements MiddlewareInterface
     /**
      * @param UriInterface $uri
      * @return string
-     * @throws SystemException
      */
     private function getFilePath(UriInterface $uri)
     {
@@ -106,7 +105,7 @@ class DownloadMiddleware implements MiddlewareInterface
             $filePath = $this->storagePath . substr($uriPath, strlen($this->baseUrl));
             return $this->alias->get($filePath);
         }
-        throw SystemException::fileNotExist($uriPath);
+        return '';
     }
 
     /**

@@ -42,24 +42,24 @@ function normalize_path(string $path): string
 function render_exception(\Throwable $exception): string
 {
     if (HERBIE_DEBUG) {
-        $format = "Uncatched Exception: %s\n\n%s [%s] in %s on line %s\n\nStack trace:\n%s";
+        $format = "%s [%s] in %s on line %s\n\n%s\n\nStack trace:\n%s";
         $message = sprintf(
             $format,
-            $exception->getMessage(),
             get_class($exception),
             $exception->getCode(),
             $exception->getFile(),
             $exception->getLine(),
-            $exception->getTraceAsString()
+            $exception->getMessage(),
+            strip_tags($exception->getTraceAsString())
         );
 
         // remove path
         $path = realpath(__DIR__ . '/../../');
         $message = str_replace($path, '', $message);
-    } else {
-        $format = 'Uncatched Exception: %s';
-        $message = sprintf($format, $exception->getMessage());
+        return sprintf('<pre class="error error--exception error--debug">%s</pre>', $message);
     }
 
-    return sprintf('<pre>%s</pre>', $message);
+    $format = '%s';
+    $message = sprintf($format, $exception->getMessage());
+    return sprintf('<pre class="error error--exception">%s</pre>', $message);
 }
