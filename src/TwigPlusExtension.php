@@ -92,14 +92,12 @@ class TwigPlusExtension extends AbstractExtension
      * @param string $route
      * @param int $maxDepth
      * @param bool $showHidden
-     * @param string $class
      * @return string
      */
     public function functionAsciiTree(
         string $route = '',
         int $maxDepth = -1,
-        bool $showHidden = false,
-        string $class = 'sitemap'
+        bool $showHidden = false
     ): string {
 
         // TODO use $class parameter
@@ -242,14 +240,12 @@ class TwigPlusExtension extends AbstractExtension
     /**
      * @param string $route
      * @param int $maxDepth
-     * @param bool $showHidden
      * @param string $class
      * @return string
      */
     public function functionMenu(
         string $route = '',
         int $maxDepth = -1,
-        bool $showHidden = false,
         string $class = 'menu'
     ): string {
 

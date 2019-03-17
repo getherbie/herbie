@@ -269,7 +269,7 @@ class TwigRenderer
      * @param string $file
      * @return object
      */
-    private function includePhpFile(string $file): object
+    private function includePhpFile(string $file)
     {
         return include($file);
     }

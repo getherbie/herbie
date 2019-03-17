@@ -194,7 +194,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
 
             $count = count($splitted);
             if ($count %2 == 0) {
-                throw new \Exception('Fehler beim Auslesen der Seite.');
+                throw new \UnexpectedValueException('Error at reading file content');
             }
 
             $segments['default'] = array_shift($splitted);

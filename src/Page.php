@@ -102,10 +102,10 @@ class Page
     public function setData(array $data): void
     {
         if (array_key_exists('segments', $data)) {
-            throw new \LogicException("Field segments is not allowed.");
+            throw new \InvalidArgumentException("Field segments is not allowed.");
         }
         if (array_key_exists('data', $data)) {
-            throw new \LogicException("Field data is not allowed.");
+            throw new \InvalidArgumentException("Field data is not allowed.");
         }
         foreach ($data as $key => $value) {
             $this->__set($key, $value);

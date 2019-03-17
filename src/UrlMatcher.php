@@ -39,7 +39,6 @@ class UrlMatcher
      * Returns a path to a valid page file.
      * @param string $route The route of the current request.
      * @return array
-     * @throws HttpException
      */
     public function match(string $route): array
     {
@@ -74,14 +73,13 @@ class UrlMatcher
     /**
      * @param string $route
      * @return array|null
-     * @throws \Exception
      */
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
         foreach ($this->config->rules->toArray() as $rule) {
             if (count($rule) < 2) {
-                throw new \Exception(sprintf('Invalid rule %s', $rule[0]));
+                throw new \InvalidArgumentException(sprintf('Invalid rule %s', $rule[0]));
             }
             $constraints = $rule[2] ?? [];
             $regex = $this->getRegex($rule[0], $constraints);

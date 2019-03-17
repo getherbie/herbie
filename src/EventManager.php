@@ -54,6 +54,7 @@ class EventManager
      */
     public function trigger(string $eventName, $target = null, array $argv = []): void
     {
+        /** @var Event $event */
         $event = new $this->eventPrototype();
         $event->setName($eventName);
 

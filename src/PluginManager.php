@@ -103,6 +103,7 @@ class PluginManager
     }
 
     /**
+     * @throws SystemException
      * @throws \ReflectionException
      */
     public function init(): void
@@ -123,8 +124,9 @@ class PluginManager
     /**
      * @param string $path
      * @param string $key
-     * @throws \ReflectionException
+     * @param string $namespace
      * @throws SystemException
+     * @throws \ReflectionException
      */
     private function loadPlugin(string $path, string $key, string $namespace): void
     {
@@ -222,11 +224,10 @@ class PluginManager
     /**
      * @param string $name
      * @param callable $callable
-     * @param int $priority
      */
-    private function attachFilter(string $name, callable $callable, int $priority = 1): void
+    private function attachFilter(string $name, callable $callable): void
     {
-        $this->filterChainManager->attach($name, $callable, $priority);
+        $this->filterChainManager->attach($name, $callable);
     }
 
     /**

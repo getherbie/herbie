@@ -265,7 +265,6 @@ class Selector
     /**
      * @param string|array $selector
      * @return array
-     * @throws \Exception
      */
     protected function getSelector($selector)
     {
@@ -274,7 +273,7 @@ class Selector
         } elseif (is_string($selector)) {
             $selectors = [trim($selector)];
         } else {
-            throw new \Exception("Selector has to be a string or an array.");
+            throw new \InvalidArgumentException("Selector has to be a string or an array.");
         }
         unset($selector);
 

@@ -19,8 +19,8 @@ class Alias
     private $aliases;
 
     /**
+     * Alias constructor.
      * @param array $aliases
-     * @throws \Exception
      */
     public function __construct(array $aliases = [])
     {
@@ -33,7 +33,6 @@ class Alias
     /**
      * @param string $alias
      * @param string $path
-     * @throws \Exception
      */
     public function set(string $alias, string $path): void
     {
@@ -41,7 +40,7 @@ class Alias
             throw new \InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
         }
         if (array_key_exists($alias, $this->aliases)) {
-            throw new \Exception("Alias {$alias} already set, use update instead.");
+            throw new \InvalidArgumentException("Alias {$alias} already set, use update instead.");
         }
         $this->aliases[$alias] = $this->rtrim($path);
     }
@@ -61,14 +60,13 @@ class Alias
     /**
      * @param string $alias
      * @param string $path
-     * @throws \Exception
      */
     public function update(string $alias, string $path): void
     {
         if (array_key_exists($alias, $this->aliases)) {
             $this->aliases[$alias] = $this->rtrim($path);
         } else {
-            throw new \Exception("Alias {$alias} not exists, use set instead.");
+            throw new \InvalidArgumentException("Alias {$alias} not exists, use set instead.");
         }
     }
 

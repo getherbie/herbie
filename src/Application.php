@@ -240,10 +240,6 @@ class Application implements LoggerAwareInterface
             );
         });
 
-        $c->set(DefaultStringFilter::class, function () {
-            return new DefaultStringFilter();
-        });
-
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
@@ -281,7 +277,7 @@ class Application implements LoggerAwareInterface
             return new HttpFactory();
         });
 
-        $c->set(LoggerInterface::class, function (Container $c) {
+        $c->set(LoggerInterface::class, function () {
             return new NullLogger();
         });
 
