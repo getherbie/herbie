@@ -5,6 +5,8 @@ namespace herbie\sysplugins\textile;
 use herbie\Configuration;
 use herbie\FilterInterface;
 use herbie\Plugin;
+use Netcarver\Textile\Parser;
+use Psr\Log\LoggerInterface;
 
 class TextilePlugin extends Plugin
 {
@@ -16,10 +18,14 @@ class TextilePlugin extends Plugin
     /**
      * TextilePlugin constructor.
      * @param Configuration $config
+     * @param LoggerInterface $logger
      */
-    public function __construct(Configuration $config)
+    public function __construct(Configuration $config, LoggerInterface $logger)
     {
         $this->config = $config->plugins->textile;
+        if (!class_exists('Netcarver\Textile\Parser')) {
+            $logger->error('Please install "netcarver/textile" via composer');
+        }
     }
 
     /**
@@ -76,8 +82,11 @@ class TextilePlugin extends Plugin
      */
     public function parseTextile(string $value): string
     {
+        if (!class_exists('Netcarver\Textile\Parser')) {
+            return $value;
+        }
         try {
-            $parser = new \Netcarver\Textile\Parser();
+            $parser = new Parser();
             return $parser->parse($value);
         } catch (\Throwable $t) {
             return $value;
