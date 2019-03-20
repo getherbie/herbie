@@ -9,5 +9,5 @@ twig:
 enabledPlugins:
   - simplecontact
   - simplesearch
-enabledSysPlugins:
-  - dummy
+enabledSysPlugins: []
+
