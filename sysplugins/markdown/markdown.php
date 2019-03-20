@@ -7,22 +7,45 @@ namespace herbie\sysplugins\markdown;
 use herbie\Configuration;
 use herbie\FilterInterface;
 use herbie\Plugin;
+use Parsedown;
 use ParsedownExtra;
+use Psr\Log\LoggerInterface;
 
 class MarkdownPlugin extends Plugin
 {
+    const MODE_PARSEDOWN = 1;
+    const MODE_PARSEDOWN_EXTRA = 2;
+
     /**
      * @var Configuration
      */
     private $config;
 
     /**
+     * @var int
+     */
+    private $mode;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * MarkdownPlugin constructor.
      * @param Configuration $config
      */
-    public function __construct(Configuration $config)
+    public function __construct(Configuration $config, LoggerInterface $logger)
     {
         $this->config = $config->plugins->markdown;
+        $this->logger = $logger;
+        if (class_exists('ParsedownExtra')) {
+            $this->mode = self::MODE_PARSEDOWN_EXTRA;
+        } elseif (class_exists('Parsedown')) {
+            $this->mode = self::MODE_PARSEDOWN;
+        } else {
+            $logger->error('Please install either "erusev/parsedown" or "erusev/parsedown-extra" via composer');
+        }
     }
 
     /**
@@ -81,9 +104,25 @@ class MarkdownPlugin extends Plugin
      */
     public function parseMarkdown(string $string): string
     {
-        $parser = new ParsedownExtra();
-        $parser->setUrlsLinked(false);
-        $html = $parser->text($string);
-        return $html;
+        $parser = $this->createParser();
+        if ($parser) {
+            $parser->setUrlsLinked(false);
+            $string = $parser->text($string);
+        }
+        return $string;
+    }
+
+    /**
+     * @return Parsedown|ParsedownExtra|null
+     */
+    private function createParser()
+    {
+        if ($this->mode == self::MODE_PARSEDOWN_EXTRA) {
+            return new ParsedownExtra();
+        }
+        if ($this->mode == self::MODE_PARSEDOWN) {
+            return new Parsedown();
+        }
+        return null;
     }
 }

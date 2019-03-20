@@ -19,7 +19,8 @@
         "psr/simple-cache": "^1.0",
         "symfony/yaml": "^4.2",
         "tebe/http-factory": "^1.1",
-        "twig/twig": "^2.0"
+        "twig/twig": "^2.0",
+        "netcarver/textile": "^3.7"
     },
     "autoload": {
         "psr-4": {
