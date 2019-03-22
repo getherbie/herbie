@@ -13,6 +13,9 @@ namespace herbie\sysplugins\imagine;
 use herbie\Alias;
 use herbie\Configuration;
 use herbie\Plugin;
+use Imagine\Exception\InvalidArgumentException;
+use Imagine\Exception\OutOfBoundsException;
+use Imagine\Exception\RuntimeException;
 use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
@@ -20,6 +23,7 @@ use Imagine\Image\Color;
 use Imagine\Image\Point;
 use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
+use Twig\Markup;
 
 class ImaginePlugin extends Plugin
 {
@@ -79,6 +83,7 @@ class ImaginePlugin extends Plugin
      * @param string $filter
      * @param array $attribs
      * @return string
+     * @throws RuntimeException
      */
     public function imagineFunction(string $path, string $filter = 'default', array $attribs = []): string
     {
@@ -129,21 +134,22 @@ class ImaginePlugin extends Plugin
      *
      * @param string $path
      * @param string $filter
-     * @return \Twig_Markup
+     * @return Markup
+     * @throws RuntimeException
      */
-    public function imagineFilter(string $path, string $filter): \Twig_Markup
+    public function imagineFilter(string $path, string $filter): Markup
     {
         $abspath = $this->alias->get('@media/' . $path);
 
         $attribs['class'] = $attribs['class'] ?? 'imagine';
 
         if (!is_file($abspath)) {
-            return new \Twig\Markup('', 'utf8');
+            return new Markup('', 'utf8');
         }
 
         $sanatizedFilter = $this->sanatizeFilterName($filter);
 
-        return new \Twig\Markup(
+        return new Markup(
             $this->basePath . $this->applyFilter($path, $sanatizedFilter),
             'utf8'
         );
@@ -175,6 +181,7 @@ class ImaginePlugin extends Plugin
      * @param string $relpath
      * @param string $filter
      * @return string
+     * @throws RuntimeException
      */
     protected function applyFilter(string $relpath, string $filter): string
     {
@@ -236,9 +243,11 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     protected function applyResizeFilter(ImageInterface $image, $options)
     {
@@ -254,9 +263,11 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     protected function applyThumbnailFilter(ImageInterface $image, $options)
     {
@@ -277,9 +288,12 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws InvalidArgumentException
+     * @throws OutOfBoundsException
+     * @throws RuntimeException
      */
     protected function applyCropFilter(ImageInterface $image, $options)
     {
@@ -301,8 +315,9 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
-     * @return \Imagine\Image\ImageInterface
+     * @param ImageInterface $image
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyGrayscaleFilter(ImageInterface $image)
     {
@@ -311,8 +326,9 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
-     * @return \Imagine\Image\ImageInterface
+     * @param ImageInterface $image
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyNegativeFilter(ImageInterface $image)
     {
@@ -321,8 +337,9 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
-     * @return \Imagine\Image\ImageInterface
+     * @param ImageInterface $image
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applySharpenFilter(ImageInterface $image)
     {
@@ -331,9 +348,10 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyBlurFilter(ImageInterface $image, $options)
     {
@@ -346,9 +364,10 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyGammaFilter(ImageInterface $image, $options)
     {
@@ -361,9 +380,11 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     protected function applyColorizeFilter(ImageInterface $image, $options)
     {
@@ -375,9 +396,10 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyRotateFilter(ImageInterface $image, $options)
     {
@@ -389,8 +411,9 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
-     * @return \Imagine\Image\ImageInterface
+     * @param ImageInterface $image
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyFlipHorizontallyFilter(ImageInterface $image)
     {
@@ -399,8 +422,9 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     * @param \Imagine\Image\ImageInterface $image
-     * @return \Imagine\Image\ImageInterface
+     * @param ImageInterface $image
+     * @return ImageInterface
+     * @throws RuntimeException
      */
     protected function applyFlipVerticallyFilter(ImageInterface $image)
     {
@@ -410,9 +434,9 @@ class ImaginePlugin extends Plugin
 
     /**
      * @see https://github.com/liip/LiipImagineBundle/blob/master/Imagine/Filter/Loader/UpscaleFilterLoader.php
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
      * @throws \InvalidArgumentException
      */
     protected function applyUpscaleFilter(ImageInterface $image, $options)
@@ -442,10 +466,10 @@ class ImaginePlugin extends Plugin
     }
 
     /**
-     *
-     * @param \Imagine\Image\ImageInterface $image
+     * @param ImageInterface $image
      * @param array $options
-     * @return \Imagine\Image\ImageInterface
+     * @return ImageInterface
+     * @throws InvalidArgumentException
      */
     protected function applyRelativeResizeFilter(ImageInterface $image, $options)
     {
