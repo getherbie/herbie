@@ -1,29 +1,31 @@
 {% if routeParams %}
+    {% spaceless %}
 
-    {% if routeParams.author %}
+        {% if routeParams.author %}
 
-        <p>Filtered by Author "{{ routeParams.author }}"</p>
+            <p>Filtered by Author "{{ routeParams.author }}"</p>
 
-    {% elseif routeParams.category %}
+        {% elseif routeParams.category %}
 
-        <p>Filtered by Category "{{ routeParams.category }}"</p>
+            <p>Filtered by Category "{{ routeParams.category }}"</p>
 
-    {% elseif routeParams.tag %}
+        {% elseif routeParams.tag %}
 
-        <p>Filtered by Tag "{{ routeParams.tag }}"</p>
+            <p>Filtered by Tag "{{ routeParams.tag }}"</p>
 
-    {% elseif routeParams.year and routeParams.month and routeParams.day %}
+        {% elseif routeParams.year and routeParams.month and routeParams.day %}
 
-        <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
+            <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
 
-    {% elseif routeParams.year and routeParams.month %}
+        {% elseif routeParams.year and routeParams.month %}
 
-        <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
+            <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
 
-    {% elseif routeParams.year %}
+        {% elseif routeParams.year %}
 
-        <p>Filtered by Year "{{ routeParams.year }}"</p>
+            <p>Filtered by Year "{{ routeParams.year }}"</p>
 
-    {% endif %}
+        {% endif %}
 
+    {% endspaceless %}
 {% endif %}
