@@ -1,11 +1,13 @@
 {% if categories|length > 0 %}
-    <div class="widget-blog widget-blog-categories">
-        <h4>{{ title }}</h4>
-        <ul>
-            {% for category, count in categories %}
-                {% set route = pageRoute ~ '/category/' ~ category|slugify %}
-                <li>{{ page_link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% spaceless %}
+        <div class="widget-blog widget-blog-categories">
+            <h4>{{ title }}</h4>
+            <ul>
+                {% for category, count in categories %}
+                    {% set route = pageRoute ~ '/category/' ~ category|slugify %}
+                    <li>{{ page_link(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endspaceless %}
 {% endif %}
