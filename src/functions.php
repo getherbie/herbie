@@ -71,7 +71,8 @@ function render_exception(\Throwable $exception): string
  */
 function explode_list(string $list, string $delim = ',')
 {
-    if (substr_count($list, $delim) === 0) {
+    $list = trim($list);
+    if (strlen($list) === 0) {
         return [];
     }
     $values = explode($delim, $list);
