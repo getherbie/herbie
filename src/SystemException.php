@@ -98,6 +98,18 @@ class SystemException extends \Exception
     }
 
     /**
+     * @param string $plugin
+     * @param string $format
+     * @return static
+     */
+    public static function pluginNotExist(string $plugin, string $format = null): SystemException
+    {
+        $format = $format ?? 'Plugin "%s" does not exist';
+        $message = sprintf($format, $plugin);
+        return new SystemException($message, 500);
+    }
+
+    /**
      * @param string $message
      * @param \Throwable $t
      * @return static
