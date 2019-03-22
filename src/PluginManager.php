@@ -109,12 +109,14 @@ class PluginManager
     public function init(): void
     {
         // add sys plugins first
-        foreach ($this->config['enabledSysPlugins'] as $key) {
+        $enabledSysPlugins = explode_list($this->config['enabledSysPlugins']);
+        foreach ($enabledSysPlugins as $key) {
             $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
         }
 
         // add third-party plugins
-        foreach ($this->config['enabledPlugins'] as $key) {
+        $enabledPlugins = explode_list($this->config['enabledPlugins']);
+        foreach ($enabledPlugins as $key) {
             $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
         }
 

@@ -29,7 +29,7 @@ return [
         'web' => $WEB_URL . '/',
     ],
     'fileExtensions' => [
-        'data' => ['yml', 'yaml'],
+        'data' => 'yml,yaml',
         'layouts' => 'html',
         'media' => [
             'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
@@ -39,7 +39,7 @@ return [
             'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
             'audio' => 'mp3,m4a,wav,aiff,midi'
         ],
-        'pages' => ['txt', 'md', 'markdown', 'textile', 'htm', 'html', 'rss', 'xml'],
+        'pages' => 'txt,md,markdown,textile,htm,html,rss,xml',
     ],
     'components' => [
         'downloadMiddleware' => [
@@ -47,14 +47,7 @@ return [
             'storagePath' => '@site/media',
         ],
         'urlMatcher' => [
-            'rules' => [
-                ['blog/author/{author}', 'blog'],
-                ['blog/category/{category}', 'blog'],
-                ['blog/tag/{tag}', 'blog'],
-                ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
-                ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
-                ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
-            ]
+            'rules' => []
         ]
     ],
     'twig' => [
@@ -65,6 +58,6 @@ return [
         'testsPath' => $SITE_PATH . '/twig/tests'
     ],
     'plugins' => [],
-    'enabledPlugins' => [],
-    'enabledSysPlugins' => ['adminpanel', 'imagine']
+    'enabledPlugins' => '',
+    'enabledSysPlugins' => 'adminpanel,imagine'
 ];
