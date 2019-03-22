@@ -63,3 +63,19 @@ function render_exception(\Throwable $exception): string
     $message = sprintf($format, $exception->getMessage());
     return sprintf('<pre class="error error--exception">%s</pre>', $message);
 }
+
+/**
+ * @param string $list
+ * @param string $delim
+ * @return array
+ */
+function explode_list(string $list, string $delim = ',')
+{
+    $list = trim($list);
+    if (strlen($list) === 0) {
+        return [];
+    }
+    $values = explode($delim, $list);
+    $values = array_map('trim', $values);
+    return $values;
+}

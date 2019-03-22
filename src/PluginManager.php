@@ -109,12 +109,14 @@ class PluginManager
     public function init(): void
     {
         // add sys plugins first
-        foreach ($this->config['enabledSysPlugins'] as $key) {
+        $enabledSysPlugins = explode_list($this->config['enabledSysPlugins']);
+        foreach ($enabledSysPlugins as $key) {
             $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
         }
 
         // add third-party plugins
-        foreach ($this->config['enabledPlugins'] as $key) {
+        $enabledPlugins = explode_list($this->config['enabledPlugins']);
+        foreach ($enabledPlugins as $key) {
             $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
         }
 
@@ -127,69 +129,72 @@ class PluginManager
      * @param string $namespace
      * @throws SystemException
      * @throws \ReflectionException
+     * @throws \InvalidArgumentException
      */
     private function loadPlugin(string $path, string $key, string $namespace): void
     {
         $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
-        if (is_readable($pluginPath)) {
-            require($pluginPath);
-
-            $className = $namespace . $key . '\\' . ucfirst($key) . 'Plugin';
-
-            $class = new \ReflectionClass($className);
-
-            $constructor = $class->getConstructor();
-            $constructorParams = [];
-            if ($constructor) {
-                foreach ($constructor->getParameters() as $param) {
-                    if ($param->getType() === null) {
-                        throw SystemException::serverError('Only objects can be injected in ' . $className);
-                    }
-                    $classNameToInject = $param->getClass()->getName();
-                    $constructorParams[] = $this->container->get($classNameToInject);
-                };
-            }
-
-            /** @var PluginInterface $plugin */
-            $plugin = new $className(...$constructorParams);
-
-            if (!$plugin instanceof PluginInterface) {
-                // TODO throw error?
-                return;
-            }
-
-            if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
-                // TODO throw error?
-                return;
-            }
-
-            foreach ($plugin->events() as $event) {
-                $this->attachListener(...$event);
-            }
-            foreach ($plugin->filters() as $filter) {
-                $this->attachFilter(...$filter);
-            }
-            foreach ($plugin->middlewares() as $middleware) {
-                $this->middlewares[] = $middleware;
-            }
-            foreach ($plugin->twigFilters() as $twigFilter) {
-                $this->addTwigFilter(...$twigFilter);
-            }
-            foreach ($plugin->twigFunctions() as $twigFunction) {
-                $this->addTwigFunction(...$twigFunction);
-            }
-            foreach ($plugin->twigTests() as $twigTest) {
-                $this->addTwigTest(...$twigTest);
-            }
-
-            $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
-            $this->eventManager->trigger($eventName, $plugin);
-
-            $this->translator->addPath($key, $path . '/messages');
-
-            $this->loadedPlugins[$key] = $plugin;
-            $this->pluginPaths[$key] = dirname($pluginPath);
+        if (!is_file($pluginPath) || !is_readable($pluginPath)) {
+            throw SystemException::pluginNotExist($key);
         }
+
+        require($pluginPath);
+
+        $className = $namespace . $key . '\\' . ucfirst($key) . 'Plugin';
+
+        $class = new \ReflectionClass($className);
+
+        $constructor = $class->getConstructor();
+        $constructorParams = [];
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $param) {
+                if ($param->getType() === null) {
+                    throw SystemException::serverError('Only objects can be injected in ' . $className);
+                }
+                $classNameToInject = $param->getClass()->getName();
+                $constructorParams[] = $this->container->get($classNameToInject);
+            };
+        }
+
+        /** @var PluginInterface $plugin */
+        $plugin = new $className(...$constructorParams);
+
+        if (!$plugin instanceof PluginInterface) {
+            // TODO throw error?
+            return;
+        }
+
+        if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
+            // TODO throw error?
+            return;
+        }
+
+        foreach ($plugin->events() as $event) {
+            $this->attachListener(...$event);
+        }
+        foreach ($plugin->filters() as $filter) {
+            $this->attachFilter(...$filter);
+        }
+        foreach ($plugin->middlewares() as $middleware) {
+            $this->middlewares[] = $middleware;
+        }
+        foreach ($plugin->twigFilters() as $twigFilter) {
+            $this->addTwigFilter(...$twigFilter);
+        }
+        foreach ($plugin->twigFunctions() as $twigFunction) {
+            $this->addTwigFunction(...$twigFunction);
+        }
+        foreach ($plugin->twigTests() as $twigTest) {
+            $this->addTwigTest(...$twigTest);
+        }
+
+        $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
+        $this->eventManager->trigger($eventName, $plugin);
+
+        $this->translator->addPath($key, $path . '/messages');
+
+        $this->loadedPlugins[$key] = $plugin;
+        $this->pluginPaths[$key] = dirname($pluginPath);
     }
 
     /**
