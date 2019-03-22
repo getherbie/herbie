@@ -12,7 +12,6 @@ return [
         'debug' => true
     ],
     'enabledPlugins' => 'simplecontact,simplesearch',
-    'enabledSysPlugins' => '',
     'components' => [
         'urlMatcher' => [
             'rules' => [
