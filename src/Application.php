@@ -164,76 +164,44 @@ class Application implements LoggerAwareInterface
 
         $c->set(Configuration::class, function (Container $c) {
 
-            $APP_PATH = rtrim($this->appPath, '/');
-            $SITE_PATH = rtrim($this->sitePath, '/');
-            $WEB_PATH = rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/');
-            $WEB_URL = rtrim($c->get(Environment::class)->getBaseUrl(), '/');
-
-            $consts = [
-                'APP_PATH' => $APP_PATH,
-                'WEB_PATH' => $WEB_PATH,
-                'WEB_URL' => $WEB_URL,
-                'SITE_PATH' => $SITE_PATH
+            $const = [
+                'APP_PATH' => rtrim($this->appPath, '/'),
+                'SITE_PATH' => rtrim($this->sitePath, '/'),
+                'WEB_PATH' => rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/'),
+                'WEB_URL' => rtrim($c->get(Environment::class)->getBaseUrl(), '/')
             ];
 
-            // config default
-            $defaults = require($this->appPath . '/config/defaults.php');
-            $config = new Configuration($defaults);
+            $processor = function (array $data) use ($const) {
+                return recursive_array_replace(array_keys($const), array_values($const), $data);
+            };
 
-            // config user
+            // default config
+            $defaultConfig = load_php_config($this->appPath . '/config/defaults.php', $processor);
+            $userConfig = [];
+            $pluginConfig = [];
+
+            // user config
             if (is_file($this->sitePath . '/config/main.php')) {
-                $array = require($this->sitePath . '/config/main.php');
-            } elseif (is_file($this->sitePath . '/config/main.yml')) {
-                $content = file_get_contents($this->sitePath . '/config/main.yml');
-                $content = str_replace(array_keys($consts), array_values($consts), $content);
-                $array = Yaml::parse($content);
-            } else {
-                $array = [];
+                $userConfig = load_php_config($this->sitePath . '/config/main.php', $processor);
             }
-            $userConfig = new Configuration($array);
 
-            // config plugins
-            $array = [];
-            $dir = $userConfig['paths']['plugins'] ?? $config['paths']['plugins'];
-            if (is_readable($dir)) {
-                $files = scandir($dir);
-                foreach ($files as $file) {
-                    if (substr($file, 0, 1) === '.') {
-                        continue;
-                    }
-                    $configFile = $dir . '/' . $file . '/config.yml';
-                    if (is_file($configFile)) {
-                        $content = file_get_contents($configFile);
-                        $content = str_replace(array_keys($consts), array_values($consts), $content);
-                        $array['plugins'][$file] = Yaml::parse($content);
-                    } else {
-                        $array['plugins'][$file] = [];
-                    }
-                }
+            // plugin config
+            $dir = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
+            foreach (glob($dir . '/*/config.php') as $configFile) {
+                $pluginName = basename(dirname($configFile));
+                $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
             }
 
             // sysplugins config
-            $dir = $userConfig['paths']['sysPlugins'] ?? $config['paths']['sysPlugins'];
-            if (is_readable($dir)) {
-                $files = scandir($dir);
-                foreach ($files as $file) {
-                    if (substr($file, 0, 1) === '.') {
-                        continue;
-                    }
-                    $configFile = $dir . '/' . $file . '/config.yml';
-                    if (is_file($configFile)) {
-                        $content = file_get_contents($configFile);
-                        $content = str_replace(array_keys($consts), array_values($consts), $content);
-                        $array['plugins'][$file] = Yaml::parse($content);
-                    } else {
-                        $array['plugins'][$file] = [];
-                    }
-                }
+            $dir = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
+            foreach (glob($dir . '/*/config.php') as $configFile) {
+                $pluginName = basename(dirname($configFile));
+                $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
             }
 
-            $config->merge(new Configuration($array));
-
-            $config->merge($userConfig);
+            $config = new Configuration($defaultConfig);
+            $config->merge(new Configuration($pluginConfig));
+            $config->merge(new Configuration($userConfig));
 
             return $config;
         });

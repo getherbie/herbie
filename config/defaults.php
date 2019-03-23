@@ -13,20 +13,20 @@ return [
     'theme' => 'default',
     'niceUrls' => false,
     'paths' => [
-        'app' => $APP_PATH,
-        'data' => $SITE_PATH . '/data',
-        'messages' => $APP_PATH . '/messages',
-        'media' => $SITE_PATH . '/media',
-        'pages' => $SITE_PATH . '/pages',
-        'plugins' => $SITE_PATH . '/plugins',
-        'site' => $SITE_PATH,
-        'sysPlugins' => $APP_PATH . '/sysplugins',
-        'themes' => $SITE_PATH . '/themes',
-        'web' => $WEB_PATH
+        'app' => 'APP_PATH',
+        'data' => 'SITE_PATH/data',
+        'messages' => 'APP_PATH/messages',
+        'media' => 'SITE_PATH/media',
+        'pages' => 'SITE_PATH/pages',
+        'plugins' => 'SITE_PATH/plugins',
+        'site' => 'SITE_PATH',
+        'sysPlugins' => 'APP_PATH/sysplugins',
+        'themes' => 'SITE_PATH/themes',
+        'web' => 'WEB_PATH'
     ],
     'urls' => [
-        'media' => $WEB_URL . '/media',
-        'web' => $WEB_URL . '/',
+        'media' => 'WEB_URL/media',
+        'web' => 'WEB_URL/',
     ],
     'fileExtensions' => [
         'layouts' => 'html',
@@ -55,9 +55,9 @@ return [
     'twig' => [
         'debug' => false,
         'cache' => false,
-        'functionsPath' => $SITE_PATH . '/twig/functions',
-        'filtersPath' => $SITE_PATH . '/twig/filters',
-        'testsPath' => $SITE_PATH . '/twig/tests'
+        'functionsPath' => 'SITE_PATH/twig/functions',
+        'filtersPath' => 'SITE_PATH/twig/filters',
+        'testsPath' => 'SITE_PATH/twig/tests'
     ],
     'plugins' => [],
     'enabledPlugins' => '',

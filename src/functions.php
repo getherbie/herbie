@@ -79,3 +79,38 @@ function explode_list(string $list, string $delim = ',')
     $values = array_map('trim', $values);
     return $values;
 }
+
+/**
+ * @param string $path
+ * @param callable|null $processor
+ * @return array
+ */
+function load_php_config(string $path, callable $processor = null): array
+{
+    $data = include($path);
+    if ($processor) {
+        $data = $processor($data);
+    }
+    return $data;
+}
+
+/**
+ * @param string|array $find
+ * @param string|array $replace
+ * @param string|array $array
+ * @return array
+ */
+function recursive_array_replace($find, $replace, $array): array
+{
+    if (!is_array($array)) {
+        return str_replace($find, $replace, $array);
+    }
+
+    $newArray = [];
+
+    foreach ($array as $key => $value) {
+        $newArray[$key] = recursive_array_replace($find, $replace, $value);
+    }
+
+    return $newArray;
+}
