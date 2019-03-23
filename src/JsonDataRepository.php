@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class YamlDataRepository implements DataRepositoryInterface
+class JsonDataRepository implements DataRepositoryInterface
 {
     /**
      * @var string
@@ -36,7 +36,7 @@ class YamlDataRepository implements DataRepositoryInterface
             throw SystemException::directoryNotReadable($path);
         }
         $this->path = $path;
-        $this->extensions = ['yml', 'yaml'];
+        $this->extensions = ['json'];
     }
 
     /**
@@ -100,7 +100,6 @@ class YamlDataRepository implements DataRepositoryInterface
      */
     private function parseDataFile(string $filepath): array
     {
-        $yaml = file_get_contents($filepath);
-        return Yaml::parse($yaml);
+        return json_decode(file_get_contents($filepath), true);
     }
 }

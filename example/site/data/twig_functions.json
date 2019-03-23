@@ -1,0 +1,580 @@
+[
+    {
+        "name": "absurl",
+        "code": "string absurl(string route)",
+        "desc": "Returns the absolute URL for a given route.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "The route to a page.",
+                "default": ""
+            }
+        ],
+        "return": [
+            "string",
+            "The absolute URL."
+        ]
+    },
+    {
+        "name": "add_css",
+        "code": "add_css(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])",
+        "desc": "Adds a CSS asset to the html page.",
+        "params": [
+            {
+                "name": "paths",
+                "type": "string|array",
+                "desc": "One or more paths to CSS resources.",
+                "default": ""
+            },
+            {
+                "name": "attr",
+                "type": "array",
+                "desc": "Attribute for the HTML tag.",
+                "default": "[]"
+            },
+            {
+                "name": "group",
+                "type": "string",
+                "desc": "A name to group the CSS.",
+                "default": "null"
+            },
+            {
+                "name": "raw",
+                "type": "bool",
+                "desc": "Returns CSS directly instead of in a link.",
+                "default": "false"
+            },
+            {
+                "name": "pos",
+                "type": "int",
+                "desc": "The sort order of the CSS asset.",
+                "default": "-1"
+            }
+        ],
+        "return": [
+            "void"
+        ]
+    },
+    {
+        "name": "add_js",
+        "code": "add_js(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])",
+        "desc": "Adds a JavaScript asset to the html page.",
+        "params": [
+            {
+                "name": "paths",
+                "type": "string|array",
+                "desc": "One or more paths to JavaScript resources.",
+                "default": ""
+            },
+            {
+                "name": "attr",
+                "type": "array",
+                "desc": "Attribute for the HTML-Tag.",
+                "default": "[]"
+            },
+            {
+                "name": "group",
+                "type": "string",
+                "desc": "A name to group the JavaScript.",
+                "default": "null"
+            },
+            {
+                "name": "raw",
+                "type": "bool",
+                "desc": "Returns JavaScript directly instead of a link.",
+                "default": "false"
+            },
+            {
+                "name": "pos",
+                "type": "int",
+                "desc": "The sort order of the JavaScript asset.",
+                "default": "-1"
+            }
+        ],
+        "return": [
+            "void"
+        ]
+    },
+    {
+        "name": "ascii_tree",
+        "code": "string ascii_tree([array options = {}])",
+        "desc": "Creates a text based (=ascii) tree of all pages. All parameters are optional and passed as named parameters.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "The tree from the given route.",
+                "default": "\"\""
+            },
+            {
+                "name": "maxDepth",
+                "type": "int",
+                "desc": "The maximum depth level of the tree (-1 = unlimited)",
+                "default": "-1"
+            },
+            {
+                "name": "showHidden",
+                "type": "bool",
+                "desc": "Show hidden pages.",
+                "default": "false"
+            },
+            {
+                "name": "class",
+                "type": "string",
+                "desc": "The CSS class name.",
+                "default": "sitemap"
+            }
+        ],
+        "return": [
+            "string",
+            "The tree rendered as ascii text"
+        ]
+    },
+    {
+        "name": "body_class",
+        "code": "string body_class()",
+        "desc": "Returns a string with CSS classes, to be used within the class attribute of the body tag.",
+        "return": [
+            "string",
+            "The string with CSS classes"
+        ]
+    },
+    {
+        "name": "breadcrumb",
+        "code": "string breadcrumb([array options = {}])",
+        "desc": "Returns a breadcrumb path for the given page. All parameters are passed as an associative array.",
+        "params": [
+            {
+                "name": "delim",
+                "type": "string",
+                "desc": "The delim.",
+                "default": "\"\""
+            },
+            {
+                "name": "homeLink",
+                "type": "array|string",
+                "desc": "The link to the homepage",
+                "default": "\"\""
+            },
+            {
+                "name": "reverse",
+                "type": "bool",
+                "desc": "Reverse the breadcrumb.",
+                "default": "false"
+            }
+        ],
+        "return": [
+            "string",
+            "The breadcrumb path as HTMl"
+        ]
+    },
+    {
+        "name": "file",
+        "code": "",
+        "desc": "Returns a link to a file with file info.",
+        "params": [
+            {
+                "name": "path",
+                "type": "string",
+                "desc": "The path to the file.",
+                "default": ""
+            },
+            {
+                "name": "label",
+                "type": "string",
+                "desc": "The label for the html tag.",
+                "default": "\""
+            },
+            {
+                "name": "info",
+                "type": "bool",
+                "desc": "If true file info will be added after the link",
+                "default": "false"
+            },
+            {
+                "name": "attribs",
+                "type": "array",
+                "desc": "One or more html attributes.",
+                "default": "[ ]"
+            }
+        ],
+        "return": []
+    },
+    {
+        "name": "image",
+        "code": "string image(string src [, string width = ''][, string height = ''][, string alt = ''][, string class = ''])",
+        "desc": "Returns an image markup tag.",
+        "params": [
+            {
+                "name": "src",
+                "type": "string",
+                "desc": "The relative path to the image file.",
+                "default": ""
+            },
+            {
+                "name": "width",
+                "type": "int",
+                "desc": "The width of the image.",
+                "default": "0"
+            },
+            {
+                "name": "height",
+                "type": "int",
+                "desc": "The height of the image.",
+                "default": "0"
+            },
+            {
+                "name": "alt",
+                "type": "string",
+                "desc": "The alt text of the image.",
+                "default": "\"\""
+            },
+            {
+                "name": "class",
+                "type": "string",
+                "desc": "The html class attribute.",
+                "default": "\"\""
+            }
+        ],
+        "return": [
+            "string",
+            "The image markup"
+        ]
+    },
+    {
+        "name": "page_link",
+        "code": "string page_link(string route, string label [, array attribs = {}])",
+        "desc": "Returns a html link with label and attributes for a given route.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "The route or the URL to a page.",
+                "default": ""
+            },
+            {
+                "name": "label",
+                "type": "string",
+                "desc": "The label.",
+                "default": ""
+            },
+            {
+                "name": "attribs",
+                "type": "array",
+                "desc": "The html attributes passed as an associative array.",
+                "default": ""
+            }
+        ],
+        "return": [
+            "string",
+            "The link to a route"
+        ]
+    },
+    {
+        "name": "listing",
+        "code": "",
+        "desc": "Returns a paginated list of page items.",
+        "params": [
+            {
+                "name": "pageList",
+                "type": "PageList",
+                "desc": "The page list",
+                "default": "null"
+            },
+            {
+                "name": "filter",
+                "type": "string",
+                "desc": "One or more filters",
+                "default": "\"\""
+            },
+            {
+                "name": "sort",
+                "type": "string",
+                "desc": "The sort field",
+                "default": "\"\""
+            },
+            {
+                "name": "shuffle",
+                "type": "bool",
+                "desc": "If set the list is shuffled",
+                "default": "false"
+            },
+            {
+                "name": "limit",
+                "type": "int",
+                "desc": "The limit",
+                "default": "10"
+            },
+            {
+                "name": "template",
+                "type": "string",
+                "desc": "The path to the twig template",
+                "default": "@snippet\/listing.twig"
+            }
+        ],
+        "return": [
+            "string",
+            "The rendered markup"
+        ]
+    },
+    {
+        "name": "menu",
+        "code": "string menu([array options = {}])",
+        "desc": "Returns a html menu as unordered list. All parameters are optional and passed as named parameters.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "The menu from the given route.",
+                "default": "\"\""
+            },
+            {
+                "name": "maxDepth",
+                "type": "int",
+                "desc": "The maximum depth level of the tree.",
+                "default": "-1"
+            },
+            {
+                "name": "showHidden",
+                "type": "bool",
+                "desc": "Show hidden pages.",
+                "default": "false"
+            },
+            {
+                "name": "class",
+                "type": "string",
+                "desc": "The CSS class for the menu.",
+                "default": "menu"
+            }
+        ],
+        "return": [
+            "string",
+            "The menu as unordered list"
+        ]
+    },
+    {
+        "name": "output_css",
+        "code": "string output_css([string group])",
+        "desc": "Outputs the CSS assets for a given group.",
+        "params": [
+            {
+                "name": "group",
+                "type": "string",
+                "desc": "The grouped CSS.",
+                "default": "null"
+            }
+        ],
+        "return": [
+            "void",
+            "The CSS assets"
+        ]
+    },
+    {
+        "name": "output_js",
+        "code": "string output_js([string group])",
+        "desc": "Outputs the JavaScript assets for a given group.",
+        "params": [
+            {
+                "name": "group",
+                "type": "string",
+                "desc": "The grouped JavaScript.",
+                "default": "null"
+            }
+        ],
+        "return": [
+            "string",
+            "The JavaScript assets"
+        ]
+    },
+    {
+        "name": "pager",
+        "code": "string pager([string limit = \"\"][, string template = \"{prev}{next}\"][, string linkClass = \"\"][, string prevPageLabel = \"\"][, string nextPageLabel = \"\"][, string prevPageIcon = \"\"][, string nextPageIcon = \"\"])",
+        "desc": "Creates a pagination with links to the previous an next page within the current page branch. All parameters are optional and passed as named parameters (see twig).",
+        "params": [
+            {
+                "name": "limit",
+                "type": "string",
+                "desc": "Limits the pagination to a certain branch of the page tree.",
+                "default": ""
+            },
+            {
+                "name": "template",
+                "type": "string",
+                "desc": "The template.",
+                "default": "{prev}{next}"
+            },
+            {
+                "name": "linkClass",
+                "type": "string",
+                "desc": "The CSS class names for the links.",
+                "default": ""
+            },
+            {
+                "name": "prevPageLabel",
+                "type": "string",
+                "desc": "The label for the \"previous\" link. If empty the page title will be shown.",
+                "default": ""
+            },
+            {
+                "name": "nextPageLabel",
+                "type": "string",
+                "desc": "The label for the \"next\" link. If empty the page title will be shown.",
+                "default": ""
+            },
+            {
+                "name": "prevPageIcon",
+                "type": "string",
+                "desc": "The icon for the \"previous\" link.",
+                "default": ""
+            },
+            {
+                "name": "nextPageIcon",
+                "type": "string",
+                "desc": "The icon for the \"next\" link.",
+                "default": ""
+            }
+        ],
+        "return": [
+            "string",
+            "The generated markup"
+        ]
+    },
+    {
+        "name": "page_title",
+        "code": "string page_title([array options = {}])",
+        "desc": "Returns the SEO optimized page title of the website. All parameters are optional and passed as an named parameters.",
+        "params": [
+            {
+                "name": "delim",
+                "type": "string",
+                "desc": "The delim.",
+                "default": "\/"
+            },
+            {
+                "name": "siteTitle",
+                "type": "string",
+                "desc": "The title of the website.",
+                "default": "null"
+            },
+            {
+                "name": "rootTitle",
+                "type": "string",
+                "desc": "The title of the root page of the website.",
+                "default": "null"
+            },
+            {
+                "name": "reverse",
+                "type": "bool",
+                "desc": "Reverse the page title \"path\".",
+                "default": "false"
+            }
+        ],
+        "return": [
+            "string",
+            "The page title of the website"
+        ]
+    },
+    {
+        "name": "snippet",
+        "code": "",
+        "desc": "Includes a custom snippet. Accepts an arbitrary number of arguments which are passed to the snippet.",
+        "see": [
+            "https:\/\/twig.symfony.com\/doc\/2.x\/advanced.html#variadic-filters",
+            "Variadic filters"
+        ],
+        "params": [
+            {
+                "name": "path",
+                "type": "string",
+                "desc": "The path to the snippet.",
+                "default": ""
+            }
+        ],
+        "return": [
+            "string",
+            "The included snippet"
+        ]
+    },
+    {
+        "name": "sitemap",
+        "code": "string sitemap()",
+        "desc": "Creates a simple sitemap for all pages of the website based on an unordered list. All parameters are optional and passed as named parameters.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "Limits the sitemap to a certain branch of the page tree.",
+                "default": "\"\""
+            },
+            {
+                "name": "showHidden",
+                "type": "bool",
+                "desc": "Show hidden pages.",
+                "default": "false"
+            },
+            {
+                "name": "maxDepth",
+                "type": "int",
+                "desc": "The maximum depth level of the sitemap.",
+                "default": "-1"
+            },
+            {
+                "name": "class",
+                "type": "string",
+                "desc": "The CSS class name.",
+                "default": "sitemap"
+            }
+        ],
+        "return": [
+            "string",
+            "The generated markup"
+        ]
+    },
+    {
+        "name": "translate",
+        "code": "string translate(string category, string message, array params={})",
+        "desc": "Translates a string according to the configuration and locale settings.",
+        "params": [
+            {
+                "name": "category",
+                "type": "string",
+                "desc": "The translate category",
+                "default": ""
+            },
+            {
+                "name": "message",
+                "type": "string",
+                "desc": "The message to translate",
+                "default": ""
+            },
+            {
+                "name": "params",
+                "type": "array",
+                "desc": "Params injected into translate function",
+                "default": "[ ]"
+            }
+        ],
+        "return": [
+            "string",
+            "The translated message"
+        ]
+    },
+    {
+        "name": "url",
+        "code": "string url(string route)",
+        "desc": "Returns the relative URL to a given route.",
+        "params": [
+            {
+                "name": "route",
+                "type": "string",
+                "desc": "The route to a page.",
+                "default": ""
+            }
+        ],
+        "return": [
+            "string",
+            "The relative URL."
+        ]
+    }
+]

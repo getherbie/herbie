@@ -1,0 +1,55 @@
+[
+    {
+        "name": "filesize",
+        "code": "int 12345678|filesize",
+        "desc": "Returns file size in a human readable format (B, KB, MB, GB, TB, PB).",
+        "return": [
+            "string",
+            "The file size in human readable format"
+        ]
+    },
+    {
+        "name": "filter",
+        "code": "string site.pageList|filter()",
+        "desc": "Filters the page list by one or more filters.",
+        "return": [
+            "pageList",
+            "The filtered page list"
+        ]
+    },
+    {
+        "name": "slugify",
+        "code": "string \"E string with spaces, Umlauts or special characters (?!&#).\"|slugify",
+        "desc": "Returns a string slug for using as URL segment.",
+        "return": [
+            "string",
+            "The slugified string"
+        ]
+    },
+    {
+        "name": "strftime",
+        "code": "string date|strftime([string format = \"%x\" ])",
+        "desc": "Formats a local time\/date according to locale settings. This is a wrapper for the same-named PHP function.",
+        "params": [
+            {
+                "name": "format",
+                "type": "string",
+                "desc": "The format, see http:\/\/php.net\/strftime",
+                "default": "%x"
+            }
+        ],
+        "return": [
+            "string",
+            "The formatted time or date"
+        ]
+    },
+    {
+        "name": "visible",
+        "code": "string site.pageTree|visible",
+        "desc": "Filters the page tree by visible and active page items.",
+        "return": [
+            "pageTree",
+            "The filtered page tree"
+        ]
+    }
+]

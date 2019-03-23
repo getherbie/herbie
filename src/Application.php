@@ -239,9 +239,12 @@ class Application implements LoggerAwareInterface
         });
 
         $c->set(DataRepositoryInterface::class, function (Container $c) {
-            return new YamlDataRepository(
-                $c->get(Configuration::class)
-            );
+            $adapter = $c->get(Configuration::class)->components->dataRepository->adapter;
+            $path = $c->get(Configuration::class)->paths->data;
+            if ($adapter === 'json') {
+                return new JsonDataRepository($path);
+            }
+            return new YamlDataRepository($path);
         });
 
         $c->set(DownloadMiddleware::class, function (Container $c) {

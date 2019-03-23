@@ -1,0 +1,18 @@
+[
+    {
+        "name": "readable",
+        "code": "<string> is readable",
+        "desc": "Tests if the given alias or path exists and is readable.",
+        "return": [
+            "bool"
+        ]
+    },
+    {
+        "name": "writable",
+        "code": "<string> is writable",
+        "desc": "Tests if the given alias or path exists and is writable.",
+        "return": [
+            "bool"
+        ]
+    }
+]
