@@ -29,7 +29,6 @@ return [
         'web' => $WEB_URL . '/',
     ],
     'fileExtensions' => [
-        'data' => 'yml,yaml',
         'layouts' => 'html',
         'media' => [
             'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
@@ -42,6 +41,9 @@ return [
         'pages' => 'txt,md,markdown,textile,htm,html,rss,xml',
     ],
     'components' => [
+        'dataRepository' => [
+            'adapter' => 'json'
+        ],
         'downloadMiddleware' => [
             'baseUrl' => '/download/',
             'storagePath' => '@site/media',

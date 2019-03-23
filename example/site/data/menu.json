@@ -1,0 +1,18 @@
+[
+    {
+        "route": "about",
+        "label": "About"
+    },
+    {
+        "route": "features",
+        "label": "Features"
+    },
+    {
+        "route": "blog",
+        "label": "Blog"
+    },
+    {
+        "route": "news",
+        "label": "News"
+    }
+]
