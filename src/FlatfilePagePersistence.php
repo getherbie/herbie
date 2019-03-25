@@ -21,15 +21,15 @@ class FlatfilePagePersistence implements PagePersistenceInterface
     private $alias;
 
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
     /**
      * @param Alias $alias
-     * @param Configuration $config
+     * @param Config $config
      */
-    public function __construct(Alias $alias, Configuration $config)
+    public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
         $this->config = $config;
@@ -52,8 +52,8 @@ class FlatfilePagePersistence implements PagePersistenceInterface
      */
     public function findAll(): array
     {
-        $path = $this->config->paths->pages;
-        $extensions = explode_list($this->config->fileExtensions->pages);
+        $path = $this->config->get('paths.pages');
+        $extensions = explode_list($this->config->get('fileExtensions.pages'));
 
         $recDirectoryIt = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
 

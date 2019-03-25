@@ -2,7 +2,7 @@
 
 namespace herbie\sysplugins\textile;
 
-use herbie\Configuration;
+use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
 use Netcarver\Textile\Parser;
@@ -11,18 +11,19 @@ use Psr\Log\LoggerInterface;
 class TextilePlugin extends Plugin
 {
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
     /**
      * TextilePlugin constructor.
-     * @param Configuration $config
+     * @param Config $config
      * @param LoggerInterface $logger
+     * @throws \InvalidArgumentException
      */
-    public function __construct(Configuration $config, LoggerInterface $logger)
+    public function __construct(Config $config, LoggerInterface $logger)
     {
-        $this->config = $config->plugins->textile;
+        $this->config = $config->getAsConfig('plugins.textile');
         if (!class_exists('Netcarver\Textile\Parser')) {
             $logger->error('Please install "netcarver/textile" via composer');
         }
@@ -43,7 +44,7 @@ class TextilePlugin extends Plugin
      */
     public function twigFilters(): array
     {
-        if (empty($this->config->twigFilter)) {
+        if (empty($this->config->get('twigFilter'))) {
             return [];
         }
         return [
@@ -56,7 +57,7 @@ class TextilePlugin extends Plugin
      */
     public function twigFunctions(): array
     {
-        if (empty($this->config->twigFunction)) {
+        if (empty($this->config->get('twigFunction'))) {
             return [];
         }
         return [

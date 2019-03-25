@@ -24,7 +24,7 @@ class PluginManager
     private $eventManager;
 
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
@@ -73,7 +73,7 @@ class PluginManager
 
     /**
      * PluginManager constructor.
-     * @param Configuration $config
+     * @param Config $config
      * @param EventManager $eventManager
      * @param ContainerInterface $container
      * @param FilterChainManager $filterChainManager
@@ -82,7 +82,7 @@ class PluginManager
      * @throws SystemException
      */
     public function __construct(
-        Configuration $config,
+        Config $config,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         Translator $translator,
@@ -94,8 +94,8 @@ class PluginManager
         $this->eventManager = $eventManager;
         $this->loadedPlugins = [];
         $this->pluginPaths = [];
-        $this->pluginsPath = normalize_path($config['paths']['plugins']);
-        $this->sysPluginsPath = normalize_path($config['paths']['sysPlugins']);
+        $this->pluginsPath = normalize_path($config->get('paths.plugins'));
+        $this->sysPluginsPath = normalize_path($config->get('paths.sysPlugins'));
         $this->filterChainManager = $filterChainManager;
         $this->twigRenderer = $twigRenderer;
         $this->middlewares = [];
@@ -109,13 +109,13 @@ class PluginManager
     public function init(): void
     {
         // add sys plugins first
-        $enabledSysPlugins = explode_list($this->config['enabledSysPlugins']);
+        $enabledSysPlugins = explode_list($this->config->get('enabledSysPlugins'));
         foreach ($enabledSysPlugins as $key) {
             $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
         }
 
         // add third-party plugins
-        $enabledPlugins = explode_list($this->config['enabledPlugins']);
+        $enabledPlugins = explode_list($this->config->get('enabledPlugins'));
         foreach ($enabledPlugins as $key) {
             $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
         }

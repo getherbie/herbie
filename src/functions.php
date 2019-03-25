@@ -98,12 +98,15 @@ function load_php_config(string $path, callable $processor = null): array
  * @param string|array $find
  * @param string|array $replace
  * @param string|array $array
- * @return array
+ * @return string|array
  */
-function recursive_array_replace($find, $replace, $array): array
+function recursive_array_replace($find, $replace, $array)
 {
     if (!is_array($array)) {
-        return str_replace($find, $replace, $array);
+        if (is_string($array)) {
+            return str_replace($find, $replace, $array);
+        }
+        return $array;
     }
 
     $newArray = [];
