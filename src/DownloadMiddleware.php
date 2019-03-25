@@ -37,13 +37,13 @@ class DownloadMiddleware implements MiddlewareInterface
     /**
      * DownloadMiddleware constructor.
      * @param Alias $alias
-     * @param Configuration $config
+     * @param Config $config
      */
-    public function __construct(Alias $alias, Configuration $config)
+    public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
-        $this->baseUrl = rtrim($config->baseUrl, '/') . '/';
-        $this->storagePath = rtrim($config->storagePath, '/') . '/';
+        $this->baseUrl = rtrim($config->get('baseUrl'), '/') . '/';
+        $this->storagePath = rtrim($config->get('storagePath'), '/') . '/';
     }
 
     /**

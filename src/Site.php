@@ -16,7 +16,7 @@ namespace herbie;
 class Site
 {
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
@@ -37,13 +37,13 @@ class Site
 
     /**
      * Site constructor.
-     * @param Configuration $config
+     * @param Config $config
      * @param DataRepositoryInterface $dataRepository
      * @param Environment $environment
      * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
-        Configuration $config,
+        Config $config,
         DataRepositoryInterface $dataRepository,
         Environment $environment,
         PageRepositoryInterface $pageRepository
@@ -115,7 +115,7 @@ class Site
      */
     public function getLanguage(): string
     {
-        return $this->config['language'];
+        return $this->config->get('language');
     }
 
     /**
@@ -123,7 +123,7 @@ class Site
      */
     public function getLocale(): string
     {
-        return $this->config['locale'];
+        return $this->config->get('locale');
     }
 
     /**
@@ -131,6 +131,6 @@ class Site
      */
     public function getCharset(): string
     {
-        return $this->config['charset'];
+        return $this->config->get('charset');
     }
 }

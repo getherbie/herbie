@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\sysplugins\markdown;
 
-use herbie\Configuration;
+use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
 use Parsedown;
@@ -17,7 +17,7 @@ class MarkdownPlugin extends Plugin
     const MODE_PARSEDOWN_EXTRA = 2;
 
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
@@ -33,11 +33,12 @@ class MarkdownPlugin extends Plugin
 
     /**
      * MarkdownPlugin constructor.
-     * @param Configuration $config
+     * @param Config $config
+     * @throws \InvalidArgumentException
      */
-    public function __construct(Configuration $config, LoggerInterface $logger)
+    public function __construct(Config $config, LoggerInterface $logger)
     {
-        $this->config = $config->plugins->markdown;
+        $this->config = $config->getAsConfig('plugins.markdown');
         $this->logger = $logger;
         if (class_exists('ParsedownExtra')) {
             $this->mode = self::MODE_PARSEDOWN_EXTRA;
@@ -63,7 +64,7 @@ class MarkdownPlugin extends Plugin
      */
     public function twigFilters(): array
     {
-        if (empty($this->config->twigFilter)) {
+        if (empty($this->config->get('twigFilter'))) {
             return [];
         }
         return [
@@ -76,7 +77,7 @@ class MarkdownPlugin extends Plugin
      */
     public function twigFunctions(): array
     {
-        if (empty($this->config->twigFunction)) {
+        if (empty($this->config->get('twigFunction'))) {
             return [];
         }
         return [

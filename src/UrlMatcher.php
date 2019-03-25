@@ -16,7 +16,7 @@ namespace herbie;
 class UrlMatcher
 {
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
     /**
@@ -26,10 +26,10 @@ class UrlMatcher
 
     /**
      * Constructor
-     * @param Configuration $config
+     * @param Config $config
      * @param PageRepositoryInterface $pageRepository
      */
-    public function __construct(Configuration $config, PageRepositoryInterface $pageRepository)
+    public function __construct(Config $config, PageRepositoryInterface $pageRepository)
     {
         $this->config = $config;
         $this->pageRepository = $pageRepository;
@@ -77,7 +77,8 @@ class UrlMatcher
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
-        foreach ($this->config->rules->toArray() as $rule) {
+        $rules = $this->config->getAsArray('rules');
+        foreach ($rules as $rule) {
             if (count($rule) < 2) {
                 throw new \InvalidArgumentException(sprintf('Invalid rule %s', $rule[0]));
             }

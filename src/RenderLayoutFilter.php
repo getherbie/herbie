@@ -13,7 +13,7 @@ namespace herbie;
 class RenderLayoutFilter
 {
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
@@ -24,10 +24,10 @@ class RenderLayoutFilter
 
     /**
      * ContentRendererFilter constructor.
-     * @param Configuration $config
+     * @param Config $config
      * @param TwigRenderer $twigRenderer
      */
-    public function __construct(Configuration $config, TwigRenderer $twigRenderer)
+    public function __construct(Config $config, TwigRenderer $twigRenderer)
     {
         $this->config = $config;
         $this->twigRenderer = $twigRenderer;
@@ -48,7 +48,7 @@ class RenderLayoutFilter
         $this->twigRenderer->init();
         /** @var Page $page */
         $page = $params['page'];
-        $extension = trim($this->config['fileExtensions']['layouts']);
+        $extension = trim($this->config->get('fileExtensions.layouts'));
         $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
         $content = $this->twigRenderer->renderTemplate($name, $params);
         return $chain->next($content, $params, $chain);

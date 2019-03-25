@@ -29,7 +29,7 @@ class TwigRenderer
     private $initialized;
 
     /**
-     * @var Configuration
+     * @var array
      */
     private $config;
 
@@ -65,7 +65,7 @@ class TwigRenderer
 
     /**
      * TwigRenderer constructor.
-     * @param Configuration $config
+     * @param Config $config
      * @param Environment $environment
      * @param EventManager $eventManager
      * @param Site $site
@@ -73,7 +73,7 @@ class TwigRenderer
      * @param TwigPlusExtension $twigPlusExtension
      */
     public function __construct(
-        Configuration $config,
+        Config $config,
         Environment $environment,
         EventManager $eventManager,
         Site $site,
@@ -82,7 +82,7 @@ class TwigRenderer
     ) {
         $this->initialized = false;
         $this->environment = $environment;
-        $this->config = $config;
+        $this->config = $config->toArray();
         $this->eventManager = $eventManager;
         $this->twigCoreExtension = $twigExtension;
         $this->site = $site;
@@ -172,7 +172,7 @@ class TwigRenderer
             'theme' => $this->config['theme'],
             'site' => $this->site,
             'page' => null, // will be set by page renderer middleware
-            'config' => $this->config->toArray()
+            'config' => $this->config
         ];
     }
 

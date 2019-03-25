@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace herbie\sysplugins\imagine;
 
 use herbie\Alias;
-use herbie\Configuration;
+use herbie\Config;
 use herbie\Plugin;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\OutOfBoundsException;
@@ -28,7 +28,7 @@ use Twig\Markup;
 class ImaginePlugin extends Plugin
 {
     /**
-     * @var Configuration
+     * @var Config
      */
     protected $config;
 
@@ -48,14 +48,14 @@ class ImaginePlugin extends Plugin
 
     /**
      * @param Alias $alias
-     * @param Configuration $config
+     * @param Config $config
      */
-    public function __construct(Alias $alias, Configuration $config)
+    public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
         $this->config = $config;
-        $this->basePath = rtrim($config->urls->web, '/') . '/';
-        $this->cachePath = $this->config->plugins->imagine->cachePath;
+        $this->basePath = rtrim($config->get('urls.web'), '/') . '/';
+        $this->cachePath = $this->config->get('plugins.imagine.cachePath');
     }
 
     /**
@@ -158,7 +158,7 @@ class ImaginePlugin extends Plugin
     private function sanatizeFilterName($filter)
     {
         if ($filter !== 'default') {
-            if (!isset($this->config->plugins->imagine->filterSets->{$filter})) {
+            if ($this->config->check("plugins.imagine.filterSets.{$filter}") === false) {
                 $filter = 'default';
             }
         }
@@ -187,7 +187,7 @@ class ImaginePlugin extends Plugin
     {
         $path = $this->alias->get('@media/' . $relpath);
 
-        $filterConfig = $this->config->plugins->imagine->filterSets->{$filter};
+        $filterConfig = $this->config->get("plugins.imagine.filterSets.{$filter}");
         $cachePath = $this->resolveCachePath($relpath, $filter);
 
         if (!empty($filterConfig['test'])) {

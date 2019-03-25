@@ -45,7 +45,7 @@ class PageRendererMiddleware implements MiddlewareInterface
     private $filterChainManager;
 
     /**
-     * @var Configuration
+     * @var Config
      */
     private $config;
 
@@ -57,7 +57,7 @@ class PageRendererMiddleware implements MiddlewareInterface
     /**
      * PageRendererMiddleware constructor.
      * @param CacheInterface $cache
-     * @param Configuration $config
+     * @param Config $config
      * @param Environment $environment
      * @param EventManager $eventManager
      * @param FilterChainManager $filterChainManager
@@ -66,7 +66,7 @@ class PageRendererMiddleware implements MiddlewareInterface
      */
     public function __construct(
         CacheInterface $cache,
-        Configuration $config,
+        Config $config,
         Environment $environment,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,

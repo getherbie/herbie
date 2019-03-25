@@ -110,11 +110,12 @@ class Application implements LoggerAwareInterface
         }
 
         $this->container = $this->initContainer();
+        $config = $this->container->get(Config::class);
 
-        setlocale(LC_ALL, $this->container->get(Configuration::class)->get('locale'));
+        setlocale(LC_ALL, $config->get('locale'));
 
         // Add custom PSR-4 plugin path to Composer autoloader
-        $pluginsPath = $this->container->get(Configuration::class)->paths->plugins;
+        $pluginsPath = $config->get('paths.plugins');
         $autoload = require($this->vendorDir . '/autoload.php');
         $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
 
@@ -136,18 +137,18 @@ class Application implements LoggerAwareInterface
         });
 
         $c->set(Alias::class, function (Container $c) {
-            $config = $c->get(Configuration::class);
+            $paths = $c->get(Config::class)->get('paths');
             return new Alias([
-                '@app' => $config['paths']['app'],
+                '@app' => $paths['app'],
                 '@asset' => $this->sitePath . '/assets',
-                '@media' => $config['paths']['media'],
-                '@page' => $config['paths']['pages'],
-                '@plugin' => $config['paths']['plugins'],
+                '@media' => $paths['media'],
+                '@page' => $paths['pages'],
+                '@plugin' => $paths['plugins'],
                 '@site' => $this->sitePath,
-                '@sysplugin' => $config['paths']['sysPlugins'],
+                '@sysplugin' => $paths['sysPlugins'],
                 '@vendor' => $this->vendorDir,
-                '@web' => $config['paths']['web'],
-                '@snippet' => $config['paths']['app'] . '/templates/snippets'
+                '@web' => $paths['web'],
+                '@snippet' => $paths['app'] . '/templates/snippets'
             ]);
         });
 
@@ -162,7 +163,7 @@ class Application implements LoggerAwareInterface
             return new NullCache();
         });
 
-        $c->set(Configuration::class, function (Container $c) {
+        $c->set(Config::class, function (Container $c) {
 
             $const = [
                 'APP_PATH' => rtrim($this->appPath, '/'),
@@ -192,23 +193,20 @@ class Application implements LoggerAwareInterface
                 $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
             }
 
-            // sysplugins config
+            // sysplugin config
             $dir = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
             foreach (glob($dir . '/*/config.php') as $configFile) {
                 $pluginName = basename(dirname($configFile));
                 $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
             }
 
-            $config = new Configuration($defaultConfig);
-            $config->merge(new Configuration($pluginConfig));
-            $config->merge(new Configuration($userConfig));
-
+            $config = new Config(array_replace_recursive($defaultConfig, $pluginConfig, $userConfig));
             return $config;
         });
 
         $c->set(DataRepositoryInterface::class, function (Container $c) {
-            $adapter = $c->get(Configuration::class)->components->dataRepository->adapter;
-            $path = $c->get(Configuration::class)->paths->data;
+            $adapter = $c->get(Config::class)->get('components.dataRepository.adapter');
+            $path = $c->get(Config::class)->get('paths.data');
             if ($adapter === 'json') {
                 return new JsonDataRepository($path);
             }
@@ -218,7 +216,7 @@ class Application implements LoggerAwareInterface
         $c->set(DownloadMiddleware::class, function (Container $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
-                $c->get(Configuration::class)->components->downloadMiddleware
+                $c->get(Config::class)->getAsConfig('components.downloadMiddleware')
             );
         });
 
@@ -285,14 +283,14 @@ class Application implements LoggerAwareInterface
         $c->set(PagePersistenceInterface::class, function (Container $c) {
             return new FlatfilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(Configuration::class)
+                $c->get(Config::class)
             );
         });
 
         $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
@@ -318,7 +316,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(PluginManager::class, function (Container $c) {
             return new PluginManager(
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(Translator::class),
@@ -329,7 +327,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(RenderLayoutFilter::class, function (Container $c) {
             return new RenderLayoutFilter(
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(TwigRenderer::class)
             );
         });
@@ -346,7 +344,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(Site::class, function (Container $c) {
             return new Site(
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(DataRepositoryInterface::class),
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class)
@@ -355,15 +353,15 @@ class Application implements LoggerAwareInterface
 
         $c->set(SlugGenerator::class, function (Container $c) {
             $options = [
-                'locale' => $c->get(Configuration::class)->get('language'),
+                'locale' => $c->get(Config::class)->get('language'),
                 'delimiter' => '-'
             ];
             return new SlugGenerator($options);
         });
 
         $c->set(Translator::class, function (Container $c) {
-            $translator = new Translator($c->get(Configuration::class)->language);
-            $translator->addPath('app', $c->get(Configuration::class)->paths->messages);
+            $translator = new Translator($c->get(Config::class)->get('language'));
+            $translator->addPath('app', $c->get(Config::class)->get('paths.messages'));
             return $translator;
         });
 
@@ -388,7 +386,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(TwigRenderer::class, function (Container $c) {
             return new TwigRenderer(
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(Site::class),
@@ -399,7 +397,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(UrlGenerator::class, function (Container $c) {
             return new UrlGenerator(
-                $c->get(Configuration::class),
+                $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(ServerRequestInterface::class)
             );
@@ -407,7 +405,7 @@ class Application implements LoggerAwareInterface
 
         $c->set(UrlMatcher::class, function (Container $c) {
             return new UrlMatcher(
-                $c->get(Configuration::class)->components->urlMatcher,
+                $c->get(Config::class)->getAsConfig('components.urlMatcher'),
                 $c->get(PageRepositoryInterface::class)
             );
         });

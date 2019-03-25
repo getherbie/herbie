@@ -34,14 +34,14 @@ class UrlGenerator
 
     /**
      * Constructor
-     * @param Configuration $config
+     * @param Config $config
      * @param Environment $environment
      * @param ServerRequestInterface $request The request object.
      */
-    public function __construct(Configuration $config, Environment $environment, ServerRequestInterface $request)
+    public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
     {
         $this->environment = $environment;
-        $this->niceUrls = $config['niceUrls'];
+        $this->niceUrls = $config->get('niceUrls');
         $this->request = $request;
     }
 
