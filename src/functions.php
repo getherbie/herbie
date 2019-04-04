@@ -95,6 +95,26 @@ function load_php_config(string $path, callable $processor = null): array
 }
 
 /**
+ * @param string $path
+ * @param callable|null $processor
+ * @return array
+ */
+function load_plugin_config(string $path, callable $processor = null): array
+{
+    $config = load_php_config($path, $processor);
+    if (!isset($config['apiVersion'])) {
+        throw new \RuntimeException(sprintf('Required config "apiVersion" is missing in %s', $path));
+    }
+    if (!isset($config['pluginName'])) {
+        throw new \RuntimeException(sprintf('Required config "pluginName" is missing in %s', $path));
+    }
+    if (!isset($config['pluginPath'])) {
+        throw new \RuntimeException(sprintf('Required config "pluginPath" is missing in %s', $path));
+    }
+    return $config;
+}
+
+/**
  * @param string|array $find
  * @param string|array $replace
  * @param string|array $array

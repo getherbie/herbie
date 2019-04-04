@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\markdown;
-
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
-use Parsedown;
-use ParsedownExtra;
+use \Parsedown as Parsedown;
+use \ParsedownExtra as ParsedownExtra;
 use Psr\Log\LoggerInterface;
 
-class MarkdownPlugin extends Plugin
+class MarkdownSysPlugin extends Plugin
 {
     const MODE_PARSEDOWN = 1;
     const MODE_PARSEDOWN_EXTRA = 2;

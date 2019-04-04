@@ -1,6 +1,6 @@
 <?php
 
-namespace herbie\sysplugins\textile;
+declare(strict_types=1);
 
 use herbie\Config;
 use herbie\FilterInterface;
@@ -8,7 +8,7 @@ use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
 
-class TextilePlugin extends Plugin
+class TextileSysPlugin extends Plugin
 {
     /**
      * @var Config
