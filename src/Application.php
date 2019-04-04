@@ -114,11 +114,6 @@ class Application implements LoggerAwareInterface
 
         setlocale(LC_ALL, $config->get('locale'));
 
-        // Add custom PSR-4 plugin path to Composer autoloader
-        $pluginsPath = $config->get('paths.plugins');
-        $autoload = require($this->vendorDir . '/autoload.php');
-        $autoload->addPsr4('herbie\\plugin\\', $pluginsPath);
-
         // Set slug generator to page and page item
         PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
         Page::setSlugGenerator($this->container->get(SlugGenerator::class));
@@ -186,18 +181,15 @@ class Application implements LoggerAwareInterface
                 $userConfig = load_php_config($this->sitePath . '/config/main.php', $processor);
             }
 
-            // plugin config
-            $dir = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
-            foreach (glob($dir . '/*/config.php') as $configFile) {
-                $pluginName = basename(dirname($configFile));
-                $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
-            }
-
-            // sysplugin config
-            $dir = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
-            foreach (glob($dir . '/*/config.php') as $configFile) {
-                $pluginName = basename(dirname($configFile));
-                $pluginConfig['plugins'][$pluginName] = load_php_config($configFile, $processor);
+            // plugin configs
+            $dir1 = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
+            $dir2 = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
+            $globPattern = "{$dir1}/*/config.php,{$dir2}/*/config.php";
+            $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
+            foreach ($configFiles as $configFile) {
+                $config = load_plugin_config($configFile, $processor);
+                $pluginName = $config['pluginName'];
+                $pluginConfig['plugins'][$pluginName] = $config;
             }
 
             $config = new Config(array_replace_recursive($defaultConfig, $pluginConfig, $userConfig));

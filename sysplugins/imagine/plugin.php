@@ -8,8 +8,6 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\imagine;
-
 use herbie\Alias;
 use herbie\Config;
 use herbie\Plugin;
@@ -25,7 +23,7 @@ use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
 use Twig\Markup;
 
-class ImaginePlugin extends Plugin
+class ImagineSysPlugin extends Plugin
 {
     /**
      * @var Config

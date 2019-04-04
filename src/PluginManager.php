@@ -108,48 +108,47 @@ class PluginManager
      */
     public function init(): void
     {
-        // add sys plugins first
-        $enabledSysPlugins = explode_list($this->config->get('enabledSysPlugins'));
-        foreach ($enabledSysPlugins as $key) {
-            $this->loadPlugin($this->sysPluginsPath, $key, 'herbie\\sysplugins\\');
-        }
+        $plugins = array_unique(array_merge(
+            explode_list($this->config->get('enabledSysPlugins')),
+            explode_list($this->config->get('enabledPlugins'))
+        ));
 
-        // add third-party plugins
-        $enabledPlugins = explode_list($this->config->get('enabledPlugins'));
-        foreach ($enabledPlugins as $key) {
-            $this->loadPlugin($this->pluginsPath, $key, 'herbie\\plugins\\');
+        foreach ($plugins as $key) {
+            $this->loadPlugin($key);
         }
 
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
 
     /**
-     * @param string $path
      * @param string $key
-     * @param string $namespace
      * @throws SystemException
      * @throws \ReflectionException
      * @throws \InvalidArgumentException
      */
-    private function loadPlugin(string $path, string $key, string $namespace): void
+    private function loadPlugin(string $key): void
     {
-        $pluginPath = sprintf('%s/%s/%s.php', $path, $key, $key);
-        if (!is_file($pluginPath) || !is_readable($pluginPath)) {
+        $configKey = sprintf('plugins.%s.pluginPath', $key);
+        $pluginPath = $this->config->getAsString($configKey);
+        $pluginClassPath = sprintf('%s/plugin.php', $pluginPath);
+
+        if (!is_file($pluginClassPath) || !is_readable($pluginClassPath)) {
             throw SystemException::pluginNotExist($key);
         }
 
-        require($pluginPath);
+        require($pluginClassPath);
 
-        $className = $namespace . $key . '\\' . ucfirst($key) . 'Plugin';
+        $declaredClasses = get_declared_classes();
+        $pluginClassName = end($declaredClasses);
 
-        $class = new \ReflectionClass($className);
+        $reflectedClass = new \ReflectionClass($pluginClassName);
 
-        $constructor = $class->getConstructor();
+        $constructor = $reflectedClass->getConstructor();
         $constructorParams = [];
         if ($constructor) {
             foreach ($constructor->getParameters() as $param) {
                 if ($param->getType() === null) {
-                    throw SystemException::serverError('Only objects can be injected in ' . $className);
+                    throw SystemException::serverError('Only objects can be injected in ' . $pluginClassName);
                 }
                 $classNameToInject = $param->getClass()->getName();
                 $constructorParams[] = $this->container->get($classNameToInject);
@@ -157,7 +156,7 @@ class PluginManager
         }
 
         /** @var PluginInterface $plugin */
-        $plugin = new $className(...$constructorParams);
+        $plugin = new $pluginClassName(...$constructorParams);
 
         if (!$plugin instanceof PluginInterface) {
             // TODO throw error?
@@ -191,10 +190,10 @@ class PluginManager
         $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
         $this->eventManager->trigger($eventName, $plugin);
 
-        $this->translator->addPath($key, $path . '/messages');
+        $this->translator->addPath($key, $pluginPath . '/messages');
 
         $this->loadedPlugins[$key] = $plugin;
-        $this->pluginPaths[$key] = dirname($pluginPath);
+        $this->pluginPaths[$key] = $pluginPath;
     }
 
     /**
