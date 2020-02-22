@@ -52,4 +52,4 @@ Now, open <http://localhost:8888> in your browser. You should then see your firs
 
 ## More Information
 
-More information see [www.getherbie.org](https://www.getherbie.org).
+More information see <https://herbie.tebe.ch>.
