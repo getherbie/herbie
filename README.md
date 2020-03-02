@@ -18,7 +18,7 @@ Herbie is based on proven libraries and concepts:
 * [Markdown](https://www.markdownguide.org) and [Textile](https://textile-lang.com) for formatting page content
 * [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts
 * [Yaml](http://www.yaml.org) for configuration and data structures files
-* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for das Dependency and Plugin Management
+* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
 * [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
 * PHP Middlewares
 
