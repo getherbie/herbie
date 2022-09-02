@@ -36,18 +36,29 @@ Herbie supports the following [PHP Standards Recommendations](https://www.php-fi
 
 ## Install
 
-The easiest way to install Herbie is via Composer. To do this, execute the following statement in your terminal:
+### Composer 
 
+The easiest way to install Herbie is via Composer. 
+To do this, execute the following commands in your terminal:
+
+    # create project and install dependent libraries
     $ composer create-project getherbie/start-website:dev-master myproject
-
-Composer creates your website in the `myproject` folder and installs all dependent libraries.
-
-Go to the web directory and start PHPs built-in web server.
-
+    
+    # go to web directory
     $ cd myproject/web
+    
+    # start internal webserver 
     $ php -S localhost:8888 index.php
 
-Now, open <http://localhost:8888> in your browser. You should then see your first Herbie website. 
+Now, open <http://localhost:8888> in your browser.
+You should then see your first Herbie website. 
+
+### Docker
+
+Or you can achieve the same by using Docker.
+
+    $ docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website:dev-master myproject 
+    $ cd myproject
 
 
 ## More Information
