@@ -138,7 +138,10 @@ class PluginManager
 
         require($pluginClassPath);
 
-        $declaredClasses = get_declared_classes();
+        $declaredClasses = array_filter(get_declared_classes(), function ($value) {
+            return 'herbie\Plugin' !== $value;
+        });
+
         $pluginClassName = end($declaredClasses);
 
         $reflectedClass = new \ReflectionClass($pluginClassName);
