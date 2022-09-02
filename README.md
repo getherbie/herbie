@@ -1,55 +1,52 @@
-[![Packagist](https://img.shields.io/packagist/dt/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
-[![GitHub (pre-)release](https://img.shields.io/github/release/getherbie/herbie/all.svg)](https://github.com/getherbie/herbie/releases)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/master/LICENCE.md)
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
+Herbie
+======
 
+Herbie ist ein einfaches Flat-File CMS- und Blogsystem, das auf simplen Textdateien basiert.
 
-# :red_car: Herbie
+## Was ist Herbie?
 
-Herbie is a simple Flat-File CMS- und Blogsystem based on human readable text files.
+Mit Herbie erstellst du mit einfachen Markdown- und Textiledateien in kurzer Zeit und mit wenig Aufwand eine voll
+funktionsfähige Website oder einen Blog.
 
+Herbie baut auf bewährten Bibliotheken und Komponenten auf.
 
-## About Herbie
+* [Markdown][markdown] und [Textile][textile] zur Formatierung von Inhalten
+* [Twig][twig] Template Engine zur Erstellung von Layouts
+* [Yaml][yaml] zum Konfigurieren der Website und Verwalten von Datenstrukturen
+* [Pimple][pimple] als Dependency Injection Container
+* [Composer][composer] und [Packagist][packagist] für das Dependency Management
+* die HttpFoundation-, EventDispatcher- und Yaml-Komponenten der [Symfony Components][symfony]
+* [Imagine][imagine] zur Bildmanipulation und -bearbeitung
+* [GeSHi][geshi] als leistungsfähgier Code Syntaxhighlighter
 
-With Herbie you are able to create a fully functional website or blog in a short amount of time and with little effort.
+## Installation
 
-Herbie is based on proven libraries and concepts:
+Am einfachsten installierst du Herbie via Composer. Führe dazu im Terminal die folgende Anweisung aus:
 
-* [Markdown](https://www.markdownguide.org) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts
-* [Yaml](http://www.yaml.org) for configuration and data structures files
-* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
-* [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
-* PHP Middlewares
+    $ composer create-project getherbie/start-website myproject
 
-Herbie supports the following [PHP Standards Recommendations](https://www.php-fig.org/psr/):
+Composer erstellt im Verzeichnis `myproject` deine Website und installiert alle abhängigen Bibliotheken.
 
-* PSR-2  Coding Style Guide
-* PSR-3  Logger Interface
-* PSR-4  Autoloading Standard
-* PSR-7  HTTP Message Interface
-* PSR-11 Container Interface
-* PSR-15 HTTP Handlers
-* PSR-16 Simple Cache
-* PSR-17 HTTP Factories
-
-
-## Install
-
-The easiest way to install Herbie is via Composer. To do this, execute the following statement in your terminal:
-
-    $ composer create-project getherbie/start-website:dev-master myproject
-
-Composer creates your website in the `myproject` folder and installs all dependent libraries.
-
-Go to the web directory and start PHPs built-in web server.
+Danach wechselst du ins Webverzeichnis und startest den eingebauten Webserver von PHP.
 
     $ cd myproject/web
-    $ php -S localhost:8888 index.php
+    $ php -S localhost:8888
 
-Now, open <http://localhost:8888> in your browser. You should then see your first Herbie website. 
+Dann musst du nur noch die Website im Browser unter <http://localhost:8888> aufrufen. Fertig!
+
+## Website
+
+Weitere Informationen findest du unter [www.getherbie.org](https://www.getherbie.org).
 
 
-## More Information
-
-More information see <https://herbie.tebe.ch>.
+[markdown]: http://daringfireball.net/projects/markdown/
+[textile]: http://txstyle.org/article/36/php-textile
+[twig]: http://twig.sensiolabs.org
+[yaml]: http://www.yaml.org
+[geshi]: http://qbnz.com/highlighter/
+[pimple]: http://pimple.sensiolabs.org
+[composer]: http://getcomposer.org
+[packagist]: https://packagist.org
+[symfony]: http://symfony.com/doc/current/components/
+[phpunit]: http://phpunit.de
+[imagine]: https://github.com/avalanche123/Imagine
