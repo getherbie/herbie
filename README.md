@@ -36,7 +36,7 @@ Dann musst du nur noch die Website im Browser unter <http://localhost:8888> aufr
 
 ## Website
 
-Weitere Informationen findest du unter [www.getherbie.org](https://www.getherbie.org).
+Weitere Informationen findest du unter [herbie.tebe.ch](https://herbie.tebe.ch).
 
 
 [markdown]: http://daringfireball.net/projects/markdown/
