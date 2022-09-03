@@ -21,9 +21,18 @@ class ErrorHandler
      */
     public function register()
     {
+        $logFile = sprintf("%s/log/%s-error.log", dirname(__DIR__), date('Y-m'));
+        $logDir = dirname($logFile);
+        if (!is_dir($logDir)) {
+            die("Logdir {$logDir} does not exist");
+        } elseif (!is_writable($logDir)) {
+            die("Logdir {$logDir} is not writable");
+        }
+        
+        error_reporting(E_ALL);
         ini_set("display_errors", 0);
         ini_set("log_errors", 1);
-        ini_set("error_log", sprintf("%s/log/%s-error.log", dirname(__DIR__), date('Y-m')));
+        ini_set("error_log", $logFile);
 
         set_exception_handler([$this, 'handleException']);
         set_error_handler([$this, 'handleError'], error_reporting());

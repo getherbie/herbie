@@ -61,7 +61,8 @@ class Application
         $DI['Config'] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
-            $request->getBaseUrl()
+            $request->getBaseUrl(),
+            $this->vendorDir
         );
 
         $DI['Alias'] = new Alias([
