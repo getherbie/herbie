@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Twig\TwigFilter;
@@ -108,34 +109,91 @@ class PluginManager
      */
     public function init(): void
     {
-        $plugins = array_unique(array_merge(
-            explode_list($this->config->get('enabledSysPlugins')),
-            explode_list($this->config->get('enabledPlugins'))
-        ));
-
-        foreach ($plugins as $key) {
-            $this->loadPlugin($key);
+        $composerPlugins = $this->getComposerPlugins();
+        $sysPlugins = $this->getSysPlugins();
+        $localPlugins = $this->getLocalPlugins();
+        
+        $plugins = array_merge(
+            $composerPlugins,
+            $sysPlugins,
+            $localPlugins,
+        );
+        
+        foreach ($plugins as $plugin) {
+            $this->loadPlugin($plugin['key'], $plugin['path'], $plugin['class']);
         }
-
+        
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
+    
+    private function getComposerPlugins(): array
+    {
+        $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
 
+        $plugins = [];
+        foreach (array_unique($installedPackages) as $pluginKey) {
+            $path = realpath(InstalledVersions::getInstallPath($pluginKey));
+            $plugins[] = [
+                'key' => $pluginKey,
+                'path' => $path,
+                'class' => 'plugin.php'
+            ];
+        }
+        
+        return $plugins;
+    }
+    
+    private function getSysPlugins(): array
+    {
+        $enabledPlugins = explode_list($this->config->get('enabledSysPlugins'));
+        
+        $plugins = [];
+        foreach ($enabledPlugins as $pluginKey) {
+            $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
+            $pluginPath = $this->config->getAsString($configKey);
+            $plugins[] = [
+                'key' => $pluginKey,
+                'path' => $pluginPath,
+                'class' => 'plugin.php'
+            ];
+        }
+        
+        return $plugins;
+    }
+    
+    private function getLocalPlugins(): array
+    {
+        $enabledPlugins = explode_list($this->config->get('enabledPlugins'));
+
+        $plugins = [];
+        foreach ($enabledPlugins as $pluginKey) {
+            $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
+            $pluginPath = $this->config->getAsString($configKey);
+            $plugins[] = [
+                'key' => $pluginKey,
+                'path' => $pluginPath,
+                'class' => 'plugin.php'
+            ];
+        }
+        
+        return $plugins;
+    }
+    
     /**
      * @param string $key
      * @throws SystemException
      * @throws \ReflectionException
      * @throws \InvalidArgumentException
      */
-    private function loadPlugin(string $key): void
+    private function loadPlugin(string $key, string $pluginPath, string $pluginClass): void
     {
-        $configKey = sprintf('plugins.%s.pluginPath', $key);
-        $pluginPath = $this->config->getAsString($configKey);
-        $pluginClassPath = sprintf('%s/plugin.php', $pluginPath);
+        $pluginClassPath = sprintf('%s/%s', $pluginPath, $pluginClass);
 
         if (!is_file($pluginClassPath) || !is_readable($pluginClassPath)) {
-            throw SystemException::pluginNotExist($key);
+            // TODO log it
+            return;
         }
-
+        
         require($pluginClassPath);
 
         $declaredClasses = array_filter(get_declared_classes(), function ($value) {
