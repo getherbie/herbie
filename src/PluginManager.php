@@ -102,25 +102,21 @@ class PluginManager
         $this->middlewares = [];
         $this->translator = $translator;
     }
-
-    /**
-     * @throws SystemException
-     * @throws \ReflectionException
-     */
+    
     public function init(): void
     {
+        $systemPlugins = $this->getSystemPlugins();
         $composerPlugins = $this->getComposerPlugins();
-        $sysPlugins = $this->getSysPlugins();
         $localPlugins = $this->getLocalPlugins();
         
         $plugins = array_merge(
             $composerPlugins,
-            $sysPlugins,
+            $systemPlugins,
             $localPlugins,
         );
         
         foreach ($plugins as $plugin) {
-            $this->loadPlugin($plugin['key'], $plugin['path'], $plugin['class']);
+            $this->loadPlugin($plugin);
         }
         
         $this->eventManager->trigger('onPluginsAttached', $this);
@@ -133,17 +129,13 @@ class PluginManager
         $plugins = [];
         foreach (array_unique($installedPackages) as $pluginKey) {
             $path = realpath(InstalledVersions::getInstallPath($pluginKey));
-            $plugins[] = [
-                'key' => $pluginKey,
-                'path' => $path,
-                'class' => 'plugin.php'
-            ];
+            $plugins[] = new InstallablePlugin($pluginKey, $path, 'plugin.php');
         }
         
         return $plugins;
     }
     
-    private function getSysPlugins(): array
+    private function getSystemPlugins(): array
     {
         $enabledPlugins = explode_list($this->config->get('enabledSysPlugins'));
         
@@ -151,11 +143,7 @@ class PluginManager
         foreach ($enabledPlugins as $pluginKey) {
             $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
             $pluginPath = $this->config->getAsString($configKey);
-            $plugins[] = [
-                'key' => $pluginKey,
-                'path' => $pluginPath,
-                'class' => 'plugin.php'
-            ];
+            $plugins[] = new InstallablePlugin($pluginKey, $pluginPath, 'plugin.php');
         }
         
         return $plugins;
@@ -169,56 +157,21 @@ class PluginManager
         foreach ($enabledPlugins as $pluginKey) {
             $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
             $pluginPath = $this->config->getAsString($configKey);
-            $plugins[] = [
-                'key' => $pluginKey,
-                'path' => $pluginPath,
-                'class' => 'plugin.php'
-            ];
+            $plugins[] = new InstallablePlugin($pluginKey, $pluginPath, 'plugin.php');
         }
         
         return $plugins;
     }
     
-    /**
-     * @param string $key
-     * @throws SystemException
-     * @throws \ReflectionException
-     * @throws \InvalidArgumentException
-     */
-    private function loadPlugin(string $key, string $pluginPath, string $pluginClass): void
+    private function loadPlugin(InstallablePlugin $installablePlugin): void
     {
-        $pluginClassPath = sprintf('%s/%s', $pluginPath, $pluginClass);
-
-        if (!is_file($pluginClassPath) || !is_readable($pluginClassPath)) {
-            // TODO log it
+        if (!$installablePlugin->classPathExists()) {
+            // TODO log info
             return;
         }
         
-        require($pluginClassPath);
-
-        $declaredClasses = array_filter(get_declared_classes(), function ($value) {
-            return 'herbie\Plugin' !== $value;
-        });
-
-        $pluginClassName = end($declaredClasses);
-
-        $reflectedClass = new \ReflectionClass($pluginClassName);
-
-        $constructor = $reflectedClass->getConstructor();
-        $constructorParams = [];
-        if ($constructor) {
-            foreach ($constructor->getParameters() as $param) {
-                if ($param->getType() === null) {
-                    throw SystemException::serverError('Only objects can be injected in ' . $pluginClassName);
-                }
-                $classNameToInject = $param->getClass()->getName();
-                $constructorParams[] = $this->container->get($classNameToInject);
-            };
-        }
-
-        /** @var PluginInterface $plugin */
-        $plugin = new $pluginClassName(...$constructorParams);
-
+        $plugin = $installablePlugin->createPluginInstance($this->container);
+        
         if (!$plugin instanceof PluginInterface) {
             // TODO throw error?
             return;
@@ -232,29 +185,36 @@ class PluginManager
         foreach ($plugin->events() as $event) {
             $this->attachListener(...$event);
         }
+        
         foreach ($plugin->filters() as $filter) {
             $this->attachFilter(...$filter);
         }
+        
         foreach ($plugin->middlewares() as $middleware) {
             $this->middlewares[] = $middleware;
         }
+        
         foreach ($plugin->twigFilters() as $twigFilter) {
             $this->addTwigFilter(...$twigFilter);
         }
+        
         foreach ($plugin->twigFunctions() as $twigFunction) {
             $this->addTwigFunction(...$twigFunction);
         }
+        
         foreach ($plugin->twigTests() as $twigTest) {
             $this->addTwigTest(...$twigTest);
         }
 
+        $key = $installablePlugin->getKey();
+        
         $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
         $this->eventManager->trigger($eventName, $plugin);
 
-        $this->translator->addPath($key, $pluginPath . '/messages');
+        $this->translator->addPath($key, $installablePlugin->getPath() . '/messages');
 
         $this->loadedPlugins[$key] = $plugin;
-        $this->pluginPaths[$key] = $pluginPath;
+        $this->pluginPaths[$key] = $installablePlugin->getPath();
     }
 
     /**
