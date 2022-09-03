@@ -51,9 +51,15 @@ class Application
      */
     private function init()
     {
-
+        $logDir = $this->sitePath . '/runtime/log'; // NOTE kind of hard-coded, I know
+        if (!is_dir($logDir)) {
+            die("Logdir {$logDir} does not exist");
+        } elseif (!is_writable($logDir)) {
+            die("Logdir {$logDir} is not writable");
+        }
+        
         $errorHandler = new ErrorHandler();
-        $errorHandler->register();
+        $errorHandler->register($logDir);
 
         static::$DI = $DI = DI::instance();
 
@@ -61,7 +67,8 @@ class Application
         $DI['Config'] = $config = new Config(
             $this->sitePath,
             dirname($_SERVER['SCRIPT_FILENAME']),
-            $request->getBaseUrl()
+            $request->getBaseUrl(),
+            $this->vendorDir
         );
 
         $DI['Alias'] = new Alias([

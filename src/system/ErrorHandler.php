@@ -19,11 +19,12 @@ class ErrorHandler
     /**
      * Registers this error handler.
      */
-    public function register()
+    public function register(string $logDir)
     {
+        error_reporting(E_ALL);
         ini_set("display_errors", 0);
         ini_set("log_errors", 1);
-        ini_set("error_log", sprintf("%s/log/%s-error.log", dirname(__DIR__), date('Y-m')));
+        ini_set("error_log", sprintf("%s/%s-error.log", $logDir, date('Y-m')));
 
         set_exception_handler([$this, 'handleException']);
         set_error_handler([$this, 'handleError'], error_reporting());

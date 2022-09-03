@@ -39,16 +39,23 @@ class Config
     private $sitePath;
 
     /**
+     * @var string
+     */
+    public $vendorPath;
+
+    /**
      * @param string $sitePath
      * @param string $webPath
      * @param string $webUrl
+     * @param string $vendorPath
      */
-    public function __construct($sitePath, $webPath, $webUrl)
+    public function __construct($sitePath, $webPath, $webUrl, $vendorPath)
     {
         $this->appPath  = realpath(__DIR__);
         $this->sitePath = $sitePath;
         $this->webPath  = $webPath;
         $this->webUrl   = preg_replace('#\/?index.php#', '', $webUrl);
+        $this->vendorPath = $vendorPath;
         $this->items = [];
         $this->cache = [];
         $this->loadConfig(false);
@@ -203,12 +210,16 @@ class Config
         $WEB_PATH = $this->webPath;
         $WEB_URL = $this->webUrl;
 
-        $defaults = require(__DIR__ . '/../config/defaults.php');
-        if (is_file($this->sitePath . '/config/main.php')) {
-            $userConfig = require($this->sitePath . '/config.php');
+        $defaultConfig = __DIR__ . '/../config/defaults.php';
+        $userPhpConfig = $this->sitePath . '/config/main.php';
+        $userYmlConfig = $this->sitePath . '/config/main.yml';
+        
+        $defaults = require($defaultConfig);
+        if (is_file($userPhpConfig)) {
+            $userConfig = require($userPhpConfig);
             $defaults = $this->merge($defaults, $userConfig);
-        } elseif (is_file($this->sitePath . '/config/main.yml')) {
-            $content = file_get_contents($this->sitePath . '/config/main.yml');
+        } elseif (is_file($userYmlConfig)) {
+            $content = file_get_contents($userYmlConfig);
             $content = $this->replaceConstants($content);
             $userConfig = Yaml::parse($content);
             $defaults = $this->merge($defaults, $userConfig);

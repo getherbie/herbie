@@ -1,0 +1,6 @@
+nice_urls: false
+
+plugins:
+    enable:
+        - simplecontact
+        - simplesearch
