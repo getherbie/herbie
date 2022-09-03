@@ -64,12 +64,12 @@ return [
     'cache' => [
         'page' => [
             'enable' => false,
-            'dir' => $SITE_PATH . '/cache/page',
+            'dir' => $SITE_PATH . '/runtime/cache/page',
             'expire' => 86400
         ],
         'data' => [
             'enable' => false,
-            'dir' => $SITE_PATH . '/cache/data',
+            'dir' => $SITE_PATH . '/runtime/cache/data',
             'expire' => 86400
         ]
     ],
