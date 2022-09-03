@@ -4,4 +4,4 @@ parameters:
 		- config
 		- messages
 		- src
-		- sysplugin
+		- sysplugins

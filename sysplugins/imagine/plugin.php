@@ -139,8 +139,6 @@ class ImagineSysPlugin extends Plugin
     {
         $abspath = $this->alias->get('@media/' . $path);
 
-        $attribs['class'] = $attribs['class'] ?? 'imagine';
-
         if (!is_file($abspath)) {
             return new Markup('', 'utf8');
         }

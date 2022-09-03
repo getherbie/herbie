@@ -114,17 +114,17 @@ class PageList implements \IteratorAggregate, \Countable
     public function filter($key = null, $value = null): PageList
     {
         if (is_callable($key)) {
-            return new static(array_filter($this->items, $key));
+            return new self(array_filter($this->items, $key));
         }
         if (is_string($key) && is_scalar($value)) {
-            return new static(array_filter($this->items, function ($val) use ($key, $value) {
+            return new self(array_filter($this->items, function ($val) use ($key, $value) {
                 if ($val->{$key} == $value) {
                     return true;
                 }
                 return false;
             }));
         }
-        return new static(array_filter($this->items));
+        return new self(array_filter($this->items));
     }
 
     /**
@@ -136,7 +136,7 @@ class PageList implements \IteratorAggregate, \Countable
     {
         $items = $this->items;
         shuffle($items);
-        return new static($items);
+        return new self($items);
     }
 
     /**
@@ -158,7 +158,7 @@ class PageList implements \IteratorAggregate, \Countable
 
         if (is_callable($mixed)) {
             uasort($items, $mixed);
-            return new static($items);
+            return new self($items);
         }
 
         $field = is_string($mixed) ? $mixed : 'title';
@@ -173,7 +173,7 @@ class PageList implements \IteratorAggregate, \Countable
             }
         });
 
-        return new static($items);
+        return new self($items);
     }
 
     /**
@@ -359,7 +359,7 @@ class PageList implements \IteratorAggregate, \Countable
             }
         }
 
-        return new static($items);
+        return new self($items);
     }
 
     /**

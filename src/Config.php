@@ -147,7 +147,7 @@ class Config
         if (!is_array($data)) {
             throw new \InvalidArgumentException("Config for \"$path\" not an array");
         }
-        return new static($data, $this->delim);
+        return new self($data, $this->delim);
     }
 
     /**

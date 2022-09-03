@@ -18,25 +18,13 @@ use Twig\TwigFunction;
 
 class TwigPlusExtension extends AbstractExtension
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var PageRepositoryInterface
-     */
-    private $pageRepository;
+    private PageRepositoryInterface $pageRepository;
 
-    /**
-     * @var UrlGenerator
-     */
-    private $urlGenerator;
+    private UrlGenerator $urlGenerator;
 
-    /**
-     * @var TwigRenderer
-     */
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * TwigPlusExtension constructor.
@@ -190,7 +178,7 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList $pageList
+     * @param PageList|null $pageList
      * @param string $filter
      * @param string $sort
      * @param bool $shuffle
@@ -622,5 +610,21 @@ class TwigPlusExtension extends AbstractExtension
             'tags' => $tags,
             'title' => $title
         ]);
+    }
+    
+    protected function buildHtmlAttributes(array $htmlOptions = []): string
+    {
+        $attributes = '';
+        foreach ($htmlOptions as $key => $value) {
+            $attributes .= $key . '="' . $value . '" ';
+        }
+        return trim($attributes);
+    }
+    
+    protected function createLink(string $route, string $label, array $htmlAttributes = []): string
+    {
+        $url = $this->urlGenerator->generate($route);
+        $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
+        return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
     }
 }
