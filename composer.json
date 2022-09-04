@@ -1,7 +1,7 @@
 {
     "name": "getherbie/herbie",
     "homepage": "https://herbie.tebe.ch/",
-    "description": "Herbie Flat-file CMS System. Simple installation - no database - just text files.",
+    "description": "Herbie flat-file content management system. Simple setup - no database - just text files.",
     "keywords": [
         "herbie",
         "flat-file",
@@ -57,6 +57,7 @@
         ],
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
-        "phpunit": "./vendor/bin/phpunit"
+        "phpunit": "./vendor/bin/phpunit",
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M"
     }
 }
