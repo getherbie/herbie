@@ -44,8 +44,11 @@ class InstallablePlugin
     
     public function requireClassPath(): string
     {
-        require $this->classPath;
-        return $this->getClassName();
+        $className = $this->getClassName();
+        if (!class_exists($className)) {
+            require $this->classPath;
+        }
+        return $className;
     }
 
     /**

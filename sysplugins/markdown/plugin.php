@@ -43,7 +43,7 @@ class MarkdownSysPlugin extends Plugin
     
     public function twigFilters(): array
     {
-        if (empty($this->config->get('twigFilter'))) {
+        if (empty($this->config->get('enableTwigFilter'))) {
             return [];
         }
         return [
@@ -53,7 +53,7 @@ class MarkdownSysPlugin extends Plugin
     
     public function twigFunctions(): array
     {
-        if (empty($this->config->get('twigFunction'))) {
+        if (empty($this->config->get('enableTwigFunction'))) {
             return [];
         }
         return [

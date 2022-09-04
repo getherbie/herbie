@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Composer\InstalledVersions;
+
 /**
  * @param string $input
  * @param string $separator
@@ -112,6 +114,36 @@ function load_plugin_config(string $path, callable $processor = null): array
         throw new \RuntimeException(sprintf('Required config "pluginPath" is missing in %s', $path));
     }
     return $config;
+}
+
+function load_plugin_configs(string $pluginDir, callable $processor = null): array
+{
+    $globPattern = "{$pluginDir}/*/config.php";
+    $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
+    
+    $pluginConfigs = [];
+    foreach ($configFiles as $configFile) {
+        $config = load_plugin_config($configFile, $processor);
+        $pluginName = $config['pluginName'];
+        $pluginConfigs[$pluginName] = $config;
+    }
+    return $pluginConfigs;
+}
+
+function load_composer_plugin_configs(): array
+{
+    $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
+    $pluginConfigs = [];
+    foreach (array_unique($installedPackages) as $pluginKey) {
+        $path = realpath(InstalledVersions::getInstallPath($pluginKey));
+        $composerPluginConfigPath = $path . '/config.php';
+        if (is_readable($composerPluginConfigPath)) {
+            $composerPluginConfig = load_plugin_config($composerPluginConfigPath);
+            $composerPluginName = $composerPluginConfig['pluginName'];
+            $pluginConfigs[$composerPluginName] = $composerPluginConfig;
+        }
+    }
+    return $pluginConfigs;
 }
 
 /**

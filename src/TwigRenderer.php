@@ -253,7 +253,8 @@ class TwigRenderer
             'site' => $this->config['paths']['site'],
             'snippet' => $this->config['paths']['app'] . '/templates/snippets',
             'sysplugin' => $this->config['paths']['sysPlugins'],
-            'template' => $this->config['paths']['app'] . '/templates'
+            'template' => $this->config['paths']['app'] . '/templates',
+            'vendor' => $this->config['paths']['app'] . '/vendor',
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
@@ -261,8 +262,7 @@ class TwigRenderer
             }
         }
 
-        $loader = new ChainLoader([$loader1, $loader2]);
-        return $loader;
+        return new ChainLoader([$loader1, $loader2]);
     }
 
     /**

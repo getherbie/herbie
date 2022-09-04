@@ -61,6 +61,29 @@ Or you can achieve the same by using Docker.
     $ cd myproject
 
 
+## Development Environment
+
+If you want to have a development environment you can follow these steps.
+
+Git clone the repository
+
+    $ git clone https://github.com/getherbie/herbie.git
+
+Change to `herbie` directory
+
+    $ cd herbie
+
+Start PHP's internal web server
+
+    $ php -S localhost:9999 -t example/web
+
+Or, when using Xdebug 3.x
+
+    $ export XDEBUG_MODE=debug; php -S localhost:9999 -t example/web
+
+Open `localhost:9999` with your favorite web browser.
+
+
 ## More Information
 
 More information see <https://herbie.tebe.ch>.

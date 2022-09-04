@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -97,10 +98,10 @@ class Application implements LoggerAwareInterface
     {
         $logDir = $this->sitePath . '/runtime/log';
 
+        error_reporting(E_ALL);
         ini_set('display_errors', HERBIE_DEBUG ? '1': '0');
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
-        error_reporting(E_ALL);
 
         if (!is_dir($logDir)) {
             throw SystemException::directoryNotExist($logDir);
@@ -172,28 +173,38 @@ class Application implements LoggerAwareInterface
             };
 
             // default config
-            $defaultConfig = load_php_config($this->appPath . '/config/defaults.php', $processor);
-            $userConfig = [];
-            $pluginConfig = [];
+            $defaultConfigPath = $this->appPath . '/config/defaults.php';
+            $defaultConfig = load_php_config($defaultConfigPath, $processor);
 
             // user config
-            if (is_file($this->sitePath . '/config/main.php')) {
-                $userConfig = load_php_config($this->sitePath . '/config/main.php', $processor);
+            $userConfigPath = $this->sitePath . '/config/main.php';
+            $userConfig = [];
+            if (is_file($userConfigPath)) {
+                $userConfig = load_php_config($userConfigPath, $processor);
             }
+            
+            // system plugin configs
+            $systemPluginPath = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
+            $systemPluginConfigs = load_plugin_configs($systemPluginPath, $processor);
 
-            // plugin configs
-            $dir1 = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
-            $dir2 = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
-            $globPattern = "{$dir1}/*/config.php,{$dir2}/*/config.php";
-            $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
-            foreach ($configFiles as $configFile) {
-                $config = load_plugin_config($configFile, $processor);
-                $pluginName = $config['pluginName'];
-                $pluginConfig['plugins'][$pluginName] = $config;
-            }
+            // composer plugin configs
+            $composerPluginConfigs = load_composer_plugin_configs();
 
-            $config = new Config(array_replace_recursive($defaultConfig, $pluginConfig, $userConfig));
-            return $config;
+            // local plugin configs
+            $localPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
+            $localPluginConfigs = load_plugin_configs($localPluginPath, $processor);
+
+            // the order is important here
+            $userConfig['plugins'] = array_replace_recursive(
+                $systemPluginConfigs,
+                $composerPluginConfigs,
+                $localPluginConfigs,
+                $userConfig['plugins'] ?? []
+            );
+            
+            $allConfig = array_replace_recursive($defaultConfig, $userConfig);
+            
+            return new Config($allConfig);
         });
 
         $c->set(DataRepositoryInterface::class, function (Container $c) {

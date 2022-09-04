@@ -105,14 +105,12 @@ class PluginManager
     
     public function init(): void
     {
-        $systemPlugins = $this->getSystemPlugins();
-        $composerPlugins = $this->getComposerPlugins();
-        $localPlugins = $this->getLocalPlugins();
-        
+        $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
+        $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
+
         $plugins = array_merge(
-            $composerPlugins,
-            $systemPlugins,
-            $localPlugins,
+            $this->getPlugins($enabledSystemPlugins),
+            $this->getPlugins($enabledComposerOrLocalPlugins)
         );
         
         foreach ($plugins as $plugin) {
@@ -122,42 +120,20 @@ class PluginManager
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
     
-    private function getComposerPlugins(): array
+    private function getPlugins(array $enabledPlugins): array
     {
-        $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
-
-        $plugins = [];
-        foreach (array_unique($installedPackages) as $pluginKey) {
-            $path = realpath(InstalledVersions::getInstallPath($pluginKey));
-            $plugins[] = new InstallablePlugin($pluginKey, $path, 'plugin.php');
-        }
-        
-        return $plugins;
-    }
-    
-    private function getSystemPlugins(): array
-    {
-        $enabledPlugins = explode_list($this->config->get('enabledSysPlugins'));
-        
         $plugins = [];
         foreach ($enabledPlugins as $pluginKey) {
-            $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
-            $pluginPath = $this->config->getAsString($configKey);
-            $plugins[] = new InstallablePlugin($pluginKey, $pluginPath, 'plugin.php');
-        }
-        
-        return $plugins;
-    }
-    
-    private function getLocalPlugins(): array
-    {
-        $enabledPlugins = explode_list($this->config->get('enabledPlugins'));
-
-        $plugins = [];
-        foreach ($enabledPlugins as $pluginKey) {
-            $configKey = sprintf('plugins.%s.pluginPath', $pluginKey);
-            $pluginPath = $this->config->getAsString($configKey);
-            $plugins[] = new InstallablePlugin($pluginKey, $pluginPath, 'plugin.php');
+            $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
+            $pluginConfig = $this->config->getAsArray($pluginConfigPath);
+            if (empty($pluginConfig['pluginName']) || empty($pluginConfig['pluginPath'])) {
+                continue;
+            }
+            $plugins[] = new InstallablePlugin(
+                $pluginConfig['pluginName'],
+                $pluginConfig['pluginPath'],
+                'plugin.php'
+            );
         }
         
         return $plugins;
@@ -169,7 +145,7 @@ class PluginManager
             // TODO log info
             return;
         }
-        
+
         $plugin = $installablePlugin->createPluginInstance($this->container);
         
         if (!$plugin instanceof PluginInterface) {
