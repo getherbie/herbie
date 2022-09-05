@@ -147,7 +147,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchEqual($value1, $value2)
+    protected function matchEqual($value1, $value2): bool
     {
         return $value1 == $value2;
     }
@@ -157,7 +157,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchNotEqual($value1, $value2)
+    protected function matchNotEqual($value1, $value2): bool
     {
         return $value1 != $value2;
     }
@@ -167,7 +167,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchGreaterThan($value1, $value2)
+    protected function matchGreaterThan($value1, $value2): bool
     {
         return $value1 > $value2;
     }
@@ -177,7 +177,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchLessThan($value1, $value2)
+    protected function matchLessThan($value1, $value2): bool
     {
         return $value1 < $value2;
     }
@@ -187,7 +187,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchGreaterThanEqual($value1, $value2)
+    protected function matchGreaterThanEqual($value1, $value2): bool
     {
         return $value1 >= $value2;
     }
@@ -197,7 +197,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchLessThanEqual($value1, $value2)
+    protected function matchLessThanEqual($value1, $value2): bool
     {
         return $value1 <= $value2;
     }
@@ -205,9 +205,9 @@ class Selector
     /**
      * @param string $value1
      * @param string $value2
-     * @return bool
+     * @return int
      */
-    protected function matchBitwiseAnd($value1, $value2)
+    protected function matchBitwiseAnd($value1, $value2): int
     {
         return ((int)$value1) & ((int)$value2);
     }
@@ -217,7 +217,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchContains($value1, $value2)
+    protected function matchContains($value1, $value2): bool
     {
         return stripos($value1, $value2) !== false;
     }
@@ -227,7 +227,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchContainsWords($value1, $value2)
+    protected function matchContainsWords($value1, $value2): bool
     {
         $hasAll = true;
         $words = preg_split('/[-\s]/', $value2, -1, PREG_SPLIT_NO_EMPTY);
@@ -245,7 +245,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchStarts($value1, $value2)
+    protected function matchStarts($value1, $value2): bool
     {
         return stripos(trim($value1), $value2) === 0;
     }
@@ -255,7 +255,7 @@ class Selector
      * @param string $value2
      * @return bool
      */
-    protected function matchEnds($value1, $value2)
+    protected function matchEnds($value1, $value2): bool
     {
         $value2 = trim($value2);
         $value1 = substr($value1, -1 * strlen($value2));
@@ -266,7 +266,7 @@ class Selector
      * @param string|array $selector
      * @return array
      */
-    protected function getSelector($selector)
+    protected function getSelector($selector): array
     {
         if (is_array($selector)) {
             $selectors = $selector;
@@ -300,7 +300,7 @@ class Selector
      * @param $items
      * @return bool
      */
-    public function sort($sort, &$items)
+    public function sort($sort, &$items): bool
     {
         if (is_numeric($sort)) {
             return false;

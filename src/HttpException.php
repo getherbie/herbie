@@ -20,9 +20,9 @@ class HttpException extends \Exception
     /**
      * @param string $path
      * @param string|null $format
-     * @return static
+     * @return HttpException
      */
-    public static function notFound(string $path, string $format = null): HttpException
+    public static function notFound(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'Cannot find any resource at "%s"';
         $message = sprintf($format, $path);
@@ -32,9 +32,9 @@ class HttpException extends \Exception
     /**
      * @param string $path
      * @param string|null $format
-     * @return static
+     * @return HttpException
      */
-    public static function fileNotFound(string $path, string $format = null): HttpException
+    public static function fileNotFound(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'File "%s" not found';
         $message = sprintf($format, $path);
@@ -46,13 +46,13 @@ class HttpException extends \Exception
      * @param string $method
      * @param array $allowed
      * @param string|null $format
-     * @return static
+     * @return HttpException
      */
     public static function methodNotAllowed(
         string $path,
         string $method,
         array $allowed,
-        string $format = null
+        ?string $format = null
     ): HttpException {
         $format = $format ?? 'Cannot access resource "%s" using method "%s"';
         $message = sprintf($format, $path, $method);
@@ -64,9 +64,9 @@ class HttpException extends \Exception
     /**
      * @param string $path
      * @param string|null $format
-     * @return static
+     * @return HttpException
      */
-    public static function badRequest(string $path, string $format = null): HttpException
+    public static function badRequest(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'Cannot parse request "%s"';
         return new HttpException(sprintf(

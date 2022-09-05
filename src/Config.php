@@ -46,9 +46,7 @@ class Config
         $path = explode($this->delim, $name);
         $current = $this->data;
         foreach ($path as $field) {
-            if (isset($current) && isset($current[$field])) {
-                $current = $current[$field];
-            } elseif (is_array($current) && isset($current[$field])) {
+            if (isset($current[$field])) {
                 $current = $current[$field];
             } else {
                 return $default;

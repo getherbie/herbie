@@ -12,20 +12,9 @@ namespace herbie;
 
 class FlatfilePageRepository implements PageRepositoryInterface
 {
-    /**
-     * @var PageFactory
-     */
-    private $pageFactory;
-
-    /**
-     * @var PageList
-     */
-    private $pageList;
-
-    /**
-     * @var PagePersistenceInterface
-     */
-    private $pagePersistence;
+    private PageFactory $pageFactory;
+    private ?PageList $pageList;
+    private PagePersistenceInterface $pagePersistence;
 
     /**
      * FlatfilePageRepository constructor.

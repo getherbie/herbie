@@ -12,16 +12,12 @@ namespace herbie;
 
 abstract class AbstractNode implements \IteratorAggregate
 {
-
     /**
      * @var mixed
      */
     private $value;
 
-    /**
-     * @var AbstractNode
-     */
-    private $parent;
+    private ?AbstractNode $parent;
 
     /**
      * @var AbstractNode[]

@@ -33,7 +33,7 @@ interface EventInterface
 
     /**
      * @param string $name
-     * @param null $default
+     * @param mixed|null $default
      * @return mixed
      */
     public function getParam(string $name, $default = null);
@@ -61,7 +61,7 @@ interface EventInterface
 
     /**
      * @param bool $flag
-     * @return mixed
+     * @return void
      */
     public function stopPropagation(bool $flag = true): void;
 
