@@ -15,7 +15,6 @@ class MarkdownSysPlugin extends Plugin
 
     private Config $config;
     private int $mode;
-    private LoggerInterface $logger;
 
     /**
      * MarkdownPlugin constructor.
@@ -23,7 +22,6 @@ class MarkdownSysPlugin extends Plugin
     public function __construct(Config $config, LoggerInterface $logger)
     {
         $this->config = $config->getAsConfig('plugins.markdown');
-        $this->logger = $logger;
         if (class_exists('ParsedownExtra')) {
             $this->mode = self::MODE_PARSEDOWN_EXTRA;
         } elseif (class_exists('Parsedown')) {
