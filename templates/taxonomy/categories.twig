@@ -1,5 +1,5 @@
-{% if categories|length > 0 %}
-    {% apply spaceless %}
+{% apply spaceless %}
+    {% if categories|length > 0 %}
         <div class="widget-blog widget-blog-categories">
             <h4>{{ title }}</h4>
             <ul>
@@ -9,5 +9,5 @@
                 {% endfor %}
             </ul>
         </div>
-    {% endapply %}
-{% endif %}
+    {% endif %}
+{% endapply %}

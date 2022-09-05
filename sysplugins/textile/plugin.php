@@ -73,7 +73,9 @@ class TextileSysPlugin extends Plugin
      */
     public function renderSegment(string $context, array $params, FilterInterface $filter)
     {
-        $context = $this->parseTextile($context);
+        if ($params['page']->format === 'textile') {
+            $context = $this->parseTextile($context);
+        }
         return $filter->next($context, $params, $filter);
     }
 

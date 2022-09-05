@@ -1,5 +1,5 @@
-{% if renderCategories and renderTags and renderAuthors %}
-    {% apply spaceless %}
+{% apply spaceless %}
+    {% if renderCategories and renderTags and renderAuthors %}
         <div class="blog-meta">
 
             {# render markup for categories #}
@@ -54,5 +54,5 @@
             {% endif %}
 
         </div>
-    {% endapply %}
-{% endif %}
+    {% endif %}
+{% endapply %}

@@ -63,7 +63,9 @@ class MarkdownSysPlugin extends Plugin
     
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
-        $context = $this->parseMarkdown($context);
+        if ($params['page']->format === 'markdown') {
+            $context = $this->parseMarkdown($context);
+        }
         return $filter->next($context, $params, $filter);
     }
 
