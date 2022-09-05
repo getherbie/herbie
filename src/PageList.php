@@ -245,7 +245,7 @@ class PageList implements \IteratorAggregate, \Countable
     {
         $years = [];
         foreach ($this->items as $item) {
-            $key = substr($item->date, 0, 4);
+            $key = substr($item->getDate(), 0, 4);
             if (array_key_exists($key, $years)) {
                 $count = $years[$key] + 1;
             } else {
@@ -269,14 +269,14 @@ class PageList implements \IteratorAggregate, \Countable
         foreach ($this->items as $pageItem) {
             $pageType = $pageItem->getType();
 
-            $year = substr($pageItem->date, 0, 4);
-            $month = substr($pageItem->date, 5, 2);
+            $year = substr($pageItem->getDate(), 0, 4);
+            $month = substr($pageItem->getDate(), 5, 2);
             $key = $year . '-' . $month;
 
             $item = [
                 'year' => $year,
                 'month' => $month,
-                'date' => $pageItem->date,
+                'date' => $pageItem->getDate(),
                 'count' => 1
             ];
 
