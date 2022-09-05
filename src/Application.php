@@ -32,49 +32,19 @@ define('HERBIE_API_VERSION', 2);
 
 class Application implements LoggerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private Container $container;
+    private array $filters;
+    private string $appPath;
+    private string $sitePath;
+    private string $vendorDir;
+    private array $applicationMiddlewares;
+    private array $routeMiddlewares;
 
     /**
-     * @var array
-     */
-    private $filters;
-
-    /**
-     * @var string
-     */
-    private $appPath;
-
-    /**
-     * @var string
-     */
-    private $sitePath;
-
-    /**
-     * @var string
-     */
-    private $vendorDir;
-
-    /**
-     * @var array
-     */
-    private $applicationMiddlewares;
-
-    /**
-     * @var array
-     */
-    private $routeMiddlewares;
-
-    /**
-     * Application constructor.
-     * @param $sitePath
-     * @param string $vendorDir
+     * Application constructor
      * @throws SystemException
-     * @throws \BadMethodCallException
      */
-    public function __construct($sitePath, $vendorDir = '../vendor')
+    public function __construct(string $sitePath, string $vendorDir = '../vendor')
     {
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
@@ -92,9 +62,8 @@ class Application implements LoggerAwareInterface
     /**
      * Initialize the application.
      * @throws SystemException
-     * @throws \BadMethodCallException
      */
-    private function init()
+    private function init(): void
     {
         $logDir = $this->sitePath . '/runtime/log';
 
@@ -417,11 +386,10 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @return void
-     * @throws \Exception
      * @throws \Throwable
+     * @throws \Twig\Error\LoaderError
      */
-    public function run()
+    public function run(): void
     {
         // init components
         $this->getPluginManager()->init();
@@ -442,9 +410,6 @@ class Application implements LoggerAwareInterface
         exit(0);
     }
 
-    /**
-     * @param ResponseInterface $response
-     */
     private function emitResponse(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
@@ -458,11 +423,11 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @param $middlewareOrPath
-     * @param null $middleware
+     * @param MiddlewareInterface|string $middlewareOrPath
+     * @param MiddlewareInterface|null $middleware
      * @return Application
      */
-    public function addMiddleware($middlewareOrPath, $middleware = null) : Application
+    public function addMiddleware($middlewareOrPath, ?MiddlewareInterface $middleware = null) : Application
     {
         if ($middleware) {
             $this->routeMiddlewares[$middlewareOrPath] = $middleware;
@@ -473,12 +438,12 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @param LoggerInterface $interface
+     * @param LoggerInterface $logger
      * @return Application
      */
-    public function setLogger(LoggerInterface $interface): Application
+    public function setLogger(LoggerInterface $logger): Application
     {
-        $this->container->set(LoggerInterface::class, $interface);
+        $this->container->set(LoggerInterface::class, $logger);
         return $this;
     }
 
@@ -486,7 +451,7 @@ class Application implements LoggerAwareInterface
      * @param CacheInterface $cache
      * @return Application
      */
-    public function setCache(CacheInterface $cache)
+    public function setCache(CacheInterface $cache): Application
     {
         $this->container->set(NullCache::class, $cache);
         return $this;
@@ -525,7 +490,7 @@ class Application implements LoggerAwareInterface
      * @param callable $filter
      * @return Application
      */
-    public function attachFilter(string $filterName, callable $filter)
+    public function attachFilter(string $filterName, callable $filter): Application
     {
         if (!isset($this->filters[$filterName])) {
             $this->filters[$filterName] = [];
@@ -540,7 +505,7 @@ class Application implements LoggerAwareInterface
      * @param int $priority
      * @return Application
      */
-    public function attachListener(string $eventName, callable $listener, int $priority = 1)
+    public function attachListener(string $eventName, callable $listener, int $priority = 1): Application
     {
         $this->getEventManager()->attach($eventName, $listener, $priority);
         return $this;
@@ -563,7 +528,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return PluginManager
      */
-    private function getPluginManager()
+    private function getPluginManager(): PluginManager
     {
         return $this->container->get(PluginManager::class);
     }
@@ -571,7 +536,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return Translator
      */
-    private function getTranslator()
+    private function getTranslator(): Translator
     {
         return $this->container->get(Translator::class);
     }
@@ -579,7 +544,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return TwigRenderer
      */
-    private function getTwigRenderer()
+    private function getTwigRenderer(): TwigRenderer
     {
         return $this->container->get(TwigRenderer::class);
     }
@@ -587,7 +552,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return MiddlewareDispatcher
      */
-    private function getMiddlewareDispatcher()
+    private function getMiddlewareDispatcher(): MiddlewareDispatcher
     {
         return $this->container->get(MiddlewareDispatcher::class);
     }
@@ -595,7 +560,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return ServerRequestInterface
      */
-    private function getServerRequest()
+    private function getServerRequest(): ServerRequestInterface
     {
         return $this->container->get(ServerRequestInterface::class);
     }
@@ -603,7 +568,7 @@ class Application implements LoggerAwareInterface
     /**
      * @return EventManager
      */
-    private function getEventManager()
+    private function getEventManager(): EventManager
     {
         return $this->container->get(EventManager::class);
     }

@@ -229,7 +229,7 @@ class TwigRenderer
     }
 
     /**
-     * @throws ChainLoader
+     * @return ChainLoader
      * @throws LoaderError
      */
     private function getTwigFilesystemLoader(): ChainLoader

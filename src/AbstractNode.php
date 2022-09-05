@@ -81,7 +81,7 @@ abstract class AbstractNode implements \IteratorAggregate
     /**
      * @return AbstractNode|null
      */
-    public function getParent(): AbstractNode
+    public function getParent(): ?AbstractNode
     {
         return $this->parent;
     }

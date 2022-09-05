@@ -48,7 +48,9 @@
         "phpunit/phpunit": "^7.5",
         "zendframework/zend-diactoros": "^2.2",
         "monolog/monolog": "^1.27",
-        "phpstan/phpstan": "^1.8"
+        "phpstan/phpstan": "^1.8",
+        "erusev/parsedown": "^1.7",
+        "erusev/parsedown-extra": "^0.8.1"
     },
     "scripts": {
         "test": [

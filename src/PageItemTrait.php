@@ -644,7 +644,7 @@ trait PageItemTrait
      */
     private function slugify(string $slug): string
     {
-        return static::$slugGenerator->generate($slug);
+        return self::$slugGenerator->generate($slug);
     }
 
     /**
@@ -652,9 +652,9 @@ trait PageItemTrait
      */
     public static function setSlugGenerator(SlugGenerator $slugGenerator)
     {
-        if (!empty(static::$slugGenerator)) {
+        if (!empty(self::$slugGenerator)) {
             throw new \BadMethodCallException('SlugGenerator already set');
         }
-        static::$slugGenerator = $slugGenerator;
+        self::$slugGenerator = $slugGenerator;
     }
 }

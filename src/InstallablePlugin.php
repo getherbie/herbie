@@ -54,7 +54,7 @@ class InstallablePlugin
     /**
      * @throws SystemException
      */
-    public function createPluginInstance(Container $container): object
+    public function createPluginInstance(Container $container): PluginInterface
     {
         $pluginClassName = $this->requireClassPath();
 
@@ -63,7 +63,6 @@ class InstallablePlugin
             $container
         );
 
-        /** @var PluginInterface $plugin */
         return new $pluginClassName(...$constructorParams);
     }
 

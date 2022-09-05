@@ -86,10 +86,9 @@ class PageRendererMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
-     * @throws \Exception
-     * @throws \Psr\SimpleCache\\InvalidArgumentException
-     * @throws \Throwable
+     * @throws HttpException
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

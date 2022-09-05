@@ -87,10 +87,10 @@ class MarkdownSysPlugin extends Plugin
     private function createParser()
     {
         if ($this->mode === self::MODE_PARSEDOWN_EXTRA) {
-            return new ParsedownExtra(); // @phpstan-ignore-line
+            return new ParsedownExtra();
         }
         if ($this->mode === self::MODE_PARSEDOWN) {
-            return new Parsedown(); // @phpstan-ignore-line
+            return new Parsedown();
         }
         return null;
     }
