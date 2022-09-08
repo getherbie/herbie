@@ -19,31 +19,18 @@ use Symfony\Component\Yaml\Yaml as sfYaml;
  */
 class Yaml
 {
-
-    /**
-     * @param string $input
-     * @return array
-     */
     public static function parse(string $input): array
     {
         $parsed = sfYaml::parse($input);
         return (array)$parsed;
     }
 
-    /**
-     * @param string $file
-     * @return array
-     */
     public static function parseFile(string $file): array
     {
         $input = file_get_contents($file);
         return self::parse($input);
     }
 
-    /**
-     * @param array $array
-     * @return string
-     */
     public static function dump(array $array): string
     {
         return sfYaml::dump($array, 100);

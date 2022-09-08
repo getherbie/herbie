@@ -19,10 +19,7 @@ class FileInfoSortableIterator implements \IteratorAggregate
     const SORT_BY_CHANGED_TIME = 4;
     const SORT_BY_MODIFIED_TIME = 5;
 
-    /**
-     * @var \Traversable
-     */
-    private $iterator;
+    private \Traversable $iterator;
 
     /**
      * @var int|callable
@@ -30,7 +27,6 @@ class FileInfoSortableIterator implements \IteratorAggregate
     private $sort;
 
     /**
-     * @param \Traversable $iterator
      * @param int|callable $sort
      */
     public function __construct(\Traversable $iterator, $sort)
@@ -70,9 +66,6 @@ class FileInfoSortableIterator implements \IteratorAggregate
         }
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator(): \ArrayIterator
     {
         $array = iterator_to_array($this->iterator, true);

@@ -12,14 +12,10 @@ namespace herbie;
 
 class RenderSegmentFilter
 {
-    /**
-     * @var TwigRenderer
-     */
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * ContentRendererFilter constructor.
-     * @param TwigRenderer $twigRenderer
      */
     public function __construct(TwigRenderer $twigRenderer)
     {
@@ -27,10 +23,6 @@ class RenderSegmentFilter
     }
 
     /**
-     * @param string $content
-     * @param array $params
-     * @param FilterIterator $chain
-     * @return string|null
      * @throws \Throwable
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -42,7 +34,7 @@ class RenderSegmentFilter
         /** @var Page $page */
         $page = $params['page'];
         if (!empty($page->getTwig())) {
-            $content = $this->twigRenderer->renderString((string)$content, $params);
+            $content = $this->twigRenderer->renderString($content, $params);
         }
         return $chain->next($content, $params, $chain);
     }

@@ -14,12 +14,6 @@ use Throwable;
 
 class SystemException extends \Exception
 {
-
-    /**
-     * @param string $class
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function classNotExist(string $class, ?string $format = null): SystemException
     {
         $format = $format ?? 'Class "%s" does not exist';
@@ -27,11 +21,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $method
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function methodNotExist(string $method, ?string $format = null): SystemException
     {
         $format = $format ?? 'Method "%s" does not exist';
@@ -39,11 +28,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $filepath
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function includeFileNotExist(string $filepath, ?string $format = null): SystemException
     {
         $format = $format ?? 'Include file "%s" does not exist';
@@ -51,11 +35,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $directory
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function directoryNotExist(string $directory, ?string $format = null): SystemException
     {
         $format = $format ?? 'Directory "%s" does not exist';
@@ -63,11 +42,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $directory
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function directoryNotWritable(string $directory, ?string $format = null): SystemException
     {
         $format = $format ?? 'Directory "%s" is not writable';
@@ -75,11 +49,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $directory
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function directoryNotReadable(string $directory, ?string $format = null): SystemException
     {
         $format = $format ?? 'Directory "%s" is not readable';
@@ -87,11 +56,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $file
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function fileNotExist(string $file, ?string $format = null): SystemException
     {
         $format = $format ?? 'File "%s" does not exist';
@@ -99,11 +63,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $plugin
-     * @param string|null $format
-     * @return SystemException
-     */
     public static function pluginNotExist(string $plugin, ?string $format = null): SystemException
     {
         $format = $format ?? 'Plugin "%s" does not exist';
@@ -111,11 +70,6 @@ class SystemException extends \Exception
         return new SystemException($message, 500);
     }
 
-    /**
-     * @param string $message
-     * @param Throwable|null $t
-     * @return SystemException
-     */
     public static function serverError(string $message, ?Throwable $t = null): SystemException
     {
         return new SystemException($message, 500, $t);

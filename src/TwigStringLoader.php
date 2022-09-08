@@ -17,11 +17,9 @@ use Twig\Source;
 class TwigStringLoader implements LoaderInterface
 {
     /**
-     * @param string $name
-     * @return Source
      * @throws LoaderError
      */
-    public function getSourceContext($name): Source
+    public function getSourceContext(string $name): Source
     {
         if (true === $this->isLayoutTemplate($name)) {
             throw new LoaderError(sprintf('Template "%s" does not exist.', $name));
@@ -29,39 +27,22 @@ class TwigStringLoader implements LoaderInterface
         return new Source($name, $name);
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function exists($name): bool
+    public function exists(string $name): bool
     {
         $bool = $this->isLayoutTemplate($name);
         return !$bool;
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    public function getCacheKey($name): string
+    public function getCacheKey(string $name): string
     {
         return md5($name);
     }
 
-    /**
-     * @param string $name
-     * @param int $time
-     * @return bool
-     */
-    public function isFresh($name, $time): bool
+    public function isFresh(string $name, int $time): bool
     {
         return true;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function isLayoutTemplate(string $name): bool
     {
         $pos = strrpos($name, '.');

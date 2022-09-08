@@ -12,9 +12,6 @@ namespace herbie;
 
 class PageTree extends AbstractNode
 {
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         $menuItem = $this->getMenuItem();
@@ -30,7 +27,6 @@ class PageTree extends AbstractNode
     }
 
     /**
-     * @param string $route
      * @return PageTree|bool
      */
     public function findByRoute(string $route)
@@ -53,7 +49,6 @@ class PageTree extends AbstractNode
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      * @return PageTree|bool
      */

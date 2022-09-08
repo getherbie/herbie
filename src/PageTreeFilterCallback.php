@@ -12,25 +12,16 @@ namespace herbie;
 
 class PageTreeFilterCallback
 {
-
-    /**
-     * @var array
-     */
-    private $routeLine;
+    private array $routeLine;
 
     /**
      * FilterCallback constructor.
-     * @param array $routeLine
      */
     public function __construct(array $routeLine)
     {
         $this->routeLine = $routeLine;
     }
 
-    /**
-     * @param PageTree $current
-     * @return int
-     */
     public function __invoke(PageTree $current): int
     {
         $menuItem = $current->getMenuItem();

@@ -12,19 +12,12 @@ namespace herbie;
 
 class JsonDataRepository implements DataRepositoryInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
+    private string $path;
 
-    /**
-     * @var array
-     */
-    private $extensions;
+    private array $extensions;
 
     /**
      * YamlDataRepository constructor.
-     * @param string $path
      * @throws SystemException
      */
     public function __construct(string $path)
@@ -39,10 +32,6 @@ class JsonDataRepository implements DataRepositoryInterface
         $this->extensions = ['json'];
     }
 
-    /**
-     * @param string $name
-     * @return array
-     */
     public function load(string $name): array
     {
         $dataFiles = $this->scanDataDir();
@@ -53,9 +42,6 @@ class JsonDataRepository implements DataRepositoryInterface
         return $this->parseDataFile($dataFiles[$name]);
     }
 
-    /**
-     * @return array
-     */
     public function loadAll(): array
     {
         $data = [];
@@ -65,9 +51,6 @@ class JsonDataRepository implements DataRepositoryInterface
         return $data;
     }
 
-    /**
-     * @return array
-     */
     private function scanDataDir(): array
     {
         $dataFiles = [];
@@ -94,10 +77,6 @@ class JsonDataRepository implements DataRepositoryInterface
         return $dataFiles;
     }
 
-    /**
-     * @param string $filepath
-     * @return array
-     */
     private function parseDataFile(string $filepath): array
     {
         return json_decode(file_get_contents($filepath), true);

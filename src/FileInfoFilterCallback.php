@@ -12,25 +12,13 @@ namespace herbie;
 
 class FileInfoFilterCallback
 {
+    private array $extensions;
 
-    /**
-     * @var array
-     */
-    private $extensions;
-
-    /**
-     * @param array $extensions
-     */
     public function __construct(array $extensions)
     {
         $this->extensions = $extensions;
     }
 
-    /**
-     *
-     * @param \SplFileInfo $file
-     * @return bool
-     */
     public function __invoke(\SplFileInfo $file): bool
     {
         $firstChar = substr($file->getFilename(), 0, 1);

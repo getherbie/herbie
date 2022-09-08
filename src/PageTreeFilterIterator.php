@@ -12,14 +12,8 @@ namespace herbie;
 
 class PageTreeFilterIterator extends \RecursiveFilterIterator
 {
-    /**
-     * @var boolean
-     */
-    private $enabled = true;
+    private bool $enabled = true;
 
-    /**
-     * @return boolean
-     */
     public function accept(): bool
     {
         if (!$this->enabled) {
@@ -32,11 +26,8 @@ class PageTreeFilterIterator extends \RecursiveFilterIterator
         return false;
     }
 
-    /**
-     * @param bool $enabled
-     */
     public function setEnabled(bool $enabled): void
     {
-        $this->enabled = (bool)$enabled;
+        $this->enabled = $enabled;
     }
 }

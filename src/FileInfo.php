@@ -12,23 +12,10 @@ namespace herbie;
 
 class FileInfo extends \SplFileInfo
 {
-    /**
-     * @var string
-     */
-    private $relativePath;
+    private string $relativePath;
 
-    /**
-     * @var string
-     */
-    private $relativePathname;
+    private string $relativePathname;
 
-    /**
-     * Constructor
-     *
-     * @param string $file             The file name
-     * @param string $relativePath     The relative path
-     * @param string $relativePathname The relative path name
-     */
     public function __construct(string $file, string $relativePath, string $relativePathname)
     {
         parent::__construct($file);
@@ -38,8 +25,6 @@ class FileInfo extends \SplFileInfo
 
     /**
      * Returns the relative path
-     *
-     * @return string the relative path
      */
     public function getRelativePath(): string
     {
@@ -48,17 +33,12 @@ class FileInfo extends \SplFileInfo
 
     /**
      * Returns the relative path name
-     *
-     * @return string the relative path name
      */
     public function getRelativePathname(): string
     {
         return $this->relativePathname;
     }
 
-    /**
-     * @return bool
-     */
     public function isDot(): bool
     {
         return in_array($this->getBasename(), ['.', '..']);
@@ -66,8 +46,6 @@ class FileInfo extends \SplFileInfo
 
     /**
      * Returns the contents of the file
-     *
-     * @return string the contents of the file
      */
     public function getContents(): string
     {

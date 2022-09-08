@@ -12,20 +12,12 @@ namespace herbie;
 
 class RenderLayoutFilter
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @var TwigRenderer
-     */
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * ContentRendererFilter constructor.
-     * @param Config $config
-     * @param TwigRenderer $twigRenderer
      */
     public function __construct(Config $config, TwigRenderer $twigRenderer)
     {
@@ -34,10 +26,6 @@ class RenderLayoutFilter
     }
 
     /**
-     * @param string $content
-     * @param array $params
-     * @param FilterIterator $chain
-     * @return string|null
      * @throws \Throwable
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError

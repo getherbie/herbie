@@ -15,17 +15,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
+use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * ErrorHandlerMiddleware constructor.
-     * @param TwigRenderer $twigRenderer
      */
     public function __construct(TwigRenderer $twigRenderer)
     {
@@ -33,13 +33,10 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
@@ -47,7 +44,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
 
         try {
             $response = $handler->handle($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (!$this->twigRenderer->isInitialized()) {
                 $this->twigRenderer->init();
             }
@@ -73,17 +70,9 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * Creates and returns a callable error handler that raises exceptions.
      *
      * Only raises exceptions for errors that are within the error_reporting mask.
-     *
-     * @return callable
      */
     private function createErrorHandler() : callable
     {
-        /**
-         * @param int $errno
-         * @param string $errstr
-         * @param string $errfile
-         * @param int $errline
-         */
         return function (int $errno, string $errstr, string $errfile, int $errline) : void {
             if (! (error_reporting() & $errno)) {
                 // error_reporting does not include this error

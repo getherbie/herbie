@@ -17,27 +17,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class UrlGenerator
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
+    private ServerRequestInterface $request;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var bool
-     */
-    private $niceUrls;
+    private bool $niceUrls;
 
-    /**
-     * Constructor
-     * @param Config $config
-     * @param Environment $environment
-     * @param ServerRequestInterface $request The request object.
-     */
     public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
     {
         $this->environment = $environment;

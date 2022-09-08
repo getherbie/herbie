@@ -12,26 +12,11 @@ namespace herbie;
 
 interface PageRepositoryInterface
 {
-    /**
-     * @param string $id
-     * @return Page|null
-     */
     public function find(string $id): ?Page;
 
-    /**
-     * @return PageList
-     */
     public function findAll(): PageList;
 
-    /**
-     * @param Page $page
-     * @return bool
-     */
     public function save(Page $page): bool;
 
-    /**
-     * @param Page $page
-     * @return bool
-     */
     public function delete(Page $page): bool;
 }

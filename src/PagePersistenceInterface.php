@@ -12,14 +12,7 @@ namespace herbie;
 
 interface PagePersistenceInterface
 {
-    /**
-     * @param string $id
-     * @return array
-     */
     public function findById(string $id): array;
 
-    /**
-     * @return array
-     */
     public function findAll(): array;
 }

@@ -16,25 +16,16 @@ use Tebe\HttpFactory\HttpFactory;
 
 class HttpBasicAuthMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var array
-     */
-    private $users;
+    private array $users;
 
     /**
      * HttpBasicAuthMiddleware constructor.
-     * @param array $users
      */
     public function __construct(array $users)
     {
         $this->users = $users;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $login = $this->login($request);
@@ -45,16 +36,13 @@ class HttpBasicAuthMiddleware implements MiddlewareInterface
                 ->withHeader('WWW-Authenticate', 'Basic realm="Test"');
         }
 
-        $response = $handler->handle($request);
-
-        return $response;
+        return $handler->handle($request);
     }
 
     /**
      * Check the user credentials and return the username or false.
      *
-     * @param ServerRequestInterface $request
-     * @return bool|mixed
+     * @return bool|string
      */
     private function login(ServerRequestInterface $request)
     {
@@ -77,7 +65,6 @@ class HttpBasicAuthMiddleware implements MiddlewareInterface
     /**
      * Parses the authorization header for a basic authentication.
      *
-     * @param string $header
      * @return array|bool
      */
     private function parseHeader(string $header)
@@ -88,7 +75,7 @@ class HttpBasicAuthMiddleware implements MiddlewareInterface
         $header = explode(':', base64_decode(substr($header, 6)), 2);
         return [
             'username' => $header[0],
-            'password' => isset($header[1]) ? $header[1] : null,
+            'password' => $header[1] ?? null,
         ];
     }
 }

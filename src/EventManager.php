@@ -12,19 +12,12 @@ namespace herbie;
 
 class EventManager
 {
-    /**
-     * @var array
-     */
-    private $events;
+    private array $events;
 
-    /**
-     * @var Event
-     */
-    private $eventPrototype;
+    private Event $eventPrototype;
 
     /**
      * EventManager constructor.
-     * @param Event $eventPrototype
      */
     public function __construct(Event $eventPrototype)
     {
@@ -32,26 +25,12 @@ class EventManager
         $this->eventPrototype = $eventPrototype;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function attach(string $eventName, callable $listener, int $priority = 1): callable
     {
-        if (! is_string($eventName)) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s expects a string for the event; received %s',
-                __METHOD__,
-                (is_object($eventName) ? get_class($eventName) : gettype($eventName))
-            ));
-        }
-
         $this->events[$eventName][(int) $priority][0][] = $listener;
         return $listener;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function trigger(string $eventName, $target = null, array $argv = []): void
     {
         /** @var Event $event */
@@ -73,9 +52,6 @@ class EventManager
      * Trigger listeners
      *
      * Actual functionality for triggering listeners, to which trigger() delegate.
-     *
-     * @param  EventInterface $event
-     * @return void
      */
     private function triggerListeners(EventInterface $event): void
     {

@@ -12,15 +12,8 @@ namespace herbie;
 
 class PageTreeTextRenderer extends \RecursiveTreeIterator
 {
+    public string $emptyTitle = '[]';
 
-    /**
-     * @var string
-     */
-    public $emptyTitle = '[]';
-
-    /**
-     * @param \RecursiveIterator $iterator
-     */
     public function __construct(\RecursiveIterator $iterator)
     {
         parent::__construct($iterator);
@@ -30,9 +23,6 @@ class PageTreeTextRenderer extends \RecursiveTreeIterator
         $this->setPrefixPart(self::PREFIX_END_LAST, '└ ');
     }
 
-    /**
-     * @return string
-     */
     public function render(): string
     {
         $output = '';

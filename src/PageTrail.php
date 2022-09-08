@@ -12,31 +12,21 @@ namespace herbie;
 
 class PageTrail implements \IteratorAggregate, \Countable
 {
-    /**
-     * @var array
-     */
-    private $items;
+    private array $items;
 
     /**
      * PageTrail constructor.
-     * @param array $items
      */
     public function __construct(array $items)
     {
         $this->items = $items;
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->items);

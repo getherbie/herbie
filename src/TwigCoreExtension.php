@@ -18,35 +18,22 @@ use Twig\TwigTest;
 
 class TwigCoreExtension extends AbstractExtension
 {
-    /** @var Alias */
-    private $alias;
+    private Alias $alias;
 
-    /** @var UrlGenerator */
-    private $urlGenerator;
+    private UrlGenerator $urlGenerator;
 
-    /** @var Translator */
-    private $translator;
+    private Translator $translator;
 
-    /** @var SlugGeneratorInterface */
-    private $slugGenerator;
+    private SlugGeneratorInterface $slugGenerator;
 
-    /** @var Assets */
-    private $assets;
+    private Assets $assets;
 
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
-    /** @var TwigRenderer */
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * TwigExtension constructor.
-     * @param Alias $alias
-     * @param Assets $assets
-     * @param Environment $environment
-     * @param SlugGeneratorInterface $slugGenerator
-     * @param Translator $translator
-     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         Alias $alias,
@@ -64,16 +51,13 @@ class TwigCoreExtension extends AbstractExtension
         $this->environment = $environment;
     }
 
-    /**
-     * @param TwigRenderer $twigRenderer
-     */
     public function setTwigRenderer(TwigRenderer $twigRenderer): void
     {
         $this->twigRenderer = $twigRenderer;
     }
 
     /**
-     * @return array
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
@@ -87,7 +71,7 @@ class TwigCoreExtension extends AbstractExtension
     }
 
     /**
-     * @return array
+     * @return TwigFunction[]
      */
     public function getFunctions(): array
     {
@@ -110,7 +94,7 @@ class TwigCoreExtension extends AbstractExtension
     }
 
     /**
-     * @return array
+     * @return TwigTest[]
      */
     public function getTests(): array
     {
@@ -120,10 +104,6 @@ class TwigCoreExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @param array $htmlOptions
-     * @return string
-     */
     private function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
@@ -133,10 +113,6 @@ class TwigCoreExtension extends AbstractExtension
         return trim($attributes);
     }
 
-    /**
-     * @param integer $size
-     * @return string
-     */
     public function filterFilesize(int $size): string
     {
         if ($size <= 0) {
@@ -154,9 +130,6 @@ class TwigCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param \Traversable $iterator
-     * @param array $selectors
-     * @return array
      * @throws \Exception
      * @todo Implement und document this twig filter
      */
@@ -170,9 +143,6 @@ class TwigCoreExtension extends AbstractExtension
 
     /**
      * Creates a web friendly URL (slug) from a string.
-     *
-     * @param string $url
-     * @return string
      */
     public function filterSlugify(string $url): string
     {
@@ -180,9 +150,6 @@ class TwigCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param string $date
-     * @param string $format
-     * @return string
      * @throws \Exception
      */
     public function filterStrftime(string $date, string $format = '%x'): string
@@ -195,10 +162,6 @@ class TwigCoreExtension extends AbstractExtension
         return strftime($format, $dateTime->getTimestamp());
     }
 
-    /**
-     * @param PageTree $tree
-     * @return PageTreeFilterIterator
-     */
     public function filterVisible(PageTree $tree): PageTreeFilterIterator
     {
         $treeIterator = new PageTreeIterator($tree);
@@ -207,15 +170,11 @@ class TwigCoreExtension extends AbstractExtension
 
     /**
      * @param array|string $paths
-     * @param array $attr
-     * @param string $group
-     * @param bool $raw
-     * @param int $pos
      */
     public function functionAddCss(
         $paths,
         array $attr = [],
-        string $group = null,
+        ?string $group = null,
         bool $raw = false,
         int $pos = 1
     ): void {
@@ -224,10 +183,6 @@ class TwigCoreExtension extends AbstractExtension
 
     /**
      * @param array|string $paths
-     * @param array $attr
-     * @param string $group
-     * @param bool $raw
-     * @param int $pos
      */
     public function functionAddJs(
         $paths,
@@ -239,14 +194,6 @@ class TwigCoreExtension extends AbstractExtension
         $this->assets->addJs($paths, $attr, $group, $raw, $pos);
     }
 
-    /**
-     * @param array $context
-     * @param string $path
-     * @param string $label
-     * @param bool $info
-     * @param array $attribs
-     * @return string
-     */
     public function functionFileLink(
         array $context,
         string $path,
@@ -279,12 +226,6 @@ class TwigCoreExtension extends AbstractExtension
         return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
-    /**
-     * @param string $email
-     * @param string $label
-     * @param array $attribs
-     * @return string
-     */
     public function functionMailLink(string $email, string $label, array $attribs = []): string
     {
         $attribs['class'] = $attribs['class'] ?? 'link__label';
@@ -299,32 +240,16 @@ class TwigCoreExtension extends AbstractExtension
         return strtr($template, $replace);
     }
 
-    /**
-     * @param string $group
-     * @return string
-     */
     public function functionOutputCss(?string $group = null): string
     {
         return $this->assets->outputCss($group);
     }
 
-    /**
-     * @param string $group
-     * @return string
-     */
     public function functionOutputJs(?string $group = null): string
     {
         return $this->assets->outputJs($group);
     }
 
-    /**
-     * @param string $src
-     * @param int $width
-     * @param int $height
-     * @param string $alt
-     * @param string $class
-     * @return string
-     */
     public function functionImage(
         string $src,
         int $width = 0,
@@ -347,12 +272,6 @@ class TwigCoreExtension extends AbstractExtension
         return sprintf('<img %s>', $this->buildHtmlAttributes($attribs));
     }
 
-    /**
-     * @param string $route
-     * @param string $label
-     * @param array $attribs
-     * @return string
-     */
     public function functionPageLink(string $route, string $label, array $attribs = []): string
     {
         $scheme = parse_url($route, PHP_URL_SCHEME);
@@ -378,22 +297,11 @@ class TwigCoreExtension extends AbstractExtension
         return strtr($template, $replace);
     }
 
-    /**
-     * @param string $category
-     * @param string $message
-     * @param array $params
-     * @return string
-     */
     public function functionTranslate(string $category, string $message, array $params = []): string
     {
         return $this->translator->translate($category, $message, $params);
     }
 
-    /**
-     * @param string $route
-     * @param bool $absolute
-     * @return string
-     */
     public function functionUrl(string $route, bool $absolute = false): string
     {
         if ($absolute) {
@@ -402,13 +310,6 @@ class TwigCoreExtension extends AbstractExtension
         return $this->urlGenerator->generate($route);
     }
 
-    /**
-     * @param string $path
-     * @param string $label
-     * @param bool $info
-     * @param array $attribs
-     * @return string
-     */
     public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
         $attribs['alt'] = $attribs['alt'] ?? '';
@@ -427,10 +328,6 @@ class TwigCoreExtension extends AbstractExtension
         return strtr('<span class="link link--file"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
-    /**
-     * @param string $path
-     * @return string
-     */
     private function getFileInfo(string $path): string
     {
         if (!is_readable($path)) {
@@ -443,10 +340,6 @@ class TwigCoreExtension extends AbstractExtension
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    /**
-     * @param string $alias
-     * @return bool
-     */
     public function testIsReadable(string $alias): bool
     {
         if (!is_string($alias) || empty($alias)) {
@@ -456,10 +349,6 @@ class TwigCoreExtension extends AbstractExtension
         return is_readable($filename);
     }
 
-    /**
-     * @param string $alias
-     * @return bool
-     */
     public function testIsWritable(string $alias): bool
     {
         if (!is_string($alias) || empty($alias)) {

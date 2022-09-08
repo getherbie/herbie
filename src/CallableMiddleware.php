@@ -19,15 +19,12 @@ class CallableMiddleware implements MiddlewareInterface
 {
     /**
      * The callable to proxy.
-     *
      * @var callable
      */
     private $callable;
 
     /**
      * Set up a callable middleware proxying the given callable.
-     *
-     * @param callable $callable
      */
     public function __construct(callable $callable)
     {
@@ -36,10 +33,6 @@ class CallableMiddleware implements MiddlewareInterface
 
     /**
      * Return the response produced by the callable.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

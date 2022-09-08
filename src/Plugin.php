@@ -12,57 +12,36 @@ namespace herbie;
 
 abstract class Plugin implements PluginInterface
 {
-    /**
-     * @return int
-     */
     public function apiVersion(): int
     {
         return 2;
     }
 
-    /**
-     * @return array
-     */
     public function events(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
     public function filters(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
     public function middlewares(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
     public function twigFilters(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
     public function twigFunctions(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
     public function twigTests(): array
     {
         return [];

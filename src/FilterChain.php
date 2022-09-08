@@ -12,10 +12,7 @@ namespace herbie;
 
 class FilterChain
 {
-    /**
-     * @var FilterIterator
-     */
-    private $filters;
+    private FilterIterator $filters;
 
     /**
      * FilterChain constructor.
@@ -25,19 +22,12 @@ class FilterChain
         $this->filters = new FilterIterator();
     }
 
-    /**
-     * @param callable $callback
-     * @return callable
-     */
     public function attach(callable $callback): callable
     {
         $this->filters->insert($callback);
         return $callback;
     }
 
-    /**
-     * @param callable $callback
-     */
     public function detach(callable $callback): void
     {
         $this->filters->remove($callback);
@@ -45,7 +35,6 @@ class FilterChain
 
     /**
      * @param mixed $context
-     * @param array $argv
      */
     public function run($context, array $argv = [])
     {
@@ -60,15 +49,12 @@ class FilterChain
         return $next($context, $argv, $filters);
     }
 
-    /**
-     * @return FilterIterator
-     */
     public function getFilters(): FilterIterator
     {
         return $this->filters;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->filters->rewind();
     }

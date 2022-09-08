@@ -12,9 +12,9 @@ namespace herbie;
 
 class FilterIterator implements \Iterator, \Countable, FilterInterface
 {
-    private $position = 0;
+    private int $position = 0;
 
-    private $items = [];
+    private array $items = [];
 
     public function insert(callable $callback)
     {
@@ -35,11 +35,9 @@ class FilterIterator implements \Iterator, \Countable, FilterInterface
 
     /**
      * @param mixed|null $context
-     * @param array $params
-     * @param FilterInterface|null $filters
      * @return mixed|null
      */
-    public function next($context = null, array $params = [], FilterInterface $filters = null)
+    public function next($context = null, array $params = [], ?FilterInterface $filters = null)
     {
         if (is_null($context) || is_null($filters)) {
             return null;

@@ -92,7 +92,6 @@ class Application implements LoggerAwareInterface
 
     /**
      * Initializes and returns container
-     * @return Container
      */
     private function initContainer(): Container
     {
@@ -387,7 +386,7 @@ class Application implements LoggerAwareInterface
     }
 
     /**
-     * @throws \Throwable
+     * @throws SystemException
      * @throws \Twig\Error\LoaderError
      */
     public function run(): void
@@ -426,7 +425,6 @@ class Application implements LoggerAwareInterface
     /**
      * @param MiddlewareInterface|string $middlewareOrPath
      * @param MiddlewareInterface|null $middleware
-     * @return Application
      */
     public function addMiddleware($middlewareOrPath, ?MiddlewareInterface $middleware = null) : Application
     {
@@ -438,30 +436,18 @@ class Application implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @return Application
-     */
     public function setLogger(LoggerInterface $logger): Application
     {
         $this->container->set(LoggerInterface::class, $logger);
         return $this;
     }
 
-    /**
-     * @param CacheInterface $cache
-     * @return Application
-     */
     public function setCache(CacheInterface $cache): Application
     {
         $this->container->set(NullCache::class, $cache);
         return $this;
     }
 
-    /**
-     * @param TwigFilter $twigFilter
-     * @return Application
-     */
     public function addTwigFilter(TwigFilter $twigFilter): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
@@ -472,10 +458,6 @@ class Application implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @param TwigFunction $twigFunction
-     * @return Application
-     */
     public function addTwigFunction(TwigFunction $twigFunction): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFunction) {
@@ -486,11 +468,6 @@ class Application implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @param string $filterName
-     * @param callable $filter
-     * @return Application
-     */
     public function attachFilter(string $filterName, callable $filter): Application
     {
         if (!isset($this->filters[$filterName])) {
@@ -500,22 +477,12 @@ class Application implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @param string $eventName
-     * @param callable $listener
-     * @param int $priority
-     * @return Application
-     */
     public function attachListener(string $eventName, callable $listener, int $priority = 1): Application
     {
         $this->getEventManager()->attach($eventName, $listener, $priority);
         return $this;
     }
 
-    /**
-     * @param TwigTest $twigTest
-     * @return Application
-     */
     public function addTwigTest(TwigTest $twigTest): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigTest) {
@@ -526,49 +493,31 @@ class Application implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @return PluginManager
-     */
     private function getPluginManager(): PluginManager
     {
         return $this->container->get(PluginManager::class);
     }
 
-    /**
-     * @return Translator
-     */
     private function getTranslator(): Translator
     {
         return $this->container->get(Translator::class);
     }
 
-    /**
-     * @return TwigRenderer
-     */
     private function getTwigRenderer(): TwigRenderer
     {
         return $this->container->get(TwigRenderer::class);
     }
 
-    /**
-     * @return MiddlewareDispatcher
-     */
     private function getMiddlewareDispatcher(): MiddlewareDispatcher
     {
         return $this->container->get(MiddlewareDispatcher::class);
     }
 
-    /**
-     * @return ServerRequestInterface
-     */
     private function getServerRequest(): ServerRequestInterface
     {
         return $this->container->get(ServerRequestInterface::class);
     }
 
-    /**
-     * @return EventManager
-     */
     private function getEventManager(): EventManager
     {
         return $this->container->get(EventManager::class);

@@ -23,54 +23,24 @@ use Twig\Environment as TwigEnvironment;
 
 class TwigRenderer
 {
-    /**
-     * @var bool
-     */
-    private $initialized;
+    private bool $initialized;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var \Twig\Environment
-     */
-    private $twig;
+    private \Twig\Environment $twig;
 
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /**
-     * @var TwigCoreExtension
-     */
-    private $twigCoreExtension;
+    private TwigCoreExtension $twigCoreExtension;
 
-    /**
-     * @var Site
-     */
-    private $site;
+    private Site $site;
 
-    /**
-     * @var TwigPlusExtension
-     */
-    private $twigPlusExtension;
+    private TwigPlusExtension $twigPlusExtension;
 
     /**
      * TwigRenderer constructor.
-     * @param Config $config
-     * @param Environment $environment
-     * @param EventManager $eventManager
-     * @param Site $site
-     * @param TwigCoreExtension $twigExtension
-     * @param TwigPlusExtension $twigPlusExtension
      */
     public function __construct(
         Config $config,
@@ -91,7 +61,7 @@ class TwigRenderer
 
     /**
      * @throws LoaderError
-     * @throws \Throwable
+     * @throws SystemException
      */
     public function init(): void
     {
@@ -133,9 +103,6 @@ class TwigRenderer
     }
 
     /**
-     * @param string $string
-     * @param array $context
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -147,9 +114,6 @@ class TwigRenderer
     }
 
     /**
-     * @param string $name
-     * @param array $context
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -159,10 +123,7 @@ class TwigRenderer
         $context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
     }
-
-    /**
-     * @return array
-     */
+    
     public function getContext(): array
     {
         return [
@@ -176,33 +137,21 @@ class TwigRenderer
         ];
     }
 
-    /**
-     * @param TwigFunction $function
-     */
     public function addFunction(TwigFunction $function): void
     {
         $this->twig->addFunction($function);
     }
 
-    /**
-     * @param TwigFilter $filter
-     */
     public function addFilter(TwigFilter $filter): void
     {
         $this->twig->addFilter($filter);
     }
 
-    /**
-     * @param TwigTest $test
-     */
     public function addTest(TwigTest $test): void
     {
         $this->twig->addTest($test);
     }
 
-    /**
-     * @return void
-     */
     private function addTwigPlugins(): void
     {
         // Functions
@@ -229,7 +178,6 @@ class TwigRenderer
     }
 
     /**
-     * @return ChainLoader
      * @throws LoaderError
      */
     private function getTwigFilesystemLoader(): ChainLoader
@@ -266,18 +214,13 @@ class TwigRenderer
     }
 
     /**
-     * @param string $file
-     * @return object
+     * @return mixed
      */
     private function includePhpFile(string $file)
     {
         return include($file);
     }
 
-    /**
-     * @param string $dir
-     * @return array
-     */
     private function globPhpFiles(string $dir): array
     {
         $dir = rtrim($dir, '/');
@@ -288,9 +231,6 @@ class TwigRenderer
         return glob($pattern);
     }
 
-    /**
-     * @return bool
-     */
     public function isInitialized(): bool
     {
         return $this->initialized;

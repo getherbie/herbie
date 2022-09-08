@@ -67,7 +67,6 @@ class InstallablePlugin
     }
 
     /**
-     * @return string
      * @see https://stackoverflow.com/questions/7153000/get-class-name-from-file
      */
     private function getClassName(): string

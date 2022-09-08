@@ -31,10 +31,6 @@ class FatalErrorHandler
         }
     }
 
-    /**
-     * @param array $error
-     * @return bool
-     */
     public function isFatalError(array $error): bool
     {
         $errorTypes = [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];

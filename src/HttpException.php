@@ -12,16 +12,8 @@ namespace herbie;
 
 class HttpException extends \Exception
 {
-    /**
-     * @var array
-     */
-    private $allowed = [];
+    private array $allowed = [];
 
-    /**
-     * @param string $path
-     * @param string|null $format
-     * @return HttpException
-     */
     public static function notFound(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'Cannot find any resource at "%s"';
@@ -29,11 +21,6 @@ class HttpException extends \Exception
         return new HttpException($message, 404);
     }
 
-    /**
-     * @param string $path
-     * @param string|null $format
-     * @return HttpException
-     */
     public static function fileNotFound(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'File "%s" not found';
@@ -41,13 +28,6 @@ class HttpException extends \Exception
         return new HttpException($message, 404);
     }
 
-    /**
-     * @param string $path
-     * @param string $method
-     * @param array $allowed
-     * @param string|null $format
-     * @return HttpException
-     */
     public static function methodNotAllowed(
         string $path,
         string $method,
@@ -61,11 +41,6 @@ class HttpException extends \Exception
         return $error;
     }
 
-    /**
-     * @param string $path
-     * @param string|null $format
-     * @return HttpException
-     */
     public static function badRequest(string $path, ?string $format = null): HttpException
     {
         $format = $format ?? 'Cannot parse request "%s"';

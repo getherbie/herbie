@@ -12,20 +12,7 @@ namespace herbie;
 
 interface DataRepositoryInterface
 {
-    /**
-     * DataRepositoryInterface constructor.
-     * @param string $path
-     */
     public function __construct(string $path);
-
-    /**
-     * @param string $name
-     * @return array
-     */
     public function load(string $name): array;
-
-    /**
-     * @return array
-     */
     public function loadAll(): array;
 }

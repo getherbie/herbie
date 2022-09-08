@@ -19,67 +19,30 @@ use Twig\TwigTest;
 
 class PluginManager
 {
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @var string
-     */
-    private $pluginsPath;
+    private string $pluginsPath;
 
-    /**
-     * @var array
-     */
-    private $loadedPlugins;
+    private array $loadedPlugins;
 
-    /**
-     * @var array
-     */
-    private $pluginPaths;
+    private array $pluginPaths;
 
-    /**
-     * @var string
-     */
-    private $sysPluginsPath;
+    private string $sysPluginsPath;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * @var FilterChainManager
-     */
-    private $filterChainManager;
-    /**
-     * @var TwigRenderer
-     */
-    private $twigRenderer;
-    /**
-     * @var Translator
-     */
-    private $translator;
+    private FilterChainManager $filterChainManager;
 
-    /**
-     * @var array
-     */
-    private $middlewares;
+    private TwigRenderer $twigRenderer;
+
+    private Translator $translator;
+
+    private array $middlewares;
 
     /**
      * PluginManager constructor.
-     * @param Config $config
-     * @param EventManager $eventManager
-     * @param ContainerInterface $container
-     * @param FilterChainManager $filterChainManager
-     * @param Translator $translator
-     * @param TwigRenderer $twigRenderer
      * @throws SystemException
      */
     public function __construct(
@@ -193,17 +156,11 @@ class PluginManager
         $this->pluginPaths[$key] = $installablePlugin->getPath();
     }
 
-    /**
-     * @return array
-     */
     public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
     }
 
-    /**
-     * @return array
-     */
     public function getMiddlewares(): array
     {
         foreach ($this->loadedPlugins as $plugin) {
@@ -214,39 +171,21 @@ class PluginManager
         return $this->middlewares;
     }
 
-    /**
-     * @return array
-     */
     public function getPluginPaths(): array
     {
         return $this->pluginPaths;
     }
 
-    /**
-     * @param string $name
-     * @param callable $callable
-     */
     private function attachFilter(string $name, callable $callable): void
     {
         $this->filterChainManager->attach($name, $callable);
     }
 
-    /**
-     * @param string $name
-     * @param callable $callable
-     * @param int $priority
-     */
     private function attachListener(string $name, callable $callable, int $priority = 1): void
     {
         $this->eventManager->attach($name, $callable, $priority);
     }
 
-    /**
-     * @param string $name
-     * @param callable $callable
-     * @param array $options
-     * @return callable
-     */
     private function addTwigFilter(string $name, callable $callable, array $options = []): callable
     {
         $closure = function (Event $event) use ($name, $callable, $options) {
@@ -259,12 +198,6 @@ class PluginManager
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    /**
-     * @param string $name
-     * @param callable $callable
-     * @param array $options
-     * @return callable
-     */
     private function addTwigFunction(string $name, callable $callable, array $options = []): callable
     {
         $closure = function (Event $event) use ($name, $callable, $options) {
@@ -277,12 +210,6 @@ class PluginManager
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    /**
-     * @param string $name
-     * @param callable $callable
-     * @param array $options
-     * @return callable
-     */
     private function addTwigTest(string $name, callable $callable, array $options = []): callable
     {
         $closure = function (Event $event) use ($name, $callable, $options) {

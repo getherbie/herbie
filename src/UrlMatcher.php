@@ -15,20 +15,10 @@ namespace herbie;
  */
 class UrlMatcher
 {
-    /**
-     * @var Config
-     */
-    private $config;
-    /**
-     * @var PageRepositoryInterface
-     */
-    private $pageRepository;
+    private Config $config;
 
-    /**
-     * Constructor
-     * @param Config $config
-     * @param PageRepositoryInterface $pageRepository
-     */
+    private PageRepositoryInterface $pageRepository;
+
     public function __construct(Config $config, PageRepositoryInterface $pageRepository)
     {
         $this->config = $config;
@@ -70,10 +60,6 @@ class UrlMatcher
         return [];
     }
 
-    /**
-     * @param string $route
-     * @return array|null
-     */
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;

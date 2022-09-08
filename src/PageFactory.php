@@ -12,13 +12,6 @@ namespace herbie;
 
 class PageFactory
 {
-    /**
-     * @param string $id
-     * @param string $parent
-     * @param array $data
-     * @param array $segments
-     * @return Page
-     */
     public function newPage(string $id, string $parent, array $data, array $segments): Page
     {
         $page = new Page();
@@ -29,28 +22,16 @@ class PageFactory
         return $page;
     }
 
-    /**
-     * @param array $data
-     * @return PageItem
-     */
-    public function newPageItem(array $data = [])
+    public function newPageItem(array $data = []): PageItem
     {
         return new PageItem($data);
     }
 
-    /**
-     * @param array $items
-     * @return PageList
-     */
-    public function newPageList(array $items = [])
+    public function newPageList(array $items = []): PageList
     {
         return new PageList($items);
     }
 
-    /**
-     * @param PageList $pageList
-     * @return PageTree
-     */
     public function newPageTree(PageList $pageList): PageTree
     {
         $tree = new PageTree();
@@ -64,11 +45,7 @@ class PageFactory
         return $tree;
     }
 
-    /**
-     * @param $pageItems
-     * @return PageTrail
-     */
-    public function newPageTrail($pageItems): PageTrail
+    public function newPageTrail(array $pageItems): PageTrail
     {
         return new PageTrail($pageItems);
     }

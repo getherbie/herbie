@@ -12,24 +12,14 @@ namespace herbie;
 
 class Translator
 {
-    /**
-     * @var string
-     */
-    private $language;
+    private string $language;
 
-    /**
-     * @var array
-     */
-    private $paths;
+    private array $paths;
 
-    /**
-     * @var array
-     */
-    private $messages;
+    private array $messages;
 
     /**
      * Translator constructor.
-     * @param string $language
      */
     public function __construct(string $language)
     {
@@ -46,23 +36,11 @@ class Translator
         $this->loadMessages();
     }
 
-    /**
-     * @param string $category
-     * @param string $message
-     * @param array $params
-     * @return string
-     */
     public function t(string $category, string $message, array $params = []): string
     {
         return $this->translate($category, $message, $params);
     }
 
-    /**
-     * @param string $category
-     * @param string $message
-     * @param array $params
-     * @return string
-     */
     public function translate(string $category, string $message, array $params = []): string
     {
         if (isset($this->messages[$this->language][$category][$message])) {
@@ -74,9 +52,6 @@ class Translator
         return strtr($message, $params);
     }
 
-    /**
-     * @return void
-     */
     private function loadMessages(): void
     {
         foreach ($this->paths as $category => $paths) {
@@ -89,10 +64,6 @@ class Translator
         }
     }
 
-    /**
-     * @param string $category
-     * @param string $path
-     */
     public function addPath(string $category, string $path): void
     {
         if (!isset($this->paths[$category])) {

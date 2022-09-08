@@ -10,9 +10,7 @@ namespace herbie;
 
 class UncaughtExceptionHandler
 {
-    /**
-     * @param \Throwable $exception
-     */
+
     public function __invoke(\Throwable $exception): void
     {
         if (!headers_sent()) {

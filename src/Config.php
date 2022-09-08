@@ -12,20 +12,10 @@ namespace herbie;
 
 class Config
 {
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
+    
+    private string $delim;
 
-    /**
-     * @var string
-     */
-    private $delim;
-
-    /**
-     * @param array $data
-     * @param string $delim
-     */
     public function __construct(array $data, string $delim = '.')
     {
         $this->data = $data;
@@ -37,11 +27,10 @@ class Config
      *
      * @example $value = $config->get('twig.extend.functions');
      *
-     * @param string $name
      * @param mixed $default
      * @return mixed
      */
-    public function get($name, $default = null)
+    public function get(string $name, $default = null)
     {
         $path = explode($this->delim, $name);
         $current = $this->data;
@@ -55,13 +44,7 @@ class Config
 
         return $current;
     }
-
-    /**
-     * @param string $path
-     * @param array $default
-     * @return array
-     * @throws \InvalidArgumentException
-     */
+    
     public function getAsArray(string $path, array $default = []): array
     {
         $arrayValue = $this->get($path, $default);
@@ -71,12 +54,6 @@ class Config
         return (array)($arrayValue);
     }
 
-    /**
-     * @param string $path
-     * @param bool $default
-     * @return bool
-     * @throws \InvalidArgumentException
-     */
     public function getAsBool(string $path, bool $default = false): bool
     {
         $boolValue = $this->get($path, $default);
@@ -86,12 +63,6 @@ class Config
         return boolval($boolValue);
     }
 
-    /**
-     * @param string $path
-     * @param float $default
-     * @return float
-     * @throws \InvalidArgumentException
-     */
     public function getAsFloat(string $path, float $default = 0.0): float
     {
         $floatValue = $this->get($path, $default);
@@ -101,12 +72,6 @@ class Config
         return floatval($floatValue);
     }
 
-    /**
-     * @param string $path
-     * @param int $default
-     * @return int
-     * @throws \InvalidArgumentException
-     */
     public function getAsInt(string $path, int $default = 0): int
     {
         $intValue = $this->get($path, $default);
@@ -116,12 +81,6 @@ class Config
         return intval($intValue);
     }
 
-    /**
-     * @param string $path
-     * @param string $default
-     * @return string
-     * @throws \InvalidArgumentException
-     */
     public function getAsString(string $path, string $default = ''): string
     {
         $strValue = $this->get($path, $default);
@@ -131,11 +90,6 @@ class Config
         return strval($strValue);
     }
 
-    /**
-     * @param string $path
-     * @return Config
-     * @throws \InvalidArgumentException
-     */
     public function getAsConfig(string $path): Config
     {
         $data = $this->get($path, null);
@@ -148,19 +102,12 @@ class Config
         return new self($data, $this->delim);
     }
 
-    /**
-     * @param string $name
-     * @return boolean
-     */
-    public function check($name): bool
+    public function check(string $name): bool
     {
         $value = $this->get($name);
         return $value !== null;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return $this->data;

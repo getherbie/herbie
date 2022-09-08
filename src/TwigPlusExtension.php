@@ -28,9 +28,6 @@ class TwigPlusExtension extends AbstractExtension
 
     /**
      * TwigPlusExtension constructor.
-     * @param Environment $environment
-     * @param PageRepositoryInterface $pageRepository
-     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         Environment $environment,
@@ -43,7 +40,7 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @return array
+     * @return TwigFunction[]
      */
     public function getFunctions(): array
     {
@@ -76,12 +73,6 @@ class TwigPlusExtension extends AbstractExtension
         $this->twigRenderer = $twigRenderer;
     }
 
-    /**
-     * @param string $route
-     * @param int $maxDepth
-     * @param bool $showHidden
-     * @return string
-     */
     public function functionAsciiTree(
         string $route = '',
         int $maxDepth = -1,
@@ -99,10 +90,6 @@ class TwigPlusExtension extends AbstractExtension
         return $asciiTree->render();
     }
 
-    /**
-     * @param array $context
-     * @return string
-     */
     public function functionBodyClass(array $context): string
     {
         $page = 'error';
@@ -131,10 +118,7 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param string $delim
      * @param array|string $homeLink
-     * @param bool $reverse
-     * @return string
      */
     public function functionBreadcrumb(
         string $delim = '',
@@ -178,17 +162,12 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $filter
-     * @param string $sort
-     * @param bool $shuffle
-     * @param int $limit
-     * @param string $template
-     * @return string
-     * @throws \Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function functionListing(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $filter = '',
         string $sort = '',
         bool $shuffle = false,
@@ -225,12 +204,6 @@ class TwigPlusExtension extends AbstractExtension
         return $this->twigRenderer->renderTemplate($template, ['pagination' => $pagination]);
     }
 
-    /**
-     * @param string $route
-     * @param int $maxDepth
-     * @param string $class
-     * @return string
-     */
     public function functionMenu(
         string $route = '',
         int $maxDepth = -1,
@@ -257,6 +230,11 @@ class TwigPlusExtension extends AbstractExtension
         return $htmlTree->render($this->environment->getRoute());
     }
 
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function functionPageTaxonomies(
         Page $page,
         string $pageRoute = '',
@@ -275,14 +253,7 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param string $limit
-     * @param string $template
-     * @param string $linkClass
-     * @param string $nextPageLabel
-     * @param string $prevPageLabel
-     * @param string $prevPageIcon
-     * @param string $nextPageIcon
-     * @return string
+     * @throws \Exception
      */
     public function functionPager(
         string $limit = '',
@@ -349,8 +320,6 @@ class TwigPlusExtension extends AbstractExtension
 
     /**
      * @param $routeParams
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -365,23 +334,15 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $dateFormat
-     * @param int $limit
-     * @param string|null $pageType
-     * @param bool $showDate
-     * @param string $title
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionPagesRecent(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $dateFormat = '%e. %B %Y',
         int $limit = 5,
-        string $pageType = null,
+        ?string $pageType = null,
         bool $showDate = false,
         string $title = 'Recent posts',
         string $template = '@template/pages/recent.twig'
@@ -399,13 +360,6 @@ class TwigPlusExtension extends AbstractExtension
         ]);
     }
 
-    /**
-     * @param string $delim
-     * @param string $siteTitle
-     * @param string $rootTitle
-     * @param bool $reverse
-     * @return string
-     */
     public function functionPagetitle(
         string $delim = '/',
         string $siteTitle = '',
@@ -437,18 +391,11 @@ class TwigPlusExtension extends AbstractExtension
         return implode($delim, $titles);
     }
 
-    /**
-     * @param int $maxDepth
-     * @param string $route
-     * @param bool $showHidden
-     * @param string $class
-     * @return string
-     */
     public function functionSitemap(
-        $maxDepth = -1,
-        $route = '',
-        $showHidden = false,
-        $class = 'sitemap'
+        int $maxDepth = -1,
+        string $route = '',
+        bool $showHidden = false,
+        string $class = 'sitemap'
     ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
@@ -467,9 +414,6 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param string $path
-     * @param array $options
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -481,19 +425,12 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $pageRoute
-     * @param string $pageType
-     * @param bool $showCount
-     * @param string $title
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionTaxonomyArchive(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -514,19 +451,12 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $pageRoute
-     * @param string $pageType
-     * @param bool $showCount
-     * @param string $title
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionTaxonomyAuthors(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -547,19 +477,12 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $pageRoute
-     * @param string $pageType
-     * @param bool $showCount
-     * @param string $title
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionTaxonomyCategories(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -580,19 +503,12 @@ class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param PageList|null $pageList
-     * @param string $pageRoute
-     * @param string $pageType
-     * @param bool $showCount
-     * @param string $title
-     * @param string $template
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionTaxonomyTags(
-        PageList $pageList = null,
+        ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,

@@ -19,60 +19,17 @@ class Assets
     const TYPE_CSS = 0;
     const TYPE_JS = 1;
 
-    /**
-     * @var Alias
-     */
-    private $alias;
+    private Alias $alias;
+    private array $assets = [];
+    private string $assetsDir = '/assets';
+    private string $assetsUrl;
+    private string $assetsPath;
+    private int $refresh = 86400;
+    private int $chmode = 0755;
+    private static int $counter = 0;
+    private static bool $sorted = false;
+    private static array $published = [];
 
-    /**
-     * @var array
-     */
-    private $assets = [];
-
-    /**
-     * @var string
-     */
-    private $assetsDir = '/assets';
-
-    /**
-     * @var string
-     */
-    private $assetsUrl;
-
-    /**
-     * @var string
-     */
-    private $assetsPath;
-
-    /**
-     * @var int
-     */
-    private $refresh = 86400;
-
-    /**
-     * @var int
-     */
-    private $chmode = 0755;
-
-    /**
-     * @var int
-     */
-    private static $counter = 0;
-
-    /**
-     * @var bool
-     */
-    private static $sorted = false;
-
-    /**
-     * @var array
-     */
-    private static $published = [];
-
-    /**
-     * @param Alias $alias
-     * @param Environment $environment
-     */
     public function __construct(Alias $alias, Environment $environment)
     {
         $this->alias = $alias;
@@ -82,12 +39,8 @@ class Assets
 
     /**
      * @param array|string $paths
-     * @param array $attr
-     * @param string $group
-     * @param bool $raw
-     * @param int $pos
      */
-    public function addCss($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1): void
+    public function addCss($paths, array $attr = [], ?string $group = null, bool $raw = false, int $pos = 1): void
     {
         $paths = is_array($paths) ? $paths : [$paths];
         foreach ($paths as $path) {
@@ -97,12 +50,8 @@ class Assets
 
     /**
      * @param array|string $paths
-     * @param array $attr
-     * @param string $group
-     * @param bool $raw
-     * @param int $pos
      */
-    public function addJs($paths, array $attr = [], string $group = null, bool $raw = false, int $pos = 1): void
+    public function addJs($paths, array $attr = [], ?string $group = null, bool $raw = false, int $pos = 1): void
     {
         $paths = is_array($paths) ? $paths : [$paths];
         foreach ($paths as $path) {
@@ -110,11 +59,7 @@ class Assets
         }
     }
 
-    /**
-     * @param string $group
-     * @return string
-     */
-    public function outputCss(string $group = null): string
+    public function outputCss(?string $group = null): string
     {
         $this->sort();
         $this->publish();
@@ -130,11 +75,7 @@ class Assets
         return $return;
     }
 
-    /**
-     * @param string $group
-     * @return string
-     */
-    public function outputJs(string $group = null): string
+    public function outputJs(?string $group = null): string
     {
         $this->sort();
         $this->publish();
@@ -150,19 +91,11 @@ class Assets
         return $return;
     }
 
-    /**
-     * @param int $type
-     * @param string $path
-     * @param array $attr
-     * @param string $group
-     * @param bool $raw
-     * @param int $pos
-     */
     private function addAsset(
         int $type,
         string $path,
         array $attr,
-        string $group = null,
+        ?string $group = null,
         bool $raw = false,
         int $pos = 1
     ): void {
@@ -180,9 +113,6 @@ class Assets
         ];
     }
 
-    /**
-     * return void
-     */
     private function sort(): void
     {
         if (!self::$sorted) {
@@ -201,12 +131,7 @@ class Assets
         }
     }
 
-    /**
-     * @param int $type
-     * @param string $group
-     * @return array
-     */
-    private function collect(int $type, string $group = null): array
+    private function collect(int $type, ?string $group = null): array
     {
         $assets = [];
         foreach ($this->assets as $asset) {
@@ -218,7 +143,6 @@ class Assets
     }
 
     /**
-     * @param string $path
      * @return bool|int
      */
     private function search(string $path)
@@ -231,9 +155,6 @@ class Assets
         return false;
     }
 
-    /**
-     * @return void
-     */
     private function publish(): void
     {
         foreach ($this->assets as $asset) {
@@ -267,10 +188,6 @@ class Assets
         }
     }
 
-    /**
-     * @param string $file
-     * @return string
-     */
     private function buildUrl(string $file): string
     {
         $url = $file;
@@ -281,10 +198,6 @@ class Assets
         return $url;
     }
 
-    /**
-     * @param string $file
-     * @return string
-     */
     private function removeAlias(string $file): string
     {
         $parts = explode('/', $file);

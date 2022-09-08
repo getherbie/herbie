@@ -12,19 +12,12 @@ namespace herbie;
 
 use Composer\InstalledVersions;
 
-/**
- * @param string $input
- * @param string $separator
- * @return string
- */
 function camelize(string $input, string $separator = '_'): string
 {
     return str_replace($separator, '', ucwords($input, $separator));
 }
 
 /**
- * @param string $path
- * @return string
  * @throws SystemException
  */
 function normalize_path(string $path): string
@@ -39,7 +32,6 @@ function normalize_path(string $path): string
 
 /**
  * @param \Throwable $exception
- * @return string
  */
 function render_exception(\Throwable $exception): string
 {
@@ -66,28 +58,17 @@ function render_exception(\Throwable $exception): string
     return sprintf('<pre class="error error--exception">%s</pre>', $message);
 }
 
-/**
- * @param string $list
- * @param string $delim
- * @return array
- */
-function explode_list(string $list, string $delim = ',')
+function explode_list(string $list, string $delim = ','): array
 {
     $list = trim($list);
     if (strlen($list) === 0) {
         return [];
     }
     $values = explode($delim, $list);
-    $values = array_map('trim', $values);
-    return $values;
+    return array_map('trim', $values);
 }
 
-/**
- * @param string $path
- * @param callable|null $processor
- * @return array
- */
-function load_php_config(string $path, callable $processor = null): array
+function load_php_config(string $path, ?callable $processor = null): array
 {
     $data = include($path);
     if ($processor) {
@@ -96,12 +77,7 @@ function load_php_config(string $path, callable $processor = null): array
     return $data;
 }
 
-/**
- * @param string $path
- * @param callable|null $processor
- * @return array
- */
-function load_plugin_config(string $path, callable $processor = null): array
+function load_plugin_config(string $path, ?callable $processor = null): array
 {
     $config = load_php_config($path, $processor);
     if (!isset($config['apiVersion'])) {
@@ -116,7 +92,7 @@ function load_plugin_config(string $path, callable $processor = null): array
     return $config;
 }
 
-function load_plugin_configs(string $pluginDir, callable $processor = null): array
+function load_plugin_configs(string $pluginDir, ?callable $processor = null): array
 {
     $globPattern = "{$pluginDir}/*/config.php";
     $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);

@@ -18,44 +18,29 @@ use Psr\Http\Server\RequestHandlerInterface;
 class MiddlewareDispatcher implements RequestHandlerInterface
 {
     /** @var MiddlewareInterface[] */
-    private $middlewares = [];
+    private array $middlewares = [];
 
     /**
      * Dispatcher constructor.
-     * @param array $appMiddlewares
-     * @param array $routeMiddleware
-     * @param string $route
      */
     public function __construct(array $appMiddlewares, array $routeMiddleware, string $route)
     {
         $this->middlewares = $this->composeMiddlewares($appMiddlewares, $routeMiddleware, $route);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
     public function dispatch(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->handle($request);
         return $response;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();
         next($this->middlewares);
-        $response = $current->process($request, $this);
-        return $response;
+        return $current->process($request, $this);
     }
 
-    /**
-     * @return MiddlewareInterface
-     */
     private function getMiddleware(): MiddlewareInterface
     {
         $current = current($this->middlewares);
@@ -71,12 +56,6 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         return $current;
     }
 
-    /**
-     * @param array $appMiddlewares
-     * @param array $routeMiddlewares
-     * @param string $route
-     * @return array
-     */
     private function composeMiddlewares(array $appMiddlewares, array $routeMiddlewares, string $route): array
     {
         if (empty($routeMiddlewares)) {

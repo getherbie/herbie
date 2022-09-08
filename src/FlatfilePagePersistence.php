@@ -15,20 +15,10 @@ namespace herbie;
  */
 class FlatfilePagePersistence implements PagePersistenceInterface
 {
-    /**
-     * @var Alias
-     */
-    private $alias;
+    private Alias $alias;
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @param Alias $alias
-     * @param Config $config
-     */
     public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
@@ -37,17 +27,14 @@ class FlatfilePagePersistence implements PagePersistenceInterface
 
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
-     * @return array
      * @throws \Exception
      */
     public function findById(string $id): array
     {
-        $data = $this->readFile($id);
-        return $data;
+        return $this->readFile($id);
     }
 
     /**
-     * @return array
      * @throws \Exception
      */
     public function findAll(): array
@@ -91,10 +78,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
     }
 
     /**
-     * @param string $alias
-     * @param bool $addDefFields
-     * @return array
-     * @throws \Exception
+     * @throws HttpException // TODO change exception type
      */
     private function readFile(string $alias, bool $addDefFields = true): array
     {
@@ -135,10 +119,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         ];
     }
 
-    /**
-     * @param string $path
-     * @return array
-     */
     public function readFrontMatter(string $path): array
     {
         if (!defined('UTF8_BOM')) {
@@ -171,11 +151,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return (array) Yaml::parse($yaml);
     }
 
-    /**
-     * @param string $content
-     * @return array
-     * @throws \Exception
-     */
     private function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
@@ -221,9 +196,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
     }
 
     /**
-     * @param string $path
-     * @return string
-     * @throws HttpException
+     * @throws HttpException // TODO change exception type
      */
     private function readFileContent(string $path): string
     {
@@ -235,11 +208,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return $contents;
     }
 
-    /**
-     * @param string $contentDir
-     * @param array $contentExt
-     * @return array
-     */
     public static function getRouteToIdMapping(string $contentDir, array $contentExt): array
     {
         $path = $contentDir;
@@ -283,12 +251,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return $mapping;
     }
 
-
-    /**
-     * @param string $path
-     * @param bool $trimExtension
-     * @return string
-     */
     private function createRoute(string $path, bool $trimExtension = false): string
     {
         // strip left unix AND windows dir separator

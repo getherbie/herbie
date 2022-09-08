@@ -19,50 +19,22 @@ use Tebe\HttpFactory\HttpFactory;
 
 class PageRendererMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
+    private CacheInterface $cache;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var HttpFactory
-     */
-    private $httpFactory;
+    private HttpFactory $httpFactory;
 
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /**
-     * @var FilterChainManager
-     */
-    private $filterChainManager;
+    private FilterChainManager $filterChainManager;
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @var UrlGenerator
-     */
-    private $urlGenerator;
+    private UrlGenerator $urlGenerator;
 
     /**
      * PageRendererMiddleware constructor.
-     * @param CacheInterface $cache
-     * @param Config $config
-     * @param Environment $environment
-     * @param EventManager $eventManager
-     * @param FilterChainManager $filterChainManager
-     * @param HttpFactory $httpFactory
-     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         CacheInterface $cache,
@@ -83,9 +55,6 @@ class PageRendererMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws HttpException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Throwable
@@ -106,9 +75,6 @@ class PageRendererMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param Page $page
-     * @param array $routeParams
-     * @return ResponseInterface
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Throwable
      */
@@ -168,11 +134,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param array $redirect
-     * @return ResponseInterface
-     */
-    private function createRedirectResponse(array $redirect)
+    private function createRedirectResponse(array $redirect): ResponseInterface
     {
         if (strpos($redirect['url'], 'http') === 0) { // A valid URL? Take it.
             $location = $redirect['url'];
