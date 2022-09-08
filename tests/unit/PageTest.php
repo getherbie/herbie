@@ -8,6 +8,7 @@ use herbie\FlatfilePagePersistence;
 use herbie\FlatfilePageRepository;
 use herbie\Page;
 use herbie\PageFactory;
+use InvalidArgumentException;
 use LogicException;
 
 class PageTest extends \Codeception\Test\Unit
@@ -47,12 +48,12 @@ class PageTest extends \Codeception\Test\Unit
     public function testGetSegment()
     {
         $page = new Page();
-        $page->setSegments(array(
+        $page->setSegments([
             0 => 'Default Segment',
             1 => 'Segment 1',
             2 => 'Segment 2',
             'three' => 'Segment 3'
-        ));
+        ]);
         $this->assertSame('Default Segment', $page->getSegment(0));
         $this->assertSame('Segment 1', $page->getSegment(1));
         $this->assertSame('Segment 2', $page->getSegment(2));
@@ -65,25 +66,24 @@ class PageTest extends \Codeception\Test\Unit
         $page = $this->repository->find('@page/segments.md');
         $this->assertSame('Segments', $page->getTitle());
         $this->assertSame('default', $page->getLayout());
-        $this->assertSame('Default Segment', trim($page->getSegment(0)));
+        $this->assertSame('Default Segment', trim($page->getSegment('default')));
         $this->assertSame('Segment 1', trim($page->getSegment(1)));
         $this->assertSame('Segment 2', trim($page->getSegment(2)));
-        $this->assertSame("Segment 3\n\n--- -1 ---\n\nInvalid Segment", trim($page->getSegment('three')));
+        $this->assertSame('Segment 3', trim($page->getSegment('three')));
+        $this->assertSame('Invalid Segment', trim($page->getSegment(-1)));
         $this->assertSame('Last Segment', trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789')));
     }
 
     public function testSetData()
     {
-        $page = new Page(array('title' => 'Testtitle', 'layout' => 'test.html'));
+        $page = new Page(['title' => 'Testtitle', 'layout' => 'test']);
         $this->assertSame('Testtitle', $page->getTitle());
-        $this->assertSame('test.html', $page->getLayout());
+        $this->assertSame('test', $page->getLayout());
     }
 
-    /**
-     * @expectedException LogicException
-     */
     public function testSetDataException()
     {
+        $this->expectException(InvalidArgumentException::class);
         new Page(['segments' => []]);
     }
 
@@ -113,16 +113,29 @@ class PageTest extends \Codeception\Test\Unit
         $page = $this->repository->find('@page/pagedata.md');
 
         $array = [
+            'id' => '@page/pagedata.md',
+            'parent' => '',
+            'segments' => ['default' => ''],
+            'authors' => [],
+            'categories' => [],
+            'content_type' => 'text/html',
+            'date' => '2013-12-24T01:00:00+01:00',
+            'excerpt' => 'This is a short text.',
+            'format' => 'markdown',
+            'hidden' => 1,
+            'keep_extension' => 0,
             'layout' => 'layout.html',
-            'type' => 'my_type',
+            'menu' => '',
+            'modified' => '2022-09-08T19:14:37+02:00',
+            'cached' => 1,
+            'path' => '@page/pagedata.md',
+            'redirect' => [],
+            'route' => '',
+            'tags' => [],
             'title' => 'My Title',
-            # Yaml wandelt 2013-12-24 in einen Unix-Timestamp um
-            # Herbie wiederum wandelt einen Timestamp in ein ISO8601 Datum um.
-            'date' => '2013-12-24T00:00:00+01:00',
-            'abstract' => 'This is a short text.',
-            'keywords' => 'Keyword 1, Keyword 2, Keyword 3'
+            'type' => 'my_type',
+            'twig' => 1
         ];
-
         $this->assertSame($array, $page->toArray());
         return $page;
     }
@@ -135,16 +148,16 @@ class PageTest extends \Codeception\Test\Unit
         // Member var
         $this->assertSame('layout.html', $page->layout);
         // User var
-        $this->assertSame('This is a short text.', $page->abstract);
+        $this->assertSame('This is a short text.', $page->excerpt);
     }
 
     /**
      * @depends testToArray
      * @expectedException LogicException
-     * @expectedExceptionMessage Field notExistingMember does not exist.
      */
     public function testMagicalGetMethodException(Page $page)
     {
+        $this->expectExceptionMessage("Field notExistingMember does not exist.");
         $page->notExistingMember;
     }
 
@@ -156,7 +169,7 @@ class PageTest extends \Codeception\Test\Unit
         // Member var
         $this->assertSame(true, isset($page->layout));
         // User var
-        $this->assertSame(true, isset($page->abstract));
+        $this->assertSame(true, isset($page->excerpt));
         // Not existing member
         $this->assertSame(false, isset($page->notExistingMember));
     }
