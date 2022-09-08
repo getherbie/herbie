@@ -1,26 +1,52 @@
 <?php
 
-class PageTest extends \PHPUnit\Framework\TestCase
-{
+namespace Tests\Unit;
 
+use herbie\Alias;
+use herbie\Config;
+use herbie\FlatfilePagePersistence;
+use herbie\FlatfilePageRepository;
+use herbie\Page;
+use herbie\PageFactory;
+use LogicException;
+
+class PageTest extends \Codeception\Test\Unit
+{
+    protected FlatfilePageRepository $repository;
+    
+    protected function _before()
+    {
+        $this->repository = new FlatfilePageRepository(
+            new PageFactory(),
+            new FlatfilePagePersistence(
+                new Alias([
+                    '@page' => __DIR__ . '/Fixtures/site/pages'
+                ]),
+                new Config([
+                    'paths' => ['pages' => __DIR__ . '/Fixtures/site/pages'],
+                    'fileExtensions' => ['pages' => 'md']
+                ])
+            )
+        );
+    }
+    
     public function testConstructor()
     {
-        $page = new Herbie\Page();
+        $page = new Page();
         $layout = $page->getLayout();
-        $this->assertSame('default.html', $layout);
+        $this->assertSame('default', $layout);
         return $page;
     }
 
     public function testGetLayout()
     {
-        $page = new Herbie\Page();
-        $this->assertSame('default.html', $page->getLayout());
-        $this->assertSame('default', $page->getLayout(true));
+        $page = new Page();
+        $this->assertSame('default', $page->getLayout());
     }
 
     public function testGetSegment()
     {
-        $page = new Herbie\Page();
+        $page = new Page();
         $page->setSegments(array(
             0 => 'Default Segment',
             1 => 'Segment 1',
@@ -31,20 +57,14 @@ class PageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Segment 1', $page->getSegment(1));
         $this->assertSame('Segment 2', $page->getSegment(2));
         $this->assertSame('Segment 3', $page->getSegment('three'));
-        $this->assertSame(NULL, $page->getSegment('notExistingKey'));
+        $this->assertSame('', $page->getSegment('notExistingKey'));
     }
 
     public function testLoad()
     {
-        $path = TESTS_PATH . '/Fixtures/site/pages/segments.md';
-        $parser = new \Symfony\Component\Yaml\Parser();
-        $loader = new Herbie\Loader\PageLoader($path, $parser);
-
-        $page = new Herbie\Page();
-        $page->load($loader);
-
+        $page = $this->repository->find('@page/segments.md');
         $this->assertSame('Segments', $page->getTitle());
-        $this->assertSame('default.html', $page->getLayout());
+        $this->assertSame('default', $page->getLayout());
         $this->assertSame('Default Segment', trim($page->getSegment(0)));
         $this->assertSame('Segment 1', trim($page->getSegment(1)));
         $this->assertSame('Segment 2', trim($page->getSegment(2)));
@@ -54,8 +74,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
 
     public function testSetData()
     {
-        $page = new Herbie\Page();
-        $page->setData(array('title' => 'Testtitle', 'layout' => 'test.html'));
+        $page = new Page(array('title' => 'Testtitle', 'layout' => 'test.html'));
         $this->assertSame('Testtitle', $page->getTitle());
         $this->assertSame('test.html', $page->getLayout());
     }
@@ -65,15 +84,14 @@ class PageTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetDataException()
     {
-        $page = new Herbie\Page();
-        $page->setData(['segments' => []]);
+        new Page(['segments' => []]);
     }
 
     public function testSetDate()
     {
         date_default_timezone_set('Europe/Zurich');
 
-        $page = new Herbie\Page();
+        $page = new Page();
 
         $page->setDate('');
         $this->assertSame('', $page->getDate());
@@ -92,12 +110,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
     {
         date_default_timezone_set('Europe/Zurich');
 
-        $path = TESTS_PATH . '/Fixtures/site/pages/pagedata.md';
-        $parser = new \Symfony\Component\Yaml\Parser();
-        $loader = new Herbie\Loader\PageLoader($path, $parser);
-
-        $page = new Herbie\Page();
-        $page->load($loader);
+        $page = $this->repository->find('@page/pagedata.md');
 
         $array = [
             'layout' => 'layout.html',
@@ -117,7 +130,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testToArray
      */
-    public function testMagicalGetMethod(Herbie\Page $page)
+    public function testMagicalGetMethod(Page $page)
     {
         // Member var
         $this->assertSame('layout.html', $page->layout);
@@ -130,7 +143,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
      * @expectedException LogicException
      * @expectedExceptionMessage Field notExistingMember does not exist.
      */
-    public function testMagicalGetMethodException(Herbie\Page $page)
+    public function testMagicalGetMethodException(Page $page)
     {
         $page->notExistingMember;
     }
@@ -138,7 +151,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testToArray
      */
-    public function testMagicalIssetMethod(Herbie\Page $page)
+    public function testMagicalIssetMethod(Page $page)
     {
         // Member var
         $this->assertSame(true, isset($page->layout));
@@ -151,7 +164,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testConstructor
      */
-    public function testMagicalSetMethod(Herbie\Page $page)
+    public function testMagicalSetMethod(Page $page)
     {
         // Member var
         $page->title = 'My Title';
@@ -164,7 +177,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testToArray
      */
-    public function testToString(Herbie\Page $page)
+    public function testToString(Page $page)
     {
         $this->assertSame('My Title', strval($page));
     }

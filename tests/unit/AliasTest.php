@@ -1,18 +1,17 @@
 <?php
 
-namespace Tests;
+namespace Tests\Unit;
 
-use Herbie\Alias;
-use PHPUnit\Framework\TestCase;
+use herbie\Alias;
 
-class AliasTest extends TestCase
+class AliasTest extends \Codeception\Test\Unit
 {
     /**
      * @var Alias
      */
     private $alias;
 
-    public function setUp()
+    protected function _before()
     {
         $this->alias = new Alias([
             '@foo' => 'foo',
