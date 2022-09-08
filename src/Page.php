@@ -12,71 +12,43 @@ namespace herbie;
 
 /**
  * Stores the page.
+ * @property string $id
+ * @property string $parent
+ * @property string[] $segments
  */
 class Page
 {
     use PageItemTrait;
 
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
+    private string $parent;
+    private array $segments = [];
 
-    /**
-     * @var string
-     */
-    private $parent;
-
-    /**
-     * @var array
-     */
-    private $segments = [];
-
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param $id
-     */
     public function setId(string $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getParent(): string
     {
         return $this->parent;
     }
 
-    /**
-     * @param string $parent
-     */
     public function setParent(string $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * @return array
-     */
     public function getSegments(): array
     {
         return $this->segments;
     }
 
-    /**
-     *
-     * @param string $id
-     * @return string
-     */
     public function getSegment(string $id): string
     {
         $segment = '';
@@ -87,7 +59,7 @@ class Page
     }
 
     /**
-     * @param array $segments
+     * @param string[] $segments
      */
     public function setSegments(array $segments = []): void
     {
@@ -95,9 +67,7 @@ class Page
     }
 
     /**
-     * Overwrites MenuItemTrait::setData()
-     * @param array $data
-     * @throws \LogicException
+     * Overwrites PageItemTrait::setData()
      */
     public function setData(array $data): void
     {

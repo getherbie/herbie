@@ -12,34 +12,54 @@ namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 
+/**
+ * @property string[] $authors
+ * @property int $cached
+ * @property string[] $categories
+ * @property string $content_type
+ * @property string $created
+ * @property array $customData
+ * @property string $date
+ * @property string $excerpt
+ * @property string $format
+ * @property int $hidden
+ * @property int $keep_extension
+ * @property string $layout
+ * @property string $menu
+ * @property string $modified
+ * @property string $path
+ * @property array $redirect
+ * @property string $route
+ * @property string[] $tags
+ * @property string $title
+ * @property int $twig
+ * @property string $type
+ */
 trait PageItemTrait
 {
-    private $authors;
-    private $categories;
-    private $content_type;
-    private $created;
-    private $customData;
-    private $date;
-    private $excerpt;
-    private $format;
-    private $hidden;
-    private $keep_extension;
-    private $layout;
-    private $menu;
-    private $modified;
-    private $cached;
-    private $path;
-    private $redirect;
-    private $route;
-    private $tags;
-    private $title;
-    private $type;
-    private $twig;
+    private array $authors;
+    private int $cached;
+    private array $categories;
+    private string $content_type;
+    private string $created;
+    private array $customData;
+    private string $date;
+    private string $excerpt;
+    private string $format;
+    private int $hidden;
+    private int $keep_extension;
+    private string $layout;
+    private string $menu;
+    private string $modified;
+    private string $path;
+    private array $redirect;
+    private string $route;
+    private array $tags;
+    private string $title;
+    private int $twig;
+    private string $type;
 
-    /**
-     * @var SlugGenerator
-     */
-    private static $slugGenerator;
+    private static SlugGenerator $slugGenerator;
 
     /**
      * @param array $data
@@ -47,99 +67,72 @@ trait PageItemTrait
     public function __construct(array $data = [])
     {
         // set defaults
-        $this->title = '';
-        $this->route = '';
-        $this->type = 'page';
-        $this->path = '';
-        $this->format = '';
-        $this->date = '';
-        $this->layout = 'default';
-        $this->content_type = 'text/html';
         $this->authors = [];
+        $this->cached = 1;
         $this->categories = [];
-        $this->tags = [];
+        $this->content_type = 'text/html';
+        $this->created = '';
+        $this->customData = [];
+        $this->date = '';
+        $this->excerpt = '';
+        $this->format = '';
+        $this->hidden = 0;
+        $this->keep_extension = 0;
+        $this->layout = 'default';
         $this->menu = '';
         $this->modified = '';
-        $this->created = '';
-        $this->cached = 1;
-        $this->hidden = 0;
-        $this->excerpt = '';
-        $this->twig = 1;
-        $this->keep_extension = 0;
-        $this->customData = [];
+        $this->path = '';
         $this->redirect = [];
+        $this->route = '';
+        $this->tags = [];
+        $this->title = '';
+        $this->twig = 1;
+        $this->type = 'page';
 
         // set values
         $this->setData($data);
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(string $title): void
     {
         $this->title = trim($title);
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     */
     public function setType(string $type): void
     {
         $this->type = trim($type);
     }
 
-    /**
-     * @return string
-     */
     public function getLayout(): string
     {
         return $this->layout;
     }
 
-    /**
-     * @param string $layout
-     */
     public function setLayout(string $layout): void
     {
         $this->layout = trim($layout);
     }
 
-    /**
-     * @return string
-     */
     public function getMenu(): string
     {
         return $this->menu;
     }
 
-    /**
-     * @param string $menu
-     */
     public function setMenu(string $menu): void
     {
         $this->menu = trim($menu);
     }
 
-    /**
-     * @return array
-     */
     public function getRedirect(): array
     {
         return $this->redirect;
@@ -167,58 +160,36 @@ trait PageItemTrait
         $this->redirect = $redirectArray;
     }
 
-    /**
-     * @return string
-     */
     public function getRoute(): string
     {
         return trim($this->route);
     }
 
-    /**
-     * @param string $route
-     */
     public function setRoute(string $route): void
     {
         $this->route = trim($route);
     }
 
-    /**
-     * @return string
-     */
     public function getParentRoute(): string
     {
-        $parentRoute = trim(dirname($this->getRoute()), '.');
-        return $parentRoute;
+        return trim(dirname($this->getRoute()), '.');
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @param string $path
-     */
     public function setPath(string $path): void
     {
         $this->path = trim($path);
     }
 
-    /**
-     * @return string
-     */
     public function getFormat(): string
     {
         return $this->format;
     }
 
-    /**
-     * @param string $format
-     */
     public function setFormat(string $format): void
     {
         switch (trim($format)) {
@@ -235,25 +206,19 @@ trait PageItemTrait
         $this->format = $format;
     }
 
-    /**
-     * @return string
-     */
     public function getDate(): string
     {
         return $this->date;
     }
 
     /**
-     * @param mixed $date
+     * @param int|string $date
      */
     public function setDate($date): void
     {
         $this->date = is_numeric($date) ? date('c', $date) : trim($date);
     }
 
-    /**
-     * @return string
-     */
     public function getMenuTitle(): string
     {
         if (!empty($this->menu)) {
@@ -262,10 +227,6 @@ trait PageItemTrait
         return $this->title;
     }
 
-    /**
-     * @param string $author
-     * @return string
-     */
     public function getAuthor(string $author): string
     {
         $author = $this->slugify($author);
@@ -277,18 +238,11 @@ trait PageItemTrait
         return '';
     }
 
-    /**
-     * @return array
-     */
     public function getAuthors(): array
     {
         return $this->authors;
     }
 
-    /**
-     * @param string $category
-     * @return string
-     */
     public function getCategory(string $category): string
     {
         $category = $this->slugify($category);
@@ -300,26 +254,16 @@ trait PageItemTrait
         return '';
     }
 
-    /**
-     * @return array
-     */
     public function getCategories(): array
     {
         return $this->categories;
     }
 
-    /**
-     * @return array
-     */
     public function getTags(): array
     {
         return $this->tags;
     }
 
-    /**
-     * @param string $tag
-     * @return string
-     */
     public function getTag(string $tag): string
     {
         $tag = $this->slugify($tag);
@@ -331,9 +275,6 @@ trait PageItemTrait
         return '';
     }
 
-    /**
-     * @param array $categories
-     */
     public function setCategories(array $categories): void
     {
         $categories = array_map('trim', $categories);
@@ -341,9 +282,6 @@ trait PageItemTrait
         $this->categories = $categories;
     }
 
-    /**
-     * @param string $category
-     */
     public function setCategory(string $category): void
     {
         $category = trim($category);
@@ -352,9 +290,6 @@ trait PageItemTrait
         }
     }
 
-    /**
-     * @param array $tags
-     */
     public function setTags(array $tags): void
     {
         $tags = array_map('trim', $tags);
@@ -362,9 +297,6 @@ trait PageItemTrait
         $this->tags = $tags;
     }
 
-    /**
-     * @param string $tag
-     */
     public function setTag(string $tag): void
     {
         $tag = trim($tag);
@@ -373,10 +305,6 @@ trait PageItemTrait
         }
     }
 
-
-    /**
-     * @param array $authors
-     */
     public function setAuthors(array $authors): void
     {
         $authors = array_map('trim', $authors);
@@ -384,9 +312,6 @@ trait PageItemTrait
         $this->authors = $authors;
     }
 
-    /**
-     * @param string $author
-     */
     public function setAuthor(string $author): void
     {
         $author = trim($author);
@@ -395,10 +320,6 @@ trait PageItemTrait
         }
     }
 
-    /**
-     * @param string $author
-     * @return boolean
-     */
     public function hasAuthor(string $author): bool
     {
         $author = $this->slugify($author);
@@ -410,10 +331,6 @@ trait PageItemTrait
         return false;
     }
 
-    /**
-     * @param string $category
-     * @return boolean
-     */
     public function hasCategory(string $category): bool
     {
         $category = $this->slugify($category);
@@ -425,10 +342,6 @@ trait PageItemTrait
         return false;
     }
 
-    /**
-     * @param string $tag
-     * @return boolean
-     */
     public function hasTag(string $tag): bool
     {
         $tag = $this->slugify($tag);
@@ -440,17 +353,11 @@ trait PageItemTrait
         return false;
     }
 
-    /**
-     * @param string $modified
-     */
     public function setModified(string $modified): void
     {
         $this->modified = $modified;
     }
 
-    /**
-     * @return string
-     */
     public function getModified(): string
     {
         return $this->modified;
@@ -516,10 +423,6 @@ trait PageItemTrait
         $this->excerpt = trim($excerpt);
     }
 
-    /**
-     * @param array $data
-     * @throws \LogicException
-     */
     private function setData(array $data): void
     {
         if (array_key_exists('data', $data)) {
@@ -530,27 +433,16 @@ trait PageItemTrait
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isStartPage(): bool
     {
-        return $this->getRoute() == '';
+        return $this->getRoute() === '';
     }
 
-    /**
-     * @param string $route
-     * @return bool
-     */
     public function routeEquals(string $route): bool
     {
-        return $this->getRoute() == $route;
+        return $this->getRoute() === $route;
     }
 
-    /**
-     * @param string $route
-     * @return bool
-     */
     public function routeInPageTrail(string $route): bool
     {
         $current = $this->getRoute();
@@ -560,18 +452,13 @@ trait PageItemTrait
         return 0 === strpos($route, $current);
     }
 
-    /**
-     * @return bool
-     */
     public function isStaticPage(): bool
     {
         return 0 === strpos($this->getPath(), '@page');
     }
 
     /**
-     * @param $name
      * @return mixed
-     * @throws \LogicException
      */
     public function __get(string $name)
     {
@@ -585,10 +472,6 @@ trait PageItemTrait
         }
     }
 
-    /**
-     * @param string $name
-     * @return boolean
-     */
     public function __isset(string $name): bool
     {
         $getter = 'get' . camelize($name);
@@ -602,7 +485,6 @@ trait PageItemTrait
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      */
     public function __set(string $name, $value): void
@@ -615,17 +497,11 @@ trait PageItemTrait
         }
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         $array = [];
@@ -638,19 +514,12 @@ trait PageItemTrait
         return $array;
     }
 
-    /**
-     * @param string $slug
-     * @return string
-     */
     private function slugify(string $slug): string
     {
         return self::$slugGenerator->generate($slug);
     }
 
-    /**
-     * @param SlugGenerator $slugGenerator
-     */
-    public static function setSlugGenerator(SlugGenerator $slugGenerator)
+    public static function setSlugGenerator(SlugGenerator $slugGenerator): void
     {
         if (!empty(self::$slugGenerator)) {
             throw new \BadMethodCallException('SlugGenerator already set');

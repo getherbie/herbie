@@ -111,12 +111,13 @@ class PageTest extends \Codeception\Test\Unit
         date_default_timezone_set('Europe/Zurich');
 
         $page = $this->repository->find('@page/pagedata.md');
-
+        $page->authors = [];
         $array = [
             'id' => '@page/pagedata.md',
             'parent' => '',
             'segments' => ['default' => ''],
             'authors' => [],
+            'cached' => 1,
             'categories' => [],
             'content_type' => 'text/html',
             'date' => '2013-12-24T01:00:00+01:00',
@@ -127,14 +128,13 @@ class PageTest extends \Codeception\Test\Unit
             'layout' => 'layout.html',
             'menu' => '',
             'modified' => '2022-09-08T19:14:37+02:00',
-            'cached' => 1,
             'path' => '@page/pagedata.md',
             'redirect' => [],
             'route' => '',
             'tags' => [],
             'title' => 'My Title',
-            'type' => 'my_type',
-            'twig' => 1
+            'twig' => 1,
+            'type' => 'my_type'
         ];
         $this->assertSame($array, $page->toArray());
         return $page;
@@ -194,5 +194,4 @@ class PageTest extends \Codeception\Test\Unit
     {
         $this->assertSame('My Title', strval($page));
     }
-
 }
