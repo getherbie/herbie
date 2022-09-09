@@ -72,7 +72,7 @@ class InstallablePlugin
     private function getClassName(): string
     {
         $fp = fopen($this->classPath, 'r');
-        $class = $buffer = '';
+        $class = $namespace = $buffer = '';
         $i = 0;
         while (!$class) {
             if (feof($fp)) {
@@ -86,6 +86,16 @@ class InstallablePlugin
             }
             
             for (; $i<count($tokens); $i++) {
+                if ($tokens[$i][0] === T_NAMESPACE) {
+                    for ($j=$i+1; $j<count($tokens); $j++) {
+                        if ($tokens[$j][0] === T_STRING) {
+                            $namespace .= '\\'.$tokens[$j][1];
+                        } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
+                            break;
+                        }
+                    }
+                }
+
                 if ($tokens[$i][0] === T_CLASS) {
                     for ($j=$i+1; $j<count($tokens); $j++) {
                         if ($tokens[$j] === '{') {
@@ -97,7 +107,11 @@ class InstallablePlugin
             }
         }
         
-        return $class;
+        if (strlen($namespace) === 0) {
+            return $class;
+        }
+        
+        return $namespace . '\\' . $class;
     }
 
     public static function getConstructorParamsToInject(string $pluginClassName, Container $container): array

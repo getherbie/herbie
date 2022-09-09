@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace herbie\sysplugin;
+
 use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\PluginInterface;

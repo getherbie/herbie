@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace herbie\sysplugin;
+
 use herbie\Alias;
 use herbie\Config;
 use herbie\Plugin;
@@ -99,7 +101,8 @@ class ImagineSysPlugin extends Plugin
     private function getTransparentOnePixelSrc(): string
     {
         // see http://png-pixel.com
-        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+        return 'data:image/png;'
+        . 'base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
     }
 
     /**

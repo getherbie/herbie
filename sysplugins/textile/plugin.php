@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace herbie\sysplugin;
+
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
