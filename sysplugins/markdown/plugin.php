@@ -67,10 +67,6 @@ class MarkdownSysPlugin extends Plugin
         return $filter->next($context, $params, $filter);
     }
 
-    /**
-     * @param string $string
-     * @return string
-     */
     public function parseMarkdown(string $string): string
     {
         $parser = $this->createParser();

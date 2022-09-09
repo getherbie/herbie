@@ -64,7 +64,10 @@ class Translator
         }
     }
 
-    public function addPath(string $category, string $path): void
+    /**
+     * @param array|string $path
+     */
+    public function addPath(string $category, $path): void
     {
         if (!isset($this->paths[$category])) {
             $this->paths[$category] = [];

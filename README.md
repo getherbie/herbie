@@ -84,6 +84,23 @@ Or, when using Xdebug 3.x
 Open `localhost:9999` with your favorite web browser.
 
 
+## Tests
+
+Run acceptance tests
+
+    php vendor/bin/codecept run acceptance
+
+Run unit tests
+
+    php vendor/bin/codecept run unit
+
+Run all tests
+
+Run acceptance tests
+
+    php vendor/bin/codecept run
+
+
 ## More Information
 
 More information see <https://herbie.tebe.ch>.

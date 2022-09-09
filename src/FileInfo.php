@@ -54,7 +54,7 @@ class FileInfo extends \SplFileInfo
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new \RuntimeException($error['message']);
+            throw new \UnexpectedValueException($error['message']);
         }
 
         return $content;

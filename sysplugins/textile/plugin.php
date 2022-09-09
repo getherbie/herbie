@@ -10,16 +10,10 @@ use Psr\Log\LoggerInterface;
 
 class TextileSysPlugin extends Plugin
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
     /**
      * TextilePlugin constructor.
-     * @param Config $config
-     * @param LoggerInterface $logger
-     * @throws \InvalidArgumentException
      */
     public function __construct(Config $config, LoggerInterface $logger)
     {
@@ -30,7 +24,7 @@ class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function filters(): array
     {
@@ -40,7 +34,7 @@ class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFilters(): array
     {
@@ -53,7 +47,7 @@ class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFunctions(): array
     {
@@ -65,13 +59,7 @@ class TextileSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param string $context
-     * @param array $params
-     * @param FilterInterface $filter
-     * @return mixed
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter)
+    public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         if ($params['page']->format === 'textile') {
             $context = $this->parseTextile($context);
@@ -79,10 +67,6 @@ class TextileSysPlugin extends Plugin
         return $filter->next($context, $params, $filter);
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
     public function parseTextile(string $value): string
     {
         if (!class_exists('Netcarver\Textile\Parser')) {
@@ -95,5 +79,4 @@ class TextileSysPlugin extends Plugin
             return $value;
         }
     }
-
 }

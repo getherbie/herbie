@@ -58,7 +58,7 @@ class EventManager
         $name = $event->getName();
 
         if (empty($name)) {
-            throw new \RuntimeException('Event is missing a name; cannot trigger!');
+            throw new \UnexpectedValueException('Event is missing a name; cannot trigger!');
         }
 
         if (isset($this->events[$name])) {

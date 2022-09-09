@@ -49,7 +49,7 @@ class Config
     {
         $arrayValue = $this->get($path, $default);
         if (!is_array($arrayValue)) {
-            throw new \InvalidArgumentException("Value for \"$path\" not an array");
+            throw new \UnexpectedValueException("Value for \"$path\" not an array");
         }
         return (array)($arrayValue);
     }
@@ -58,7 +58,7 @@ class Config
     {
         $boolValue = $this->get($path, $default);
         if (!is_bool($boolValue)) {
-            throw new \InvalidArgumentException("Value for \"$path\" not a bool");
+            throw new \UnexpectedValueException("Value for \"$path\" not a bool");
         }
         return boolval($boolValue);
     }
@@ -67,7 +67,7 @@ class Config
     {
         $floatValue = $this->get($path, $default);
         if (!is_float($floatValue)) {
-            throw new \InvalidArgumentException("Value for \"$path\" not a float");
+            throw new \UnexpectedValueException("Value for \"$path\" not a float");
         }
         return floatval($floatValue);
     }
@@ -76,7 +76,7 @@ class Config
     {
         $intValue = $this->get($path, $default);
         if (!is_int($intValue)) {
-            throw new \InvalidArgumentException("Value for \"$path\" not an int");
+            throw new \UnexpectedValueException("Value for \"$path\" not an int");
         }
         return intval($intValue);
     }
@@ -85,7 +85,7 @@ class Config
     {
         $strValue = $this->get($path, $default);
         if (!is_string($strValue)) {
-            throw new \InvalidArgumentException("Value for \"$path\" not a string");
+            throw new \UnexpectedValueException("Value for \"$path\" not a string");
         }
         return strval($strValue);
     }
@@ -94,10 +94,10 @@ class Config
     {
         $data = $this->get($path, null);
         if (is_null($data)) {
-            throw new \InvalidArgumentException("Config for \"$path\" not found");
+            throw new \UnexpectedValueException("Config for \"$path\" not found");
         }
         if (!is_array($data)) {
-            throw new \InvalidArgumentException("Config for \"$path\" not an array");
+            throw new \UnexpectedValueException("Config for \"$path\" not an array");
         }
         return new self($data, $this->delim);
     }

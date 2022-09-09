@@ -11,9 +11,6 @@ declare(strict_types=1);
 use herbie\Alias;
 use herbie\Config;
 use herbie\Plugin;
-use Imagine\Exception\InvalidArgumentException;
-use Imagine\Exception\OutOfBoundsException;
-use Imagine\Exception\RuntimeException;
 use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
@@ -25,29 +22,14 @@ use Twig\Markup;
 
 class ImagineSysPlugin extends Plugin
 {
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * @var string
-     */
-    protected $basePath;
+    protected string $basePath;
 
-    /**
-     * @var string
-     */
-    protected $cachePath;
-    /**
-     * @var Alias
-     */
-    private $alias;
+    protected string $cachePath;
 
-    /**
-     * @param Alias $alias
-     * @param Config $config
-     */
+    private Alias $alias;
+    
     public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
@@ -57,7 +39,7 @@ class ImagineSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFilters(): array
     {
@@ -67,7 +49,7 @@ class ImagineSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFunctions(): array
     {
@@ -76,13 +58,6 @@ class ImagineSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param string $path
-     * @param string $filter
-     * @param array $attribs
-     * @return string
-     * @throws RuntimeException
-     */
     public function imagineFunction(string $path, string $filter = 'default', array $attribs = []): string
     {
         $abspath = $this->alias->get('@media/' . $path);
@@ -121,7 +96,7 @@ class ImagineSysPlugin extends Plugin
         );
     }
 
-    private function getTransparentOnePixelSrc()
+    private function getTransparentOnePixelSrc(): string
     {
         // see http://png-pixel.com
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
@@ -129,11 +104,6 @@ class ImagineSysPlugin extends Plugin
 
     /**
      * Gets the browser path for the image and filter to apply.
-     *
-     * @param string $path
-     * @param string $filter
-     * @return Markup
-     * @throws RuntimeException
      */
     public function imagineFilter(string $path, string $filter): Markup
     {
@@ -151,7 +121,7 @@ class ImagineSysPlugin extends Plugin
         );
     }
 
-    private function sanatizeFilterName($filter)
+    private function sanatizeFilterName(string $filter): string
     {
         if ($filter !== 'default') {
             if ($this->config->check("plugins.imagine.filterSets.{$filter}") === false) {
@@ -161,10 +131,6 @@ class ImagineSysPlugin extends Plugin
         return $filter;
     }
 
-    /**
-     * @param string $cachePath
-     * @return array
-     */
     private function getImageSize(string $cachePath): array
     {
         if (!is_file($cachePath)) {
@@ -173,12 +139,6 @@ class ImagineSysPlugin extends Plugin
         return getimagesize($cachePath);
     }
 
-    /**
-     * @param string $relpath
-     * @param string $filter
-     * @return string
-     * @throws RuntimeException
-     */
     protected function applyFilter(string $relpath, string $filter): string
     {
         $path = $this->alias->get('@media/' . $relpath);
@@ -220,12 +180,7 @@ class ImagineSysPlugin extends Plugin
         return $cachePath;
     }
 
-    /**
-     * @param string $path
-     * @param string $filter
-     * @return string
-     */
-    protected function resolveCachePath($path, $filter)
+    protected function resolveCachePath(string $path, string $filter): string
     {
         $info = pathinfo($path);
         return sprintf(
@@ -238,14 +193,7 @@ class ImagineSysPlugin extends Plugin
         );
     }
 
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
-    protected function applyResizeFilter(ImageInterface $image, $options)
+    protected function applyResizeFilter(ImageInterface $image, array $options): ImageInterface
     {
         // Defaults
         $size = new Box(120, 120);
@@ -257,15 +205,8 @@ class ImagineSysPlugin extends Plugin
 
         return $image->resize($size);
     }
-
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
-    protected function applyThumbnailFilter(ImageInterface $image, $options)
+    
+    protected function applyThumbnailFilter(ImageInterface $image, array $options): ImageInterface
     {
         // Defaults
         $size = new Box(120, 120);
@@ -282,16 +223,8 @@ class ImagineSysPlugin extends Plugin
 
         return $image->thumbnail($size, $mode);
     }
-
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws InvalidArgumentException
-     * @throws OutOfBoundsException
-     * @throws RuntimeException
-     */
-    protected function applyCropFilter(ImageInterface $image, $options)
+    
+    protected function applyCropFilter(ImageInterface $image, array $options): ImageInterface
     {
         // Defaults
         $start = new Point(0, 0);
@@ -309,47 +242,26 @@ class ImagineSysPlugin extends Plugin
 
         return $image->crop($start, $size);
     }
-
-    /**
-     * @param ImageInterface $image
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyGrayscaleFilter(ImageInterface $image)
+    
+    protected function applyGrayscaleFilter(ImageInterface $image): ImageInterface
     {
         $image->effects()->grayscale();
         return $image;
     }
-
-    /**
-     * @param ImageInterface $image
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyNegativeFilter(ImageInterface $image)
+    
+    protected function applyNegativeFilter(ImageInterface $image): ImageInterface
     {
         $image->effects()->negative();
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applySharpenFilter(ImageInterface $image)
+    protected function applySharpenFilter(ImageInterface $image): ImageInterface
     {
         $image->effects()->sharpen();
         return $image;
     }
-
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyBlurFilter(ImageInterface $image, $options)
+    
+    protected function applyBlurFilter(ImageInterface $image, array $options): ImageInterface
     {
         $sigma = 1;
         if (isset($options['sigma'])) {
@@ -359,13 +271,7 @@ class ImagineSysPlugin extends Plugin
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyGammaFilter(ImageInterface $image, $options)
+    protected function applyGammaFilter(ImageInterface $image, array $options): ImageInterface
     {
         $correction = 0.5;
         if (isset($options['correction'])) {
@@ -374,15 +280,8 @@ class ImagineSysPlugin extends Plugin
         $image->effects()->gamma($correction);
         return $image;
     }
-
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
-    protected function applyColorizeFilter(ImageInterface $image, $options)
+    
+    protected function applyColorizeFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (isset($options['color'])) {
             $color = $image->palette()->color($options['color']);
@@ -391,13 +290,7 @@ class ImagineSysPlugin extends Plugin
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyRotateFilter(ImageInterface $image, $options)
+    protected function applyRotateFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (isset($options['angle'])) {
             $angle = (int) $options['angle'];
@@ -406,23 +299,13 @@ class ImagineSysPlugin extends Plugin
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyFlipHorizontallyFilter(ImageInterface $image)
+    protected function applyFlipHorizontallyFilter(ImageInterface $image): ImageInterface
     {
         $image->flipHorizontally();
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @return ImageInterface
-     * @throws RuntimeException
-     */
-    protected function applyFlipVerticallyFilter(ImageInterface $image)
+    protected function applyFlipVerticallyFilter(ImageInterface $image): ImageInterface
     {
         $image->flipVertically();
         return $image;
@@ -430,12 +313,8 @@ class ImagineSysPlugin extends Plugin
 
     /**
      * @see https://github.com/liip/LiipImagineBundle/blob/master/Imagine/Filter/Loader/UpscaleFilterLoader.php
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws \InvalidArgumentException
      */
-    protected function applyUpscaleFilter(ImageInterface $image, $options)
+    protected function applyUpscaleFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (!isset($options['min'])) {
             throw new \InvalidArgumentException('Missing min option.');
@@ -461,13 +340,7 @@ class ImagineSysPlugin extends Plugin
         return $image;
     }
 
-    /**
-     * @param ImageInterface $image
-     * @param array $options
-     * @return ImageInterface
-     * @throws InvalidArgumentException
-     */
-    protected function applyRelativeResizeFilter(ImageInterface $image, $options)
+    protected function applyRelativeResizeFilter(ImageInterface $image, array $options): ImageInterface
     {
         $method = $options['method'];
         $parameter = $options['parameter'];
@@ -475,11 +348,7 @@ class ImagineSysPlugin extends Plugin
         return $filter->apply($image);
     }
 
-    /**
-     * @param array $htmlOptions
-     * @return string
-     */
-    protected function buildHtmlAttributes($htmlOptions = [])
+    protected function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
         foreach ($htmlOptions as $key => $value) {

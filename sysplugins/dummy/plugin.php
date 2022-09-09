@@ -18,30 +18,23 @@ use Psr\Log\LoggerInterface;
 
 class DummySysPlugin implements PluginInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * DummyPlugin constructor.
-     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @return int
-     */
     public function apiVersion(): int
     {
         return 2;
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function events(): array
     {
@@ -57,7 +50,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function filters(): array
     {
@@ -70,7 +63,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function middlewares(): array
     {
@@ -81,7 +74,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFilters(): array
     {
@@ -92,7 +85,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFunctions(): array
     {
@@ -103,7 +96,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigTests(): array
     {
@@ -113,19 +106,19 @@ class DummySysPlugin implements PluginInterface
         ];
     }
 
-    public function renderSegment(string $context, array $params, FilterInterface $filter)
+    public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderContent(array $context, array $params, FilterInterface $filter)
+    public function renderContent(array $context, array $params, FilterInterface $filter): array
     {
         $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderLayout(string $context, array $params, FilterInterface $filter)
+    public function renderLayout(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
         return $filter->next($context, $params, $filter);
@@ -161,11 +154,6 @@ class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $next
-     * @return \Psr\Http\Message\ResponseInterface
-     */
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);

@@ -66,7 +66,7 @@ class UrlMatcher
         $rules = $this->config->getAsArray('rules');
         foreach ($rules as $rule) {
             if (count($rule) < 2) {
-                throw new \InvalidArgumentException(sprintf('Invalid rule %s', $rule[0]));
+                throw new \UnexpectedValueException(sprintf('Invalid rule %s', $rule[0]));
             }
             $constraints = $rule[2] ?? [];
             $regex = $this->getRegex($rule[0], $constraints);
