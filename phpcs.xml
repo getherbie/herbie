@@ -18,4 +18,5 @@
     <file>config</file>
     <file>messages</file>
     <file>src</file>
+    <file>sysplugins</file>
 </ruleset>
