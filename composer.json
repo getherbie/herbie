@@ -58,11 +58,11 @@
     "scripts": {
         "test": [
             "@phpcs",
-            "@phpunit"
+            "@codecept"
         ],
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
-        "phpunit": "./vendor/bin/phpunit",
+        "codecept": "./vendor/bin/codecept run",
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M"
     }
 }
