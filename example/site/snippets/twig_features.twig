@@ -8,6 +8,9 @@
             See: <a target="_blank" href="{{ see[0] }}">{{ see[1] }}</a>
         {% endif %}
     </p>
+    {% if item.code is defined %}
+        <p>{{ item.code }}</p>
+    {% endif %}
     <table class="pure-table pure-table-horizontal">
         <tr class="code">
             <td>Parameter</td>

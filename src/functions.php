@@ -125,8 +125,8 @@ function load_composer_plugin_configs(): array
 /**
  * @param string|array $find
  * @param string|array $replace
- * @param string|array $array
- * @return string|array
+ * @param array|scalar $array
+ * @return array|scalar
  */
 function recursive_array_replace($find, $replace, $array)
 {

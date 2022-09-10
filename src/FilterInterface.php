@@ -13,9 +13,8 @@ namespace herbie;
 interface FilterInterface
 {
     /**
-     * @param mixed $context
-     * @param array $params
-     * @return string|null
+     * @param array|string $context
+     * @return array|string
      */
     public function next($context = null, array $params = [], ?FilterInterface $chain = null);
 }

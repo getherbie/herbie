@@ -109,9 +109,11 @@ class UrlMatcher
             return '';
         }, $pattern);
 
+        if (is_null($string) || strlen($string) === 0) {
+            return null;
+        }
+        
         // Add start and end matching
-        $patternAsRegex = "@^" . $string . "$@D";
-
-        return $patternAsRegex;
+        return "@^" . $string . "$@D";
     }
 }
