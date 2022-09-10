@@ -231,11 +231,13 @@ class TwigCoreExtension extends AbstractExtension
         $attribs['href'] = 'mailto:' . $email;
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
+        ksort($attribs);
+
         $context = [
             'attribs' => $attribs,
             'label' => $label ?? $email,
         ];
-
+        
         return $this->twigRenderer->renderTemplate($template, $context);
     }
 

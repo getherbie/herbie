@@ -516,14 +516,14 @@ trait PageItemTrait
 
     private function slugify(string $slug): string
     {
+        if (!self::$slugGenerator) {
+            throw new \BadMethodCallException('SlugGenerator not set');
+        }
         return self::$slugGenerator->generate($slug);
     }
 
     public static function setSlugGenerator(SlugGenerator $slugGenerator): void
     {
-        if (!empty(self::$slugGenerator)) {
-            throw new \BadMethodCallException('SlugGenerator already set');
-        }
         self::$slugGenerator = $slugGenerator;
     }
 }

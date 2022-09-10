@@ -521,4 +521,10 @@ class Application implements LoggerAwareInterface
     {
         return $this->container->get(EventManager::class);
     }
+    
+    // NOTE should be used for testing only
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
 }
