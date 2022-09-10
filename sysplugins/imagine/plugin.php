@@ -22,7 +22,7 @@ use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
 use Twig\Markup;
 
-class ImagineSysPlugin extends Plugin
+final class ImagineSysPlugin extends Plugin
 {
     protected Config $config;
 

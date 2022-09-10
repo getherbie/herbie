@@ -10,7 +10,7 @@ use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
 
-class TextileSysPlugin extends Plugin
+final class TextileSysPlugin extends Plugin
 {
     private Config $config;
 

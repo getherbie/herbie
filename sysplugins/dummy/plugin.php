@@ -18,7 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class DummySysPlugin implements PluginInterface
+final class DummySysPlugin implements PluginInterface
 {
     private LoggerInterface $logger;
 

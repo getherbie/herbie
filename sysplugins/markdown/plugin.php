@@ -11,7 +11,7 @@ use Parsedown;
 use ParsedownExtra;
 use Psr\Log\LoggerInterface;
 
-class MarkdownSysPlugin extends Plugin
+final class MarkdownSysPlugin extends Plugin
 {
     const MODE_NONE = 0;
     const MODE_PARSEDOWN = 1;
