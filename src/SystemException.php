@@ -12,7 +12,7 @@ namespace herbie;
 
 use Throwable;
 
-class SystemException extends \Exception
+final class SystemException extends \Exception
 {
     public static function classNotExist(string $class, ?string $format = null): SystemException
     {

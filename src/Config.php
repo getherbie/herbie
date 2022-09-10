@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class Config
+final class Config
 {
     private array $data;
     

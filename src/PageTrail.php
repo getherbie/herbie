@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageTrail implements \IteratorAggregate, \Countable
+final class PageTrail implements \IteratorAggregate, \Countable
 {
     private array $items;
 

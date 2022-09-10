@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class RenderLayoutFilter
+final class RenderLayoutFilter
 {
     private Config $config;
 

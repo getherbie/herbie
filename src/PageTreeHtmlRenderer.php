@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
+final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
 {
     private string $class;
 

@@ -2,7 +2,7 @@
 
 namespace herbie;
 
-class InstallablePlugin
+final class InstallablePlugin
 {
     private string $key;
     private string $path;

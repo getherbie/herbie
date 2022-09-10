@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class Environment
+final class Environment
 {
     private ?string $basePath;
 

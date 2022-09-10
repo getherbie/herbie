@@ -16,7 +16,7 @@ use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class TwigPlusExtension extends AbstractExtension
+final class TwigPlusExtension extends AbstractExtension
 {
     private Environment $environment;
 

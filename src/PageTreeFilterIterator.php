@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeFilterIterator extends \RecursiveFilterIterator
+final class PageTreeFilterIterator extends \RecursiveFilterIterator
 {
     private bool $enabled = true;
 

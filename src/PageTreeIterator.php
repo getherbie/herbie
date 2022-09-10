@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeIterator implements \RecursiveIterator
+final class PageTreeIterator implements \RecursiveIterator
 {
     private array $children = [];
 

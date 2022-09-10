@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class FlatfilePageRepository implements PageRepositoryInterface
+final class FlatfilePageRepository implements PageRepositoryInterface
 {
     private PageFactory $pageFactory;
     private ?PageList $pageList;

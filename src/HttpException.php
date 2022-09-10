@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class HttpException extends \Exception
+final class HttpException extends \Exception
 {
     private array $allowed = [];
 

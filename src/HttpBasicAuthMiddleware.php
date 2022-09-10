@@ -14,7 +14,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class HttpBasicAuthMiddleware implements MiddlewareInterface
+final class HttpBasicAuthMiddleware implements MiddlewareInterface
 {
     private array $users;
 

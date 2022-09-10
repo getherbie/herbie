@@ -30,7 +30,7 @@ define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 define('HERBIE_API_VERSION', 2);
 
-class Application implements LoggerAwareInterface
+final class Application implements LoggerAwareInterface
 {
     private Container $container;
     private array $filters;

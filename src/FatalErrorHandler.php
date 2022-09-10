@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class FatalErrorHandler
+final class FatalErrorHandler
 {
     public function __invoke(): void
     {

@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class PageRendererMiddleware implements MiddlewareInterface
+final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
 

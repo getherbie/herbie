@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class Alias
+final class Alias
 {
     private array $aliases;
 

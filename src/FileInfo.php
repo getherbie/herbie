@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class FileInfo extends \SplFileInfo
+final class FileInfo extends \SplFileInfo
 {
     private string $relativePath;
 

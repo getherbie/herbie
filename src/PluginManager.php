@@ -17,7 +17,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-class PluginManager
+final class PluginManager
 {
     private EventManager $eventManager;
 

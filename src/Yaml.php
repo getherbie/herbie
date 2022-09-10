@@ -17,7 +17,7 @@ use Symfony\Component\Yaml\Yaml as sfYaml;
  *
  * @package Herbie
  */
-class Yaml
+final class Yaml
 {
     public static function parse(string $input): array
     {

@@ -14,7 +14,7 @@ use Psr\Log\AbstractLogger;
  * Class NullLogger
  * @package Psr\Log
  */
-class NullLogger extends AbstractLogger
+final class NullLogger extends AbstractLogger
 {
     /**
      * @param mixed $level

@@ -21,7 +21,7 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 use Twig\Environment as TwigEnvironment;
 
-class TwigRenderer
+final class TwigRenderer
 {
     private bool $initialized;
 

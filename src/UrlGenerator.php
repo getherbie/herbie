@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * The URLGenerator creates URLs based on the given route.
  */
-class UrlGenerator
+final class UrlGenerator
 {
     private ServerRequestInterface $request;
 

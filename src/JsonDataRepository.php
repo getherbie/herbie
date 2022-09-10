@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class JsonDataRepository implements DataRepositoryInterface
+final class JsonDataRepository implements DataRepositoryInterface
 {
     private string $path;
 

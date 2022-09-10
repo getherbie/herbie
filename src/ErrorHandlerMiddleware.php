@@ -20,7 +20,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private TwigRenderer $twigRenderer;
 

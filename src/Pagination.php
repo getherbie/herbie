@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class Pagination implements \IteratorAggregate, \Countable
+final class Pagination implements \IteratorAggregate, \Countable
 {
     private array $items;
 

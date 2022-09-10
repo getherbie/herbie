@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class EventManager
+final class EventManager
 {
     private array $events;
 

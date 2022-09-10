@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MiddlewareDispatcher implements RequestHandlerInterface
+final class MiddlewareDispatcher implements RequestHandlerInterface
 {
     /** @var MiddlewareInterface[] */
     private array $middlewares = [];

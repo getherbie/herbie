@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageItem implements \ArrayAccess
+final class PageItem implements \ArrayAccess
 {
     use PageItemTrait;
 

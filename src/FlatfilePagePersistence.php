@@ -13,7 +13,7 @@ namespace herbie;
 /**
  * Loads the whole page.
  */
-class FlatfilePagePersistence implements PagePersistenceInterface
+final class FlatfilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
 

@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ResponseTimeMiddleware implements MiddlewareInterface
+final class ResponseTimeMiddleware implements MiddlewareInterface
 {
     const HEADER = 'X-Response-Time';
 

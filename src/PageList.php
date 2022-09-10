@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageList implements \IteratorAggregate, \Countable
+final class PageList implements \IteratorAggregate, \Countable
 {
     /**
      * @var PageItem[]

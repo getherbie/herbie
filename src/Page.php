@@ -16,7 +16,7 @@ namespace herbie;
  * @property string $parent
  * @property string[] $segments
  */
-class Page
+final class Page
 {
     use PageItemTrait;
 

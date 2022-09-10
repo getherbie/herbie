@@ -8,7 +8,7 @@
 
 namespace herbie;
 
-class UncaughtExceptionHandler
+final class UncaughtExceptionHandler
 {
 
     public function __invoke(\Throwable $exception): void

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageFactory
+final class PageFactory
 {
     public function newPage(string $id, string $parent, array $data, array $segments): Page
     {

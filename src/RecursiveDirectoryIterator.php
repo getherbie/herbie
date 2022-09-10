@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
+final class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {
 
     /**

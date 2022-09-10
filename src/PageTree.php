@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class PageTree extends AbstractNode
+final class PageTree extends AbstractNode
 {
     public function __toString(): string
     {

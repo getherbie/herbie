@@ -13,7 +13,7 @@ namespace herbie;
 /**
  * Stores the site.
  */
-class Site
+final class Site
 {
     private Config $config;
 

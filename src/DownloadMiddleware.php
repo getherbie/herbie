@@ -17,7 +17,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class DownloadMiddleware implements MiddlewareInterface
+final class DownloadMiddleware implements MiddlewareInterface
 {
     private Alias $alias;
 

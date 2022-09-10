@@ -12,7 +12,7 @@ namespace herbie;
 
 use Psr\SimpleCache\CacheInterface;
 
-class NullCache implements CacheInterface
+final class NullCache implements CacheInterface
 {
     /**
      * @param string $key

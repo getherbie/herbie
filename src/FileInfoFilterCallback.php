@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class FileInfoFilterCallback
+final class FileInfoFilterCallback
 {
     private array $extensions;
 

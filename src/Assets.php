@@ -14,7 +14,7 @@ namespace herbie;
  * @see: http://fuelphp.com/docs/classes/asset/usage.html
  * @see: http://docs.phalconphp.com/en/latest/reference/assets.html
  */
-class Assets
+final class Assets
 {
     const TYPE_CSS = 0;
     const TYPE_JS = 1;

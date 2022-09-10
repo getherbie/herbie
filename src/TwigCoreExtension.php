@@ -16,7 +16,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-class TwigCoreExtension extends AbstractExtension
+final class TwigCoreExtension extends AbstractExtension
 {
     private Alias $alias;
 

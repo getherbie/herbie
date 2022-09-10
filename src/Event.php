@@ -14,7 +14,7 @@ namespace herbie;
  * Class Event
  * @package Herbie
  */
-class Event implements EventInterface
+final class Event implements EventInterface
 {
     private string $name;
 

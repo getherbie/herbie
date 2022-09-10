@@ -14,7 +14,7 @@ use Twig\Error\LoaderError;
 use Twig\Loader\LoaderInterface;
 use Twig\Source;
 
-class TwigStringLoader implements LoaderInterface
+final class TwigStringLoader implements LoaderInterface
 {
     /**
      * @throws LoaderError

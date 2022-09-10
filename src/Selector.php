@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class Selector
+final class Selector
 {
     protected string $className;
 

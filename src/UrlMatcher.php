@@ -13,7 +13,7 @@ namespace herbie;
 /**
  * The URLMatcher matches a given route and returns the path to a valid page file.
  */
-class UrlMatcher
+final class UrlMatcher
 {
     private Config $config;
 

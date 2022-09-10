@@ -13,7 +13,7 @@ namespace herbie;
 use Psr\Container\ContainerInterface;
 use Psr\Log\InvalidArgumentException;
 
-class Container implements ContainerInterface
+final class Container implements ContainerInterface
 {
     private array $values = [];
     

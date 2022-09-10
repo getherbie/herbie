@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class FilterChainManager
+final class FilterChainManager
 {
     private array $filters = [];
 
