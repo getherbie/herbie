@@ -226,18 +226,17 @@ class TwigCoreExtension extends AbstractExtension
         return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
-    public function functionMailLink(string $email, string $label, array $attribs = []): string
+    public function functionMailLink(string $email, ?string $label = null, array $attribs = [], string $template = '@snippet/mail_link.twig'): string
     {
+        $attribs['href'] = 'mailto:' . $email;
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
-        $replace = [
-            '{href}' => $email,
-            '{attribs}' => $this->buildHtmlAttributes($attribs),
-            '{label}' => $label,
+        $context = [
+            'attribs' => $attribs,
+            'label' => $label ?? $email,
         ];
 
-        $template = '<span class="link link--mailto"><a href="mailto:{href}" {attribs}>{label}</a></span>';
-        return strtr($template, $replace);
+        return $this->twigRenderer->renderTemplate($template, $context);
     }
 
     public function functionOutputCss(?string $group = null): string
