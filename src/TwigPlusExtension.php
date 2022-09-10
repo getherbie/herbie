@@ -141,7 +141,9 @@ class TwigPlusExtension extends AbstractExtension
             $links[] = $this->createLink($route, $label);
         }
 
-        foreach ($this->pageRepository->buildTrail() as $item) {
+        $route = $this->environment->getRoute();
+        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
+        foreach ($pageTrail as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
 

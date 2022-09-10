@@ -333,23 +333,27 @@ class PageList implements \IteratorAggregate, \Countable
 
     public function getPageTrail(string $requestRoute): PageTrail
     {
-        if (is_null($this->pageTrail)) {
-            $items = [];
-
-            $segments = explode('/', rtrim($requestRoute, '/'));
-            $route = '';
-            $delim = '';
-            foreach ($segments as $segment) {
-                $route .= $delim . $segment;
-                $delim = '/';
-
-                $item = $this->getItem($route);
-                if (isset($item)) {
-                    $items[] = $item;
-                }
-            }
-            $this->pageTrail = (new PageFactory)->newPageTrail($items);
+        // It would be possible to have multiple cached page trails.
+        // But in fact, there is always only one for the requested route.
+        if ($this->pageTrail) {
+            return $this->pageTrail;
         }
-        return $this->pageTrail;
+        
+        $items = [];
+
+        $segments = explode('/', rtrim($requestRoute, '/'));
+        $route = '';
+        $delim = '';
+        foreach ($segments as $segment) {
+            $route .= $delim . $segment;
+            $delim = '/';
+
+            $item = $this->getItem($route);
+            if (isset($item)) {
+                $items[] = $item;
+            }
+        }
+        
+        return $this->pageTrail = (new PageFactory)->newPageTrail($items);
     }
 }
