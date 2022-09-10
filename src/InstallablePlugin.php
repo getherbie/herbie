@@ -6,15 +6,15 @@ final class InstallablePlugin
 {
     private string $key;
     private string $path;
-    private string $class;
     private string $classPath;
+    private string $type;
     
-    public function __construct(string $key, string $path, string $class)
+    public function __construct(string $key, string $path, string $classPath, string $type)
     {
         $this->key = $key;
         $this->path = $path;
-        $this->class = $class;
-        $this->classPath = sprintf('%s/%s', $path, $class);
+        $this->classPath = $classPath;
+        $this->type = $type;
     }
 
     public function getKey(): string
@@ -25,11 +25,6 @@ final class InstallablePlugin
     public function getPath(): string
     {
         return $this->path;
-    }
-
-    public function getClass(): string
-    {
-        return $this->class;
     }
 
     public function getClassPath(): string

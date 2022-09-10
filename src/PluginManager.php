@@ -72,8 +72,8 @@ final class PluginManager
         $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
 
         $plugins = array_merge(
-            $this->getPlugins($enabledSystemPlugins),
-            $this->getPlugins($enabledComposerOrLocalPlugins)
+            $this->getPlugins($enabledSystemPlugins, 'system'),
+            $this->getPlugins($enabledComposerOrLocalPlugins, 'plugin')
         );
         
         foreach ($plugins as $plugin) {
@@ -83,19 +83,22 @@ final class PluginManager
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
     
-    private function getPlugins(array $enabledPlugins): array
+    private function getPlugins(array $enabledPlugins, string $type): array
     {
         $plugins = [];
         foreach ($enabledPlugins as $pluginKey) {
             $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
             $pluginConfig = $this->config->getAsArray($pluginConfigPath);
-            if (empty($pluginConfig['pluginName']) || empty($pluginConfig['pluginPath'])) {
+            if (empty($pluginConfig['pluginName'])
+                || empty($pluginConfig['pluginClass'])
+                || empty($pluginConfig['pluginPath'])) {
                 continue;
             }
             $plugins[] = new InstallablePlugin(
                 $pluginConfig['pluginName'],
                 $pluginConfig['pluginPath'],
-                'plugin.php'
+                $pluginConfig['pluginClass'],
+                $type
             );
         }
         
@@ -110,11 +113,6 @@ final class PluginManager
         }
 
         $plugin = $installablePlugin->createPluginInstance($this->container);
-        
-        if (!$plugin instanceof PluginInterface) {
-            // TODO throw error?
-            return;
-        }
 
         if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
             // TODO throw error?
