@@ -127,7 +127,7 @@ class PageTest extends \Codeception\Test\Unit
             'keep_extension' => 0,
             'layout' => 'layout.html',
             'menu' => '',
-            'modified' => '2022-09-08T19:14:37+02:00',
+            'modified' => '2022-09-10T08:57:53+02:00',
             'path' => '@page/pagedata.md',
             'redirect' => [],
             'route' => '',
