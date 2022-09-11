@@ -17,8 +17,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class MiddlewareDispatcher implements RequestHandlerInterface
 {
-    /** @var MiddlewareInterface[] */
-    private array $middlewares = [];
+    /** @var MiddlewareInterface[]|string[] */
+    private array $middlewares;
 
     /**
      * Dispatcher constructor.
@@ -30,8 +30,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
 
     public function dispatch(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = $this->handle($request);
-        return $response;
+        return $this->handle($request);
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

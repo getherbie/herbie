@@ -59,7 +59,7 @@ trait PageItemTrait
     private int $twig;
     private string $type;
 
-    private static SlugGenerator $slugGenerator;
+    private static ?SlugGenerator $slugGenerator;
 
     /**
      * @param array $data
@@ -516,7 +516,7 @@ trait PageItemTrait
 
     private function slugify(string $slug): string
     {
-        if (!self::$slugGenerator) {
+        if (is_null(self::$slugGenerator)) {
             throw new \BadMethodCallException('SlugGenerator not set');
         }
         return self::$slugGenerator->generate($slug);

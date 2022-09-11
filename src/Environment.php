@@ -233,10 +233,7 @@ final class Environment
     private function preparePathInfo(): string
     {
         $baseUrl = $this->getBaseUrl();
-
-        if (null === ($requestUri = $this->getRequestUri())) {
-            return '/';
-        }
+        $requestUri = $this->getRequestUri();
 
         // Remove the query string from REQUEST_URI
         if ($pos = strpos($requestUri, '?')) {
@@ -244,14 +241,13 @@ final class Environment
         }
 
         $pathInfo = substr($requestUri, strlen($baseUrl));
-        if (null !== $baseUrl && (false === $pathInfo || '' === $pathInfo)) {
-            // If substr() returns false then PATH_INFO is set to an empty string
+        if ((false === $pathInfo || '' === $pathInfo)) {
             return '/';
-        } elseif (null === $baseUrl) {
+        } elseif ('' === $baseUrl) {
             return $requestUri;
         }
 
-        return (string) $pathInfo;
+        return $pathInfo;
     }
 
     /**
@@ -262,10 +258,7 @@ final class Environment
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
-    /**
-     * @param null $default
-     */
-    private function getServer(string $name, $default = null): ?string
+    private function getServer(string $name, ?string $default = null): ?string
     {
         return $_SERVER[$name] ?? $default;
     }

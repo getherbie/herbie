@@ -13,6 +13,7 @@ namespace herbie;
 use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Log\LoggerInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -23,46 +24,39 @@ final class PluginManager
 
     private Config $config;
 
-    private string $pluginsPath;
-
     private array $loadedPlugins;
 
     private array $pluginPaths;
-
-    private string $sysPluginsPath;
 
     private ContainerInterface $container;
 
     private FilterChainManager $filterChainManager;
 
-    private TwigRenderer $twigRenderer;
-
     private Translator $translator;
+    
+    private LoggerInterface $logger;
 
     private array $middlewares;
 
     /**
      * PluginManager constructor.
-     * @throws SystemException
      */
     public function __construct(
         Config $config,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         Translator $translator,
-        TwigRenderer $twigRenderer,
+        LoggerInterface $logger,
         ContainerInterface $container
     ) {
         $this->config = $config;
         $this->container = $container;
         $this->eventManager = $eventManager;
-        $this->loadedPlugins = [];
-        $this->pluginPaths = [];
-        $this->pluginsPath = normalize_path($config->get('paths.plugins'));
-        $this->sysPluginsPath = normalize_path($config->get('paths.sysPlugins'));
         $this->filterChainManager = $filterChainManager;
-        $this->twigRenderer = $twigRenderer;
+        $this->loadedPlugins = [];
+        $this->logger = $logger;
         $this->middlewares = [];
+        $this->pluginPaths = [];
         $this->translator = $translator;
     }
     
@@ -108,15 +102,13 @@ final class PluginManager
     private function loadPlugin(InstallablePlugin $installablePlugin): void
     {
         if (!$installablePlugin->classPathExists()) {
-            // TODO log info
-            return;
+            return; // TODO log info
         }
 
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
-        if ($plugin->apiVersion() !== HERBIE_API_VERSION) {
-            // TODO throw error?
-            return;
+        if ($plugin->apiVersion() < HERBIE_API_VERSION) {
+            return; // TODO log info
         }
 
         foreach ($plugin->events() as $event) {
@@ -152,6 +144,13 @@ final class PluginManager
 
         $this->loadedPlugins[$key] = $plugin;
         $this->pluginPaths[$key] = $installablePlugin->getPath();
+        
+        $message = sprintf(
+            'Plugin %s with type %s installed successfully',
+            $installablePlugin->getKey(),
+            $installablePlugin->getType(),
+        );
+        $this->logger->debug($message);
     }
 
     public function getLoadedPlugins(): array

@@ -68,7 +68,7 @@ final class Application implements LoggerAwareInterface
         $logDir = $this->sitePath . '/runtime/log';
 
         error_reporting(E_ALL);
-        ini_set('display_errors', HERBIE_DEBUG ? '1': '0');
+        ini_set('display_errors', HERBIE_DEBUG ? '1': '0'); // @phpstan-ignore-line
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
@@ -261,7 +261,6 @@ final class Application implements LoggerAwareInterface
         $c->set(PageRendererMiddleware::class, function (Container $c) {
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
-                $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
@@ -291,7 +290,7 @@ final class Application implements LoggerAwareInterface
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(Translator::class),
-                $c->get(TwigRenderer::class),
+                $c->get(LoggerInterface::class),
                 $c // needed for DI in plugins
             );
         });
@@ -423,9 +422,9 @@ final class Application implements LoggerAwareInterface
 
     /**
      * @param MiddlewareInterface|string $middlewareOrPath
-     * @param MiddlewareInterface|null $middleware
+     * @param MiddlewareInterface|string|null $middleware
      */
-    public function addMiddleware($middlewareOrPath, ?MiddlewareInterface $middleware = null) : Application
+    public function addMiddleware($middlewareOrPath, $middleware = null) : Application
     {
         if ($middleware) {
             $this->routeMiddlewares[$middlewareOrPath] = $middleware;

@@ -2,6 +2,8 @@
 
 namespace herbie;
 
+use Psr\Container\ContainerInterface;
+
 final class InstallablePlugin
 {
     private string $key;
@@ -32,6 +34,11 @@ final class InstallablePlugin
         return $this->classPath;
     }
     
+    public function getType(): string
+    {
+        return $this->type;
+    }
+    
     public function classPathExists(): bool
     {
         return is_file($this->classPath) && is_readable($this->classPath);
@@ -49,7 +56,7 @@ final class InstallablePlugin
     /**
      * @throws SystemException
      */
-    public function createPluginInstance(Container $container): PluginInterface
+    public function createPluginInstance(ContainerInterface $container): PluginInterface
     {
         $pluginClassName = $this->requireClassPath();
 
@@ -109,7 +116,7 @@ final class InstallablePlugin
         return $namespace . '\\' . $class;
     }
 
-    public static function getConstructorParamsToInject(string $pluginClassName, Container $container): array
+    public static function getConstructorParamsToInject(string $pluginClassName, ContainerInterface $container): array
     {
         $reflectedClass = new \ReflectionClass($pluginClassName);
         $constructor = $reflectedClass->getConstructor();

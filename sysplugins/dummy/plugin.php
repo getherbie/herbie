@@ -159,9 +159,9 @@ final class DummySysPlugin implements PluginInterface
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
-        $request = $request->withAttribute('X-DummyPlugin', time());
+        $request = $request->withAttribute('X-DummyPlugin', (string)time());
         $response = $next->handle($request);
-        return $response->withHeader('X-DummyPlugin', time());
+        return $response->withHeader('X-DummyPlugin', (string)time());
     }
 
     public function twigDummyFilter()

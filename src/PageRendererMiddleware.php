@@ -29,8 +29,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
 
     private FilterChainManager $filterChainManager;
 
-    private Config $config;
-
     private UrlGenerator $urlGenerator;
 
     /**
@@ -38,7 +36,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
      */
     public function __construct(
         CacheInterface $cache,
-        Config $config,
         Environment $environment,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
@@ -50,7 +47,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
-        $this->config = $config;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -61,8 +57,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var Page $page */
-        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
+        /** @var Page|null $page */
+        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
         if (is_null($page)) {
             throw HttpException::notFound($this->environment->getRoute());

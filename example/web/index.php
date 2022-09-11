@@ -40,7 +40,7 @@ $app->setLogger($logger);
 // $app->setPageCache($fileCache);
 
 // Middlewares
-$app->addMiddleware(new ResponseTimeMiddleware());
+$app->addMiddleware(ResponseTimeMiddleware::class);
 $app->addMiddleware(new CustomHeader('one'));
 $app->addMiddleware(new CustomHeader('two'));
 $app->addMiddleware(new CustomHeader('three'));
