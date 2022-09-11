@@ -26,7 +26,7 @@ final class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array[]
+     * @return array
      */
     public function filters(): array
     {

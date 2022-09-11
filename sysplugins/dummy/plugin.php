@@ -126,32 +126,32 @@ final class DummySysPlugin implements PluginInterface
         return $filter->next($context, $params, $filter);
     }
 
-    public function onContentRendered(EventInterface $event)
+    public function onContentRendered(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
 
-    public function onLayoutRendered(EventInterface $event)
+    public function onLayoutRendered(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
 
-    public function onPluginsAttached(EventInterface $event)
+    public function onPluginsAttached(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
 
-    public function onResponseEmitted(EventInterface $event)
+    public function onResponseEmitted(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
 
-    public function onResponseGenerated(EventInterface $event)
+    public function onResponseGenerated(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
 
-    public function onTwigInitialized(EventInterface $event)
+    public function onTwigInitialized(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
     }
@@ -164,18 +164,21 @@ final class DummySysPlugin implements PluginInterface
         return $response->withHeader('X-DummyPlugin', (string)time());
     }
 
-    public function twigDummyFilter()
+    public function twigDummyFilter(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        return $content;
     }
 
-    public function twigDummyFunction()
+    public function twigDummyFunction(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        return $content;
     }
 
-    public function twigDummyTest()
+    public function twigDummyTest(string $content): bool
     {
         $this->logger->debug(__METHOD__);
+        return strlen($content) > 0;
     }
 }
