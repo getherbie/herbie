@@ -30,7 +30,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
     {
         $login = $this->login($request);
 
-        if (empty($login)) {
+        if ($login === false) {
             return HttpFactory::instance()
                 ->createResponse(401, 'Unauthorized')
                 ->withHeader('WWW-Authenticate', 'Basic realm="Test"');
@@ -42,30 +42,40 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
     /**
      * Check the user credentials and return the username or false.
      *
-     * @return bool|string
+     * @return false|string
      */
     private function login(ServerRequestInterface $request)
     {
-        //Check header
+        // check header
         $authorization = $this->parseHeader($request->getHeaderLine('Authorization'));
 
-        if (!$authorization) {
+        if ($authorization === false) {
             return false;
         }
+        
         //Check the user
-        if (!isset($this->users[$authorization['username']])) {
+        $username = trim($authorization['username'] ?? '');
+        $password = trim($authorization['password'] ?? '');
+        
+        if ((strlen($username) === 0) || (strlen($password) === 0)) {
             return false;
         }
-        if ($this->users[$authorization['username']] !== $authorization['password']) {
+        
+        if (!isset($this->users[$username])) {
             return false;
         }
-        return $authorization['username'];
+        
+        if ($this->users[$username] !== $password) {
+            return false;
+        }
+        
+        return $username;
     }
 
     /**
      * Parses the authorization header for a basic authentication.
      *
-     * @return array|bool
+     * @return array|false
      */
     private function parseHeader(string $header)
     {
@@ -74,8 +84,8 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
         }
         $header = explode(':', base64_decode(substr($header, 6)), 2);
         return [
-            'username' => $header[0],
-            'password' => $header[1] ?? null,
+            'username' => trim($header[0] ?? ''),
+            'password' => trim($header[1] ?? ''),
         ];
     }
 }

@@ -33,6 +33,11 @@ final class Config
     public function get(string $name, $default = null)
     {
         $path = explode($this->delim, $name);
+        
+        if ($path === false) {
+            return null;
+        }
+        
         $current = $this->data;
         foreach ($path as $field) {
             if (isset($current[$field])) {
