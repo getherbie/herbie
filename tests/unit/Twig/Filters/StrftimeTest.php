@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace unit\Twig\Filters;
 
 use herbie\Application;
