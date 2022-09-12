@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use ArrayAccess;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -136,7 +135,7 @@ final class TwigCoreExtension extends AbstractExtension
      */
     public function filterFilter(\Traversable $iterator, array $selectors = []): array
     {
-        $selector = new Selector(get_class($iterator));
+        $selector = new Selector();
         $items = $iterator->getItems();
         $filtered = $selector->find($selectors, $items);
         return $filtered;
