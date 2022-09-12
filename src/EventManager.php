@@ -31,6 +31,9 @@ final class EventManager
         return $listener;
     }
 
+    /**
+     * @param mixed $target
+     */
     public function trigger(string $eventName, $target = null, array $argv = []): void
     {
         /** @var Event $event */

@@ -89,7 +89,7 @@ final class Selector
         return $return;
     }
 
-    protected function extractSort(&$selectors)
+    protected function extractSort(array &$selectors): string
     {
         $sort = "";
         foreach ($selectors as $index => $selector) {
@@ -102,7 +102,7 @@ final class Selector
         return $sort;
     }
 
-    protected function extractLimit(&$selectors)
+    protected function extractLimit(array &$selectors): int
     {
         $limit = 0;
         foreach ($selectors as $index => $selector) {
@@ -123,8 +123,7 @@ final class Selector
      */
     public function get($selector, &$data)
     {
-        $object = $this->find($selector, $data)->first();
-        return $object;
+        return $this->find($selector, $data)->first();
     }
 
     protected function matchEqual(string $value1, string $value2): bool
@@ -227,10 +226,8 @@ final class Selector
 
     /**
      * @param callable|string $sort
-     * @param $items
-     * @return bool
      */
-    public function sort($sort, &$items): bool
+    public function sort($sort, array &$items): bool
     {
         if (is_numeric($sort)) {
             return false;
@@ -252,7 +249,7 @@ final class Selector
             $direction = "desc";
         }
 
-        $bool = uasort($items, function ($value1, $value2) use ($field, $direction) {
+        return uasort($items, function ($value1, $value2) use ($field, $direction) {
             if (!isset($value1[$field]) || !isset($value2[$field])) {
                 return 0;
             }
@@ -265,11 +262,13 @@ final class Selector
                 return ($value2[$field] < $value1[$field]) ? -1 : 1;
             }
         });
-
-        return $bool;
     }
 
-    public static function mergeSelectors($selector1, $selector2)
+    /**
+     * @param array|string $selector1
+     * @param array|string $selector2
+     */
+    public static function mergeSelectors($selector1, $selector2): array
     {
         $selectors = [];
         if (is_array($selector1)) {
@@ -282,7 +281,6 @@ final class Selector
         } else {
             $selectors[] = $selector2;
         }
-        $selectors = array_filter($selectors);
-        return $selectors;
+        return array_filter($selectors); // filter empty
     }
 }

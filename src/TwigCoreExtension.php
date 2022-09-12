@@ -133,12 +133,17 @@ final class TwigCoreExtension extends AbstractExtension
      * @throws \Exception
      * @todo Implement und document this twig filter
      */
-    public function filterFilter(\Traversable $iterator, array $selectors = []): array
+
+    /**
+     * @param \IteratorAggregate $iterator
+     * @param string[] $selectors
+     * @return array
+     * @throws \Exception
+     */
+    public function filterFilter(\IteratorAggregate $iterator, array $selectors = []): array
     {
         $selector = new Selector();
-        $items = $iterator->getItems();
-        $filtered = $selector->find($selectors, $items);
-        return $filtered;
+        return $selector->find($selectors, (array)$iterator->getIterator());
     }
 
     /**

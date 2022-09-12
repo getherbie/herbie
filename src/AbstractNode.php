@@ -42,7 +42,7 @@ abstract class AbstractNode implements \IteratorAggregate
     /**
      * @param mixed $value
      */
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }

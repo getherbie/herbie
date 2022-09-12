@@ -35,13 +35,14 @@ final class FilterChain
 
     /**
      * @param mixed $context
+     * @return array|string|null depending on the context
      */
     public function run($context, array $argv = [])
     {
         $filters = $this->getFilters();
 
         if (count($filters) === 0) {
-            return;
+            return null;
         }
 
         $next = $filters->current();

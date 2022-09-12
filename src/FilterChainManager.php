@@ -14,7 +14,7 @@ final class FilterChainManager
 {
     private array $filters = [];
 
-    public function attach(string $filterName, callable $listener)
+    public function attach(string $filterName, callable $listener): void
     {
         $this->getFilters($filterName)->attach($listener);
     }

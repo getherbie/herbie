@@ -16,12 +16,12 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
 
     private array $items = [];
 
-    public function insert(callable $callback)
+    public function insert(callable $callback): void
     {
         $this->items[] = $callback;
     }
 
-    public function remove(callable $callback)
+    public function remove(callable $callback): void
     {
         foreach ($this->items as $i => $item) {
             if ($callback === $item) {
