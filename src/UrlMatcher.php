@@ -96,7 +96,7 @@ final class UrlMatcher
      * @see https://stackoverflow.com/questions/30130913/how-to-do-url-matching-regex-for-routing-framework
      * @see https://laravel.com/docs/5.7/routing
      */
-    private function getRegex($pattern, array $replacements): ?string
+    private function getRegex(string $pattern, array $replacements): ?string
     {
         $string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function ($matches) use ($replacements) {
             if (count($matches) === 2) {

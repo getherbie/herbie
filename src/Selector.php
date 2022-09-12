@@ -12,8 +12,6 @@ namespace herbie;
 
 final class Selector
 {
-    protected string $className;
-
     protected array $operators = [
         "!=" => 'matchNotEqual',
         ">=" => 'matchGreaterThanEqual',
@@ -29,14 +27,6 @@ final class Selector
     ];
 
     protected array $selectors = [];
-
-    /**
-     * Selector constructor.
-     */
-    public function __construct(string $className)
-    {
-        $this->className = $className;
-    }
 
     /**
      * Find and return all items matching the given selector string.

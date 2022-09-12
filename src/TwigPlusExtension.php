@@ -321,13 +321,12 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param $routeParams
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function functionPagesFiltered(
-        $routeParams,
+        array $routeParams,
         string $template = '@template/pages/filtered.twig'
     ): string {
         return $this->twigRenderer->renderTemplate($template, [

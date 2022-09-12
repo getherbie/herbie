@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayAccess;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -126,7 +127,7 @@ final class TwigCoreExtension extends AbstractExtension
         for ($i = 0; $size > $mod && $i < count($units) - 1; ++$i) {
             $size /= $mod;
         }
-        return str_replace(',', '.', round($size, 1)) . ' ' . $units[$i];
+        return str_replace(',', '.', (string)round($size, 1)) . ' ' . $units[$i];
     }
 
     /**
@@ -156,9 +157,13 @@ final class TwigCoreExtension extends AbstractExtension
     {
         // timestamp?
         if (is_numeric($date)) {
-            $date = date('Y-m-d H:i:s', $date);
+            $date = date('Y-m-d H:i:s', (int)$date);
         }
-        $dateTime = new \DateTime($date);
+        try {
+            $dateTime = new \DateTime($date);
+        } catch (\Exception $e) {
+            return $date;
+        }
         return strftime($format, $dateTime->getTimestamp());
     }
 
