@@ -27,17 +27,20 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-$app = new Application('../site', '../../vendor');
-
 // create a log channel
 $logger = new Logger('herbie');
 $logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::DEBUG));
-$app->setLogger($logger);
 
 // Cache
 // $fileCache = new Anax\Cache\FileCache();
 // $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
-// $app->setPageCache($fileCache);
+
+$app = new Application(
+    '../site',
+    '../../vendor',
+    $logger,
+    // $fileCache
+);
 
 // Middlewares
 $app->addMiddleware(ResponseTimeMiddleware::class);

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -29,9 +30,11 @@ final class TwigRenderer
 
     private Environment $environment;
 
-    private \Twig\Environment $twig;
+    private TwigEnvironment $twig;
 
     private EventManager $eventManager;
+    
+    private LoggerInterface $logger;
 
     private TwigCoreExtension $twigCoreExtension;
 
@@ -46,6 +49,7 @@ final class TwigRenderer
         Config $config,
         Environment $environment,
         EventManager $eventManager,
+        LoggerInterface $logger,
         Site $site,
         TwigCoreExtension $twigExtension,
         TwigPlusExtension $twigPlusExtension
@@ -54,6 +58,7 @@ final class TwigRenderer
         $this->environment = $environment;
         $this->config = $config->toArray();
         $this->eventManager = $eventManager;
+        $this->logger = $logger;
         $this->twigCoreExtension = $twigExtension;
         $this->site = $site;
         $this->twigPlusExtension = $twigPlusExtension;
@@ -191,6 +196,8 @@ final class TwigRenderer
             $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
         }
 
+        $paths = $this->validatePaths($paths);
+        
         $loader1 = new TwigStringLoader();
         $loader2 = new FilesystemLoader($paths);
 
@@ -213,6 +220,18 @@ final class TwigRenderer
         return new ChainLoader([$loader1, $loader2]);
     }
 
+    private function validatePaths(array $paths): array
+    {
+        foreach ($paths as $i => $path) {
+            if (!is_dir($path)) {
+                $this->logger->error(sprintf('Directory "%s" does not exist', $path));
+                // we remove not existing paths here because Twig's loader would throw an error
+                unset($paths[$i]);
+            }
+        }
+        return array_values($paths);
+    }
+    
     /**
      * @return mixed
      */

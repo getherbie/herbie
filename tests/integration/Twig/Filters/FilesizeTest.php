@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace unit\Twig\Filters;
 
 use herbie\Application;
-use herbie\SystemException;
 use herbie\TwigRenderer;
-use Twig\Error\LoaderError;
 use TypeError;
 
 final class FilesizeTest extends \Codeception\Test\Unit
@@ -16,12 +14,8 @@ final class FilesizeTest extends \Codeception\Test\Unit
 
     protected function _setUp(): void
     {
-        try {
-            $app = new Application(dirname(__DIR__, 2) . '/Fixtures/site', dirname(__DIR__, 4) . '/vendor');
-            $this->twigRenderer = $app->getContainer()->get(TwigRenderer::class);
-            $this->twigRenderer->init();
-        } catch (LoaderError|SystemException $e) {
-        }
+        $app = new Application(dirname(__DIR__, 2) . '/Fixtures/site', dirname(__DIR__, 4) . '/vendor');
+        ($this->twigRenderer = $app->getTwigRenderer())->init();
     }
 
     public function testFilesizeWithWrongType(): void

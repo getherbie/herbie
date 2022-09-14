@@ -18,16 +18,9 @@ final class JsonDataRepository implements DataRepositoryInterface
 
     /**
      * YamlDataRepository constructor.
-     * @throws SystemException
      */
     public function __construct(string $path)
     {
-        if (!is_dir($path)) {
-            throw SystemException::directoryNotExist($path);
-        }
-        if (!is_readable($path)) {
-            throw SystemException::directoryNotReadable($path);
-        }
         $this->path = $path;
         $this->extensions = ['json'];
     }
@@ -51,8 +44,13 @@ final class JsonDataRepository implements DataRepositoryInterface
         return $data;
     }
 
+    /**
+     * @throws SystemException
+     */
     private function scanDataDir(): array
     {
+        $this->validatePath();
+        
         $dataFiles = [];
 
         $files = scandir($this->path);
@@ -77,6 +75,19 @@ final class JsonDataRepository implements DataRepositoryInterface
         return $dataFiles;
     }
 
+    /**
+     * @throws SystemException
+     */
+    private function validatePath(): void
+    {
+        if (!is_dir($this->path)) {
+            throw SystemException::directoryNotExist($this->path);
+        }
+        if (!is_readable($this->path)) {
+            throw SystemException::directoryNotReadable($this->path);
+        }
+    }
+    
     private function parseDataFile(string $filepath): array
     {
         return json_decode(file_get_contents($filepath), true);

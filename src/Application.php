@@ -15,7 +15,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
@@ -30,7 +29,7 @@ define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 define('HERBIE_API_VERSION', 2);
 
-final class Application implements LoggerAwareInterface
+final class Application
 {
     private Container $container;
     private array $filters;
@@ -44,8 +43,12 @@ final class Application implements LoggerAwareInterface
      * Application constructor
      * @throws SystemException
      */
-    public function __construct(string $sitePath, string $vendorDir = '../vendor')
-    {
+    public function __construct(
+        string $sitePath, 
+        string $vendorDir = '../vendor', 
+        ?LoggerInterface $logger = null, 
+        ?CacheInterface $cache = null
+    ) {
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
 
@@ -56,14 +59,14 @@ final class Application implements LoggerAwareInterface
         $this->applicationMiddlewares = [];
         $this->routeMiddlewares = [];
 
-        $this->init();
+        $this->init($logger, $cache);
     }
 
     /**
      * Initialize the application.
      * @throws SystemException
      */
-    private function init(): void
+    private function init(?LoggerInterface $logger = null, ?CacheInterface $cache = null): void
     {
         $logDir = $this->sitePath . '/runtime/log';
 
@@ -72,14 +75,24 @@ final class Application implements LoggerAwareInterface
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
-        if (!is_dir($logDir)) {
-            throw SystemException::directoryNotExist($logDir);
-        }
-        if (!is_writable($logDir)) {
-            throw SystemException::directoryNotWritable($logDir);
+        $this->container = $this->initContainer();
+
+        if ($logger) {
+            $this->container->set(LoggerInterface::class, $logger);
         }
 
-        $this->container = $this->initContainer();
+        if ($cache) {
+            $this->container->set(NullCache::class, $cache);
+        }
+
+        if (!is_dir($logDir)) {
+            $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
+        }
+        
+        if (!is_writable($logDir)) {
+            $this->getLogger()->error(sprintf('Directory "%s" is not writable', $logDir));
+        }
+        
         $config = $this->container->get(Config::class);
 
         setlocale(LC_ALL, $config->get('locale'));
@@ -359,6 +372,7 @@ final class Application implements LoggerAwareInterface
                 $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
+                $c->get(LoggerInterface::class),
                 $c->get(Site::class),
                 $c->get(TwigCoreExtension::class),
                 $c->get(TwigPlusExtension::class)
@@ -434,18 +448,6 @@ final class Application implements LoggerAwareInterface
         return $this;
     }
 
-    public function setLogger(LoggerInterface $logger): Application
-    {
-        $this->container->set(LoggerInterface::class, $logger);
-        return $this;
-    }
-
-    public function setCache(CacheInterface $cache): Application
-    {
-        $this->container->set(NullCache::class, $cache);
-        return $this;
-    }
-
     public function addTwigFilter(TwigFilter $twigFilter): Application
     {
         $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
@@ -491,39 +493,43 @@ final class Application implements LoggerAwareInterface
         return $this;
     }
 
-    private function getPluginManager(): PluginManager
+    public function getConfig(): Config
+    {
+        return $this->container->get(Config::class);
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->container->get(LoggerInterface::class);
+    }
+    
+    public function getPluginManager(): PluginManager
     {
         return $this->container->get(PluginManager::class);
     }
 
-    private function getTranslator(): Translator
+    public function getTranslator(): Translator
     {
         return $this->container->get(Translator::class);
     }
 
-    private function getTwigRenderer(): TwigRenderer
+    public function getTwigRenderer(): TwigRenderer
     {
         return $this->container->get(TwigRenderer::class);
     }
 
-    private function getMiddlewareDispatcher(): MiddlewareDispatcher
+    public function getMiddlewareDispatcher(): MiddlewareDispatcher
     {
         return $this->container->get(MiddlewareDispatcher::class);
     }
 
-    private function getServerRequest(): ServerRequestInterface
+    public function getServerRequest(): ServerRequestInterface
     {
         return $this->container->get(ServerRequestInterface::class);
     }
 
-    private function getEventManager(): EventManager
+    public function getEventManager(): EventManager
     {
         return $this->container->get(EventManager::class);
-    }
-    
-    // NOTE should be used for testing only
-    public function getContainer(): Container
-    {
-        return $this->container;
     }
 }
