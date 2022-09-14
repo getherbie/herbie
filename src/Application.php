@@ -44,9 +44,9 @@ final class Application
      * @throws SystemException
      */
     public function __construct(
-        string $sitePath, 
-        string $vendorDir = '../vendor', 
-        ?LoggerInterface $logger = null, 
+        string $sitePath,
+        string $vendorDir = '../vendor',
+        ?LoggerInterface $logger = null,
         ?CacheInterface $cache = null
     ) {
         #register_shutdown_function(new FatalErrorHandler());

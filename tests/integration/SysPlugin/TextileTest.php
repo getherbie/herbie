@@ -7,7 +7,7 @@ namespace integration\SysPlugin;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class MarkdownTest extends \Codeception\Test\Unit
+final class TextileTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 
@@ -27,39 +27,39 @@ final class MarkdownTest extends \Codeception\Test\Unit
         );
     }
 
-    public function testMarkdownFilter(): void
+    public function testTextileFilter(): void
     {
         $this->assertSame(
-            '<h1>This is markdown</h1>',
-            $this->twigRenderer->renderString('{{ "# This is markdown"|markdown }}')
+            '<h1>This is textile</h1>',
+            $this->twigRenderer->renderString('{{ "h1. This is textile"|textile }}')
         );
     }
 
-    public function testMarkdownFilterWithDisabledFilter(): void
+    public function testTextileFilterWithDisabledFilter(): void
     {
         $twigRenderer = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/markdown',
+            dirname(__DIR__) . '/Fixtures/textile',
             dirname(__DIR__, 3) . '/vendor'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
-        $twigRenderer->renderString('{{ "# This is markdown"|markdown }}');
+        $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
     }
     
-    public function testMarkdownFunction(): void
+    public function testTextileFunction(): void
     {
         $this->assertSame(
-            '<h1>This is markdown</h1>',
-            $this->twigRenderer->renderString('{{ markdown("# This is markdown") }}')
+            '<h1>This is textile</h1>',
+            $this->twigRenderer->renderString('{{ textile("h1. This is textile") }}')
         );
     }
 
-    public function testMarkdownFunctionWithDisabledFunction(): void
+    public function testTextileFunctionWithDisabledFunction(): void
     {
         $twigRenderer = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/markdown',
+            dirname(__DIR__) . '/Fixtures/textile',
             dirname(__DIR__, 3) . '/vendor'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
-        $twigRenderer->renderString('{{ markdown("# This is markdown") }}');
+        $twigRenderer->renderString('{{ textile("# This is textile") }}');
     }
 }
