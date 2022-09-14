@@ -5,4 +5,4 @@ hidden: 1
 
 h1. Textile Page
 
-This is a textile formatted page.
+p. This is a textile formatted page.

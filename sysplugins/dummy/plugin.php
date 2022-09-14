@@ -108,21 +108,35 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
+    private function wrapHtmlComment(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
+    }
+    
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
+        $context .= $this->wrapHtmlComment('dummy-plugin-render-segment', __METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
     public function renderContent(array $context, array $params, FilterInterface $filter): array
     {
         $this->logger->debug(__METHOD__);
+        foreach ($context as $key => $value) {
+            $context[$key] = $context[$key] . $this->wrapHtmlComment('dummy-plugin-render-content', __METHOD__);
+        }
         return $filter->next($context, $params, $filter);
     }
 
     public function renderLayout(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
+        $context = str_replace(
+            '</body>',
+            $this->wrapHtmlComment('dummy-plugin-render-layout', __METHOD__) . '</body>',
+            $context
+        );
         return $filter->next($context, $params, $filter);
     }
 
@@ -159,9 +173,9 @@ final class DummySysPlugin implements PluginInterface
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
-        $request = $request->withAttribute('X-DummyPlugin', (string)time());
+        $request = $request->withAttribute('X-Plugin-Dummy', (string)time());
         $response = $next->handle($request);
-        return $response->withHeader('X-DummyPlugin', (string)time());
+        return $response->withHeader('X-Plugin-Dummy', (string)time());
     }
 
     public function twigDummyFilter(string $content): string
