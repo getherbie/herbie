@@ -63,7 +63,21 @@ class PageTest extends \Codeception\Test\Unit
 
     public function testLoad()
     {
-        $page = $this->repository->find('@page/segments.md');
+        $page = (new PageFactory())->newPage(
+            'id',
+            'parent',
+            [
+                'title' => 'Segments'
+            ],
+            [
+                'default' => 'Default Segment',
+                '1' => 'Segment 1',
+                '2' => 'Segment 2',
+                'three' => 'Segment 3',
+                '-1' => 'Invalid Segment',
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789' => 'Last Segment',
+            ]
+        );
         $this->assertSame('Segments', $page->getTitle());
         $this->assertSame('default', $page->getLayout());
         $this->assertSame('Default Segment', trim($page->getSegment('default')));
@@ -108,14 +122,9 @@ class PageTest extends \Codeception\Test\Unit
 
     public function testToArray()
     {
-        date_default_timezone_set('Europe/Zurich');
-
-        $page = $this->repository->find('@page/pagedata.md');
-        $page->authors = [];
-        $array = [
+        $data = [
             'id' => '@page/pagedata.md',
             'parent' => '',
-            'segments' => ['default' => ''],
             'authors' => [],
             'cached' => 1,
             'categories' => [],
@@ -136,7 +145,10 @@ class PageTest extends \Codeception\Test\Unit
             'twig' => 1,
             'type' => 'my_type'
         ];
-        $this->assertSame($array, $page->toArray());
+        
+        $page = (new PageFactory)->newPage('@page/pagedata.md', 'parent', $data, []);
+        $this->assertEquals(array_merge($data, ['segments' => []]), $page->toArray());
+        
         return $page;
     }
 

@@ -94,6 +94,10 @@ Run unit tests
 
     php vendor/bin/codecept run unit
 
+Run integration tests
+
+    php vendor/bin/codecept run integration
+
 Run all tests
 
 Run acceptance tests
