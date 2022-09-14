@@ -72,7 +72,7 @@ final class FilterTest extends \Codeception\Test\Unit
         $this->assertSame($expected, $actual);
     }
     
-    public function testFilterWithDifferentOperators()
+    public function testFilterArrayWithDifferentOperators()
     {
         $twigArray = <<<TWIG
             {%- set array = [{key: 'abcd'}, {key: 'efgh'}, {key: 'ijkl'}, {key: 'mnop'}, {key: 'qrst'}, {key: 'uvwx'}] -%}    
