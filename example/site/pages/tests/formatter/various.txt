@@ -1,0 +1,18 @@
+---
+title: Various
+hidden: 1
+---
+
+<h1>Various Page</h1>
+
+{% apply markdown %}
+## Markdown Filter
+{% endapply %}
+
+{{ markdown('## Markdown Function') }}
+
+{% apply textile %}
+h2. Textile Filter
+{% endapply %}
+
+{{ markdown('## Textile Function') }}

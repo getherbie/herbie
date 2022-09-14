@@ -3,6 +3,6 @@ title: Textile
 hidden: 1
 ---
 
-h1. Textile Testpage
+h1. Textile Page
 
-Hello, this is textile.
+This is a textile formatted page.

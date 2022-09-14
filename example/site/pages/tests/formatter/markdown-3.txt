@@ -1,0 +1,9 @@
+---
+title: Markdown
+hidden: 1
+format: markdown
+---
+
+# Markdown Page
+
+This is a markdown formatted page.
