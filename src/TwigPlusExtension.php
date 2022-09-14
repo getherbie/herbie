@@ -82,8 +82,7 @@ final class TwigPlusExtension extends AbstractExtension
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator);
-        $filterIterator->setEnabled(!$showHidden);
+        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 
         $asciiTree = new PageTreeTextRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
@@ -400,9 +399,8 @@ final class TwigPlusExtension extends AbstractExtension
     ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator);
-        $filterIterator->setEnabled(!$showHidden);
-
+        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
+        
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
