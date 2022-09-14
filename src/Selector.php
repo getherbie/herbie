@@ -156,9 +156,9 @@ final class Selector
         return $value1 <= $value2;
     }
 
-    protected function matchBitwiseAnd(string $value1, string $value2): int
+    protected function matchBitwiseAnd(string $value1, string $value2): bool
     {
-        return ((int)$value1) & ((int)$value2);
+        return ((int)$value1 & (int)$value2) > 0;
     }
 
     protected function matchContains(string $value1, string $value2): bool
