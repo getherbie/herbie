@@ -1,5 +1,5 @@
 ---
-title: My Title
+title: Page Data
 layout: layout.html
 type: my_type
 date: 2013-12-24

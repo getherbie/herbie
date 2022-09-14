@@ -66,7 +66,7 @@ final class TwigCoreExtension extends AbstractExtension
             new TwigFilter('filter', [$this, 'filterFilter'], ['is_variadic' => true]),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
             new TwigFilter('strftime', [$this, 'filterStrftime']),
-            new TwigFilter('visible', [$this, 'filterVisible'])
+            new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
         ];
     }
 
