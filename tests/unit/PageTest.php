@@ -127,12 +127,12 @@ class PageTest extends \Codeception\Test\Unit
             'keep_extension' => 0,
             'layout' => 'layout.html',
             'menu' => '',
-            'modified' => '2022-09-10T08:57:53+02:00',
+            'modified' => '2022-09-13T04:43:13+02:00',
             'path' => '@page/pagedata.md',
             'redirect' => [],
             'route' => '',
             'tags' => [],
-            'title' => 'My Title',
+            'title' => 'Page Data',
             'twig' => 1,
             'type' => 'my_type'
         ];
@@ -192,6 +192,6 @@ class PageTest extends \Codeception\Test\Unit
      */
     public function testToString(Page $page)
     {
-        $this->assertSame('My Title', strval($page));
+        $this->assertSame('Page Data', strval($page));
     }
 }
