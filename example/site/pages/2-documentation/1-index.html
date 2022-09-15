@@ -1,0 +1,110 @@
+---
+title: Documentation
+---
+
+<h1>Documentation</h1>
+
+<ul>
+    <li><a href="/documentation#variables">Variables</a></li>
+    <li><a href="/documentation#twig-functions">Twig Functions</a></li>
+    <li><a href="/documentation#twig-filters">Twig Filters</a></li>
+    <li><a href="/documentation#twig-tests">Twig Tests</a></li>
+    <li><a href="/documentation#events">Events</a></li>
+    <li><a href="/documentation#filters">Filters</a></li>
+    <li><a href="/documentation#middlewares">Middlewares</a></li>
+    <li><a href="/documentation#plugins">Plugins</a></li>
+</ul>
+
+<h2 id="variables">Variables</h2>
+
+{{ page.excerpt }}
+
+<h3>Global Variables</h3>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_global")|raw }}
+
+<h3>Site Variables</h3>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_site")|raw }}
+
+<h3>Page Variables</h3>
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_page")|raw }}
+
+<h2 id="twig-functions">Twig Functions</h2>
+
+<p>In addition to the <a href="https://twig.symfony.com/doc/2.x/">standard functions</a> of Twig, the following functions are available in Herbie.</p>
+
+{{ snippet(path="@site/snippets/twig_features.twig", type="twig_functions")|raw }}
+
+<h2 id="twig-filters">Twig Filters</h2>
+
+<p>In addition to the <a href="https://twig.symfony.com/doc/2.x/">standard filters</a> of Twig, the following filters are available in Herbie.</p>
+
+{{ snippet(path="@site/snippets/twig_features.twig", type="twig_filters")|raw }}
+
+<h2 id="twig-tests">Twig Tests</h2>
+
+<p>In addition to the <a href="https://twig.symfony.com/doc/2.x/">standard tests</a> of Twig, the following tests are available in Herbie.</p>
+
+{{ snippet(path="@site/snippets/twig_features.twig", type="twig_tests")|raw }}
+
+<h2 id="events">Events</h2>
+
+<p>
+    Herbie is using an event manager inspired by <a href="https://docs.laminas.dev/laminas-eventmanager/">Laminas' EventManager</a> component.
+    During the application lifecycle the following events are triggered.
+</p>
+
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+    <tr>
+        <th width="5%"></th>
+        <th width="20%">Name</th>
+        <th width="75%">Description</th>
+    </tr>
+    </thead>
+    {% for event in site.data.events %}
+    <tr>
+        <td>{{ event.order }}</td>
+        <td>{{ event.name }}</td>
+        <td>{{ event.desc }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2 id="filters">Filters</h2>
+
+<p>
+    Herbie is using an intercepting filter inspired by <a href="https://docs.laminas.dev/laminas-eventmanager/intercepting-filters/">Laminas' FilterChain</a> for providing a mechanism to alter the workflow of the rendering process.
+    During the application lifecycle The following filters are used.
+</p>
+
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+    <tr>
+        <th width="5%"></th>
+        <th width="20%">Name</th>
+        <th width="75%">Description</th>
+    </tr>
+    </thead>
+    {% for filter in site.data.filters %}
+    <tr>
+        <td>{{ filter.order }}</td>
+        <td>{{ filter.name }}</td>
+        <td>{{ filter.desc }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>The given architecture allows you to attach your own listeners and filters.
+    This can be done in your custom Herbie plugin or in the <code>index.php</code> bootstrap file.
+</p>
+
+<h2 id="middlewares">Middlewares</h2>
+
+<p>To be done.</p>
+
+<h2 id="plugins">Plugins</h2>
+
+<p>To be done.</p>
