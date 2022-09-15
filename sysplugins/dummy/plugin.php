@@ -13,10 +13,12 @@ namespace herbie\sysplugin;
 use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\PluginInterface;
+use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Twig\TwigFilter;
 
 final class DummySysPlugin implements PluginInterface
 {
@@ -108,7 +110,7 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    private function wrapHtmlComment(string $class, string $content): string
+    private function wrapHtmlBlock(string $class, string $content): string
     {
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
@@ -116,7 +118,7 @@ final class DummySysPlugin implements PluginInterface
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
-        $context .= $this->wrapHtmlComment('dummy-plugin-render-segment', __METHOD__);
+        $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
@@ -124,7 +126,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         foreach ($context as $key => $value) {
-            $context[$key] = $context[$key] . $this->wrapHtmlComment('dummy-plugin-render-content', __METHOD__);
+            $context[$key] = $context[$key] . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
         }
         return $filter->next($context, $params, $filter);
     }
@@ -134,7 +136,7 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
         $context = str_replace(
             '</body>',
-            $this->wrapHtmlComment('dummy-plugin-render-layout', __METHOD__) . '</body>',
+            $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
             $context
         );
         return $filter->next($context, $params, $filter);
@@ -168,25 +170,42 @@ final class DummySysPlugin implements PluginInterface
     public function onTwigInitialized(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        /** @var TwigRenderer $twigRenderer */
+        $twigRenderer = $event->getTarget();
+        $twigRenderer->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+            return $content . ' Dummy Filter Dynamic';
+        }));
     }
 
     public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
         $request = $request->withAttribute('X-Plugin-Dummy', (string)time());
-        $response = $next->handle($request);
-        return $response->withHeader('X-Plugin-Dummy', (string)time());
+        $response = $next->handle($request)
+            ->withHeader('X-Plugin-Dummy', (string)time());
+
+        if ($request->getUri()->getPath() === '/tests/plugins/dummy') {
+            $content = (string)$response->getBody();
+            $newContent = str_replace('</body>', '<p>This is from Dummy Middleware.</p></body', $content);
+            $response->getBody()->rewind();
+            $response->getBody()->write($newContent);
+            return $response;
+        }
+        
+        return $response;
     }
 
     public function twigDummyFilter(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        $content .= ' Dummy Filter';
         return $content;
     }
 
     public function twigDummyFunction(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        $content .= ' Dummy Function';
         return $content;
     }
 
