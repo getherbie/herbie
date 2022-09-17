@@ -1,6 +1,6 @@
 ---
 title: Various
-hidden: 1
+hidden: 0
 ---
 
 <h1>Various Page</h1>

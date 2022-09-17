@@ -1,6 +1,6 @@
 ---
 title: Text
-hidden: 1
+hidden: 0
 ---
 
 Text Page
