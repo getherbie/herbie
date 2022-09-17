@@ -126,7 +126,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         foreach ($context as $key => $value) {
-            $context[$key] = $context[$key] . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
+            $context[$key] = $value . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
         }
         return $filter->next($context, $params, $filter);
     }
@@ -145,26 +145,31 @@ final class DummySysPlugin implements PluginInterface
     public function onContentRendered(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        // TODO add test
     }
 
     public function onLayoutRendered(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        // TODO add test
     }
 
     public function onPluginsAttached(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        // TODO add test
     }
 
     public function onResponseEmitted(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        // TODO add test
     }
 
     public function onResponseGenerated(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        // TODO add test
     }
 
     public function onTwigInitialized(EventInterface $event): void
