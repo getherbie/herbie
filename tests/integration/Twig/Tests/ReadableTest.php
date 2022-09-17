@@ -19,10 +19,16 @@ final class ReadableTest extends \Codeception\Test\Unit
 
     public function testReadableWithoutCondition(): void
     {
-        $twig = <<<TWIG
-            {{- readable -}}
-        TWIG;
+        $twig = '{{- readable -}}';
+        
+        // disabled strict variables
+        $this->twigRenderer->getTwigEnvironment()->disableStrictVariables();
         $this->assertSame('', $this->twigRenderer->renderString($twig));
+        
+        // enabled strict variables
+        $this->expectException(\Twig\Error\RuntimeError::class);
+        $this->twigRenderer->getTwigEnvironment()->enableStrictVariables();
+        $this->twigRenderer->renderString($twig);
     }
 
     public function testReadableWithEmptyParam(): void

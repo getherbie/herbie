@@ -19,10 +19,16 @@ final class WritableTest extends \Codeception\Test\Unit
 
     public function testWritableWithoutCondition(): void
     {
-        $twig = <<<TWIG
-            {{- writable -}}
-        TWIG;
+        $twig = '{{- writable -}}';
+
+        // disabled strict variables
+        $this->twigRenderer->getTwigEnvironment()->disableStrictVariables();
         $this->assertSame('', $this->twigRenderer->renderString($twig));
+
+        // enabled strict variables
+        $this->expectException(\Twig\Error\RuntimeError::class);
+        $this->twigRenderer->getTwigEnvironment()->enableStrictVariables();
+        $this->twigRenderer->renderString($twig);
     }
 
     public function testWritableWithEmptyParam(): void
