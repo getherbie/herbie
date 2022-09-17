@@ -85,11 +85,17 @@ final class TwigRenderer
             }
             $cache = $cachePath;
         }
-
-        $this->twig = new TwigEnvironment($loader, [
-            'debug' => $this->config['twig']['debug'],
-            'cache' => $cache
-        ]);
+        
+        // see \Twig\Environment default options
+        $twigOptions = [
+            'autoescape'       => $this->config['twig']['autoescape'] ?? 'html',
+            'cache'            => $cache,
+            'charset'          => $this->config['twig']['charset'] ?? 'UTF-8',
+            'debug'            => $this->config['twig']['debug'] ?? false,
+            'strict_variables' => $this->config['twig']['strictVariables'] ?? false,
+        ];
+        
+        $this->twig = new TwigEnvironment($loader, $twigOptions);
 
         if (!empty($this->config['twig']['debug'])) {
             $this->twig->addExtension(new DebugExtension());
@@ -105,6 +111,11 @@ final class TwigRenderer
 
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
+    }
+    
+    public function getTwigEnvironment(): TwigEnvironment
+    {
+        return $this->twig;
     }
 
     /**

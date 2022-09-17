@@ -54,7 +54,10 @@ return [
     ],
     'twig' => [
         'debug' => false,
+        'charset' => 'UTF-8',
         'cache' => false,
+        'strictVariables' => true,
+        'autoescape' => 'html',
         'functionsPath' => 'SITE_PATH/twig/functions',
         'filtersPath' => 'SITE_PATH/twig/filters',
         'testsPath' => 'SITE_PATH/twig/tests'
