@@ -184,7 +184,7 @@ final class DummySysPlugin implements PluginInterface
         $response = $next->handle($request)
             ->withHeader('X-Plugin-Dummy', (string)time());
 
-        if ($request->getUri()->getPath() === '/tests/plugins/dummy') {
+        if ($request->getUri()->getPath() === '/plugins/dummy') {
             $content = (string)$response->getBody();
             $newContent = str_replace('</body>', '<p>This is from Dummy Middleware.</p></body', $content);
             $response->getBody()->rewind();

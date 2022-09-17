@@ -9,7 +9,7 @@ class PageFormatterCest
 {
     public function testMarkdownPageWithMdExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/markdown-1');
+        $I->amOnPage('/formatter/markdown-1');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Markdown Page', 'h1');
         $I->see('This is a markdown formatted page.', 'p');
@@ -17,7 +17,7 @@ class PageFormatterCest
 
     public function testMarkdownPageWithMarkdownExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/markdown-2');
+        $I->amOnPage('/formatter/markdown-2');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Markdown Page', 'h1');
         $I->see('This is a markdown formatted page.', 'p');
@@ -25,7 +25,7 @@ class PageFormatterCest
 
     public function testMarkdownPageWithTextExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/markdown-3');
+        $I->amOnPage('/formatter/markdown-3');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Markdown Page', 'h1');
         $I->see('This is a markdown formatted page.', 'p');
@@ -33,7 +33,7 @@ class PageFormatterCest
     
     public function testPageWithTextileExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/textile');
+        $I->amOnPage('/formatter/textile');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Textile Page', 'h1');
         $I->see('This is a textile formatted page.', 'p');
@@ -41,7 +41,7 @@ class PageFormatterCest
 
     public function testPageWithHtmExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/htm');
+        $I->amOnPage('/formatter/htm');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('HTM Page', 'h1');
         $I->see('This is a HTM formatted page.', 'p');
@@ -49,7 +49,7 @@ class PageFormatterCest
 
     public function testPageWithHtmlExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/html');
+        $I->amOnPage('/formatter/html');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('HTML Page', 'h1');
         $I->see('This is a HTML formatted page.', 'p');
@@ -57,7 +57,7 @@ class PageFormatterCest
 
     public function testPageWithTextExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/text');
+        $I->amOnPage('/formatter/text');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Text Page');
         $I->see('This is a text formatted page.');
@@ -65,7 +65,7 @@ class PageFormatterCest
 
     public function testPageWithRssExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/rss');
+        $I->amOnPage('/formatter/rss');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('RSS Page');
         $I->see('This is a RSS formatted page.');
@@ -73,7 +73,7 @@ class PageFormatterCest
     
     public function testPageWithXmlExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/xml');
+        $I->amOnPage('/formatter/xml');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('XML Page');
         $I->see('This is a XML formatted page.');
@@ -81,7 +81,7 @@ class PageFormatterCest
 
     public function testPageWithWrongExtension(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/invalid');
+        $I->amOnPage('/formatter/invalid');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->see('Page not found');
         $I->see('Oops, something got wrong!');
@@ -89,7 +89,7 @@ class PageFormatterCest
 
     public function testTextPageWithVariousFormattings(AcceptanceTester $I)
     {
-        $I->amOnPage('/tests/formatter/various');
+        $I->amOnPage('/formatter/various');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Markdown Filter', 'h2');
         $I->see('Markdown Function', 'h2');

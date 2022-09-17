@@ -1,6 +1,6 @@
 {% for item in attribute(site.data, type) %}
 <div class="doc-function">
-    <h4>{{ attribute(item, 'name') }}</h4>
+    <h3>{{ attribute(item, 'name') }}</h3>
     <p>
         {{ attribute(item, 'desc') }}
         {% set see = attribute(item, 'see') %}

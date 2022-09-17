@@ -7,10 +7,10 @@ use Codeception\Util\HttpCode;
 
 class DummyPluginCest
 {
-    public function testMarkdownPageWithMdExtension(AcceptanceTester $I)
+    public function testDummyPlugin(AcceptanceTester $I)
     {
         /** @var \Codeception\Lib\Interfaces\Web $I */
-        $I->amOnPage('/tests/plugins/dummy');
+        $I->amOnPage('/plugins/dummy');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeInTitle('Dummy Plugin');
         $I->see('Dummy Plugin', 'h1');

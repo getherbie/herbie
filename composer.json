@@ -53,7 +53,8 @@
         "netcarver/textile": "^3.7",
         "codeception/codeception": "^4.2",
         "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0"
+        "codeception/module-asserts": "^1.0.0",
+        "symfony/process": "^5.4"
     },
     "scripts": {
         "test": [
