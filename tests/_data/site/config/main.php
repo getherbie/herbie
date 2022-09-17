@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'language' => 'en',
-    'locale' => 'en_EN',
+    'language' => 'de',
+    'locale' => 'de_DE',
     'theme' => 'default',
     'niceUrls' => true,
     'fileExtensions' => [

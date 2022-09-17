@@ -312,7 +312,7 @@ final class TwigCoreExtension extends AbstractExtension
         return strtr($template, $replace);
     }
 
-    public function functionTranslate(string $category, string $message, array $params = []): string
+    public function functionTranslate(string $category = '', string $message = '', array $params = []): string
     {
         return $this->translator->translate($category, $message, $params);
     }

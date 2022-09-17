@@ -49,7 +49,17 @@ final class Translator
         if (empty($params)) {
             return $message;
         }
-        return strtr($message, $params);
+        return $this->replacePlaceholders($message, $params);
+    }
+    
+    private function replacePlaceholders(string $message, array $params): string
+    {
+        $paramsWithBrackets = [];
+        foreach ($params as $key => $value) {
+            $key = '{' . $key . '}';
+            $paramsWithBrackets[$key] = $value;
+        }
+        return strtr($message, $paramsWithBrackets);
     }
 
     private function loadMessages(): void
@@ -58,7 +68,8 @@ final class Translator
             foreach ($paths as $path) {
                 $messagePath = sprintf('%s/%s.php', $path, $this->language);
                 if (file_exists($messagePath)) {
-                    $this->messages[$this->language][$category] = require_once($messagePath);
+                    // NOTE this must be "require" here, not only "require_once"
+                    $this->messages[$this->language][$category] = require($messagePath);
                 }
             }
         }
