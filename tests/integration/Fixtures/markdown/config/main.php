@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'twig' => [
+        'debug' => true,
+    ],
     'enabledSysPlugins' => 'markdown',
     'plugins' => [
         'markdown' => [
