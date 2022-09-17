@@ -1,7 +1,7 @@
 [
     {
-        "name": "absurl",
-        "code": "string absurl(string route)",
+        "name": "abs_url",
+        "code": "string abs_url(string route)",
         "desc": "Returns the absolute URL for a given route.",
         "params": [
             {

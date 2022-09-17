@@ -89,6 +89,7 @@ final class TwigCoreExtension extends AbstractExtension
             new TwigFunction('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
             new TwigFunction('translate', [$this, 'functionTranslate']),
             new TwigFunction('url', [$this, 'functionUrl']),
+            new TwigFunction('abs_url', [$this, 'functionAbsUrl']),
             new TwigFunction('mail_link', [$this, 'functionMailLink'], ['is_safe' => ['html']])
         ];
     }
@@ -316,14 +317,16 @@ final class TwigCoreExtension extends AbstractExtension
         return $this->translator->translate($category, $message, $params);
     }
 
-    public function functionUrl(string $route, bool $absolute = false): string
+    public function functionUrl(string $route = ''): string
     {
-        if ($absolute) {
-            return $this->urlGenerator->generateAbsolute($route);
-        }
         return $this->urlGenerator->generate($route);
     }
 
+    public function functionAbsUrl(string $route = ''): string
+    {
+        return $this->urlGenerator->generateAbsolute($route);
+    }
+    
     public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
         $attribs['alt'] = $attribs['alt'] ?? '';
