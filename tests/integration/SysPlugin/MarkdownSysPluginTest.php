@@ -6,7 +6,7 @@ namespace integration\SysPlugin;
 
 use herbie\Application;
 
-final class MarkdownTest extends \Codeception\Test\Unit
+final class MarkdownSysPluginTest extends \Codeception\Test\Unit
 {
     protected Application $app;
 

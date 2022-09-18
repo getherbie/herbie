@@ -7,7 +7,7 @@ namespace integration\SysPlugin;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class TextileTest extends \Codeception\Test\Unit
+final class TextileSysPluginTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 

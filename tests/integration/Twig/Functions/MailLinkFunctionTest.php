@@ -8,7 +8,7 @@ use ArgumentCountError;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class MailLinkTest extends \Codeception\Test\Unit
+final class MailLinkFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
     

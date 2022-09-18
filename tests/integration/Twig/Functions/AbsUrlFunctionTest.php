@@ -7,7 +7,7 @@ namespace Tests\Unit\Twig\Functions;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class AbsUrlTest extends \Codeception\Test\Unit
+final class AbsUrlFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
     

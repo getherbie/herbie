@@ -7,7 +7,7 @@ namespace unit\Twig\Filters;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class SlugifyTest extends \Codeception\Test\Unit
+final class SlugifyFilterTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 

@@ -8,7 +8,7 @@ use ArgumentCountError;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class UrlTest extends \Codeception\Test\Unit
+final class UrlFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
     

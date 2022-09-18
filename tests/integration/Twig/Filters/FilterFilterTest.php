@@ -7,7 +7,7 @@ namespace unit\Twig\Filters;
 use herbie\Application;
 use herbie\TwigRenderer;
 
-final class FilterTest extends \Codeception\Test\Unit
+final class FilterFilterTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 

@@ -5,9 +5,9 @@ namespace Tests\Acceptance;
 use AcceptanceTester;
 use Codeception\Util\HttpCode;
 
-class DummyPluginCest
+class DummySysPluginCest
 {
-    public function testDummyPlugin(AcceptanceTester $I)
+    public function testDummySysPlugin(AcceptanceTester $I)
     {
         /** @var \Codeception\Lib\Interfaces\Web $I */
         $I->amOnPage('/plugins/dummy');

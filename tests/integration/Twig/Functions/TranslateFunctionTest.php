@@ -6,7 +6,7 @@ namespace Tests\Unit\Twig\Functions;
 
 use herbie\Application;
 
-final class TranslateTest extends \Codeception\Test\Unit
+final class TranslateFunctionTest extends \Codeception\Test\Unit
 {
     protected Application $app;
     

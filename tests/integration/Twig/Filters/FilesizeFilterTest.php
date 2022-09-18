@@ -8,7 +8,7 @@ use herbie\Application;
 use herbie\TwigRenderer;
 use TypeError;
 
-final class FilesizeTest extends \Codeception\Test\Unit
+final class FilesizeFilterTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 
