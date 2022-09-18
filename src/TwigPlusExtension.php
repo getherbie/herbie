@@ -237,7 +237,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionPageTaxonomies(
-        Page $page,
+        ?Page $page = null,
         string $pageRoute = '',
         bool $renderAuthors = true,
         bool $renderCategories = true,
