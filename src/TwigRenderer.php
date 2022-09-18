@@ -37,9 +37,7 @@ final class TwigRenderer
     private LoggerInterface $logger;
     
     private Site $site;
-
-    private TwigPlusExtension $twigPlusExtension;
-
+    
     /**
      * TwigRenderer constructor.
      */
@@ -48,8 +46,7 @@ final class TwigRenderer
         Environment $environment,
         EventManager $eventManager,
         LoggerInterface $logger,
-        Site $site,
-        TwigPlusExtension $twigPlusExtension
+        Site $site
     ) {
         $this->initialized = false;
         $this->environment = $environment;
@@ -57,7 +54,6 @@ final class TwigRenderer
         $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->site = $site;
-        $this->twigPlusExtension = $twigPlusExtension;
     }
 
     /**
@@ -98,9 +94,6 @@ final class TwigRenderer
         }
 
         $this->eventManager->trigger('onTwigAddExtension', $this);
-        
-        $this->twigPlusExtension->setTwigRenderer($this);
-        $this->twig->addExtension($this->twigPlusExtension);
 
         $this->addTwigPlugins();
 

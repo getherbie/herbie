@@ -7,5 +7,5 @@ return [
         'debug' => true,
         'cache' => false,
     ],
-    'enabledSysPlugins' => 'twig_core,dummy,imagine,markdown,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,textile',
 ];

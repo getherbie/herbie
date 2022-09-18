@@ -8,8 +8,21 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\sysplugin;
 
+use herbie\Environment;
+use herbie\Page;
+use herbie\PageItem;
+use herbie\PageRepositoryInterface;
+use herbie\PageTree;
+use herbie\PageTreeFilterCallback;
+use herbie\PageTreeFilterIterator;
+use herbie\PageTreeHtmlRenderer;
+use herbie\PageTreeIterator;
+use herbie\PageTreeTextRenderer;
+use herbie\Pagination;
+use herbie\TwigRenderer;
+use herbie\UrlGenerator;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -32,10 +45,12 @@ final class TwigPlusExtension extends AbstractExtension
     public function __construct(
         Environment $environment,
         PageRepositoryInterface $pageRepository,
+        TwigRenderer $twigRenderer,
         UrlGenerator $urlGenerator
     ) {
         $this->environment = $environment;
         $this->pageRepository = $pageRepository;
+        $this->twigRenderer = $twigRenderer;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -63,14 +78,6 @@ final class TwigPlusExtension extends AbstractExtension
             new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
             new TwigFunction('taxonomy_tags', [$this, 'functionTaxonomyTags'], $options)
         ];
-    }
-
-    /**
-     * @param TwigRenderer $twigRenderer
-     */
-    public function setTwigRenderer(TwigRenderer $twigRenderer): void
-    {
-        $this->twigRenderer = $twigRenderer;
     }
 
     public function functionAsciiTree(

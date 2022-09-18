@@ -13,7 +13,7 @@ return [
         'strictVariables' => false,
     ],
     'enabledPlugins' => 'simplecontact,simplesearch',
-    'enabledSysPlugins' => 'twig_core,dummy,imagine,markdown,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,textile',
     'components' => [
         'urlMatcher' => [
             'rules' => [

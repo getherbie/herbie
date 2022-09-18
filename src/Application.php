@@ -348,22 +348,13 @@ final class Application
             return $translator;
         });
 
-        $c->set(TwigPlusExtension::class, function (Container $c) {
-            return new TwigPlusExtension(
-                $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class),
-                $c->get(UrlGenerator::class)
-            );
-        });
-
         $c->set(TwigRenderer::class, function (Container $c) {
             return new TwigRenderer(
                 $c->get(Config::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
-                $c->get(Site::class),
-                $c->get(TwigPlusExtension::class)
+                $c->get(Site::class)
             );
         });
 
