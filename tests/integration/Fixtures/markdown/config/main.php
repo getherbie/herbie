@@ -4,7 +4,7 @@ return [
     'twig' => [
         'debug' => true,
     ],
-    'enabledSysPlugins' => 'markdown',
+    'enabledSysPlugins' => 'twig_core,markdown',
     'plugins' => [
         'markdown' => [
             'enableTwigFilter' => false,

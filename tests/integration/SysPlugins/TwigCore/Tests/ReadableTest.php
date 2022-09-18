@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Twig\Tests;
+namespace tests\integration\SysPlugins\TwigCore\Tests;
 
 use herbie\Application;
 use herbie\TwigRenderer;
@@ -13,8 +13,10 @@ final class ReadableTest extends \Codeception\Test\Unit
 
     protected function _setUp(): void
     {
-        $app = new Application(dirname(__DIR__, 2) . '/Fixtures/site', dirname(__DIR__, 4) . '/vendor');
-        ($this->twigRenderer = $app->getTwigRenderer())->init();
+        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
+        $app->getPluginManager()->init();
+        $app->getTwigRenderer()->init();
+        $this->twigRenderer = $app->getTwigRenderer();
     }
 
     public function testReadableWithoutCondition(): void

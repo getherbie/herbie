@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Acceptance;
+namespace tests\acceptance;
 
 use AcceptanceTester;
 use Codeception\Util\HttpCode;

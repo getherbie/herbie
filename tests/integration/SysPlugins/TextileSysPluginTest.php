@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace integration\SysPlugin;
+namespace tests\integration\SysPlugin;
 
 use herbie\Application;
 use herbie\TwigRenderer;

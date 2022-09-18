@@ -35,9 +35,7 @@ final class TwigRenderer
     private EventManager $eventManager;
     
     private LoggerInterface $logger;
-
-    private TwigCoreExtension $twigCoreExtension;
-
+    
     private Site $site;
 
     private TwigPlusExtension $twigPlusExtension;
@@ -51,7 +49,6 @@ final class TwigRenderer
         EventManager $eventManager,
         LoggerInterface $logger,
         Site $site,
-        TwigCoreExtension $twigExtension,
         TwigPlusExtension $twigPlusExtension
     ) {
         $this->initialized = false;
@@ -59,7 +56,6 @@ final class TwigRenderer
         $this->config = $config->toArray();
         $this->eventManager = $eventManager;
         $this->logger = $logger;
-        $this->twigCoreExtension = $twigExtension;
         $this->site = $site;
         $this->twigPlusExtension = $twigPlusExtension;
     }
@@ -101,9 +97,8 @@ final class TwigRenderer
             $this->twig->addExtension(new DebugExtension());
         }
 
-        $this->twigCoreExtension->setTwigRenderer($this);
-        $this->twig->addExtension($this->twigCoreExtension);
-
+        $this->eventManager->trigger('onTwigAddExtension', $this);
+        
         $this->twigPlusExtension->setTwigRenderer($this);
         $this->twig->addExtension($this->twigPlusExtension);
 

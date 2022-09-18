@@ -8,9 +8,20 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\sysplugin;
 
+use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
+use herbie\Alias;
+use herbie\Assets;
+use herbie\Environment;
+use herbie\PageTree;
+use herbie\PageTreeFilterIterator;
+use herbie\PageTreeIterator;
+use herbie\Selector;
+use herbie\Translator;
+use herbie\TwigRenderer;
+use herbie\UrlGenerator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -20,17 +31,17 @@ final class TwigCoreExtension extends AbstractExtension
 {
     private Alias $alias;
 
-    private UrlGenerator $urlGenerator;
-
-    private Translator $translator;
-
-    private SlugGeneratorInterface $slugGenerator;
-
     private Assets $assets;
 
     private Environment $environment;
 
+    private SlugGenerator $slugGenerator;
+    
+    private Translator $translator;
+    
     private TwigRenderer $twigRenderer;
+
+    private UrlGenerator $urlGenerator;
 
     /**
      * TwigExtension constructor.
@@ -41,19 +52,16 @@ final class TwigCoreExtension extends AbstractExtension
         Environment $environment,
         SlugGeneratorInterface $slugGenerator,
         Translator $translator,
+        TwigRenderer $twigRenderer,
         UrlGenerator $urlGenerator
     ) {
         $this->alias = $alias;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
-        $this->slugGenerator = $slugGenerator;
         $this->assets = $assets;
         $this->environment = $environment;
-    }
-
-    public function setTwigRenderer(TwigRenderer $twigRenderer): void
-    {
+        $this->slugGenerator = $slugGenerator;
+        $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**

@@ -348,17 +348,6 @@ final class Application
             return $translator;
         });
 
-        $c->set(TwigCoreExtension::class, function (Container $c) {
-            return new TwigCoreExtension(
-                $c->get(Alias::class),
-                $c->get(Assets::class),
-                $c->get(Environment::class),
-                $c->get(SlugGenerator::class),
-                $c->get(Translator::class),
-                $c->get(UrlGenerator::class)
-            );
-        });
-
         $c->set(TwigPlusExtension::class, function (Container $c) {
             return new TwigPlusExtension(
                 $c->get(Environment::class),
@@ -374,7 +363,6 @@ final class Application
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
                 $c->get(Site::class),
-                $c->get(TwigCoreExtension::class),
                 $c->get(TwigPlusExtension::class)
             );
         });

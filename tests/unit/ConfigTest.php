@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace tests\unit;
 
 use herbie\Config;
 

@@ -9,10 +9,11 @@ return [
         'layouts' => 'twig'
     ],
     'twig' => [
-        'debug' => true
+        'debug' => true,
+        'strictVariables' => false,
     ],
     'enabledPlugins' => 'simplecontact,simplesearch',
-    'enabledSysPlugins' => 'dummy,imagine,markdown,textile',
+    'enabledSysPlugins' => 'twig_core,dummy,imagine,markdown,textile',
     'components' => [
         'urlMatcher' => [
             'rules' => [

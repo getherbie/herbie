@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'enabledSysPlugins' => 'textile',
+    'enabledSysPlugins' => 'twig_core,textile',
     'plugins' => [
         'textile' => [
             'enableTwigFilter' => false,
