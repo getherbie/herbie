@@ -25,7 +25,7 @@ final class Assets
     private string $assetsUrl;
     private string $assetsPath;
     private int $refresh = 86400;
-    private int $chmode = 0755;
+    private int $permissions = 0755;
     private static int $counter = 0;
     private static bool $sorted = false;
     private static array $published = [];
@@ -170,7 +170,7 @@ final class Assets
             $dstPath = $this->assetsPath . '/' . $this->removeAlias($asset['path']);
             $dstDir = dirname($dstPath);
             if (!is_dir($dstDir)) {
-                mkdir($dstDir, $this->chmode, true);
+                mkdir($dstDir, $this->permissions, true);
             }
             $copy = false;
             if (is_file($dstPath)) {
