@@ -54,7 +54,7 @@ final class Config
     {
         $arrayValue = $this->get($path, $default);
         if (!is_array($arrayValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" not an array");
+            throw new \UnexpectedValueException("Value for \"$path\" is not an array");
         }
         return (array)($arrayValue);
     }
@@ -63,7 +63,7 @@ final class Config
     {
         $boolValue = $this->get($path, $default);
         if (!is_bool($boolValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" not a bool");
+            throw new \UnexpectedValueException("Value for \"$path\" is not a bool");
         }
         return boolval($boolValue);
     }
@@ -72,7 +72,7 @@ final class Config
     {
         $floatValue = $this->get($path, $default);
         if (!is_float($floatValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" not a float");
+            throw new \UnexpectedValueException("Value for \"$path\" is not a float");
         }
         return floatval($floatValue);
     }
@@ -81,7 +81,7 @@ final class Config
     {
         $intValue = $this->get($path, $default);
         if (!is_int($intValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" not an int");
+            throw new \UnexpectedValueException("Value for \"$path\" is not an int");
         }
         return intval($intValue);
     }
@@ -90,7 +90,7 @@ final class Config
     {
         $strValue = $this->get($path, $default);
         if (!is_string($strValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" not a string");
+            throw new \UnexpectedValueException("Value for \"$path\" is not a string");
         }
         return strval($strValue);
     }
@@ -102,7 +102,7 @@ final class Config
             throw new \UnexpectedValueException("Config for \"$path\" not found");
         }
         if (!is_array($data)) {
-            throw new \UnexpectedValueException("Config for \"$path\" not an array");
+            throw new \UnexpectedValueException("Config for \"$path\" is not an array");
         }
         return new self($data, $this->delim);
     }
