@@ -21,16 +21,16 @@ Herbie is based on proven libraries and concepts:
 * [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
 * PHP Middlewares
 
-Herbie supports the following [PHP Standards Recommendations](https://www.php-fig.org/psr/):
+Herbie supports the following PHP Standards Recommendations:
 
-* PSR-2  Coding Style Guide
-* PSR-3  Logger Interface
-* PSR-4  Autoloading Standard
-* PSR-7  HTTP Message Interface
-* PSR-11 Container Interface
-* PSR-15 HTTP Handlers
-* PSR-16 Simple Cache
-* PSR-17 HTTP Factories
+* [PSR-2](https://www.php-fig.org/psr/psr-2/)  Coding Style Guide
+* [PSR-3](https://www.php-fig.org/psr/psr-3/)  Logger Interface
+* [PSR-4](https://www.php-fig.org/psr/psr-4/)  Autoloading Standard
+* [PSR-7](https://www.php-fig.org/psr/psr-7/)  HTTP Message Interface
+* [PSR-11](https://www.php-fig.org/psr/psr-11/) Container Interface
+* [PSR-15](https://www.php-fig.org/psr/psr-15/) HTTP Handlers
+* [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
+* [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 
 
 ## Install
