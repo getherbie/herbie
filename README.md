@@ -6,8 +6,7 @@
 
 # :red_car: Herbie
 
-Herbie is a simple Flat-File CMS- und Blogsystem based on human readable text files.
-
+Herbie is a simple flat-file Content Management System (CMS) based on human readable text files.
 
 ## About Herbie
 
@@ -16,8 +15,8 @@ With Herbie you are able to create a fully functional website or blog in a short
 Herbie is based on proven libraries and concepts:
 
 * [Markdown](https://www.markdownguide.org) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts
-* [Yaml](http://www.yaml.org) for configuration and data structures files
+* [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts and extending Herbie's core
+* [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
 * [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
 * PHP Middlewares
@@ -42,7 +41,7 @@ The easiest way to install Herbie is via Composer.
 To do this, execute the following commands in your terminal:
 
     # create project and install dependent libraries
-    $ composer create-project getherbie/start-website:dev-master myproject
+    $ composer create-project getherbie/start-website myproject
     
     # go to web directory
     $ cd myproject/web
@@ -51,25 +50,25 @@ To do this, execute the following commands in your terminal:
     $ php -S localhost:8888 index.php
 
 Now, open <http://localhost:8888> in your browser.
-You should then see your first Herbie website. 
+You should see your first Herbie website. 
 
 ### Docker
 
 Or you can achieve the same by using Docker.
 
-    $ docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website:dev-master myproject 
+    $ docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
     $ cd myproject
 
 
 ## Development Environment
 
-If you want to have a development environment you can follow these steps.
+If you need a development environment, you can follow the steps below.
 
-Git clone the repository
+Clone the git repository
 
     $ git clone https://github.com/getherbie/herbie.git
 
-Change to `herbie` directory
+Change to the `herbie` directory
 
     $ cd herbie
 
@@ -77,11 +76,13 @@ Start PHP's internal web server
 
     $ php -S localhost:9999 -t example/web
 
-Or, when using Xdebug 3.x
+If you want to use Xdebug 3.x, start the internal web server as follows.
 
     $ export XDEBUG_MODE=debug; php -S localhost:9999 -t example/web
 
-Open `localhost:9999` with your favorite web browser.
+For this to work, Xdebug must of course be installed.
+
+Now, open `localhost:9999` with your favorite web browser.
 
 
 ## Tests
@@ -99,8 +100,6 @@ Run integration tests
     php vendor/bin/codecept run integration
 
 Run all tests
-
-Run acceptance tests
 
     php vendor/bin/codecept run
 
