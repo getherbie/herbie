@@ -41,13 +41,13 @@ The easiest way to install Herbie is via Composer.
 To do this, execute the following commands in your terminal:
 
     # create project and install dependent libraries
-    $ composer create-project getherbie/start-website myproject
+    composer create-project getherbie/start-website myproject
     
     # go to web directory
-    $ cd myproject/web
+    cd myproject/web
     
     # start internal webserver 
-    $ php -S localhost:8888 index.php
+    php -S localhost:8888 index.php
 
 Now, open <http://localhost:8888> in your browser.
 You should see your first Herbie website. 
@@ -56,31 +56,30 @@ You should see your first Herbie website.
 
 Or you can achieve the same by using Docker.
 
-    $ docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
-    $ cd myproject
+    docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
+    cd myproject
 
 
 ## Development Environment
 
 If you need a development environment, you can follow the steps below.
 
-Clone the git repository
+Clone the git repository.
 
-    $ git clone https://github.com/getherbie/herbie.git
+    git clone https://github.com/getherbie/herbie.git
 
-Change to the `herbie` directory
+Change to the `herbie` directory.
 
-    $ cd herbie
+    cd herbie
 
-Start PHP's internal web server
+Start PHP's internal web server.
 
-    $ php -S localhost:9999 -t example/web
+    php -S localhost:9999 -t example/web
 
-If you want to use Xdebug 3.x, start the internal web server as follows.
+Or, if you want to use Xdebug (3.x), start the internal web server as follows.
+Hint: For this to work, Xdebug must of course be installed.
 
-    $ export XDEBUG_MODE=debug; php -S localhost:9999 -t example/web
-
-For this to work, Xdebug must of course be installed.
+    export XDEBUG_MODE=debug; php -S localhost:9999 -t example/web
 
 Now, open `localhost:9999` with your favorite web browser.
 
