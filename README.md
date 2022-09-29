@@ -15,7 +15,7 @@ With Herbie you are able to create a fully functional website or blog in a short
 Herbie is based on proven libraries and concepts:
 
 * [Markdown](https://www.markdownguide.org) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](http://twig.sensiolabs.org) Template Engine for rendering layouts and extending Herbie's core
+* [Twig](https://twig.symfony.com) Template Engine for rendering layouts and extending Herbie's core
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
 * [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
