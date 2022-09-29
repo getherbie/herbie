@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -50,7 +51,7 @@ final class JsonDataRepository implements DataRepositoryInterface
     private function scanDataDir(): array
     {
         $this->validatePath();
-        
+
         $dataFiles = [];
 
         $files = scandir($this->path);
@@ -87,7 +88,7 @@ final class JsonDataRepository implements DataRepositoryInterface
             throw SystemException::directoryNotReadable($this->path);
         }
     }
-    
+
     private function parseDataFile(string $filepath): array
     {
         return json_decode(file_get_contents($filepath), true);

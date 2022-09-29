@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -93,7 +94,7 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
     {
         $replacements = [
             '{class}' => $this->class,
-            '{level}' => $this->getDepth()+1
+            '{level}' => $this->getDepth() + 1
         ];
         return strtr($this->template[$key], $replacements);
     }

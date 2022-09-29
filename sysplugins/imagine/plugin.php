@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -31,7 +32,7 @@ final class ImagineSysPlugin extends Plugin
     protected string $cachePath;
 
     private Alias $alias;
-    
+
     public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
@@ -208,7 +209,7 @@ final class ImagineSysPlugin extends Plugin
 
         return $image->resize($size);
     }
-    
+
     protected function applyThumbnailFilter(ImageInterface $image, array $options): ImageInterface
     {
         // Defaults
@@ -226,7 +227,7 @@ final class ImagineSysPlugin extends Plugin
 
         return $image->thumbnail($size, $mode);
     }
-    
+
     protected function applyCropFilter(ImageInterface $image, array $options): ImageInterface
     {
         // Defaults
@@ -245,13 +246,13 @@ final class ImagineSysPlugin extends Plugin
 
         return $image->crop($start, $size);
     }
-    
+
     protected function applyGrayscaleFilter(ImageInterface $image): ImageInterface
     {
         $image->effects()->grayscale();
         return $image;
     }
-    
+
     protected function applyNegativeFilter(ImageInterface $image): ImageInterface
     {
         $image->effects()->negative();
@@ -263,7 +264,7 @@ final class ImagineSysPlugin extends Plugin
         $image->effects()->sharpen();
         return $image;
     }
-    
+
     protected function applyBlurFilter(ImageInterface $image, array $options): ImageInterface
     {
         $sigma = 1;
@@ -283,7 +284,7 @@ final class ImagineSysPlugin extends Plugin
         $image->effects()->gamma($correction);
         return $image;
     }
-    
+
     protected function applyColorizeFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (isset($options['color'])) {

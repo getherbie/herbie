@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -10,7 +11,6 @@ namespace herbie;
 
 final class UncaughtExceptionHandler
 {
-
     public function __invoke(\Throwable $exception): void
     {
         if (!headers_sent()) {

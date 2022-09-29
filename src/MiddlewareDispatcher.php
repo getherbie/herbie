@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -28,7 +29,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         $this->middlewares = $this->composeMiddlewares($appMiddlewares, $routeMiddleware, $route);
     }
 
-    public function dispatch(ServerRequestInterface $request) : ResponseInterface
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         return $this->handle($request);
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -71,7 +72,7 @@ final class Application
         $logDir = $this->sitePath . '/runtime/log';
 
         error_reporting(E_ALL);
-        ini_set('display_errors', HERBIE_DEBUG ? '1': '0'); // @phpstan-ignore-line
+        ini_set('display_errors', HERBIE_DEBUG ? '1' : '0'); // @phpstan-ignore-line
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
@@ -88,11 +89,11 @@ final class Application
         if (!is_dir($logDir)) {
             $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
         }
-        
+
         if (!is_writable($logDir)) {
             $this->getLogger()->error(sprintf('Directory "%s" is not writable', $logDir));
         }
-        
+
         $config = $this->container->get(Config::class);
 
         setlocale(LC_ALL, $config->get('locale'));
@@ -163,7 +164,7 @@ final class Application
             if (is_file($userConfigPath)) {
                 $userConfig = load_php_config($userConfigPath, $processor);
             }
-            
+
             // system plugin configs
             $systemPluginPath = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
             $systemPluginConfigs = load_plugin_configs($systemPluginPath, $processor);
@@ -182,9 +183,9 @@ final class Application
                 $localPluginConfigs,
                 $userConfig['plugins'] ?? []
             );
-            
+
             $allConfig = array_replace_recursive($defaultConfig, $userConfig);
-            
+
             return new Config($allConfig);
         });
 
@@ -417,7 +418,7 @@ final class Application
      * @param MiddlewareInterface|string $middlewareOrPath
      * @param MiddlewareInterface|string|null $middleware
      */
-    public function addMiddleware($middlewareOrPath, $middleware = null) : Application
+    public function addMiddleware($middlewareOrPath, $middleware = null): Application
     {
         if ($middleware) {
             $this->routeMiddlewares[$middlewareOrPath] = $middleware;
@@ -481,7 +482,7 @@ final class Application
     {
         return $this->container->get(LoggerInterface::class);
     }
-    
+
     public function getPluginManager(): PluginManager
     {
         return $this->container->get(PluginManager::class);

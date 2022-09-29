@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -61,7 +62,7 @@ final class PageList implements \IteratorAggregate, \Countable
     public function getRandom(): PageItem
     {
         $routes = array_keys($this->items);
-        $index = mt_rand(0, $this->count()-1);
+        $index = mt_rand(0, $this->count() - 1);
         $route = $routes[$index];
         return $this->items[$route];
     }
@@ -326,7 +327,7 @@ final class PageList implements \IteratorAggregate, \Countable
     public function getPageTree(): PageTree
     {
         if (is_null($this->pageTree)) {
-            $this->pageTree = (new PageFactory)->newPageTree($this);
+            $this->pageTree = (new PageFactory())->newPageTree($this);
         }
         return $this->pageTree;
     }
@@ -338,7 +339,7 @@ final class PageList implements \IteratorAggregate, \Countable
         if ($this->pageTrail) {
             return $this->pageTrail;
         }
-        
+
         $items = [];
 
         $segments = explode('/', rtrim($requestRoute, '/'));
@@ -353,7 +354,7 @@ final class PageList implements \IteratorAggregate, \Countable
                 $items[] = $item;
             }
         }
-        
-        return $this->pageTrail = (new PageFactory)->newPageTrail($items);
+
+        return $this->pageTrail = (new PageFactory())->newPageTrail($items);
     }
 }

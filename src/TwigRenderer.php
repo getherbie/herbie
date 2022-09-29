@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -33,11 +34,11 @@ final class TwigRenderer
     private TwigEnvironment $twig;
 
     private EventManager $eventManager;
-    
+
     private LoggerInterface $logger;
-    
+
     private Site $site;
-    
+
     /**
      * TwigRenderer constructor.
      */
@@ -77,7 +78,7 @@ final class TwigRenderer
             }
             $cache = $cachePath;
         }
-        
+
         // see \Twig\Environment default options
         $twigOptions = [
             'autoescape'       => $this->config['twig']['autoescape'] ?? 'html',
@@ -86,7 +87,7 @@ final class TwigRenderer
             'debug'            => $this->config['twig']['debug'] ?? false,
             'strict_variables' => $this->config['twig']['strictVariables'] ?? false,
         ];
-        
+
         $this->twig = new TwigEnvironment($loader, $twigOptions);
 
         if (!empty($this->config['twig']['debug'])) {
@@ -100,7 +101,7 @@ final class TwigRenderer
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
     }
-    
+
     public function getTwigEnvironment(): TwigEnvironment
     {
         return $this->twig;
@@ -127,7 +128,7 @@ final class TwigRenderer
         $context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
     }
-    
+
     public function getContext(): array
     {
         return [
@@ -196,7 +197,7 @@ final class TwigRenderer
         }
 
         $paths = $this->validatePaths($paths);
-        
+
         $loader1 = new TwigStringLoader();
         $loader2 = new FilesystemLoader($paths);
 
@@ -230,7 +231,7 @@ final class TwigRenderer
         }
         return array_values($paths);
     }
-    
+
     /**
      * @return mixed
      */

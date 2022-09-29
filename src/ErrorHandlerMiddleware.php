@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -38,7 +39,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @throws SyntaxError
      * @throws Throwable
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         set_error_handler($this->createErrorHandler());
 
@@ -71,9 +72,9 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      *
      * Only raises exceptions for errors that are within the error_reporting mask.
      */
-    private function createErrorHandler() : callable
+    private function createErrorHandler(): callable
     {
-        return function (int $errno, string $errstr, string $errfile, int $errline) : void {
+        return function (int $errno, string $errstr, string $errfile, int $errline): void {
             if (! (error_reporting() & $errno)) {
                 // error_reporting does not include this error
                 return;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -407,7 +408,7 @@ final class TwigPlusExtension extends AbstractExtension
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
         $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
-        
+
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
@@ -533,7 +534,7 @@ final class TwigPlusExtension extends AbstractExtension
             'title' => $title
         ]);
     }
-    
+
     protected function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
@@ -542,7 +543,7 @@ final class TwigPlusExtension extends AbstractExtension
         }
         return trim($attributes);
     }
-    
+
     protected function createLink(string $route, string $label, array $htmlAttributes = []): string
     {
         $url = $this->urlGenerator->generate($route);

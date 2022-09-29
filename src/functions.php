@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -96,7 +97,7 @@ function load_plugin_configs(string $pluginDir, ?callable $processor = null): ar
 {
     $globPattern = "{$pluginDir}/*/config.php";
     $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
-    
+
     $pluginConfigs = [];
     foreach ($configFiles as $configFile) {
         $config = load_plugin_config($configFile, $processor);

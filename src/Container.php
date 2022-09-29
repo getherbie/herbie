@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -16,7 +17,7 @@ use Psr\Log\InvalidArgumentException;
 final class Container implements ContainerInterface
 {
     private array $values = [];
-    
+
     private array $frozen = [];
 
     /**

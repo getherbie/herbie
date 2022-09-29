@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -51,7 +52,7 @@ final class Translator
         }
         return $this->replacePlaceholders($message, $params);
     }
-    
+
     private function replacePlaceholders(string $message, array $params): string
     {
         $paramsWithBrackets = [];

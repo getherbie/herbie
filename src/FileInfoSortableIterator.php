@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -12,7 +13,6 @@ namespace herbie;
 
 final class FileInfoSortableIterator implements \IteratorAggregate
 {
-
     const SORT_BY_NAME = 1;
     const SORT_BY_TYPE = 2;
     const SORT_BY_ACCESSED_TIME = 3;

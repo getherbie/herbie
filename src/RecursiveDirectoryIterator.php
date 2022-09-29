@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -12,7 +13,6 @@ namespace herbie;
 
 final class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {
-
     /**
      * Return an instance of SplFileInfo with support for relative paths
      */

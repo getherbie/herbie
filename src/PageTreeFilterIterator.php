@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -15,13 +16,13 @@ use RecursiveIterator;
 final class PageTreeFilterIterator extends \RecursiveFilterIterator
 {
     private bool $enableFilter;
-    
+
     public function __construct(RecursiveIterator $recursiveIterator, bool $enableFilter = true)
     {
         $this->enableFilter = $enableFilter;
         parent::__construct($recursiveIterator);
     }
-    
+
     public function accept(): bool
     {
         if (!$this->enableFilter) {
@@ -34,7 +35,7 @@ final class PageTreeFilterIterator extends \RecursiveFilterIterator
         }
         return false;
     }
-    
+
     public function getChildren(): PageTreeFilterIterator
     {
         return new self(

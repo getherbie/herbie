@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -122,7 +123,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
     public function readFrontMatter(string $path): array
     {
         if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
         }
 
         $yaml = '';
@@ -154,13 +155,13 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
     private function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
         }
-        
+
         $yaml = '';
         $segments = [];
 
-        $matched = preg_match('/^['.UTF8_BOM.']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
+        $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
         if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
@@ -168,15 +169,15 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             $splitted = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $count = count($splitted);
-            if ($count %2 == 0) {
+            if ($count % 2 == 0) {
                 throw new \UnexpectedValueException('Error at reading file content');
             }
 
             $segments['default'] = array_shift($splitted);
             $ct_splitted = count($splitted);
-            for ($i=0; $i<$ct_splitted; $i=$i+2) {
+            for ($i = 0; $i < $ct_splitted; $i = $i + 2) {
                 $key = $splitted[$i];
-                $value = $splitted[$i+1];
+                $value = $splitted[$i + 1];
                 if (array_key_exists($key, $segments)) {
                     $segments[$key] .= $value;
                 } else {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -13,7 +14,7 @@ namespace herbie;
 final class Config
 {
     private array $data;
-    
+
     private string $delim;
 
     public function __construct(array $data, string $delim = '.')
@@ -33,11 +34,11 @@ final class Config
     public function get(string $name, $default = null)
     {
         $path = explode($this->delim, $name);
-        
+
         if ($path === false) {
             return null;
         }
-        
+
         $current = $this->data;
         foreach ($path as $field) {
             if (isset($current[$field])) {
@@ -49,7 +50,7 @@ final class Config
 
         return $current;
     }
-    
+
     public function getAsArray(string $path, array $default = []): array
     {
         $arrayValue = $this->get($path, $default);

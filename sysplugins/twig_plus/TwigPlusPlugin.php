@@ -37,7 +37,7 @@ final class TwigPlusPlugin extends Plugin
             ['onTwigAddExtension', [$this, 'onTwigAddExtension']],
         ];
     }
-    
+
     public function onTwigAddExtension(EventInterface $event): void
     {
         /** @var TwigRenderer $twigRenderer */

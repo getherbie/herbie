@@ -10,7 +10,7 @@ final class InstallablePlugin
     private string $path;
     private string $classPath;
     private string $type;
-    
+
     public function __construct(string $key, string $path, string $classPath, string $type)
     {
         $this->key = $key;
@@ -33,17 +33,17 @@ final class InstallablePlugin
     {
         return $this->classPath;
     }
-    
+
     public function getType(): string
     {
         return $this->type;
     }
-    
+
     public function classPathExists(): bool
     {
         return is_file($this->classPath) && is_readable($this->classPath);
     }
-    
+
     public function requireClassPath(): string
     {
         $className = $this->getClassName();
@@ -82,16 +82,16 @@ final class InstallablePlugin
             }
             $buffer .= fread($fp, 256);
             $tokens = @token_get_all($buffer);
-            
+
             if (strpos($buffer, '{') === false) {
                 continue;
             }
-            
-            for (; $i<count($tokens); $i++) {
+
+            for (; $i < count($tokens); $i++) {
                 if ($tokens[$i][0] === T_NAMESPACE) {
-                    for ($j=$i+1; $j<count($tokens); $j++) {
+                    for ($j = $i + 1; $j < count($tokens); $j++) {
                         if ($tokens[$j][0] === T_STRING) {
-                            $namespace .= '\\'.$tokens[$j][1];
+                            $namespace .= '\\' . $tokens[$j][1];
                         } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
                             break;
                         }
@@ -99,20 +99,20 @@ final class InstallablePlugin
                 }
 
                 if ($tokens[$i][0] === T_CLASS) {
-                    for ($j=$i+1; $j<count($tokens); $j++) {
+                    for ($j = $i + 1; $j < count($tokens); $j++) {
                         if ($tokens[$j] === '{') {
-                            $class = $tokens[$i+2][1];
+                            $class = $tokens[$i + 2][1];
                             break;
                         }
                     }
                 }
             }
         }
-        
+
         if (strlen($namespace) === 0) {
             return $class;
         }
-        
+
         return $namespace . '\\' . $class;
     }
 

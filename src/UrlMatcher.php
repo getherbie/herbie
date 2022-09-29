@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -112,7 +113,7 @@ final class UrlMatcher
         if (is_null($string) || strlen($string) === 0) {
             return null;
         }
-        
+
         // Add start and end matching
         return "@^" . $string . "$@D";
     }

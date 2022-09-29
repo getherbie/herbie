@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -52,23 +53,23 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
         if ($authorization === false) {
             return false;
         }
-        
+
         //Check the user
         $username = trim($authorization['username'] ?? '');
         $password = trim($authorization['password'] ?? '');
-        
+
         if ((strlen($username) === 0) || (strlen($password) === 0)) {
             return false;
         }
-        
+
         if (!isset($this->users[$username])) {
             return false;
         }
-        
+
         if ($this->users[$username] !== $password) {
             return false;
         }
-        
+
         return $username;
     }
 

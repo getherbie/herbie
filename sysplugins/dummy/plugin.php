@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -114,7 +115,7 @@ final class DummySysPlugin implements PluginInterface
     {
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
-    
+
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
@@ -196,7 +197,7 @@ final class DummySysPlugin implements PluginInterface
             $response->getBody()->write($newContent);
             return $response;
         }
-        
+
         return $response;
     }
 

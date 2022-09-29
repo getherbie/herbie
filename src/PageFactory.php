@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -38,7 +39,7 @@ final class PageFactory
         $filenameWithoutPrefix = preg_replace('/^([0-9])+-/', '', $filename);
         return $filenameWithoutPrefix === 'index';
     }
-    
+
     public function newPageTree(PageList $pageList): PageTree
     {
         $tree = new PageTree();
@@ -66,7 +67,7 @@ final class PageFactory
                 $parent->addChild(new PageTree($pageItem));
             }
         }
-        
+
         return $tree;
     }
 

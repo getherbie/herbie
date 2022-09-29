@@ -35,14 +35,14 @@ final class MarkdownSysPlugin extends Plugin
             $logger->error('Please install either "erusev/parsedown" or "erusev/parsedown-extra" via composer');
         }
     }
-    
+
     public function filters(): array
     {
         return [
             ['renderSegment', [$this, 'renderSegment']]
         ];
     }
-    
+
     public function twigFilters(): array
     {
         if (empty($this->config->get('enableTwigFilter'))) {
@@ -52,7 +52,7 @@ final class MarkdownSysPlugin extends Plugin
             ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
         ];
     }
-    
+
     public function twigFunctions(): array
     {
         if (empty($this->config->get('enableTwigFunction'))) {
@@ -62,7 +62,7 @@ final class MarkdownSysPlugin extends Plugin
             ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
         ];
     }
-    
+
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         if ($params['page']->format === 'markdown') {

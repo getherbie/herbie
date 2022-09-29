@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -36,9 +37,9 @@ final class TwigCoreExtension extends AbstractExtension
     private Environment $environment;
 
     private SlugGenerator $slugGenerator;
-    
+
     private Translator $translator;
-    
+
     private TwigRenderer $twigRenderer;
 
     private UrlGenerator $urlGenerator;
@@ -259,7 +260,7 @@ final class TwigCoreExtension extends AbstractExtension
             'attribs' => $attribs,
             'label' => $label ?? $email,
         ];
-        
+
         return $this->twigRenderer->renderTemplate($template, $context);
     }
 
@@ -334,7 +335,7 @@ final class TwigCoreExtension extends AbstractExtension
     {
         return $this->urlGenerator->generateAbsolute($route);
     }
-    
+
     public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
         $attribs['alt'] = $attribs['alt'] ?? '';

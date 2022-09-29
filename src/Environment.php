@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -27,7 +28,7 @@ final class Environment
         $this->pathInfo = null;
         $this->requestUri = null;
     }
-    
+
     /**
      * Get the current route.
      */
@@ -206,7 +207,8 @@ final class Environment
         // If using mod_rewrite or ISAPI_Rewrite strip the script filename
         // out of the base path. $pos !== 0 makes sure it is not matching a
         // value from PATH_INFO or QUERY_STRING.
-        if (strlen($requestUri) >= strlen($baseUrl)
+        if (
+            strlen($requestUri) >= strlen($baseUrl)
             && (false !== ($pos = strpos($requestUri, $baseUrl)) && $pos !== 0)
         ) {
             $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));

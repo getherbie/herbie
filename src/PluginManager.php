@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Herbie.
  *
@@ -33,7 +34,7 @@ final class PluginManager
     private FilterChainManager $filterChainManager;
 
     private Translator $translator;
-    
+
     private LoggerInterface $logger;
 
     private array $middlewares;
@@ -59,7 +60,7 @@ final class PluginManager
         $this->pluginPaths = [];
         $this->translator = $translator;
     }
-    
+
     public function init(): void
     {
         $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
@@ -69,23 +70,25 @@ final class PluginManager
             $this->getPlugins($enabledSystemPlugins, 'system'),
             $this->getPlugins($enabledComposerOrLocalPlugins, 'plugin')
         );
-        
+
         foreach ($plugins as $plugin) {
             $this->loadPlugin($plugin);
         }
-        
+
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
-    
+
     private function getPlugins(array $enabledPlugins, string $type): array
     {
         $plugins = [];
         foreach ($enabledPlugins as $pluginKey) {
             $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
             $pluginConfig = $this->config->getAsArray($pluginConfigPath);
-            if (empty($pluginConfig['pluginName'])
+            if (
+                empty($pluginConfig['pluginName'])
                 || empty($pluginConfig['pluginClass'])
-                || empty($pluginConfig['pluginPath'])) {
+                || empty($pluginConfig['pluginPath'])
+            ) {
                 continue;
             }
             $plugins[] = new InstallablePlugin(
@@ -95,10 +98,10 @@ final class PluginManager
                 $type
             );
         }
-        
+
         return $plugins;
     }
-    
+
     private function loadPlugin(InstallablePlugin $installablePlugin): void
     {
         if (!$installablePlugin->classPathExists()) {
@@ -114,29 +117,29 @@ final class PluginManager
         foreach ($plugin->events() as $event) {
             $this->attachListener(...$event);
         }
-        
+
         foreach ($plugin->filters() as $filter) {
             $this->attachFilter(...$filter);
         }
-        
+
         foreach ($plugin->middlewares() as $middleware) {
             $this->middlewares[] = $middleware;
         }
-        
+
         foreach ($plugin->twigFilters() as $twigFilter) {
             $this->addTwigFilter(...$twigFilter);
         }
-        
+
         foreach ($plugin->twigFunctions() as $twigFunction) {
             $this->addTwigFunction(...$twigFunction);
         }
-        
+
         foreach ($plugin->twigTests() as $twigTest) {
             $this->addTwigTest(...$twigTest);
         }
 
         $key = $installablePlugin->getKey();
-        
+
         $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
         $this->eventManager->trigger($eventName, $plugin);
 
@@ -144,7 +147,7 @@ final class PluginManager
 
         $this->loadedPlugins[$key] = $plugin;
         $this->pluginPaths[$key] = $installablePlugin->getPath();
-        
+
         $message = sprintf(
             'Plugin %s with type %s installed successfully',
             $installablePlugin->getKey(),
