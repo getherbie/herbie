@@ -309,17 +309,12 @@ final class Application
             );
         });
 
-        $c->set(RenderLayoutFilter::class, function (Container $c) {
-            return new RenderLayoutFilter(
-                $c->get(Config::class),
-                $c->get(TwigRenderer::class)
-            );
+        $c->set(RenderLayoutFilter::class, function () {
+            return new RenderLayoutFilter();
         });
 
-        $c->set(RenderSegmentFilter::class, function (Container $c) {
-            return new RenderSegmentFilter(
-                $c->get(TwigRenderer::class)
-            );
+        $c->set(RenderSegmentFilter::class, function () {
+            return new RenderSegmentFilter();
         });
 
         $c->set(ServerRequestInterface::class, function (Container $c) {
