@@ -23,6 +23,7 @@ Herbie is based on proven libraries and concepts:
 
 Herbie supports the following PHP Standards Recommendations:
 
+* [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
 * [PSR-2](https://www.php-fig.org/psr/psr-2/) Coding Style Guide
 * [PSR-3](https://www.php-fig.org/psr/psr-3/) Logger Interface
 * [PSR-4](https://www.php-fig.org/psr/psr-4/) Autoloading Standard
