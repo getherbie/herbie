@@ -221,8 +221,8 @@ final class Application
 
         $c->set(FilterChainManager::class, function (Container $c) {
             $manager = new FilterChainManager();
-            $manager->attach('renderSegment', $c->get(RenderSegmentFilter::class));
-            $manager->attach('renderLayout', $c->get(RenderLayoutFilter::class));
+            //$manager->attach('renderSegment', $c->get(RenderSegmentFilter::class));
+            //$manager->attach('renderLayout', $c->get(RenderLayoutFilter::class));
             foreach ($this->filters as $filterName => $filtersPerName) {
                 foreach ($filtersPerName as $filter) {
                     $manager->attach($filterName, $filter);
