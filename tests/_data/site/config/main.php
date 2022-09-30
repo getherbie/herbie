@@ -12,5 +12,5 @@ return [
         'debug' => true
     ],
     'enabledPlugins' => '',
-    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
 ];

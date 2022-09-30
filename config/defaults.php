@@ -39,7 +39,7 @@ return [
             'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
             'audio' => 'mp3,m4a,wav,aiff,midi'
         ],
-        'pages' => 'txt,md,markdown,textile,htm,html,rss,xml',
+        'pages' => 'txt,md,markdown,textile,htm,html,rss,rst,xml',
     ],
     'components' => [
         'dataRepository' => [

@@ -201,6 +201,9 @@ trait PageItemTrait
             case 'textile':
                 $format = 'textile';
                 break;
+            case 'rst':
+                $format = 'rest';
+                break;
             default:
                 $format = 'raw';
         }

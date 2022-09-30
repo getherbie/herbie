@@ -70,7 +70,15 @@ class PageFormatterCest
         $I->see('RSS Page');
         $I->see('This is a RSS formatted page.');
     }
-    
+
+    public function testMarkdownPageWithRstExtension(AcceptanceTester $I)
+    {
+        $I->amOnPage('/formatter/rest');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('REST Page', 'h1');
+        $I->see('This is a reStructuredText formatted page.', 'p');
+    }
+
     public function testPageWithXmlExtension(AcceptanceTester $I)
     {
         $I->amOnPage('/formatter/xml');
@@ -93,6 +101,8 @@ class PageFormatterCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Markdown Filter', 'h2');
         $I->see('Markdown Function', 'h2');
+        $I->see('reStructuredText Filter', 'h1');
+        $I->see('reStructuredText Function', 'h1');
         $I->see('Textile Filter', 'h2');
         $I->see('Textile Function', 'h2');
     }
