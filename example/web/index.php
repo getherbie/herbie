@@ -13,6 +13,7 @@ define('HERBIE_DEBUG', true);
 use example\CustomHeader;
 use example\TestFilter;
 use herbie\Application;
+use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use Monolog\Logger;
@@ -57,11 +58,11 @@ $app->addTwigTest(new TwigTest('mytest', function () {
 }));
 
 // Filters
-$app->attachFilter('renderSegment', function (string $content, array $args, $chain) {
+$app->attachFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
-$app->attachFilter('renderLayout', function (string $content, array $args, $chain) {
+$app->attachFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
