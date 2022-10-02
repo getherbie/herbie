@@ -4,7 +4,7 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 
 
-# :red_car: Herbie
+# :red_car: Herbie CMS
 
 Herbie is a simple flat-file Content Management System (CMS) based on human readable text files.
 
