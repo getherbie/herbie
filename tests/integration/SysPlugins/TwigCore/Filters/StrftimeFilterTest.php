@@ -47,7 +47,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
 
         // year with month (without day)
         $this->assertSame(
-            strftime(" 1. %B %Y"),
+            strftime(" 1. September 2022"),
             $this->twigRenderer->renderString('{{ "2022-09"|strftime("%e. %B %Y") }}')
         );
     }
