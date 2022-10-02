@@ -13,9 +13,9 @@ use Psr\Log\LoggerInterface;
 
 final class MarkdownSysPlugin extends Plugin
 {
-    const MODE_NONE = 0;
-    const MODE_PARSEDOWN = 1;
-    const MODE_PARSEDOWN_EXTRA = 2;
+    private const MODE_NONE = 0;
+    private const MODE_PARSEDOWN = 1;
+    private const MODE_PARSEDOWN_EXTRA = 2;
 
     private Config $config;
     private int $mode;

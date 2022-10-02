@@ -6,11 +6,11 @@ namespace herbie;
 
 final class FileInfoSortableIterator implements \IteratorAggregate
 {
-    const SORT_BY_NAME = 1;
-    const SORT_BY_TYPE = 2;
-    const SORT_BY_ACCESSED_TIME = 3;
-    const SORT_BY_CHANGED_TIME = 4;
-    const SORT_BY_MODIFIED_TIME = 5;
+    public const SORT_BY_NAME = 1;
+    public const SORT_BY_TYPE = 2;
+    public const SORT_BY_ACCESSED_TIME = 3;
+    public const SORT_BY_CHANGED_TIME = 4;
+    public const SORT_BY_MODIFIED_TIME = 5;
 
     private \Traversable $iterator;
 

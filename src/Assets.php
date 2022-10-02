@@ -10,8 +10,8 @@ namespace herbie;
  */
 final class Assets
 {
-    const TYPE_CSS = 0;
-    const TYPE_JS = 1;
+    private const TYPE_CSS = 0;
+    private const TYPE_JS = 1;
 
     private Alias $alias;
     private array $assets = [];
