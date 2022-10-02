@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 if (php_sapi_name() == 'cli-server') {
     if (preg_match('/\.(?:js|css|gif|jpg|jpeg|png)$/', $_SERVER["REQUEST_URI"])) {
