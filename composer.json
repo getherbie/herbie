@@ -1,7 +1,7 @@
 {
     "name": "getherbie/herbie",
     "homepage": "https://herbie.tebe.ch/",
-    "description": "Herbie flat-file content management system. Simple setup - no database - just text files.",
+    "description": "Herbie CMS. Flat-file content management system with simple setup, no database, and just text files.",
     "keywords": [
         "herbie",
         "flat-file",

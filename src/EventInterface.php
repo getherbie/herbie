@@ -6,7 +6,6 @@ namespace herbie;
 
 /**
  * Interface EventInterface
- * @package Herbie
  */
 interface EventInterface
 {

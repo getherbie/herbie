@@ -6,7 +6,6 @@ namespace herbie;
 
 /**
  * Class Event
- * @package Herbie
  */
 final class Event implements EventInterface
 {

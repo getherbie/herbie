@@ -4,24 +4,24 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 
 
-# :red_car: Herbie CMS
+# Herbie CMS
 
-Herbie is a simple flat-file Content Management System (CMS) based on human readable text files.
+Herbie CMS is a simple flat-file Content Management System based on human-readable text files.
 
-## About Herbie
+## About Herbie CMS
 
-With Herbie you are able to create a fully functional website or blog in a short amount of time and with little effort.
+With Herbie CMS you are able to create a fully functional website or blog in a short amount of time and with little effort.
 
-Herbie is based on proven libraries and concepts:
+Herbie CMS is based on proven libraries and concepts:
 
 * [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](https://twig.symfony.com) Template Engine for rendering layouts and extending Herbie's core
+* [Twig](https://twig.symfony.com) Template Engine for rendering layouts and extending Herbie CMS's core
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
 * [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
 * PHP Middlewares
 
-Herbie supports the following PHP Standards Recommendations:
+Herbie CMS supports the following PHP Standards Recommendations:
 
 * [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
 * [PSR-2](https://www.php-fig.org/psr/psr-2/) Coding Style Guide
@@ -39,7 +39,7 @@ Herbie supports the following PHP Standards Recommendations:
 
 ### Composer 
 
-The easiest way to install Herbie is via Composer. 
+The easiest way to install Herbie CMS is via Composer. 
 To do this, execute the following commands in your terminal:
 
     # create project and install dependent libraries
@@ -52,7 +52,7 @@ To do this, execute the following commands in your terminal:
     php -S localhost:8888 index.php
 
 Now, open <http://localhost:8888> in your browser.
-You should see your first Herbie website. 
+You should see your first Herbie CMS website. 
 
 ### Docker
 

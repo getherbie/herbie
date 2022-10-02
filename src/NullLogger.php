@@ -6,7 +6,6 @@ use Psr\Log\AbstractLogger;
 
 /**
  * Class NullLogger
- * @package Psr\Log
  */
 final class NullLogger extends AbstractLogger
 {
