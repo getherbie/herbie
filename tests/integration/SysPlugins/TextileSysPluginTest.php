@@ -18,7 +18,7 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
         ($twigRenderer = $app->getTwigRenderer())->init();
         return $twigRenderer;
     }
-    
+
     protected function _setUp(): void
     {
         $this->twigRenderer = $this->initApplication(
@@ -44,7 +44,7 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
         $this->expectException(\Twig\Error\SyntaxError::class);
         $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
     }
-    
+
     public function testTextileFunction(): void
     {
         $this->assertSame(

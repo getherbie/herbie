@@ -24,7 +24,7 @@ class UnitTester extends \Codeception\Actor
     /**
      * Define custom actions here
      */
-    
+
     public function initApplication(string $siteDir, string $vendorDir): Application
     {
         $app = new Application($siteDir, $vendorDir);
@@ -33,7 +33,7 @@ class UnitTester extends \Codeception\Actor
         $app->getTranslator()->init();
         return $app;
     }
-    
+
     public function initTwigRenderer(string $siteDir, string $vendorDir): \herbie\TwigRenderer
     {
         return $this->initApplication($siteDir, $vendorDir)->getTwigRenderer();

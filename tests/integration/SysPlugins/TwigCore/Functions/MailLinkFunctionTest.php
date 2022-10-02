@@ -11,7 +11,7 @@ use herbie\TwigRenderer;
 final class MailLinkFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
-    
+
     protected function _setUp(): void
     {
         $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
@@ -64,14 +64,14 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame($expected, $actual);
     }
-    
+
     public function testLinkWithNotExistingCustomTemplate(): void
     {
         $this->expectException(\Twig\Error\LoaderError::class);
         $twig = '{{ mail_link("me@example.com", template="@not/existing/template.twig") }}';
         $this->twigRenderer->renderString($twig);
     }
-    
+
     private function getHtml(string $link): string
     {
         return <<<STRING

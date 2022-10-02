@@ -30,7 +30,7 @@ class PageFormatterCest
         $I->see('Markdown Page', 'h1');
         $I->see('This is a markdown formatted page.', 'p');
     }
-    
+
     public function testPageWithTextileExtension(AcceptanceTester $I)
     {
         $I->amOnPage('/formatter/textile');

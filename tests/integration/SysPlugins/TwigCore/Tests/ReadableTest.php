@@ -22,11 +22,11 @@ final class ReadableTest extends \Codeception\Test\Unit
     public function testReadableWithoutCondition(): void
     {
         $twig = '{{- readable -}}';
-        
+
         // disabled strict variables
         $this->twigRenderer->getTwigEnvironment()->disableStrictVariables();
         $this->assertSame('', $this->twigRenderer->renderString($twig));
-        
+
         // enabled strict variables
         $this->expectException(\Twig\Error\RuntimeError::class);
         $this->twigRenderer->getTwigEnvironment()->enableStrictVariables();
@@ -48,7 +48,7 @@ final class ReadableTest extends \Codeception\Test\Unit
         TWIG;
         $this->assertSame('is readable', $this->twigRenderer->renderString($twig));
     }
-    
+
     public function testReadableWithExistingAliasWithoutPermissions(): void
     {
         $twig = <<<TWIG
@@ -56,7 +56,7 @@ final class ReadableTest extends \Codeception\Test\Unit
         TWIG;
         $this->assertSame('not readable', $this->twigRenderer->renderString($twig));
     }
-    
+
     public function testReadableWithNotExistingAlias(): void
     {
         $twig = <<<TWIG

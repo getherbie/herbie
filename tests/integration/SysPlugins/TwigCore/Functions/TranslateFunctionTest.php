@@ -9,7 +9,7 @@ use herbie\Application;
 final class TranslateFunctionTest extends \Codeception\Test\Unit
 {
     protected Application $app;
-    
+
     protected function _setUp(): void
     {
         $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
@@ -18,7 +18,7 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
         $app->getTranslator()->init();
         $this->app = $app;
     }
-    
+
     private function _render(string $twig): string
     {
         return $this->app->getTwigRenderer()->renderString($twig);
@@ -31,12 +31,12 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
         $this->assertSame('', $this->_render('{{ translate("app") }}'));
         $this->assertSame('test', $this->_render('{{ translate("", "test") }}'));
     }
-    
+
     public function testTranslateFromApp(): void
     {
         $this->assertSame('Herbie ist grossartig!', $this->_render('{{ translate("app", "Herbie is great!") }}'));
     }
-    
+
     public function testTranslateFromPlugin(): void
     {
         $this->assertSame('Dummy-Übersetzung', $this->_render('{{ translate("dummy", "Dummy translation") }}'));

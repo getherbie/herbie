@@ -18,7 +18,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $app->getTwigRenderer()->init();
         $this->twigRenderer = $app->getTwigRenderer();
     }
-    
+
     public function testFilterPageListWithoutSelectors()
     {
         $twig = <<<TWIG
@@ -54,7 +54,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame($expected, $actual);
     }
-    
+
     public function testFilterArray()
     {
         $twig = <<<TWIG
@@ -67,13 +67,13 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame($expected, $actual);
     }
-    
+
     public function testFilterArrayWithDifferentOperators()
     {
         $twigArray = <<<TWIG
             {%- set array = [{key: 'abcd'}, {key: 'efgh'}, {key: 'ijkl'}, {key: 'mnop'}, {key: 'qrst'}, {key: 'uvwx'}] -%}    
         TWIG;
-        
+
         // matchEqual
         $twig = <<<TWIG
             $twigArray
@@ -81,7 +81,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop', $actual);
-        
+
         // matchNotEqual
         $twig = <<<TWIG
             $twigArray
@@ -97,7 +97,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('qrst,uvwx', $actual);
-        
+
         // matchGreaterThanEqual
         $twig = <<<TWIG
             $twigArray
@@ -113,7 +113,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('abcd,efgh,ijkl', $actual);
-        
+
         // matchLessThanEqual
         $twig = <<<TWIG
             $twigArray
@@ -149,7 +149,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $words = <<<TWIG
             {%- set array = [{key: 'this is great'}, {key: 'not the same'}, {key: 'this is yours'}] -%}    
         TWIG;
-        
+
         // matchContainsWords
         $twig = <<<TWIG
             $words

@@ -14,7 +14,7 @@ use LogicException;
 class PageTest extends \Codeception\Test\Unit
 {
     protected FlatfilePageRepository $repository;
-    
+
     protected function _before()
     {
         $this->repository = new FlatfilePageRepository(
@@ -30,7 +30,7 @@ class PageTest extends \Codeception\Test\Unit
             )
         );
     }
-    
+
     public function testConstructor()
     {
         $page = new Page();
@@ -145,10 +145,10 @@ class PageTest extends \Codeception\Test\Unit
             'twig' => 1,
             'type' => 'my_type'
         ];
-        
-        $page = (new PageFactory)->newPage('@page/pagedata.md', 'parent', $data, []);
+
+        $page = (new PageFactory())->newPage('@page/pagedata.md', 'parent', $data, []);
         $this->assertEquals(array_merge($data, ['segments' => []]), $page->toArray());
-        
+
         return $page;
     }
 

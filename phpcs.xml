@@ -16,6 +16,7 @@
 
     <!-- Paths to check -->
     <file>config</file>
+    <file>example</file>
     <file>messages</file>
     <file>src</file>
     <file>sysplugins</file>

@@ -38,7 +38,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
             '12. September 2022',
             $this->twigRenderer->renderString('{{ "2022-09-12"|strftime("%e. %B %Y") }}')
         );
-        
+
         // empty string
         $this->assertSame(
             strftime("%e. %B %Y"),
@@ -58,7 +58,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
             'invalid-date',
             $this->twigRenderer->renderString('{{ "invalid-date"|strftime("%e. %B %Y") }}')
         );
-        
+
         $this->assertSame(
             ' 1. Januar 1970',
             $this->twigRenderer->renderString('{{ 2000|strftime("%e. %B %Y") }}')

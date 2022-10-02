@@ -12,7 +12,7 @@ final class AddCssFunctionTest extends \Codeception\Test\Unit
      * @var \UnitTester
      */
     protected $tester;
-    
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(
@@ -25,6 +25,6 @@ final class AddCssFunctionTest extends \Codeception\Test\Unit
     {
         $this->twig()->renderString('{{ add_css("@site/assets/styles.css") }}');
     }
-    
+
     // TODO write more tests
 }

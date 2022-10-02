@@ -18,7 +18,7 @@ final class VisibleFilterTest extends \Codeception\Test\Unit
         $app->getTwigRenderer()->init();
         $this->twigRenderer = $app->getTwigRenderer();
     }
-    
+
     public function testUnfilteredTree()
     {
         $twig = <<<TWIG

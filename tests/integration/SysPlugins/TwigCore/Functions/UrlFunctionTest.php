@@ -11,7 +11,7 @@ use herbie\TwigRenderer;
 final class UrlFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
-    
+
     protected function _setUp(): void
     {
         $_SERVER['SCRIPT_NAME'] = '';

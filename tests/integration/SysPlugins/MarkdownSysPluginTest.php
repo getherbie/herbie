@@ -17,7 +17,7 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
         $app->getTwigRenderer()->init();
         return $app;
     }
-    
+
     protected function _setUp(): void
     {
         $this->app = $this->initApplication(
@@ -47,7 +47,7 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
         }
         $app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}');
     }
-    
+
     public function testMarkdownFunction(): void
     {
         $this->assertSame(

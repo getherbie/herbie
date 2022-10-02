@@ -48,7 +48,7 @@ final class WritableTest extends \Codeception\Test\Unit
         TWIG;
         $this->assertSame('yes', $this->twigRenderer->renderString($twig));
     }
-    
+
     public function testWritableWithExistingAliasWithoutPermissions(): void
     {
         $twig = <<<TWIG
@@ -56,7 +56,7 @@ final class WritableTest extends \Codeception\Test\Unit
         TWIG;
         $this->assertSame('no', $this->twigRenderer->renderString($twig));
     }
-    
+
     public function testReadableWithNotExistingAlias(): void
     {
         $twig = <<<TWIG

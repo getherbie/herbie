@@ -30,7 +30,7 @@ class ConfigTest extends \Codeception\Test\Unit
         $this->expectExceptionMessage('Value for "string" is not a bool');
         $this->assertIsNotBool($this->config->getAsBool('string'));
     }
-    
+
     public function testGetAsInt()
     {
         $this->assertIsInt($this->config->getAsInt('int'));
@@ -46,7 +46,7 @@ class ConfigTest extends \Codeception\Test\Unit
         $this->expectExceptionMessage('Value for "int" is not a float');
         $this->assertIsNotFloat($this->config->getAsFloat('int'));
     }
-    
+
     public function testGetAsString()
     {
         $this->assertIsString($this->config->getAsString('string'));
@@ -70,14 +70,14 @@ class ConfigTest extends \Codeception\Test\Unit
         $this->expectExceptionMessage('Config for "bool" is not an array');
         $this->assertIsNotObject($this->config->getAsConfig('bool'));
     }
-    
+
     public function testGetAsConfigWithNull()
     {
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('Config for "not-existing-key" not found');
         $this->assertIsNotObject($this->config->getAsConfig('not-existing-key'));
     }
-    
+
     public function testCheck()
     {
         $this->assertNotNull($this->config->get('bool'));
