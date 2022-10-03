@@ -71,9 +71,12 @@ function load_php_config(string $path, ?callable $processor = null): array
     return $data;
 }
 
-function load_plugin_config(string $path, ?callable $processor = null): array
+function load_plugin_config(string $path, string $pluginLocation, ?callable $processor = null): array
 {
-    $config = load_php_config($path, $processor);
+    $config = array_merge(
+        ['location' => $pluginLocation],
+        load_php_config($path, $processor)
+    );
     if (!isset($config['apiVersion'])) {
         throw new \UnexpectedValueException(sprintf('Required config "apiVersion" is missing in %s', $path));
     }
@@ -86,14 +89,14 @@ function load_plugin_config(string $path, ?callable $processor = null): array
     return $config;
 }
 
-function load_plugin_configs(string $pluginDir, ?callable $processor = null): array
+function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callable $processor = null): array
 {
     $globPattern = "{$pluginDir}/*/config.php";
     $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
 
     $pluginConfigs = [];
     foreach ($configFiles as $configFile) {
-        $config = load_plugin_config($configFile, $processor);
+        $config = load_plugin_config($configFile, $pluginLocation, $processor);
         $pluginName = $config['pluginName'];
         $pluginConfigs[$pluginName] = $config;
     }
@@ -108,7 +111,7 @@ function load_composer_plugin_configs(): array
         $path = realpath(InstalledVersions::getInstallPath($pluginKey));
         $composerPluginConfigPath = $path . '/config.php';
         if (is_readable($composerPluginConfigPath)) {
-            $composerPluginConfig = load_plugin_config($composerPluginConfigPath);
+            $composerPluginConfig = load_plugin_config($composerPluginConfigPath, 'composer');
             $composerPluginName = $composerPluginConfig['pluginName'];
             $pluginConfigs[$composerPluginName] = $composerPluginConfig;
         }

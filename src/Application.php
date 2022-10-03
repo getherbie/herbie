@@ -160,14 +160,14 @@ final class Application
 
             // system plugin configs
             $systemPluginPath = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
-            $systemPluginConfigs = load_plugin_configs($systemPluginPath, $processor);
+            $systemPluginConfigs = load_plugin_configs($systemPluginPath, 'system', $processor);
 
             // composer plugin configs
             $composerPluginConfigs = load_composer_plugin_configs();
 
             // local plugin configs
             $localPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
-            $localPluginConfigs = load_plugin_configs($localPluginPath, $processor);
+            $localPluginConfigs = load_plugin_configs($localPluginPath, 'local', $processor);
 
             // the order is important here
             $userConfig['plugins'] = array_replace_recursive(

@@ -59,14 +59,23 @@ final class PluginManager
         $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
         $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
 
-        $plugins = array_merge(
-            $this->getPlugins($enabledSystemPlugins, 'system'),
-            $this->getPlugins($enabledComposerOrLocalPlugins, 'plugin')
-        );
-
-        foreach ($plugins as $plugin) {
+        // system plugins
+        foreach ($this->getPlugins($enabledSystemPlugins, 'system') as $plugin) {
             $this->loadPlugin($plugin);
         }
+        $this->eventManager->trigger('onSystemPluginsAttached', $this);
+
+        // composer plugins
+        foreach ($this->getPlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
+            $this->loadPlugin($plugin);
+        }
+        $this->eventManager->trigger('onComposerPluginsAttached', $this);
+
+        // local plugins
+        foreach ($this->getPlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
+            $this->loadPlugin($plugin);
+        }
+        $this->eventManager->trigger('onLocalPluginsAttached', $this);
 
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
@@ -78,7 +87,8 @@ final class PluginManager
             $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
             $pluginConfig = $this->config->getAsArray($pluginConfigPath);
             if (
-                empty($pluginConfig['pluginName'])
+                ($pluginConfig['location'] !== $type)
+                || empty($pluginConfig['pluginName'])
                 || empty($pluginConfig['pluginClass'])
                 || empty($pluginConfig['pluginPath'])
             ) {
