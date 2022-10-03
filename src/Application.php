@@ -386,8 +386,6 @@ final class Application
         $this->emitResponse($response);
 
         $this->getEventManager()->trigger('onResponseEmitted');
-
-        exit(0);
     }
 
     private function emitResponse(ResponseInterface $response): void

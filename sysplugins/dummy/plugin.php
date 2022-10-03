@@ -38,12 +38,16 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onContentRendered']],
-            ['onLayoutRendered', [$this, 'onLayoutRendered']],
-            ['onPluginsAttached', [$this, 'onPluginsAttached']],
-            ['onResponseEmitted', [$this, 'onResponseEmitted']],
-            ['onResponseGenerated', [$this, 'onResponseGenerated']],
-            ['onTwigInitialized', [$this, 'onTwigInitialized']],
+            ['onContentRendered', [$this, 'onGenericEventHandler']],
+            ['onLayoutRendered', [$this, 'onGenericEventHandler']],
+            ['onPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onResponseEmitted', [$this, 'onGenericEventHandler']],
+            ['onResponseGenerated', [$this, 'onGenericEventHandler']],
+            ['onTwigInitialized', [$this, 'onGenericEventHandler']],
+            ['onTwigInitialized', [$this, 'onTwigInitializedEventHandler']],
+            ['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
         ];
     }
 
@@ -136,37 +140,12 @@ final class DummySysPlugin implements PluginInterface
         return $filter->next($context, $params, $filter);
     }
 
-    public function onContentRendered(EventInterface $event): void
+    public function onGenericEventHandler(EventInterface $event): void
     {
-        $this->logger->debug(__METHOD__);
-        // TODO add test
+        $this->logger->debug('Event ' . $event->getName() . ' was triggered');
     }
 
-    public function onLayoutRendered(EventInterface $event): void
-    {
-        $this->logger->debug(__METHOD__);
-        // TODO add test
-    }
-
-    public function onPluginsAttached(EventInterface $event): void
-    {
-        $this->logger->debug(__METHOD__);
-        // TODO add test
-    }
-
-    public function onResponseEmitted(EventInterface $event): void
-    {
-        $this->logger->debug(__METHOD__);
-        // TODO add test
-    }
-
-    public function onResponseGenerated(EventInterface $event): void
-    {
-        $this->logger->debug(__METHOD__);
-        // TODO add test
-    }
-
-    public function onTwigInitialized(EventInterface $event): void
+    public function onTwigInitializedEventHandler(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
         /** @var TwigRenderer $twigRenderer */
