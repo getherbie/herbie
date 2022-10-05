@@ -11,7 +11,7 @@ use herbie\PageFactory;
 use InvalidArgumentException;
 use LogicException;
 
-class PageTest extends \Codeception\Test\Unit
+final class PageTest extends \Codeception\Test\Unit
 {
     protected FlatfilePageRepository $repository;
 

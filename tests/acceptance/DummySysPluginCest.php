@@ -5,7 +5,7 @@ namespace tests\acceptance;
 use AcceptanceTester;
 use Codeception\Util\HttpCode;
 
-class DummySysPluginCest
+final class DummySysPluginCest
 {
     public function testDummySysPlugin(AcceptanceTester $I)
     {

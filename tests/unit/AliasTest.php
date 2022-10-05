@@ -4,7 +4,7 @@ namespace tests\unit;
 
 use herbie\Alias;
 
-class AliasTest extends \Codeception\Test\Unit
+final class AliasTest extends \Codeception\Test\Unit
 {
     /**
      * @var Alias

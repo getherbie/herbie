@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class ContainerBuilder
+final class ContainerBuilder
 {
     private Application $app;
     private ?CacheInterface $cache;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class TwigFilter
+final class TwigFilter
 {
     private string $name;
     private $callable;

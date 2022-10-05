@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class VirtualAppPlugin extends Plugin
+final class VirtualAppPlugin extends Plugin
 {
     private Application $application;
 

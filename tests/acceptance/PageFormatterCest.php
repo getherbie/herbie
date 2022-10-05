@@ -5,7 +5,7 @@ namespace tests\acceptance;
 use AcceptanceTester;
 use Codeception\Util\HttpCode;
 
-class PageFormatterCest
+final class PageFormatterCest
 {
     public function testMarkdownPageWithMdExtension(AcceptanceTester $I)
     {

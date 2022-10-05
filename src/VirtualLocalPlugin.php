@@ -9,7 +9,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-class VirtualLocalPlugin extends Plugin
+final class VirtualLocalPlugin extends Plugin
 {
     private LoggerInterface $logger;
     private Config $config;

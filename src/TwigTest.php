@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class TwigTest
+final class TwigTest
 {
     private string $name;
     private $callable;

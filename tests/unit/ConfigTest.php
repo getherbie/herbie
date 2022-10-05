@@ -4,7 +4,7 @@ namespace tests\unit;
 
 use herbie\Config;
 
-class ConfigTest extends \Codeception\Test\Unit
+final class ConfigTest extends \Codeception\Test\Unit
 {
     /**
      * @var Config

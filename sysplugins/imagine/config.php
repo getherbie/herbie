@@ -11,10 +11,7 @@ return [
             'test' => true,
             'filters' => [
                 'thumbnail' => [
-                    'size' => [
-                        360,
-                        240
-                    ],
+                    'size' => [360, 240],
                     'mode' => 'outbound'
                 ]
             ]
