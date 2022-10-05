@@ -7,9 +7,6 @@ namespace herbie;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Twig\TwigTest;
 
 final class PluginManager
 {
@@ -140,26 +137,32 @@ final class PluginManager
 
         $twigFilters = $plugin->twigFilters();
         foreach ($twigFilters as $twigFilter) {
-            if (!$twigFilter instanceof TwigFilter) {
-                $this->addTwigFilter(new TwigFilter(...$twigFilter));
-            } else {
+            if ($twigFilter instanceof \Twig\TwigFilter) {
                 $this->addTwigFilter($twigFilter);
+            } elseif ($twigFilter instanceof \herbie\TwigFilter) {
+                $this->addTwigFilter($twigFilter->createTwigFilter());
+            } else {
+                $this->addTwigFilter(new \Twig\TwigFilter(...$twigFilter));
             }
         }
 
         foreach ($plugin->twigFunctions() as $twigFunction) {
-            if (!$twigFunction instanceof TwigFunction) {
-                $this->addTwigFunction(new TwigFunction(...$twigFunction));
-            } else {
+            if ($twigFunction instanceof \Twig\TwigFunction) {
                 $this->addTwigFunction($twigFunction);
+            } elseif ($twigFunction instanceof \herbie\TwigFunction) {
+                $this->addTwigFunction($twigFunction->createTwigFunction());
+            } else {
+                $this->addTwigFunction(new \Twig\TwigFunction(...$twigFunction));
             }
         }
 
         foreach ($plugin->twigTests() as $twigTest) {
-            if (!$twigTest instanceof TwigTest) {
-                $this->addTwigTest(new TwigTest(...$twigTest));
-            } else {
+            if ($twigTest instanceof \Twig\TwigTest) {
                 $this->addTwigTest($twigTest);
+            } elseif ($twigTest instanceof \herbie\TwigTest) {
+                $this->addTwigTest($twigTest->createTwigTest());
+            } else {
+                $this->addTwigTest(new \Twig\TwigTest(...$twigTest));
             }
         }
 
@@ -215,7 +218,7 @@ final class PluginManager
         $this->eventManager->attach($name, $callable, $priority);
     }
 
-    private function addTwigFilter(TwigFilter $filter): callable
+    private function addTwigFilter(\Twig\TwigFilter $filter): callable
     {
         $closure = function (Event $event) use ($filter) {
             /** @var TwigRenderer $twig */
@@ -225,7 +228,7 @@ final class PluginManager
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    private function addTwigFunction(TwigFunction $function): callable
+    private function addTwigFunction(\Twig\TwigFunction $function): callable
     {
         $closure = function (Event $event) use ($function) {
             /** @var TwigRenderer $twig */
@@ -235,7 +238,7 @@ final class PluginManager
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    private function addTwigTest(TwigTest $test): callable
+    private function addTwigTest(\Twig\TwigTest $test): callable
     {
         $closure = function (Event $event) use ($test) {
             /** @var TwigRenderer $twig */
