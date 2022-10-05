@@ -59,17 +59,6 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
             if (preg_match('#' . $regex . '#', $route)) {
                 $appMiddlewares[] = $middleware;
             }
-            /*
-            if (substr($middlewareRoute, -1) === '*') {
-                if (strpos($route, substr($middlewareRoute, 0, -1)) === 0) {
-                    $appMiddlewares[] = $middleware;
-                }
-            } else {
-                if ($route === $middlewareRoute) {
-                    $appMiddlewares[] = $middleware;
-                }
-            }
-            */
         }
         $appMiddlewares[] = $pageRendererMiddleware;
         return $appMiddlewares;

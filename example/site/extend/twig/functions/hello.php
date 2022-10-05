@@ -2,6 +2,6 @@
 
 use Twig\TwigFunction;
 
-return new TwigFunction('hello', function ($name) {
+return new TwigFunction('local_hello', function ($name) {
     return "Hello {$name}!";
 });

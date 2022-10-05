@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use Tebe\HttpFactory\HttpFactory;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -25,13 +23,17 @@ define('HERBIE_API_VERSION', 2);
 
 final class Application
 {
-    private Container $container;
-    private array $filters;
-    private string $appPath;
-    private string $sitePath;
-    private string $vendorDir;
     private array $applicationMiddlewares;
+    private string $appPath;
+    private Container $container;
+    private array $events;
+    private array $filters;
     private array $routeMiddlewares;
+    private string $sitePath;
+    private array $twigFilters;
+    private array $twigFunctions;
+    private array $twigTests;
+    private string $vendorDir;
 
     /**
      * Application constructor
@@ -46,12 +48,16 @@ final class Application
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
 
-        $this->filters = [];
-        $this->appPath = normalize_path(dirname(__DIR__));
-        $this->sitePath = normalize_path($sitePath);
-        $this->vendorDir = normalize_path($vendorDir);
         $this->applicationMiddlewares = [];
+        $this->appPath = normalize_path(dirname(__DIR__));
+        $this->events = [];
+        $this->filters = [];
         $this->routeMiddlewares = [];
+        $this->sitePath = normalize_path($sitePath);
+        $this->twigFilters = [];
+        $this->twigFunctions = [];
+        $this->twigTests = [];
+        $this->vendorDir = normalize_path($vendorDir);
 
         $this->init($logger, $cache);
     }
@@ -69,15 +75,9 @@ final class Application
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
-        $this->container = $this->initContainer();
+        $this->container = (new ContainerBuilder($this, $cache, $logger))->build();
 
-        if ($logger) {
-            $this->container->set(LoggerInterface::class, $logger);
-        }
-
-        if ($cache) {
-            $this->container->set(NullCache::class, $cache);
-        }
+        $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
 
         if (!is_dir($logDir)) {
             $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
@@ -94,275 +94,6 @@ final class Application
         // Set slug generator to page and page item
         PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
         Page::setSlugGenerator($this->container->get(SlugGenerator::class));
-    }
-
-    /**
-     * Initializes and returns container
-     */
-    private function initContainer(): Container
-    {
-        $c = new Container();
-
-        $c->set(ContainerInterface::class, function (Container $c) {
-            return $c;
-        });
-
-        $c->set(Alias::class, function (Container $c) {
-            $paths = $c->get(Config::class)->get('paths');
-            return new Alias([
-                '@app' => $paths['app'],
-                '@asset' => $this->sitePath . '/assets',
-                '@media' => $paths['media'],
-                '@page' => $paths['pages'],
-                '@plugin' => $paths['plugins'],
-                '@site' => $this->sitePath,
-                '@sysplugin' => $paths['sysPlugins'],
-                '@vendor' => $this->vendorDir,
-                '@web' => $paths['web'],
-                '@snippet' => $paths['app'] . '/templates/snippets'
-            ]);
-        });
-
-        $c->set(Assets::class, function (Container $c) {
-            return new Assets(
-                $c->get(Alias::class),
-                $c->get(Environment::class)
-            );
-        });
-
-        $c->set(CacheInterface::class, function () {
-            return new NullCache();
-        });
-
-        $c->set(Config::class, function (Container $c) {
-
-            $const = [
-                'APP_PATH' => rtrim($this->appPath, '/'),
-                'SITE_PATH' => rtrim($this->sitePath, '/'),
-                'WEB_PATH' => rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/'),
-                'WEB_URL' => rtrim($c->get(Environment::class)->getBaseUrl(), '/')
-            ];
-
-            $processor = function (array $data) use ($const) {
-                return recursive_array_replace(array_keys($const), array_values($const), $data);
-            };
-
-            // default config
-            $defaultConfigPath = $this->appPath . '/config/defaults.php';
-            $defaultConfig = load_php_config($defaultConfigPath, $processor);
-
-            // user config
-            $userConfigPath = $this->sitePath . '/config/main.php';
-            $userConfig = [];
-            if (is_file($userConfigPath)) {
-                $userConfig = load_php_config($userConfigPath, $processor);
-            }
-
-            // system plugin configs
-            $systemPluginPath = $userConfig['paths']['sysPlugins'] ?? $defaultConfig['paths']['sysPlugins'];
-            $systemPluginConfigs = load_plugin_configs($systemPluginPath, 'system', $processor);
-
-            // composer plugin configs
-            $composerPluginConfigs = load_composer_plugin_configs();
-
-            // local plugin configs
-            $localPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
-            $localPluginConfigs = load_plugin_configs($localPluginPath, 'local', $processor);
-
-            // the order is important here
-            $userConfig['plugins'] = array_replace_recursive(
-                $systemPluginConfigs,
-                $composerPluginConfigs,
-                $localPluginConfigs,
-                $userConfig['plugins'] ?? []
-            );
-
-            $allConfig = array_replace_recursive($defaultConfig, $userConfig);
-
-            return new Config($allConfig);
-        });
-
-        $c->set(DataRepositoryInterface::class, function (Container $c) {
-            $adapter = $c->get(Config::class)->get('components.dataRepository.adapter');
-            $path = $c->get(Config::class)->get('paths.data');
-            if ($adapter === 'json') {
-                return new JsonDataRepository($path);
-            }
-            return new YamlDataRepository($path);
-        });
-
-        $c->set(DownloadMiddleware::class, function (Container $c) {
-            return new DownloadMiddleware(
-                $c->get(Alias::class),
-                $c->get(Config::class)->getAsConfig('components.downloadMiddleware')
-            );
-        });
-
-        $c->set(Environment::class, function () {
-            return new Environment();
-        });
-
-        $c->set(ErrorHandlerMiddleware::class, function (Container $c) {
-            return new ErrorHandlerMiddleware(
-                $c->get(TwigRenderer::class)
-            );
-        });
-
-        $c->set(EventManager::class, function () {
-            return new EventManager(new Event());
-        });
-
-        $c->set(FilterChainManager::class, function (Container $c) {
-            $manager = new FilterChainManager();
-            //$manager->attach('renderSegment', $c->get(RenderSegmentFilter::class));
-            //$manager->attach('renderLayout', $c->get(RenderLayoutFilter::class));
-            foreach ($this->filters as $filterName => $filtersPerName) {
-                foreach ($filtersPerName as $filter) {
-                    $manager->attach($filterName, $filter);
-                }
-            }
-            return $manager;
-        });
-
-        $c->set(HttpFactory::class, function () {
-            return new HttpFactory();
-        });
-
-        $c->set(LoggerInterface::class, function () {
-            return new NullLogger();
-        });
-
-        $c->set(MiddlewareDispatcher::class, function (Container $c) {
-            $pageMiddlewares = array_merge(
-                [
-                    $c->get(ErrorHandlerMiddleware::class)
-                ],
-                $this->applicationMiddlewares,
-                [
-                    $c->get(DownloadMiddleware::class),
-                    $c->get(PageResolverMiddleware::class)
-                ],
-                $c->get(PluginManager::class)->getMiddlewares(),
-                [
-                    $c->get(PageRendererMiddleware::class)
-                ]
-            );
-            return new MiddlewareDispatcher(
-                $pageMiddlewares,
-                $this->routeMiddlewares,
-                $c->get(Environment::class)->getRoute()
-            );
-        });
-
-        $c->set(PageFactory::class, function () {
-            return new PageFactory();
-        });
-
-        $c->set(PagePersistenceInterface::class, function (Container $c) {
-            return new FlatfilePagePersistence(
-                $c->get(Alias::class),
-                $c->get(Config::class)
-            );
-        });
-
-        $c->set(PageRendererMiddleware::class, function (Container $c) {
-            return new PageRendererMiddleware(
-                $c->get(CacheInterface::class),
-                $c->get(Environment::class),
-                $c->get(EventManager::class),
-                $c->get(FilterChainManager::class),
-                $c->get(HttpFactory::class),
-                $c->get(UrlGenerator::class)
-            );
-        });
-
-        $c->set(PageRepositoryInterface::class, function (Container $c) {
-            return new FlatfilePageRepository(
-                $c->get(PageFactory::class),
-                $c->get(PagePersistenceInterface::class)
-            );
-        });
-
-        $c->set(PageResolverMiddleware::class, function (Container $c) {
-            return new PageResolverMiddleware(
-                $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class),
-                $c->get(UrlMatcher::class)
-            );
-        });
-
-        $c->set(PluginManager::class, function (Container $c) {
-            return new PluginManager(
-                $c->get(Config::class),
-                $c->get(EventManager::class),
-                $c->get(FilterChainManager::class),
-                $c->get(Translator::class),
-                $c->get(LoggerInterface::class),
-                $c // needed for DI in plugins
-            );
-        });
-
-        $c->set(RenderLayoutFilter::class, function () {
-            return new RenderLayoutFilter();
-        });
-
-        $c->set(RenderSegmentFilter::class, function () {
-            return new RenderSegmentFilter();
-        });
-
-        $c->set(ServerRequestInterface::class, function (Container $c) {
-            return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
-        });
-
-        $c->set(Site::class, function (Container $c) {
-            return new Site(
-                $c->get(Config::class),
-                $c->get(DataRepositoryInterface::class),
-                $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class)
-            );
-        });
-
-        $c->set(SlugGenerator::class, function (Container $c) {
-            $options = [
-                'locale' => $c->get(Config::class)->get('language'),
-                'delimiter' => '-'
-            ];
-            return new SlugGenerator($options);
-        });
-
-        $c->set(Translator::class, function (Container $c) {
-            $translator = new Translator($c->get(Config::class)->get('language'));
-            $translator->addPath('app', $c->get(Config::class)->get('paths.messages'));
-            return $translator;
-        });
-
-        $c->set(TwigRenderer::class, function (Container $c) {
-            return new TwigRenderer(
-                $c->get(Config::class),
-                $c->get(Environment::class),
-                $c->get(EventManager::class),
-                $c->get(LoggerInterface::class),
-                $c->get(Site::class)
-            );
-        });
-
-        $c->set(UrlGenerator::class, function (Container $c) {
-            return new UrlGenerator(
-                $c->get(Config::class),
-                $c->get(Environment::class),
-                $c->get(ServerRequestInterface::class)
-            );
-        });
-
-        $c->set(UrlMatcher::class, function (Container $c) {
-            return new UrlMatcher(
-                $c->get(Config::class)->getAsConfig('components.urlMatcher'),
-                $c->get(PageRepositoryInterface::class)
-            );
-        });
-
-        return $c;
     }
 
     /**
@@ -400,6 +131,31 @@ final class Application
         echo $response->getBody();
     }
 
+    public function getAppPath(): string
+    {
+        return $this->appPath;
+    }
+
+    public function getSitePath(): string
+    {
+        return $this->sitePath;
+    }
+
+    public function getVendorDir(): string
+    {
+        return $this->vendorDir;
+    }
+
+    public function getApplicationMiddlewares(): array
+    {
+        return $this->applicationMiddlewares;
+    }
+
+    public function getRouteMiddlewares(): array
+    {
+        return $this->routeMiddlewares;
+    }
+
     /**
      * @param MiddlewareInterface|string $middlewareOrPath
      * @param MiddlewareInterface|string|null $middleware
@@ -416,47 +172,57 @@ final class Application
 
     public function addTwigFilter(TwigFilter $twigFilter): Application
     {
-        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFilter) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addFilter($twigFilter);
-        });
+        $this->twigFilters[] = $twigFilter;
         return $this;
+    }
+
+    public function getTwigFilters(): array
+    {
+        return $this->twigFilters;
     }
 
     public function addTwigFunction(TwigFunction $twigFunction): Application
     {
-        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigFunction) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addFunction($twigFunction);
-        });
+        $this->twigFunctions[] = $twigFunction;
         return $this;
     }
 
-    public function attachFilter(string $filterName, callable $filter): Application
+    public function getTwigFunctions(): array
     {
-        if (!isset($this->filters[$filterName])) {
-            $this->filters[$filterName] = [];
-        }
-        $this->filters[$filterName][] = $filter;
-        return $this;
-    }
-
-    public function attachListener(string $eventName, callable $listener, int $priority = 1): Application
-    {
-        $this->getEventManager()->attach($eventName, $listener, $priority);
-        return $this;
+        return $this->twigFunctions;
     }
 
     public function addTwigTest(TwigTest $twigTest): Application
     {
-        $this->getEventManager()->attach('onTwigInitialized', function (Event $event) use ($twigTest) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addTest($twigTest);
-        });
+        $this->twigTests[] = $twigTest;
         return $this;
+    }
+
+    public function getTwigTests(): array
+    {
+        return $this->twigTests;
+    }
+
+    public function addFilter(string $filterName, callable $filter): Application
+    {
+        $this->filters[] = [$filterName, $filter];
+        return $this;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    public function addEvent(string $eventName, callable $listener, int $priority = 1): Application
+    {
+        $this->events[] = [$eventName, $listener, $priority];
+        return $this;
+    }
+
+    public function getEvents(): array
+    {
+        return $this->events;
     }
 
     public function getConfig(): Config

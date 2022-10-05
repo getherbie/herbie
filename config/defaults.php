@@ -52,9 +52,9 @@ return [
         'cache' => false,
         'strictVariables' => false,
         'autoescape' => 'html',
-        'functionsPath' => 'SITE_PATH/twig/functions',
-        'filtersPath' => 'SITE_PATH/twig/filters',
-        'testsPath' => 'SITE_PATH/twig/tests'
+        'functionsPath' => 'SITE_PATH/extend/twig/functions',
+        'filtersPath' => 'SITE_PATH/extend/twig/filters',
+        'testsPath' => 'SITE_PATH/extend/twig/tests'
     ],
     'plugins' => [],
     'enabledPlugins' => '',

@@ -13,9 +13,11 @@ define('HERBIE_DEBUG', true);
 use example\CustomHeader;
 use example\TestFilter;
 use herbie\Application;
+use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
+use herbie\TwigRenderer;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Twig\TwigFilter;
@@ -44,7 +46,7 @@ $app->addMiddleware(new CustomHeader('two'));
 $app->addMiddleware(new CustomHeader('three'));
 $app->addMiddleware('blog/2015-07-30', new CustomHeader('blog'));
 $app->addMiddleware('features', new CustomHeader('features'));
-$app->addMiddleware('news/january', new HttpBasicAuthMiddleware(['user' => 'pass']));
+$app->addMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass']));
 
 // Twig
 $app->addTwigFunction(new TwigFunction('myfunction', function () {
@@ -58,15 +60,25 @@ $app->addTwigTest(new TwigTest('mytest', function () {
 }));
 
 // Filters
-$app->attachFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
+$app->addFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
-$app->attachFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
+$app->addFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
-$app->attachFilter('renderSegment', new TestFilter());
+$app->addFilter('renderSegment', new TestFilter());
+
+
+// Events
+$app->addEvent('onTwigInitialized', function (EventInterface $event): void {
+    /** @var TwigRenderer $twigRenderer */
+    $twigRenderer = $event->getTarget();
+    $twigRenderer->addFilter(new TwigFilter('my_filter', function (string $content): string {
+        return $content . ' My Filter';
+    }));
+});
 
 // Run
 $app->run();

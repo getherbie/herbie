@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
@@ -77,6 +76,20 @@ final class PluginManager
         }
         $this->eventManager->trigger('onLocalPluginsAttached', $this);
 
+        $this->loadPlugin(new InstallablePlugin(
+            'virtual_local_plugin',
+            __DIR__,
+            __DIR__ . '/VirtualLocalPlugin.php',
+            'virtual',
+        ));
+
+        $this->loadPlugin(new InstallablePlugin(
+            'virtual_app_plugin',
+            __DIR__,
+            __DIR__ . '/VirtualAppPlugin.php',
+            'virtual',
+        ));
+
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
 
@@ -117,10 +130,6 @@ final class PluginManager
             return; // TODO log info
         }
 
-        foreach ($plugin->events() as $event) {
-            $this->attachListener(...$event);
-        }
-
         foreach ($plugin->filters() as $filter) {
             $this->attachFilter(...$filter);
         }
@@ -129,16 +138,33 @@ final class PluginManager
             $this->middlewares[] = $middleware;
         }
 
-        foreach ($plugin->twigFilters() as $twigFilter) {
-            $this->addTwigFilter(...$twigFilter);
+        $twigFilters = $plugin->twigFilters();
+        foreach ($twigFilters as $twigFilter) {
+            if (!$twigFilter instanceof TwigFilter) {
+                $this->addTwigFilter(new TwigFilter(...$twigFilter));
+            } else {
+                $this->addTwigFilter($twigFilter);
+            }
         }
 
         foreach ($plugin->twigFunctions() as $twigFunction) {
-            $this->addTwigFunction(...$twigFunction);
+            if (!$twigFunction instanceof TwigFunction) {
+                $this->addTwigFunction(new TwigFunction(...$twigFunction));
+            } else {
+                $this->addTwigFunction($twigFunction);
+            }
         }
 
         foreach ($plugin->twigTests() as $twigTest) {
-            $this->addTwigTest(...$twigTest);
+            if (!$twigTest instanceof TwigTest) {
+                $this->addTwigTest(new TwigTest(...$twigTest));
+            } else {
+                $this->addTwigTest($twigTest);
+            }
+        }
+
+        foreach ($plugin->events() as $event) {
+            $this->attachListener(...$event);
         }
 
         $key = $installablePlugin->getKey();
@@ -189,38 +215,32 @@ final class PluginManager
         $this->eventManager->attach($name, $callable, $priority);
     }
 
-    private function addTwigFilter(string $name, callable $callable, array $options = []): callable
+    private function addTwigFilter(TwigFilter $filter): callable
     {
-        $closure = function (Event $event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($filter) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
-            $twig->addFilter(
-                new TwigFilter($name, $callable, $options)
-            );
+            $twig->addFilter($filter);
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    private function addTwigFunction(string $name, callable $callable, array $options = []): callable
+    private function addTwigFunction(TwigFunction $function): callable
     {
-        $closure = function (Event $event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($function) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
-            $twig->addFunction(
-                new TwigFunction($name, $callable, $options)
-            );
+            $twig->addFunction($function);
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
-    private function addTwigTest(string $name, callable $callable, array $options = []): callable
+    private function addTwigTest(TwigTest $test): callable
     {
-        $closure = function (Event $event) use ($name, $callable, $options) {
+        $closure = function (Event $event) use ($test) {
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
-            $twig->addTest(
-                new TwigTest($name, $callable, $options)
-            );
+            $twig->addTest($test);
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }

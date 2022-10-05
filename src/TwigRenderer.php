@@ -89,8 +89,6 @@ final class TwigRenderer
 
         $this->eventManager->trigger('onTwigAddExtension', $this);
 
-        $this->addTwigPlugins();
-
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
     }
@@ -150,31 +148,6 @@ final class TwigRenderer
         $this->twig->addTest($test);
     }
 
-    private function addTwigPlugins(): void
-    {
-        // Functions
-        $dir = $this->config['twig']['functionsPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigFunction $twigFunction */
-            $twigFunction = $this->includePhpFile($file);
-            $this->twig->addFunction($twigFunction);
-        }
-        // Filters
-        $dir = $this->config['twig']['filtersPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigFilter $twigFilter */
-            $twigFilter = $this->includePhpFile($file);
-            $this->twig->addFilter($twigFilter);
-        }
-        // Tests
-        $dir = $this->config['twig']['testsPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigTest $twigTest */
-            $twigTest = $this->includePhpFile($file);
-            $this->twig->addTest($twigTest);
-        }
-    }
-
     /**
      * @throws LoaderError
      */
@@ -223,24 +196,6 @@ final class TwigRenderer
             }
         }
         return array_values($paths);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function includePhpFile(string $file)
-    {
-        return include($file);
-    }
-
-    private function globPhpFiles(string $dir): array
-    {
-        $dir = rtrim($dir, '/');
-        if (empty($dir) || !is_readable($dir)) {
-            return [];
-        }
-        $pattern = $dir . '/*.php';
-        return glob($pattern);
     }
 
     public function isInitialized(): bool
