@@ -12,7 +12,7 @@ return [
         'messages' => 'APP_PATH/messages',
         'media' => 'SITE_PATH/media',
         'pages' => 'SITE_PATH/pages',
-        'plugins' => 'SITE_PATH/plugins',
+        'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
         'sysPlugins' => 'APP_PATH/sysplugins',
         'themes' => 'SITE_PATH/themes',
