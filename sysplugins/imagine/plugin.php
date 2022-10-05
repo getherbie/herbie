@@ -180,10 +180,16 @@ final class ImagineSysPlugin extends Plugin
     protected function resolveCachePath(string $path, string $filter): string
     {
         $info = pathinfo($path);
+
+        $dirname = trim($info['dirname'], '.');
+        if (strlen($dirname) > 0) {
+            $dirname = '/' . $dirname;
+        }
+
         return sprintf(
-            '%s/%s/%s-%s.%s',
+            '%s%s/%s-%s.%s',
             $this->cachePath,
-            $info['dirname'],
+            $dirname,
             $info['filename'],
             $filter,
             $info['extension']
