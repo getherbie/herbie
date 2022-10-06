@@ -160,23 +160,23 @@ final class ContainerBuilder
         }
 
         $c->set(MiddlewareDispatcher::class, function (Container $c) {
-            $pageMiddlewares = array_merge(
+            return new MiddlewareDispatcher(
                 [
-                    $c->get(ErrorHandlerMiddleware::class)
+                    $c->get(ErrorHandlerMiddleware::class) // only one at the moment
                 ],
-                $this->app->getApplicationMiddlewares(),
+                array_merge(
+                    $c->get(PluginManager::class)->getAppMiddlewares(),
+                    $this->app->getAppMiddlewares()
+                ),
+                array_merge(
+                    $c->get(PluginManager::class)->getRouteMiddlewares(),
+                    $this->app->getRouteMiddlewares(),
+                ),
                 [
                     $c->get(DownloadMiddleware::class),
-                    $c->get(PageResolverMiddleware::class)
-                ],
-                $c->get(PluginManager::class)->getMiddlewares(),
-                [
+                    $c->get(PageResolverMiddleware::class),
                     $c->get(PageRendererMiddleware::class)
-                ]
-            );
-            return new MiddlewareDispatcher(
-                $pageMiddlewares,
-                $this->app->getRouteMiddlewares(),
+                ],
                 $c->get(Environment::class)->getRoute()
             );
         });

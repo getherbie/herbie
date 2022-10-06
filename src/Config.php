@@ -21,7 +21,7 @@ final class Config
      *
      * @example $value = $config->get('twig.extend.functions');
      *
-     * @param mixed $default
+     * @param callable|mixed $default
      * @return mixed
      */
     public function get(string $name, $default = null)
@@ -37,7 +37,7 @@ final class Config
             if (isset($current[$field])) {
                 $current = $current[$field];
             } else {
-                return $default;
+                return is_callable($default) ? $default() : $default;
             }
         }
 

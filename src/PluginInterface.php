@@ -12,7 +12,9 @@ interface PluginInterface
 
     public function filters(): array;
 
-    public function middlewares(): array;
+    public function appMiddlewares(): array;
+
+    public function routeMiddlewares(): array;
 
     public function twigFilters(): array;
 

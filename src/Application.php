@@ -23,7 +23,7 @@ define('HERBIE_API_VERSION', 2);
 
 final class Application
 {
-    private array $applicationMiddlewares;
+    private array $appMiddlewares;
     private string $appPath;
     private Container $container;
     private array $events;
@@ -48,7 +48,7 @@ final class Application
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
 
-        $this->applicationMiddlewares = [];
+        $this->appMiddlewares = [];
         $this->appPath = normalize_path(dirname(__DIR__));
         $this->events = [];
         $this->filters = [];
@@ -128,6 +128,7 @@ final class Application
                 header(sprintf('%s: %s', $k, $v), false);
             }
         }
+        header_remove('X-Powered-By'); // don't expose php
         echo $response->getBody();
     }
 
@@ -146,9 +147,9 @@ final class Application
         return $this->vendorDir;
     }
 
-    public function getApplicationMiddlewares(): array
+    public function getAppMiddlewares(): array
     {
-        return $this->applicationMiddlewares;
+        return $this->appMiddlewares;
     }
 
     public function getRouteMiddlewares(): array
@@ -157,16 +158,20 @@ final class Application
     }
 
     /**
-     * @param MiddlewareInterface|string $middlewareOrPath
-     * @param MiddlewareInterface|string|null $middleware
+     * @param MiddlewareInterface|string $middleware
      */
-    public function addMiddleware($middlewareOrPath, $middleware = null): Application
+    public function addAppMiddleware($middleware): Application
     {
-        if ($middleware) {
-            $this->routeMiddlewares[$middlewareOrPath] = $middleware;
-        } else {
-            $this->applicationMiddlewares[] = $middlewareOrPath;
-        }
+        $this->appMiddlewares[] = $middleware;
+        return $this;
+    }
+
+    /**
+     * @param MiddlewareInterface|string $middleware
+     */
+    public function addRouteMiddleware(string $routeRegex, $middleware): Application
+    {
+        $this->routeMiddlewares[] = [$routeRegex, $middleware];
         return $this;
     }
 

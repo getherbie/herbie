@@ -67,11 +67,22 @@ final class DummySysPlugin implements PluginInterface
     /**
      * @return array[]
      */
-    public function middlewares(): array
+    public function appMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'dummyMiddleware']
+            [$this, 'appMiddleware']
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function routeMiddlewares(): array
+    {
+        $this->logger->debug(__METHOD__);
+        return [
+            ['documentation', [$this, 'routeMiddleware']]
         ];
     }
 
@@ -155,21 +166,25 @@ final class DummySysPlugin implements PluginInterface
         }));
     }
 
-    public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
+    public function appMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
         $request = $request->withAttribute('X-Plugin-Dummy', (string)time());
-        $response = $next->handle($request)
-            ->withHeader('X-Plugin-Dummy', (string)time());
+        return $next->handle($request)->withHeader('X-Plugin-Dummy', (string)time());
+    }
 
-        if ($request->getUri()->getPath() === '/plugins/dummy') {
-            $content = (string)$response->getBody();
-            $newContent = str_replace('</body>', '<p>This is from Dummy Middleware.</p></body', $content);
-            $response->getBody()->rewind();
-            $response->getBody()->write($newContent);
-            return $response;
-        }
-
+    public function routeMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
+    {
+        $this->logger->debug(__METHOD__);
+        $response = $next->handle($request);
+        $content = (string)$response->getBody();
+        $newContent = str_replace(
+            '</body>',
+            $this->wrapHtmlBlock('dummy-plugin-route-middleware', __METHOD__) . '</body>',
+            $content
+        );
+        $response->getBody()->rewind();
+        $response->getBody()->write($newContent);
         return $response;
     }
 

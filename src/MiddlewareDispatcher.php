@@ -17,9 +17,15 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     /**
      * Dispatcher constructor.
      */
-    public function __construct(array $appMiddlewares, array $routeMiddleware, string $route)
+    public function __construct(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route)
     {
-        $this->middlewares = $this->composeMiddlewares($appMiddlewares, $routeMiddleware, $route);
+        $this->middlewares = $this->composeMiddlewares(
+            $prependMiddlewares,
+            $appMiddlewares,
+            $routeMiddlewares,
+            $appendMiddlewares,
+            $route
+        );
     }
 
     public function dispatch(ServerRequestInterface $request): ResponseInterface
@@ -49,18 +55,18 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         return $current;
     }
 
-    private function composeMiddlewares(array $appMiddlewares, array $routeMiddlewares, string $route): array
+    private function composeMiddlewares(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route): array
     {
         if (empty($routeMiddlewares)) {
-            return $appMiddlewares;
+            return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
         }
-        $pageRendererMiddleware = array_pop($appMiddlewares);
-        foreach ($routeMiddlewares as $regex => $middleware) {
+        // append route middlewares to app middlewares depending on the matched route
+        foreach ($routeMiddlewares as $routeMiddleware) {
+            [$regex, $middleware] = $routeMiddleware;
             if (preg_match('#' . $regex . '#', $route)) {
                 $appMiddlewares[] = $middleware;
             }
         }
-        $appMiddlewares[] = $pageRendererMiddleware;
-        return $appMiddlewares;
+        return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
     }
 }

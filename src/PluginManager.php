@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 
 final class PluginManager
@@ -26,7 +25,9 @@ final class PluginManager
 
     private LoggerInterface $logger;
 
-    private array $middlewares;
+    private array $appMiddlewares;
+
+    private array $routeMiddlewares;
 
     /**
      * PluginManager constructor.
@@ -45,7 +46,8 @@ final class PluginManager
         $this->filterChainManager = $filterChainManager;
         $this->loadedPlugins = [];
         $this->logger = $logger;
-        $this->middlewares = [];
+        $this->appMiddlewares = [];
+        $this->routeMiddlewares = [];
         $this->pluginPaths = [];
         $this->translator = $translator;
     }
@@ -131,8 +133,12 @@ final class PluginManager
             $this->attachFilter(...$filter);
         }
 
-        foreach ($plugin->middlewares() as $middleware) {
-            $this->middlewares[] = $middleware;
+        foreach ($plugin->appMiddlewares() as $appMiddleware) {
+            $this->appMiddlewares[] = $appMiddleware;
+        }
+
+        foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
+            $this->routeMiddlewares[] = $routeMiddleware;
         }
 
         $twigFilters = $plugin->twigFilters();
@@ -193,14 +199,14 @@ final class PluginManager
         return $this->loadedPlugins;
     }
 
-    public function getMiddlewares(): array
+    public function getAppMiddlewares(): array
     {
-        foreach ($this->loadedPlugins as $plugin) {
-            if ($plugin instanceof MiddlewareInterface) {
-                $this->middlewares[] = $plugin;
-            }
-        }
-        return $this->middlewares;
+        return $this->appMiddlewares;
+    }
+
+    public function getRouteMiddlewares(): array
+    {
+        return $this->routeMiddlewares;
     }
 
     public function getPluginPaths(): array

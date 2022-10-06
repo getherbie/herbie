@@ -1,12 +1,8 @@
 <?php
 
-if (php_sapi_name() == 'cli-server') {
-    if (preg_match('/\.(?:js|css|gif|jpg|jpeg|png)$/', $_SERVER["REQUEST_URI"])) {
-        return false;
-    }
-}
-
 require_once(__DIR__ . '/../../vendor/autoload.php');
+
+herbie\handle_internal_webserver_assets(__FILE__);
 
 define('HERBIE_DEBUG', true);
 
@@ -33,20 +29,22 @@ $logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.lo
 // $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
 
 $app = new Application(
-    '../site',
-    '../../vendor',
+    dirname(__DIR__) . '/site',
+    dirname(__DIR__, 2) . '/vendor',
     $logger,
     // $fileCache
 );
 
-// Middlewares
-$app->addMiddleware(ResponseTimeMiddleware::class);
-$app->addMiddleware(new CustomHeader('one'));
-$app->addMiddleware(new CustomHeader('two'));
-$app->addMiddleware(new CustomHeader('three'));
-$app->addMiddleware('blog/2015-07-30', new CustomHeader('blog'));
-$app->addMiddleware('features', new CustomHeader('features'));
-$app->addMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass']));
+// App Middlewares
+$app->addAppMiddleware(ResponseTimeMiddleware::class);
+$app->addAppMiddleware(new CustomHeader('one'));
+$app->addAppMiddleware(new CustomHeader('two'));
+$app->addAppMiddleware(new CustomHeader('three'));
+
+// Route Middlewares
+$app->addRouteMiddleware('blog/2015-07-30', new CustomHeader('blog'));
+$app->addRouteMiddleware('features', new CustomHeader('features'));
+$app->addRouteMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass']));
 
 // Twig
 $app->addTwigFunction(new TwigFunction('myfunction', function () {

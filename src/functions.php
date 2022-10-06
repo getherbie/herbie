@@ -142,3 +142,33 @@ function recursive_array_replace($find, $replace, $array)
 
     return $newArray;
 }
+
+function handle_internal_webserver_assets($file): void
+{
+    if (php_sapi_name() !== 'cli-server') {
+        return;
+    }
+
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+
+    $mimeTypes = [
+        'css' => 'text/css',
+        'gif' => 'image/gif',
+        'ico' => 'image/vnd.microsoft.icon',
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'js' => 'text/javascript',
+        'png' => 'image/png',
+    ];
+
+    $extensions = implode('|', array_keys($mimeTypes));
+    $regex = '/\.(?:' . $extensions . ')$/';
+
+    if (preg_match($regex, $requestUri)) {
+        $requestedAbsoluteFile = dirname($file) . $requestUri;
+        $extension = pathinfo($requestedAbsoluteFile, PATHINFO_EXTENSION);
+        header('Content-Type: ' . ($mimeTypes[$extension] ?? 'text/plain'));
+        readfile($requestedAbsoluteFile);
+        exit;
+    }
+}

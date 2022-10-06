@@ -21,7 +21,12 @@ abstract class Plugin implements PluginInterface
         return [];
     }
 
-    public function middlewares(): array
+    public function appMiddlewares(): array
+    {
+        return [];
+    }
+
+    public function routeMiddlewares(): array
     {
         return [];
     }

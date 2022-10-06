@@ -80,12 +80,12 @@ Install Composer dependencies.
 
 Start PHP's internal web server.
 
-    php -S localhost:9999 -t example/web
+    php -S localhost:9999 example/web/index.php
 
 Or, if you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
-    export XDEBUG_MODE=debug; php -S localhost:9999 -t example/web
+    export XDEBUG_MODE=debug; php -S localhost:9999 example/web/index.php
 
 Now, open `localhost:9999` with your favorite web browser.
 
