@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 return [
     'language' => 'de',
@@ -18,7 +12,7 @@ return [
         'messages' => 'APP_PATH/messages',
         'media' => 'SITE_PATH/media',
         'pages' => 'SITE_PATH/pages',
-        'plugins' => 'SITE_PATH/plugins',
+        'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
         'sysPlugins' => 'APP_PATH/sysplugins',
         'themes' => 'SITE_PATH/themes',
@@ -38,7 +32,7 @@ return [
             'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
             'audio' => 'mp3,m4a,wav,aiff,midi'
         ],
-        'pages' => 'txt,md,markdown,textile,htm,html,rss,xml',
+        'pages' => 'txt,md,markdown,textile,htm,html,rss,rst,xml',
     ],
     'components' => [
         'dataRepository' => [
@@ -54,10 +48,13 @@ return [
     ],
     'twig' => [
         'debug' => false,
+        'charset' => 'UTF-8',
         'cache' => false,
-        'functionsPath' => 'SITE_PATH/twig/functions',
-        'filtersPath' => 'SITE_PATH/twig/filters',
-        'testsPath' => 'SITE_PATH/twig/tests'
+        'strictVariables' => false,
+        'autoescape' => 'html',
+        'functionsPath' => 'SITE_PATH/extend/twig/functions',
+        'filtersPath' => 'SITE_PATH/extend/twig/filters',
+        'testsPath' => 'SITE_PATH/extend/twig/tests'
     ],
     'plugins' => [],
     'enabledPlugins' => '',

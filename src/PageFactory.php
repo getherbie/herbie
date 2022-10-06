@@ -1,24 +1,11 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageFactory
+final class PageFactory
 {
-    /**
-     * @param string $id
-     * @param string $parent
-     * @param array $data
-     * @param array $segments
-     * @return Page
-     */
     public function newPage(string $id, string $parent, array $data, array $segments): Page
     {
         $page = new Page();
@@ -29,46 +16,55 @@ class PageFactory
         return $page;
     }
 
-    /**
-     * @param array $data
-     * @return PageItem
-     */
-    public function newPageItem(array $data = [])
+    public function newPageItem(array $data = []): PageItem
     {
         return new PageItem($data);
     }
 
-    /**
-     * @param array $items
-     * @return PageList
-     */
-    public function newPageList(array $items = [])
+    public function newPageList(array $items = []): PageList
     {
         return new PageList($items);
     }
 
-    /**
-     * @param PageList $pageList
-     * @return PageTree
-     */
+    private function isIndexPage(string $path): bool
+    {
+        $filename = pathinfo($path, PATHINFO_FILENAME);
+        $filenameWithoutPrefix = preg_replace('/^([0-9])+-/', '', $filename);
+        return $filenameWithoutPrefix === 'index';
+    }
+
     public function newPageTree(PageList $pageList): PageTree
     {
         $tree = new PageTree();
+
+        // first go through all index pages
         foreach ($pageList as $pageItem) {
-            $route = $pageItem->getParentRoute();
-            $node = $tree->findByRoute($route);
-            if ($node) {
-                $node->addChild(new PageTree($pageItem));
+            if (!$this->isIndexPage($pageItem->path)) {
+                continue;
+            }
+            $parentRoute = $pageItem->getParentRoute();
+            $parent = $tree->findByRoute($parentRoute);
+            if ($parent) {
+                $parent->addChild(new PageTree($pageItem));
             }
         }
+
+        // then go through all non-index pages
+        foreach ($pageList as $pageItem) {
+            if ($this->isIndexPage($pageItem->path)) {
+                continue;
+            }
+            $parentRoute = $pageItem->getParentRoute();
+            $parent = $tree->findByRoute($parentRoute);
+            if ($parent) {
+                $parent->addChild(new PageTree($pageItem));
+            }
+        }
+
         return $tree;
     }
 
-    /**
-     * @param $pageItems
-     * @return PageTrail
-     */
-    public function newPageTrail($pageItems): PageTrail
+    public function newPageTrail(array $pageItems): PageTrail
     {
         return new PageTrail($pageItems);
     }

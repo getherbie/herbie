@@ -1,15 +1,10 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -21,77 +16,43 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 use Twig\Environment as TwigEnvironment;
 
-class TwigRenderer
+final class TwigRenderer
 {
-    /**
-     * @var bool
-     */
-    private $initialized;
+    private bool $initialized;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var \Twig\Environment
-     */
-    private $twig;
+    private TwigEnvironment $twig;
 
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /**
-     * @var TwigCoreExtension
-     */
-    private $twigCoreExtension;
+    private LoggerInterface $logger;
 
-    /**
-     * @var Site
-     */
-    private $site;
-
-    /**
-     * @var TwigPlusExtension
-     */
-    private $twigPlusExtension;
+    private Site $site;
 
     /**
      * TwigRenderer constructor.
-     * @param Config $config
-     * @param Environment $environment
-     * @param EventManager $eventManager
-     * @param Site $site
-     * @param TwigCoreExtension $twigExtension
-     * @param TwigPlusExtension $twigPlusExtension
      */
     public function __construct(
         Config $config,
         Environment $environment,
         EventManager $eventManager,
-        Site $site,
-        TwigCoreExtension $twigExtension,
-        TwigPlusExtension $twigPlusExtension
+        LoggerInterface $logger,
+        Site $site
     ) {
         $this->initialized = false;
         $this->environment = $environment;
         $this->config = $config->toArray();
         $this->eventManager = $eventManager;
-        $this->twigCoreExtension = $twigExtension;
+        $this->logger = $logger;
         $this->site = $site;
-        $this->twigPlusExtension = $twigPlusExtension;
     }
 
     /**
      * @throws LoaderError
-     * @throws \Throwable
+     * @throws SystemException
      */
     public function init(): void
     {
@@ -111,31 +72,33 @@ class TwigRenderer
             $cache = $cachePath;
         }
 
-        $this->twig = new TwigEnvironment($loader, [
-            'debug' => $this->config['twig']['debug'],
-            'cache' => $cache
-        ]);
+        // see \Twig\Environment default options
+        $twigOptions = [
+            'autoescape'       => $this->config['twig']['autoescape'] ?? 'html',
+            'cache'            => $cache,
+            'charset'          => $this->config['twig']['charset'] ?? 'UTF-8',
+            'debug'            => $this->config['twig']['debug'] ?? false,
+            'strict_variables' => $this->config['twig']['strictVariables'] ?? false,
+        ];
+
+        $this->twig = new TwigEnvironment($loader, $twigOptions);
 
         if (!empty($this->config['twig']['debug'])) {
             $this->twig->addExtension(new DebugExtension());
         }
 
-        $this->twigCoreExtension->setTwigRenderer($this);
-        $this->twig->addExtension($this->twigCoreExtension);
-
-        $this->twigPlusExtension->setTwigRenderer($this);
-        $this->twig->addExtension($this->twigPlusExtension);
-
-        $this->addTwigPlugins();
+        $this->eventManager->trigger('onTwigAddExtension', $this);
 
         $this->initialized = true;
         $this->eventManager->trigger('onTwigInitialized', $this);
     }
 
+    public function getTwigEnvironment(): TwigEnvironment
+    {
+        return $this->twig;
+    }
+
     /**
-     * @param string $string
-     * @param array $context
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -147,9 +110,6 @@ class TwigRenderer
     }
 
     /**
-     * @param string $name
-     * @param array $context
-     * @return string
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -160,9 +120,6 @@ class TwigRenderer
         return $this->twig->render($name, $context);
     }
 
-    /**
-     * @return array
-     */
     public function getContext(): array
     {
         return [
@@ -176,60 +133,22 @@ class TwigRenderer
         ];
     }
 
-    /**
-     * @param TwigFunction $function
-     */
     public function addFunction(TwigFunction $function): void
     {
         $this->twig->addFunction($function);
     }
 
-    /**
-     * @param TwigFilter $filter
-     */
     public function addFilter(TwigFilter $filter): void
     {
         $this->twig->addFilter($filter);
     }
 
-    /**
-     * @param TwigTest $test
-     */
     public function addTest(TwigTest $test): void
     {
         $this->twig->addTest($test);
     }
 
     /**
-     * @return void
-     */
-    private function addTwigPlugins(): void
-    {
-        // Functions
-        $dir = $this->config['twig']['functionsPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigFunction $twigFunction */
-            $twigFunction = $this->includePhpFile($file);
-            $this->twig->addFunction($twigFunction);
-        }
-        // Filters
-        $dir = $this->config['twig']['filtersPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigFilter $twigFilter */
-            $twigFilter = $this->includePhpFile($file);
-            $this->twig->addFilter($twigFilter);
-        }
-        // Tests
-        $dir = $this->config['twig']['testsPath'];
-        foreach ($this->globPhpFiles($dir) as $file) {
-            /** @var TwigTest $twigTest */
-            $twigTest = $this->includePhpFile($file);
-            $this->twig->addTest($twigTest);
-        }
-    }
-
-    /**
-     * @throws ChainLoader
      * @throws LoaderError
      */
     private function getTwigFilesystemLoader(): ChainLoader
@@ -243,6 +162,8 @@ class TwigRenderer
             $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
         }
 
+        $paths = $this->validatePaths($paths);
+
         $loader1 = new TwigStringLoader();
         $loader2 = new FilesystemLoader($paths);
 
@@ -253,7 +174,8 @@ class TwigRenderer
             'site' => $this->config['paths']['site'],
             'snippet' => $this->config['paths']['app'] . '/templates/snippets',
             'sysplugin' => $this->config['paths']['sysPlugins'],
-            'template' => $this->config['paths']['app'] . '/templates'
+            'template' => $this->config['paths']['app'] . '/templates',
+            'vendor' => $this->config['paths']['app'] . '/vendor',
         ];
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
@@ -261,36 +183,21 @@ class TwigRenderer
             }
         }
 
-        $loader = new ChainLoader([$loader1, $loader2]);
-        return $loader;
+        return new ChainLoader([$loader1, $loader2]);
     }
 
-    /**
-     * @param string $file
-     * @return object
-     */
-    private function includePhpFile(string $file)
+    private function validatePaths(array $paths): array
     {
-        return include($file);
-    }
-
-    /**
-     * @param string $dir
-     * @return array
-     */
-    private function globPhpFiles(string $dir): array
-    {
-        $dir = rtrim($dir, '/');
-        if (empty($dir) || !is_readable($dir)) {
-            return [];
+        foreach ($paths as $i => $path) {
+            if (!is_dir($path)) {
+                $this->logger->error(sprintf('Directory "%s" does not exist', $path));
+                // we remove not existing paths here because Twig's loader would throw an error
+                unset($paths[$i]);
+            }
         }
-        $pattern = $dir . '/*.php';
-        return glob($pattern);
+        return array_values($paths);
     }
 
-    /**
-     * @return bool
-     */
     public function isInitialized(): bool
     {
         return $this->initialized;

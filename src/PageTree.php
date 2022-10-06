@@ -1,20 +1,11 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageTree extends AbstractNode
+final class PageTree extends AbstractNode
 {
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         $menuItem = $this->getMenuItem();
@@ -30,7 +21,6 @@ class PageTree extends AbstractNode
     }
 
     /**
-     * @param string $route
      * @return PageTree|bool
      */
     public function findByRoute(string $route)
@@ -53,7 +43,6 @@ class PageTree extends AbstractNode
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      * @return PageTree|bool
      */

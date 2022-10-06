@@ -1,40 +1,29 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class Environment
+final class Environment
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    private ?string $basePath;
 
-    /**
-     * @var string
-     */
-    private $baseUrl;
+    private ?string $baseUrl;
 
-    /**
-     * @var string
-     */
-    private $pathInfo;
+    private ?string $pathInfo;
 
-    /**
-     * @var string
-     */
-    private $requestUri;
+    private ?string $requestUri;
+
+    public function __construct()
+    {
+        $this->basePath = null;
+        $this->baseUrl = null;
+        $this->pathInfo = null;
+        $this->requestUri = null;
+    }
 
     /**
      * Get the current route.
-     * @return string
      */
     public function getRoute(): string
     {
@@ -44,7 +33,6 @@ class Environment
 
     /**
      * Get the parts of the current route.
-     * @return array
      */
     public function getRouteParts(): array
     {
@@ -54,7 +42,6 @@ class Environment
 
     /**
      * Get all routes from root to current page as an index array.
-     * @return array
      */
     public function getRouteLine(): array
     {
@@ -69,18 +56,12 @@ class Environment
         return $routeLine;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         $route = $this->getRawRoute();
         return $route[1];
     }
 
-    /**
-     * @return array
-     */
     private function getRawRoute(): array
     {
         $pathInfo = trim($this->getPathInfo(), '/');
@@ -93,9 +74,6 @@ class Environment
         return array_map('trim', $parts);
     }
 
-    /**
-     * @return string
-     */
     public function getBasePath(): string
     {
         if (null === $this->basePath) {
@@ -105,9 +83,6 @@ class Environment
         return $this->basePath;
     }
 
-    /**
-     * @return string
-     */
     public function getBaseUrl(): string
     {
         if (null === $this->baseUrl) {
@@ -116,9 +91,6 @@ class Environment
         return $this->baseUrl;
     }
 
-    /**
-     * @return string
-     */
     public function getPathInfo(): string
     {
         if (null === $this->pathInfo) {
@@ -128,9 +100,6 @@ class Environment
         return $this->pathInfo;
     }
 
-    /**
-     * @return string
-     */
     public function getRequestUri(): string
     {
         if (null === $this->requestUri) {
@@ -140,9 +109,6 @@ class Environment
         return $this->requestUri;
     }
 
-    /**
-     * @return string
-     */
     private function detectRequestUri(): string
     {
         $requestUri = null;
@@ -183,9 +149,6 @@ class Environment
         return '/';
     }
 
-    /**
-     * @return string
-     */
     private function detectBaseUrl(): string
     {
         $filename       = $this->getServer('SCRIPT_FILENAME', '');
@@ -237,7 +200,8 @@ class Environment
         // If using mod_rewrite or ISAPI_Rewrite strip the script filename
         // out of the base path. $pos !== 0 makes sure it is not matching a
         // value from PATH_INFO or QUERY_STRING.
-        if (strlen($requestUri) >= strlen($baseUrl)
+        if (
+            strlen($requestUri) >= strlen($baseUrl)
             && (false !== ($pos = strpos($requestUri, $baseUrl)) && $pos !== 0)
         ) {
             $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
@@ -245,9 +209,6 @@ class Environment
         return $baseUrl;
     }
 
-    /**
-     * @return string
-     */
     private function detectBasePath(): string
     {
         $filename = basename($this->getServer('SCRIPT_FILENAME', ''));
@@ -264,16 +225,10 @@ class Environment
         return rtrim($baseUrl, '/');
     }
 
-    /**
-     * @return string
-     */
     private function preparePathInfo(): string
     {
         $baseUrl = $this->getBaseUrl();
-
-        if (null === ($requestUri = $this->getRequestUri())) {
-            return '/';
-        }
+        $requestUri = $this->getRequestUri();
 
         // Remove the query string from REQUEST_URI
         if ($pos = strpos($requestUri, '?')) {
@@ -281,31 +236,24 @@ class Environment
         }
 
         $pathInfo = substr($requestUri, strlen($baseUrl));
-        if (null !== $baseUrl && (false === $pathInfo || '' === $pathInfo)) {
-            // If substr() returns false then PATH_INFO is set to an empty string
+        if ((false === $pathInfo || '' === $pathInfo)) {
             return '/';
-        } elseif (null === $baseUrl) {
+        } elseif ('' === $baseUrl) {
             return $requestUri;
         }
 
-        return (string) $pathInfo;
+        return $pathInfo;
     }
 
     /**
      * Returns current script name.
-     * @return string
      */
     public function getScriptName(): string
     {
         return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
-    /**
-     * @param string $name
-     * @param null $default
-     * @return string|null
-     */
-    private function getServer(string $name, $default = null): ?string
+    private function getServer(string $name, ?string $default = null): ?string
     {
         return $_SERVER[$name] ?? $default;
     }

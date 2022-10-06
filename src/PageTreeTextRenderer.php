@@ -1,26 +1,13 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeTextRenderer extends \RecursiveTreeIterator
+final class PageTreeTextRenderer extends \RecursiveTreeIterator
 {
+    public string $emptyTitle = '[]';
 
-    /**
-     * @var string
-     */
-    public $emptyTitle = '[]';
-
-    /**
-     * @param \RecursiveIterator $iterator
-     */
     public function __construct(\RecursiveIterator $iterator)
     {
         parent::__construct($iterator);
@@ -30,9 +17,6 @@ class PageTreeTextRenderer extends \RecursiveTreeIterator
         $this->setPrefixPart(self::PREFIX_END_LAST, '└ ');
     }
 
-    /**
-     * @return string
-     */
     public function render(): string
     {
         $output = '';

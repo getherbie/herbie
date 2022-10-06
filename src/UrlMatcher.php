@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -13,22 +7,12 @@ namespace herbie;
 /**
  * The URLMatcher matches a given route and returns the path to a valid page file.
  */
-class UrlMatcher
+final class UrlMatcher
 {
-    /**
-     * @var Config
-     */
-    private $config;
-    /**
-     * @var PageRepositoryInterface
-     */
-    private $pageRepository;
+    private Config $config;
 
-    /**
-     * Constructor
-     * @param Config $config
-     * @param PageRepositoryInterface $pageRepository
-     */
+    private PageRepositoryInterface $pageRepository;
+
     public function __construct(Config $config, PageRepositoryInterface $pageRepository)
     {
         $this->config = $config;
@@ -70,17 +54,13 @@ class UrlMatcher
         return [];
     }
 
-    /**
-     * @param string $route
-     * @return array|null
-     */
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
         $rules = $this->config->getAsArray('rules');
         foreach ($rules as $rule) {
             if (count($rule) < 2) {
-                throw new \InvalidArgumentException(sprintf('Invalid rule %s', $rule[0]));
+                throw new \UnexpectedValueException(sprintf('Invalid rule %s', $rule[0]));
             }
             $constraints = $rule[2] ?? [];
             $regex = $this->getRegex($rule[0], $constraints);
@@ -110,7 +90,7 @@ class UrlMatcher
      * @see https://stackoverflow.com/questions/30130913/how-to-do-url-matching-regex-for-routing-framework
      * @see https://laravel.com/docs/5.7/routing
      */
-    private function getRegex($pattern, array $replacements): ?string
+    private function getRegex(string $pattern, array $replacements): ?string
     {
         $string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function ($matches) use ($replacements) {
             if (count($matches) === 2) {
@@ -123,9 +103,11 @@ class UrlMatcher
             return '';
         }, $pattern);
 
-        // Add start and end matching
-        $patternAsRegex = "@^" . $string . "$@D";
+        if (is_null($string) || strlen($string) === 0) {
+            return null;
+        }
 
-        return $patternAsRegex;
+        // Add start and end matching
+        return "@^" . $string . "$@D";
     }
 }

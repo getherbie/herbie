@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="Herbie coding standard">
-    <description>Herbie coding standard</description>
+<ruleset name="Herbie CMS coding standard">
+    <description>Herbie CMS coding standard</description>
 
     <!-- display progress -->
     <arg value="p"/>
@@ -9,13 +9,16 @@
     <arg name="colors"/>
 
     <!-- inherit rules from: -->
-    <rule ref="PSR2"/>
+    <rule ref="PSR12"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
-    <exclude-pattern>*\.(css|js)</exclude-pattern>
+    <exclude-pattern>*\.(css|js|twig)</exclude-pattern>
 
     <!-- Paths to check -->
     <file>config</file>
+    <file>example</file>
     <file>messages</file>
     <file>src</file>
+    <file>sysplugins</file>
+    <!-- file>tests</file -->
 </ruleset>

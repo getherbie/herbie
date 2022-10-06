@@ -1,0 +1,48 @@
+---
+title: Herbie Tests
+---
+
+<h1>Herbie Tests</h1>
+
+{{ 100000|filesize }}
+
+{{ sitemap() }}
+
+<h2>Downloads</h2>
+
+{{ file_link('favicon.ico', 'File', true) }}
+
+<a href="{{ url('/download/dummy.pdf') }}">Download</a>
+
+<ul>
+    <li>{{ file_link('dummy.pdf') }}</li>
+    <li>{{ file_link('dummy.pdf', 'Dummy', false) }}</li>
+    <li>{{ file_link('dummy.pdf', 'Dummy', true) }}</li>
+    <li>{{ file_link('dummy.pdf', 'Dummy', true, { target:"_blank"}) }}</li>
+</ul>
+
+<h2>Imagine</h2>
+
+<p>
+    As function:<br>
+    {{ imagine('subfolder/not-found.jpg') }}<br>
+    {{ imagine('subfolder/p6044089.jpg', 'dummy') }}<br>
+    <br>
+    As filter:<br>
+    {{ 'subfolder/p6044089.jpg'|imagine('dummy') }}<br>
+    {{ 'subfolder/p6044089.jpg'|imagine('f200x300') }}<br>
+</p>
+
+<h2>Links</h2>
+
+<ul>
+    <li>{{ page_link('adfsafsdf', 'About') }}</li>
+    <li>{{ page_link('about', 'About') }}</li>
+    <li>{{ page_link('http://tebe.ch', 'About') }}</li>
+</ul>
+
+<h2>Mailto-Links</h2>
+
+<ul>
+    <li>{{ mail_link('me@tebe.ch', 'Thomas Breuss') }}</li>
+</ul>

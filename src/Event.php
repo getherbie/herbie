@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -12,18 +6,17 @@ namespace herbie;
 
 /**
  * Class Event
- * @package Herbie
  */
-class Event implements EventInterface
+final class Event implements EventInterface
 {
-    /** @var string */
-    private $name;
+    private string $name;
+
     /** @var mixed */
     private $target;
-    /** @var array */
-    private $params;
-    /** @var bool */
-    private $stopPropagation;
+
+    private array $params;
+
+    private bool $stopPropagation;
 
     /**
      * Event constructor.
@@ -36,9 +29,6 @@ class Event implements EventInterface
         $this->stopPropagation = false;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -52,24 +42,17 @@ class Event implements EventInterface
         return $this->target;
     }
 
-    /**
-     * @param array $params
-     */
     public function setParams(array $params): void
     {
         $this->params = $params;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
-     * @param string $name
      * @param null $default
      * @return mixed|null
      */
@@ -80,8 +63,6 @@ class Event implements EventInterface
 
     /**
      * Set the event name
-     *
-     * @param  string $name
      */
     public function setName(string $name): void
     {
@@ -97,7 +78,6 @@ class Event implements EventInterface
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      */
     public function setParam(string $name, $value): void
@@ -105,17 +85,11 @@ class Event implements EventInterface
         $this->params[$name] = $value;
     }
 
-    /**
-     * @param bool $flag
-     */
     public function stopPropagation(bool $flag = true): void
     {
         $this->stopPropagation = $flag;
     }
 
-    /**
-     * @return bool
-     */
     public function propagationIsStopped(): bool
     {
         return $this->stopPropagation;

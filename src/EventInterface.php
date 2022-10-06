@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -12,13 +6,9 @@ namespace herbie;
 
 /**
  * Interface EventInterface
- * @package Herbie
  */
 interface EventInterface
 {
-    /**
-     * @return string
-     */
     public function getName(): string;
 
     /**
@@ -26,21 +16,14 @@ interface EventInterface
      */
     public function getTarget();
 
-    /**
-     * @return array
-     */
     public function getParams(): array;
 
     /**
-     * @param string $name
-     * @param null $default
+     * @param mixed|null $default
      * @return mixed
      */
     public function getParam(string $name, $default = null);
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void;
 
     /**
@@ -48,25 +31,18 @@ interface EventInterface
      */
     public function setTarget($target): void;
 
-    /**
-     * @param array $params
-     */
     public function setParams(array $params): void;
 
     /**
-     * @param string $name
      * @param mixed $value
      */
     public function setParam(string $name, $value): void;
 
     /**
      * @param bool $flag
-     * @return mixed
+     * @return void
      */
     public function stopPropagation(bool $flag = true): void;
 
-    /**
-     * @return bool
-     */
     public function propagationIsStopped(): bool;
 }

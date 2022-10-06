@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -13,34 +7,18 @@ namespace herbie;
 /**
  * Stores the site.
  */
-class Site
+final class Site
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @var DataRepositoryInterface
-     */
-    private $dataRepository;
+    private DataRepositoryInterface $dataRepository;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var PageRepositoryInterface
-     */
-    private $pageRepository;
+    private PageRepositoryInterface $pageRepository;
 
     /**
      * Site constructor.
-     * @param Config $config
-     * @param DataRepositoryInterface $dataRepository
-     * @param Environment $environment
-     * @param PageRepositoryInterface $pageRepository
      */
     public function __construct(
         Config $config,
@@ -54,50 +32,32 @@ class Site
         $this->environment = $environment;
     }
 
-    /**
-     * @return string
-     */
     public function getTime(): string
     {
         return date('c');
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->dataRepository->loadAll();
     }
 
-    /**
-     * @return PageList
-     */
     public function getPageList(): PageList
     {
         return $this->pageRepository->findAll();
     }
 
-    /**
-     * @return PageTree
-     */
     public function getPageTree(): PageTree
     {
         return $this->getPageList()->getPageTree();
     }
 
-    /**
-     * @return PageTrail
-     */
     public function getPageTrail(): PageTrail
     {
         $route = $this->environment->getRoute();
         return $this->getPageList()->getPageTrail($route);
     }
 
-    /**
-     * @return string
-     */
     public function getModified(): string
     {
         $lastModified = 0;
@@ -110,25 +70,16 @@ class Site
         return date('c', $lastModified);
     }
 
-    /**
-     * @return string
-     */
     public function getLanguage(): string
     {
         return $this->config->get('language');
     }
 
-    /**
-     * @return string
-     */
     public function getLocale(): string
     {
         return $this->config->get('locale');
     }
 
-    /**
-     * @return string
-     */
     public function getCharset(): string
     {
         return $this->config->get('charset');

@@ -2,24 +2,20 @@
 
 declare(strict_types=1);
 
+namespace herbie\sysplugin;
+
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
 
-class TextileSysPlugin extends Plugin
+final class TextileSysPlugin extends Plugin
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
     /**
      * TextilePlugin constructor.
-     * @param Config $config
-     * @param LoggerInterface $logger
-     * @throws \InvalidArgumentException
      */
     public function __construct(Config $config, LoggerInterface $logger)
     {
@@ -40,11 +36,11 @@ class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFilters(): array
     {
-        if (empty($this->config->get('twigFilter'))) {
+        if (empty($this->config->get('enableTwigFilter'))) {
             return [];
         }
         return [
@@ -53,11 +49,11 @@ class TextileSysPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFunctions(): array
     {
-        if (empty($this->config->get('twigFunction'))) {
+        if (empty($this->config->get('enableTwigFunction'))) {
             return [];
         }
         return [
@@ -65,22 +61,14 @@ class TextileSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param string $context
-     * @param array $params
-     * @param FilterInterface $filter
-     * @return mixed
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter)
+    public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
-        $context = $this->parseTextile($context);
+        if ($params['page']->format === 'textile') {
+            $context = $this->parseTextile($context);
+        }
         return $filter->next($context, $params, $filter);
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
     public function parseTextile(string $value): string
     {
         if (!class_exists('Netcarver\Textile\Parser')) {
@@ -93,5 +81,4 @@ class TextileSysPlugin extends Plugin
             return $value;
         }
     }
-
 }

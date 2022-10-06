@@ -1,28 +1,18 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class FileInfoSortableIterator implements \IteratorAggregate
+final class FileInfoSortableIterator implements \IteratorAggregate
 {
+    public const SORT_BY_NAME = 1;
+    public const SORT_BY_TYPE = 2;
+    public const SORT_BY_ACCESSED_TIME = 3;
+    public const SORT_BY_CHANGED_TIME = 4;
+    public const SORT_BY_MODIFIED_TIME = 5;
 
-    const SORT_BY_NAME = 1;
-    const SORT_BY_TYPE = 2;
-    const SORT_BY_ACCESSED_TIME = 3;
-    const SORT_BY_CHANGED_TIME = 4;
-    const SORT_BY_MODIFIED_TIME = 5;
-
-    /**
-     * @var \Traversable
-     */
-    private $iterator;
+    private \Traversable $iterator;
 
     /**
      * @var int|callable
@@ -30,7 +20,6 @@ class FileInfoSortableIterator implements \IteratorAggregate
     private $sort;
 
     /**
-     * @param \Traversable $iterator
      * @param int|callable $sort
      */
     public function __construct(\Traversable $iterator, $sort)
@@ -70,9 +59,6 @@ class FileInfoSortableIterator implements \IteratorAggregate
         }
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator(): \ArrayIterator
     {
         $array = iterator_to_array($this->iterator, true);

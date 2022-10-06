@@ -1,30 +1,17 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class EventManager
+final class EventManager
 {
-    /**
-     * @var array
-     */
-    private $events;
+    private array $events;
 
-    /**
-     * @var Event
-     */
-    private $eventPrototype;
+    private Event $eventPrototype;
 
     /**
      * EventManager constructor.
-     * @param Event $eventPrototype
      */
     public function __construct(Event $eventPrototype)
     {
@@ -32,25 +19,14 @@ class EventManager
         $this->eventPrototype = $eventPrototype;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function attach(string $eventName, callable $listener, int $priority = 1): callable
     {
-        if (! is_string($eventName)) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s expects a string for the event; received %s',
-                __METHOD__,
-                (is_object($eventName) ? get_class($eventName) : gettype($eventName))
-            ));
-        }
-
         $this->events[$eventName][(int) $priority][0][] = $listener;
         return $listener;
     }
 
     /**
-     * @inheritDoc
+     * @param mixed $target
      */
     public function trigger(string $eventName, $target = null, array $argv = []): void
     {
@@ -73,16 +49,13 @@ class EventManager
      * Trigger listeners
      *
      * Actual functionality for triggering listeners, to which trigger() delegate.
-     *
-     * @param  EventInterface $event
-     * @return void
      */
     private function triggerListeners(EventInterface $event): void
     {
         $name = $event->getName();
 
         if (empty($name)) {
-            throw new \RuntimeException('Event is missing a name; cannot trigger!');
+            throw new \UnexpectedValueException('Event is missing a name; cannot trigger!');
         }
 
         if (isset($this->events[$name])) {

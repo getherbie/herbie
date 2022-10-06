@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace example;
 
@@ -15,7 +9,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CustomHeader implements MiddlewareInterface
 {
-
     private $identifier;
 
     public function __construct($identifier)

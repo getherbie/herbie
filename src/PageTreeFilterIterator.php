@@ -1,42 +1,39 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeFilterIterator extends \RecursiveFilterIterator
-{
-    /**
-     * @var boolean
-     */
-    private $enabled = true;
+use RecursiveIterator;
 
-    /**
-     * @return boolean
-     */
+final class PageTreeFilterIterator extends \RecursiveFilterIterator
+{
+    private bool $enableFilter;
+
+    public function __construct(RecursiveIterator $recursiveIterator, bool $enableFilter = true)
+    {
+        $this->enableFilter = $enableFilter;
+        parent::__construct($recursiveIterator);
+    }
+
     public function accept(): bool
     {
-        if (!$this->enabled) {
+        if (!$this->enableFilter) {
             return true;
         }
         $menuItem = $this->current()->getMenuItem();
+        $route = $menuItem->route;
         if (empty($menuItem->hidden)) {
             return true;
         }
         return false;
     }
 
-    /**
-     * @param bool $enabled
-     */
-    public function setEnabled(bool $enabled): void
+    public function getChildren(): PageTreeFilterIterator
     {
-        $this->enabled = (bool)$enabled;
+        return new self(
+            $this->getInnerIterator()->getChildren(),
+            $this->enableFilter
+        );
     }
 }

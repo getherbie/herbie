@@ -1,26 +1,14 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeIterator implements \RecursiveIterator
+final class PageTreeIterator implements \RecursiveIterator
 {
-    /**
-     * @var array
-     */
-    private $children = [];
+    private array $children = [];
 
-    /**
-     * @var int
-     */
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * @param PageTree|array $context
@@ -34,65 +22,41 @@ class PageTreeIterator implements \RecursiveIterator
         }
     }
 
-    /**
-     * @return PageTreeIterator
-     */
-    public function getChildren()
+    public function getChildren(): PageTreeIterator
     {
         return new self($this->children[$this->position]->getChildren());
     }
 
-    /**
-     * @return bool
-     */
     public function hasChildren(): bool
     {
         return $this->children[$this->position]->hasChildren();
     }
 
-    /**
-     * @return PageTree
-     */
     public function current(): PageTree
     {
         return $this->children[$this->position];
     }
 
-    /**
-     * @return int
-     */
     public function key(): int
     {
         return $this->position;
     }
 
-    /**
-     * @return void
-     */
     public function next(): void
     {
         $this->position++;
     }
 
-    /**
-     * @return void
-     */
     public function rewind(): void
     {
         $this->position = 0;
     }
 
-    /**
-     * @return bool
-     */
     public function valid(): bool
     {
         return isset($this->children[$this->position]);
     }
 
-    /**
-     * @return PageItem
-     */
     public function getMenuItem(): PageItem
     {
         return $this->children[$this->position]->getMenuItem();

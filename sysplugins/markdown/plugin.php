@@ -2,54 +2,40 @@
 
 declare(strict_types=1);
 
+namespace herbie\sysplugin;
+
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
-use \Parsedown as Parsedown;
-use \ParsedownExtra as ParsedownExtra;
+use Parsedown;
+use ParsedownExtra;
 use Psr\Log\LoggerInterface;
 
-class MarkdownSysPlugin extends Plugin
+final class MarkdownSysPlugin extends Plugin
 {
-    const MODE_PARSEDOWN = 1;
-    const MODE_PARSEDOWN_EXTRA = 2;
+    private const MODE_NONE = 0;
+    private const MODE_PARSEDOWN = 1;
+    private const MODE_PARSEDOWN_EXTRA = 2;
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var int
-     */
-    private $mode;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private Config $config;
+    private int $mode;
 
     /**
      * MarkdownPlugin constructor.
-     * @param Config $config
-     * @throws \InvalidArgumentException
      */
     public function __construct(Config $config, LoggerInterface $logger)
     {
         $this->config = $config->getAsConfig('plugins.markdown');
-        $this->logger = $logger;
         if (class_exists('ParsedownExtra')) {
             $this->mode = self::MODE_PARSEDOWN_EXTRA;
         } elseif (class_exists('Parsedown')) {
             $this->mode = self::MODE_PARSEDOWN;
         } else {
+            $this->mode = self::MODE_NONE;
             $logger->error('Please install either "erusev/parsedown" or "erusev/parsedown-extra" via composer');
         }
     }
 
-    /**
-     * @return array
-     */
     public function filters(): array
     {
         return [
@@ -57,12 +43,9 @@ class MarkdownSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @return array
-     */
     public function twigFilters(): array
     {
-        if (empty($this->config->get('twigFilter'))) {
+        if (empty($this->config->get('enableTwigFilter'))) {
             return [];
         }
         return [
@@ -70,12 +53,9 @@ class MarkdownSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @return array
-     */
     public function twigFunctions(): array
     {
-        if (empty($this->config->get('twigFunction'))) {
+        if (empty($this->config->get('enableTwigFunction'))) {
             return [];
         }
         return [
@@ -83,32 +63,22 @@ class MarkdownSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param string $context
-     * @param array $params
-     * @param FilterInterface $filter
-     * @return mixed|null
-     * @throws \Exception
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter)
+    public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
-        $context = $this->parseMarkdown($context);
+        if ($params['page']->format === 'markdown') {
+            $context = $this->parseMarkdown($context);
+        }
         return $filter->next($context, $params, $filter);
     }
 
-    /**
-     * @param string $string
-     * @return string
-     * @throws \Exception
-     */
     public function parseMarkdown(string $string): string
     {
         $parser = $this->createParser();
-        if ($parser) {
-            $parser->setUrlsLinked(false);
-            $string = $parser->text($string);
+        if ($parser === null) {
+            return $string;
         }
-        return $string;
+        $parser->setUrlsLinked(false);
+        return $parser->text($string);
     }
 
     /**
@@ -116,10 +86,10 @@ class MarkdownSysPlugin extends Plugin
      */
     private function createParser()
     {
-        if ($this->mode == self::MODE_PARSEDOWN_EXTRA) {
+        if ($this->mode === self::MODE_PARSEDOWN_EXTRA) {
             return new ParsedownExtra();
         }
-        if ($this->mode == self::MODE_PARSEDOWN) {
+        if ($this->mode === self::MODE_PARSEDOWN) {
             return new Parsedown();
         }
         return null;

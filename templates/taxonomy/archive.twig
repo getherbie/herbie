@@ -1,5 +1,5 @@
-{% if months|length > 0 %}
-    {% spaceless %}
+{% apply spaceless %}
+    {% if months|length > 0 %}
         <div class="widget-blog widget-blog-archives">
             <h4>{{ title }}</h4>
             <ul>
@@ -10,5 +10,5 @@
                 {% endfor %}
             </ul>
         </div>
-    {% endspaceless %}
-{% endif %}
+    {% endif %}
+{% endapply %}

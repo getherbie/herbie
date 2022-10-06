@@ -1,5 +1,5 @@
-{% if recentPages|length > 0 %}
-    {% spaceless %}
+{% apply spaceless %}
+    {% if recentPages|length > 0 %}
         <div class="widget-blog widget-blog-recent-posts">
             <h4>{{ title }}</h4>
             <ul>
@@ -11,5 +11,5 @@
                 {% endfor %}
             </ul>
         </div>
-    {% endspaceless %}
-{% endif %}
+    {% endif %}
+{% endapply %}

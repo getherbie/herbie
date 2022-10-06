@@ -1,6 +1,6 @@
 {% for item in attribute(site.data, type) %}
 <div class="doc-function">
-    <h4>{{ attribute(item, 'name') }}</h4>
+    <h3>{{ attribute(item, 'name') }}</h3>
     <p>
         {{ attribute(item, 'desc') }}
         {% set see = attribute(item, 'see') %}
@@ -8,6 +8,9 @@
             See: <a target="_blank" href="{{ see[0] }}">{{ see[1] }}</a>
         {% endif %}
     </p>
+    {% if item.code is defined %}
+        <p>{{ item.code }}</p>
+    {% endif %}
     <table class="pure-table pure-table-horizontal">
         <tr class="code">
             <td>Parameter</td>

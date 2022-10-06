@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -15,29 +9,14 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * The URLGenerator creates URLs based on the given route.
  */
-class UrlGenerator
+final class UrlGenerator
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
+    private ServerRequestInterface $request;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var bool
-     */
-    private $niceUrls;
+    private bool $niceUrls;
 
-    /**
-     * Constructor
-     * @param Config $config
-     * @param Environment $environment
-     * @param ServerRequestInterface $request The request object.
-     */
     public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
     {
         $this->environment = $environment;

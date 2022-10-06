@@ -1,5 +1,5 @@
-{% if routeParams %}
-    {% spaceless %}
+{% apply spaceless %}
+    {% if routeParams %}
 
         {% if routeParams.author %}
 
@@ -27,5 +27,5 @@
 
         {% endif %}
 
-    {% endspaceless %}
-{% endif %}
+    {% endif %}
+{% endapply %}

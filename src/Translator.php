@@ -1,35 +1,19 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class Translator
+final class Translator
 {
-    /**
-     * @var string
-     */
-    private $language;
+    private string $language;
 
-    /**
-     * @var array
-     */
-    private $paths;
+    private array $paths;
 
-    /**
-     * @var array
-     */
-    private $messages;
+    private array $messages;
 
     /**
      * Translator constructor.
-     * @param string $language
      */
     public function __construct(string $language)
     {
@@ -46,23 +30,11 @@ class Translator
         $this->loadMessages();
     }
 
-    /**
-     * @param string $category
-     * @param string $message
-     * @param array $params
-     * @return string
-     */
     public function t(string $category, string $message, array $params = []): string
     {
         return $this->translate($category, $message, $params);
     }
 
-    /**
-     * @param string $category
-     * @param string $message
-     * @param array $params
-     * @return string
-     */
     public function translate(string $category, string $message, array $params = []): string
     {
         if (isset($this->messages[$this->language][$category][$message])) {
@@ -71,29 +43,36 @@ class Translator
         if (empty($params)) {
             return $message;
         }
-        return strtr($message, $params);
+        return $this->replacePlaceholders($message, $params);
     }
 
-    /**
-     * @return void
-     */
+    private function replacePlaceholders(string $message, array $params): string
+    {
+        $paramsWithBrackets = [];
+        foreach ($params as $key => $value) {
+            $key = '{' . $key . '}';
+            $paramsWithBrackets[$key] = $value;
+        }
+        return strtr($message, $paramsWithBrackets);
+    }
+
     private function loadMessages(): void
     {
         foreach ($this->paths as $category => $paths) {
             foreach ($paths as $path) {
                 $messagePath = sprintf('%s/%s.php', $path, $this->language);
                 if (file_exists($messagePath)) {
-                    $this->messages[$this->language][$category] = require_once($messagePath);
+                    // NOTE this must be "require" here, not only "require_once"
+                    $this->messages[$this->language][$category] = require($messagePath);
                 }
             }
         }
     }
 
     /**
-     * @param string $category
-     * @param string $path
+     * @param array|string $path
      */
-    public function addPath(string $category, string $path): void
+    public function addPath(string $category, $path): void
     {
         if (!isset($this->paths[$category])) {
             $this->paths[$category] = [];

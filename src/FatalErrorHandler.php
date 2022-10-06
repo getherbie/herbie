@@ -1,16 +1,10 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class FatalErrorHandler
+final class FatalErrorHandler
 {
     public function __invoke(): void
     {
@@ -31,10 +25,6 @@ class FatalErrorHandler
         }
     }
 
-    /**
-     * @param array $error
-     * @return bool
-     */
     public function isFatalError(array $error): bool
     {
         $errorTypes = [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];

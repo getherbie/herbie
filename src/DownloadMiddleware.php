@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -17,27 +11,16 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class DownloadMiddleware implements MiddlewareInterface
+final class DownloadMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var Alias
-     */
-    private $alias;
+    private Alias $alias;
 
-    /**
-     * @var string
-     */
-    private $baseUrl;
+    private string $baseUrl;
 
-    /**
-     * @var string
-     */
-    private $storagePath;
+    private string $storagePath;
 
     /**
      * DownloadMiddleware constructor.
-     * @param Alias $alias
-     * @param Config $config
      */
     public function __construct(Alias $alias, Config $config)
     {
@@ -47,9 +30,6 @@ class DownloadMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws HttpException
      * @throws SystemException
      */
@@ -73,17 +53,12 @@ class DownloadMiddleware implements MiddlewareInterface
         $httpFactory = HttpFactory::instance();
         $stream = $httpFactory->createStreamFromFile($filepath);
         $contentType = $this->determineContentType($filepath);
-        $response = $httpFactory->createResponse(200)
+        return $httpFactory->createResponse()
             ->withHeader('Content-type', $contentType)
             ->withBody($stream);
-        return $response;
     }
 
-    /**
-     * @param UriInterface $uri
-     * @return bool
-     */
-    private function isDownloadRequest(UriInterface $uri)
+    private function isDownloadRequest(UriInterface $uri): bool
     {
         $uriPath = $uri->getPath();
         $pos = strpos($uriPath, $this->baseUrl);
@@ -93,11 +68,7 @@ class DownloadMiddleware implements MiddlewareInterface
         return false;
     }
 
-    /**
-     * @param UriInterface $uri
-     * @return string
-     */
-    private function getFilePath(UriInterface $uri)
+    private function getFilePath(UriInterface $uri): string
     {
         $uriPath = $uri->getPath();
         $pos = strpos($uriPath, $this->baseUrl);
@@ -109,11 +80,9 @@ class DownloadMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param string $filepath
-     * @return string
      * @throws SystemException
      */
-    private function determineContentType(string $filepath)
+    private function determineContentType(string $filepath): string
     {
         $extension = pathinfo($filepath, PATHINFO_EXTENSION);
         switch ($extension) {

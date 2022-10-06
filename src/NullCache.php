@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -12,7 +6,7 @@ namespace herbie;
 
 use Psr\SimpleCache\CacheInterface;
 
-class NullCache implements CacheInterface
+final class NullCache implements CacheInterface
 {
     /**
      * @param string $key
@@ -28,26 +22,21 @@ class NullCache implements CacheInterface
      * @param string $key
      * @param mixed $value
      * @param null $ttl
-     * @return bool
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null): bool
     {
         return false;
     }
 
     /**
      * @param string $key
-     * @return bool
      */
-    public function delete($key)
+    public function delete($key): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function clear()
+    public function clear(): bool
     {
         return true;
     }
@@ -67,27 +56,24 @@ class NullCache implements CacheInterface
     /**
      * @param iterable $values
      * @param null $ttl
-     * @return bool
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple($values, $ttl = null): bool
     {
         return false;
     }
 
     /**
      * @param iterable $keys
-     * @return bool
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys): bool
     {
         return true;
     }
 
     /**
      * @param string $key
-     * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return false;
     }

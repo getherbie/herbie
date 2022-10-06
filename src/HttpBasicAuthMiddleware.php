@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace herbie;
 
@@ -14,71 +8,68 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class HttpBasicAuthMiddleware implements MiddlewareInterface
+final class HttpBasicAuthMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var array
-     */
-    private $users;
+    private array $users;
 
     /**
      * HttpBasicAuthMiddleware constructor.
-     * @param array $users
      */
     public function __construct(array $users)
     {
         $this->users = $users;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $login = $this->login($request);
 
-        if (empty($login)) {
+        if ($login === false) {
             return HttpFactory::instance()
                 ->createResponse(401, 'Unauthorized')
                 ->withHeader('WWW-Authenticate', 'Basic realm="Test"');
         }
 
-        $response = $handler->handle($request);
-
-        return $response;
+        return $handler->handle($request);
     }
 
     /**
      * Check the user credentials and return the username or false.
      *
-     * @param ServerRequestInterface $request
-     * @return bool|mixed
+     * @return false|string
      */
     private function login(ServerRequestInterface $request)
     {
-        //Check header
+        // check header
         $authorization = $this->parseHeader($request->getHeaderLine('Authorization'));
 
-        if (!$authorization) {
+        if ($authorization === false) {
             return false;
         }
+
         //Check the user
-        if (!isset($this->users[$authorization['username']])) {
+        $username = trim($authorization['username'] ?? '');
+        $password = trim($authorization['password'] ?? '');
+
+        if ((strlen($username) === 0) || (strlen($password) === 0)) {
             return false;
         }
-        if ($this->users[$authorization['username']] !== $authorization['password']) {
+
+        if (!isset($this->users[$username])) {
             return false;
         }
-        return $authorization['username'];
+
+        if ($this->users[$username] !== $password) {
+            return false;
+        }
+
+        return $username;
     }
 
     /**
      * Parses the authorization header for a basic authentication.
      *
-     * @param string $header
-     * @return array|bool
+     * @return array|false
      */
     private function parseHeader(string $header)
     {
@@ -87,8 +78,8 @@ class HttpBasicAuthMiddleware implements MiddlewareInterface
         }
         $header = explode(':', base64_decode(substr($header, 6)), 2);
         return [
-            'username' => $header[0],
-            'password' => isset($header[1]) ? $header[1] : null,
+            'username' => trim($header[0] ?? ''),
+            'password' => trim($header[1] ?? ''),
         ];
     }
 }

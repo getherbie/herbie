@@ -1,30 +1,17 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class YamlDataRepository implements DataRepositoryInterface
+final class YamlDataRepository implements DataRepositoryInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
+    private string $path;
 
-    /**
-     * @var array
-     */
-    private $extensions;
+    private array $extensions;
 
     /**
      * YamlDataRepository constructor.
-     * @param string $path
      * @throws SystemException
      */
     public function __construct(string $path)
@@ -39,10 +26,6 @@ class YamlDataRepository implements DataRepositoryInterface
         $this->extensions = ['yml', 'yaml'];
     }
 
-    /**
-     * @param string $name
-     * @return array
-     */
     public function load(string $name): array
     {
         $dataFiles = $this->scanDataDir();
@@ -53,9 +36,6 @@ class YamlDataRepository implements DataRepositoryInterface
         return $this->parseDataFile($dataFiles[$name]);
     }
 
-    /**
-     * @return array
-     */
     public function loadAll(): array
     {
         $data = [];
@@ -65,9 +45,6 @@ class YamlDataRepository implements DataRepositoryInterface
         return $data;
     }
 
-    /**
-     * @return array
-     */
     private function scanDataDir(): array
     {
         $dataFiles = [];
@@ -94,10 +71,6 @@ class YamlDataRepository implements DataRepositoryInterface
         return $dataFiles;
     }
 
-    /**
-     * @param string $filepath
-     * @return array
-     */
     private function parseDataFile(string $filepath): array
     {
         $yaml = file_get_contents($filepath);

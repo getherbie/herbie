@@ -1,0 +1,9 @@
+<span class="link link--mailto">
+    <a 
+        {%- for key, value in attribs -%}
+            {{- ' ' }}{{- key -}}="{{- value|e('html_attr') -}}"
+        {%- endfor -%}
+    >
+    {{- label -}}
+    </a>
+</span>

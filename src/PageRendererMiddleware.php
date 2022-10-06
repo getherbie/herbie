@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -17,56 +11,25 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
-class PageRendererMiddleware implements MiddlewareInterface
+final class PageRendererMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
+    private CacheInterface $cache;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var HttpFactory
-     */
-    private $httpFactory;
+    private HttpFactory $httpFactory;
 
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
 
-    /**
-     * @var FilterChainManager
-     */
-    private $filterChainManager;
+    private FilterChainManager $filterChainManager;
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var UrlGenerator
-     */
-    private $urlGenerator;
+    private UrlGenerator $urlGenerator;
 
     /**
      * PageRendererMiddleware constructor.
-     * @param CacheInterface $cache
-     * @param Config $config
-     * @param Environment $environment
-     * @param EventManager $eventManager
-     * @param FilterChainManager $filterChainManager
-     * @param HttpFactory $httpFactory
-     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         CacheInterface $cache,
-        Config $config,
         Environment $environment,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
@@ -78,23 +41,18 @@ class PageRendererMiddleware implements MiddlewareInterface
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
-        $this->config = $config;
         $this->urlGenerator = $urlGenerator;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     * @throws \Exception
-     * @throws \Psr\SimpleCache\\InvalidArgumentException
-     * @throws \Throwable
+     * @throws HttpException
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var Page $page */
-        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, null);
+        /** @var Page|null $page */
+        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
         if (is_null($page)) {
             throw HttpException::notFound($this->environment->getRoute());
@@ -107,9 +65,6 @@ class PageRendererMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param Page $page
-     * @param array $routeParams
-     * @return ResponseInterface
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Throwable
      */
@@ -169,11 +124,7 @@ class PageRendererMiddleware implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param array $redirect
-     * @return ResponseInterface
-     */
-    private function createRedirectResponse(array $redirect)
+    private function createRedirectResponse(array $redirect): ResponseInterface
     {
         if (strpos($redirect['url'], 'http') === 0) { // A valid URL? Take it.
             $location = $redirect['url'];

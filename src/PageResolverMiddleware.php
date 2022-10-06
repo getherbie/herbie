@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -15,28 +9,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class PageResolverMiddleware implements MiddlewareInterface
+final class PageResolverMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
-    /**
-     * @var UrlMatcher
-     */
-    private $urlMatcher;
+    private UrlMatcher $urlMatcher;
 
-    /**
-     * @var PageRepositoryInterface
-     */
-    private $pageRepository;
+    private PageRepositoryInterface $pageRepository;
 
     /**
      * PageResolverMiddleware constructor.
-     * @param Environment $environment
-     * @param PageRepositoryInterface $pageRepository
-     * @param UrlMatcher $urlMatcher
      */
     public function __construct(
         Environment $environment,
@@ -48,11 +30,6 @@ class PageResolverMiddleware implements MiddlewareInterface
         $this->pageRepository = $pageRepository;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $this->environment->getRoute();
@@ -71,6 +48,7 @@ class PageResolverMiddleware implements MiddlewareInterface
             ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
             ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
             ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
+
         return $handler->handle($request);
     }
 }

@@ -1,5 +1,5 @@
-{% if tags|length > 0 %}
-    {% spaceless %}
+{% apply spaceless %}
+    {% if tags|length > 0 %}
         <div class="widget-blog widget-blog-tags">
             <h4>{{ title }}</h4>
             <ul>
@@ -9,5 +9,5 @@
                 {% endfor %}
             </ul>
         </div>
-    {% endspaceless %}
-{% endif %}
+    {% endif %}
+{% endapply %}

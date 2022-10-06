@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -15,17 +9,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
+use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private $twigRenderer;
+    private TwigRenderer $twigRenderer;
 
     /**
      * ErrorHandlerMiddleware constructor.
-     * @param TwigRenderer $twigRenderer
      */
     public function __construct(TwigRenderer $twigRenderer)
     {
@@ -33,21 +27,18 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         set_error_handler($this->createErrorHandler());
 
         try {
             $response = $handler->handle($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (!$this->twigRenderer->isInitialized()) {
                 $this->twigRenderer->init();
             }
@@ -73,18 +64,10 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * Creates and returns a callable error handler that raises exceptions.
      *
      * Only raises exceptions for errors that are within the error_reporting mask.
-     *
-     * @return callable
      */
-    private function createErrorHandler() : callable
+    private function createErrorHandler(): callable
     {
-        /**
-         * @param int $errno
-         * @param string $errstr
-         * @param string $errfile
-         * @param int $errline
-         */
-        return function (int $errno, string $errstr, string $errfile, int $errline) : void {
+        return function (int $errno, string $errstr, string $errfile, int $errline): void {
             if (! (error_reporting() & $errno)) {
                 // error_reporting does not include this error
                 return;

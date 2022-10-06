@@ -1,22 +1,15 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageItem implements \ArrayAccess
+final class PageItem implements \ArrayAccess
 {
     use PageItemTrait;
 
     /**
      * @param mixed $offset
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -35,7 +28,6 @@ class PageItem implements \ArrayAccess
     /**
      * @param mixed $offset
      * @param mixed $value
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -44,7 +36,6 @@ class PageItem implements \ArrayAccess
 
     /**
      * @param mixed $offset
-     * @return void
      */
     public function offsetUnset($offset): void
     {

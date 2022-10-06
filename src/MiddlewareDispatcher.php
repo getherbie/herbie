@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -15,47 +9,37 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MiddlewareDispatcher implements RequestHandlerInterface
+final class MiddlewareDispatcher implements RequestHandlerInterface
 {
-    /** @var MiddlewareInterface[] */
-    private $middlewares = [];
+    /** @var MiddlewareInterface[]|string[] */
+    private array $middlewares;
 
     /**
      * Dispatcher constructor.
-     * @param array $appMiddlewares
-     * @param array $routeMiddleware
-     * @param string $route
      */
-    public function __construct(array $appMiddlewares, array $routeMiddleware, string $route)
+    public function __construct(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route)
     {
-        $this->middlewares = $this->composeMiddlewares($appMiddlewares, $routeMiddleware, $route);
+        $this->middlewares = $this->composeMiddlewares(
+            $prependMiddlewares,
+            $appMiddlewares,
+            $routeMiddlewares,
+            $appendMiddlewares,
+            $route
+        );
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
-    public function dispatch(ServerRequestInterface $request) : ResponseInterface
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->handle($request);
-        return $response;
+        return $this->handle($request);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();
         next($this->middlewares);
-        $response = $current->process($request, $this);
-        return $response;
+        return $current->process($request, $this);
     }
 
-    /**
-     * @return MiddlewareInterface
-     */
     private function getMiddleware(): MiddlewareInterface
     {
         $current = current($this->middlewares);
@@ -71,35 +55,18 @@ class MiddlewareDispatcher implements RequestHandlerInterface
         return $current;
     }
 
-    /**
-     * @param array $appMiddlewares
-     * @param array $routeMiddlewares
-     * @param string $route
-     * @return array
-     */
-    private function composeMiddlewares(array $appMiddlewares, array $routeMiddlewares, string $route): array
+    private function composeMiddlewares(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route): array
     {
         if (empty($routeMiddlewares)) {
-            return $appMiddlewares;
+            return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
         }
-        $pageRendererMiddleware = array_pop($appMiddlewares);
-        foreach ($routeMiddlewares as $regex => $middleware) {
+        // append route middlewares to app middlewares depending on the matched route
+        foreach ($routeMiddlewares as $routeMiddleware) {
+            [$regex, $middleware] = $routeMiddleware;
             if (preg_match('#' . $regex . '#', $route)) {
                 $appMiddlewares[] = $middleware;
             }
-            /*
-            if (substr($middlewareRoute, -1) === '*') {
-                if (strpos($route, substr($middlewareRoute, 0, -1)) === 0) {
-                    $appMiddlewares[] = $middleware;
-                }
-            } else {
-                if ($route === $middlewareRoute) {
-                    $appMiddlewares[] = $middleware;
-                }
-            }
-            */
         }
-        $appMiddlewares[] = $pageRendererMiddleware;
-        return $appMiddlewares;
+        return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
     }
 }

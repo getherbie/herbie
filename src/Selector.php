@@ -1,22 +1,12 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class Selector
+final class Selector
 {
-    /** @var string */
-    protected $className;
-
-    /** @var array */
-    protected $operators = [
+    protected array $operators = [
         "!=" => 'matchNotEqual',
         ">=" => 'matchGreaterThanEqual',
         "<=" => 'matchLessThanEqual',
@@ -30,17 +20,7 @@ class Selector
         "="  => 'matchEqual',
     ];
 
-    /** @var array */
-    protected $selectors = [];
-
-    /**
-     * Selector constructor.
-     * @param $className
-     */
-    public function __construct($className)
-    {
-        $this->className = $className;
-    }
+    protected array $selectors = [];
 
     /**
      * Find and return all items matching the given selector string.
@@ -58,11 +38,10 @@ class Selector
      * &   Bitwise and
      *
      * @param array|string $selector
-     * @param array &$data
      * @return mixed
      * @throws \Exception
      */
-    public function find($selector, $data)
+    public function find($selector, array $data)
     {
         $selectors = $this->getSelector($selector);
         $sort = $this->extractSort($selectors);
@@ -104,7 +83,7 @@ class Selector
         return $return;
     }
 
-    protected function extractSort(&$selectors)
+    protected function extractSort(array &$selectors): string
     {
         $sort = "";
         foreach ($selectors as $index => $selector) {
@@ -117,7 +96,7 @@ class Selector
         return $sort;
     }
 
-    protected function extractLimit(&$selectors)
+    protected function extractLimit(array &$selectors): int
     {
         $limit = 0;
         foreach ($selectors as $index => $selector) {
@@ -138,96 +117,50 @@ class Selector
      */
     public function get($selector, &$data)
     {
-        $object = $this->find($selector, $data)->first();
-        return $object;
+        return $this->find($selector, $data)->first();
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchEqual($value1, $value2)
+    protected function matchEqual(string $value1, string $value2): bool
     {
         return $value1 == $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchNotEqual($value1, $value2)
+    protected function matchNotEqual(string $value1, string $value2): bool
     {
         return $value1 != $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchGreaterThan($value1, $value2)
+    protected function matchGreaterThan(string $value1, string $value2): bool
     {
         return $value1 > $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchLessThan($value1, $value2)
+    protected function matchLessThan(string $value1, string $value2): bool
     {
         return $value1 < $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchGreaterThanEqual($value1, $value2)
+    protected function matchGreaterThanEqual(string $value1, string $value2): bool
     {
         return $value1 >= $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchLessThanEqual($value1, $value2)
+    protected function matchLessThanEqual(string $value1, string $value2): bool
     {
         return $value1 <= $value2;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchBitwiseAnd($value1, $value2)
+    protected function matchBitwiseAnd(string $value1, string $value2): bool
     {
-        return ((int)$value1) & ((int)$value2);
+        return ((int)$value1 & (int)$value2) > 0;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchContains($value1, $value2)
+    protected function matchContains(string $value1, string $value2): bool
     {
         return stripos($value1, $value2) !== false;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchContainsWords($value1, $value2)
+    protected function matchContainsWords(string $value1, string $value2): bool
     {
         $hasAll = true;
         $words = preg_split('/[-\s]/', $value2, -1, PREG_SPLIT_NO_EMPTY);
@@ -240,22 +173,12 @@ class Selector
         return $hasAll;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchStarts($value1, $value2)
+    protected function matchStarts(string $value1, string $value2): bool
     {
         return stripos(trim($value1), $value2) === 0;
     }
 
-    /**
-     * @param string $value1
-     * @param string $value2
-     * @return bool
-     */
-    protected function matchEnds($value1, $value2)
+    protected function matchEnds(string $value1, string $value2): bool
     {
         $value2 = trim($value2);
         $value1 = substr($value1, -1 * strlen($value2));
@@ -266,7 +189,7 @@ class Selector
      * @param string|array $selector
      * @return array
      */
-    protected function getSelector($selector)
+    protected function getSelector($selector): array
     {
         if (is_array($selector)) {
             $selectors = $selector;
@@ -297,10 +220,8 @@ class Selector
 
     /**
      * @param callable|string $sort
-     * @param $items
-     * @return bool
      */
-    public function sort($sort, &$items)
+    public function sort($sort, array &$items): bool
     {
         if (is_numeric($sort)) {
             return false;
@@ -322,7 +243,7 @@ class Selector
             $direction = "desc";
         }
 
-        $bool = uasort($items, function ($value1, $value2) use ($field, $direction) {
+        return uasort($items, function ($value1, $value2) use ($field, $direction) {
             if (!isset($value1[$field]) || !isset($value2[$field])) {
                 return 0;
             }
@@ -335,11 +256,13 @@ class Selector
                 return ($value2[$field] < $value1[$field]) ? -1 : 1;
             }
         });
-
-        return $bool;
     }
 
-    public static function mergeSelectors($selector1, $selector2)
+    /**
+     * @param array|string $selector1
+     * @param array|string $selector2
+     */
+    public static function mergeSelectors($selector1, $selector2): array
     {
         $selectors = [];
         if (is_array($selector1)) {
@@ -352,7 +275,6 @@ class Selector
         } else {
             $selectors[] = $selector2;
         }
-        $selectors = array_filter($selectors);
-        return $selectors;
+        return array_filter($selectors); // filter empty
     }
 }

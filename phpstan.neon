@@ -1,7 +1,9 @@
 parameters:
-	level: 1
+	ignoreErrors:
+		- "#no value type specified in iterable type array#"
+	level: 7
 	paths:
 		- config
 		- messages
 		- src
-		- sysplugin
+		- sysplugins

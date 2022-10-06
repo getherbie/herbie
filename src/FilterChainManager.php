@@ -1,32 +1,20 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class FilterChainManager
+final class FilterChainManager
 {
-    private $filters = [];
+    private array $filters = [];
 
-    /**
-     * @param string $filterName
-     * @param callable $listener
-     */
-    public function attach(string $filterName, callable $listener)
+    public function attach(string $filterName, callable $listener): void
     {
         $this->getFilters($filterName)->attach($listener);
     }
 
     /**
-     * @param string $filterName
-     * @param $subject
-     * @param array $context
+     * @param mixed $subject
      * @return mixed
      */
     public function execute(string $filterName, $subject, array $context)
@@ -37,11 +25,7 @@ class FilterChainManager
         return $filterChain->run($subject, $context);
     }
 
-    /**
-     * @param string $filterName
-     * @return FilterChain
-     */
-    private function getFilters(string $filterName)
+    private function getFilters(string $filterName): FilterChain
     {
         if (!isset($this->filters[$filterName])) {
             $this->filters[$filterName] = new FilterChain();
@@ -49,11 +33,7 @@ class FilterChainManager
         return $this->filters[$filterName];
     }
 
-    /**
-     * @param string $filterName
-     * @return \Closure
-     */
-    private function getDefaultFilter(string $filterName)
+    private function getDefaultFilter(string $filterName): \Closure
     {
         switch ($filterName) {
             default:

@@ -2,7 +2,7 @@
     {
         "key": "page.authors",
         "desc": "One or more authors of the page",
-        "type": "array"
+        "type": "string[]"
     },
     {
         "key": "page.cached",
@@ -12,11 +12,11 @@
     {
         "key": "page.categories",
         "desc": "One or more categories, that belongs to the page",
-        "type": "array"
+        "type": "string[]"
     },
     {
         "key": "page.content_type",
-        "desc": "The Content-Type of the page for the HTTP response, automatically set by Herbie",
+        "desc": "The Content-Type of the page for the HTTP response, automatically set by Herbie CMS",
         "default": "text\/html",
         "type": "string"
     },
@@ -37,12 +37,12 @@
     },
     {
         "key": "page.excerpt",
-        "desc": "The exceprt of the page body",
+        "desc": "The excerpt of the page body",
         "type": "string"
     },
     {
         "key": "page.format",
-        "desc": "The formatter like markdown or textile. Is set by Herbie automatically depending on the file extension.",
+        "desc": "The formatter like markdown or textile. Is set by Herbie CMS automatically depending on the file extension.",
         "type": "string"
     },
     {
@@ -84,7 +84,7 @@
     {
         "key": "page.redirect",
         "desc": "If set the request will be redirected to the given page",
-        "type": "array"
+        "type": "string|object"
     },
     {
         "key": "page.route",
@@ -99,7 +99,7 @@
     {
         "key": "page.tags",
         "desc": "One or more tags that belongs to the page",
-        "type": "array"
+        "type": "string[]"
     },
     {
         "key": "page.title",

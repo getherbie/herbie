@@ -1,27 +1,21 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class FilterIterator implements \Iterator, \Countable, FilterInterface
+final class FilterIterator implements \Iterator, \Countable, FilterInterface
 {
-    private $position = 0;
+    private int $position = 0;
 
-    private $items = [];
+    private array $items = [];
 
-    public function insert(callable $callback)
+    public function insert(callable $callback): void
     {
         $this->items[] = $callback;
     }
 
-    public function remove(callable $callback)
+    public function remove(callable $callback): void
     {
         foreach ($this->items as $i => $item) {
             if ($callback === $item) {
@@ -35,11 +29,9 @@ class FilterIterator implements \Iterator, \Countable, FilterInterface
 
     /**
      * @param mixed|null $context
-     * @param array $params
-     * @param FilterInterface|null $filters
      * @return mixed|null
      */
-    public function next($context = null, array $params = [], FilterInterface $filters = null)
+    public function next($context = null, array $params = [], ?FilterInterface $filters = null)
     {
         if (is_null($context) || is_null($filters)) {
             return null;

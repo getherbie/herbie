@@ -1,21 +1,12 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class FilterChain
+final class FilterChain
 {
-    /**
-     * @var FilterIterator
-     */
-    private $filters;
+    private FilterIterator $filters;
 
     /**
      * FilterChain constructor.
@@ -25,19 +16,12 @@ class FilterChain
         $this->filters = new FilterIterator();
     }
 
-    /**
-     * @param callable $callback
-     * @return callable
-     */
     public function attach(callable $callback): callable
     {
         $this->filters->insert($callback);
         return $callback;
     }
 
-    /**
-     * @param callable $callback
-     */
     public function detach(callable $callback): void
     {
         $this->filters->remove($callback);
@@ -45,14 +29,14 @@ class FilterChain
 
     /**
      * @param mixed $context
-     * @param array $argv
+     * @return array|string|null depending on the context
      */
     public function run($context, array $argv = [])
     {
         $filters = $this->getFilters();
 
         if (count($filters) === 0) {
-            return;
+            return null;
         }
 
         $next = $filters->current();
@@ -60,15 +44,12 @@ class FilterChain
         return $next($context, $argv, $filters);
     }
 
-    /**
-     * @return FilterIterator
-     */
     public function getFilters(): FilterIterator
     {
         return $this->filters;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->filters->rewind();
     }

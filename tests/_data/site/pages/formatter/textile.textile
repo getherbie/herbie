@@ -1,0 +1,8 @@
+---
+title: Textile
+hidden: 0
+---
+
+h1. Textile Page
+
+p. This is a textile formatted page.

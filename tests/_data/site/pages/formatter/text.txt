@@ -1,0 +1,8 @@
+---
+title: Text
+hidden: 0
+---
+
+Text Page
+
+This is a text formatted page.

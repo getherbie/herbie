@@ -1,31 +1,20 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class Pagination implements \IteratorAggregate, \Countable
+final class Pagination implements \IteratorAggregate, \Countable
 {
-    /** @var array */
-    private $items;
+    private array $items;
 
-    /** @var int */
-    private $limit;
+    private int $limit;
 
-    /** @var string */
-    private $name;
+    private string $name;
 
     /**
-     * @param iterable $items
-     * @param int $limit
-     * @param string $name
      * @throws \Exception
+     * @throws \LogicException
      */
     public function __construct(iterable $items, int $limit = 10, string $name = 'page')
     {
@@ -36,15 +25,12 @@ class Pagination implements \IteratorAggregate, \Countable
             $this->items = (array)$items->getIterator();
         } else {
             $message = 'The param $items must be an array or an object implementing \IteratorAggregate.';
-            throw new \LogicException($message, 500);
+            throw new \InvalidArgumentException($message, 500);
         }
         $this->setLimit($limit);
         $this->name = $name;
     }
 
-    /**
-     * @return int
-     */
     public function getPage(): int
     {
         $page = isset($_GET[$this->name]) ? intval($_GET[$this->name]) : 1;
@@ -55,26 +41,17 @@ class Pagination implements \IteratorAggregate, \Countable
         return intval($page);
     }
 
-    /**
-     * @return int
-     */
     public function getLimit(): int
     {
         return $this->limit;
     }
 
-    /**
-     * @param int $limit
-     */
     public function setLimit(int $limit): void
     {
         $limit = (0 == $limit) ? 1000 : intval($limit);
         $this->limit = $limit;
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator(): \ArrayIterator
     {
         $offset = ($this->getPage() - 1) * $this->limit;
@@ -82,41 +59,26 @@ class Pagination implements \IteratorAggregate, \Countable
         return new \ArrayIterator($items);
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->items);
     }
 
-    /**
-     * @return bool
-     */
     public function hasNextPage(): bool
     {
         return ($this->limit * $this->getPage()) < $this->count();
     }
 
-    /**
-     * @return int
-     */
     public function getNextPage(): int
     {
         return max(2, $this->getPage() + 1);
     }
 
-    /**
-     * @return bool
-     */
     public function hasPrevPage(): bool
     {
         return 1 < $this->getPage();
     }
 
-    /**
-     * @return int
-     */
     public function getPrevPage(): int
     {
         return max(1, $this->getPage() - 1);

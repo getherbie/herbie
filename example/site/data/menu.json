@@ -4,8 +4,8 @@
         "label": "About"
     },
     {
-        "route": "features",
-        "label": "Features"
+        "route": "documentation",
+        "label": "Documentation"
     },
     {
         "route": "blog",

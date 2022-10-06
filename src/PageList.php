@@ -1,31 +1,19 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageList implements \IteratorAggregate, \Countable
+final class PageList implements \IteratorAggregate, \Countable
 {
     /**
      * @var PageItem[]
      */
-    private $items = [];
+    private array $items;
 
-    /**
-     * @var PageTrail
-     */
-    private $pageTrail = null;
+    private ?PageTrail $pageTrail;
 
-    /**
-     * @var PageTree
-     */
-    private $pageTree = null;
+    private ?PageTree $pageTree;
 
     /**
      * MenuList constructor.
@@ -34,67 +22,45 @@ class PageList implements \IteratorAggregate, \Countable
     public function __construct(array $items = [])
     {
         $this->items = $items;
+        $this->pageTrail = null;
+        $this->pageTree = null;
     }
 
-    /**
-     * @param PageItem $item
-     */
     public function addItem(PageItem $item): void
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
     }
 
-    /**
-     * @return array
-     */
     public function getItems(): array
     {
         return $this->items;
     }
 
-    /**
-     * @param string $route
-     * @return PageItem|null
-     */
-    public function getItem($route): ?PageItem
+    public function getItem(string $route): ?PageItem
     {
         return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->items);
     }
 
-    /**
-     * @return PageItem
-     */
     public function getRandom(): PageItem
     {
         $routes = array_keys($this->items);
-        $index = mt_rand(0, $this->count()-1);
+        $index = mt_rand(0, $this->count() - 1);
         $route = $routes[$index];
         return $this->items[$route];
     }
 
-    /**
-     * @param string $value
-     * @param string $key
-     * @return PageItem|null
-     */
-    public function find($value, $key): ?PageItem
+    public function find(string $value, string $key): ?PageItem
     {
         foreach ($this->items as $item) {
             if ($item->$key == $value) {
@@ -107,41 +73,35 @@ class PageList implements \IteratorAggregate, \Countable
     /**
      * Run a filter over each of the items.
      *
-     * @param callable|null $key
+     * @param callable|string|null $key
      * @param mixed $value
-     * @return PageList
      */
     public function filter($key = null, $value = null): PageList
     {
         if (is_callable($key)) {
-            return new static(array_filter($this->items, $key));
+            return new self(array_filter($this->items, $key));
         }
         if (is_string($key) && is_scalar($value)) {
-            return new static(array_filter($this->items, function ($val) use ($key, $value) {
+            return new self(array_filter($this->items, function ($val) use ($key, $value) {
                 if ($val->{$key} == $value) {
                     return true;
                 }
                 return false;
             }));
         }
-        return new static(array_filter($this->items));
+        return new self(array_filter($this->items));
     }
 
     /**
      * Shuffle the items in the list.
-     *
-     * @return PageList
      */
     public function shuffle(): PageList
     {
         $items = $this->items;
         shuffle($items);
-        return new static($items);
+        return new self($items);
     }
 
-    /**
-     * @return array
-     */
     public function flatten(): array
     {
         return $this->items;
@@ -149,16 +109,14 @@ class PageList implements \IteratorAggregate, \Countable
 
     /**
      * @param callable|string|null $mixed
-     * @param string $direction
-     * @return PageList
      */
-    public function sort($mixed = null, $direction = 'asc'): PageList
+    public function sort($mixed = null, string $direction = 'asc'): PageList
     {
         $items = $this->items;
 
         if (is_callable($mixed)) {
             uasort($items, $mixed);
-            return new static($items);
+            return new self($items);
         }
 
         $field = is_string($mixed) ? $mixed : 'title';
@@ -173,13 +131,9 @@ class PageList implements \IteratorAggregate, \Countable
             }
         });
 
-        return new static($items);
+        return new self($items);
     }
 
-    /**
-     * @param string|null $type
-     * @return array
-     */
     public function getAuthors(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
@@ -189,10 +143,6 @@ class PageList implements \IteratorAggregate, \Countable
         return $authors;
     }
 
-    /**
-     * @param string|null $type
-     * @return array
-     */
     public function getCategories(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
@@ -202,11 +152,6 @@ class PageList implements \IteratorAggregate, \Countable
         return $categories;
     }
 
-    /**
-     * @param int $limit
-     * @param string|null $type
-     * @return array
-     */
     public function getRecent(int $limit, ?string $type = null): array
     {
         $limit = intval($limit);
@@ -225,10 +170,6 @@ class PageList implements \IteratorAggregate, \Countable
         return $items;
     }
 
-    /**
-     * @param string|null $type
-     * @return array
-     */
     public function getTags(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
@@ -238,14 +179,11 @@ class PageList implements \IteratorAggregate, \Countable
         return $tags;
     }
 
-    /**
-     * @return array
-     */
     public function getYears(): array
     {
         $years = [];
         foreach ($this->items as $item) {
-            $key = substr($item->date, 0, 4);
+            $key = substr($item->getDate(), 0, 4);
             if (array_key_exists($key, $years)) {
                 $count = $years[$key] + 1;
             } else {
@@ -256,10 +194,6 @@ class PageList implements \IteratorAggregate, \Countable
         return $years;
     }
 
-    /**
-     * @param string|null $type
-     * @return array
-     */
     public function getMonths(?string $type = null): array
     {
         $type = is_null($type) ? '__all__' : $type;
@@ -269,14 +203,14 @@ class PageList implements \IteratorAggregate, \Countable
         foreach ($this->items as $pageItem) {
             $pageType = $pageItem->getType();
 
-            $year = substr($pageItem->date, 0, 4);
-            $month = substr($pageItem->date, 5, 2);
+            $year = substr($pageItem->getDate(), 0, 4);
+            $month = substr($pageItem->getDate(), 5, 2);
             $key = $year . '-' . $month;
 
             $item = [
                 'year' => $year,
                 'month' => $month,
-                'date' => $pageItem->date,
+                'date' => $pageItem->getDate(),
                 'count' => 1
             ];
 
@@ -303,12 +237,6 @@ class PageList implements \IteratorAggregate, \Countable
         return $months;
     }
 
-    /**
-     * @param string $type
-     * @param string $parentRoute
-     * @param array $params
-     * @return PageList
-     */
     public function filterItems(string $type, string $parentRoute, array $params): PageList
     {
         $items = [];
@@ -359,13 +287,9 @@ class PageList implements \IteratorAggregate, \Countable
             }
         }
 
-        return new static($items);
+        return new self($items);
     }
 
-    /**
-     * @param string $dataType
-     * @return array
-     */
     private function createTaxonomyFor(string $dataType): array
     {
         $items = ['__all__' => []];
@@ -393,40 +317,37 @@ class PageList implements \IteratorAggregate, \Countable
         return $items;
     }
 
-    /**
-     * @return PageTree
-     */
     public function getPageTree(): PageTree
     {
         if (is_null($this->pageTree)) {
-            $this->pageTree = (new PageFactory)->newPageTree($this);
+            $this->pageTree = (new PageFactory())->newPageTree($this);
         }
         return $this->pageTree;
     }
 
-    /**
-     * @param string $requestRoute
-     * @return PageTrail
-     */
     public function getPageTrail(string $requestRoute): PageTrail
     {
-        if (is_null($this->pageTrail)) {
-            $items = [];
-
-            $segments = explode('/', rtrim($requestRoute, '/'));
-            $route = '';
-            $delim = '';
-            foreach ($segments as $segment) {
-                $route .= $delim . $segment;
-                $delim = '/';
-
-                $item = $this->getItem($route);
-                if (isset($item)) {
-                    $items[] = $item;
-                }
-            }
-            $this->pageTrail = (new PageFactory)->newPageTrail($items);
+        // It would be possible to have multiple cached page trails.
+        // But in fact, there is always only one for the requested route.
+        if ($this->pageTrail) {
+            return $this->pageTrail;
         }
-        return $this->pageTrail;
+
+        $items = [];
+
+        $segments = explode('/', rtrim($requestRoute, '/'));
+        $route = '';
+        $delim = '';
+        foreach ($segments as $segment) {
+            $route .= $delim . $segment;
+            $delim = '/';
+
+            $item = $this->getItem($route);
+            if (isset($item)) {
+                $items[] = $item;
+            }
+        }
+
+        return $this->pageTrail = (new PageFactory())->newPageTrail($items);
     }
 }

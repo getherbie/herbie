@@ -1,48 +1,24 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class JsonDataRepository implements DataRepositoryInterface
+final class JsonDataRepository implements DataRepositoryInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
+    private string $path;
 
-    /**
-     * @var array
-     */
-    private $extensions;
+    private array $extensions;
 
     /**
      * YamlDataRepository constructor.
-     * @param string $path
-     * @throws SystemException
      */
     public function __construct(string $path)
     {
-        if (!is_dir($path)) {
-            throw SystemException::directoryNotExist($path);
-        }
-        if (!is_readable($path)) {
-            throw SystemException::directoryNotReadable($path);
-        }
         $this->path = $path;
         $this->extensions = ['json'];
     }
 
-    /**
-     * @param string $name
-     * @return array
-     */
     public function load(string $name): array
     {
         $dataFiles = $this->scanDataDir();
@@ -53,9 +29,6 @@ class JsonDataRepository implements DataRepositoryInterface
         return $this->parseDataFile($dataFiles[$name]);
     }
 
-    /**
-     * @return array
-     */
     public function loadAll(): array
     {
         $data = [];
@@ -66,10 +39,12 @@ class JsonDataRepository implements DataRepositoryInterface
     }
 
     /**
-     * @return array
+     * @throws SystemException
      */
     private function scanDataDir(): array
     {
+        $this->validatePath();
+
         $dataFiles = [];
 
         $files = scandir($this->path);
@@ -95,9 +70,18 @@ class JsonDataRepository implements DataRepositoryInterface
     }
 
     /**
-     * @param string $filepath
-     * @return array
+     * @throws SystemException
      */
+    private function validatePath(): void
+    {
+        if (!is_dir($this->path)) {
+            throw SystemException::directoryNotExist($this->path);
+        }
+        if (!is_readable($this->path)) {
+            throw SystemException::directoryNotReadable($this->path);
+        }
+    }
+
     private function parseDataFile(string $filepath): array
     {
         return json_decode(file_get_contents($filepath), true);

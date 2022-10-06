@@ -11,7 +11,7 @@
 
     {# render markup #}
     {% if months|length > 0 %}
-        {% spaceless %}
+        {% apply spaceless %}
             <div class="widget-blog widget-blog-archives">
                 <h4>{{ title }}</h4>
                 <ul>
@@ -22,7 +22,7 @@
                     {% endfor %}
                 </ul>
             </div>
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 
 {% endmacro %}
@@ -41,7 +41,7 @@
 
     {# render markup #}
     {% if authors|length > 0 %}
-        {% spaceless %}
+        {% apply spaceless %}
             <div class="widget-blog widget-blog-authors">
                 <h4>{{ title }}</h4>
                 <ul>
@@ -51,7 +51,7 @@
                     {% endfor %}
                 </ul>
             </div>
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 
 {% endmacro %}
@@ -70,7 +70,7 @@
 
     {# render markup #}
     {% if categories|length > 0 %}
-        {% spaceless %}
+        {% apply spaceless %}
             <div class="widget-blog widget-blog-categories">
                 <h4>{{ title }}</h4>
                 <ul>
@@ -80,7 +80,7 @@
                     {% endfor %}
                 </ul>
             </div>
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 
 {% endmacro %}
@@ -99,7 +99,7 @@
 
     {# render markup #}
     {% if tags|length > 0 %}
-        {% spaceless %}
+        {% apply spaceless %}
             <div class="widget-blog widget-blog-tags">
                 <h4>{{ title }}</h4>
                 <ul>
@@ -109,7 +109,7 @@
                     {% endfor %}
                 </ul>
             </div>
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 
 {% endmacro %}

@@ -1,18 +1,9 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace herbie;
 
-class UncaughtExceptionHandler
+final class UncaughtExceptionHandler
 {
-    /**
-     * @param \Throwable $exception
-     */
     public function __invoke(\Throwable $exception): void
     {
         if (!headers_sent()) {

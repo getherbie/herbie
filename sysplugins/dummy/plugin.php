@@ -1,63 +1,58 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
+
+namespace herbie\sysplugin;
 
 use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\PluginInterface;
+use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Twig\TwigFilter;
 
-class DummySysPlugin implements PluginInterface
+final class DummySysPlugin implements PluginInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * DummyPlugin constructor.
-     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @return int
-     */
     public function apiVersion(): int
     {
         return 2;
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function events(): array
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onContentRendered']],
-            ['onLayoutRendered', [$this, 'onLayoutRendered']],
-            ['onPluginsAttached', [$this, 'onPluginsAttached']],
-            ['onResponseEmitted', [$this, 'onResponseEmitted']],
-            ['onResponseGenerated', [$this, 'onResponseGenerated']],
-            ['onTwigInitialized', [$this, 'onTwigInitialized']],
+            ['onContentRendered', [$this, 'onGenericEventHandler']],
+            ['onLayoutRendered', [$this, 'onGenericEventHandler']],
+            ['onPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onResponseEmitted', [$this, 'onGenericEventHandler']],
+            ['onResponseGenerated', [$this, 'onGenericEventHandler']],
+            ['onTwigInitialized', [$this, 'onGenericEventHandler']],
+            ['onTwigInitialized', [$this, 'onTwigInitializedEventHandler']],
+            ['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
+            ['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
         ];
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function filters(): array
     {
@@ -70,18 +65,29 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
-    public function middlewares(): array
+    public function appMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'dummyMiddleware']
+            [$this, 'appMiddleware']
         ];
     }
 
     /**
-     * @return array
+     * @return array[]
+     */
+    public function routeMiddlewares(): array
+    {
+        $this->logger->debug(__METHOD__);
+        return [
+            ['documentation', [$this, 'routeMiddleware']]
+        ];
+    }
+
+    /**
+     * @return array[]
      */
     public function twigFilters(): array
     {
@@ -92,7 +98,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigFunctions(): array
     {
@@ -103,7 +109,7 @@ class DummySysPlugin implements PluginInterface
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function twigTests(): array
     {
@@ -113,79 +119,92 @@ class DummySysPlugin implements PluginInterface
         ];
     }
 
-    public function renderSegment(string $context, array $params, FilterInterface $filter)
+    private function wrapHtmlBlock(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
+    }
+
+    public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
+        $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderContent(array $context, array $params, FilterInterface $filter)
+    public function renderContent(array $context, array $params, FilterInterface $filter): array
     {
         $this->logger->debug(__METHOD__);
+        foreach ($context as $key => $value) {
+            $context[$key] = $value . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
+        }
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderLayout(string $context, array $params, FilterInterface $filter)
+    public function renderLayout(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
+        $context = str_replace(
+            '</body>',
+            $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
+            $context
+        );
         return $filter->next($context, $params, $filter);
     }
 
-    public function onContentRendered(EventInterface $event)
+    public function onGenericEventHandler(EventInterface $event): void
     {
-        $this->logger->debug(__METHOD__);
+        $this->logger->debug('Event ' . $event->getName() . ' was triggered');
     }
 
-    public function onLayoutRendered(EventInterface $event)
+    public function onTwigInitializedEventHandler(EventInterface $event): void
     {
         $this->logger->debug(__METHOD__);
+        /** @var TwigRenderer $twigRenderer */
+        $twigRenderer = $event->getTarget();
+        $twigRenderer->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+            return $content . ' Dummy Filter Dynamic';
+        }));
     }
 
-    public function onPluginsAttached(EventInterface $event)
+    public function appMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
+        $request = $request->withAttribute('X-Plugin-Dummy', (string)time());
+        return $next->handle($request)->withHeader('X-Plugin-Dummy', (string)time());
     }
 
-    public function onResponseEmitted(EventInterface $event)
+    public function routeMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
-    }
-
-    public function onResponseGenerated(EventInterface $event)
-    {
-        $this->logger->debug(__METHOD__);
-    }
-
-    public function onTwigInitialized(EventInterface $event)
-    {
-        $this->logger->debug(__METHOD__);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $next
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function dummyMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
-    {
-        $this->logger->debug(__METHOD__);
-        $request = $request->withAttribute('X-DummyPlugin', time());
         $response = $next->handle($request);
-        return $response->withHeader('X-DummyPlugin', time());
+        $content = (string)$response->getBody();
+        $newContent = str_replace(
+            '</body>',
+            $this->wrapHtmlBlock('dummy-plugin-route-middleware', __METHOD__) . '</body>',
+            $content
+        );
+        $response->getBody()->rewind();
+        $response->getBody()->write($newContent);
+        return $response;
     }
 
-    public function twigDummyFilter()
+    public function twigDummyFilter(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        $content .= ' Dummy Filter';
+        return $content;
     }
 
-    public function twigDummyFunction()
+    public function twigDummyFunction(string $content): string
     {
         $this->logger->debug(__METHOD__);
+        $content .= ' Dummy Function';
+        return $content;
     }
 
-    public function twigDummyTest()
+    public function twigDummyTest(string $content): bool
     {
         $this->logger->debug(__METHOD__);
+        return strlen($content) > 0;
     }
 }

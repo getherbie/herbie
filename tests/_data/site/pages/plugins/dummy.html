@@ -1,0 +1,11 @@
+---
+title: Dummy Plugin
+hidden: 0
+---
+
+<h1>Dummy Plugin</h1>
+
+<p>{% apply dummy %}This is from {% endapply %}.</p>
+<p>{{ dummy("This is from") }}.</p>
+<p>{% if "dummy" is dummy %}This is from Dummy Test.{% endif %}</p>
+<p>{% apply dummy_dynamic %}This is from {% endapply %}.</p>

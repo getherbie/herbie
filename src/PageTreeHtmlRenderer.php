@@ -1,31 +1,16 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
 namespace herbie;
 
-class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
+final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
 {
-    /**
-     * @var string
-     */
-    private $class;
+    private string $class;
 
-    /**
-     * @var string
-     */
-    private $output;
+    private string $output;
 
-    /**
-     * @var array
-     */
-    private $template = [
+    private array $template = [
         'beginIteration' => '<div class="{class}"><ul>',
         'endIteration' => '</ul></div>',
         'beginChildren' => '<ul>',
@@ -39,11 +24,6 @@ class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
      */
     public $itemCallback;
 
-    /**
-     * @param \RecursiveIterator $iterator
-     * @param int $mode
-     * @param int $flags
-     */
     public function __construct(
         \RecursiveIterator $iterator,
         int $mode = \RecursiveIteratorIterator::SELF_FIRST,
@@ -51,19 +31,14 @@ class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
     ) {
         parent::__construct($iterator, $mode, $flags);
         $this->class = '';
+        $this->output = '';
     }
 
-    /**
-     * @param string $class
-     */
     public function setClass(string $class): void
     {
         $this->class = $class;
     }
 
-    /**
-     * @param array $options
-     */
     public function setTemplate(array $options = []): void
     {
         foreach ($options as $key => $value) {
@@ -71,42 +46,26 @@ class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
         }
     }
 
-    /**
-     * @return void
-     */
     public function beginIteration(): void
     {
         $this->output .= $this->getTemplate('beginIteration');
     }
 
-    /**
-     * @return void
-     */
     public function endIteration(): void
     {
         $this->output .= $this->getTemplate('endIteration');
     }
 
-    /**
-     * @return void
-     */
     public function beginChildren(): void
     {
         $this->output .= $this->getTemplate('beginChildren');
     }
 
-    /**
-     * @return void
-     */
     public function endChildren(): void
     {
         $this->output .= $this->getTemplate('endChildren');
     }
 
-    /**
-     * @param string $route
-     * @return string
-     */
     public function render(string $route = ''): string
     {
         foreach ($this as $item) {
@@ -124,24 +83,15 @@ class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
         return $this->output;
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
     private function getTemplate(string $key): string
     {
         $replacements = [
             '{class}' => $this->class,
-            '{level}' => $this->getDepth()+1
+            '{level}' => $this->getDepth() + 1
         ];
         return strtr($this->template[$key], $replacements);
     }
 
-    /**
-     * @param string $beginCurrent
-     * @param string $route
-     * @return string
-     */
     private function addCssClasses(string $beginCurrent, string $route): string
     {
         $menuItem = $this->getMenuItem();

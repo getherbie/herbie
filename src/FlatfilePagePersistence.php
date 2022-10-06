@@ -1,10 +1,4 @@
 <?php
-/**
- * This file is part of Herbie.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -13,22 +7,12 @@ namespace herbie;
 /**
  * Loads the whole page.
  */
-class FlatfilePagePersistence implements PagePersistenceInterface
+final class FlatfilePagePersistence implements PagePersistenceInterface
 {
-    /**
-     * @var Alias
-     */
-    private $alias;
+    private Alias $alias;
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
-    /**
-     * @param Alias $alias
-     * @param Config $config
-     */
     public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
@@ -37,17 +21,14 @@ class FlatfilePagePersistence implements PagePersistenceInterface
 
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
-     * @return array
      * @throws \Exception
      */
     public function findById(string $id): array
     {
-        $data = $this->readFile($id);
-        return $data;
+        return $this->readFile($id);
     }
 
     /**
-     * @return array
      * @throws \Exception
      */
     public function findAll(): array
@@ -91,10 +72,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
     }
 
     /**
-     * @param string $alias
-     * @param bool $addDefFields
-     * @return array
-     * @throws \Exception
+     * @throws HttpException // TODO change exception type
      */
     private function readFile(string $alias, bool $addDefFields = true): array
     {
@@ -135,14 +113,10 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         ];
     }
 
-    /**
-     * @param string $path
-     * @return array
-     */
     public function readFrontMatter(string $path): array
     {
         if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
         }
 
         $yaml = '';
@@ -171,21 +145,16 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return (array) Yaml::parse($yaml);
     }
 
-    /**
-     * @param string $content
-     * @return array
-     * @throws \Exception
-     */
     private function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF).chr(0xBB).chr(0xBF));
+            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
         }
-        
+
         $yaml = '';
         $segments = [];
 
-        $matched = preg_match('/^['.UTF8_BOM.']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
+        $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
         if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
@@ -193,15 +162,15 @@ class FlatfilePagePersistence implements PagePersistenceInterface
             $splitted = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $count = count($splitted);
-            if ($count %2 == 0) {
+            if ($count % 2 == 0) {
                 throw new \UnexpectedValueException('Error at reading file content');
             }
 
             $segments['default'] = array_shift($splitted);
             $ct_splitted = count($splitted);
-            for ($i=0; $i<$ct_splitted; $i=$i+2) {
+            for ($i = 0; $i < $ct_splitted; $i = $i + 2) {
                 $key = $splitted[$i];
-                $value = $splitted[$i+1];
+                $value = $splitted[$i + 1];
                 if (array_key_exists($key, $segments)) {
                     $segments[$key] .= $value;
                 } else {
@@ -221,9 +190,7 @@ class FlatfilePagePersistence implements PagePersistenceInterface
     }
 
     /**
-     * @param string $path
-     * @return string
-     * @throws HttpException
+     * @throws HttpException // TODO change exception type
      */
     private function readFileContent(string $path): string
     {
@@ -235,11 +202,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return $contents;
     }
 
-    /**
-     * @param string $contentDir
-     * @param array $contentExt
-     * @return array
-     */
     public static function getRouteToIdMapping(string $contentDir, array $contentExt): array
     {
         $path = $contentDir;
@@ -283,12 +245,6 @@ class FlatfilePagePersistence implements PagePersistenceInterface
         return $mapping;
     }
 
-
-    /**
-     * @param string $path
-     * @param bool $trimExtension
-     * @return string
-     */
     private function createRoute(string $path, bool $trimExtension = false): string
     {
         // strip left unix AND windows dir separator
