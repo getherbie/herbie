@@ -99,7 +99,8 @@ final class PluginManager
             $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
             $pluginConfig = $this->config->getAsArray($pluginConfigPath);
             if (
-                ($pluginConfig['location'] !== $type)
+                empty($pluginConfig)
+                || ($pluginConfig['location'] !== $type)
                 || empty($pluginConfig['pluginName'])
                 || empty($pluginConfig['pluginClass'])
                 || empty($pluginConfig['pluginPath'])
