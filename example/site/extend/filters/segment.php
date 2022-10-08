@@ -1,5 +1,7 @@
 <?php
 
+namespace example\site\extend\filters;
+
 use herbie\FilterInterface;
 
 return ['renderSegment', function (string $context, array $params, FilterInterface $filter): string {
