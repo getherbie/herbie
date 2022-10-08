@@ -43,8 +43,8 @@ final class Application
      * @throws SystemException
      */
     public function __construct(
+        string $appPath,
         string $sitePath,
-        string $vendorDir = '../vendor',
         ?LoggerInterface $logger = null,
         ?CacheInterface $cache = null
     ) {
@@ -52,7 +52,7 @@ final class Application
         set_exception_handler(new UncaughtExceptionHandler());
 
         $this->appMiddlewares = [];
-        $this->appPath = normalize_path(dirname(__DIR__));
+        $this->appPath = normalize_path($appPath);
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
@@ -60,7 +60,7 @@ final class Application
         $this->twigFilters = [];
         $this->twigFunctions = [];
         $this->twigTests = [];
-        $this->vendorDir = normalize_path($vendorDir);
+        $this->vendorDir = normalize_path($this->appPath . '/vendor');
 
         $this->init($logger, $cache);
     }
