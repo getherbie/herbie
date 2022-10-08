@@ -29,8 +29,8 @@ $logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.lo
 // $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
 
 $app = new Application(
+    dirname(__DIR__, 2),
     dirname(__DIR__) . '/site',
-    dirname(__DIR__, 2) . '/vendor',
     $logger,
     // $fileCache
 );

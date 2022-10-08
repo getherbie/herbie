@@ -172,11 +172,12 @@ final class TwigRenderer
             'plugin' => $this->config['paths']['plugins'],
             'page' => $this->config['paths']['pages'],
             'site' => $this->config['paths']['site'],
-            'snippet' => $this->config['paths']['app'] . '/templates/snippets',
-            'sysplugin' => $this->config['paths']['sysPlugins'],
-            'template' => $this->config['paths']['app'] . '/templates',
+            'snippet' => HERBIE_PATH . '/templates/snippets',
+            'sysplugin' => HERBIE_PATH_SYSPLUGINS,
+            'template' => HERBIE_PATH . '/templates',
             'vendor' => $this->config['paths']['app'] . '/vendor',
         ];
+
         foreach ($namespaces as $namespace => $path) {
             if (is_readable($path)) {
                 $loader2->addPath($path, $namespace);

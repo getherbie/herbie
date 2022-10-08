@@ -54,6 +54,13 @@ final class PluginManager
 
     public function init(): void
     {
+        $this->loadPlugin(new InstallablePlugin(
+            'virtual_core_plugin',
+            __DIR__,
+            __DIR__ . '/VirtualCorePlugin.php',
+            'virtual',
+        ));
+        
         $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
         $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
 
@@ -99,7 +106,8 @@ final class PluginManager
             $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
             $pluginConfig = $this->config->getAsArray($pluginConfigPath);
             if (
-                ($pluginConfig['location'] !== $type)
+                empty($pluginConfig)
+                || ($pluginConfig['location'] !== $type)
                 || empty($pluginConfig['pluginName'])
                 || empty($pluginConfig['pluginClass'])
                 || empty($pluginConfig['pluginPath'])

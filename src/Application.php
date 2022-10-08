@@ -20,6 +20,9 @@ define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 define('HERBIE_API_VERSION', 2);
+define('HERBIE_PATH', dirname(__DIR__));
+define('HERBIE_PATH_MESSAGES', HERBIE_PATH . '/messages');
+define('HERBIE_PATH_SYSPLUGINS', HERBIE_PATH . '/sysplugins');
 
 final class Application
 {
@@ -40,8 +43,8 @@ final class Application
      * @throws SystemException
      */
     public function __construct(
+        string $appPath,
         string $sitePath,
-        string $vendorDir = '../vendor',
         ?LoggerInterface $logger = null,
         ?CacheInterface $cache = null
     ) {
@@ -49,7 +52,7 @@ final class Application
         set_exception_handler(new UncaughtExceptionHandler());
 
         $this->appMiddlewares = [];
-        $this->appPath = normalize_path(dirname(__DIR__));
+        $this->appPath = normalize_path($appPath);
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
@@ -57,7 +60,7 @@ final class Application
         $this->twigFilters = [];
         $this->twigFunctions = [];
         $this->twigTests = [];
-        $this->vendorDir = normalize_path($vendorDir);
+        $this->vendorDir = normalize_path($this->appPath . '/vendor');
 
         $this->init($logger, $cache);
     }

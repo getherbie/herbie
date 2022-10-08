@@ -9,12 +9,10 @@ return [
     'paths' => [
         'app' => 'APP_PATH',
         'data' => 'SITE_PATH/data',
-        'messages' => 'APP_PATH/messages',
         'media' => 'SITE_PATH/media',
         'pages' => 'SITE_PATH/pages',
         'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
-        'sysPlugins' => 'APP_PATH/sysplugins',
         'themes' => 'SITE_PATH/themes',
         'web' => 'WEB_PATH'
     ],
@@ -23,7 +21,7 @@ return [
         'web' => 'WEB_URL/',
     ],
     'fileExtensions' => [
-        'layouts' => 'html',
+        'layouts' => 'twig',
         'media' => [
             'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
             'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
