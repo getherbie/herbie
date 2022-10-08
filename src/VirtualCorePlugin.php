@@ -8,13 +8,13 @@ final class VirtualCorePlugin extends Plugin
 {
     private Config $config;
     private TwigRenderer $twigRenderer;
-    
+
     public function __construct(Config $config, TwigRenderer $twigRenderer)
     {
         $this->config = $config;
-        $this->twigRenderer = $twigRenderer;    
+        $this->twigRenderer = $twigRenderer;
     }
-    
+
     public function filters(): array
     {
         return [
@@ -41,5 +41,5 @@ final class VirtualCorePlugin extends Plugin
         $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
         $context = $this->twigRenderer->renderTemplate($name, $params);
         return $filter->next($context, $params, $filter);
-    }    
+    }
 }

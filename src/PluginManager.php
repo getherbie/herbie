@@ -60,7 +60,7 @@ final class PluginManager
             __DIR__ . '/VirtualCorePlugin.php',
             'virtual',
         ));
-        
+
         $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
         $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
 
