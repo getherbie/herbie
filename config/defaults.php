@@ -9,12 +9,10 @@ return [
     'paths' => [
         'app' => 'APP_PATH',
         'data' => 'SITE_PATH/data',
-        'messages' => 'APP_PATH/messages',
         'media' => 'SITE_PATH/media',
         'pages' => 'SITE_PATH/pages',
         'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
-        'sysPlugins' => 'APP_PATH/sysplugins',
         'themes' => 'SITE_PATH/themes',
         'web' => 'WEB_PATH'
     ],

@@ -173,7 +173,7 @@ final class TwigRenderer
             'page' => $this->config['paths']['pages'],
             'site' => $this->config['paths']['site'],
             'snippet' => $this->config['paths']['app'] . '/templates/snippets',
-            'sysplugin' => $this->config['paths']['sysPlugins'],
+            'sysplugin' => HERBIE_PATH_SYSPLUGINS,
             'template' => $this->config['paths']['app'] . '/templates',
             'vendor' => $this->config['paths']['app'] . '/vendor',
         ];

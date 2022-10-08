@@ -20,6 +20,9 @@ define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
 define('HERBIE_VERSION', '2.0.0');
 define('HERBIE_API_VERSION', 2);
+define('HERBIE_PATH', dirname(__DIR__));
+define('HERBIE_PATH_MESSAGES', HERBIE_PATH . '/messages');
+define('HERBIE_PATH_SYSPLUGINS', HERBIE_PATH . '/sysplugins');
 
 final class Application
 {
