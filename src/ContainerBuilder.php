@@ -79,7 +79,7 @@ final class ContainerBuilder
             };
 
             // default config
-            $defaultConfigPath = $this->app->getAppPath() . '/config/defaults.php';
+            $defaultConfigPath = HERBIE_PATH . '/config/defaults.php';
             $defaultConfig = load_php_config($defaultConfigPath, $processor);
 
             // user config
