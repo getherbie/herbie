@@ -61,7 +61,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         );
 
         $this->assertSame(
-            ' 1. Januar 1970',
+            strftime('%e. %B %Y', strtotime('1970-01-01')),
             $this->twigRenderer->renderString('{{ 2000|strftime("%e. %B %Y") }}')
         );
 
@@ -71,7 +71,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         );
 
         $this->assertSame(
-            '31. Dezember 2000', // quite random
+            strftime('%e. %B %Y', strtotime('2000-12-31')), // quite random
             $this->twigRenderer->renderString('{{ "20000-12-31"|strftime("%e. %B %Y") }}')
         );
 
@@ -81,7 +81,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         );
 
         $this->assertSame(
-            ' 1. Januar 1970',
+            strftime('%e. %B %Y', strtotime('1970-01-01')),
             $this->twigRenderer->renderString('{{ true|strftime("%e. %B %Y") }}')
         );
     }
