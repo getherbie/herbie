@@ -27,24 +27,21 @@ define('HERBIE_PATH_SYSPLUGINS', HERBIE_PATH . '/sysplugins');
 final class Application
 {
     private array $appMiddlewares;
-    private string $appPath;
+    private ApplicationPaths $appPaths;
     private Container $container;
     private array $events;
     private array $filters;
     private array $routeMiddlewares;
-    private string $sitePath;
     private array $twigFilters;
     private array $twigFunctions;
     private array $twigTests;
-    private string $vendorDir;
 
     /**
      * Application constructor
      * @throws SystemException
      */
     public function __construct(
-        string $appPath,
-        string $sitePath,
+        ApplicationPaths $paths,
         ?LoggerInterface $logger = null,
         ?CacheInterface $cache = null
     ) {
@@ -52,15 +49,13 @@ final class Application
         set_exception_handler(new UncaughtExceptionHandler());
 
         $this->appMiddlewares = [];
-        $this->appPath = normalize_path($appPath);
+        $this->appPaths = $paths;
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
-        $this->sitePath = normalize_path($sitePath);
         $this->twigFilters = [];
         $this->twigFunctions = [];
         $this->twigTests = [];
-        $this->vendorDir = normalize_path($this->appPath . '/vendor');
 
         $this->init($logger, $cache);
     }
@@ -71,7 +66,7 @@ final class Application
      */
     private function init(?LoggerInterface $logger = null, ?CacheInterface $cache = null): void
     {
-        $logDir = $this->sitePath . '/runtime/log';
+        $logDir = $this->appPaths->getSite('/runtime/log');
 
         error_reporting(E_ALL);
         ini_set('display_errors', HERBIE_DEBUG ? '1' : '0'); // @phpstan-ignore-line
@@ -137,17 +132,17 @@ final class Application
 
     public function getAppPath(): string
     {
-        return $this->appPath;
+        return $this->appPaths->getApp();
     }
 
     public function getSitePath(): string
     {
-        return $this->sitePath;
+        return $this->appPaths->getSite();
     }
 
     public function getVendorDir(): string
     {
-        return $this->vendorDir;
+        return $this->appPaths->getVendor();
     }
 
     public function getAppMiddlewares(): array

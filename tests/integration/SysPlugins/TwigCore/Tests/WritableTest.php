@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace tests\integration\SysPlugins\TwigCore\Tests;
 
-use herbie\Application;
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class WritableTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 
-    protected function _setUp(): void
+    protected UnitTester $tester;
+
+    private function twig(): TwigRenderer
     {
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testWritableWithoutCondition(): void
@@ -24,13 +26,15 @@ final class WritableTest extends \Codeception\Test\Unit
         $twig = '{{- writable -}}';
 
         // disabled strict variables
-        $this->twigRenderer->getTwigEnvironment()->disableStrictVariables();
-        $this->assertSame('', $this->twigRenderer->renderString($twig));
+        $twigInstance = $this->twig();
+        $twigInstance->getTwigEnvironment()->disableStrictVariables();
+        $this->assertSame('', $twigInstance->renderString($twig));
 
         // enabled strict variables
         $this->expectException(\Twig\Error\RuntimeError::class);
-        $this->twigRenderer->getTwigEnvironment()->enableStrictVariables();
-        $this->twigRenderer->renderString($twig);
+        $twigInstance = $this->twig();
+        $twigInstance->getTwigEnvironment()->enableStrictVariables();
+        $twigInstance->renderString($twig);
     }
 
     public function testWritableWithEmptyParam(): void
@@ -38,7 +42,7 @@ final class WritableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '' is writable -%}yes{% else %}no{%- endif -%}
         TWIG;
-        $this->assertSame('no', $this->twigRenderer->renderString($twig));
+        $this->assertSame('no', $this->twig()->renderString($twig));
     }
 
     public function testWritableWithExistingAlias(): void
@@ -46,7 +50,7 @@ final class WritableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy.pdf' is writable -%}yes{% else %}no{%- endif -%}
         TWIG;
-        $this->assertSame('yes', $this->twigRenderer->renderString($twig));
+        $this->assertSame('yes', $this->twig()->renderString($twig));
     }
 
     public function testWritableWithExistingAliasWithoutPermissions(): void
@@ -54,7 +58,7 @@ final class WritableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy-no-rights.pdf' is writable -%}yes{% else %}no{%- endif -%}
         TWIG;
-        $this->assertSame('no', $this->twigRenderer->renderString($twig));
+        $this->assertSame('no', $this->twig()->renderString($twig));
     }
 
     public function testReadableWithNotExistingAlias(): void
@@ -62,6 +66,6 @@ final class WritableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy-xyz.pdf' is writable -%}yes{% else %}no{%- endif -%}
         TWIG;
-        $this->assertSame('no', $this->twigRenderer->renderString($twig));
+        $this->assertSame('no', $this->twig()->renderString($twig));
     }
 }

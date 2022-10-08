@@ -82,7 +82,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['documentation', [$this, 'routeMiddleware']]
+            ['plugins/dummy', [$this, 'routeMiddleware']]
         ];
     }
 
@@ -162,15 +162,23 @@ final class DummySysPlugin implements PluginInterface
         /** @var TwigRenderer $twigRenderer */
         $twigRenderer = $event->getTarget();
         $twigRenderer->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
-            return $content . ' Dummy Filter Dynamic';
+            return $content . 'Dummy Filter Dynamic';
         }));
     }
 
     public function appMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->logger->debug(__METHOD__);
-        $request = $request->withAttribute('X-Plugin-Dummy', (string)time());
-        return $next->handle($request)->withHeader('X-Plugin-Dummy', (string)time());
+        $response = $next->handle($request);
+        $content = (string)$response->getBody();
+        $newContent = str_replace(
+            '</body>',
+            $this->wrapHtmlBlock('dummy-plugin-app-middleware', __METHOD__) . '</body>',
+            $content
+        );
+        $response->getBody()->rewind();
+        $response->getBody()->write($newContent);
+        return $response;
     }
 
     public function routeMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
@@ -191,7 +199,7 @@ final class DummySysPlugin implements PluginInterface
     public function twigDummyFilter(string $content): string
     {
         $this->logger->debug(__METHOD__);
-        $content .= ' Dummy Filter';
+        $content .= 'Dummy Filter';
         return $content;
     }
 

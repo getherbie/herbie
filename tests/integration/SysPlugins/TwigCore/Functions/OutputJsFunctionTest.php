@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugins\TwigCore\Functions;
 
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class OutputJsFunctionTest extends \Codeception\Test\Unit
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
+    protected UnitTester $tester;
 
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 3) . '/Fixtures/site',
-            dirname(__DIR__, 5) . '/vendor'
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
         );
     }
 

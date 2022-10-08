@@ -20,6 +20,7 @@ define('HERBIE_DEBUG', true);
 use example\CustomHeader;
 use example\TestFilter;
 use herbie\Application;
+use herbie\ApplicationPaths;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use Monolog\Logger;
@@ -29,8 +30,10 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 
 $app = new Application(
-    '../site',
-    '../../../vendor',
+    new ApplicationPaths(
+        dirname(__DIR__),
+        dirname(__DIR__) . '/site'
+    )
 );
 
 $app->run();

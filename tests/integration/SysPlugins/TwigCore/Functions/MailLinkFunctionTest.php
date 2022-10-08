@@ -5,26 +5,26 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugins\TwigCore\Functions;
 
 use ArgumentCountError;
-use herbie\Application;
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class MailLinkFunctionTest extends \Codeception\Test\Unit
 {
-    protected TwigRenderer $twigRenderer;
+    protected UnitTester $tester;
 
-    protected function _setUp(): void
+    private function twig(): TwigRenderer
     {
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testLinkWithoutParams(): void
     {
         $this->expectException(ArgumentCountError::class);
         $twig = '{{ mail_link() }}';
-        $this->twigRenderer->renderString($twig);
+        $this->twig()->renderString($twig);
     }
 
     public function testLinkWithEmail(): void
@@ -33,7 +33,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
             '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">me@example.com</a>'
         );
         $twig = '{{ mail_link("me@example.com") }}';
-        $actual = $this->twigRenderer->renderString($twig);
+        $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
 
@@ -43,7 +43,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
             '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">Example</a>'
         );
         $twig = '{{ mail_link("me@example.com", "Example") }}';
-        $actual = $this->twigRenderer->renderString($twig);
+        $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
 
@@ -53,7 +53,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
             '<a class="link-class" href="mailto&#x3A;me&#x40;example.com" id="link-id">Example</a>'
         );
         $twig = '{{ mail_link("me@example.com", "Example", {class:"link-class", id:"link-id"}) }}';
-        $actual = $this->twigRenderer->renderString($twig);
+        $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
 
@@ -61,7 +61,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
     {
         $expected = 'me@example.com';
         $twig = '{{ mail_link("me@example.com", template="{{label}}") }}';
-        $actual = $this->twigRenderer->renderString($twig);
+        $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
 
@@ -69,7 +69,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
     {
         $this->expectException(\Twig\Error\LoaderError::class);
         $twig = '{{ mail_link("me@example.com", template="@not/existing/template.twig") }}';
-        $this->twigRenderer->renderString($twig);
+        $this->twig()->renderString($twig);
     }
 
     private function getHtml(string $link): string

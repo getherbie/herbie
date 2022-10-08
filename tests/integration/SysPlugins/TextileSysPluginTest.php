@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugin;
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
 final class TextileSysPluginTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
 
-    protected function initApplication(string $sitePath, string $vendorPath): TwigRenderer
+    protected function initApplication(string $appPath, string $sitePath): TwigRenderer
     {
-        $app = new Application($sitePath, $vendorPath);
+        $app = new Application(new ApplicationPaths($appPath, $sitePath));
         $app->getPluginManager()->init();
         ($twigRenderer = $app->getTwigRenderer())->init();
         return $twigRenderer;
@@ -22,8 +23,8 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
     protected function _setUp(): void
     {
         $this->twigRenderer = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/site',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/site'
         );
     }
 
@@ -38,8 +39,8 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
     public function testTextileFilterWithDisabledFilter(): void
     {
         $twigRenderer = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/textile',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/textile'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
         $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
@@ -56,8 +57,8 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
     public function testTextileFunctionWithDisabledFunction(): void
     {
         $twigRenderer = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/textile',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/textile'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
         $twigRenderer->renderString('{{ textile("# This is textile") }}');

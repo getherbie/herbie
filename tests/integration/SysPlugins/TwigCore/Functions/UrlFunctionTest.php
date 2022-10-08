@@ -4,33 +4,33 @@ declare(strict_types=1);
 
 namespace tests\integration\SysPlugins\TwigCore\Functions;
 
-use ArgumentCountError;
-use herbie\Application;
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class UrlFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
+    protected UnitTester $tester;
 
-    protected function _setUp(): void
+    private function twig(): TwigRenderer
     {
         $_SERVER['SCRIPT_NAME'] = '';
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testUrlWithoutRoute(): void
     {
         $twig = '{{ url() }}';
-        $this->assertSame('/', $this->twigRenderer->renderString($twig));
+        $this->assertSame('/', $this->twig()->renderString($twig));
     }
 
     public function testUrlWithValidRoutes(): void
     {
-        $this->assertSame('/one', $this->twigRenderer->renderString('{{ url("one") }}'));
-        $this->assertSame('/one/two', $this->twigRenderer->renderString('{{ url("one/two") }}'));
-        $this->assertSame('/one/two/three', $this->twigRenderer->renderString('{{ url("one/two/three") }}'));
+        $this->assertSame('/one', $this->twig()->renderString('{{ url("one") }}'));
+        $this->assertSame('/one/two', $this->twig()->renderString('{{ url("one/two") }}'));
+        $this->assertSame('/one/two/three', $this->twig()->renderString('{{ url("one/two/three") }}'));
     }
 }

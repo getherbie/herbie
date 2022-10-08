@@ -9,6 +9,7 @@ define('HERBIE_DEBUG', true);
 use example\CustomHeader;
 use example\TestFilter;
 use herbie\Application;
+use herbie\ApplicationPaths;
 use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
@@ -20,6 +21,12 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+// create app paths
+$appPaths = new ApplicationPaths(
+    dirname(__DIR__, 2),
+    dirname(__DIR__) . '/site',
+);
+
 // create a log channel
 $logger = new Logger('herbie');
 $logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::DEBUG));
@@ -29,8 +36,7 @@ $logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.lo
 // $fileCache->setPath(dirname(__DIR__) . '/site/runtime/cache/page/');
 
 $app = new Application(
-    dirname(__DIR__, 2),
-    dirname(__DIR__) . '/site',
+    $appPaths,
     $logger,
     // $fileCache
 );

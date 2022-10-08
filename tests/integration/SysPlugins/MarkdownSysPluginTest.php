@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugin;
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 
 final class MarkdownSysPluginTest extends \Codeception\Test\Unit
 {
     protected Application $app;
 
-    protected function initApplication(string $sitePath, string $vendorPath): Application
+    protected function initApplication(string $appPath, string $sitePath): Application
     {
-        $app = new Application($sitePath, $vendorPath);
+        $app = new Application(new ApplicationPaths($appPath, $sitePath));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         return $app;
@@ -21,8 +22,8 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
     protected function _setUp(): void
     {
         $this->app = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/site',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/site'
         );
     }
 
@@ -37,8 +38,8 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
     public function testMarkdownFilterWithDisabledFilter(): void
     {
         $app = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/markdown',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/markdown'
         );
         if ($app->getConfig()->getAsBool('twig.debug') === true) {
             $this->expectException(\Error::class);
@@ -59,8 +60,8 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
     public function testMarkdownFunctionWithDisabledFunction(): void
     {
         $app = $this->initApplication(
-            dirname(__DIR__) . '/Fixtures/markdown',
-            dirname(__DIR__, 3) . '/vendor'
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/markdown'
         );
         $isDebug = $app->getConfig()->getAsBool('twig.debug');
         if ($isDebug === true) {
