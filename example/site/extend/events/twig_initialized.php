@@ -1,5 +1,7 @@
 <?php
 
+namespace example\site\extend\events;
+
 use herbie\EventInterface;
 use herbie\TwigRenderer;
 use Twig\TwigFilter;

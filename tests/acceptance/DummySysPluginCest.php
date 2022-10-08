@@ -17,11 +17,12 @@ final class DummySysPluginCest
         $I->seeElement('.dummy-plugin-render-segment');
         $I->seeElement('.dummy-plugin-render-content');
         $I->seeElement('.dummy-plugin-render-layout');
+        $I->seeElement('.dummy-plugin-app-middleware');
+        $I->seeElement('.dummy-plugin-route-middleware');
         $I->see('This is from Dummy Filter.', 'p');
         $I->see('This is from Dummy Filter Dynamic.', 'p');
         $I->see('This is from Dummy Function.', 'p');
         $I->see('This is from Dummy Test.', 'p');
-        $I->see('This is from Dummy Middleware.', 'p');
         // TODO complete tests
     }
 }

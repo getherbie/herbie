@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugin;
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -12,7 +13,7 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
 {
     protected Application $app;
 
-    protected function initApplication(string $sitePath, string $vendorPath, string $logPath): Application
+    protected function initApplication(string $appPath, string $sitePath, string $logPath): Application
     {
         if (is_file($logPath)) {
             unlink($logPath); // delete log file if exists
@@ -21,7 +22,7 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         $logger = new Logger('herbie');
         $logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
 
-        return new Application($sitePath, $vendorPath, $logger);
+        return new Application(new ApplicationPaths($appPath, $sitePath), $logger);
     }
 
     public function testTextileFilter(): void
@@ -29,8 +30,8 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         $logFile = dirname(__DIR__) . '/Fixtures/site/runtime/log/logger.log';
 
         $this->initApplication(
+            dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/site',
-            dirname(__DIR__, 3) . '/vendor',
             $logFile
         )->run();
 

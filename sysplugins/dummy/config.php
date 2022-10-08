@@ -3,6 +3,6 @@
 return [
     'apiVersion' => 2,
     'pluginName' => 'dummy',
-    'pluginClass' => __DIR__ . '/plugin.php',
+    'pluginClass' => __DIR__ . '/DummySysPlugin.php',
     'pluginPath' => __DIR__
 ];

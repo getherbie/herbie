@@ -6,17 +6,20 @@ namespace tests\integration\SysPlugins\TwigCore\Tests;
 
 use herbie\Application;
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class ReadableTest extends \Codeception\Test\Unit
 {
+    protected UnitTester $tester;
+
     protected TwigRenderer $twigRenderer;
 
-    protected function _setUp(): void
+    private function twig(): TwigRenderer
     {
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testReadableWithoutCondition(): void
@@ -24,13 +27,16 @@ final class ReadableTest extends \Codeception\Test\Unit
         $twig = '{{- readable -}}';
 
         // disabled strict variables
-        $this->twigRenderer->getTwigEnvironment()->disableStrictVariables();
-        $this->assertSame('', $this->twigRenderer->renderString($twig));
+        $twigInstance = $this->twig();
+        $twigInstance->getTwigEnvironment()->disableStrictVariables();
+        $this->assertSame('', $twigInstance->renderString($twig));
 
         // enabled strict variables
         $this->expectException(\Twig\Error\RuntimeError::class);
-        $this->twigRenderer->getTwigEnvironment()->enableStrictVariables();
-        $this->twigRenderer->renderString($twig);
+
+        $twigInstance = $this->twig();
+        $twigInstance->getTwigEnvironment()->enableStrictVariables();
+        $twigInstance->renderString($twig);
     }
 
     public function testReadableWithEmptyParam(): void
@@ -38,7 +44,7 @@ final class ReadableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '' is readable -%}readable{% else %}not readable{%- endif -%}
         TWIG;
-        $this->assertSame('not readable', $this->twigRenderer->renderString($twig));
+        $this->assertSame('not readable', $this->twig()->renderString($twig));
     }
 
     public function testReadableWithExistingAlias(): void
@@ -46,7 +52,7 @@ final class ReadableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
-        $this->assertSame('is readable', $this->twigRenderer->renderString($twig));
+        $this->assertSame('is readable', $this->twig()->renderString($twig));
     }
 
     public function testReadableWithExistingAliasWithoutPermissions(): void
@@ -54,7 +60,7 @@ final class ReadableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy-no-rights.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
-        $this->assertSame('not readable', $this->twigRenderer->renderString($twig));
+        $this->assertSame('not readable', $this->twig()->renderString($twig));
     }
 
     public function testReadableWithNotExistingAlias(): void
@@ -62,6 +68,6 @@ final class ReadableTest extends \Codeception\Test\Unit
         $twig = <<<TWIG
             {%- if '@media/dummy-xyz.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
-        $this->assertSame('not readable', $this->twigRenderer->renderString($twig));
+        $this->assertSame('not readable', $this->twig()->renderString($twig));
     }
 }

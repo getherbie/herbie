@@ -1,6 +1,7 @@
 <?php
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 
 /**
  * Inherited Methods
@@ -25,17 +26,17 @@ class UnitTester extends \Codeception\Actor
      * Define custom actions here
      */
 
-    public function initApplication(string $siteDir, string $vendorDir): Application
+    public function initApplication(string $appDir, string $siteDir, ?string $vendorDir = null): Application
     {
-        $app = new Application($siteDir, $vendorDir);
+        $app = new Application(new ApplicationPaths($appDir, $siteDir, $vendorDir));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $app->getTranslator()->init();
         return $app;
     }
 
-    public function initTwigRenderer(string $siteDir, string $vendorDir): \herbie\TwigRenderer
+    public function initTwigRenderer(string $appDir, string $siteDir, ?string $vendorDir = null): \herbie\TwigRenderer
     {
-        return $this->initApplication($siteDir, $vendorDir)->getTwigRenderer();
+        return $this->initApplication($appDir, $siteDir, $vendorDir)->getTwigRenderer();
     }
 }

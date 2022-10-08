@@ -16,8 +16,8 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 2) . '/Fixtures/site',
-            dirname(__DIR__, 4) . '/vendor'
+            dirname(__DIR__, 4),
+            dirname(__DIR__, 2) . '/Fixtures/site'
         );
     }
 

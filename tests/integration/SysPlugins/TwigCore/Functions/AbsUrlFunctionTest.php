@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugins\TwigCore\Functions;
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
 final class AbsUrlFunctionTest extends \Codeception\Test\Unit
@@ -14,7 +15,7 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
     protected function _setUp(): void
     {
         $_SERVER['SCRIPT_NAME'] = '';
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
+        $app = new Application(new ApplicationPaths(dirname(__DIR__, 5), dirname(__DIR__, 3) . '/Fixtures/site'));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $this->twigRenderer = $app->getTwigRenderer();

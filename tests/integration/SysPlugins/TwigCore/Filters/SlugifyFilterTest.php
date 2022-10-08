@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\integration\SysPlugins\TwigCore\Filters;
 
 use herbie\Application;
+use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
 final class SlugifyFilterTest extends \Codeception\Test\Unit
@@ -13,7 +14,7 @@ final class SlugifyFilterTest extends \Codeception\Test\Unit
 
     protected function _setUp(): void
     {
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
+        $app = new Application(new ApplicationPaths(dirname(__DIR__, 5), dirname(__DIR__, 3) . '/Fixtures/site'));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $this->twigRenderer = $app->getTwigRenderer();

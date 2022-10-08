@@ -4,47 +4,42 @@ declare(strict_types=1);
 
 namespace tests\integration\SysPlugins\TwigCore\Functions;
 
-use herbie\Application;
+use herbie\TwigRenderer;
+use UnitTester;
 
 final class TranslateFunctionTest extends \Codeception\Test\Unit
 {
-    protected Application $app;
+    protected UnitTester $tester;
 
-    protected function _setUp(): void
+    private function twig(): TwigRenderer
     {
-        $app = new Application(dirname(__DIR__, 3) . '/Fixtures/site', dirname(__DIR__, 5) . '/vendor');
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $app->getTranslator()->init();
-        $this->app = $app;
-    }
-
-    private function _render(string $twig): string
-    {
-        return $this->app->getTwigRenderer()->renderString($twig);
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testTranslateWithWrongParams(): void
     {
-        $this->assertSame('', $this->_render('{{ translate() }}'));
-        $this->assertSame('', $this->_render('{{ translate("", "", params={a:1,b:2}) }}'));
-        $this->assertSame('', $this->_render('{{ translate("app") }}'));
-        $this->assertSame('test', $this->_render('{{ translate("", "test") }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ translate() }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ translate("", "", params={a:1,b:2}) }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ translate("app") }}'));
+        $this->assertSame('test', $this->twig()->renderString('{{ translate("", "test") }}'));
     }
 
     public function testTranslateFromApp(): void
     {
-        $this->assertSame('Herbie CMS ist grossartig!', $this->_render('{{ translate("app", "Herbie is great!") }}'));
+        $this->assertSame('Herbie CMS ist grossartig!', $this->twig()->renderString('{{ translate("app", "Herbie is great!") }}'));
     }
 
     public function testTranslateFromPlugin(): void
     {
-        $this->assertSame('Dummy-Übersetzung', $this->_render('{{ translate("dummy", "Dummy translation") }}'));
+        $this->assertSame('Dummy-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "Dummy translation") }}'));
     }
 
     public function testTranslateFromPluginWithParams(): void
     {
-        $actual = $this->_render(
+        $actual = $this->twig()->renderString(
             '{{ translate("dummy", "Dummy translation with params {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
         );
         $this->assertSame('Dummy-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);

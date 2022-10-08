@@ -3,7 +3,7 @@
 return [
     'apiVersion' => 2,
     'pluginName' => 'imagine',
-    'pluginClass' => __DIR__ . '/plugin.php',
+    'pluginClass' => __DIR__ . '/ImagineSysPlugin.php',
     'pluginPath' => __DIR__,
     'cachePath' => 'cache/imagine',
     'filterSets' => [
