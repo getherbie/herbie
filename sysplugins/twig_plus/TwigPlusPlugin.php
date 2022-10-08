@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin;
-
-require_once __DIR__ . '/TwigPlusExtension.php';
+namespace herbie\sysplugin\twig_plus;
 
 use herbie\Environment;
 use herbie\EventInterface;

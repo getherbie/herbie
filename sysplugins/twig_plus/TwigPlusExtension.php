@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin;
+namespace herbie\sysplugin\twig_plus;
 
 use herbie\Environment;
 use herbie\Page;

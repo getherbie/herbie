@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin;
+namespace herbie\sysplugin\textile;
 
 use herbie\Config;
 use herbie\FilterInterface;

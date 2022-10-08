@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin;
+namespace herbie\sysplugin\imagine;
 
 use herbie\Alias;
 use herbie\Config;

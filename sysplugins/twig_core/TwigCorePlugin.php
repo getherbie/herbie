@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin;
-
-require_once __DIR__ . '/TwigCoreExtension.php';
+namespace herbie\sysplugin\twig_core;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
