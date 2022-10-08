@@ -21,7 +21,7 @@ return [
         'web' => 'WEB_URL/',
     ],
     'fileExtensions' => [
-        'layouts' => 'html',
+        'layouts' => 'twig',
         'media' => [
             'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
             'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
