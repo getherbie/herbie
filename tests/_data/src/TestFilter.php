@@ -1,6 +1,6 @@
 <?php
 
-namespace example;
+namespace tests\_data\src;
 
 class TestFilter
 {

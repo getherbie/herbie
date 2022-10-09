@@ -1,6 +1,6 @@
 <?php
 
-namespace example\site\extend\events;
+namespace tests\_data\site\extend\events;
 
 use herbie\EventInterface;
 use herbie\TwigRenderer;

@@ -97,6 +97,13 @@ final class PluginManager
         ));
 
         $this->eventManager->trigger('onPluginsAttached', $this);
+
+        $this->loadPlugin(new InstallablePlugin(
+            'virtual_last_plugin',
+            __DIR__,
+            __DIR__ . '/VirtualLastPlugin.php',
+            'virtual',
+        ));
     }
 
     private function getInstallablePlugins(array $enabledPlugins, string $type): array

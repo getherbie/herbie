@@ -12,6 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class MiddlewareDispatcher implements RequestHandlerInterface
 {
     /** @var MiddlewareInterface[]|string[] */
+    private array $composedMiddlewares;
     private array $middlewares;
 
     /**
@@ -19,7 +20,8 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
      */
     public function __construct(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route)
     {
-        $this->middlewares = $this->composeMiddlewares(
+        $this->middlewares = array_merge($prependMiddlewares, $appMiddlewares, $routeMiddlewares, $appendMiddlewares);
+        $this->composedMiddlewares = $this->composeMiddlewares(
             $prependMiddlewares,
             $appMiddlewares,
             $routeMiddlewares,
@@ -36,13 +38,33 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();
-        next($this->middlewares);
+        next($this->composedMiddlewares);
         return $current->process($request, $this);
     }
 
+    public function getInfo(): array
+    {
+        $info = [];
+        foreach ($this->middlewares as $middleware) {
+            if (is_array($middleware) && (is_string($middleware[0]))) {
+                $type = 'ROUTE';
+                $callable = get_callable_name($middleware[1]);
+            } else {
+                $type = 'APP';
+                $callable = get_callable_name($middleware);
+            }
+            $info[] = [
+                $type,
+                $callable[0],
+                $callable[1],
+            ];
+        }        
+        return $info;
+    }
+    
     private function getMiddleware(): MiddlewareInterface
     {
-        $current = current($this->middlewares);
+        $current = current($this->composedMiddlewares);
 
         if (is_string($current)) {
             $current = new $current();
