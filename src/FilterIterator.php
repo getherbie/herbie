@@ -31,6 +31,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * @param mixed|null $context
      * @return mixed|null
      */
+    #[\ReturnTypeWillChange]
     public function next($context = null, array $params = [], ?FilterInterface $filters = null)
     {
         if (is_null($context) || is_null($filters)) {
@@ -53,6 +54,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * @return mixed Can return any type.
      * @since 5.0.0
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->items[$this->position];
@@ -64,6 +66,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * @return mixed scalar on success, or null on failure.
      * @since 5.0.0
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -76,6 +79,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * Returns true on success or false on failure.
      * @since 5.0.0
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->items[$this->position]);
@@ -87,6 +91,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * @return void Any returned value is ignored.
      * @since 5.0.0
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
@@ -101,6 +106,7 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
      * The return value is cast to an integer.
      * @since 5.1.0
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->items);

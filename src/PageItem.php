@@ -20,6 +20,7 @@ final class PageItem implements \ArrayAccess
      * @param mixed $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);

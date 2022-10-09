@@ -172,3 +172,52 @@ function handle_internal_webserver_assets($file): void
         exit;
     }
 }
+
+/**
+ * @see https://stackoverflow.com/questions/7153000/get-class-name-from-file
+ */
+function get_fully_qualified_class_name(string $file): string
+{
+    $tokens = token_get_all(file_get_contents($file));
+    $tokensCount = count($tokens);
+
+    $className = '';
+    $namespaceName = '';
+
+    for ($i = 0; $i < $tokensCount; $i++) {
+        // namespace token
+        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_NAMESPACE')) {
+            for ($j = $i + 1; $j < $tokensCount; $j++) {
+                if ($tokens[$j][0] === ';') {
+                    break;
+                }
+                $tokenName = token_name($tokens[$j][0]);
+                if ($tokenName === 'T_WHITESPACE') {
+                    continue;
+                }
+                if (in_array($tokenName, ['T_NAME_QUALIFIED', 'T_NS_SEPARATOR', 'T_STRING'])) {
+                    $namespaceName .= $tokens[$j][1];
+                }
+            }
+        }
+        // class token
+        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_CLASS')) {
+            for ($j = $i + 1; $j < count($tokens); $j++) {
+                $tokenName = token_name($tokens[$j][0]);
+                if ($tokenName === 'T_WHITESPACE') {
+                    continue;
+                }
+                if ($tokenName === 'T_STRING') {
+                    $className = $tokens[$j][1];
+                    break;
+                }
+            }
+        }
+    }
+
+    if (strlen($namespaceName) === 0) {
+        return $className;
+    }
+
+    return $namespaceName . '\\' . $className;
+}
