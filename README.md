@@ -82,12 +82,16 @@ Start PHP's internal web server.
 
     php -S localhost:9999 example/web/index.php
 
-Or, if you want to use Xdebug (3.x), start the internal web server as follows.
+Now, open `localhost:9999` with your favorite web browser.
+
+If you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
-    export XDEBUG_MODE=debug; php -S localhost:9999 example/web/index.php
+    XDEBUG_MODE=debug php -S localhost:9999 example/web/index.php
 
-Now, open `localhost:9999` with your favorite web browser.
+And if you want to have additional console output and logging information, set Herbie CMS's environment variable.
+
+    HERBIE_DEBUG=1 XDEBUG_MODE=debug php -d variables_order=EGPCS -S localhost:9999 example/web/index.php
 
 
 ## Tests

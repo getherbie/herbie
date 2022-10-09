@@ -1,10 +1,8 @@
 <?php
 
-require_once(__DIR__ . '/../../vendor/autoload.php');
+require_once(dirname(__DIR__, 2) . '/vendor/autoload.php');
 
 herbie\handle_internal_webserver_assets(__FILE__);
-
-define('HERBIE_DEBUG', true);
 
 use example\CustomHeader;
 use example\TestFilter;
