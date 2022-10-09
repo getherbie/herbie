@@ -23,14 +23,14 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig',
         'media' => [
-            'images' => 'jpg,gif,png,svg,ico,tiff,bmp,psd,ai',
-            'documents' => 'md,pdf,doc,docx,xls,xlsx,ppt,csv,rtf',
-            'archives' => 'zip,tar,gz,gzip,tgz',
-            'code' => 'js,css,html,xml,json',
-            'videos' => 'mov,avi,ogg,ogv,webm,flv,swf,mp4,mv4',
-            'audio' => 'mp3,m4a,wav,aiff,midi'
+            'images' => 'ai,bmp,gif,ico,jpg,png,psd,svg,tiff',
+            'documents' => 'csv,doc,docx,md,pdf,ppt,rtf,xls,xlsx',
+            'archives' => 'gz,gzip,tar,tgz,zip',
+            'code' => 'css,html,js,json,xml',
+            'videos' => 'avi,flv,mov,mp4,mv4,ogg,ogv,swf,webm',
+            'audio' => 'aiff,m4a,midi,mp3,wav'
         ],
-        'pages' => 'txt,md,markdown,textile,htm,html,rss,rst,xml',
+        'pages' => 'htm,html,markdown,md,rss,rst,textile,txt,xml',
     ],
     'components' => [
         'dataRepository' => [
@@ -45,13 +45,13 @@ return [
         ]
     ],
     'twig' => [
-        'debug' => false,
-        'charset' => 'UTF-8',
-        'cache' => false,
-        'strictVariables' => false,
         'autoescape' => 'html',
-        'functionsPath' => 'SITE_PATH/extend/twig/functions',
+        'cache' => false,
+        'charset' => 'UTF-8',
+        'debug' => false,
         'filtersPath' => 'SITE_PATH/extend/twig/filters',
+        'functionsPath' => 'SITE_PATH/extend/twig/functions',
+        'strictVariables' => false,
         'testsPath' => 'SITE_PATH/extend/twig/tests'
     ],
     'plugins' => [],
