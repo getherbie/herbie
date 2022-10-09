@@ -6,20 +6,24 @@
 
 # Herbie CMS
 
-Herbie CMS is a simple flat-file Content Management System based on human-readable text files.
+Herbie CMS is a Simple, Modern, Fast and Highly Customizable Flat-File Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other Human-Readable Text Files.
 
 ## About Herbie CMS
 
 With Herbie CMS you are able to create a fully functional website or blog in a short amount of time and with little effort.
 
-Herbie CMS is based on proven libraries and concepts:
+Herbie CMS is powered by proven libraries:
 
 * [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
 * [Twig](https://twig.symfony.com) Template Engine for rendering layouts and extending Herbie CMS's core
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
-* [Zend-EventManager](https://docs.zendframework.com/zend-eventmanager/)
-* PHP Middlewares
+
+Herbie CMS is highly customizable, thanks to:
+
+* Application and Route Middlewares
+* Event Handlers and Interception Filters
+* Twig Plugins with Filters, Functions and Tests
 
 Herbie CMS supports the following PHP Standards Recommendations:
 
@@ -34,8 +38,12 @@ Herbie CMS supports the following PHP Standards Recommendations:
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 
+Herbie CMS is well tested, thanks to:
 
-## Install
+- Codeception with their Unit, Integration and Acceptance Tests
+
+
+## Installation
 
 ### Composer 
 
@@ -96,10 +104,6 @@ And if you want to have additional console output and logging information, set H
 
 ## Tests
 
-Run acceptance tests
-
-    php vendor/bin/codecept run acceptance
-
 Run unit tests
 
     php vendor/bin/codecept run unit
@@ -108,6 +112,10 @@ Run integration tests
 
     php vendor/bin/codecept run integration
 
+Run acceptance tests
+
+    php vendor/bin/codecept run acceptance
+
 Run all tests
 
     php vendor/bin/codecept run
@@ -115,4 +123,4 @@ Run all tests
 
 ## More Information
 
-More information see <https://herbie.tebe.ch>.
+For more information, see <https://herbie.tebe.ch>.
