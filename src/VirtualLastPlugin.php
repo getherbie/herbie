@@ -25,10 +25,11 @@ final class VirtualLastPlugin extends Plugin
             ['herbie_info', [$this, 'herbieInfo'], ['is_safe' => ['html']]],
         ];
     }
-    
+
     public function herbieInfo(string $template = '@snippet/herbie_info.twig'): string
     {
         $context = [
+            'config' => $this->config->flatten(),
             'constants' => defined_constants('herbie'),
             'classes' => defined_classes('herbie'),
             'functions' => defined_functions('herbie'),

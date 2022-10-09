@@ -25,8 +25,8 @@ final class DownloadMiddleware implements MiddlewareInterface
     public function __construct(Alias $alias, Config $config)
     {
         $this->alias = $alias;
-        $this->baseUrl = rtrim($config->get('baseUrl'), '/') . '/';
-        $this->storagePath = rtrim($config->get('storagePath'), '/') . '/';
+        $this->baseUrl = rtrim($config->getAsString('baseUrl'), '/') . '/';
+        $this->storagePath = rtrim($config->getAsString('storagePath'), '/') . '/';
     }
 
     /**

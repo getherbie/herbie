@@ -52,7 +52,7 @@ return [
             'charset' => 'UTF-8',
             'debug' => false,
             'strictVariables' => false,
-        ],        
+        ],
     ],
     'plugins' => [],
     'enabledPlugins' => '',

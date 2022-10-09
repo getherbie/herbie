@@ -40,7 +40,7 @@ final class TextileSysPlugin extends Plugin
      */
     public function twigFilters(): array
     {
-        if (empty($this->config->get('enableTwigFilter'))) {
+        if (!$this->config->getAsBool('enableTwigFilter')) {
             return [];
         }
         return [
@@ -53,7 +53,7 @@ final class TextileSysPlugin extends Plugin
      */
     public function twigFunctions(): array
     {
-        if (empty($this->config->get('enableTwigFunction'))) {
+        if (!$this->config->getAsBool('enableTwigFunction')) {
             return [];
         }
         return [

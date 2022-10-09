@@ -1,14 +1,16 @@
 <div class="herbie-info">
     <h1 class="herbie-info-h1">Herbie Info</h1>
-
+    
     <h2 class="herbie-info-h2">Constants ({{ constants|length }})</h2>
     <table class="herbie-info-table">
         <tr>
             <th>Name</th>
+            <th>Value</th>
         </tr>
-        {% for constant, _ in constants %}
+        {% for constant, value in constants %}
             <tr>
                 <td>{{ loop.index }}. {{ constant }}</td>
+                <td>{{ value }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -52,4 +54,18 @@
             </tr>
         {% endfor %}
     </table>
+
+    <h2 class="herbie-info-h2">Config ({{ config|length }})</h2>
+    <table class="herbie-info-table">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in config %}
+            <tr>
+                <td>{{ loop.index }}. {{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
+    </table>    
 </div>

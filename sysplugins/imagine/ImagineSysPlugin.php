@@ -30,8 +30,8 @@ final class ImagineSysPlugin extends Plugin
     {
         $this->alias = $alias;
         $this->config = $config;
-        $this->basePath = rtrim($config->get('urls.web'), '/') . '/';
-        $this->cachePath = $this->config->get('plugins.imagine.cachePath');
+        $this->basePath = rtrim($config->getAsString('urls.web'), '/') . '/';
+        $this->cachePath = $this->config->getAsString('plugins.imagine.cachePath');
     }
 
     /**
@@ -140,7 +140,7 @@ final class ImagineSysPlugin extends Plugin
     {
         $path = $this->alias->get('@media/' . $relpath);
 
-        $filterConfig = $this->config->get("plugins.imagine.filterSets.{$filter}");
+        $filterConfig = $this->config->getAsArray("plugins.imagine.filterSets.{$filter}");
         $cachePath = $this->resolveCachePath($relpath, $filter);
 
         if (!empty($filterConfig['test'])) {

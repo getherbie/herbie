@@ -8,6 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugGeneratorInterface;
 use herbie\Alias;
 use herbie\Assets;
+use herbie\Config;
 use herbie\Environment;
 use herbie\PageTree;
 use herbie\PageTreeFilterIterator;
@@ -220,10 +221,10 @@ final class TwigCoreExtension extends AbstractExtension
         $attribs['alt'] = $attribs['alt'] ?? '';
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
-        // get config from download middleware
-        $config = $context['config']['components']['downloadMiddleware'];
-        $baseUrl = rtrim($config['baseUrl'], '/') . '/';
-        $storagePath = rtrim($config['storagePath'], '/') . '/';
+        /** @var Config $config from download middleware */
+        $config = $context['config'];
+        $baseUrl = rtrim($config->getAsString('components.downloadMiddleware.baseUrl'), '/') . '/';
+        $storagePath = rtrim($config->getAsString('components.downloadMiddleware.storagePath'), '/') . '/';
 
         // combine url and path
         $href = $baseUrl . $path;
