@@ -65,19 +65,19 @@ final class PluginManager
         $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
 
         // system plugins
-        foreach ($this->getPlugins($enabledSystemPlugins, 'system') as $plugin) {
+        foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onSystemPluginsAttached', $this);
 
         // composer plugins
-        foreach ($this->getPlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
+        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onComposerPluginsAttached', $this);
 
         // local plugins
-        foreach ($this->getPlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
+        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onLocalPluginsAttached', $this);
@@ -99,7 +99,7 @@ final class PluginManager
         $this->eventManager->trigger('onPluginsAttached', $this);
     }
 
-    private function getPlugins(array $enabledPlugins, string $type): array
+    private function getInstallablePlugins(array $enabledPlugins, string $type): array
     {
         $plugins = [];
         foreach ($enabledPlugins as $pluginKey) {
@@ -149,8 +149,7 @@ final class PluginManager
             $this->routeMiddlewares[] = $routeMiddleware;
         }
 
-        $twigFilters = $plugin->twigFilters();
-        foreach ($twigFilters as $twigFilter) {
+        foreach ($plugin->twigFilters() as $twigFilter) {
             if ($twigFilter instanceof \Twig\TwigFilter) {
                 $this->addTwigFilter($twigFilter);
             } elseif ($twigFilter instanceof \herbie\TwigFilter) {
