@@ -8,10 +8,6 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
-    'twig' => [
-        'debug' => true,
-        'strictVariables' => false,
-    ],
     'enabledPlugins' => 'simplecontact,simplesearch',
     'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
     'components' => [
@@ -24,6 +20,9 @@ return [
                 ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
                 ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
             ]
-        ]
+        ],
+        'twigRenderer' => [
+            'debug' => true
+        ],        
     ],
 ];

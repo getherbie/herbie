@@ -19,7 +19,7 @@ final class Config
     /**
      * Get value by using dot notation for nested arrays.
      *
-     * @example $value = $config->get('twig.extend.functions');
+     * @example $value = $config->get('example.node.value');
      *
      * @param callable|mixed $default
      * @return mixed

@@ -14,6 +14,9 @@ return [
         'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
         'themes' => 'SITE_PATH/themes',
+        'twigFilters' => 'SITE_PATH/extend/twig/filters',
+        'twigFunctions' => 'SITE_PATH/extend/twig/functions',
+        'twigTests' => 'SITE_PATH/extend/twig/tests',
         'web' => 'WEB_PATH'
     ],
     'urls' => [
@@ -42,17 +45,14 @@ return [
         ],
         'urlMatcher' => [
             'rules' => []
-        ]
-    ],
-    'twig' => [
-        'autoescape' => 'html',
-        'cache' => false,
-        'charset' => 'UTF-8',
-        'debug' => false,
-        'filtersPath' => 'SITE_PATH/extend/twig/filters',
-        'functionsPath' => 'SITE_PATH/extend/twig/functions',
-        'strictVariables' => false,
-        'testsPath' => 'SITE_PATH/extend/twig/tests'
+        ],
+        'twigRenderer' => [
+            'autoescape' => 'html',
+            'cache' => false,
+            'charset' => 'UTF-8',
+            'debug' => false,
+            'strictVariables' => false,
+        ],        
     ],
     'plugins' => [],
     'enabledPlugins' => '',

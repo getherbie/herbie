@@ -8,8 +8,10 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
-    'twig' => [
-        'debug' => true
+    'components' => [
+        'twigRenderer' => [
+            'debug' => true
+        ],
     ],
     'enabledPlugins' => '',
     'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',

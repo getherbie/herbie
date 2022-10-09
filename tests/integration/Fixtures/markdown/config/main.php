@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'twig' => [
-        'debug' => true,
+    'components' => [
+        'twigRenderer' => [
+            'debug' => true,
+        ],
     ],
     'enabledSysPlugins' => 'twig_core,twig_plus,markdown',
     'plugins' => [
