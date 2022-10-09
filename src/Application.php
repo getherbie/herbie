@@ -74,9 +74,7 @@ final class Application
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
         $this->container = (new ContainerBuilder($this, $cache, $logger))->build();
-
-        $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
-
+        
         if (!is_dir($logDir)) {
             $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
         }
