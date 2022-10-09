@@ -41,7 +41,7 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/markdown'
         );
-        if ($app->getConfig()->getAsBool('twig.debug') === true) {
+        if ($app->getConfig()->getAsBool('components.twigRenderer.debug') === true) {
             $this->expectException(\Error::class);
         } else {
             $this->expectException(\Twig\Error\SyntaxError::class);
@@ -63,7 +63,7 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/markdown'
         );
-        $isDebug = $app->getConfig()->getAsBool('twig.debug');
+        $isDebug = $app->getConfig()->getAsBool('components.twigRenderer.debug');
         if ($isDebug === true) {
             $this->expectException(\Error::class);
         } else {
