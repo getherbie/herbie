@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Closure;
 use Composer\InstalledVersions;
 
 function camelize(string $input, string $separator = '_'): string
@@ -220,4 +221,78 @@ function get_fully_qualified_class_name(string $file): string
     }
 
     return $namespaceName . '\\' . $className;
+}
+
+/**
+ * @phpstan-return array<int,string>
+ */
+function defined_classes(string $prefix = ''): array
+{
+    $classes = [];
+    foreach (get_declared_classes() as $class) {
+        if ((strlen($prefix) > 0) && (stripos($class, $prefix) !== 0)) {
+            continue;
+        }        
+        $classes[] = $class;
+    }
+    sort($classes);
+    return $classes;
+}
+
+/**
+ * @phpstan-return array<string,string>
+ */
+function defined_constants(string $prefix = ''): array
+{
+    $constants = [];
+    foreach (get_defined_constants() as $key => $value) {
+        if ((strlen($prefix) > 0) && (stripos($key, $prefix) !== 0)) {
+            continue;
+        }
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
+        $constants[$key] = $value;
+    }
+    ksort($constants);
+    return $constants;
+}
+
+/**
+ * @phpstan-return array<int,string>
+ */
+function defined_functions(string $prefix = ''): array
+{
+    $functions = [];
+    foreach (get_defined_functions()['user'] as $function) {
+        if ((strlen($prefix) > 0) && (stripos($function, $prefix) !== 0)) {
+            continue;
+        }
+        $functions[] = $function;
+    }
+    sort($functions);
+    return $functions;
+}
+
+/**
+ * @see https://stackoverflow.com/a/68113840/6161354
+ */
+function get_callable_name($callable): array
+{
+    switch (true) {
+        case is_string($callable) && strpos($callable, '::'):
+            return ['static', $callable];
+        case is_string($callable):
+            return ['function', $callable];
+        case is_array($callable) && is_object($callable[0]):
+            return ['method', get_class($callable[0])  . '->' . $callable[1]];
+        case is_array($callable):
+            return ['static', $callable[0]  . '::' . $callable[1]];
+        case $callable instanceof Closure:
+            return ['closure', null];
+        case is_object($callable):
+            return ['invokable', get_class($callable)];
+        default:
+            return ['unknown', null];
+    }
 }

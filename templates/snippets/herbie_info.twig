@@ -1,0 +1,55 @@
+<div class="herbie-info">
+    <h1 class="herbie-info-h1">Herbie Info</h1>
+
+    <h2 class="herbie-info-h2">Constants ({{ constants|length }})</h2>
+    <table class="herbie-info-table">
+        <tr>
+            <th>Name</th>
+        </tr>
+        {% for constant, _ in constants %}
+            <tr>
+                <td>{{ loop.index }}. {{ constant }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 class="herbie-info-h2">Classes ({{ classes|length }})</h2>
+    <table class="herbie-info-table">
+        <tr>
+            <th>Name</th>
+        </tr>
+        {% for class in classes %}
+            <tr>
+                <td>{{ loop.index }}. {{ class }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 class="herbie-info-h2">Functions ({{ functions|length }})</h2>
+    <table class="herbie-info-table">
+        <tr>
+            <th>Name</th>
+        </tr>
+        {% for function in functions %}
+            <tr>
+                <td>{{ loop.index }}. {{ function }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 class="herbie-info-h2">Middlewares ({{ middlewares|length }})</h2>
+    <table class="herbie-info-table">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+        </tr>
+        {% for middleware in middlewares %}
+            <tr>
+                <td>{{ loop.index }}. {{ middleware[2] }}</td>
+                <td>{{ middleware[0] }}</td>
+                <td>{{ middleware[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>

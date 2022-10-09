@@ -1,6 +1,6 @@
 <?php
 
-namespace example;
+namespace tests\_data\src;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

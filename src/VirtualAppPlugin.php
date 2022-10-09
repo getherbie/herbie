@@ -23,7 +23,12 @@ final class VirtualAppPlugin extends Plugin
         return $this->application->getFilters();
     }
 
-    public function middlewares(): array
+    public function appMiddlewares(): array
+    {
+        return []; // TODO
+    }
+
+    public function routeMiddlewares(): array
     {
         return []; // TODO
     }

@@ -14,7 +14,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-defined('HERBIE_DEBUG') or define('HERBIE_DEBUG', false);
+define('HERBIE_DEBUG', !empty($_ENV['HERBIE_DEBUG']));
 define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
@@ -68,7 +68,7 @@ final class Application
     {
         $logDir = $this->appPaths->getSite('/runtime/log');
 
-        error_reporting(E_ALL);
+        error_reporting(HERBIE_DEBUG ? E_ALL : E_ERROR);
         ini_set('display_errors', HERBIE_DEBUG ? '1' : '0'); // @phpstan-ignore-line
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));

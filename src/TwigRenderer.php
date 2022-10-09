@@ -64,7 +64,7 @@ final class TwigRenderer
         $loader = $this->getTwigFilesystemLoader();
 
         $cache = false;
-        if (!empty($this->config['twig']['cache'])) {
+        if (!empty($this->config['components']['twigRenderer']['cache'])) {
             $cachePath = $this->config['paths']['site'] . '/runtime/cache/twig';
             if (!is_dir($cachePath)) {
                 throw SystemException::directoryNotExist($cachePath);
@@ -74,16 +74,16 @@ final class TwigRenderer
 
         // see \Twig\Environment default options
         $twigOptions = [
-            'autoescape'       => $this->config['twig']['autoescape'] ?? 'html',
+            'autoescape'       => $this->config['components']['twigRenderer']['autoescape'] ?? 'html',
             'cache'            => $cache,
-            'charset'          => $this->config['twig']['charset'] ?? 'UTF-8',
-            'debug'            => $this->config['twig']['debug'] ?? false,
-            'strict_variables' => $this->config['twig']['strictVariables'] ?? false,
+            'charset'          => $this->config['components']['twigRenderer']['charset'] ?? 'UTF-8',
+            'debug'            => $this->config['components']['twigRenderer']['debug'] ?? false,
+            'strict_variables' => $this->config['components']['twigRenderer']['strictVariables'] ?? false,
         ];
 
         $this->twig = new TwigEnvironment($loader, $twigOptions);
 
-        if (!empty($this->config['twig']['debug'])) {
+        if (!empty($this->config['components']['twigRenderer']['debug'])) {
             $this->twig->addExtension(new DebugExtension());
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace example\site\extend\filters;
+namespace tests\_data\site\extend\filters;
 
 use herbie\FilterInterface;
 
