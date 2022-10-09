@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\_data\site\extend\twig\functions;
+namespace tests\_data\site\extend\twig_functions;
 
 use Twig\TwigFunction;
 
