@@ -7,6 +7,7 @@ namespace herbie\sysplugin\twig_plus;
 use herbie\Environment;
 use herbie\Page;
 use herbie\PageItem;
+use herbie\PageList;
 use herbie\PageRepositoryInterface;
 use herbie\PageTree;
 use herbie\PageTreeFilterCallback;

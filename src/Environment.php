@@ -236,7 +236,7 @@ final class Environment
         }
 
         $pathInfo = substr($requestUri, strlen($baseUrl));
-        if ((false === $pathInfo || '' === $pathInfo)) {
+        if (!is_string($pathInfo) || ('' === $pathInfo)) {
             return '/';
         } elseif ('' === $baseUrl) {
             return $requestUri;

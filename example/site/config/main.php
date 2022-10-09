@@ -16,13 +16,22 @@ return [
                 ['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
                 ['blog/tag/{tag}', 'blog'],
-                ['blog/{year}/{month}/{day}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}', 'day' => '[0-9]{2}']],
-                ['blog/{year}/{month}', 'blog', ['year' => '[0-9]{4}', 'month' => '[0-9]{2}']],
-                ['blog/{year}', 'blog', ['year' => '[0-9]{4}']]
+                ['blog/{year}/{month}/{day}', 'blog', [
+                    'year' => '[0-9]{4}',
+                    'month' => '[0-9]{2}',
+                    'day' => '[0-9]{2}'
+                ]],
+                ['blog/{year}/{month}', 'blog', [
+                    'year' => '[0-9]{4}',
+                    'month' => '[0-9]{2}'
+                ]],
+                ['blog/{year}', 'blog', [
+                    'year' => '[0-9]{4}'
+                ]]
             ]
         ],
         'twigRenderer' => [
             'debug' => true
-        ],        
+        ],
     ],
 ];

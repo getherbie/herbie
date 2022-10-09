@@ -155,7 +155,7 @@ final class TwigRenderer
     {
         $theme = trim($this->config->getAsString('theme'));
         $themePath = trim($this->config->getAsString('paths.themes'));
-        
+
         $paths = [];
         if ($theme === '') {
             $paths[] = $themePath;

@@ -7,21 +7,18 @@ namespace herbie\sysplugin\rest;
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
-use Psr\Log\LoggerInterface;
 
 final class RestSysPlugin extends Plugin
 {
     private Config $config;
-    private LoggerInterface $logger;
     private bool $parserClassExists;
 
     /**
      * RestSysPlugin constructor.
      */
-    public function __construct(Config $config, LoggerInterface $logger)
+    public function __construct(Config $config)
     {
         $this->config = $config->getAsConfig('plugins.rest');
-        $this->logger = $logger;
         $this->parserClassExists = class_exists('\\Doctrine\\RST\\Parser');
     }
 

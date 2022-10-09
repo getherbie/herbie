@@ -37,7 +37,6 @@ $app = new Application(
     )
 );
 
-
 // App Middlewares
 $app->addAppMiddleware(ResponseTimeMiddleware::class);
 $app->addAppMiddleware(new CustomHeader('one'));

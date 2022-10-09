@@ -44,7 +44,7 @@ final class NullCache implements CacheInterface
     /**
      * @param iterable $keys
      * @param null $default
-     * @return array|iterable
+     * @return iterable
      */
     public function getMultiple($keys, $default = null)
     {

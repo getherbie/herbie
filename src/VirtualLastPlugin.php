@@ -18,7 +18,7 @@ final class VirtualLastPlugin extends Plugin
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->twigRenderer = $twigRenderer;
     }
-    
+
     public function twigFunctions(): array
     {
         return [
@@ -37,5 +37,4 @@ final class VirtualLastPlugin extends Plugin
         ];
         return $this->twigRenderer->renderTemplate($template, $context);
     }
-
 }

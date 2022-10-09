@@ -56,7 +56,8 @@ function render_exception(\Throwable $exception): string
 function explode_list(string $list, string $delim = ','): array
 {
     $list = trim($list);
-    if (strlen($list) === 0) {
+    $delim = trim($delim);
+    if ((strlen($list) === 0) || (strlen($delim) === 0)) {
         return [];
     }
     $values = explode($delim, $list);
@@ -144,7 +145,7 @@ function recursive_array_replace($find, $replace, $array)
     return $newArray;
 }
 
-function handle_internal_webserver_assets($file): void
+function handle_internal_webserver_assets(string $file): void
 {
     if (php_sapi_name() !== 'cli-server') {
         return;
@@ -232,7 +233,7 @@ function defined_classes(string $prefix = ''): array
     foreach (get_declared_classes() as $class) {
         if ((strlen($prefix) > 0) && (stripos($class, $prefix) !== 0)) {
             continue;
-        }        
+        }
         $classes[] = $class;
     }
     sort($classes);
@@ -275,6 +276,8 @@ function defined_functions(string $prefix = ''): array
 }
 
 /**
+ * @param string|array|Closure|object $callable
+ * @return array<int, string|null>
  * @see https://stackoverflow.com/a/68113840/6161354
  */
 function get_callable_name($callable): array
