@@ -11,6 +11,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class PageResolverMiddleware implements MiddlewareInterface
 {
+    public const HERBIE_REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
+    public const HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
+    public const HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
+
     private Environment $environment;
 
     private UrlMatcher $urlMatcher;
@@ -45,9 +49,9 @@ final class PageResolverMiddleware implements MiddlewareInterface
         }
 
         $request = $request
-            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
-            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
-            ->withAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
+            ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
+            ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
+            ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
 
         return $handler->handle($request);
     }

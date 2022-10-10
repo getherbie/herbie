@@ -173,9 +173,9 @@ final class TwigRenderer
             'plugin' => $this->config->getAsString('paths.plugins'),
             'page' => $this->config->getAsString('paths.pages'),
             'site' => $this->config->getAsString('paths.site'),
-            'snippet' => HERBIE_PATH . '/templates/snippets',
-            'sysplugin' => HERBIE_PATH_SYSPLUGINS,
-            'template' => HERBIE_PATH . '/templates',
+            'snippet' => Application::getHerbiePath('/templates/snippets'),
+            'sysplugin' => Application::getHerbiePath('/sysplugins'),
+            'template' => Application::getHerbiePath('/templates'),
             'vendor' => $this->config->getAsString('paths.app') . '/vendor',
         ];
 

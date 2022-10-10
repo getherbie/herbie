@@ -43,7 +43,7 @@ final class ContainerBuilder
                 '@page' => $paths['pages'],
                 '@plugin' => $paths['plugins'],
                 '@site' => $this->app->getSitePath(),
-                '@sysplugin' => HERBIE_PATH_SYSPLUGINS,
+                '@sysplugin' => Application::getHerbiePath('/sysplugins'),
                 '@vendor' => $this->app->getVendorDir(),
                 '@web' => $paths['web'],
                 '@snippet' => $paths['app'] . '/templates/snippets'
@@ -79,7 +79,7 @@ final class ContainerBuilder
             };
 
             // default config
-            $defaultConfigPath = HERBIE_PATH . '/config/defaults.php';
+            $defaultConfigPath = Application::getHerbiePath('/config/defaults.php');
             $defaultConfig = load_php_config($defaultConfigPath, $processor);
 
             // user config
@@ -90,7 +90,7 @@ final class ContainerBuilder
             }
 
             // system plugin configs
-            $systemPluginPath = HERBIE_PATH_SYSPLUGINS;
+            $systemPluginPath = Application::getHerbiePath('/sysplugins');
             $systemPluginConfigs = load_plugin_configs($systemPluginPath, 'system', $processor);
 
             // composer plugin configs
@@ -260,7 +260,7 @@ final class ContainerBuilder
 
         $c->set(Translator::class, function (Container $c) {
             $translator = new Translator($c->get(Config::class)->get('language'));
-            $translator->addPath('app', HERBIE_PATH_MESSAGES);
+            $translator->addPath('app', Application::getHerbiePath('/messages'));
             return $translator;
         });
 

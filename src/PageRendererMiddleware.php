@@ -52,14 +52,14 @@ final class PageRendererMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page|null $page */
-        $page = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_PAGE);
+        $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
         if (is_null($page)) {
             throw HttpException::notFound($this->environment->getRoute());
         }
 
         /** @var array $routeParams */
-        $routeParams = $request->getAttribute(HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
+        $routeParams = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
 
         return $this->renderPage($page, $routeParams);
     }

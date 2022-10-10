@@ -11,29 +11,19 @@ final class HerbieInfoCest
     {
         $I->amOnPage('/herbie-info');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Herbie Info', 'h1');        
+        $I->see('Herbie Info', 'h1');
     }
-    
+
     public function testNumberAndSortingOfHerbieConstants(AcceptanceTester $I)
     {
-        $constants = [
-            'HERBIE_API_VERSION',
-            'HERBIE_DEBUG',
-            'HERBIE_PATH',
-            'HERBIE_PATH_MESSAGES',
-            'HERBIE_PATH_SYSPLUGINS',
-            'HERBIE_REQUEST_ATTRIBUTE_PAGE',
-            'HERBIE_REQUEST_ATTRIBUTE_ROUTE',
-            'HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS',
-            'HERBIE_VERSION',
-        ];        
+        $constants = [];
         $I->amOnPage('/herbie-info');
         $I->see('Constants (' . count($constants) . ')', 'h2');
         foreach ($constants as $index => $constant) {
             $I->see(($index + 1) . '. ' . $constant, 'td');
-        }        
+        }
     }
-    
+
     public function testNumberAndSortingOfHerbieFunctions(AcceptanceTester $I)
     {
         $functions = [
@@ -52,7 +42,7 @@ final class HerbieInfoCest
             'herbie\normalize_path',
             'herbie\recursive_array_replace',
             'herbie\render_exception',
-        ];        
+        ];
         $I->amOnPage('/herbie-info');
         $I->see('Functions (' . count($functions) . ')', 'h2');
         foreach ($functions as $index => $function) {

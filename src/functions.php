@@ -30,7 +30,7 @@ function normalize_path(string $path): string
  */
 function render_exception(\Throwable $exception): string
 {
-    if (HERBIE_DEBUG) {
+    if (Application::isDebug()) {
         $format = "%s [%s] in %s on line %s\n\n%s\n\nStack trace:\n%s";
         $message = sprintf(
             $format,

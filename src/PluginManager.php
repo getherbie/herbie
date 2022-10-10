@@ -140,7 +140,7 @@ final class PluginManager
 
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
-        if ($plugin->apiVersion() < HERBIE_API_VERSION) {
+        if ($plugin->apiVersion() < Application::VERSION_API) {
             return; // TODO log info
         }
 
