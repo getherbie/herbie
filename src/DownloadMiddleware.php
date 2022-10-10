@@ -84,7 +84,7 @@ final class DownloadMiddleware implements MiddlewareInterface
      */
     private function determineContentType(string $filepath): string
     {
-        $extension = pathinfo($filepath, PATHINFO_EXTENSION);
+        $extension = (string)pathinfo($filepath, PATHINFO_EXTENSION);
         switch ($extension) {
             case 'pdf':
                 return 'application/pdf';
