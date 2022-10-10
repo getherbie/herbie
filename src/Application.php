@@ -14,7 +14,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-define('HERBIE_DEBUG', !empty($_ENV['HERBIE_DEBUG']));
+define('HERBIE_DEBUG', (bool)getenv('HERBIE_DEBUG'));
 define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
 define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
