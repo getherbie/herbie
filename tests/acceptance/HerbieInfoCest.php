@@ -14,16 +14,6 @@ final class HerbieInfoCest
         $I->see('Herbie Info', 'h1');
     }
 
-    public function testNumberAndSortingOfHerbieConstants(AcceptanceTester $I)
-    {
-        $constants = [];
-        $I->amOnPage('/herbie-info');
-        $I->see('Constants (' . count($constants) . ')', 'h2');
-        foreach ($constants as $index => $constant) {
-            $I->see(($index + 1) . '. ' . $constant, 'td');
-        }
-    }
-
     public function testNumberAndSortingOfHerbieFunctions(AcceptanceTester $I)
     {
         $functions = [
@@ -45,9 +35,7 @@ final class HerbieInfoCest
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Functions (' . count($functions) . ')', 'h2');
-        foreach ($functions as $index => $function) {
-            $I->see(($index + 1) . '. ' . $function, 'td');
-        }
+        $I->see(join(',', $functions), '.herbie-info-functions');
     }
 
     public function testNumberAndSortingOfHerbieClasses(AcceptanceTester $I)
@@ -111,9 +99,7 @@ final class HerbieInfoCest
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Classes (' . count($classes) . ')', 'h2');
-        foreach ($classes as $index => $class) {
-            $I->see(($index + 1) . '. ' . $class, 'td');
-        }
+        $I->see(join(',', $classes), '.herbie-info-classes');
     }
 
     public function testNumberAndSortingOfHerbieMiddlewares(AcceptanceTester $I)
@@ -135,9 +121,7 @@ final class HerbieInfoCest
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Middlewares (' . count($middlewares) . ')', 'h2');
-        foreach ($middlewares as $index => $middleware) {
-            $I->see(($index + 1) . '. ' . $middleware, 'td');
-        }
+        $I->see(join(',', $middlewares), '.herbie-info-twig-middlewares');
     }
 
     public function testNumberAndSortingOfHerbieConfig(AcceptanceTester $I)
@@ -325,9 +309,169 @@ final class HerbieInfoCest
             'urls.web',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Config (' . count($configs) . ')', 'h2');
-        foreach ($configs as $index => $config) {
-            $I->see(($index + 1) . '. ' . $config, 'td');
-        }
+        $I->see('Configuration (' . count($configs) . ')', 'h2');
+        $I->see(join(',', $configs), '.herbie-info-config');
+    }
+
+    public function testNumberAndSortingOfHerbieTwigFilters(AcceptanceTester $I)
+    {
+        $filters = [
+            'date',
+            'date_modify',
+            'format',
+            'replace',
+            'number_format',
+            'abs',
+            'round',
+            'url_encode',
+            'json_encode',
+            'convert_encoding',
+            'title',
+            'capitalize',
+            'upper',
+            'lower',
+            'striptags',
+            'trim',
+            'nl2br',
+            'spaceless',
+            'join',
+            'split',
+            'sort',
+            'merge',
+            'batch',
+            'column',
+            'filter',
+            'map',
+            'reduce',
+            'reverse',
+            'length',
+            'slice',
+            'first',
+            'last',
+            'default',
+            'keys',
+            'escape',
+            'e',
+            'raw',
+            'filesize',
+            'slugify',
+            'strftime',
+            'visible',
+            'dummy',
+            'dummy_dynamic',
+            'imagine',
+            'markdown',
+            'rest',
+            'textile',
+            'local_reverse',
+            'my_filter2',
+            'myfilter',
+            'my_filter',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Twig Filters (' . count($filters) . ')', 'h2');
+        $I->see(join(',', $filters), '.herbie-info-twig-filters');
+    }
+    
+    public function testNumberAndSortingOfHerbieTwigFunctions(AcceptanceTester $I)
+    {
+        $functions = [
+            'max',
+            'min',
+            'range',
+            'constant',
+            'cycle',
+            'random',
+            'date',
+            'include',
+            'source',
+            'dump',
+            'add_css',
+            'add_js',
+            'file_link',
+            'image',
+            'page_link',
+            'output_css',
+            'output_js',
+            'translate',
+            'url',
+            'abs_url',
+            'mail_link',
+            'ascii_tree',
+            'body_class',
+            'breadcrumb',
+            'listing',
+            'menu',
+            'page_taxonomies',
+            'pager',
+            'pages_filtered',
+            'pages_recent',
+            'page_title',
+            'sitemap',
+            'snippet',
+            'taxonomy_archive',
+            'taxonomy_authors',
+            'taxonomy_categories',
+            'taxonomy_tags',
+            'herbie_debug',
+            'dummy',
+            'imagine',
+            'markdown',
+            'rest',
+            'textile',
+            'local_hello',
+            'myfunction',
+            'herbie_info',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Twig Functions (' . count($functions) . ')', 'h2');
+        $I->see(join(',', $functions), '.herbie-info-twig-functions');        
+    }
+    
+    public function testNumberAndSortingOfHerbieTwigTests(AcceptanceTester $I)
+    {
+        $tests = [
+            'even',
+            'odd',
+            'defined',
+            'same as',
+            'none',
+            'null',
+            'divisible by',
+            'constant',
+            'empty',
+            'iterable',
+            'readable',
+            'writable',
+            'dummy',
+            'local_odd',
+            'mytest',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Twig Tests (' . count($tests) . ')', 'h2');
+        $I->see(join(',', $tests), '.herbie-info-twig-tests');
+    }
+    
+    public function testNumberAndSortingOfHerbieFilters(AcceptanceTester $I)
+    {
+        $filters = [
+            'renderLayout',
+            'renderLayout',
+            'renderLayout',
+            'renderLayout',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderSegment',
+            'renderContent',            
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Filters (' . count($filters) . ')', 'h2');
+        $I->see(join(',', $filters), '.herbie-info-filters');        
     }
 }

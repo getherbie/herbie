@@ -98,6 +98,42 @@ final class TwigRenderer
         return $this->twig;
     }
 
+    public function getFilters(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getFilters() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
+    }
+    
+    public function getFunctions(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getFunctions() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
+    }
+    
+    public function getTests(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getTests() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
+    }
+    
     /**
      * @throws LoaderError
      * @throws RuntimeError

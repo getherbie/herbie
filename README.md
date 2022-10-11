@@ -3,14 +3,13 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/master/LICENCE.md)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 
-
 # Herbie CMS
 
-Herbie CMS is a Simple, Modern, Fast and Highly Customizable Flat-File Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other Human-Readable Text Files.
+> With Herbie CMS you create a simple but fully functional website or blog in no time and with little effort.
 
 ## About Herbie CMS
 
-With Herbie CMS you are able to create a fully functional website or blog in a short amount of time and with little effort.
+Herbie CMS is a Simple, Modern, Fast and Highly Customizable Flat-File Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other Human-Readable Text Files.
 
 Herbie CMS is powered by proven libraries:
 
@@ -40,8 +39,7 @@ Herbie CMS supports the following PHP Standards Recommendations:
 
 Herbie CMS is well tested, thanks to:
 
-- Codeception with their Unit, Integration and Acceptance Tests
-
+- [Codeception](https://codeception.com) with Unit, Integration and Acceptance Tests
 
 ## Installation
 
@@ -68,7 +66,6 @@ Or you can achieve the same by using Docker.
 
     docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
     cd myproject
-
 
 ## Development Environment
 
@@ -101,7 +98,6 @@ Hint: For this to work, Xdebug must of course be installed.
 
     XDEBUG_MODE=debug php -S localhost:9999 example/web/index.php
 
-
 ## Tests
 
 Run unit tests
@@ -119,7 +115,6 @@ Run acceptance tests
 Run all tests
 
     php vendor/bin/codecept run
-
 
 ## More Information
 
