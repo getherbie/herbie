@@ -12,9 +12,9 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
 
     public function items(): array
     {
-        return $this->items;    
+        return $this->items;
     }
-    
+
     public function insert(callable $callback): void
     {
         $this->items[] = $callback;

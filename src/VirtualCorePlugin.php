@@ -22,7 +22,7 @@ final class VirtualCorePlugin extends Plugin
             ['renderSegment', [$this, 'renderSegment']]
         ];
     }
-    
+
     public function twigFunctions(): array
     {
         return [
@@ -32,7 +32,7 @@ final class VirtualCorePlugin extends Plugin
 
     public function herbieDebug(): bool
     {
-        return Application::isDebug();        
+        return Application::isDebug();
     }
 
     public function renderSegment(string $context, array $params, FilterInterface $filter): string

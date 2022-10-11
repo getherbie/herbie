@@ -109,7 +109,7 @@ final class TwigRenderer
         }
         return $items;
     }
-    
+
     public function getFunctions(): array
     {
         $items = [];
@@ -121,7 +121,7 @@ final class TwigRenderer
         }
         return $items;
     }
-    
+
     public function getTests(): array
     {
         $items = [];
@@ -133,7 +133,7 @@ final class TwigRenderer
         }
         return $items;
     }
-    
+
     /**
      * @throws LoaderError
      * @throws RuntimeError

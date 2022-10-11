@@ -40,7 +40,7 @@ final class FilterChainManager
         }
         return $items;
     }
-    
+
     private function getFilters(string $filterName): FilterChain
     {
         if (!isset($this->filters[$filterName])) {

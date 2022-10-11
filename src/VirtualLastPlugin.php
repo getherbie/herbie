@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Http\Server\MiddlewareInterface;
-
 final class VirtualLastPlugin extends Plugin
 {
     private Config $config;
@@ -13,8 +11,12 @@ final class VirtualLastPlugin extends Plugin
     private MiddlewareDispatcher $middlewareDispatcher;
     private TwigRenderer $twigRenderer;
 
-    public function __construct(Config $config, FilterChainManager $filterChainManager, MiddlewareDispatcher $middlewareDispatcher, TwigRenderer $twigRenderer)
-    {
+    public function __construct(
+        Config $config,
+        FilterChainManager $filterChainManager,
+        MiddlewareDispatcher $middlewareDispatcher,
+        TwigRenderer $twigRenderer
+    ) {
         $this->config = $config;
         $this->filterChainManager = $filterChainManager;
         $this->middlewareDispatcher = $middlewareDispatcher;
