@@ -13,7 +13,7 @@
 
 {# render error details in debug mode only #}
 
-{% if constant('HERBIE_DEBUG') > 0 %}
+{% if herbie_debug() %}
 
     <table class="pure-table pure-table-horizontal" width="100%" style="table-layout: fixed;">
         <tr>

@@ -14,18 +14,10 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-define('HERBIE_DEBUG', !empty($_ENV['HERBIE_DEBUG']));
-define('HERBIE_REQUEST_ATTRIBUTE_PAGE', 'HERBIE_PAGE');
-define('HERBIE_REQUEST_ATTRIBUTE_ROUTE', 'HERBIE_ROUTE');
-define('HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS', 'HERBIE_ROUTE_PARAMS');
-define('HERBIE_VERSION', '2.0.0');
-define('HERBIE_API_VERSION', 2);
-define('HERBIE_PATH', dirname(__DIR__));
-define('HERBIE_PATH_MESSAGES', HERBIE_PATH . '/messages');
-define('HERBIE_PATH_SYSPLUGINS', HERBIE_PATH . '/sysplugins');
-
 final class Application
 {
+    public const VERSION_SEMVER = '2.0.0';
+    public const VERSION_API = 2;
     private array $appMiddlewares;
     private ApplicationPaths $appPaths;
     private Container $container;
@@ -68,14 +60,12 @@ final class Application
     {
         $logDir = $this->appPaths->getSite('/runtime/log');
 
-        error_reporting(HERBIE_DEBUG ? E_ALL : E_ERROR);
-        ini_set('display_errors', HERBIE_DEBUG ? '1' : '0'); // @phpstan-ignore-line
+        error_reporting(self::isDebug() ? E_ALL : E_ERROR);
+        ini_set('display_errors', self::isDebug() ? '1' : '0');
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 
         $this->container = (new ContainerBuilder($this, $cache, $logger))->build();
-
-        $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
 
         if (!is_dir($logDir)) {
             $this->getLogger()->error(sprintf('Directory "%s" does not exist', $logDir));
@@ -128,6 +118,24 @@ final class Application
         }
         header_remove('X-Powered-By'); // don't expose php
         echo $response->getBody();
+    }
+
+    public static function isDebug(): bool
+    {
+        static $debug;
+        if ($debug === null) {
+            $debug = (bool)getenv('HERBIE_DEBUG');
+        }
+        return $debug;
+    }
+
+    public static function getHerbiePath(string $append): string
+    {
+        static $herbiePath;
+        if ($herbiePath === null) {
+            $herbiePath = dirname(__DIR__);
+        }
+        return $herbiePath . $append;
     }
 
     public function getAppPath(): string

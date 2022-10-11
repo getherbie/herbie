@@ -72,16 +72,16 @@ final class Site
 
     public function getLanguage(): string
     {
-        return $this->config->get('language');
+        return $this->config->getAsString('language');
     }
 
     public function getLocale(): string
     {
-        return $this->config->get('locale');
+        return $this->config->getAsString('locale');
     }
 
     public function getCharset(): string
     {
-        return $this->config->get('charset');
+        return $this->config->getAsString('charset');
     }
 }

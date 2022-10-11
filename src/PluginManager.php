@@ -61,8 +61,8 @@ final class PluginManager
             'virtual',
         ));
 
-        $enabledSystemPlugins = explode_list($this->config->get('enabledSysPlugins'));
-        $enabledComposerOrLocalPlugins = explode_list($this->config->get('enabledPlugins'));
+        $enabledSystemPlugins = explode_list($this->config->getAsString('enabledSysPlugins'));
+        $enabledComposerOrLocalPlugins = explode_list($this->config->getAsString('enabledPlugins'));
 
         // system plugins
         foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
@@ -140,7 +140,7 @@ final class PluginManager
 
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
-        if ($plugin->apiVersion() < HERBIE_API_VERSION) {
+        if ($plugin->apiVersion() < Application::VERSION_API) {
             return; // TODO log info
         }
 

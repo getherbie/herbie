@@ -14,9 +14,9 @@ return [
         'plugins' => 'SITE_PATH/extend/plugins',
         'site' => 'SITE_PATH',
         'themes' => 'SITE_PATH/themes',
-        'twigFilters' => 'SITE_PATH/extend/twig/filters',
-        'twigFunctions' => 'SITE_PATH/extend/twig/functions',
-        'twigTests' => 'SITE_PATH/extend/twig/tests',
+        'twigFilters' => 'SITE_PATH/extend/twig_filters',
+        'twigFunctions' => 'SITE_PATH/extend/twig_functions',
+        'twigTests' => 'SITE_PATH/extend/twig_tests',
         'web' => 'WEB_PATH'
     ],
     'urls' => [
@@ -52,7 +52,7 @@ return [
             'charset' => 'UTF-8',
             'debug' => false,
             'strictVariables' => false,
-        ],        
+        ],
     ],
     'plugins' => [],
     'enabledPlugins' => '',

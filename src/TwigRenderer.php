@@ -20,7 +20,7 @@ final class TwigRenderer
 {
     private bool $initialized;
 
-    private array $config;
+    private Config $config;
 
     private Environment $environment;
 
@@ -44,7 +44,7 @@ final class TwigRenderer
     ) {
         $this->initialized = false;
         $this->environment = $environment;
-        $this->config = $config->toArray();
+        $this->config = $config;
         $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->site = $site;
@@ -64,8 +64,8 @@ final class TwigRenderer
         $loader = $this->getTwigFilesystemLoader();
 
         $cache = false;
-        if (!empty($this->config['components']['twigRenderer']['cache'])) {
-            $cachePath = $this->config['paths']['site'] . '/runtime/cache/twig';
+        if ($this->config->getAsBool('components.twigRenderer.cache')) {
+            $cachePath = $this->config->getAsString('paths.site') . '/runtime/cache/twig';
             if (!is_dir($cachePath)) {
                 throw SystemException::directoryNotExist($cachePath);
             }
@@ -74,16 +74,16 @@ final class TwigRenderer
 
         // see \Twig\Environment default options
         $twigOptions = [
-            'autoescape'       => $this->config['components']['twigRenderer']['autoescape'] ?? 'html',
+            'autoescape'       => $this->config->getAsString('components.twigRenderer.autoescape', 'html'),
             'cache'            => $cache,
-            'charset'          => $this->config['components']['twigRenderer']['charset'] ?? 'UTF-8',
-            'debug'            => $this->config['components']['twigRenderer']['debug'] ?? false,
-            'strict_variables' => $this->config['components']['twigRenderer']['strictVariables'] ?? false,
+            'charset'          => $this->config->getAsString('components.twigRenderer.charset', 'UTF-8'),
+            'debug'            => $this->config->getAsBool('components.twigRenderer.debug'),
+            'strict_variables' => $this->config->getAsBool('components.twigRenderer.strictVariables'),
         ];
 
         $this->twig = new TwigEnvironment($loader, $twigOptions);
 
-        if (!empty($this->config['components']['twigRenderer']['debug'])) {
+        if ($this->config->getAsBool('components.twigRenderer.debug')) {
             $this->twig->addExtension(new DebugExtension());
         }
 
@@ -96,6 +96,42 @@ final class TwigRenderer
     public function getTwigEnvironment(): TwigEnvironment
     {
         return $this->twig;
+    }
+
+    public function getFilters(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getFilters() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
+    }
+
+    public function getFunctions(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getFunctions() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
+    }
+
+    public function getTests(): array
+    {
+        $items = [];
+        foreach ($this->getTwigEnvironment()->getTests() as $f) {
+            $items[] = [
+                $f->getName(),
+                get_callable_name($f->getCallable())
+            ];
+        }
+        return $items;
     }
 
     /**
@@ -126,7 +162,7 @@ final class TwigRenderer
             'route' => $this->environment->getRoute(),
             'routeParams' => [], // will be set by page renderer middleware
             'baseUrl' => $this->environment->getBaseUrl(),
-            'theme' => $this->config['theme'],
+            'theme' => $this->config->getAsString('theme'),
             'site' => $this->site,
             'page' => null, // will be set by page renderer middleware
             'config' => $this->config
@@ -153,13 +189,14 @@ final class TwigRenderer
      */
     private function getTwigFilesystemLoader(): ChainLoader
     {
+        $theme = trim($this->config->getAsString('theme'));
+        $themePath = trim($this->config->getAsString('paths.themes'));
+
         $paths = [];
-        if (empty($this->config['theme'])) {
-            $paths[] = $this->config['paths']['themes'];
-        } elseif ($this->config['theme'] === 'default') {
-            $paths[] = $this->config['paths']['themes'] . '/default';
+        if ($theme === '') {
+            $paths[] = $themePath;
         } else {
-            $paths[] = $this->config['paths']['themes'] . '/' . $this->config['theme'];
+            $paths[] = $themePath . '/' . $theme;
         }
 
         $paths = $this->validatePaths($paths);
@@ -169,13 +206,13 @@ final class TwigRenderer
 
         // namespaces
         $namespaces = [
-            'plugin' => $this->config['paths']['plugins'],
-            'page' => $this->config['paths']['pages'],
-            'site' => $this->config['paths']['site'],
-            'snippet' => HERBIE_PATH . '/templates/snippets',
-            'sysplugin' => HERBIE_PATH_SYSPLUGINS,
-            'template' => HERBIE_PATH . '/templates',
-            'vendor' => $this->config['paths']['app'] . '/vendor',
+            'plugin' => $this->config->getAsString('paths.plugins'),
+            'page' => $this->config->getAsString('paths.pages'),
+            'site' => $this->config->getAsString('paths.site'),
+            'snippet' => Application::getHerbiePath('/templates/snippets'),
+            'sysplugin' => Application::getHerbiePath('/sysplugins'),
+            'template' => Application::getHerbiePath('/templates'),
+            'vendor' => $this->config->getAsString('paths.app') . '/vendor',
         ];
 
         foreach ($namespaces as $namespace => $path) {

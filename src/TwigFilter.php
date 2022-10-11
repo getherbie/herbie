@@ -7,10 +7,11 @@ namespace herbie;
 final class TwigFilter
 {
     private string $name;
+    /** @var callable */
     private $callable;
     private array $options;
 
-    public function __construct(string $name, callable $callable = null, array $options = [])
+    public function __construct(string $name, callable $callable, array $options = [])
     {
         $this->name = $name;
         $this->callable = $callable;

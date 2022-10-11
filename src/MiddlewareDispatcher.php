@@ -18,8 +18,13 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     /**
      * Dispatcher constructor.
      */
-    public function __construct(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route)
-    {
+    public function __construct(
+        array $prependMiddlewares,
+        array $appMiddlewares,
+        array $routeMiddlewares,
+        array $appendMiddlewares,
+        string $route
+    ) {
         $this->middlewares = array_merge($prependMiddlewares, $appMiddlewares, $routeMiddlewares, $appendMiddlewares);
         $this->composedMiddlewares = $this->composeMiddlewares(
             $prependMiddlewares,
@@ -28,6 +33,26 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
             $appendMiddlewares,
             $route
         );
+    }
+
+    private function composeMiddlewares(
+        array $prependMiddlewares,
+        array $appMiddlewares,
+        array $routeMiddlewares,
+        array $appendMiddlewares,
+        string $route
+    ): array {
+        if (empty($routeMiddlewares)) {
+            return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
+        }
+        // append route middlewares to app middlewares depending on the matched route
+        foreach ($routeMiddlewares as $routeMiddleware) {
+            [$regex, $middleware] = $routeMiddleware;
+            if (preg_match('#' . $regex . '#', $route)) {
+                $appMiddlewares[] = $middleware;
+            }
+        }
+        return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
     }
 
     public function dispatch(ServerRequestInterface $request): ResponseInterface
@@ -40,6 +65,21 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         $current = $this->getMiddleware();
         next($this->composedMiddlewares);
         return $current->process($request, $this);
+    }
+
+    private function getMiddleware(): MiddlewareInterface
+    {
+        $current = current($this->composedMiddlewares);
+
+        if (is_string($current)) {
+            $current = new $current();
+        }
+
+        if (is_callable($current)) {
+            $current = new CallableMiddleware($current);
+        }
+
+        return $current;
     }
 
     public function getInfo(): array
@@ -58,37 +98,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
                 $callable[0],
                 $callable[1],
             ];
-        }        
+        }
         return $info;
-    }
-    
-    private function getMiddleware(): MiddlewareInterface
-    {
-        $current = current($this->composedMiddlewares);
-
-        if (is_string($current)) {
-            $current = new $current();
-        }
-
-        if (is_callable($current)) {
-            $current = new CallableMiddleware($current);
-        }
-
-        return $current;
-    }
-
-    private function composeMiddlewares(array $prependMiddlewares, array $appMiddlewares, array $routeMiddlewares, array $appendMiddlewares, string $route): array
-    {
-        if (empty($routeMiddlewares)) {
-            return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
-        }
-        // append route middlewares to app middlewares depending on the matched route
-        foreach ($routeMiddlewares as $routeMiddleware) {
-            [$regex, $middleware] = $routeMiddleware;
-            if (preg_match('#' . $regex . '#', $route)) {
-                $appMiddlewares[] = $middleware;
-            }
-        }
-        return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
     }
 }

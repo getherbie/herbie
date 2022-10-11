@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\_data\site\extend\twig\filters;
+namespace tests\_data\site\extend\twig_filters;
 
 use Twig\TwigFilter;
 

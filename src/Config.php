@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+
 final class Config
 {
     private array $data;
@@ -107,8 +110,20 @@ final class Config
         return $value !== null;
     }
 
-    public function toArray(): array
+    public function flatten(): array
     {
-        return $this->data;
+        $recItIt = new RecursiveIteratorIterator(
+            new RecursiveArrayIterator($this->data)
+        );
+        $flatten = [];
+        foreach ($recItIt as $leafValue) {
+            $keys = [];
+            foreach (range(0, $recItIt->getDepth()) as $depth) {
+                $keys[] = $recItIt->getSubIterator($depth)->key();
+            }
+            $flatten[join($this->delim, $keys)] = $leafValue;
+        }
+        ksort($flatten);
+        return $flatten;
     }
 }

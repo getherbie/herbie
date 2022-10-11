@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\_data\site\extend\twig\tests;
+namespace tests\_data\site\extend\twig_tests;
 
 use Twig\TwigTest;
 

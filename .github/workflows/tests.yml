@@ -38,5 +38,8 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Code analysis with Phpcs
+        run: vendor/bin/phpcs
+
       - name: Test with Codeception
         run: vendor/bin/codecept run

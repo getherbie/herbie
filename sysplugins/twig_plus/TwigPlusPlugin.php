@@ -18,8 +18,12 @@ final class TwigPlusPlugin extends Plugin
     private TwigRenderer $twigRenderer;
     private UrlGenerator $urlGenerator;
 
-    public function __construct(Environment $environment, PageRepositoryInterface $pageRepository, TwigRenderer $twigRenderer, UrlGenerator $urlGenerator)
-    {
+    public function __construct(
+        Environment $environment,
+        PageRepositoryInterface $pageRepository,
+        TwigRenderer $twigRenderer,
+        UrlGenerator $urlGenerator
+    ) {
         $this->environment = $environment;
         $this->pageRepository = $pageRepository;
         $this->twigRenderer = $twigRenderer;

@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		- "#no value type specified in iterable type array#"
-	level: 7
+	level: 6
 	paths:
 		- config
 		- messages

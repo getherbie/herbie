@@ -80,13 +80,7 @@ final class ConfigTest extends \Codeception\Test\Unit
 
     public function testCheck()
     {
-        $this->assertNotNull($this->config->get('bool'));
-        $this->assertNull($this->config->get('not-existing-key'));
-    }
-
-    public function testToArray()
-    {
-        $this->assertIsArray($this->config->toArray());
-        $this->assertEquals($this->testValues, $this->config->toArray());
+        $this->assertTrue($this->config->check('string'));
+        $this->assertFalse($this->config->check('not-existing-key'));
     }
 }

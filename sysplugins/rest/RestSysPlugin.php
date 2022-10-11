@@ -7,21 +7,18 @@ namespace herbie\sysplugin\rest;
 use herbie\Config;
 use herbie\FilterInterface;
 use herbie\Plugin;
-use Psr\Log\LoggerInterface;
 
 final class RestSysPlugin extends Plugin
 {
     private Config $config;
-    private LoggerInterface $logger;
     private bool $parserClassExists;
 
     /**
      * RestSysPlugin constructor.
      */
-    public function __construct(Config $config, LoggerInterface $logger)
+    public function __construct(Config $config)
     {
         $this->config = $config->getAsConfig('plugins.rest');
-        $this->logger = $logger;
         $this->parserClassExists = class_exists('\\Doctrine\\RST\\Parser');
     }
 
@@ -34,7 +31,7 @@ final class RestSysPlugin extends Plugin
 
     public function twigFilters(): array
     {
-        if (empty($this->config->get('enableTwigFilter'))) {
+        if (!$this->config->getAsBool('enableTwigFilter')) {
             return [];
         }
         return [
@@ -44,7 +41,7 @@ final class RestSysPlugin extends Plugin
 
     public function twigFunctions(): array
     {
-        if (empty($this->config->get('enableTwigFunction'))) {
+        if (!$this->config->getAsBool('enableTwigFunction')) {
             return [];
         }
         return [

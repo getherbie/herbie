@@ -33,8 +33,8 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
      */
     public function findAll(): array
     {
-        $path = $this->config->get('paths.pages');
-        $extensions = explode_list($this->config->get('fileExtensions.pages'));
+        $path = $this->config->getAsString('paths.pages');
+        $extensions = explode_list($this->config->getAsString('fileExtensions.pages'));
 
         $recDirectoryIt = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
 

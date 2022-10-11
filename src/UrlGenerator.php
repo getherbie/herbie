@@ -20,7 +20,7 @@ final class UrlGenerator
     public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
     {
         $this->environment = $environment;
-        $this->niceUrls = $config->get('niceUrls');
+        $this->niceUrls = $config->getAsBool('niceUrls');
         $this->request = $request;
     }
 

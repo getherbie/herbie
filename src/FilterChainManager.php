@@ -6,6 +6,7 @@ namespace herbie;
 
 final class FilterChainManager
 {
+    /** @var FilterChain[] */
     private array $filters = [];
 
     public function attach(string $filterName, callable $listener): void
@@ -23,6 +24,21 @@ final class FilterChainManager
         $filterChain->attach($this->getDefaultFilter($filterName));
         $filterChain->rewind();
         return $filterChain->run($subject, $context);
+    }
+
+    public function getAllFilters(): array
+    {
+        $items = [];
+        foreach ($this->filters as $category => $filterChain) {
+            $filters = $filterChain->getFilters()->items();
+            foreach ($filters as $filter) {
+                $items[] = [
+                    $category,
+                    get_callable_name($filter)
+                ];
+            }
+        }
+        return $items;
     }
 
     private function getFilters(string $filterName): FilterChain

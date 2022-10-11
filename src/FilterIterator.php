@@ -10,6 +10,11 @@ final class FilterIterator implements \Iterator, \Countable, FilterInterface
 
     private array $items = [];
 
+    public function items(): array
+    {
+        return $this->items;
+    }
+
     public function insert(callable $callback): void
     {
         $this->items[] = $callback;

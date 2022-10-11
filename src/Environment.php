@@ -47,7 +47,7 @@ final class Environment
     {
         $route = '';
         $delim = '';
-        $routeLine[] = ''; // root
+        $routeLine = ['']; // root
         foreach ($this->getRouteParts() as $part) {
             $route .= $delim . $part;
             $routeLine[] = $route;
@@ -236,7 +236,7 @@ final class Environment
         }
 
         $pathInfo = substr($requestUri, strlen($baseUrl));
-        if ((false === $pathInfo || '' === $pathInfo)) {
+        if (!is_string($pathInfo) || ('' === $pathInfo)) {
             return '/';
         } elseif ('' === $baseUrl) {
             return $requestUri;

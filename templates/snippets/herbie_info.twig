@@ -1,54 +1,208 @@
 <div class="herbie-info">
     <h1 class="herbie-info-h1">Herbie Info</h1>
-
-    <h2 class="herbie-info-h2">Constants ({{ constants|length }})</h2>
+    <ul>
+        <li><a href="{{ route }}#herbie-config">Configuration</a></li>
+        <li><a href="{{ route }}#herbie-classes">PHP Classes</a></li>
+        <li><a href="{{ route }}#herbie-functions">PHP Functions</a></li>
+        <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
+        <li><a href="{{ route }}#herbie-filters">Filters</a></li>
+        <li><a href="{{ route }}#herbie-twig-filters">Twig Filters</a></li>
+        <li><a href="{{ route }}#herbie-twig-functions">Twig Functions</a></li>
+        <li><a href="{{ route }}#herbie-twig-tests">Twig Tests</a></li>
+    </ul>
+    
+    {# <h2 class="herbie-info-h2">Constants ({{ constants|length }})</h2>
     <table class="herbie-info-table">
         <tr>
             <th>Name</th>
+            <th>Value</th>
         </tr>
-        {% for constant, _ in constants %}
+        {% for constant, value in constants %}
             <tr>
                 <td>{{ loop.index }}. {{ constant }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
+    </table> #}
+    
+    <h2 id="herbie-config" class="herbie-info-h2">Configuration ({{ config|length }})</h2>
+    <div class="herbie-info-config" style="display:none">
+        {% for key, _ in config %}
+            {{- key -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>    
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in config %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
             </tr>
         {% endfor %}
     </table>
-
-    <h2 class="herbie-info-h2">Classes ({{ classes|length }})</h2>
+    
+    <h2 id="herbie-classes" class="herbie-info-h2">PHP Classes ({{ classes|length }})</h2>
+    <div class="herbie-info-classes" style="display:none">
+        {%- for class in classes -%}
+            {{- class -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
     <table class="herbie-info-table">
         <tr>
+            <th style="width:1%">#</th>
             <th>Name</th>
         </tr>
         {% for class in classes %}
             <tr>
-                <td>{{ loop.index }}. {{ class }}</td>
+                <td>{{ loop.index }}</td>
+                <td>{{ class }}</td>
             </tr>
         {% endfor %}
     </table>
 
-    <h2 class="herbie-info-h2">Functions ({{ functions|length }})</h2>
+    <h2 id="herbie-functions" class="herbie-info-h2">PHP Functions ({{ functions|length }})</h2>
+    <div class="herbie-info-functions" style="display:none">
+        {%- for function in functions -%}
+            {{- function -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>    
     <table class="herbie-info-table">
         <tr>
+            <th style="width:1%">#</th>
             <th>Name</th>
         </tr>
         {% for function in functions %}
             <tr>
-                <td>{{ loop.index }}. {{ function }}</td>
+                <td>{{ loop.index }}</td>
+                <td>{{ function }}</td>
             </tr>
         {% endfor %}
     </table>
 
-    <h2 class="herbie-info-h2">Middlewares ({{ middlewares|length }})</h2>
+    <h2 id="herbie-middlewares" class="herbie-info-h2">Middlewares ({{ middlewares|length }})</h2>
+    <div class="herbie-info-twig-middlewares" style="display:none">
+        {%- for middleware in middlewares -%}
+            {{- middleware[2] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
     <table class="herbie-info-table">
         <tr>
+            <th style="width:1%">#</th>
             <th>Name</th>
             <th>Type</th>
             <th>Callable</th>
         </tr>
         {% for middleware in middlewares %}
             <tr>
-                <td>{{ loop.index }}. {{ middleware[2] }}</td>
+                <td>{{ loop.index }}</td>
+                <td>{{ middleware[2] }}</td>
                 <td>{{ middleware[0] }}</td>
                 <td>{{ middleware[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-filters" class="herbie-info-h2">Filters ({{ filters|length }})</h2>
+    <div class="herbie-info-filters" style="display:none">
+        {%- for filter in filters -%}
+            {{- filter[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+        </tr>
+        {% for filter in filters %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ filter[0] }}</td>
+                <td>{{ filter[1][0] }}</td>
+                <td>{{ filter[1][1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    <h2 id="herbie-twig-filters" class="herbie-info-h2">Twig Filters ({{ twig_filters|length }})</h2>
+    <div class="herbie-info-twig-filters" style="display:none">
+        {%- for filter in twig_filters -%}
+            {{- filter[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+        </tr>
+        {% for filter in twig_filters %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ filter[0] }}</td>
+                <td>{{ filter[1][0] }}</td>
+                <td>{{ filter[1][1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-twig-functions" class="herbie-info-h2">Twig Functions ({{ twig_functions|length }})</h2>
+    <div class="herbie-info-twig-functions" style="display:none">
+        {%- for function in twig_functions -%}
+            {{- function[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+        </tr>
+        {% for function in twig_functions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ function[0] }}</td>
+                <td>{{ function[1][0] }}</td>
+                <td>{{ function[1][1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-twig-tests" class="herbie-info-h2">Twig Tests ({{ twig_tests|length }})</h2>
+    <div class="herbie-info-twig-tests" style="display:none">
+        {%- for test in twig_tests -%}
+            {{- test[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+        </tr>
+        {% for test in twig_tests %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ test[0] }}</td>
+                <td>{{ test[1][0] }}</td>
+                <td>{{ test[1][1] }}</td>
             </tr>
         {% endfor %}
     </table>

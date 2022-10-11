@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Log\LoggerInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
 final class VirtualLocalPlugin extends Plugin
 {
-    private LoggerInterface $logger;
     private Config $config;
 
-    public function __construct(LoggerInterface $logger, Config $config)
+    public function __construct(Config $config)
     {
-        $this->logger = $logger;
         $this->config = $config;
     }
 

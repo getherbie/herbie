@@ -80,7 +80,7 @@ final class InstallablePlugin
                 }
                 $classNameToInject = $param->getType()->getName();
                 $constructorParams[] = $container->get($classNameToInject);
-            };
+            }
         }
         return $constructorParams;
     }

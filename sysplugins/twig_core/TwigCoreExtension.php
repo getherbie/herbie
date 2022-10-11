@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace herbie\sysplugin\twig_core;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Ausi\SlugGenerator\SlugGeneratorInterface;
 use herbie\Alias;
 use herbie\Assets;
+use herbie\Config;
 use herbie\Environment;
 use herbie\PageTree;
 use herbie\PageTreeFilterIterator;
@@ -44,7 +44,7 @@ final class TwigCoreExtension extends AbstractExtension
         Alias $alias,
         Assets $assets,
         Environment $environment,
-        SlugGeneratorInterface $slugGenerator,
+        SlugGenerator $slugGenerator,
         Translator $translator,
         TwigRenderer $twigRenderer,
         UrlGenerator $urlGenerator
@@ -138,8 +138,8 @@ final class TwigCoreExtension extends AbstractExtension
      */
 
     /**
-     * @param \iterable $iterator
-     * @param string[] $selectors
+     * @param iterable $iterator
+     * @param array $selectors
      * @return array
      * @throws \Exception
      */
@@ -220,10 +220,10 @@ final class TwigCoreExtension extends AbstractExtension
         $attribs['alt'] = $attribs['alt'] ?? '';
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
-        // get config from download middleware
-        $config = $context['config']['components']['downloadMiddleware'];
-        $baseUrl = rtrim($config['baseUrl'], '/') . '/';
-        $storagePath = rtrim($config['storagePath'], '/') . '/';
+        /** @var Config $config from download middleware */
+        $config = $context['config'];
+        $baseUrl = rtrim($config->getAsString('components.downloadMiddleware.baseUrl'), '/') . '/';
+        $storagePath = rtrim($config->getAsString('components.downloadMiddleware.storagePath'), '/') . '/';
 
         // combine url and path
         $href = $baseUrl . $path;
@@ -242,8 +242,12 @@ final class TwigCoreExtension extends AbstractExtension
         return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
-    public function functionMailLink(string $email, ?string $label = null, array $attribs = [], string $template = '@snippet/mail_link.twig'): string
-    {
+    public function functionMailLink(
+        string $email,
+        ?string $label = null,
+        array $attribs = [],
+        string $template = '@snippet/mail_link.twig'
+    ): string {
         $attribs['href'] = 'mailto:' . $email;
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 

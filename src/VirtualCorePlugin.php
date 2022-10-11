@@ -23,6 +23,18 @@ final class VirtualCorePlugin extends Plugin
         ];
     }
 
+    public function twigFunctions(): array
+    {
+        return [
+            ['herbie_debug', [$this, 'herbieDebug']],
+        ];
+    }
+
+    public function herbieDebug(): bool
+    {
+        return Application::isDebug();
+    }
+
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         /** @var Page $page */
@@ -37,7 +49,7 @@ final class VirtualCorePlugin extends Plugin
     {
         /** @var Page $page */
         $page = $params['page'];
-        $extension = trim($this->config->get('fileExtensions.layouts'));
+        $extension = trim($this->config->getAsString('fileExtensions.layouts'));
         $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
         $context = $this->twigRenderer->renderTemplate($name, $params);
         return $filter->next($context, $params, $filter);
