@@ -22,6 +22,18 @@ final class VirtualCorePlugin extends Plugin
             ['renderSegment', [$this, 'renderSegment']]
         ];
     }
+    
+    public function twigFunctions(): array
+    {
+        return [
+            ['herbie_debug', [$this, 'herbieDebug']],
+        ];
+    }
+
+    public function herbieDebug(): bool
+    {
+        return Application::isDebug();        
+    }
 
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
