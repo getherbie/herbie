@@ -6,6 +6,7 @@
         <li><a href="{{ route }}#herbie-functions">PHP Functions</a></li>
         <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
         <li><a href="{{ route }}#herbie-filters">Filters</a></li>
+        <li><a href="{{ route }}#herbie-twig-globals">Twig Globals</a></li>
         <li><a href="{{ route }}#herbie-twig-filters">Twig Filters</a></li>
         <li><a href="{{ route }}#herbie-twig-functions">Twig Functions</a></li>
         <li><a href="{{ route }}#herbie-twig-tests">Twig Tests</a></li>
@@ -131,6 +132,30 @@
                 <td>{{ filter[0] }}</td>
                 <td>{{ filter[1][0] }}</td>
                 <td>{{ filter[1][1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-twig-globals" class="herbie-info-h2">Twig Globals ({{ twig_globals|length }})</h2>
+    <div class="herbie-info-twig-globals" style="display:none">
+        {%- for global in twig_globals -%}
+            {{- global[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Value</th>
+        </tr>
+        {% for global in twig_globals %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ global[0] }}</td>
+                <td>{{ global[2] }}</td>
+                <td>{{ global[1] }}</td>
             </tr>
         {% endfor %}
     </table>

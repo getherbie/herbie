@@ -313,6 +313,22 @@ final class HerbieInfoCest
         $I->see(join(',', $configs), '.herbie-info-config');
     }
 
+    public function testNumberAndSortingOfHerbieGlobals(AcceptanceTester $I)
+    {
+        $globals = [
+            'route',
+            'routeParams',
+            'baseUrl',
+            'theme',
+            'site',
+            'page',
+            'config',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Twig Globals (' . count($globals) . ')', 'h2');
+        $I->see(join(',', $globals), '.herbie-info-twig-globals');
+    }
+
     public function testNumberAndSortingOfHerbieTwigFilters(AcceptanceTester $I)
     {
         $filters = [
@@ -372,7 +388,7 @@ final class HerbieInfoCest
         $I->see('Twig Filters (' . count($filters) . ')', 'h2');
         $I->see(join(',', $filters), '.herbie-info-twig-filters');
     }
-    
+
     public function testNumberAndSortingOfHerbieTwigFunctions(AcceptanceTester $I)
     {
         $functions = [
@@ -425,9 +441,9 @@ final class HerbieInfoCest
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Twig Functions (' . count($functions) . ')', 'h2');
-        $I->see(join(',', $functions), '.herbie-info-twig-functions');        
+        $I->see(join(',', $functions), '.herbie-info-twig-functions');
     }
-    
+
     public function testNumberAndSortingOfHerbieTwigTests(AcceptanceTester $I)
     {
         $tests = [
@@ -451,7 +467,7 @@ final class HerbieInfoCest
         $I->see('Twig Tests (' . count($tests) . ')', 'h2');
         $I->see(join(',', $tests), '.herbie-info-twig-tests');
     }
-    
+
     public function testNumberAndSortingOfHerbieFilters(AcceptanceTester $I)
     {
         $filters = [
@@ -468,10 +484,10 @@ final class HerbieInfoCest
             'renderSegment',
             'renderSegment',
             'renderSegment',
-            'renderContent',            
+            'renderContent',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Filters (' . count($filters) . ')', 'h2');
-        $I->see(join(',', $filters), '.herbie-info-filters');        
+        $I->see(join(',', $filters), '.herbie-info-filters');
     }
 }
