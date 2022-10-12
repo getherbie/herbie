@@ -116,6 +116,10 @@ Run all tests
 
     php vendor/bin/codecept run
 
+Run tests with Code Coverage
+
+    XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+
 ## More Information
 
 For more information, see <https://herbie.tebe.ch>.

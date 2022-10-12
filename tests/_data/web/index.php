@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
+define('C3_CODECOVERAGE_ERROR_LOG_FILE', dirname(__DIR__, 3) . '/c3_error.log');
+include dirname(__DIR__, 3) . '/c3.php';
+
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\EventInterface;

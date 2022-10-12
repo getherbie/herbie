@@ -8,3 +8,7 @@
 
 # site folder
 /site
+
+# codeception/c3
+/c3.php
+/c3_error.log

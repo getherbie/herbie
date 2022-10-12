@@ -1,3 +1,13 @@
+coverage:
+    enabled: true
+    include:
+        - config/*
+        - messages/*
+        - src/*
+        - sysplugins/*
+        - templates/*
+    exclude:
+        - vendor/*
 paths:
     tests: tests
     output: tests/_output
