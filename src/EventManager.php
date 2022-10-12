@@ -53,7 +53,7 @@ final class EventManager
                 foreach ($events as $event) {
                     foreach ($event as $e) {
                         $items[] = array_merge(
-                            [$eventName, $priority], 
+                            [$eventName, $priority],
                             get_callable_name($e)
                         );
                     }
