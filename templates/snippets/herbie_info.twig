@@ -2,12 +2,13 @@
     <h1 class="herbie-info-h1">Herbie Info</h1>
     <ul>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
-        <li><a href="{{ route }}#herbie-classes">PHP Classes</a></li>
-        <li><a href="{{ route }}#herbie-functions">PHP Functions</a></li>
-        <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
+        <li><a href="{{ route }}#herbie-events">Events</a></li>
         <li><a href="{{ route }}#herbie-filters">Filters</a></li>
-        <li><a href="{{ route }}#herbie-twig-globals">Twig Globals</a></li>
+        <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
+        <li><a href="{{ route }}#herbie-php-classes">PHP Classes</a></li>
+        <li><a href="{{ route }}#herbie-php-functions">PHP Functions</a></li>        
         <li><a href="{{ route }}#herbie-twig-filters">Twig Filters</a></li>
+        <li><a href="{{ route }}#herbie-twig-globals">Twig Globals</a></li>
         <li><a href="{{ route }}#herbie-twig-functions">Twig Functions</a></li>
         <li><a href="{{ route }}#herbie-twig-tests">Twig Tests</a></li>
     </ul>
@@ -47,11 +48,11 @@
             </tr>
         {% endfor %}
     </table>
-    
-    <h2 id="herbie-classes" class="herbie-info-h2">PHP Classes ({{ classes|length }})</h2>
-    <div class="herbie-info-classes" style="display:none">
-        {%- for class in classes -%}
-            {{- class -}}
+
+    <h2 id="herbie-events" class="herbie-info-h2">Events ({{ events|length }})</h2>
+    <div class="herbie-info-events" style="display:none">
+        {%- for event in events -%}
+            {{- event[0] -}}
             {%- if loop.last == false -%},{%- endif -%}
         {%- endfor -%}
     </div>
@@ -59,31 +60,41 @@
         <tr>
             <th style="width:1%">#</th>
             <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
+            <th></th>
         </tr>
-        {% for class in classes %}
+        {% for event in events %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ class }}</td>
+                <td>{{ event[0] }}</td>
+                <td>{{ event[1] }}</td>
+                <td>{{ event[2] }}</td>
+                <td>{{ event[3] }}</td>
             </tr>
         {% endfor %}
     </table>
-
-    <h2 id="herbie-functions" class="herbie-info-h2">PHP Functions ({{ functions|length }})</h2>
-    <div class="herbie-info-functions" style="display:none">
-        {%- for function in functions -%}
-            {{- function -}}
+    
+    <h2 id="herbie-filters" class="herbie-info-h2">Filters ({{ filters|length }})</h2>
+    <div class="herbie-info-filters" style="display:none">
+        {%- for filter in filters -%}
+            {{- filter[0] -}}
             {%- if loop.last == false -%},{%- endif -%}
         {%- endfor -%}
-    </div>    
+    </div>
     <table class="herbie-info-table">
         <tr>
             <th style="width:1%">#</th>
             <th>Name</th>
+            <th>Type</th>
+            <th>Callable</th>
         </tr>
-        {% for function in functions %}
+        {% for filter in filters %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ function }}</td>
+                <td>{{ filter[0] }}</td>
+                <td>{{ filter[1][0] }}</td>
+                <td>{{ filter[1][1] }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -111,10 +122,50 @@
             </tr>
         {% endfor %}
     </table>
+    
+    <h2 id="herbie-php-classes" class="herbie-info-h2">PHP Classes ({{ php_classes|length }})</h2>
+    <div class="herbie-info-php-classes" style="display:none">
+        {%- for class in php_classes -%}
+            {{- class -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+        </tr>
+        {% for class in php_classes %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ class }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-    <h2 id="herbie-filters" class="herbie-info-h2">Filters ({{ filters|length }})</h2>
-    <div class="herbie-info-filters" style="display:none">
-        {%- for filter in filters -%}
+    <h2 id="herbie-php-functions" class="herbie-info-h2">PHP Functions ({{ php_functions|length }})</h2>
+    <div class="herbie-info-php-functions" style="display:none">
+        {%- for function in php_functions -%}
+            {{- function -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+        </tr>
+        {% for function in php_functions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ function }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    <h2 id="herbie-twig-filters" class="herbie-info-h2">Twig Filters ({{ twig_filters|length }})</h2>
+    <div class="herbie-info-twig-filters" style="display:none">
+        {%- for filter in twig_filters -%}
             {{- filter[0] -}}
             {%- if loop.last == false -%},{%- endif -%}
         {%- endfor -%}
@@ -126,7 +177,7 @@
             <th>Type</th>
             <th>Callable</th>
         </tr>
-        {% for filter in filters %}
+        {% for filter in twig_filters %}
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ filter[0] }}</td>
@@ -160,30 +211,6 @@
         {% endfor %}
     </table>
     
-    <h2 id="herbie-twig-filters" class="herbie-info-h2">Twig Filters ({{ twig_filters|length }})</h2>
-    <div class="herbie-info-twig-filters" style="display:none">
-        {%- for filter in twig_filters -%}
-            {{- filter[0] -}}
-            {%- if loop.last == false -%},{%- endif -%}
-        {%- endfor -%}
-    </div>
-    <table class="herbie-info-table">
-        <tr>
-            <th style="width:1%">#</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Callable</th>
-        </tr>
-        {% for filter in twig_filters %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ filter[0] }}</td>
-                <td>{{ filter[1][0] }}</td>
-                <td>{{ filter[1][1] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
     <h2 id="herbie-twig-functions" class="herbie-info-h2">Twig Functions ({{ twig_functions|length }})</h2>
     <div class="herbie-info-twig-functions" style="display:none">
         {%- for function in twig_functions -%}

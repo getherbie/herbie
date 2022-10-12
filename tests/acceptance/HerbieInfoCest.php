@@ -34,8 +34,8 @@ final class HerbieInfoCest
             'herbie\render_exception',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Functions (' . count($functions) . ')', 'h2');
-        $I->see(join(',', $functions), '.herbie-info-functions');
+        $I->see('PHP Functions (' . count($functions) . ')', 'h2');
+        $I->see(join(',', $functions), '.herbie-info-php-functions');
     }
 
     public function testNumberAndSortingOfHerbieClasses(AcceptanceTester $I)
@@ -98,8 +98,8 @@ final class HerbieInfoCest
             'herbie\sysplugin\twig_plus\TwigPlusPlugin',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Classes (' . count($classes) . ')', 'h2');
-        $I->see(join(',', $classes), '.herbie-info-classes');
+        $I->see('PHP Classes (' . count($classes) . ')', 'h2');
+        $I->see(join(',', $classes), '.herbie-info-php-classes');
     }
 
     public function testNumberAndSortingOfHerbieMiddlewares(AcceptanceTester $I)
@@ -489,5 +489,47 @@ final class HerbieInfoCest
         $I->amOnPage('/herbie-info');
         $I->see('Filters (' . count($filters) . ')', 'h2');
         $I->see(join(',', $filters), '.herbie-info-filters');
+    }
+
+    public function testNumberAndSortingOfHerbieEvents(AcceptanceTester $I)
+    {
+        $events = [
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigAddExtension',
+            'onTwigAddExtension',
+            'onContentRendered',
+            'onLayoutRendered',
+            'onPluginsAttached',
+            'onResponseEmitted',
+            'onResponseGenerated',
+            'onSystemPluginsAttached',
+            'onComposerPluginsAttached',
+            'onLocalPluginsAttached',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Events (' . count($events) . ')', 'h2');
+        $I->see(join(',', $events), '.herbie-info-events');
     }
 }
