@@ -80,7 +80,6 @@ final class TwigPlusExtension extends AbstractExtension
         int $maxDepth = -1,
         bool $showHidden = false
     ): string {
-
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
@@ -126,7 +125,6 @@ final class TwigPlusExtension extends AbstractExtension
         $homeLink = '',
         bool $reverse = false
     ): string {
-
         // TODO use string type for param $homeLink (like "route|label")
 
         $links = [];
@@ -177,7 +175,6 @@ final class TwigPlusExtension extends AbstractExtension
         int $limit = 10,
         string $template = '@snippet/listing.twig'
     ): string {
-
         if (is_null($pageList)) {
             $pageList = $this->pageRepository->findAll();
         }
@@ -212,7 +209,6 @@ final class TwigPlusExtension extends AbstractExtension
         int $maxDepth = -1,
         string $class = 'menu'
     ): string {
-
         // TODO use $showHidden parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         $treeIterator = new PageTreeIterator($branch);
@@ -368,7 +364,6 @@ final class TwigPlusExtension extends AbstractExtension
         string $rootTitle = '',
         bool $reverse = false
     ): string {
-
         $route = $this->environment->getRoute();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         $count = count($pageTrail);

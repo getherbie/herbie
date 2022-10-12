@@ -57,6 +57,7 @@
         "doctrine/rst-parser": "^0.5.2",
         "erusev/parsedown": "^1.7",
         "erusev/parsedown-extra": "^0.8.1",
+        "friendsofphp/php-cs-fixer": "^3.11",
         "getherbie/plugin-simplecontact": "dev-master",
         "getherbie/plugin-simplesearch": "dev-master",
         "laminas/laminas-diactoros": "^2.17",
