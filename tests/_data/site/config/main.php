@@ -17,6 +17,7 @@ return [
     'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
     'plugins' => [
         'imagine' => [
+            'test' => true,
             'filterSets' => [
                 'bsp1' => [
                     'filters' => [
@@ -174,6 +175,17 @@ return [
                         ],
                     ],
                 ],
+                'bsp17' => [
+                    'filters' => [
+                        'blur' => [
+                            'sigma' => 1,
+                        ],
+                        'thumbnail' => [
+                            'size' => [220, 220],
+                            'mode' => 'inset',
+                        ],
+                    ],
+                ]
             ],
         ],
     ],
