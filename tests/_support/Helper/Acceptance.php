@@ -7,4 +7,15 @@ namespace Helper;
 
 class Acceptance extends \Codeception\Module
 {
+    /**
+     * Define custom actions here
+     */
+    public function seeResponseContains(string $text)
+    {
+        $this->assertStringContainsString(
+            $text,
+            $this->getModule('PhpBrowser')->_getResponseContent(),
+            'response contains'
+        );
+    }
 }

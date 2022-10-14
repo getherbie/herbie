@@ -9,7 +9,7 @@ extensions:
     enabled:
         - Codeception\Extension\RunProcess:
               0: cd ..
-              1: php -S 127.0.0.1:9382 -t tests/_data/web
+              1: php -S 127.0.0.1:9382 tests/_data/web/index.php
               sleep: 1
 modules:
     enabled:

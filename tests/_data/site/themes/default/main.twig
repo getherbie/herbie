@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site.language }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,23 @@
         th, td { border: 1px solid #ccc; padding: 0.125rem 0.5rem; }
     </style>
 </head>
-<body>
+<body class="{{ body_class() }}">
+
+<div class="page-trail">
+<a href="/">Herbie Tests</a>
+{%- for menu in site.pageTrail -%}
+    {{- ' / ' -}}
+    <a href="{{ menu.route }}">{{ menu.title }}</a>
+{%- endfor -%}
+</div>
+
 {% block content %}{% endblock %}
+<div style="display:none">
+    Time: {{ site.time }}<br>
+    Last modified: {{ site.modified }}<br>
+    Locale: {{ site.locale }}<br>
+    Charset: {{ site.charset }}<br>
+    Data: {{ site.data|length }}<br>
+</div>
 </body>
 </html>
