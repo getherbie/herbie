@@ -112,6 +112,7 @@ final class HerbieInfoCest
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
+            'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'herbie\HttpBasicAuthMiddleware',
@@ -328,6 +329,7 @@ final class HerbieInfoCest
             'site',
             'page',
             'config',
+            'dummy'
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Twig Globals (' . count($globals) . ')', 'h2');
@@ -499,6 +501,7 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfHerbieEvents(AcceptanceTester $I)
     {
         $events = [
+            'onTwigInitialized',
             'onTwigInitialized',
             'onTwigInitialized',
             'onTwigInitialized',

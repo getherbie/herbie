@@ -101,7 +101,7 @@ final class DummySysPlugin implements PluginInterface
     public function twigGlobals(): array
     {
         return [
-            'herbie_dummy' => $this
+            'dummy' => $this
         ];
     }
 
