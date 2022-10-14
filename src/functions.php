@@ -6,6 +6,7 @@ namespace herbie;
 
 use Closure;
 use Composer\InstalledVersions;
+use ReflectionFunction;
 
 function camelize(string $input, string $separator = '_'): string
 {
@@ -292,7 +293,9 @@ function get_callable_name($callable): array
         case is_array($callable):
             return ['static', $callable[0]  . '::' . $callable[1]];
         case $callable instanceof Closure:
-            return ['closure', null];
+            $reflectionClosure = new ReflectionFunction($callable);
+            $class = $reflectionClosure->getClosureScopeClass();
+            return ['closure', $class ? $class->getName() : '{closure}'];
         case is_object($callable):
             return ['invokable', get_class($callable)];
         default:

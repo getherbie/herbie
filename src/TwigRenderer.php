@@ -126,9 +126,10 @@ final class TwigRenderer
     {
         $items = [];
         foreach ($this->getTwigEnvironment()->getTests() as $f) {
+            $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                get_callable_name($f->getCallable())
+                get_callable_name($callable)
             ];
         }
         return $items;
