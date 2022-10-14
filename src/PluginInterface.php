@@ -18,6 +18,8 @@ interface PluginInterface
 
     public function twigFilters(): array;
 
+    public function twigGlobals(): array;
+
     public function twigFunctions(): array;
 
     public function twigTests(): array;

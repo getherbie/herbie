@@ -166,6 +166,10 @@ final class PluginManager
             }
         }
 
+        foreach ($plugin->twigGlobals() as $twigGlobalName => $twigGlobalMixed) {
+            $this->addTwigGlobal($twigGlobalName, $twigGlobalMixed);
+        }
+
         foreach ($plugin->twigFunctions() as $twigFunction) {
             if ($twigFunction instanceof \Twig\TwigFunction) {
                 $this->addTwigFunction($twigFunction);
@@ -244,6 +248,16 @@ final class PluginManager
             /** @var TwigRenderer $twig */
             $twig = $event->getTarget();
             $twig->addFilter($filter);
+        };
+        return $this->eventManager->attach('onTwigInitialized', $closure);
+    }
+
+    private function addTwigGlobal(string $name, $mixed): callable
+    {
+        $closure = function (Event $event) use ($name, $mixed) {
+            /** @var TwigRenderer $twig */
+            $twig = $event->getTarget();
+            $twig->addGlobal($name, $mixed);
         };
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }

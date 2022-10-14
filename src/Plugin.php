@@ -36,6 +36,11 @@ abstract class Plugin implements PluginInterface
         return [];
     }
 
+    public function twigGlobals(): array
+    {
+        return [];
+    }
+
     public function twigFunctions(): array
     {
         return [];

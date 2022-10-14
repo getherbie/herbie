@@ -179,6 +179,11 @@ final class TwigRenderer
         $this->twig->addFilter($filter);
     }
 
+    public function addGlobal(string $name, $mixed): void
+    {
+        $this->twig->addGlobal($name, $mixed);
+    }
+
     public function addTest(TwigTest $test): void
     {
         $this->twig->addTest($test);

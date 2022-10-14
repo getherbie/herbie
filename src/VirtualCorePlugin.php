@@ -30,6 +30,11 @@ final class VirtualCorePlugin extends Plugin
         ];
     }
 
+    public function twigGlobals(): array
+    {
+        return [];
+    }
+
     public function herbieDebug(): bool
     {
         return Application::isDebug();
