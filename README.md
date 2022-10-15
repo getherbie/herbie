@@ -23,6 +23,7 @@ Thanks to its plugin system Herbie CMS is highly customizable and brings support
 * Application and Route Middlewares
 * Event Handlers and Intercepting Filters
 * Twig Filters, Twig Globals, Twig Functions and Twig Tests
+* Symfony Console Commands
 
 Herbie CMS implements the following PHP standard recommendations:
 
@@ -54,9 +55,18 @@ TBD
 The easiest way to install Herbie CMS is with Composer.
 To do this, run the following commands in your terminal:
 
+For the upcoming version 2.x:
+
+    # create project and install dependent libraries
+    composer create-project getherbie/start-website:dev-master mywebsite
+
+For the stable version 1.x:
+
     # create project and install dependent libraries
     composer create-project getherbie/start-website mywebsite
-    
+
+Start the internal webserver:
+
     # go to the web directory
     cd mywebsite/web
     
