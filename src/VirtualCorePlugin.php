@@ -6,13 +6,24 @@ namespace herbie;
 
 final class VirtualCorePlugin extends Plugin
 {
-    private Config $config;
     private TwigRenderer $twigRenderer;
+    private string $layoutFileExtension;
+    private bool $enableTwigInLayoutFilter;
+    private bool $enableTwigInSegmentFilter;
 
     public function __construct(Config $config, TwigRenderer $twigRenderer)
     {
-        $this->config = $config;
+        $this->enableTwigInLayoutFilter = $config->getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter');
+        $this->enableTwigInSegmentFilter = $config->getAsBool('components.virtualCorePlugin.enableTwigInSegmentFilter');
+        $this->layoutFileExtension = trim($config->getAsString('fileExtensions.layouts'));
         $this->twigRenderer = $twigRenderer;
+    }
+
+    public function commands(): array
+    {
+        return [
+            ClearCacheCommand::class
+        ];
     }
 
     public function filters(): array
@@ -30,6 +41,11 @@ final class VirtualCorePlugin extends Plugin
         ];
     }
 
+    public function twigGlobals(): array
+    {
+        return [];
+    }
+
     public function herbieDebug(): bool
     {
         return Application::isDebug();
@@ -39,19 +55,26 @@ final class VirtualCorePlugin extends Plugin
     {
         /** @var Page $page */
         $page = $params['page'];
-        if (!empty($page->getTwig())) {
+        if ($this->enableTwigInSegmentFilter && !empty($page->getTwig())) {
             $context = $this->twigRenderer->renderString($context, $params);
         }
         return $filter->next($context, $params, $filter);
     }
 
-    public function renderLayout(string $context, array $params, FilterInterface $filter): string
+    public function renderLayout(string $_, array $params, FilterInterface $filter): string
     {
         /** @var Page $page */
         $page = $params['page'];
-        $extension = trim($this->config->getAsString('fileExtensions.layouts'));
-        $name = empty($extension) ? $page->getLayout() : sprintf('%s.%s', $page->getLayout(), $extension);
-        $context = $this->twigRenderer->renderTemplate($name, $params);
+        if (strlen($this->layoutFileExtension) > 0) {
+            $name = sprintf('%s.%s', $page->getLayout(), $this->layoutFileExtension);
+        } else {
+            $name = $page->getLayout();
+        }
+        if ($this->enableTwigInLayoutFilter) {
+            $context = $this->twigRenderer->renderTemplate($name, $params);
+        } else {
+            $context = join('', $params['content'] ?? []);
+        }
         return $filter->next($context, $params, $filter);
     }
 }

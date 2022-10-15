@@ -8,6 +8,8 @@ interface PluginInterface
 {
     public function apiVersion(): int;
 
+    public function commands(): array;
+
     public function events(): array;
 
     public function filters(): array;
@@ -17,6 +19,8 @@ interface PluginInterface
     public function routeMiddlewares(): array;
 
     public function twigFilters(): array;
+
+    public function twigGlobals(): array;
 
     public function twigFunctions(): array;
 

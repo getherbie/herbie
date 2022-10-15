@@ -23,6 +23,7 @@ final class DummySysPluginCest
         $I->see('This is from Dummy Filter Dynamic.', 'p');
         $I->see('This is from Dummy Function.', 'p');
         $I->see('This is from Dummy Test.', 'p');
-        // TODO complete tests
+        $I->click('Dummy');
+        $I->seeResponseContains("%PDF-1.4\n%äüöß"); // the 1st few bytes of the pdf
     }
 }

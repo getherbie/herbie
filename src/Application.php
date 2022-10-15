@@ -25,6 +25,7 @@ final class Application
     private array $filters;
     private array $routeMiddlewares;
     private array $twigFilters;
+    private array $twigGlobals;
     private array $twigFunctions;
     private array $twigTests;
 
@@ -46,6 +47,7 @@ final class Application
         $this->filters = [];
         $this->routeMiddlewares = [];
         $this->twigFilters = [];
+        $this->twigGlobals = [];
         $this->twigFunctions = [];
         $this->twigTests = [];
 
@@ -105,6 +107,21 @@ final class Application
         $this->emitResponse($response);
 
         $this->getEventManager()->trigger('onResponseEmitted');
+    }
+
+    public function runCli(): void
+    {
+        $this->getPluginManager()->init();
+
+        $application = new \Symfony\Component\Console\Application();
+        $application->setName("-------------------\nHERBIE CMS CLI-Tool\n-------------------");
+
+        foreach ($this->getPluginManager()->getCommands() as $command) {
+            $params = get_constructor_params_to_inject($command, $this->container);
+            $application->add(new $command(...$params));
+        }
+
+        $application->run();
     }
 
     private function emitResponse(ResponseInterface $response): void
@@ -190,6 +207,17 @@ final class Application
     public function getTwigFilters(): array
     {
         return $this->twigFilters;
+    }
+
+    public function addTwigGlobals(array $twigGlobals): Application
+    {
+        $this->twigGlobals = $twigGlobals;
+        return $this;
+    }
+
+    public function getTwigGlobals(): array
+    {
+        return $this->twigGlobals;
     }
 
     public function addTwigFunction(TwigFunction $twigFunction): Application

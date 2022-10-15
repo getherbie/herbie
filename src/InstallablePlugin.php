@@ -8,14 +8,14 @@ final class InstallablePlugin
 {
     private string $key;
     private string $path;
-    private string $classPath;
+    private string $className; // as fully-qualified class name
     private string $type;
 
-    public function __construct(string $key, string $path, string $classPath, string $type)
+    public function __construct(string $key, string $path, string $className, string $type)
     {
         $this->key = $key;
         $this->path = $path;
-        $this->classPath = $classPath;
+        $this->className = $className;
         $this->type = $type;
     }
 
@@ -29,9 +29,9 @@ final class InstallablePlugin
         return $this->path;
     }
 
-    public function getClassPath(): string
+    public function getClassName(): string
     {
-        return $this->classPath;
+        return $this->className;
     }
 
     public function getType(): string
@@ -39,49 +39,13 @@ final class InstallablePlugin
         return $this->type;
     }
 
-    public function classPathExists(): bool
-    {
-        return is_file($this->classPath) && is_readable($this->classPath);
-    }
-
-    public function requireClassPath(): string
-    {
-        $className = get_fully_qualified_class_name($this->classPath);
-        if (!class_exists($className)) {
-            require $this->classPath;
-        }
-        return $className;
-    }
-
-    /**
-     * @throws SystemException
-     */
     public function createPluginInstance(ContainerInterface $container): PluginInterface
     {
-        $pluginClassName = $this->requireClassPath();
-
-        $constructorParams = self::getConstructorParamsToInject(
-            $pluginClassName,
+        $constructorParams = get_constructor_params_to_inject(
+            $this->className,
             $container
         );
 
-        return new $pluginClassName(...$constructorParams);
-    }
-
-    public static function getConstructorParamsToInject(string $pluginClassName, ContainerInterface $container): array
-    {
-        $reflectedClass = new \ReflectionClass($pluginClassName);
-        $constructor = $reflectedClass->getConstructor();
-        $constructorParams = [];
-        if ($constructor) {
-            foreach ($constructor->getParameters() as $param) {
-                if ($param->getType() === null) {
-                    throw SystemException::serverError('Only objects can be injected in ' . $pluginClassName);
-                }
-                $classNameToInject = $param->getType()->getName();
-                $constructorParams[] = $container->get($classNameToInject);
-            }
-        }
-        return $constructorParams;
+        return new $this->className(...$constructorParams);
     }
 }

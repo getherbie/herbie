@@ -27,6 +27,8 @@ hidden: 0
 <img id="imagine-filter-14" src="{{ 'tulpen.jpg'|imagine('bsp14') }}" alt="">
 <img id="imagine-filter-15" src="{{ 'tulpen.jpg'|imagine('bsp15') }}" alt="">
 <img id="imagine-filter-16" src="{{ 'tulpen.jpg'|imagine('bsp16') }}" alt="">
+<img id="imagine-filter-17" src="{{ 'tulpen.jpg'|imagine('bsp17') }}" alt="">
+<img id="imagine-filter-not-existing" src="{{ 'not-existing.jpg'|imagine('default') }}" alt="">
 
 <h2>Function</h2>
 
@@ -46,3 +48,5 @@ hidden: 0
 {{ imagine('tulpen.jpg', 'bsp14', {id: 'imagine-function-14'}) }}
 {{ imagine('tulpen.jpg', 'bsp15', {id: 'imagine-function-15'}) }}
 {{ imagine('tulpen.jpg', 'bsp16', {id: 'imagine-function-16'}) }}
+{{ imagine('tulpen.jpg', 'bsp17', {id: 'imagine-function-17'}) }}
+{{ imagine('not-existing.jpg', 'default', {id: 'imagine-function-not-existing'}) }}

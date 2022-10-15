@@ -13,6 +13,11 @@ final class VirtualAppPlugin extends Plugin
         $this->application = $application;
     }
 
+    public function commands(): array
+    {
+        return []; // TODO
+    }
+
     public function events(): array
     {
         return $this->application->getEvents();
@@ -36,6 +41,11 @@ final class VirtualAppPlugin extends Plugin
     public function twigFilters(): array
     {
         return $this->application->getTwigFilters();
+    }
+
+    public function twigGlobals(): array
+    {
+        return $this->application->getTwigGlobals();
     }
 
     public function twigFunctions(): array

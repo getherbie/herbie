@@ -66,7 +66,6 @@ final class ContainerBuilder
         }
 
         $c->set(Config::class, function (Container $c) {
-
             $const = [
                 'APP_PATH' => rtrim($this->app->getAppPath(), '/'),
                 'SITE_PATH' => rtrim($this->app->getSitePath(), '/'),

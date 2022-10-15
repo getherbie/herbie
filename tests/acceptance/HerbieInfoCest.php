@@ -23,6 +23,7 @@ final class HerbieInfoCest
             'herbie\defined_functions',
             'herbie\explode_list',
             'herbie\get_callable_name',
+            'herbie\get_constructor_params_to_inject',
             'herbie\get_fully_qualified_class_name',
             'herbie\handle_internal_webserver_assets',
             'herbie\load_composer_plugin_configs',
@@ -34,8 +35,8 @@ final class HerbieInfoCest
             'herbie\render_exception',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Functions (' . count($functions) . ')', 'h2');
-        $I->see(join(',', $functions), '.herbie-info-functions');
+        $I->see('PHP Functions (' . count($functions) . ')', 'h2');
+        $I->see(join(',', $functions), '.herbie-info-php-functions');
     }
 
     public function testNumberAndSortingOfHerbieClasses(AcceptanceTester $I)
@@ -98,8 +99,8 @@ final class HerbieInfoCest
             'herbie\sysplugin\twig_plus\TwigPlusPlugin',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Classes (' . count($classes) . ')', 'h2');
-        $I->see(join(',', $classes), '.herbie-info-classes');
+        $I->see('PHP Classes (' . count($classes) . ')', 'h2');
+        $I->see(join(',', $classes), '.herbie-info-php-classes');
     }
 
     public function testNumberAndSortingOfHerbieMiddlewares(AcceptanceTester $I)
@@ -111,6 +112,7 @@ final class HerbieInfoCest
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
+            'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
             'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
@@ -136,6 +138,8 @@ final class HerbieInfoCest
             'components.twigRenderer.charset',
             'components.twigRenderer.debug',
             'components.twigRenderer.strictVariables',
+            'components.virtualCorePlugin.enableTwigInLayoutFilter',
+            'components.virtualCorePlugin.enableTwigInSegmentFilter',
             'enabledPlugins',
             'enabledSysPlugins',
             'fileExtensions.layouts',
@@ -158,6 +162,7 @@ final class HerbieInfoCest
             'paths.themes',
             'paths.twigFilters',
             'paths.twigFunctions',
+            'paths.twigGlobals',
             'paths.twigTests',
             'paths.web',
             'plugins.dummy.apiVersion',
@@ -200,6 +205,10 @@ final class HerbieInfoCest
             'plugins.imagine.filterSets.bsp16.filters.thumbnail.mode',
             'plugins.imagine.filterSets.bsp16.filters.thumbnail.size.0',
             'plugins.imagine.filterSets.bsp16.filters.thumbnail.size.1',
+            'plugins.imagine.filterSets.bsp17.filters.blur.sigma',
+            'plugins.imagine.filterSets.bsp17.filters.thumbnail.mode',
+            'plugins.imagine.filterSets.bsp17.filters.thumbnail.size.0',
+            'plugins.imagine.filterSets.bsp17.filters.thumbnail.size.1',
             'plugins.imagine.filterSets.bsp2.filters.crop.size.0',
             'plugins.imagine.filterSets.bsp2.filters.crop.size.1',
             'plugins.imagine.filterSets.bsp2.filters.crop.start.0',
@@ -243,6 +252,7 @@ final class HerbieInfoCest
             'plugins.imagine.pluginClass',
             'plugins.imagine.pluginName',
             'plugins.imagine.pluginPath',
+            'plugins.imagine.test',
             'plugins.markdown.apiVersion',
             'plugins.markdown.enableTwigFilter',
             'plugins.markdown.enableTwigFunction',
@@ -313,6 +323,23 @@ final class HerbieInfoCest
         $I->see(join(',', $configs), '.herbie-info-config');
     }
 
+    public function testNumberAndSortingOfHerbieGlobals(AcceptanceTester $I)
+    {
+        $globals = [
+            'route',
+            'routeParams',
+            'baseUrl',
+            'theme',
+            'site',
+            'page',
+            'config',
+            'dummy'
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Twig Globals (' . count($globals) . ')', 'h2');
+        $I->see(join(',', $globals), '.herbie-info-twig-globals');
+    }
+
     public function testNumberAndSortingOfHerbieTwigFilters(AcceptanceTester $I)
     {
         $filters = [
@@ -372,7 +399,7 @@ final class HerbieInfoCest
         $I->see('Twig Filters (' . count($filters) . ')', 'h2');
         $I->see(join(',', $filters), '.herbie-info-twig-filters');
     }
-    
+
     public function testNumberAndSortingOfHerbieTwigFunctions(AcceptanceTester $I)
     {
         $functions = [
@@ -425,9 +452,9 @@ final class HerbieInfoCest
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Twig Functions (' . count($functions) . ')', 'h2');
-        $I->see(join(',', $functions), '.herbie-info-twig-functions');        
+        $I->see(join(',', $functions), '.herbie-info-twig-functions');
     }
-    
+
     public function testNumberAndSortingOfHerbieTwigTests(AcceptanceTester $I)
     {
         $tests = [
@@ -451,7 +478,7 @@ final class HerbieInfoCest
         $I->see('Twig Tests (' . count($tests) . ')', 'h2');
         $I->see(join(',', $tests), '.herbie-info-twig-tests');
     }
-    
+
     public function testNumberAndSortingOfHerbieFilters(AcceptanceTester $I)
     {
         $filters = [
@@ -468,10 +495,53 @@ final class HerbieInfoCest
             'renderSegment',
             'renderSegment',
             'renderSegment',
-            'renderContent',            
+            'renderContent',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Filters (' . count($filters) . ')', 'h2');
-        $I->see(join(',', $filters), '.herbie-info-filters');        
+        $I->see(join(',', $filters), '.herbie-info-filters');
+    }
+
+    public function testNumberAndSortingOfHerbieEvents(AcceptanceTester $I)
+    {
+        $events = [
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigInitialized',
+            'onTwigAddExtension',
+            'onTwigAddExtension',
+            'onContentRendered',
+            'onLayoutRendered',
+            'onPluginsAttached',
+            'onResponseEmitted',
+            'onResponseGenerated',
+            'onSystemPluginsAttached',
+            'onComposerPluginsAttached',
+            'onLocalPluginsAttached',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Events (' . count($events) . ')', 'h2');
+        $I->see(join(',', $events), '.herbie-info-events');
     }
 }

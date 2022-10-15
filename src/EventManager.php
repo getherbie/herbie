@@ -21,7 +21,7 @@ final class EventManager
 
     public function attach(string $eventName, callable $listener, int $priority = 1): callable
     {
-        $this->events[$eventName][(int) $priority][0][] = $listener;
+        $this->events[$eventName][$priority][0][] = $listener; // TODO reduce for one level
         return $listener;
     }
 
@@ -43,6 +43,24 @@ final class EventManager
         }
 
         $this->triggerListeners($event);
+    }
+
+    public function getEvents(): array
+    {
+        $items = [];
+        foreach ($this->events as $eventName => $eventsWithPriority) {
+            foreach ($eventsWithPriority as $priority => $events) {
+                foreach ($events as $event) {
+                    foreach ($event as $e) {
+                        $items[] = array_merge(
+                            [$eventName, $priority],
+                            get_callable_name($e)
+                        );
+                    }
+                }
+            }
+        }
+        return $items;
     }
 
     /**

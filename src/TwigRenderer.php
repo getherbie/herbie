@@ -126,9 +126,10 @@ final class TwigRenderer
     {
         $items = [];
         foreach ($this->getTwigEnvironment()->getTests() as $f) {
+            $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                get_callable_name($f->getCallable())
+                get_callable_name($callable)
             ];
         }
         return $items;
@@ -177,6 +178,11 @@ final class TwigRenderer
     public function addFilter(TwigFilter $filter): void
     {
         $this->twig->addFilter($filter);
+    }
+
+    public function addGlobal(string $name, $mixed): void
+    {
+        $this->twig->addGlobal($name, $mixed);
     }
 
     public function addTest(TwigTest $test): void

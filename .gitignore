@@ -1,4 +1,5 @@
 .idea
+.php-cs-fixer.cache
 
 # composer vendor dir
 /vendor
@@ -8,3 +9,7 @@
 
 # site folder
 /site
+
+# codeception/c3
+/c3.php
+/c3_error.log

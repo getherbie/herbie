@@ -31,6 +31,13 @@ final class DummySysPlugin implements PluginInterface
         return 2;
     }
 
+    public function commands(): array
+    {
+        return [
+            DummyCommand::class,
+        ];
+    }
+
     /**
      * @return array[]
      */
@@ -82,6 +89,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
+            ['download/dummy.pdf', [$this, 'routeMiddleware']],
             ['plugins/dummy', [$this, 'routeMiddleware']]
         ];
     }
@@ -94,6 +102,13 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
         return [
             ['dummy', [$this, 'twigDummyFilter']]
+        ];
+    }
+
+    public function twigGlobals(): array
+    {
+        return [
+            'dummy' => $this
         ];
     }
 
@@ -170,14 +185,20 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         $response = $next->handle($request);
-        $content = (string)$response->getBody();
-        $newContent = str_replace(
+
+        if (!$response->getBody()->isWritable()) {
+            // files like pdfs are not writable
+            return $response;
+        }
+
+        $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-app-middleware', __METHOD__) . '</body>',
-            $content
+            (string)$response->getBody()
         );
+
         $response->getBody()->rewind();
-        $response->getBody()->write($newContent);
+        $response->getBody()->write($content);
         return $response;
     }
 
@@ -185,14 +206,20 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         $response = $next->handle($request);
-        $content = (string)$response->getBody();
-        $newContent = str_replace(
+
+        if (!$response->getBody()->isWritable()) {
+            // files like pdfs are not writable
+            return $response;
+        }
+
+        $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-route-middleware', __METHOD__) . '</body>',
-            $content
+            (string)$response->getBody()
         );
+
         $response->getBody()->rewind();
-        $response->getBody()->write($newContent);
+        $response->getBody()->write($content);
         return $response;
     }
 

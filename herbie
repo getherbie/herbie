@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use herbie\Application;
+use herbie\ApplicationPaths;
+
+require __DIR__.'/vendor/autoload.php';
+
+// create app paths
+$appPaths = new ApplicationPaths(
+    __DIR__,
+    __DIR__ . '/example/site',
+);
+
+// create app
+$app = new Application(
+    $appPaths,
+);
+
+$app->runCli();

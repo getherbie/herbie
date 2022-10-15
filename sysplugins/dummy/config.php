@@ -1,8 +1,10 @@
 <?php
 
+use herbie\sysplugin\dummy\DummySysPlugin;
+
 return [
     'apiVersion' => 2,
     'pluginName' => 'dummy',
-    'pluginClass' => __DIR__ . '/DummySysPlugin.php',
-    'pluginPath' => __DIR__
+    'pluginClass' => DummySysPlugin::class,
+    'pluginPath' => __DIR__,
 ];

@@ -11,6 +11,11 @@ abstract class Plugin implements PluginInterface
         return 2;
     }
 
+    public function commands(): array
+    {
+        return [];
+    }
+
     public function events(): array
     {
         return [];
@@ -32,6 +37,11 @@ abstract class Plugin implements PluginInterface
     }
 
     public function twigFilters(): array
+    {
+        return [];
+    }
+
+    public function twigGlobals(): array
     {
         return [];
     }

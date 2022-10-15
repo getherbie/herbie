@@ -64,7 +64,7 @@ final class ImagineSysPlugin extends Plugin
             $attribs['class'] = trim($attribs['class'] . ' imagine--file-not-found');
             return sprintf(
                 '<img src="%s"%s>',
-                $path,
+                $this->getTransparentOnePixelSrc(),
                 $this->buildHtmlAttributes($attribs)
             );
         }
@@ -107,7 +107,8 @@ final class ImagineSysPlugin extends Plugin
         $abspath = $this->alias->get('@media/' . $path);
 
         if (!is_file($abspath)) {
-            return new Markup('', 'utf8');
+            $dataSrc = $this->getTransparentOnePixelSrc();
+            return new Markup($dataSrc, 'utf8');
         }
 
         $sanatizedFilter = $this->sanatizeFilterName($filter);

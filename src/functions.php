@@ -6,6 +6,8 @@ namespace herbie;
 
 use Closure;
 use Composer\InstalledVersions;
+use Psr\Container\ContainerInterface;
+use ReflectionFunction;
 
 function camelize(string $input, string $separator = '_'): string
 {
@@ -292,10 +294,36 @@ function get_callable_name($callable): array
         case is_array($callable):
             return ['static', $callable[0]  . '::' . $callable[1]];
         case $callable instanceof Closure:
-            return ['closure', null];
+            $reflectionClosure = new ReflectionFunction($callable);
+            $class = $reflectionClosure->getClosureScopeClass();
+            return ['closure', $class ? $class->getName() : '{closure}'];
         case is_object($callable):
             return ['invokable', get_class($callable)];
         default:
             return ['unknown', null];
     }
+}
+
+function get_constructor_params_to_inject(string $pluginClassName, ContainerInterface $container): array
+{
+    $reflectedClass = new \ReflectionClass($pluginClassName);
+    $constructor = $reflectedClass->getConstructor();
+    if (!$constructor) {
+        return [];
+    }
+
+    $constructorParams = [];
+    foreach ($constructor->getParameters() as $param) {
+        $type = $param->getType();
+        if ($type === null) {
+            continue;
+            //throw SystemException::serverError('Only objects can be injected in ' . $pluginClassName);
+        }
+        $classNameToInject = $type->getName();
+        if (in_array($classNameToInject, ['string'])) {
+            continue;
+        }
+        $constructorParams[] = $container->get($classNameToInject);
+    }
+    return $constructorParams;
 }
