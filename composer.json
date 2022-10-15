@@ -75,6 +75,10 @@
         "phpcbf": "./vendor/bin/phpcbf",
         "phpcs": "./vendor/bin/phpcs",
         "codecept": "./vendor/bin/codecept run",
-        "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M"
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
+        "start:test": "php -S localhost:9999 tests/_data/web/index.php",
+        "start:website": "php -S localhost:9999 example/web/index.php",
+        "debug:test": "HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 tests/_data/web/index.php",
+        "debug:website": "HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 example/web/index.php"
     }
 }

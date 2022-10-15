@@ -15,6 +15,7 @@ return [
         'site' => 'SITE_PATH',
         'themes' => 'SITE_PATH/themes',
         'twigFilters' => 'SITE_PATH/extend/twig_filters',
+        'twigGlobals' => 'SITE_PATH/extend/twig_globals',
         'twigFunctions' => 'SITE_PATH/extend/twig_functions',
         'twigTests' => 'SITE_PATH/extend/twig_tests',
         'web' => 'WEB_PATH'
@@ -43,9 +44,6 @@ return [
             'baseUrl' => '/download/',
             'storagePath' => '@site/media',
         ],
-        'urlMatcher' => [
-            'rules' => []
-        ],
         'twigRenderer' => [
             'autoescape' => 'html',
             'cache' => false,
@@ -53,8 +51,15 @@ return [
             'debug' => false,
             'strictVariables' => false,
         ],
+        'urlMatcher' => [
+            'rules' => []
+        ],
+        'virtualCorePlugin' => [
+            'enableTwigInLayoutFilter' => true,
+            'enableTwigInSegmentFilter' => true,
+        ],
     ],
     'plugins' => [],
     'enabledPlugins' => '',
-    'enabledSysPlugins' => 'imagine'
+    'enabledSysPlugins' => ''
 ];

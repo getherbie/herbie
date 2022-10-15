@@ -25,6 +25,7 @@ final class Application
     private array $filters;
     private array $routeMiddlewares;
     private array $twigFilters;
+    private array $twigGlobals;
     private array $twigFunctions;
     private array $twigTests;
 
@@ -46,6 +47,7 @@ final class Application
         $this->filters = [];
         $this->routeMiddlewares = [];
         $this->twigFilters = [];
+        $this->twigGlobals = [];
         $this->twigFunctions = [];
         $this->twigTests = [];
 
@@ -190,6 +192,17 @@ final class Application
     public function getTwigFilters(): array
     {
         return $this->twigFilters;
+    }
+
+    public function addTwigGlobals(array $twigGlobals): Application
+    {
+        $this->twigGlobals = $twigGlobals;
+        return $this;
+    }
+
+    public function getTwigGlobals(): array
+    {
+        return $this->twigGlobals;
     }
 
     public function addTwigFunction(TwigFunction $twigFunction): Application

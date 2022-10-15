@@ -66,6 +66,19 @@ final class VirtualLocalPlugin extends Plugin
         return $filters;
     }
 
+    public function twigGlobals(): array
+    {
+        $dir = $this->config->getAsString('paths.twigGlobals');
+        $files = $this->globPhpFiles($dir);
+
+        $globals = [];
+        foreach ($files as $file) {
+            $globals = array_merge($globals, $this->includePhpFile($file));
+        }
+
+        return $globals;
+    }
+
     public function twigFunctions(): array
     {
         $dir = $this->config->getAsString('paths.twigFunctions');

@@ -11,6 +11,9 @@ return [
     'enabledPlugins' => 'simplecontact,simplesearch',
     'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
     'components' => [
+        'twigRenderer' => [
+            'debug' => true
+        ],
         'urlMatcher' => [
             'rules' => [
                 ['blog/author/{author}', 'blog'],
@@ -29,9 +32,6 @@ return [
                     'year' => '[0-9]{4}'
                 ]]
             ]
-        ],
-        'twigRenderer' => [
-            'debug' => true
-        ],
-    ],
+        ]
+    ]
 ];

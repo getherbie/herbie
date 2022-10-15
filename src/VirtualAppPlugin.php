@@ -38,6 +38,11 @@ final class VirtualAppPlugin extends Plugin
         return $this->application->getTwigFilters();
     }
 
+    public function twigGlobals(): array
+    {
+        return $this->application->getTwigGlobals();
+    }
+
     public function twigFunctions(): array
     {
         return $this->application->getTwigFunctions();
