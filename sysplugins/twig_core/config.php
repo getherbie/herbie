@@ -1,8 +1,10 @@
 <?php
 
+use herbie\sysplugin\twig_core\TwigCorePlugin;
+
 return [
     'apiVersion' => 2,
     'pluginName' => 'twig_core',
-    'pluginClass' => __DIR__ . '/TwigCorePlugin.php',
+    'pluginClass' => TwigCorePlugin::class,
     'pluginPath' => __DIR__,
 ];

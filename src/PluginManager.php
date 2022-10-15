@@ -29,6 +29,8 @@ final class PluginManager
 
     private array $routeMiddlewares;
 
+    private array $commands;
+
     /**
      * PluginManager constructor.
      */
@@ -57,7 +59,7 @@ final class PluginManager
         $this->loadPlugin(new InstallablePlugin(
             'virtual_core_plugin',
             __DIR__,
-            __DIR__ . '/VirtualCorePlugin.php',
+            VirtualCorePlugin::class,
             'virtual',
         ));
 
@@ -85,14 +87,14 @@ final class PluginManager
         $this->loadPlugin(new InstallablePlugin(
             'virtual_local_plugin',
             __DIR__,
-            __DIR__ . '/VirtualLocalPlugin.php',
+            VirtualLocalPlugin::class,
             'virtual',
         ));
 
         $this->loadPlugin(new InstallablePlugin(
             'virtual_app_plugin',
             __DIR__,
-            __DIR__ . '/VirtualAppPlugin.php',
+            VirtualAppPlugin::class,
             'virtual',
         ));
 
@@ -101,7 +103,7 @@ final class PluginManager
         $this->loadPlugin(new InstallablePlugin(
             'virtual_last_plugin',
             __DIR__,
-            __DIR__ . '/VirtualLastPlugin.php',
+            VirtualLastPlugin::class,
             'virtual',
         ));
     }
@@ -134,14 +136,14 @@ final class PluginManager
 
     private function loadPlugin(InstallablePlugin $installablePlugin): void
     {
-        if (!$installablePlugin->classPathExists()) {
-            return; // TODO log info
-        }
-
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
         if ($plugin->apiVersion() < Application::VERSION_API) {
             return; // TODO log info
+        }
+
+        foreach ($plugin->commands() as $command) {
+            $this->commands[] = $command;
         }
 
         foreach ($plugin->filters() as $filter) {
@@ -215,6 +217,11 @@ final class PluginManager
     public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
+    }
+
+    public function getCommands(): array
+    {
+        return $this->commands;
     }
 
     public function getAppMiddlewares(): array

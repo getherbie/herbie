@@ -11,6 +11,11 @@ abstract class Plugin implements PluginInterface
         return 2;
     }
 
+    public function commands(): array
+    {
+        return [];
+    }
+
     public function events(): array
     {
         return [];

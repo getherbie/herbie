@@ -109,6 +109,20 @@ final class Application
         $this->getEventManager()->trigger('onResponseEmitted');
     }
 
+    public function runCli(): void
+    {
+        $this->getPluginManager()->init();
+
+        $application = new \Symfony\Component\Console\Application();
+
+        foreach ($this->getPluginManager()->getCommands() as $command) {
+            $params = get_constructor_params_to_inject($command, $this->container);
+            $application->add(new $command(...$params));
+        }
+
+        $application->run();
+    }
+
     private function emitResponse(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();

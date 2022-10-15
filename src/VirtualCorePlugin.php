@@ -19,6 +19,13 @@ final class VirtualCorePlugin extends Plugin
         $this->twigRenderer = $twigRenderer;
     }
 
+    public function commands(): array
+    {
+        return [
+            ClearCacheCommand::class
+        ];
+    }
+
     public function filters(): array
     {
         return [

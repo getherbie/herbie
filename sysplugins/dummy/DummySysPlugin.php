@@ -31,6 +31,13 @@ final class DummySysPlugin implements PluginInterface
         return 2;
     }
 
+    public function commands(): array
+    {
+        return [
+            DummyCommand::class,
+        ];
+    }
+
     /**
      * @return array[]
      */

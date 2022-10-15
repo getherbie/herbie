@@ -43,16 +43,6 @@ final class VirtualLocalPlugin extends Plugin
         return $filters;
     }
 
-    public function appMiddlewares(): array
-    {
-        return []; // TODO
-    }
-
-    public function routeMiddlewares(): array
-    {
-        return []; // TODO
-    }
-
     public function twigFilters(): array
     {
         $dir = $this->config->getAsString('paths.twigFilters');

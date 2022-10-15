@@ -13,6 +13,11 @@ final class VirtualAppPlugin extends Plugin
         $this->application = $application;
     }
 
+    public function commands(): array
+    {
+        return []; // TODO
+    }
+
     public function events(): array
     {
         return $this->application->getEvents();

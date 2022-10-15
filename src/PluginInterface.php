@@ -8,6 +8,8 @@ interface PluginInterface
 {
     public function apiVersion(): int;
 
+    public function commands(): array;
+
     public function events(): array;
 
     public function filters(): array;

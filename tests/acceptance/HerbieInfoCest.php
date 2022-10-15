@@ -23,6 +23,7 @@ final class HerbieInfoCest
             'herbie\defined_functions',
             'herbie\explode_list',
             'herbie\get_callable_name',
+            'herbie\get_constructor_params_to_inject',
             'herbie\get_fully_qualified_class_name',
             'herbie\handle_internal_webserver_assets',
             'herbie\load_composer_plugin_configs',
