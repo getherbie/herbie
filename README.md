@@ -5,11 +5,11 @@
 
 # Herbie CMS
 
-> With Herbie CMS you create a simple but fully functional website or blog in no time and with little effort.
+> Create <u>small</u> but fully functional websites or blogs in no time and with little effort 👌
 
-## About Herbie CMS
+Herbie CMS is a simple, modern, fast and highly customizable flat-file Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
-Herbie CMS is a Simple, Modern, Fast and Highly Customizable Flat-File Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other Human-Readable Text Files.
+## Featuring
 
 Herbie CMS is powered by proven libraries:
 
@@ -18,13 +18,13 @@ Herbie CMS is powered by proven libraries:
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
 
-Herbie CMS is highly customizable, thanks to:
+Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
 
 * Application and Route Middlewares
 * Event Handlers and Interception Filters
-* Twig Plugins with Filters, Functions and Tests
+* Twig Filters, Twig Globals, Twig Functions and Twig Tests
 
-Herbie CMS supports the following PHP Standards Recommendations:
+Herbie CMS implements the following PHP standard recommendations:
 
 * [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
 * [PSR-2](https://www.php-fig.org/psr/psr-2/) Coding Style Guide
@@ -37,41 +37,47 @@ Herbie CMS supports the following PHP Standards Recommendations:
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 
-Herbie CMS is well tested, thanks to:
+Herbie CMS is well tested:
 
-- [Codeception](https://codeception.com) with Unit, Integration and Acceptance Tests
+- Unit, Integration and Acceptance Tests with [Codeception](https://codeception.com)
+- Static Code Analysis with [PHPStan](https://phpstan.org)
+- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) 
+
+## Use Cases
+
+TBD
 
 ## Installation
 
 ### Composer 
 
-The easiest way to install Herbie CMS is via Composer. 
-To do this, execute the following commands in your terminal:
+The easiest way to install Herbie CMS is with Composer.
+To do this, run the following commands in your terminal:
 
     # create project and install dependent libraries
-    composer create-project getherbie/start-website myproject
+    composer create-project getherbie/start-website mywebsite
     
-    # go to web directory
-    cd myproject/web
+    # go to the web directory
+    cd mywebsite/web
     
-    # start internal webserver 
+    # start the internal webserver 
     php -S localhost:8888 index.php
 
-Now, open <http://localhost:8888> in your browser.
+Now open <http://localhost:8888> with your browser.
 You should see your first Herbie CMS website. 
 
 ### Docker
 
-Or you can achieve the same by using Docker.
+You can achieve the same by using Docker.
 
     docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
     cd myproject
 
 ## Development Environment
 
-If you need a development environment, you can follow the steps below.
+If you need a development environment, you can follow these steps.
 
-Clone the git repository.
+Clone the GitHub repository.
 
     git clone https://github.com/getherbie/herbie.git
 
@@ -89,11 +95,11 @@ Start PHP's internal web server.
 
 Now, open `localhost:9999` with your favorite web browser.
 
-If you want to have additional console output and logging information, set Herbie CMS's debug environment variable.
+If you want to have additional console output or logging information, set Herbie CMS's debug environment variable.
 
     HERBIE_DEBUG=1 php -S localhost:9999 example/web/index.php
 
-And if you want to use Xdebug (3.x), start the internal web server as follows.
+If you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
     XDEBUG_MODE=debug php -S localhost:9999 example/web/index.php
