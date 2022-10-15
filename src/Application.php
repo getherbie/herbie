@@ -114,6 +114,7 @@ final class Application
         $this->getPluginManager()->init();
 
         $application = new \Symfony\Component\Console\Application();
+        $application->setName("-------------------\nHERBIE CMS CLI-Tool\n-------------------");
 
         foreach ($this->getPluginManager()->getCommands() as $command) {
             $params = get_constructor_params_to_inject($command, $this->container);
