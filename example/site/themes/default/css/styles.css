@@ -209,14 +209,6 @@ div.highlight pre {
     background:#3abac4;
 }
 
-/* Page Index */
-.page-index .header .inner-container {
-    border-bottom:none;
-}
-.page-index .content {
-    padding-right:0;
-}
-
 /* Pure */
 .pure-button {
     background-color:#3BB8E6;
@@ -403,6 +395,30 @@ span.e {
     content: "(url: " attr(src) ")";
     display: block;
     font-size: 12px;
+}
+
+/* breadcrumb */
+nav.breadcrumb {
+    margin-top:-0.3em;
+    margin-bottom:1em;
+}
+nav.breadcrumb ul {
+    margin:0;
+    padding:0;
+    font-size:0.8em;
+}
+nav.breadcrumb li {
+    color:#C2C2C2;
+    display:inline;
+}
+nav.breadcrumb li.delim {
+    color:#d3d0c8;
+}
+nav.breadcrumb a {
+    color:#C2C2C2;
+}
+nav.breadcrumb a:hover {
+    color:#57534a;
 }
 
 /* Media Queries */

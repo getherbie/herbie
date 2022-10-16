@@ -8,7 +8,7 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
-    'enabledPlugins' => 'simplecontact,simplesearch',
+    'enabledPlugins' => 'simplesearch',
     'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,rest,textile',
     'components' => [
         'twigRenderer' => [

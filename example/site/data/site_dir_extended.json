@@ -1,0 +1,70 @@
+[
+    {
+        "name": "assets",
+        "desc": "Das Assets-Verzeichnis von Herbie CMS. Darin sind CSS- und JS-Dateien abgelegt, die zur Laufzeit ins Web-Assets-Verzeichnis kopiert werden."
+    },
+    {
+        "name": "config",
+        "desc": "Das Konfigurationsverzeichnis mit Dateien im YAML-Format (die Hauptdatei kann auch eine PHP-Datei sein).\n        Konfigurationen für Plugins sind als einzelne Dateien im Unterordner <code>plugins</code> abgelegt."
+    },
+    {
+        "name": "data",
+        "desc": "Das Daten-Verzeichnis, im dem verschiedene Daten-Dateien im YAML-Format gespeichert werden können."
+    },
+    {
+        "name": "extend",
+        "desc": "Das Verzeichnis mit den verschiedenen Erweiterungen."
+    },
+    {
+        "name": "extend/events",
+        "desc": "Verzeichnis mit Event Handlern."
+    },
+    {
+        "name": "extend/filters",
+        "desc": "Verzeichnis mit Intercepting Filtern."
+    },
+    {
+        "name": "extend/plugins",
+        "desc": "Verzeichnis mit Plugins."
+    },
+    {
+        "name": "extend/twig_filters",
+        "desc": "Verzeichnis mit Twig Filtern."
+    },
+    {
+        "name": "extend/twig_functions",
+        "desc": "Verzeichnis mit Twig Funktionen."
+    },
+    {
+        "name": "extend/twig_globals",
+        "desc": "Verzeichnis mit Twig Globals."
+    },
+    {
+        "name": "extend/twig_tests",
+        "desc": "Verzeichnis mit Twig Tests."
+    },
+    {
+        "name": "pages",
+        "desc": "Die CMS-Seiten der Website. Diese sind als Textdateien (Markdown,\n        Textile, Text, HTML) abgespeichert."
+    },
+    {
+        "name": "runtime",
+        "desc": "Verzeichnis mit temporären Dateien, die während der Laufzeit des Programms erstellt werden."
+    },
+    {
+        "name": "runtime/cache",
+        "desc": "Verzeichnis mit Cache-Dateien für Daten, Seiten und Twig."
+    },
+    {
+        "name": "runtime/log",
+        "desc": "Verzeichnis mit Logdateien von PHP oder eines PSR-3 kompatiblen Loggers."
+    },
+    {
+        "name": "themes",
+        "desc": "Verzeichnis mit Theme-Verzeichnissen und -Dateien."
+    },
+    {
+        "name": "themes/default",
+        "desc": "Das Verzeichnis mit dem Default-Theme."
+    }
+]
