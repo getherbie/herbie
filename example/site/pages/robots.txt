@@ -1,0 +1,6 @@
+---
+layout: ""
+content_type: text/plain
+keep_extension: 1
+---
+Sitemap: {{ abs_url() }}sitemap.xml

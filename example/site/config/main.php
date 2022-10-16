@@ -9,7 +9,7 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplecontact,simplesearch',
-    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,rest,textile',
     'components' => [
         'twigRenderer' => [
             'debug' => true
