@@ -116,12 +116,9 @@ final class PageRendererMiddleware implements MiddlewareInterface
             $rendered = $content;
         }
 
-        $response = $this->httpFactory->createResponse(200);
-
+        $response = $this->httpFactory->createResponse();
         $response->getBody()->write($rendered);
-        $response->withHeader('Content-Type', $page->getContentType());
-
-        return $response;
+        return $response->withHeader('Content-Type', $page->getContentType());
     }
 
     private function createRedirectResponse(array $redirect): ResponseInterface
