@@ -8,6 +8,7 @@ use Closure;
 use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 use ReflectionFunction;
+use ReflectionNamedType;
 
 function camelize(string $input, string $separator = '_'): string
 {
@@ -314,10 +315,10 @@ function get_constructor_params_to_inject(string $pluginClassName, ContainerInte
 
     $constructorParams = [];
     foreach ($constructor->getParameters() as $param) {
+        /** @var ReflectionNamedType|null $type */
         $type = $param->getType();
         if ($type === null) {
             continue;
-            //throw SystemException::serverError('Only objects can be injected in ' . $pluginClassName);
         }
         $classNameToInject = $type->getName();
         if (in_array($classNameToInject, ['string'])) {

@@ -29,7 +29,7 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
 
     public function testTranslateFromApp(): void
     {
-        $this->assertSame('Herbie CMS ist grossartig!', $this->twig()->renderString('{{ translate("app", "Herbie is great!") }}'));
+        $this->assertSame('Herbie CMS ist grossartig!', $this->twig()->renderString('{{ translate("app", "Herbie CMS is great!") }}'));
     }
 
     public function testTranslateFromPlugin(): void

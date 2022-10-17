@@ -259,6 +259,9 @@ final class PluginManager
         return $this->eventManager->attach('onTwigInitialized', $closure);
     }
 
+    /**
+     * @param mixed $mixed
+     */
     private function addTwigGlobal(string $name, $mixed): callable
     {
         $closure = function (Event $event) use ($name, $mixed) {

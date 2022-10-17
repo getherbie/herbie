@@ -6,11 +6,11 @@ twig: 0
 
 # Layouts
 
-Layoutdateien werden in Herbie mit Hilfe der Template Engine Twig umgesetzt. 
+Layoutdateien werden in Herbie CMS mit Hilfe der Template Engine Twig umgesetzt. 
 Twig Templates sind recht einfach zu verstehen und sehr gut dokumentiert, siehe <https://twig.symfony.com/>.
 
-Layoutdateien sind in Herbie unter `site/layouts/default` abgelegt, wobei das letzte Pfadsegment für das Theme steht. 
-Herbie erwartet mindestens zwei Layoutdateien:
+Layoutdateien werden unter `site/layouts/default` abgelegt, wobei das letzte Pfadsegment für das Theme steht. 
+Herbie CMS erwartet mindestens zwei Layoutdateien:
 
     site/layouts/default/
     |-- default.html        # das Default-Template

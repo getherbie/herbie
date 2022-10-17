@@ -180,6 +180,9 @@ final class TwigRenderer
         $this->twig->addFilter($filter);
     }
 
+    /**
+     * @param mixed $mixed
+     */
     public function addGlobal(string $name, $mixed): void
     {
         $this->twig->addGlobal($name, $mixed);

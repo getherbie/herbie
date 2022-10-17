@@ -11,7 +11,7 @@ final class HerbieInfoCest
     {
         $I->amOnPage('/herbie-info');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Herbie Info', 'h1');
+        $I->see('Herbie CMS Info', 'h1');
     }
 
     public function testNumberAndSortingOfHerbieFunctions(AcceptanceTester $I)

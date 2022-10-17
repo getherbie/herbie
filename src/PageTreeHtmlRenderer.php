@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
+/**
+ * @method PageItem getMenuItem()
+ */
 final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
 {
     private string $class;
@@ -19,10 +22,8 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
         'endCurrent' => '</li>'
     ];
 
-    /**
-     * @var callable
-     */
-    public $itemCallback;
+    /** @var callable|null */
+    private $itemCallback;
 
     public function __construct(
         \RecursiveIterator $iterator,
@@ -44,6 +45,11 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
         foreach ($options as $key => $value) {
             $this->template[$key] = $value;
         }
+    }
+
+    public function setItemCallback(callable $callback): void
+    {
+        $this->itemCallback = $callback;
     }
 
     public function beginIteration(): void

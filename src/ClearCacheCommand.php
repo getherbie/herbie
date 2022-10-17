@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCacheCommand extends Command
+final class ClearCacheCommand extends Command
 {
     private Config $config;
     protected static $defaultName = 'clear-cache';
@@ -57,7 +57,7 @@ class ClearCacheCommand extends Command
             return $cachePaths;
         }
 
-        return $cachePaths[$type] ? [$cachePaths[$type]] : [];
+        return isset($cachePaths[$type]) ? [$cachePaths[$type]] : [];
     }
 
     private function clearPath(string $path, array $filesToIgnore): void

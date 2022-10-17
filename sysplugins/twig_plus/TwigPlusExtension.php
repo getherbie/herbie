@@ -221,11 +221,11 @@ final class TwigPlusExtension extends AbstractExtension
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function (PageTree $node) {
+        $htmlTree->setItemCallback(function (PageTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
-        };
+        });
         return $htmlTree->render($this->environment->getRoute());
     }
 
@@ -401,11 +401,11 @@ final class TwigPlusExtension extends AbstractExtension
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->itemCallback = function (PageTree $node) {
+        $htmlTree->setItemCallback(function (PageTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlGenerator->generate($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
-        };
+        });
         return $htmlTree->render();
     }
 
