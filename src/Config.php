@@ -11,12 +11,11 @@ final class Config
 {
     private array $data;
 
-    private string $delim;
+    private const DELIM = '.';
 
-    public function __construct(array $data, string $delim = '.')
+    public function __construct(array $data)
     {
         $this->data = $data;
-        $this->delim = $delim;
     }
 
     /**
@@ -29,11 +28,7 @@ final class Config
      */
     public function get(string $name, $default = null)
     {
-        if (strlen($this->delim) === 0) {
-            return null;
-        }
-
-        $path = explode($this->delim, $name);
+        $path = explode(self::DELIM, $name);
 
         if (!is_array($path)) {
             return null;
@@ -105,7 +100,7 @@ final class Config
         if (!is_array($data)) {
             throw new \UnexpectedValueException("Config for \"$path\" is not an array");
         }
-        return new self($data, $this->delim);
+        return new self($data);
     }
 
     public function check(string $name): bool
@@ -125,7 +120,7 @@ final class Config
             foreach (range(0, $recItIt->getDepth()) as $depth) {
                 $keys[] = $recItIt->getSubIterator($depth)->key();
             }
-            $flatten[join($this->delim, $keys)] = $leafValue;
+            $flatten[join(self::DELIM, $keys)] = $leafValue;
         }
         ksort($flatten);
         return $flatten;
