@@ -29,9 +29,13 @@ final class Config
      */
     public function get(string $name, $default = null)
     {
+        if (strlen($this->delim) === 0) {
+            return null;
+        }
+
         $path = explode($this->delim, $name);
 
-        if ($path === false) {
+        if (!is_array($path)) {
             return null;
         }
 
