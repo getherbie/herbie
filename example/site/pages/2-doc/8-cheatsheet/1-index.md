@@ -16,57 +16,55 @@ Das Cheat Sheet befindet sich noch im Aufbau, aber hier ist schon mal ein erster
 
 **Seiteneigeschaften ausgeben**
 
-Im Layoutdateien
+Im Layout- und Seitendateien
 
-    {{ page.title }}
-    {{ page.layout }}
-
-In Seitendateien
-
-    [[page.title]]
-    [[page.layout]]    
+    {{ '{{' }} page.title }}
+    {{ '{{' }} page.layout }}
 
 **Erlaubte Dateiendungen**<br>
-txt, markdown, md, textile, htm, html
+htm, html, markdown, md, rss, rst, textile, txt, xml
 
 **Homepage**<br>
 index.md
 
 **Inhaltssegmente**
 
-    --- 1 ---
-    --- 2 ---
-    --- 3 ---
+    --- default ---
+    --- left ---
+    --- right ---
 
 **Inhaltssegmente im Layout** ausgeben
 
 {% verbatim %}
-    {{ content() }}
-    {{ content(1) }}
-    {{ content(2) }}
+    {{ content("default") }}
+    {{ content("left") }}
+    {{ content("right") }}
 {% endverbatim %}
 
+**Events**
 
-**Hooks**
+{{ snippet(path="@site/snippets/simple_data.twig", type="events")|raw }}
 
-[include path="@site/snippets/simple_data.twig" type="hooks" field="desc"]
+**Filters**
 
-
-**Twig Funktionen**
-
-[include path="@site/snippets/simple_data.twig" type="twig_functions" field="desc"]
-
+{{ snippet(path="@site/snippets/simple_data.twig", type="filters")|raw }}
 
 **Twig Filter**
 
-[include path="@site/snippets/simple_data.twig" type="twig_filters" field="desc"]
+{{ snippet(path="@site/snippets/simple_data.twig", type="twig_filters")|raw }}
 
+**Twig Globals**
+
+{{ snippet(path="@site/snippets/variables.twig", type="vars_global")|raw }}
+
+**Twig Funktionen**
+
+{{ snippet(path="@site/snippets/simple_data.twig", type="twig_functions")|raw }}
 
 **Twig Tests**
 
-[include path="@site/snippets/simple_data.twig" type="twig_tests" field="desc"]
-
+{{ snippet(path="@site/snippets/simple_data.twig", type="twig_tests")|raw }}
 
 **Plugins**
 
-[include path="@site/snippets/simple_data.twig" type="plugins" field="text"]
+TBD
