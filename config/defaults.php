@@ -40,13 +40,12 @@ $settings['urls']['web'] = 'WEB_URL/';
  */
 $settings['fileExtensions'] = [];
 $settings['fileExtensions']['layouts'] = 'twig';
-$settings['fileExtensions']['media'] = [];
-$settings['fileExtensions']['media']['images'] = 'ai,bmp,gif,ico,jpg,png,psd,svg,tiff';
-$settings['fileExtensions']['media']['documents'] = 'csv,doc,docx,md,pdf,ppt,rtf,xls,xlsx';
-$settings['fileExtensions']['media']['archives'] = 'gz,gzip,tar,tgz,zip';
-$settings['fileExtensions']['media']['code'] = 'css,html,js,json,xml';
-$settings['fileExtensions']['media']['videos'] = 'avi,flv,mov,mp4,mv4,ogg,ogv,swf,webm';
-$settings['fileExtensions']['media']['audio'] = 'aiff,m4a,midi,mp3,wav';
+//$settings['fileExtensions']['mediaImages'] = 'ai,bmp,gif,ico,jpg,png,psd,svg,tiff';
+//$settings['fileExtensions']['mediaDocuments'] = 'csv,doc,docx,md,pdf,ppt,rtf,xls,xlsx';
+//$settings['fileExtensions']['mediaArchives'] = 'gz,gzip,tar,tgz,zip';
+//$settings['fileExtensions']['mediaCode'] = 'css,html,js,json,xml';
+//$settings['fileExtensions']['mediaVideos'] = 'avi,flv,mov,mp4,mv4,ogg,ogv,swf,webm';
+//$settings['fileExtensions']['mediaAudio'] = 'aiff,m4a,midi,mp3,wav';
 $settings['fileExtensions']['pages'] = 'htm,html,markdown,md,rss,rst,textile,txt,xml';
 
 /**
