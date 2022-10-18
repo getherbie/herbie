@@ -10,6 +10,7 @@ final class VirtualLastPlugin extends Plugin
     private EventManager $eventManager;
     private FilterChainManager $filterChainManager;
     private MiddlewareDispatcher $middlewareDispatcher;
+    private PluginManager $pluginManager;
     private TwigRenderer $twigRenderer;
 
     public function __construct(
@@ -17,12 +18,14 @@ final class VirtualLastPlugin extends Plugin
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         MiddlewareDispatcher $middlewareDispatcher,
+        PluginManager $pluginManager,
         TwigRenderer $twigRenderer
     ) {
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
         $this->middlewareDispatcher = $middlewareDispatcher;
+        $this->pluginManager = $pluginManager;
         $this->twigRenderer = $twigRenderer;
     }
 
@@ -43,6 +46,7 @@ final class VirtualLastPlugin extends Plugin
             'middlewares' => $this->middlewareDispatcher->getInfo(),
             'php_classes' => defined_classes('herbie'),
             'php_functions' => defined_functions('herbie'),
+            'plugins' => $this->pluginManager->getInfo(),
             'twig_globals' => $this->transformGlobals($context),
             'twig_filters' => $this->twigRenderer->getFilters(),
             'twig_functions' => $this->twigRenderer->getFunctions(),

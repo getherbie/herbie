@@ -13,6 +13,7 @@ final class PluginManager
 
     private Config $config;
 
+    /** @var InstallablePlugin[] */
     private array $loadedPlugins;
 
     private array $pluginPaths;
@@ -203,7 +204,7 @@ final class PluginManager
 
         $this->translator->addPath($key, $installablePlugin->getPath() . '/messages');
 
-        $this->loadedPlugins[$key] = $plugin;
+        $this->loadedPlugins[$key] = $installablePlugin;
         $this->pluginPaths[$key] = $installablePlugin->getPath();
 
         $message = sprintf(
@@ -217,6 +218,19 @@ final class PluginManager
     public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
+    }
+
+    public function getInfo(): array
+    {
+        $plugins = [];
+        foreach ($this->getLoadedPlugins() as $plugin) {
+            $plugins[] = [
+                $plugin->getKey(),
+                $plugin->getType(),
+                $plugin->getClassName()
+            ];
+        }
+        return $plugins;
     }
 
     public function getCommands(): array
