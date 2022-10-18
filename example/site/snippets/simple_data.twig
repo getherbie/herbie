@@ -1,0 +1,6 @@
+<table class="pure-table pure-table-horizontal" width="100%">
+    {% for item in attribute(site.data, type) %}
+        <tr><td width="20%"><strong>{{ attribute(item, 'name') }}</strong></td>
+            <td>{{ attribute(item, field) }}</td></tr>
+    {% endfor %}
+</table>

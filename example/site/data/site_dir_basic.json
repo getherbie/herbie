@@ -1,0 +1,38 @@
+[
+    {
+        "name": "project",
+        "desc": "Das Projektverzeichnis auf dem Webserver."
+    },
+    {
+        "name": "site",
+        "desc": "Der eigentliche Inhalt der Website (siehe unten). Dieses Verzeichnis ist normalerweise nicht über das Web zugänglich. Es kann aber auch im öffentlichen Verzeichnis abgelegt werden."
+    },
+    {
+        "name": "vendor",
+        "desc": "In diesem Verzeichnis ist Herbie CMS mit allen abhängigen Komponenten und Drittanbieter-Programmen enthalten. Dieses Verzeichnis ist nicht über das Web zugänglich."
+    },
+    {
+        "name": "web",
+        "desc": "Das öffentliche Verzeichnis des Webservers. Darauf hat man über den Webbrowser Zugriff."
+    },
+    {
+        "name": "web/assets",
+        "desc": "Die Ablage für JavaScript-, CSS- und Bilddateien, welche für das Layout der Website benötigt werden."
+    },
+    {
+        "name": "web/cache",
+        "desc": "Der Cache für Dateien, die öffentlich zugänglich sein sollen, z.B. verkleinerte Bilder."
+    },
+    {
+        "name": "web/media",
+        "desc": "In diesem Verzeichnis sind Dateien abgelegt, die über die Inhalte verlinkt sind. Zum Beispiel Bilder, PDFs, Videos, MP3s, etc."
+    },
+    {
+        "name": "web/.htaccess",
+        "desc": "Falls in der Konfiguration die Option niceUrls aktiviert ist, muss diese Datei mit den entsprechenden Anweisungen vorhanden sein."
+    },
+    {
+        "name": "web/index.php",
+        "desc": "Die Bootstrap-Datei und Teil von Herbie CMS. Über diese Datei laufen alle Anfragen an den Webserver."
+    }
+]

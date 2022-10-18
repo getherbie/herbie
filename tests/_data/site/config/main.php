@@ -14,7 +14,7 @@ return [
         ],
     ],
     'enabledPlugins' => '',
-    'enabledSysPlugins' => 'twig_core,twig_plus,dummy,imagine,markdown,rest,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,markdown,rest,textile,imagine,dummy',
     'plugins' => [
         'imagine' => [
             'test' => true,
@@ -185,7 +185,7 @@ return [
                             'mode' => 'inset',
                         ],
                     ],
-                ]
+                ],
             ],
         ],
     ],

@@ -70,6 +70,11 @@ final class Site
         return date('c', $lastModified);
     }
 
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
     public function getLanguage(): string
     {
         return $this->config->getAsString('language');

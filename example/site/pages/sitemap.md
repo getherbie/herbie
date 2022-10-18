@@ -2,6 +2,6 @@
 title: Sitemap
 ---
 
-<h1>Sitemap</h1>
+# Sitemap
 
 {{ sitemap() }}

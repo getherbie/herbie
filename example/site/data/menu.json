@@ -1,18 +1,18 @@
 [
     {
-        "route": "about",
+        "route": "",
         "label": "About"
     },
     {
-        "route": "documentation",
-        "label": "Documentation"
+        "route": "doc",
+        "label": "Docs"
     },
     {
         "route": "blog",
-        "label": "Blog"
+        "label": "Recipes"
     },
     {
-        "route": "news",
-        "label": "News"
+        "route": "development",
+        "label": "DEV"
     }
 ]

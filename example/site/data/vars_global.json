@@ -6,8 +6,8 @@
     },
     {
         "key": "config",
-        "desc": "The configuration object flatten to an array.",
-        "type": "array"
+        "desc": "The configurations as Config object.",
+        "type": "Object"
     },
     {
         "key": "page",

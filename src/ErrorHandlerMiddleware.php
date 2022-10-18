@@ -53,6 +53,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
             $response = HttpFactory::instance()->createResponse($code);
             $response->getBody()->write($content);
+
+            error_log($e->getMessage());
         }
 
         restore_error_handler();

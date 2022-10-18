@@ -64,6 +64,7 @@ final class Application
 
         error_reporting(self::isDebug() ? E_ALL : E_ERROR);
         ini_set('display_errors', self::isDebug() ? '1' : '0');
+        ini_set('display_startup_errors', self::isDebug() ? '1' : '0');
         ini_set('log_errors', '1');
         ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
 

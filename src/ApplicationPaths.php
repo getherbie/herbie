@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-class ApplicationPaths
+final class ApplicationPaths
 {
     private string $app;
     private string $site;

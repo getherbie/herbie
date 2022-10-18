@@ -11,10 +11,10 @@ final class HerbieInfoCest
     {
         $I->amOnPage('/herbie-info');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Herbie Info', 'h1');
+        $I->see('Herbie CMS Info', 'h1');
     }
 
-    public function testNumberAndSortingOfHerbieFunctions(AcceptanceTester $I)
+    public function testNumberAndSortingOfPhpFunctions(AcceptanceTester $I)
     {
         $functions = [
             'herbie\camelize',
@@ -39,7 +39,7 @@ final class HerbieInfoCest
         $I->see(join(',', $functions), '.herbie-info-php-functions');
     }
 
-    public function testNumberAndSortingOfHerbieClasses(AcceptanceTester $I)
+    public function testNumberAndSortingOfPhpClasses(AcceptanceTester $I)
     {
         $classes = [
             'herbie\Alias',
@@ -103,7 +103,7 @@ final class HerbieInfoCest
         $I->see(join(',', $classes), '.herbie-info-php-classes');
     }
 
-    public function testNumberAndSortingOfHerbieMiddlewares(AcceptanceTester $I)
+    public function testNumberAndSortingOfMiddlewares(AcceptanceTester $I)
     {
         $middlewares = [
             'herbie\ErrorHandlerMiddleware',
@@ -126,7 +126,7 @@ final class HerbieInfoCest
         $I->see(join(',', $middlewares), '.herbie-info-twig-middlewares');
     }
 
-    public function testNumberAndSortingOfHerbieConfig(AcceptanceTester $I)
+    public function testNumberAndSortingOfConfig(AcceptanceTester $I)
     {
         $configs = [
             'charset',
@@ -143,12 +143,6 @@ final class HerbieInfoCest
             'enabledPlugins',
             'enabledSysPlugins',
             'fileExtensions.layouts',
-            'fileExtensions.media.archives',
-            'fileExtensions.media.audio',
-            'fileExtensions.media.code',
-            'fileExtensions.media.documents',
-            'fileExtensions.media.images',
-            'fileExtensions.media.videos',
             'fileExtensions.pages',
             'language',
             'locale',
@@ -323,7 +317,7 @@ final class HerbieInfoCest
         $I->see(join(',', $configs), '.herbie-info-config');
     }
 
-    public function testNumberAndSortingOfHerbieGlobals(AcceptanceTester $I)
+    public function testNumberAndSortingOfTwigGlobals(AcceptanceTester $I)
     {
         $globals = [
             'route',
@@ -340,7 +334,7 @@ final class HerbieInfoCest
         $I->see(join(',', $globals), '.herbie-info-twig-globals');
     }
 
-    public function testNumberAndSortingOfHerbieTwigFilters(AcceptanceTester $I)
+    public function testNumberAndSortingOfTwigFilters(AcceptanceTester $I)
     {
         $filters = [
             'date',
@@ -384,12 +378,12 @@ final class HerbieInfoCest
             'slugify',
             'strftime',
             'visible',
-            'dummy',
-            'dummy_dynamic',
-            'imagine',
             'markdown',
             'rest',
             'textile',
+            'imagine',
+            'dummy',
+            'dummy_dynamic',
             'local_reverse',
             'my_filter2',
             'myfilter',
@@ -400,7 +394,7 @@ final class HerbieInfoCest
         $I->see(join(',', $filters), '.herbie-info-twig-filters');
     }
 
-    public function testNumberAndSortingOfHerbieTwigFunctions(AcceptanceTester $I)
+    public function testNumberAndSortingOfTwigFunctions(AcceptanceTester $I)
     {
         $functions = [
             'max',
@@ -441,11 +435,11 @@ final class HerbieInfoCest
             'taxonomy_categories',
             'taxonomy_tags',
             'herbie_debug',
-            'dummy',
-            'imagine',
             'markdown',
             'rest',
             'textile',
+            'imagine',
+            'dummy',
             'local_hello',
             'myfunction',
             'herbie_info',
@@ -455,7 +449,7 @@ final class HerbieInfoCest
         $I->see(join(',', $functions), '.herbie-info-twig-functions');
     }
 
-    public function testNumberAndSortingOfHerbieTwigTests(AcceptanceTester $I)
+    public function testNumberAndSortingOfTwigTests(AcceptanceTester $I)
     {
         $tests = [
             'even',
@@ -479,7 +473,7 @@ final class HerbieInfoCest
         $I->see(join(',', $tests), '.herbie-info-twig-tests');
     }
 
-    public function testNumberAndSortingOfHerbieFilters(AcceptanceTester $I)
+    public function testNumberAndSortingOfFilters(AcceptanceTester $I)
     {
         $filters = [
             'renderLayout',
@@ -502,7 +496,7 @@ final class HerbieInfoCest
         $I->see(join(',', $filters), '.herbie-info-filters');
     }
 
-    public function testNumberAndSortingOfHerbieEvents(AcceptanceTester $I)
+    public function testNumberAndSortingOfEvents(AcceptanceTester $I)
     {
         $events = [
             'onTwigInitialized',
@@ -543,5 +537,25 @@ final class HerbieInfoCest
         $I->amOnPage('/herbie-info');
         $I->see('Events (' . count($events) . ')', 'h2');
         $I->see(join(',', $events), '.herbie-info-events');
+    }
+
+    public function testNumberAndSortingOfPlugins(AcceptanceTester $I)
+    {
+        $plugins = [
+            'virtual_core_plugin',
+            'twig_core',
+            'twig_plus',
+            'markdown',
+            'rest',
+            'textile',
+            'imagine',
+            'dummy',
+            'virtual_local_plugin',
+            'virtual_app_plugin',
+            'virtual_last_plugin',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Plugins (' . count($plugins) . ')', 'h2');
+        $I->see(join(',', $plugins), '.herbie-info-plugins');
     }
 }

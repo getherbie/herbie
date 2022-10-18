@@ -1,0 +1,26 @@
+---
+title: Filters
+layout: doc
+---
+<h1>Filters</h1>
+<p>
+    Herbie CMS is using an intercepting filter inspired by <a href="https://docs.laminas.dev/laminas-filter/filter-chains/">Laminas' FilterChain</a> for providing a mechanism to alter the workflow of the rendering process.
+    During the application lifecycle The following filters are used.
+</p>
+
+<table class="pure-table pure-table-horizontal" width="100%">
+    <thead>
+    <tr>
+        <th width="5%"></th>
+        <th width="20%">Name</th>
+        <th width="75%">Description</th>
+    </tr>
+    </thead>
+    {% for filter in site.data.filters %}
+    <tr>
+        <td>{{ filter.order }}</td>
+        <td>{{ filter.name }}</td>
+        <td>{{ filter.desc }}</td>
+    </tr>
+    {% endfor %}
+</table>

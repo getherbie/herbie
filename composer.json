@@ -71,6 +71,7 @@
     "scripts": {
         "test": [
             "@phpcs",
+            "@phpstan",
             "@codecept"
         ],
         "phpcbf": "./vendor/bin/phpcbf",

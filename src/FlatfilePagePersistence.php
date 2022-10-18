@@ -63,7 +63,8 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             $data = $this->readFile($fileInfo->getPathname());
             if (!isset($data['data']['route'])) {
                 $relPath = str_replace($path, '', $fileInfo->getPathname());
-                $data['data']['route'] = $this->createRoute($relPath, true);
+                $trimExtension = empty($data['data']['keep_extension']);
+                $data['data']['route'] = $this->createRoute($relPath, $trimExtension);
             }
             $items[] = $data;
         }

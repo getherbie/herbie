@@ -5,7 +5,7 @@
         {{ attribute(item, 'desc') }}
         {% set see = attribute(item, 'see') %}
         {% if see %}
-            See: <a target="_blank" href="{{ see[0] }}">{{ see[1] }}</a>
+            See: <a href="{{ see[0] }}">{{ see[1] }}</a>
         {% endif %}
     </p>
     {% if item.code is defined %}

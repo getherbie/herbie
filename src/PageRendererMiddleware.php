@@ -44,11 +44,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @throws HttpException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \Throwable
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Page|null $page */
@@ -64,10 +59,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
         return $this->renderPage($page, $routeParams);
     }
 
-    /**
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \Throwable
-     */
     private function renderPage(Page $page, array $routeParams): ResponseInterface
     {
         $redirect = $page->getRedirect();
@@ -116,12 +107,9 @@ final class PageRendererMiddleware implements MiddlewareInterface
             $rendered = $content;
         }
 
-        $response = $this->httpFactory->createResponse(200);
-
+        $response = $this->httpFactory->createResponse();
         $response->getBody()->write($rendered);
-        $response->withHeader('Content-Type', $page->getContentType());
-
-        return $response;
+        return $response->withHeader('Content-Type', $page->getContentType());
     }
 
     private function createRedirectResponse(array $redirect): ResponseInterface

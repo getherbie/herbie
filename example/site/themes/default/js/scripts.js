@@ -32,3 +32,11 @@ document.getElementById('menuLink').addEventListener('click', function() {
 ga('create', 'UA-XXXX', 'example.com');
 ga('send', 'pageview');
 */
+
+// open all external links with new tab
+let links = document.links;
+for(let i = 0; i < links.length; i++) {
+    if (links[i].hostname != window.location.hostname) {
+        links[i].target = '_blank';
+    }
+}

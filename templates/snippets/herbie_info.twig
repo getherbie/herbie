@@ -1,12 +1,13 @@
 <div class="herbie-info">
-    <h1 class="herbie-info-h1">Herbie Info</h1>
+    <h1 class="herbie-info-h1">Herbie CMS Info</h1>
     <ul>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
         <li><a href="{{ route }}#herbie-events">Events</a></li>
         <li><a href="{{ route }}#herbie-filters">Filters</a></li>
         <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
         <li><a href="{{ route }}#herbie-php-classes">PHP Classes</a></li>
-        <li><a href="{{ route }}#herbie-php-functions">PHP Functions</a></li>        
+        <li><a href="{{ route }}#herbie-php-functions">PHP Functions</a></li>
+        <li><a href="{{ route }}#herbie-plugins">Plugins</a></li>
         <li><a href="{{ route }}#herbie-twig-filters">Twig Filters</a></li>
         <li><a href="{{ route }}#herbie-twig-globals">Twig Globals</a></li>
         <li><a href="{{ route }}#herbie-twig-functions">Twig Functions</a></li>
@@ -159,6 +160,30 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ function }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-plugins" class="herbie-info-h2">Plugins ({{ plugins|length }})</h2>
+    <div class="herbie-info-plugins" style="display:none">
+        {%- for plugin in plugins -%}
+            {{- plugin[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Class</th>
+        </tr>
+        {% for plugin in plugins %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ plugin[0] }}</td>
+                <td>{{ plugin[1] }}</td>
+                <td>{{ plugin[2] }}</td>
             </tr>
         {% endfor %}
     </table>

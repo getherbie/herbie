@@ -4,7 +4,7 @@ cached: 0
 hidden: 1
 ---
 
-<h1>Search</h1>
+# Search
 
 {{ simplesearch_form() }}
 
