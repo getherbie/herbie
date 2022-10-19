@@ -1,4 +1,4 @@
-Copyright (c) 2014 - 2019, Thomas Breuss <https://www.tebe.ch>
+Copyright (c) 2014 - 2022, Thomas Breuss <https://www.tebe.ch>
 
 All rights reserved.
 
