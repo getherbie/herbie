@@ -166,6 +166,19 @@ final class Application
         return $this->appPaths->getSite();
     }
 
+    public function getWebPath(): string
+    {
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'];
+        $scriptFilename = $_SERVER['SCRIPT_FILENAME'];
+        if (strpos($scriptFilename, $documentRoot) === false) {
+            // when calling the internal web server from a parent directory of document root
+            // i.e. "php -S localhost example/web/index.php" instead of "php -S localhost index.php"
+            $scriptFilename = $documentRoot . '/' . $scriptFilename;
+        }
+        $scriptDirname = dirname($scriptFilename);
+        return rtrim($scriptDirname, '/');
+    }
+
     public function getVendorDir(): string
     {
         return $this->appPaths->getVendor();

@@ -69,7 +69,7 @@ final class ContainerBuilder
             $const = [
                 'APP_PATH' => rtrim($this->app->getAppPath(), '/'),
                 'SITE_PATH' => rtrim($this->app->getSitePath(), '/'),
-                'WEB_PATH' => rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/'),
+                'WEB_PATH' => rtrim($this->app->getWebPath(), '/'),
                 'WEB_URL' => rtrim($c->get(Environment::class)->getBaseUrl(), '/')
             ];
 
