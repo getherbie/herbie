@@ -220,19 +220,6 @@ final class PluginManager
         return $this->loadedPlugins;
     }
 
-    public function getInfo(): array
-    {
-        $plugins = [];
-        foreach ($this->getLoadedPlugins() as $plugin) {
-            $plugins[] = [
-                $plugin->getKey(),
-                $plugin->getType(),
-                $plugin->getClassName()
-            ];
-        }
-        return $plugins;
-    }
-
     public function getCommands(): array
     {
         return $this->commands;

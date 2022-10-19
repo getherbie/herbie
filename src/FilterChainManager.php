@@ -28,17 +28,7 @@ final class FilterChainManager
 
     public function getAllFilters(): array
     {
-        $items = [];
-        foreach ($this->filters as $category => $filterChain) {
-            $filters = $filterChain->getFilters()->items();
-            foreach ($filters as $filter) {
-                $items[] = [
-                    $category,
-                    get_callable_name($filter)
-                ];
-            }
-        }
-        return $items;
+        return $this->filters;
     }
 
     private function getFilters(string $filterName): FilterChain

@@ -82,23 +82,8 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         return $current;
     }
 
-    public function getInfo(): array
+    public function getMiddlewares(): array
     {
-        $info = [];
-        foreach ($this->middlewares as $middleware) {
-            if (is_array($middleware) && (is_string($middleware[0]))) {
-                $type = 'ROUTE';
-                $callable = get_callable_name($middleware[1]);
-            } else {
-                $type = 'APP';
-                $callable = get_callable_name($middleware);
-            }
-            $info[] = [
-                $type,
-                $callable[0],
-                $callable[1],
-            ];
-        }
-        return $info;
+        return $this->middlewares;
     }
 }
