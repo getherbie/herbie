@@ -12,11 +12,11 @@ if (getenv('HERBIE_ENV') === 'dev') {
         __DIR__ . '/example/site',
     );
 } else {
-    require dirname(__DIR__, 2) . '/vendor/autoload.php';
+    require dirname(__DIR__, 3) . '/vendor/autoload.php';
     $appPaths = new ApplicationPaths(
-        dirname(__DIR__, 2),
-        dirname(__DIR__, 2) . '/example/site',
-        dirname(__DIR__, 2) . '/vendor'
+        dirname(__DIR__, 3),
+        dirname(__DIR__, 3) . '/example/site',
+        dirname(__DIR__, 3) . '/vendor'
     );
 }
 
