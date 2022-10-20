@@ -12,6 +12,7 @@ final class VirtualLastPlugin extends Plugin
     private MiddlewareDispatcher $middlewareDispatcher;
     private PluginManager $pluginManager;
     private TwigRenderer $twigRenderer;
+    private string $appPath;
 
     public function __construct(
         Config $config,
@@ -27,6 +28,7 @@ final class VirtualLastPlugin extends Plugin
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->pluginManager = $pluginManager;
         $this->twigRenderer = $twigRenderer;
+        $this->appPath = rtrim($config->getAsString('paths.app'), '/');
     }
 
     public function twigFunctions(): array
@@ -56,7 +58,11 @@ final class VirtualLastPlugin extends Plugin
 
     private function getConfig(): array
     {
-        return $this->config->flatten();
+        $configs = $this->config->flatten();
+        foreach ($configs as &$value) {
+            $value = $this->filterValue($value);
+        }
+        return $configs;
     }
 
     private function getEvents(): array
@@ -179,5 +185,20 @@ final class VirtualLastPlugin extends Plugin
             ];
         }
         return $items;
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private function filterValue($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        $replace = [
+            $this->appPath => '{root}'
+        ];
+        return str_replace(array_keys($replace), array_values($replace), $value);
     }
 }
