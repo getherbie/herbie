@@ -14,7 +14,7 @@ $settings['niceUrls'] = false;
 /**
  * Paths
  */
-$paths = [];
+$settings['paths'] = [];
 $settings['paths']['app'] = 'APP_PATH';
 $settings['paths']['data'] = 'SITE_PATH/data';
 $settings['paths']['media'] = 'SITE_PATH/media';
