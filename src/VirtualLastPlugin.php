@@ -196,9 +196,21 @@ final class VirtualLastPlugin extends Plugin
         if (!is_string($value)) {
             return $value;
         }
-        $replace = [
-            $this->appPath => '{root}'
-        ];
-        return str_replace(array_keys($replace), array_values($replace), $value);
+
+        $replaceIfEquals = [$this->appPath => '/'];
+        foreach ($replaceIfEquals as $k => $v) {
+            if ($k === $value) {
+                $value = $v;
+            }
+        }
+
+        $stripFromBeginning = [$this->appPath];
+        foreach ($stripFromBeginning as $v) {
+            if (strpos($value, $v) === 0) {
+                $value = substr($value, strlen($v));
+            }
+        }
+
+        return $value;
     }
 }
