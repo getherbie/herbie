@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\_data\src;
 
 use Psr\Http\Message\ResponseInterface;

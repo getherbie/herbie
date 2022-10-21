@@ -18,6 +18,19 @@ final class VirtualLocalPlugin extends Plugin
         $this->config = $config;
     }
 
+    public function commands(): array
+    {
+        $dir = $this->config->getAsString('paths.site') . '/extend/commands';
+        $files = $this->findPhpFilesInDir($dir);
+
+        $commands = [];
+        foreach ($files as $file) {
+            $commands[] = $this->includePhpFile($file);
+        }
+
+        return $commands;
+    }
+
     public function events(): array
     {
         $dir = $this->config->getAsString('paths.site') . '/extend/events';
