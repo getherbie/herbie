@@ -1,6 +1,7 @@
 <div class="herbie-info">
     <h1 class="herbie-info-h1">Herbie CMS Info</h1>
     <ul>
+        <li><a href="{{ route }}#herbie-commands">Commands</a></li>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
         <li><a href="{{ route }}#herbie-events">Events</a></li>
         <li><a href="{{ route }}#herbie-filters">Filters</a></li>
@@ -27,6 +28,26 @@
             </tr>
         {% endfor %}
     </table> #}
+
+    <h2 id="herbie-commands" class="herbie-info-h2">Commands ({{ commands|length }})</h2>
+    <div class="herbie-info-commands" style="display:none">
+        {% for command in commands %}
+            {{- command -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+        </tr>
+        {% for command in commands %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ command }}</td>
+            </tr>
+        {% endfor %}
+    </table>
     
     <h2 id="herbie-config" class="herbie-info-h2">Configuration ({{ config|length }})</h2>
     <div class="herbie-info-config" style="display:none">

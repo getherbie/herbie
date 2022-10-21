@@ -560,4 +560,17 @@ final class HerbieInfoCest
         $I->see('Plugins (' . count($plugins) . ')', 'h2');
         $I->see(join(',', $plugins), '.herbie-info-plugins');
     }
+
+    public function testNumberAndSortingOfCommands(AcceptanceTester $I)
+    {
+        $commands = [
+            'herbie\ClearCacheCommand',
+            'herbie\sysplugin\dummy\DummyCommand',
+            'tests\_data\site\extend\commands\CustomCommand',
+            'tests\_data\src\CustomCommand',
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Commands (' . count($commands) . ')', 'h2');
+        $I->see(join(',', $commands), '.herbie-info-commands');
+    }
 }

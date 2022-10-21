@@ -41,6 +41,7 @@ final class VirtualLastPlugin extends Plugin
     public function herbieInfo(array $context, string $template = '@snippet/herbie_info.twig'): string
     {
         $context = [
+            'commands' => $this->getCommands(),
             'config' => $this->getConfig(),
             'events' => $this->getEvents(),
             'filters' => $this->getFilters(),
@@ -54,6 +55,15 @@ final class VirtualLastPlugin extends Plugin
             'twig_tests' => $this->getTwigTests(),
         ];
         return $this->twigRenderer->renderTemplate($template, $context);
+    }
+
+    private function getCommands(): array
+    {
+        $items = [];
+        foreach ($this->pluginManager->getCommands() as $command) {
+            $items[] = $command;
+        }
+        return $items;
     }
 
     private function getConfig(): array
