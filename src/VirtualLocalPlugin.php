@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -20,7 +21,7 @@ final class VirtualLocalPlugin extends Plugin
     public function events(): array
     {
         $dir = $this->config->getAsString('paths.site') . '/extend/events';
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $events = [];
         foreach ($files as $file) {
@@ -33,7 +34,7 @@ final class VirtualLocalPlugin extends Plugin
     public function filters(): array
     {
         $dir = $this->config->getAsString('paths.site') . '/extend/filters';
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
         foreach ($files as $file) {
@@ -43,10 +44,36 @@ final class VirtualLocalPlugin extends Plugin
         return $filters;
     }
 
+    public function appMiddlewares(): array
+    {
+        $dir = $this->config->getAsString('paths.site') . '/extend/middlewares_app';
+        $files = $this->findPhpFilesInDir($dir);
+
+        $middlewares = [];
+        foreach ($files as $file) {
+            $middlewares[] = $this->includeAppMiddleware($file);
+        }
+
+        return $middlewares;
+    }
+
+    public function routeMiddlewares(): array
+    {
+        $dir = $this->config->getAsString('paths.site') . '/extend/middlewares_route';
+        $files = $this->findPhpFilesInDir($dir);
+
+        $middlewares = [];
+        foreach ($files as $file) {
+            $middlewares[] = $this->includeRouteMiddleware($file);
+        }
+
+        return $middlewares;
+    }
+
     public function twigFilters(): array
     {
         $dir = $this->config->getAsString('paths.twigFilters');
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
         foreach ($files as $file) {
@@ -59,7 +86,7 @@ final class VirtualLocalPlugin extends Plugin
     public function twigGlobals(): array
     {
         $dir = $this->config->getAsString('paths.twigGlobals');
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $globals = [];
         foreach ($files as $file) {
@@ -72,7 +99,7 @@ final class VirtualLocalPlugin extends Plugin
     public function twigFunctions(): array
     {
         $dir = $this->config->getAsString('paths.twigFunctions');
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $functions = [];
         foreach ($files as $file) {
@@ -85,7 +112,7 @@ final class VirtualLocalPlugin extends Plugin
     public function twigTests(): array
     {
         $dir = $this->config->getAsString('paths.twigTests');
-        $files = $this->globPhpFiles($dir);
+        $files = $this->findPhpFilesInDir($dir);
 
         $tests = [];
         foreach ($files as $file) {
@@ -93,6 +120,22 @@ final class VirtualLocalPlugin extends Plugin
         }
 
         return $tests;
+    }
+
+    /**
+     * @return MiddlewareInterface|string
+     */
+    private function includeAppMiddleware(string $file)
+    {
+        return $this->includePhpFile($file);
+    }
+
+    /**
+     * @return array
+     */
+    private function includeRouteMiddleware(string $file): array
+    {
+        return $this->includePhpFile($file);
     }
 
     private function includeTwigFilter(string $file): TwigFilter
@@ -118,7 +161,7 @@ final class VirtualLocalPlugin extends Plugin
         return include($file);
     }
 
-    private function globPhpFiles(string $dir): array
+    private function findPhpFilesInDir(string $dir): array
     {
         $dir = rtrim($dir, '/');
         if (empty($dir) || !is_readable($dir)) {

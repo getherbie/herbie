@@ -9,9 +9,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CustomHeader implements MiddlewareInterface
 {
-    private $identifier;
+    private string $identifier;
 
-    public function __construct($identifier)
+    public function __construct(string $identifier)
     {
         $this->identifier = $identifier;
     }
