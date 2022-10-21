@@ -15,7 +15,7 @@ if (getenv('HERBIE_ENV') === 'dev') {
     require dirname(__DIR__, 3) . '/vendor/autoload.php';
     $appPaths = new ApplicationPaths(
         dirname(__DIR__, 3),
-        dirname(__DIR__, 3) . '/example/site',
+        dirname(__DIR__, 3) . '/site',
         dirname(__DIR__, 3) . '/vendor'
     );
 }
