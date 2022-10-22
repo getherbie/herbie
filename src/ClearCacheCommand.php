@@ -43,6 +43,9 @@ final class ClearCacheCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return string[]
+     */
     private function getPathsToClear(string $type): array
     {
         $runtimePath = $this->config->getAsString('paths.site');
@@ -54,7 +57,7 @@ final class ClearCacheCommand extends Command
         ];
 
         if ($type === 'all') {
-            return $cachePaths;
+            return array_values($cachePaths);
         }
 
         return isset($cachePaths[$type]) ? [$cachePaths[$type]] : [];

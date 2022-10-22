@@ -107,6 +107,9 @@ final class TwigCoreExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param array<string, string> $htmlOptions
+     */
     private function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
@@ -282,10 +285,10 @@ final class TwigCoreExtension extends AbstractExtension
         $attribs['src'] = $this->environment->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
-            $attribs['width'] = $width;
+            $attribs['width'] = (string)$width;
         }
         if (!empty($height)) {
-            $attribs['height'] = $height;
+            $attribs['height'] = (string)$height;
         }
         if (!empty($class)) {
             $attribs['class'] = $class;

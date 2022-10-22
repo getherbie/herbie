@@ -51,6 +51,12 @@ final class VirtualCorePlugin extends Plugin
         return Application::isDebug();
     }
 
+    /**
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         /** @var Page $page */
@@ -61,6 +67,12 @@ final class VirtualCorePlugin extends Plugin
         return $filter->next($context, $params, $filter);
     }
 
+    /**
+     * @param array{content: array<string, string>, page: Page, routeParams: array<string, mixed>} $params
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function renderLayout(string $_, array $params, FilterInterface $filter): string
     {
         /** @var Page $page */
@@ -73,7 +85,7 @@ final class VirtualCorePlugin extends Plugin
         if ($this->enableTwigInLayoutFilter) {
             $context = $this->twigRenderer->renderTemplate($name, $params);
         } else {
-            $context = join('', $params['content'] ?? []);
+            $context = join('', $params['content']);
         }
         return $filter->next($context, $params, $filter);
     }

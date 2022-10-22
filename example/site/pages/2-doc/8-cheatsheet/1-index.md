@@ -43,27 +43,27 @@ index.md
 
 **Events**
 
-{{ snippet(path="@site/snippets/simple_data.twig", type="events")|raw }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
 
 **Filters**
 
-{{ snippet(path="@site/snippets/simple_data.twig", type="filters")|raw }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"filters"}) }}
 
 **Twig Filter**
 
-{{ snippet(path="@site/snippets/simple_data.twig", type="twig_filters")|raw }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}
 
 **Twig Globals**
 
-{{ snippet(path="@site/snippets/variables.twig", type="vars_global")|raw }}
+{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
 **Twig Funktionen**
 
-{{ snippet(path="@site/snippets/simple_data.twig", type="twig_functions")|raw }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"twig_functions"}) }}
 
 **Twig Tests**
 
-{{ snippet(path="@site/snippets/simple_data.twig", type="twig_tests")|raw }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
 
 **Plugins**
 

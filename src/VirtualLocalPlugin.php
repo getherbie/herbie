@@ -136,7 +136,7 @@ final class VirtualLocalPlugin extends Plugin
     }
 
     /**
-     * @return MiddlewareInterface|string
+     * @return MiddlewareInterface|callable|string
      */
     private function includeAppMiddleware(string $file)
     {
@@ -144,7 +144,7 @@ final class VirtualLocalPlugin extends Plugin
     }
 
     /**
-     * @return array
+     * @return array{string, MiddlewareInterface|callable|string}
      */
     private function includeRouteMiddleware(string $file): array
     {
@@ -174,6 +174,9 @@ final class VirtualLocalPlugin extends Plugin
         return include($file);
     }
 
+    /**
+     * @return string[]
+     */
     private function findPhpFilesInDir(string $dir): array
     {
         $dir = rtrim($dir, '/');

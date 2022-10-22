@@ -279,8 +279,8 @@ function defined_functions(string $prefix = ''): array
 }
 
 /**
- * @param string|array|Closure|object $callable
- * @return array<int, string|null>
+ * @param Closure|string|array|object|callable $callable
+ * @return array{string, string}
  * @see https://stackoverflow.com/a/68113840/6161354
  */
 function get_callable_name($callable): array
@@ -295,18 +295,22 @@ function get_callable_name($callable): array
         case is_array($callable):
             return ['static', $callable[0]  . '::' . $callable[1]];
         case $callable instanceof Closure:
-            $reflectionClosure = new ReflectionFunction($callable);
-            $closureName = $reflectionClosure->getName();
-            $class = $reflectionClosure->getClosureScopeClass();
-            $className = $class ? $class->getName() : null;
-            return ['closure', $className ? $className . '--' . $closureName : $closureName];
+            try {
+                $reflectionClosure = new ReflectionFunction($callable);
+                $closureName = $reflectionClosure->getName();
+                $class = $reflectionClosure->getClosureScopeClass();
+                $className = $class ? $class->getName() : null;
+                return ['closure', $className ? $className . '--' . $closureName : $closureName];
+            } catch (\ReflectionException $e) {
+                return ['unknown', ''];
+            }
         case is_object($callable):
             if (is_callable($callable)) {
                 return ['invokable', get_class($callable)];
             }
             return ['-', get_class($callable)];
         default:
-            return ['unknown', null];
+            return ['unknown', ''];
     }
 }
 

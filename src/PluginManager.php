@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 
 final class PluginManager
@@ -144,19 +145,19 @@ final class PluginManager
         }
 
         foreach ($plugin->commands() as $command) {
-            $this->commands[] = $command;
+            $this->addCommand($command);
         }
 
         foreach ($plugin->filters() as $filter) {
-            $this->attachFilter(...$filter);
+            $this->addFilter(...$filter);
         }
 
         foreach ($plugin->appMiddlewares() as $appMiddleware) {
-            $this->appMiddlewares[] = $appMiddleware;
+            $this->addAppMiddleware($appMiddleware);
         }
 
         foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
-            $this->routeMiddlewares[] = $routeMiddleware;
+            $this->addRouteMiddleware($routeMiddleware);
         }
 
         foreach ($plugin->twigFilters() as $twigFilter) {
@@ -194,7 +195,7 @@ final class PluginManager
         }
 
         foreach ($plugin->events() as $event) {
-            $this->attachListener(...$event);
+            $this->addListener(...$event);
         }
 
         $key = $installablePlugin->getKey();
@@ -240,12 +241,35 @@ final class PluginManager
         return $this->pluginPaths;
     }
 
-    private function attachFilter(string $name, callable $callable): void
+    private function addCommand(string $command): void
+    {
+        $this->commands[] = $command;
+    }
+
+    private function addFilter(string $name, callable $callable): void
     {
         $this->filterChainManager->attach($name, $callable);
     }
 
-    private function attachListener(string $name, callable $callable, int $priority = 1): void
+    /**
+     * @param MiddlewareInterface|callable|string $middleware
+     * @return void
+     */
+    private function addAppMiddleware($middleware): void
+    {
+        $this->appMiddlewares[] = $middleware;
+    }
+
+    /**
+     * @param array{string, MiddlewareInterface|callable|string} $routeWithMiddleware
+     * @return void
+     */
+    private function addRouteMiddleware(array $routeWithMiddleware): void
+    {
+        $this->routeMiddlewares[] = $routeWithMiddleware;
+    }
+
+    private function addListener(string $name, callable $callable, int $priority = 1): void
     {
         $this->eventManager->attach($name, $callable, $priority);
     }

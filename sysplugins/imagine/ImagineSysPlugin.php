@@ -34,9 +34,6 @@ final class ImagineSysPlugin extends Plugin
         $this->cachePath = $this->config->getAsString('plugins.imagine.cachePath');
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFilters(): array
     {
         return [
@@ -44,9 +41,6 @@ final class ImagineSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFunctions(): array
     {
         return [

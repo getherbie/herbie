@@ -30,9 +30,6 @@ final class TwigPlusPlugin extends Plugin
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @return array[]
-     */
     public function events(): array
     {
         return [

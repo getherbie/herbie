@@ -31,7 +31,7 @@ Hier ist ein Beispiel:
 Es gibt einige vordefinierte (=reservierte) Variablen, die vom System verwendet werden.
 Diese kannt man im Seiteneigenschaften-Block einer Seite mit einem Wert belegen.
 
-{{ snippet(path="@site/snippets/variables.twig", type="vars_page")|raw }}
+{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
 
 
 ## Eigene Variablen

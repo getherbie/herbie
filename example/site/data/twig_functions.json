@@ -478,17 +478,20 @@
     {
         "name": "snippet",
         "code": "",
-        "desc": "Includes a custom snippet. Accepts an arbitrary number of arguments which are passed to the snippet.",
-        "see": [
-            "https:\/\/twig.symfony.com\/doc\/2.x\/advanced.html#variadic-filters",
-            "Variadic filters"
-        ],
+        "desc": "Includes and renders a custom snippet. Automatic escaping is disabled for all escaping strategies.",
+        "see": [],
         "params": [
             {
                 "name": "path",
                 "type": "string",
                 "desc": "The path to the snippet.",
                 "default": ""
+            },
+            {
+                "name": "variables",
+                "type": "array",
+                "desc": "The variables to pass to the snippet.",
+                "default": "[]"
             }
         ],
         "return": [

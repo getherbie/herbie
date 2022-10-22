@@ -38,9 +38,15 @@ final class VirtualLastPlugin extends Plugin
         ];
     }
 
+    /**
+     * @param array<string, mixed> $context
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function herbieInfo(array $context, string $template = '@snippet/herbie_info.twig'): string
     {
-        $context = [
+        $info = [
             'commands' => $this->getCommands(),
             'config' => $this->getConfig(),
             'events' => $this->getEvents(),
@@ -54,9 +60,12 @@ final class VirtualLastPlugin extends Plugin
             'twig_functions' => $this->getTwigFunctions(),
             'twig_tests' => $this->getTwigTests(),
         ];
-        return $this->twigRenderer->renderTemplate($template, $context);
+        return $this->twigRenderer->renderTemplate($template, $info);
     }
 
+    /**
+     * @return string[]
+     */
     private function getCommands(): array
     {
         $items = [];
@@ -66,6 +75,9 @@ final class VirtualLastPlugin extends Plugin
         return $items;
     }
 
+    /**
+     * @return array<string, scalar|null>
+     */
     private function getConfig(): array
     {
         $configs = $this->config->flatten();
@@ -75,6 +87,9 @@ final class VirtualLastPlugin extends Plugin
         return $configs;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getEvents(): array
     {
         $items = [];
@@ -83,7 +98,7 @@ final class VirtualLastPlugin extends Plugin
                 foreach ($events as $event) {
                     foreach ($event as $e) {
                         $items[] = array_merge(
-                            [$eventName, $priority],
+                            [$eventName, (string)$priority],
                             get_callable_name($e)
                         );
                     }
@@ -93,6 +108,9 @@ final class VirtualLastPlugin extends Plugin
         return $items;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getFilters(): array
     {
         $items = [];
@@ -101,13 +119,16 @@ final class VirtualLastPlugin extends Plugin
             foreach ($filters as $filter) {
                 $items[] = [
                     $category,
-                    get_callable_name($filter)
+                    ...get_callable_name($filter)
                 ];
             }
         }
         return $items;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getMiddlewares(): array
     {
         $info = [];
@@ -128,6 +149,9 @@ final class VirtualLastPlugin extends Plugin
         return $info;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getPlugins(): array
     {
         $plugins = [];
@@ -141,49 +165,62 @@ final class VirtualLastPlugin extends Plugin
         return $plugins;
     }
 
+    /**
+     * @param array<string, mixed> $context
+     * @return array<int, string[]>
+     */
     private function getTwigGlobalsFromContext(array $context): array
     {
         $globals = [];
         foreach ($context as $string => $mixed) {
-            if (is_string($mixed)) {
+            if (is_scalar($mixed)) {
                 $value = $mixed;
-                $type = 'string';
+                $type = gettype($mixed);
             } elseif (is_object($mixed)) {
                 $value = get_class($mixed);
                 $type = 'class';
             } else {
                 $value = json_encode($mixed);
-                $type = 'unknown';
+                $type = gettype($mixed);
             }
             $globals[] = [$string, $value, $type];
         }
         return $globals;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getTwigFilters(): array
     {
         $items = [];
         foreach ($this->twigRenderer->getTwigEnvironment()->getFilters() as $f) {
             $items[] = [
                 $f->getName(),
-                get_callable_name($f->getCallable())
+                ...get_callable_name($f->getCallable())
             ];
         }
         return $items;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getTwigFunctions(): array
     {
         $items = [];
         foreach ($this->twigRenderer->getTwigEnvironment()->getFunctions() as $f) {
             $items[] = [
                 $f->getName(),
-                get_callable_name($f->getCallable())
+                ...get_callable_name($f->getCallable())
             ];
         }
         return $items;
     }
 
+    /**
+     * @return array<int, string[]>
+     */
     private function getTwigTests(): array
     {
         $items = [];
@@ -191,7 +228,7 @@ final class VirtualLastPlugin extends Plugin
             $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                get_callable_name($callable)
+                ...get_callable_name($callable)
             ];
         }
         return $items;
