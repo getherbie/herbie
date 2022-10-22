@@ -96,12 +96,10 @@ final class VirtualLastPlugin extends Plugin
         foreach ($this->eventManager->getEvents() as $eventName => $eventsWithPriority) {
             foreach ($eventsWithPriority as $priority => $events) {
                 foreach ($events as $event) {
-                    foreach ($event as $e) {
-                        $items[] = array_merge(
-                            [$eventName, (string)$priority],
-                            get_callable_name($e)
-                        );
-                    }
+                    $items[] = array_merge(
+                        [$eventName, (string)$priority],
+                        get_callable_name($event)
+                    );
                 }
             }
         }
