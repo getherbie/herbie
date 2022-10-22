@@ -296,8 +296,10 @@ function get_callable_name($callable): array
             return ['static', $callable[0]  . '::' . $callable[1]];
         case $callable instanceof Closure:
             $reflectionClosure = new ReflectionFunction($callable);
+            $closureName = $reflectionClosure->getName();
             $class = $reflectionClosure->getClosureScopeClass();
-            return ['closure', $class ? $class->getName() : '{closure}'];
+            $className = $class ? $class->getName() : null;
+            return ['closure', $className ? $className . '--' . $closureName : $closureName];
         case is_object($callable):
             return ['invokable', get_class($callable)];
         default:
