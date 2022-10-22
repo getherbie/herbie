@@ -123,7 +123,15 @@ final class TwigRenderer
     }
 
     /**
-     * @return array{route: string, routeParams: array<string, string>, baseUrl: string, theme: string, site: Site, page: Page|null, config: Config}
+     * @return array{
+     *     route: string,
+     *     routeParams: array<string, string>,
+     *     baseUrl: string,
+     *     theme: string,
+     *     site: Site,
+     *     page: Page|null,
+     *     config: Config
+     * }
      */
     public function getContext(): array
     {
