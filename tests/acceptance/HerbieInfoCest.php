@@ -568,6 +568,7 @@ final class HerbieInfoCest
             'herbie\sysplugin\dummy\DummyCommand',
             'tests\_data\site\extend\commands\CustomCommand',
             'tests\_data\src\CustomCommand',
+            'tests\_data\src\CustomCommand'
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Commands (' . count($commands) . ')', 'h2');

@@ -15,7 +15,7 @@ final class VirtualAppPlugin extends Plugin
 
     public function commands(): array
     {
-        return []; // TODO
+        return $this->application->getCommands();
     }
 
     public function events(): array
@@ -30,12 +30,12 @@ final class VirtualAppPlugin extends Plugin
 
     public function appMiddlewares(): array
     {
-        return []; // TODO
+        return $this->application->getAppMiddlewares();
     }
 
     public function routeMiddlewares(): array
     {
-        return []; // TODO
+        return $this->application->getRouteMiddlewares();
     }
 
     public function twigFilters(): array

@@ -21,6 +21,8 @@ final class Application
     private array $appMiddlewares;
     private ApplicationPaths $appPaths;
     private Container $container;
+    /** @var string[] */
+    private array $commands;
     private array $events;
     private array $filters;
     private array $routeMiddlewares;
@@ -43,6 +45,7 @@ final class Application
 
         $this->appMiddlewares = [];
         $this->appPaths = $paths;
+        $this->commands = [];
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
@@ -179,6 +182,17 @@ final class Application
     public function getRouteMiddlewares(): array
     {
         return $this->routeMiddlewares;
+    }
+
+    public function addCommand(string $command): Application
+    {
+        $this->commands[] = $command;
+        return $this;
+    }
+
+    public function getCommands(): array
+    {
+        return $this->commands;
     }
 
     /**

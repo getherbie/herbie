@@ -17,6 +17,7 @@ use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use herbie\TwigRenderer;
+use tests\_data\src\CustomCommand;
 use tests\_data\src\CustomHeader;
 use tests\_data\src\TestFilter;
 use Twig\TwigFilter;
@@ -39,6 +40,8 @@ $app = new Application(
         dirname(__DIR__) . '/site'
     )
 );
+
+$app->addCommand(CustomCommand::class);
 
 // App Middlewares
 $app->addAppMiddleware(ResponseTimeMiddleware::class);

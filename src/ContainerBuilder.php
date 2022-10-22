@@ -163,14 +163,8 @@ final class ContainerBuilder
                 [
                     $c->get(ErrorHandlerMiddleware::class) // only one at the moment
                 ],
-                array_merge(
-                    $c->get(PluginManager::class)->getAppMiddlewares(),
-                    $this->app->getAppMiddlewares()
-                ),
-                array_merge(
-                    $c->get(PluginManager::class)->getRouteMiddlewares(),
-                    $this->app->getRouteMiddlewares(),
-                ),
+                $c->get(PluginManager::class)->getAppMiddlewares(),
+                $c->get(PluginManager::class)->getRouteMiddlewares(),
                 [
                     $c->get(DownloadMiddleware::class),
                     $c->get(PageResolverMiddleware::class),
