@@ -301,7 +301,10 @@ function get_callable_name($callable): array
             $className = $class ? $class->getName() : null;
             return ['closure', $className ? $className . '--' . $closureName : $closureName];
         case is_object($callable):
-            return ['invokable', get_class($callable)];
+            if (is_callable($callable)) {
+                return ['invokable', get_class($callable)];
+            }
+            return ['-', get_class($callable)];
         default:
             return ['unknown', null];
     }
