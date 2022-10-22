@@ -12,7 +12,7 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property string[] $categories
  * @property string $content_type
  * @property string $created
- * @property array $customData
+ * @property array<int|string, mixed> $customData
  * @property string $date
  * @property string $excerpt
  * @property string $format
@@ -22,7 +22,7 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property string $menu
  * @property string $modified
  * @property string $path
- * @property array $redirect
+ * @property array<void>|array{status: int, url: string} $redirect
  * @property string $route
  * @property string[] $tags
  * @property string $title
@@ -31,11 +31,14 @@ use Ausi\SlugGenerator\SlugGenerator;
  */
 trait PageItemTrait
 {
+    /** @var string[] */
     private array $authors;
     private int $cached;
+    /** @var string[] */
     private array $categories;
     private string $content_type;
     private string $created;
+    /** @var array<int|string, mixed> */
     private array $customData;
     private string $date;
     private string $excerpt;
@@ -46,8 +49,10 @@ trait PageItemTrait
     private string $menu;
     private string $modified;
     private string $path;
+    /** @var array{status: int, url: string} */
     private array $redirect;
     private string $route;
+    /** @var string[] */
     private array $tags;
     private string $title;
     private int $twig;
@@ -56,7 +61,7 @@ trait PageItemTrait
     private static ?SlugGenerator $slugGenerator;
 
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      */
     public function __construct(array $data = [])
     {
@@ -272,6 +277,9 @@ trait PageItemTrait
         return '';
     }
 
+    /**
+     * @param string[] $categories
+     */
     public function setCategories(array $categories): void
     {
         $categories = array_map('trim', $categories);
@@ -287,6 +295,9 @@ trait PageItemTrait
         }
     }
 
+    /**
+     * @param string[] $tags
+     */
     public function setTags(array $tags): void
     {
         $tags = array_map('trim', $tags);
@@ -302,6 +313,9 @@ trait PageItemTrait
         }
     }
 
+    /**
+     * @param string[] $authors
+     */
     public function setAuthors(array $authors): void
     {
         $authors = array_map('trim', $authors);
@@ -420,6 +434,9 @@ trait PageItemTrait
         $this->excerpt = trim($excerpt);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function setData(array $data): void
     {
         if (array_key_exists('data', $data)) {

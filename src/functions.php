@@ -56,6 +56,9 @@ function render_exception(\Throwable $exception): string
     return sprintf('<pre class="error error--exception">%s</pre>', $message);
 }
 
+/**
+ * @return string[]
+ */
 function explode_list(string $list, string $delim = ','): array
 {
     $list = trim($list);
@@ -67,6 +70,9 @@ function explode_list(string $list, string $delim = ','): array
     return array_map('trim', $values);
 }
 
+/**
+ * @return array<int|string, mixed>
+ */
 function load_php_config(string $path, ?callable $processor = null): array
 {
     $data = include($path);
@@ -76,6 +82,9 @@ function load_php_config(string $path, ?callable $processor = null): array
     return $data;
 }
 
+/**
+ * @return array<int|string, mixed>
+ */
 function load_plugin_config(string $path, string $pluginLocation, ?callable $processor = null): array
 {
     $config = array_merge(
@@ -94,6 +103,9 @@ function load_plugin_config(string $path, string $pluginLocation, ?callable $pro
     return $config;
 }
 
+/**
+ * @return array<string, array<int|string, mixed>>
+ */
 function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callable $processor = null): array
 {
     $globPattern = "{$pluginDir}/*/config.php";
@@ -108,6 +120,9 @@ function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callabl
     return $pluginConfigs;
 }
 
+/**
+ * @return array<string, array<int|string, mixed>>
+ */
 function load_composer_plugin_configs(): array
 {
     $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
@@ -125,17 +140,18 @@ function load_composer_plugin_configs(): array
 }
 
 /**
- * @param string|array $find
- * @param string|array $replace
- * @param array|scalar $array
- * @return array|scalar
+ * @param string|string[] $find
+ * @param string|string[] $replace
+ * @param array<int|string, mixed>|scalar $array
+ * @return array<string, mixed>|scalar
  */
 function recursive_array_replace($find, $replace, $array)
 {
+    if (is_string($array)) {
+        return str_replace($find, $replace, $array);
+    }
+
     if (!is_array($array)) {
-        if (is_string($array)) {
-            return str_replace($find, $replace, $array);
-        }
         return $array;
     }
 
@@ -228,7 +244,7 @@ function get_fully_qualified_class_name(string $file): string
 }
 
 /**
- * @phpstan-return array<int,string>
+ * @return array<int, string>
  */
 function defined_classes(string $prefix = ''): array
 {
@@ -244,7 +260,7 @@ function defined_classes(string $prefix = ''): array
 }
 
 /**
- * @phpstan-return array<string,string>
+ * @return array<string, string>
  */
 function defined_constants(string $prefix = ''): array
 {
@@ -263,7 +279,7 @@ function defined_constants(string $prefix = ''): array
 }
 
 /**
- * @phpstan-return array<int,string>
+ * @return array<int, string>
  */
 function defined_functions(string $prefix = ''): array
 {
@@ -279,7 +295,7 @@ function defined_functions(string $prefix = ''): array
 }
 
 /**
- * @param Closure|string|array|object|callable $callable
+ * @param Closure|string|array<object|string, string>|object|callable $callable
  * @return array{string, string}
  * @see https://stackoverflow.com/a/68113840/6161354
  */
@@ -314,6 +330,12 @@ function get_callable_name($callable): array
     }
 }
 
+/**
+ * @return array<int, object>
+ * @throws \Psr\Container\ContainerExceptionInterface
+ * @throws \Psr\Container\NotFoundExceptionInterface
+ * @throws \ReflectionException
+ */
 function get_constructor_params_to_inject(string $pluginClassName, ContainerInterface $container): array
 {
     $reflectedClass = new \ReflectionClass($pluginClassName);

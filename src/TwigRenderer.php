@@ -99,6 +99,7 @@ final class TwigRenderer
     }
 
     /**
+     * @param array<string, mixed> $context
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -110,6 +111,7 @@ final class TwigRenderer
     }
 
     /**
+     * @param array<string, mixed> $context
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -120,6 +122,9 @@ final class TwigRenderer
         return $this->twig->render($name, $context);
     }
 
+    /**
+     * @return array{route: string, routeParams: array<string, string>, baseUrl: string, theme: string, site: Site, page: Page|null, config: Config}
+     */
     public function getContext(): array
     {
         return [

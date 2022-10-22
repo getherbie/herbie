@@ -42,11 +42,17 @@ final class Event implements EventInterface
         return $this->target;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function setParams(array $params): void
     {
         $this->params = $params;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getParams(): array
     {
         return $this->params;

@@ -14,9 +14,10 @@ final class PluginManager
 
     private Config $config;
 
-    /** @var InstallablePlugin[] */
+    /** @var array<string, InstallablePlugin> */
     private array $loadedPlugins;
 
+    /** @var array<string, string> */
     private array $pluginPaths;
 
     private ContainerInterface $container;
@@ -27,10 +28,13 @@ final class PluginManager
 
     private LoggerInterface $logger;
 
+    /** @var array<int, MiddlewareInterface|callable|string> */
     private array $appMiddlewares;
 
+    /** @var array<int, array{string, MiddlewareInterface|callable|string}> */
     private array $routeMiddlewares;
 
+    /** @var string[] */
     private array $commands;
 
     /**
@@ -110,6 +114,10 @@ final class PluginManager
         ));
     }
 
+    /**
+     * @param string[] $enabledPlugins
+     * @return InstallablePlugin[]
+     */
     private function getInstallablePlugins(array $enabledPlugins, string $type): array
     {
         $plugins = [];
@@ -216,26 +224,41 @@ final class PluginManager
         $this->logger->debug($message);
     }
 
+    /**
+     * @return array<string, InstallablePlugin>
+     */
     public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCommands(): array
     {
         return $this->commands;
     }
 
+    /**
+     * @return array<int, MiddlewareInterface|callable|string>
+     */
     public function getAppMiddlewares(): array
     {
         return $this->appMiddlewares;
     }
 
+    /**
+     * @return array<int, array{string, MiddlewareInterface|callable|string}>
+     */
     public function getRouteMiddlewares(): array
     {
         return $this->routeMiddlewares;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getPluginPaths(): array
     {
         return $this->pluginPaths;

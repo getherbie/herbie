@@ -8,6 +8,7 @@ final class YamlDataRepository implements DataRepositoryInterface
 {
     private string $path;
 
+    /** @var string[] */
     private array $extensions;
 
     /**

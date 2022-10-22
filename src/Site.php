@@ -37,6 +37,9 @@ final class Site
         return date('c');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getData(): array
     {
         return $this->dataRepository->loadAll();
