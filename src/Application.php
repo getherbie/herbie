@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Console\Command\Command;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -122,7 +123,9 @@ final class Application
 
         foreach ($this->getPluginManager()->getCommands() as $command) {
             $params = get_constructor_params_to_inject($command, $this->container);
-            $application->add(new $command(...$params));
+            /** @var Command $commandInstance */
+            $commandInstance = new $command(...$params);
+            $application->add($commandInstance);
         }
 
         $application->run();
