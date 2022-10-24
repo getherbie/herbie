@@ -184,6 +184,10 @@ final class VirtualLocalPlugin extends Plugin
             return [];
         }
         $pattern = $dir . '/*.php';
-        return glob($pattern);
+        $files = glob($pattern);
+        if ($files === false) {
+            return [];
+        }
+        return $files;
     }
 }

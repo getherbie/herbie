@@ -8,6 +8,9 @@ use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
+use function herbie\time_format;
+use function herbie\time_from_string;
+
 final class StrftimeFilterTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
@@ -42,13 +45,13 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
 
         // empty string
         $this->assertSame(
-            strftime("%e. %B %Y"),
+            time_format("%e. %B %Y"),
             $this->twigRenderer->renderString('{{ ""|strftime("%e. %B %Y") }}')
         );
 
         // year with month (without day)
         $this->assertSame(
-            strftime(" 1. September 2022"),
+            time_format(" 1. September 2022"),
             $this->twigRenderer->renderString('{{ "2022-09"|strftime("%e. %B %Y") }}')
         );
     }
@@ -61,7 +64,7 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         );
 
         $this->assertSame(
-            strftime('%e. %B %Y', strtotime('1970-01-01')),
+            time_format('%e. %B %Y', time_from_string('1970-01-01')),
             $this->twigRenderer->renderString('{{ 2000|strftime("%e. %B %Y") }}')
         );
 
@@ -71,17 +74,17 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         );
 
         $this->assertSame(
-            strftime('%e. %B %Y', strtotime('2000-12-31')), // quite random
+            time_format('%e. %B %Y', time_from_string('2000-12-31')), // quite random
             $this->twigRenderer->renderString('{{ "20000-12-31"|strftime("%e. %B %Y") }}')
         );
 
         $this->assertSame(
-            strftime("%e. %B %Y"),
+            time_format("%e. %B %Y"),
             $this->twigRenderer->renderString('{{ false|strftime("%e. %B %Y") }}')
         );
 
         $this->assertSame(
-            strftime('%e. %B %Y', strtotime('1970-01-01')),
+            time_format('%e. %B %Y', time_from_string('1970-01-01')),
             $this->twigRenderer->renderString('{{ true|strftime("%e. %B %Y") }}')
         );
     }

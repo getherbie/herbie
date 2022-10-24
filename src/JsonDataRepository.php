@@ -8,6 +8,7 @@ final class JsonDataRepository implements DataRepositoryInterface
 {
     private string $path;
 
+    /** @var string[] */
     private array $extensions;
 
     /**
@@ -57,7 +58,7 @@ final class JsonDataRepository implements DataRepositoryInterface
                 continue;
             }
             $info = pathinfo($file);
-            if (!in_array($info['extension'], $this->extensions)) {
+            if (isset($info['extension']) && !in_array($info['extension'], $this->extensions)) {
                 continue;
             }
             $name = strtolower($info['filename']);
@@ -84,6 +85,10 @@ final class JsonDataRepository implements DataRepositoryInterface
 
     private function parseDataFile(string $filepath): array
     {
-        return json_decode(file_get_contents($filepath), true);
+        $contents = file_get_contents($filepath);
+        if ($contents === false) {
+            return [];
+        }
+        return json_decode($contents, true);
     }
 }

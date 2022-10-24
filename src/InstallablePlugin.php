@@ -46,6 +46,7 @@ final class InstallablePlugin
             $container
         );
 
+        /** @var PluginInterface */
         return new $this->className(...$constructorParams);
     }
 }

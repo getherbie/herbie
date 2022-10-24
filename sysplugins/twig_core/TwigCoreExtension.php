@@ -21,7 +21,9 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function herbie\date_format;
 use function herbie\str_trailing_slash;
+use function herbie\time_format;
 
 final class TwigCoreExtension extends AbstractExtension
 {
@@ -173,14 +175,14 @@ final class TwigCoreExtension extends AbstractExtension
     {
         // timestamp?
         if (is_numeric($date)) {
-            $date = date('Y-m-d H:i:s', (int)$date);
+            $date = date_format('Y-m-d H:i:s', (int)$date);
         }
         try {
             $dateTime = new \DateTime($date);
         } catch (\Exception $e) {
             return $date;
         }
-        return strftime($format, $dateTime->getTimestamp());
+        return time_format($format, $dateTime->getTimestamp());
     }
 
     public function filterVisible(PageTree $tree): PageTreeFilterIterator

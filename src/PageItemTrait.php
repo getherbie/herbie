@@ -218,7 +218,7 @@ trait PageItemTrait
      */
     public function setDate($date): void
     {
-        $this->date = is_numeric($date) ? date('c', $date) : trim($date);
+        $this->date = is_numeric($date) ? date_format('c', (int)$date) : trim($date);
     }
 
     public function getMenuTitle(): string

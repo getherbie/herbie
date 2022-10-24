@@ -34,7 +34,7 @@ final class Site
 
     public function getTime(): string
     {
-        return date('c');
+        return date_format('c');
     }
 
     /**
@@ -65,12 +65,12 @@ final class Site
     {
         $lastModified = 0;
         foreach ($this->pageRepository->findAll() as $item) {
-            $modified = strtotime($item->getModified());
+            $modified = time_from_string($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;
             }
         }
-        return date('c', $lastModified);
+        return date_format('c', $lastModified);
     }
 
     public function getConfig(): Config

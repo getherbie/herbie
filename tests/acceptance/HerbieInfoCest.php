@@ -17,9 +17,11 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfPhpFunctions(AcceptanceTester $I)
     {
         $functions = [
+            'herbie\date_format',
             'herbie\defined_classes',
             'herbie\defined_constants',
             'herbie\defined_functions',
+            'herbie\file_mtime',
             'herbie\get_callable_name',
             'herbie\get_constructor_params_to_inject',
             'herbie\get_fully_qualified_class_name',
@@ -37,6 +39,8 @@ final class HerbieInfoCest
             'herbie\str_trailing_slash',
             'herbie\str_unleading_slash',
             'herbie\str_untrailing_slash',
+            'herbie\time_format',
+            'herbie\time_from_string',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('PHP Functions (' . count($functions) . ')', 'h2');

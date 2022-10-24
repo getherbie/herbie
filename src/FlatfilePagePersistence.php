@@ -92,13 +92,13 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
                 $data['path'] = $alias;
             }
             if (!isset($data['modified'])) {
-                $data['modified'] = date('c', filemtime($path));
+                $data['modified'] = date_format('c', file_mtime($path));
             }
             if (!isset($data['date'])) {
                 if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $basename, $matches)) {
-                    $data['date'] = date('c', strtotime($matches[1]));
+                    $data['date'] = date_format('c', time_from_string($matches[1]));
                 } else {
-                    $data['date'] = date('c', filectime($path));
+                    $data['date'] = date_format('c', file_mtime($path));
                 }
             }
             if (!isset($data['hidden'])) {

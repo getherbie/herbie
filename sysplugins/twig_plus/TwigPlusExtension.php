@@ -415,7 +415,7 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param array<int|string, mixed> $variables
+     * @param array<string, mixed> $variables
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError

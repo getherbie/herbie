@@ -404,3 +404,37 @@ function get_constructor_params_to_inject(string $pluginClassName, ContainerInte
     }
     return $constructorParams;
 }
+
+function file_mtime(string $path): int
+{
+    $timestamp = filemtime($path);
+    if ($timestamp === false) {
+        return 0;
+    }
+    return $timestamp;
+}
+
+function time_from_string(string $datetime): int
+{
+    $timestamp = strtotime($datetime);
+    if ($timestamp === false) {
+        return 0;
+    }
+    return $timestamp;
+}
+
+function time_format(string $format, ?int $timestamp = null): string
+{
+    $timestamp = $timestamp ?? time();
+    $formatted = strftime($format, $timestamp);
+    if ($formatted === false) {
+        return '';
+    }
+    return $formatted;
+}
+
+function date_format(string $format, ?int $timestamp = null): string
+{
+    $timestamp = $timestamp ?? time();
+    return date($format, $timestamp);
+}
