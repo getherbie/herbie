@@ -32,7 +32,7 @@ final class HerbieInfoCest
             'herbie\recursive_array_replace',
             'herbie\render_exception',
             'herbie\str_camelize',
-            'herbie\str_explode_list',
+            'herbie\str_explode_filtered',
             'herbie\str_leading_slash',
             'herbie\str_trailing_slash',
             'herbie\str_unleading_slash',
