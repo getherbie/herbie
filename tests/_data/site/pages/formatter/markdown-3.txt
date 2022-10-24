@@ -1,6 +1,6 @@
 ---
 title: Markdown 3
-hidden: 0
+hidden: false
 format: markdown
 ---
 

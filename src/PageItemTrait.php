@@ -8,7 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 
 /**
  * @property string[] $authors
- * @property int $cached
+ * @property bool $cached
  * @property string[] $categories
  * @property string $content_type
  * @property string $created
@@ -16,8 +16,8 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property string $date
  * @property string $excerpt
  * @property string $format
- * @property int $hidden
- * @property int $keep_extension
+ * @property bool $hidden
+ * @property bool $keep_extension
  * @property string $layout
  * @property string $menu
  * @property string $modified
@@ -26,14 +26,14 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property string $route
  * @property string[] $tags
  * @property string $title
- * @property int $twig
+ * @property bool $twig
  * @property string $type
  */
 trait PageItemTrait
 {
     /** @var string[] */
     private array $authors;
-    private int $cached;
+    private bool $cached;
     /** @var string[] */
     private array $categories;
     private string $content_type;
@@ -43,8 +43,8 @@ trait PageItemTrait
     private string $date;
     private string $excerpt;
     private string $format;
-    private int $hidden;
-    private int $keep_extension;
+    private bool $hidden;
+    private bool $keep_extension;
     private string $layout;
     private string $menu;
     private string $modified;
@@ -55,7 +55,7 @@ trait PageItemTrait
     /** @var string[] */
     private array $tags;
     private string $title;
-    private int $twig;
+    private bool $twig;
     private string $type;
 
     private static ?SlugGenerator $slugGenerator;
@@ -67,7 +67,7 @@ trait PageItemTrait
     {
         // set defaults
         $this->authors = [];
-        $this->cached = 1;
+        $this->cached = true;
         $this->categories = [];
         $this->content_type = 'text/html';
         $this->created = '';
@@ -75,8 +75,8 @@ trait PageItemTrait
         $this->date = '';
         $this->excerpt = '';
         $this->format = '';
-        $this->hidden = 0;
-        $this->keep_extension = 0;
+        $this->hidden = false;
+        $this->keep_extension = false;
         $this->layout = 'default';
         $this->menu = '';
         $this->modified = '';
@@ -85,7 +85,7 @@ trait PageItemTrait
         $this->route = '';
         $this->tags = [];
         $this->title = '';
-        $this->twig = 1;
+        $this->twig = true;
         $this->type = 'page';
 
         // set values
@@ -374,24 +374,24 @@ trait PageItemTrait
         return $this->modified;
     }
 
-    public function getTwig(): int
+    public function getTwig(): bool
     {
         return $this->twig;
     }
 
-    public function setTwig(int $twig): void
+    public function setTwig(bool $twig): void
     {
-        $this->twig = abs($twig);
+        $this->twig = $twig;
     }
 
-    public function getKeepExtension(): int
+    public function getKeepExtension(): bool
     {
         return $this->keep_extension;
     }
 
-    public function setKeepExtension(int $keepExtension): void
+    public function setKeepExtension(bool $keepExtension): void
     {
-        $this->keep_extension = abs($keepExtension);
+        $this->keep_extension = $keepExtension;
     }
 
     public function getContentType(): string
@@ -404,24 +404,24 @@ trait PageItemTrait
         $this->content_type = trim($contentType);
     }
 
-    public function getCached(): int
+    public function getCached(): bool
     {
         return $this->cached;
     }
 
-    public function setCached(int $cached): void
+    public function setCached(bool $cached): void
     {
-        $this->cached = abs($cached);
+        $this->cached = $cached;
     }
 
-    public function getHidden(): int
+    public function getHidden(): bool
     {
         return $this->hidden;
     }
 
-    public function setHidden(int $hidden): void
+    public function setHidden(bool $hidden): void
     {
-        $this->hidden = abs($hidden);
+        $this->hidden = $hidden;
     }
 
     public function getExcerpt(): string

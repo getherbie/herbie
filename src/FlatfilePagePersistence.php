@@ -102,7 +102,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
                 }
             }
             if (!isset($data['hidden'])) {
-                $data['hidden'] = (int)!preg_match('/^[0-9]+-/', $basename);
+                $data['hidden'] = !preg_match('/^[0-9]+-/', $basename);
             }
         }
 

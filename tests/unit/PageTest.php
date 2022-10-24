@@ -126,14 +126,14 @@ final class PageTest extends \Codeception\Test\Unit
             'id' => '@page/pagedata.md',
             'parent' => '',
             'authors' => [],
-            'cached' => 1,
+            'cached' => true,
             'categories' => [],
             'content_type' => 'text/html',
             'date' => '2013-12-24T01:00:00+01:00',
             'excerpt' => 'This is a short text.',
             'format' => 'markdown',
-            'hidden' => 1,
-            'keep_extension' => 0,
+            'hidden' => true,
+            'keep_extension' => false,
             'layout' => 'layout.html',
             'menu' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
@@ -142,7 +142,7 @@ final class PageTest extends \Codeception\Test\Unit
             'route' => '',
             'tags' => [],
             'title' => 'Page Data',
-            'twig' => 1,
+            'twig' => true,
             'type' => 'my_type'
         ];
 
