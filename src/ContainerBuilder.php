@@ -66,11 +66,12 @@ final class ContainerBuilder
         }
 
         $c->set(Config::class, function (Container $c) {
+            $webPath = preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME']));
             $const = [
-                'APP_PATH' => rtrim($this->app->getAppPath(), '/'),
-                'SITE_PATH' => rtrim($this->app->getSitePath(), '/'),
-                'WEB_PATH' => rtrim(preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME'])), '/'),
-                'WEB_URL' => rtrim($c->get(Environment::class)->getBaseUrl(), '/')
+                'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
+                'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
+                'WEB_PATH' => str_untrailing_slash($webPath),
+                'WEB_URL' => str_untrailing_slash($c->get(Environment::class)->getBaseUrl())
             ];
 
             $processor = function (array $data) use ($const) {

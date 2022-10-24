@@ -179,7 +179,7 @@ final class VirtualLocalPlugin extends Plugin
      */
     private function findPhpFilesInDir(string $dir): array
     {
-        $dir = rtrim($dir, '/');
+        $dir = str_untrailing_slash($dir);
         if (empty($dir) || !is_readable($dir)) {
             return [];
         }

@@ -21,6 +21,8 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function herbie\str_trailing_slash;
+
 final class TwigCoreExtension extends AbstractExtension
 {
     private Alias $alias;
@@ -225,8 +227,8 @@ final class TwigCoreExtension extends AbstractExtension
 
         /** @var Config $config from download middleware */
         $config = $context['config'];
-        $baseUrl = rtrim($config->getAsString('components.downloadMiddleware.baseUrl'), '/') . '/';
-        $storagePath = rtrim($config->getAsString('components.downloadMiddleware.storagePath'), '/') . '/';
+        $baseUrl = str_trailing_slash($config->getAsString('components.downloadMiddleware.baseUrl'));
+        $storagePath = str_trailing_slash($config->getAsString('components.downloadMiddleware.storagePath'));
 
         // combine url and path
         $href = $baseUrl . $path;

@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionFunction;
 use ReflectionNamedType;
 
-function camelize(string $input, string $separator = '_'): string
+function str_camelize(string $input, string $separator = '_'): string
 {
     return str_replace($separator, '', ucwords($input, $separator));
 }
@@ -18,14 +18,54 @@ function camelize(string $input, string $separator = '_'): string
 /**
  * @throws SystemException
  */
-function normalize_path(string $path): string
+function path_normalize(string $path): string
 {
     $realpath = realpath($path);
     if ($realpath === false) {
         $message = sprintf('Could not normalize path "%s"', $path);
         throw SystemException::serverError($message);
     }
-    return rtrim($realpath, '/');
+    return str_trailing_slash($realpath);
+}
+
+/**
+ * Prepends a leading slash.
+ *
+ * @since 2.0.0
+ */
+function str_leading_slash(string $string): string
+{
+    return '/' . str_unleading_slash($string);
+}
+
+/**
+ * Appends a trailing slash.
+ *
+ * @since 2.0.0
+ */
+function str_trailing_slash(string $string): string
+{
+    return str_untrailing_slash($string) . '/';
+}
+
+/**
+ * Removes leading forward slashes and backslashes if they exist.
+ *
+ * @since 2.0.0
+ */
+function str_unleading_slash(string $string): string
+{
+    return ltrim($string, '/\\');
+}
+
+/**
+ * Removes trailing forward slashes and backslashes if they exist.
+ *
+ * @since 2.0.0
+ */
+function str_untrailing_slash(string $string): string
+{
+    return rtrim($string, '/\\');
 }
 
 /**
@@ -57,17 +97,22 @@ function render_exception(\Throwable $exception): string
 }
 
 /**
+ * Split a string by a delimiter.
+ *
+ * Unlike the original PHP explode function, an empty array is returned, if string is empty.
+ * Additionally, the returned array items are trimmed and empty items are filtered.
+ *
  * @return string[]
  */
-function explode_list(string $list, string $delim = ','): array
+function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_MAX): array
 {
     $list = trim($list);
     $delim = trim($delim);
     if ((strlen($list) === 0) || (strlen($delim) === 0)) {
         return [];
     }
-    $values = explode($delim, $list);
-    return array_map('trim', $values);
+    $values = explode($delim, $list, $limit);
+    return array_filter(array_map('trim', $values));
 }
 
 /**

@@ -16,6 +16,8 @@ use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
 use Twig\Markup;
 
+use function herbie\str_trailing_slash;
+
 final class ImagineSysPlugin extends Plugin
 {
     protected Config $config;
@@ -30,7 +32,7 @@ final class ImagineSysPlugin extends Plugin
     {
         $this->alias = $alias;
         $this->config = $config;
-        $this->basePath = rtrim($config->getAsString('urls.web'), '/') . '/';
+        $this->basePath = str_trailing_slash($config->getAsString('urls.web'));
         $this->cachePath = $this->config->getAsString('plugins.imagine.cachePath');
     }
 

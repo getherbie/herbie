@@ -27,7 +27,7 @@ final class Alias
         if (array_key_exists($alias, $this->aliases)) {
             throw new \InvalidArgumentException("Alias {$alias} already set, use update instead.");
         }
-        $this->aliases[$alias] = $this->rtrim($path);
+        $this->aliases[$alias] = str_untrailing_slash($path);
     }
 
     public function get(string $alias): string
@@ -41,14 +41,9 @@ final class Alias
     public function update(string $alias, string $path): void
     {
         if (array_key_exists($alias, $this->aliases)) {
-            $this->aliases[$alias] = $this->rtrim($path);
+            $this->aliases[$alias] = str_untrailing_slash($path);
         } else {
             throw new \InvalidArgumentException("Alias {$alias} not exists, use set instead.");
         }
-    }
-
-    private function rtrim(string $path): string
-    {
-        return rtrim($path, '/');
     }
 }

@@ -227,7 +227,7 @@ final class Environment
             return str_replace('\\', '/', dirname($baseUrl));
         }
         // Base path is identical to base URL
-        return rtrim($baseUrl, '/');
+        return str_untrailing_slash($baseUrl);
     }
 
     private function preparePathInfo(): string

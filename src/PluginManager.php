@@ -69,8 +69,8 @@ final class PluginManager
             'virtual',
         ));
 
-        $enabledSystemPlugins = explode_list($this->config->getAsString('enabledSysPlugins'));
-        $enabledComposerOrLocalPlugins = explode_list($this->config->getAsString('enabledPlugins'));
+        $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
+        $enabledComposerOrLocalPlugins = str_explode_filtered($this->config->getAsString('enabledPlugins'), ',');
 
         // system plugins
         foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {

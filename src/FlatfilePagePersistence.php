@@ -34,7 +34,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
     public function findAll(): array
     {
         $path = $this->config->getAsString('paths.pages');
-        $extensions = explode_list($this->config->getAsString('fileExtensions.pages'));
+        $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
 
         $recDirectoryIt = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
 
@@ -248,8 +248,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
 
     private function createRoute(string $path, bool $trimExtension = false): string
     {
-        // strip left unix AND windows dir separator
-        $route = ltrim($path, '\/');
+        $route = str_unleading_slash($path);
 
         // remove leading numbers (sorting) from url segments
         $segments = explode('/', $route);

@@ -476,7 +476,7 @@ trait PageItemTrait
      */
     public function __get(string $name)
     {
-        $getter = 'get' . camelize($name);
+        $getter = 'get' . str_camelize($name);
         if (method_exists($this, $getter)) {
             return $this->$getter();
         } elseif (array_key_exists($name, $this->customData)) {
@@ -488,7 +488,7 @@ trait PageItemTrait
 
     public function __isset(string $name): bool
     {
-        $getter = 'get' . camelize($name);
+        $getter = 'get' . str_camelize($name);
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
         } elseif (array_key_exists($name, $this->customData)) {
@@ -503,7 +503,7 @@ trait PageItemTrait
      */
     public function __set(string $name, $value): void
     {
-        $setter = 'set' . camelize($name);
+        $setter = 'set' . str_camelize($name);
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } else {
@@ -520,7 +520,7 @@ trait PageItemTrait
     {
         $array = [];
         foreach (get_object_vars($this) as $name => $value) {
-            $method = 'get' . camelize($name);
+            $method = 'get' . str_camelize($name);
             if (method_exists($this, $method)) {
                 $array[$name] = $this->$method();
             }

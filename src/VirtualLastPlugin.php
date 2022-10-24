@@ -28,7 +28,7 @@ final class VirtualLastPlugin extends Plugin
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->pluginManager = $pluginManager;
         $this->twigRenderer = $twigRenderer;
-        $this->appPath = rtrim($config->getAsString('paths.app'), '/');
+        $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
 
     public function twigFunctions(): array
