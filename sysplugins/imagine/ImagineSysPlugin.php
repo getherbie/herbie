@@ -74,10 +74,10 @@ final class ImagineSysPlugin extends Plugin
         $attribs['alt'] = $attribs['alt'] ?? '';
 
         if (empty($attribs['width']) && empty($attribs['height'])) {
-            $size = $this->getImageSize($cachePath);
-            if (!empty($size[0]) && !empty($size[1])) {
-                $attribs['width'] = $size[0];
-                $attribs['height'] = $size[1];
+            [$width, $height] = $this->getImageSize($cachePath);
+            if (($width > 0) && ($height > 0)) {
+                $attribs['width'] = $width;
+                $attribs['height'] = $height;
             }
         }
 
@@ -130,7 +130,11 @@ final class ImagineSysPlugin extends Plugin
         if (!is_file($cachePath)) {
             return [];
         }
-        return getimagesize($cachePath);
+        $size = getimagesize($cachePath);
+        if ($size === false) {
+            return [0, 0];
+        }
+        return [$size[0], $size[1]];
     }
 
     protected function applyFilter(string $relpath, string $filter): string
@@ -177,19 +181,24 @@ final class ImagineSysPlugin extends Plugin
     protected function resolveCachePath(string $path, string $filter): string
     {
         $info = pathinfo($path);
+        $dirname = $info['dirname'] ?? '';
+        $extension = $info['extension'] ?? '';
 
-        $dirname = trim($info['dirname'], '.');
+        $dirname = trim($dirname, '.');
         if (strlen($dirname) > 0) {
             $dirname = '/' . $dirname;
         }
 
+        $dot = strlen($extension) > 0 ? '.' : '';
+
         return sprintf(
-            '%s%s/%s-%s.%s',
+            '%s%s/%s-%s%s%s',
             $this->cachePath,
             $dirname,
             $info['filename'],
             $filter,
-            $info['extension']
+            $dot,
+            $extension
         );
     }
 
@@ -199,7 +208,7 @@ final class ImagineSysPlugin extends Plugin
         $size = new Box(120, 120);
 
         if (isset($options['size']) && (count($options['size']) == 2)) {
-            list($width, $height) = $options['size'];
+            [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }
 
@@ -213,7 +222,7 @@ final class ImagineSysPlugin extends Plugin
         $mode = ImageInterface::THUMBNAIL_OUTBOUND;
 
         if (isset($options['size']) && (count($options['size']) == 2)) {
-            list($width, $height) = $options['size'];
+            [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }
 
@@ -231,12 +240,12 @@ final class ImagineSysPlugin extends Plugin
         $size = new Box(120, 120);
 
         if (isset($options['start']) && (count($options['start']) == 2)) {
-            list($x, $y) = $options['start'];
+            [$x, $y] = $options['start'];
             $start = new Point($x, $y);
         }
 
         if (isset($options['size']) && (count($options['size']) == 2)) {
-            list($width, $height) = $options['size'];
+            [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }
 
@@ -320,7 +329,7 @@ final class ImagineSysPlugin extends Plugin
             throw new \InvalidArgumentException('Missing min option.');
         }
 
-        list($width, $height) = $options['min'];
+        [$width, $height] = $options['min'];
 
         $size = $image->getSize();
         $origWidth = $size->getWidth();

@@ -165,7 +165,7 @@ final class VirtualLastPlugin extends Plugin
 
     /**
      * @param array<string, mixed> $context
-     * @return array<int, string[]>
+     * @return array<int, mixed>
      */
     private function getTwigGlobalsFromContext(array $context): array
     {

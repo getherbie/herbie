@@ -22,9 +22,9 @@ final class UrlMatcher
     /**
      * Returns a path to a valid page file.
      * @param string $route The route of the current request.
-     * @return array<void>|array{route: string, path: string, params: array<string, string>}
+     * @return array{route: string, path: string, params: array<string, string>}|null
      */
-    public function match(string $route): array
+    public function match(string $route): ?array
     {
         $pageList = $this->pageRepository->findAll();
 
@@ -51,7 +51,7 @@ final class UrlMatcher
             }
         }
 
-        return [];
+        return null;
     }
 
     /**

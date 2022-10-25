@@ -126,6 +126,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 
@@ -140,6 +141,7 @@ final class DummySysPlugin implements PluginInterface
         foreach ($context as $key => $value) {
             $context[$key] = $value . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
         }
+        /** @var array */
         return $filter->next($context, $params, $filter);
     }
 
@@ -154,6 +156,7 @@ final class DummySysPlugin implements PluginInterface
             $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
             $context
         );
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

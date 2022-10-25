@@ -66,12 +66,14 @@ final class Selector
 
             $bool = true;
             foreach ($selectors as $selector) {
-                list($field, $value, $function) = $selector;
+                [$field, $value, $function] = $selector;
                 if (!isset($item[$field])) {
                     $bool = false;
                     break;
                 }
-                $bool &= call_user_func_array([$this, $function], [$item[$field], $value]);
+                /** @var callable $callable */
+                $callable = [$this, $function];
+                $bool &= call_user_func_array($callable, [$item[$field], $value]);
             }
 
             if ($bool) {
@@ -162,15 +164,16 @@ final class Selector
 
     protected function matchContainsWords(string $value1, string $value2): bool
     {
-        $hasAll = true;
         $words = preg_split('/[-\s]/', $value2, -1, PREG_SPLIT_NO_EMPTY);
-        foreach ($words as $key => $word) {
+        if (!is_array($words) || count($words) === 0) {
+            return false;
+        }
+        foreach ($words as $word) {
             if (!preg_match('/\b' . preg_quote($word) . '\b/i', $value1)) {
-                $hasAll = false;
-                break;
+                return false;
             }
         }
-        return $hasAll;
+        return true;
     }
 
     protected function matchStarts(string $value1, string $value2): bool

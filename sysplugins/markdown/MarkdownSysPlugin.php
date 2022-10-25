@@ -72,6 +72,7 @@ final class MarkdownSysPlugin extends Plugin
         if ($params['page']->format === 'markdown') {
             $context = $this->parseMarkdown($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

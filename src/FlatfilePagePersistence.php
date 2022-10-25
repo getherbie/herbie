@@ -21,11 +21,14 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
 
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
-     * @throws \Exception
      */
-    public function findById(string $id): array
+    public function findById(string $id): ?array
     {
-        return $this->readFile($id);
+        try {
+            return $this->readFile($id);
+        } catch (\RuntimeException $e) {
+            return null;
+        }
     }
 
     /**
@@ -36,9 +39,9 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         $path = $this->config->getAsString('paths.pages');
         $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
 
-        $recDirectoryIt = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $recDirectoryIt = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
 
-        $callback = function (\SplFileInfo $current, $key, \RecursiveDirectoryIterator $iterator) use ($extensions) {
+        $callback = function (FileInfo $current, $key, \RecursiveDirectoryIterator $iterator) use ($extensions) {
             // Allow recursion
             if ($iterator->hasChildren()) {
                 return true;
@@ -58,92 +61,67 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         $sortIt = new FileInfoSortableIterator($recIteratorIt, FileInfoSortableIterator::SORT_BY_NAME);
 
         $items = [];
+
+        /** @var FileInfo[] $sortIt */
         foreach ($sortIt as $fileInfo) {
-            /** @var FileInfo $fileInfo */
-            $data = $this->readFile($fileInfo->getPathname());
-            if (!isset($data['data']['route'])) {
-                $relPath = str_replace($path, '', $fileInfo->getPathname());
-                $trimExtension = empty($data['data']['keep_extension']);
-                $data['data']['route'] = $this->createRoute($relPath, $trimExtension);
+            try {
+                $items[] = $this->readFile($fileInfo->getAliasedPathname());
+            } catch (\RuntimeException $e) {
             }
-            $items[] = $data;
         }
 
         return $items;
     }
 
     /**
-     * @throws HttpException // TODO change exception type
+     * @return array<string, mixed>
      */
-    private function readFile(string $alias, bool $addDefFields = true): array
+    private function readFile(string $alias): array
     {
         $path = $this->alias->get($alias);
-        $content = $this->readFileContent($path);
-        list($yaml, $segments) = $this->parseFileContent($content);
+        $basename = basename($path);
+
+        $content = file_read($path);
+
+        [$yaml, $segments] = $this->parseFileContent($content);
 
         $data = Yaml::parse($yaml);
 
-        if ($addDefFields) {
-            $basename = basename($path);
-            if (!isset($data['format'])) {
-                $data['format'] = pathinfo($path, PATHINFO_EXTENSION);
+        if (!isset($data['format'])) {
+            $data['format'] = pathinfo($path, PATHINFO_EXTENSION);
+        }
+
+        if (!isset($data['path'])) {
+            $data['path'] = $alias;
+        }
+
+        if (!isset($data['modified'])) {
+            $data['modified'] = date_format('c', file_mtime($path));
+        }
+
+        if (!isset($data['date'])) {
+            if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $basename, $matches)) {
+                $data['date'] = date_format('c', time_from_string($matches[1]));
+            } else {
+                $data['date'] = date_format('c', file_mtime($path));
             }
-            if (!isset($data['path'])) {
-                $data['path'] = $alias;
-            }
-            if (!isset($data['modified'])) {
-                $data['modified'] = date_format('c', file_mtime($path));
-            }
-            if (!isset($data['date'])) {
-                if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $basename, $matches)) {
-                    $data['date'] = date_format('c', time_from_string($matches[1]));
-                } else {
-                    $data['date'] = date_format('c', file_mtime($path));
-                }
-            }
-            if (!isset($data['hidden'])) {
-                $data['hidden'] = !preg_match('/^[0-9]+-/', $basename);
-            }
+        }
+
+        if (!isset($data['hidden'])) {
+            $data['hidden'] = !preg_match('/^[0-9]+-/', $basename);
+        }
+
+        if (!isset($data['route'])) {
+            $trimExtension = empty($data['keep_extension']);
+            $data['route'] = $this->createRoute($alias, $trimExtension);
         }
 
         return [
             'id' => $alias,
-            'parent' => '', //str_replace('.', null$route)),
+            'parent' => '', // TODO determine parent
             'data' => $data,
             'segments' => $segments
         ];
-    }
-
-    public function readFrontMatter(string $path): array
-    {
-        if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
-        }
-
-        $yaml = '';
-
-        $fileObject = new \SplFileObject($path);
-
-        $i = 0;
-        foreach ($fileObject as $line) {
-            // strip BOM from the beginning and \n and \r from end of line
-            $line = rtrim(ltrim($line, UTF8_BOM), "\n\r");
-            if (preg_match('/^---$/', $line)) {
-                $i++;
-                continue;
-            }
-            if ($i > 1) {
-                break;
-            }
-            if ($i == 1) {
-                // add PHP_EOL to end of line
-                $yaml .= $line . PHP_EOL;
-            }
-        }
-
-        unset($fileObject);
-
-        return (array) Yaml::parse($yaml);
     }
 
     private function parseFileContent(string $content): array
@@ -160,18 +138,21 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         if ($matched === 1 && count($matches) == 3) {
             $yaml = $matches[1];
 
-            $splitted = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+            $splitContent = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+            if ($splitContent === false) {
+                throw new \UnexpectedValueException('Error at reading file content');
+            }
 
-            $count = count($splitted);
+            $count = count($splitContent);
             if ($count % 2 == 0) {
                 throw new \UnexpectedValueException('Error at reading file content');
             }
 
-            $segments['default'] = array_shift($splitted);
-            $ct_splitted = count($splitted);
-            for ($i = 0; $i < $ct_splitted; $i = $i + 2) {
-                $key = $splitted[$i];
-                $value = $splitted[$i + 1];
+            $segments['default'] = array_shift($splitContent);
+            $splitContentCount = count($splitContent);
+            for ($i = 0; $i < $splitContentCount; $i = $i + 2) {
+                $key = $splitContent[$i];
+                $value = $splitContent[$i + 1];
                 if (array_key_exists($key, $segments)) {
                     $segments[$key] .= $value;
                 } else {
@@ -188,19 +169,6 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         }
 
         return [$yaml, $segments];
-    }
-
-    /**
-     * @throws HttpException // TODO change exception type
-     */
-    private function readFileContent(string $path): string
-    {
-        // suppress E_WARNING since we throw an exception on error
-        $contents = @file_get_contents($path);
-        if (false === $contents) {
-            throw HttpException::notFound($path);
-        }
-        return $contents;
     }
 
     public static function getRouteToIdMapping(string $contentDir, array $contentExt): array

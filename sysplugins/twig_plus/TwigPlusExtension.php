@@ -184,12 +184,12 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         if (!empty($filter)) {
-            list($field, $value) = explode('|', $filter);
+            [$field, $value] = explode('|', $filter);
             $pageList = $pageList->filter($field, $value);
         }
 
         if (!empty($sort)) {
-            list($field, $direction) = explode('|', $sort);
+            [$field, $direction] = explode('|', $sort);
             $pageList = $pageList->sort($field, $direction);
         }
 

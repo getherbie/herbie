@@ -19,7 +19,7 @@ final class Yaml
 
     public static function parseFile(string $file): array
     {
-        $input = file_get_contents($file);
+        $input = file_read($file);
         return self::parse($input);
     }
 

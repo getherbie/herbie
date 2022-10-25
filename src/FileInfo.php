@@ -33,6 +33,11 @@ final class FileInfo extends \SplFileInfo
         return $this->relativePathname;
     }
 
+    public function getAliasedPathname(): string
+    {
+        return '@page/' . $this->relativePathname;
+    }
+
     public function isDot(): bool
     {
         return in_array($this->getBasename(), ['.', '..']);
@@ -43,14 +48,6 @@ final class FileInfo extends \SplFileInfo
      */
     public function getContents(): string
     {
-        $level = error_reporting(0);
-        $content = file_get_contents($this->getPathname());
-        error_reporting($level);
-        if (false === $content) {
-            $error = error_get_last();
-            throw new \UnexpectedValueException($error['message']);
-        }
-
-        return $content;
+        return file_read($this->getPathname());
     }
 }

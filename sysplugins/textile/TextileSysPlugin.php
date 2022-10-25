@@ -61,6 +61,7 @@ final class TextileSysPlugin extends Plugin
         if ($params['page']->format === 'textile') {
             $context = $this->parseTextile($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

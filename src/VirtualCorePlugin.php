@@ -64,6 +64,7 @@ final class VirtualCorePlugin extends Plugin
         if ($this->enableTwigInSegmentFilter && !empty($page->getTwig())) {
             $context = $this->twigRenderer->renderString($context, $params);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 
@@ -87,6 +88,7 @@ final class VirtualCorePlugin extends Plugin
         } else {
             $context = join('', $params['content']);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 }

@@ -9,6 +9,8 @@ use herbie\ApplicationPaths;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
+use function herbie\file_read;
+
 final class DummySysPluginTest extends \Codeception\Test\Unit
 {
     protected Application $app;
@@ -38,7 +40,7 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         // These tests are bad and really(!) should be made like here:
         // https://stackoverflow.com/a/70355297/6161354
 
-        $logContent = file_get_contents($logFile);
+        $logContent = file_read($logFile);
         $this->assertStringContainsString('Event onSystemPluginsAttached was triggered', $logContent);
         $this->assertStringContainsString('Event onComposerPluginsAttached was triggered', $logContent);
         $this->assertStringContainsString('Event onLocalPluginsAttached was triggered', $logContent);

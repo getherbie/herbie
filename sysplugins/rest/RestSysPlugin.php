@@ -58,6 +58,7 @@ final class RestSysPlugin extends Plugin
         if ($params['page']->format === 'rest') {
             $context = $this->parseRest($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

@@ -22,6 +22,7 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 
 use function herbie\date_format;
+use function herbie\file_size;
 use function herbie\str_trailing_slash;
 use function herbie\time_format;
 
@@ -145,18 +146,15 @@ final class TwigCoreExtension extends AbstractExtension
      */
 
     /**
-     * @param iterable $iterator
+     * @param \Traversable $iterator
      * @param array $selectors
      * @return array
      * @throws \Exception
      */
-    public function filterFilter(iterable $iterator, array $selectors = []): array
+    public function filterFilter(\Traversable $iterator, array $selectors = []): array
     {
         $selector = new Selector();
-        // TODO check for Traversable too
-        $data = $iterator instanceof \IteratorAggregate
-            ? (array)$iterator->getIterator()
-            : $iterator;
+        $data = iterator_to_array($iterator, true);
         return $selector->find($selectors, $data);
     }
 
@@ -364,7 +362,7 @@ final class TwigCoreExtension extends AbstractExtension
             return '';
         }
         $replace = [
-            '{size}' => $this->filterFilesize(filesize($path)),
+            '{size}' => $this->filterFilesize(file_size($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
         ];
         return strtr(' ({extension}, {size})', $replace);

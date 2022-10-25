@@ -11,6 +11,6 @@ final class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
      */
     public function current(): FileInfo
     {
-        return new FileInfo(parent::current()->getPathname(), $this->getSubPath(), $this->getSubPathname());
+        return new FileInfo($this->getPathname(), $this->getSubPath(), $this->getSubPathname());
     }
 }

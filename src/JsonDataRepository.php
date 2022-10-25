@@ -85,10 +85,7 @@ final class JsonDataRepository implements DataRepositoryInterface
 
     private function parseDataFile(string $filepath): array
     {
-        $contents = file_get_contents($filepath);
-        if ($contents === false) {
-            return [];
-        }
+        $contents = file_read($filepath);
         return json_decode($contents, true);
     }
 }

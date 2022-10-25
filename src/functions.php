@@ -87,7 +87,9 @@ function render_exception(\Throwable $exception): string
 
         // remove path
         $path = realpath(__DIR__ . '/../../');
-        $message = str_replace($path, '', $message);
+        if (is_string($path)) {
+            $message = str_replace($path, '', $message);
+        }
         return sprintf('<pre class="error error--exception error--debug">%s</pre>', $message);
     }
 
@@ -116,7 +118,7 @@ function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_
 }
 
 /**
- * @return array<int|string, mixed>
+ * @return array<string, mixed>
  */
 function load_php_config(string $path, ?callable $processor = null): array
 {
@@ -128,7 +130,7 @@ function load_php_config(string $path, ?callable $processor = null): array
 }
 
 /**
- * @return array<int|string, mixed>
+ * @return array<string, mixed>
  */
 function load_plugin_config(string $path, string $pluginLocation, ?callable $processor = null): array
 {
@@ -149,16 +151,21 @@ function load_plugin_config(string $path, string $pluginLocation, ?callable $pro
 }
 
 /**
- * @return array<string, array<int|string, mixed>>
+ * @return array<string, array<string, mixed>>
  */
 function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callable $processor = null): array
 {
     $globPattern = "{$pluginDir}/*/config.php";
     $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
 
+    if ($configFiles === false) {
+        return [];
+    }
+
     $pluginConfigs = [];
     foreach ($configFiles as $configFile) {
         $config = load_plugin_config($configFile, $pluginLocation, $processor);
+        /** @var string $pluginName */
         $pluginName = $config['pluginName'];
         $pluginConfigs[$pluginName] = $config;
     }
@@ -166,7 +173,7 @@ function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callabl
 }
 
 /**
- * @return array<string, array<int|string, mixed>>
+ * @return array<string, array<string, mixed>>
  */
 function load_composer_plugin_configs(): array
 {
@@ -177,6 +184,7 @@ function load_composer_plugin_configs(): array
         $composerPluginConfigPath = $path . '/config.php';
         if (is_readable($composerPluginConfigPath)) {
             $composerPluginConfig = load_plugin_config($composerPluginConfigPath, 'composer');
+            /** @var string $composerPluginName */
             $composerPluginName = $composerPluginConfig['pluginName'];
             $pluginConfigs[$composerPluginName] = $composerPluginConfig;
         }
@@ -187,8 +195,8 @@ function load_composer_plugin_configs(): array
 /**
  * @param string|string[] $find
  * @param string|string[] $replace
- * @param array<int|string, mixed>|scalar $array
- * @return array<string, mixed>|scalar
+ * @param array|scalar $array
+ * @return array|scalar
  */
 function recursive_array_replace($find, $replace, $array)
 {
@@ -237,55 +245,6 @@ function handle_internal_webserver_assets(string $file): void
         readfile($requestedAbsoluteFile);
         exit;
     }
-}
-
-/**
- * @see https://stackoverflow.com/questions/7153000/get-class-name-from-file
- */
-function get_fully_qualified_class_name(string $file): string
-{
-    $tokens = token_get_all(file_get_contents($file));
-    $tokensCount = count($tokens);
-
-    $className = '';
-    $namespaceName = '';
-
-    for ($i = 0; $i < $tokensCount; $i++) {
-        // namespace token
-        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_NAMESPACE')) {
-            for ($j = $i + 1; $j < $tokensCount; $j++) {
-                if ($tokens[$j][0] === ';') {
-                    break;
-                }
-                $tokenName = token_name($tokens[$j][0]);
-                if ($tokenName === 'T_WHITESPACE') {
-                    continue;
-                }
-                if (in_array($tokenName, ['T_NAME_QUALIFIED', 'T_NS_SEPARATOR', 'T_STRING'])) {
-                    $namespaceName .= $tokens[$j][1];
-                }
-            }
-        }
-        // class token
-        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_CLASS')) {
-            for ($j = $i + 1; $j < count($tokens); $j++) {
-                $tokenName = token_name($tokens[$j][0]);
-                if ($tokenName === 'T_WHITESPACE') {
-                    continue;
-                }
-                if ($tokenName === 'T_STRING') {
-                    $className = $tokens[$j][1];
-                    break;
-                }
-            }
-        }
-    }
-
-    if (strlen($namespaceName) === 0) {
-        return $className;
-    }
-
-    return $namespaceName . '\\' . $className;
 }
 
 /**
@@ -376,6 +335,7 @@ function get_callable_name($callable): array
 }
 
 /**
+ * @param class-string<PluginInterface> $pluginClassName
  * @return array<int, object>
  * @throws \Psr\Container\ContainerExceptionInterface
  * @throws \Psr\Container\NotFoundExceptionInterface
@@ -412,6 +372,37 @@ function file_mtime(string $path): int
         return 0;
     }
     return $timestamp;
+}
+
+
+function file_read(string $path): string
+{
+    // see Symfony/Component/Finder/SplFileInfo.php
+    set_error_handler(function (int $type, string $msg) use (&$error): bool {
+        $error = $msg;
+        return true;
+    });
+
+    try {
+        $content = file_get_contents($path);
+    } finally {
+        restore_error_handler();
+    }
+
+    if (false === $content) {
+        throw new \RuntimeException($error);
+    }
+
+    return $content;
+}
+
+function file_size(string $path): int
+{
+    $size = filesize($path);
+    if ($size === false) {
+        return 0;
+    }
+    return $size;
 }
 
 function time_from_string(string $datetime): int
