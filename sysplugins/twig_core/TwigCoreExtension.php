@@ -146,15 +146,19 @@ final class TwigCoreExtension extends AbstractExtension
      */
 
     /**
-     * @param \Traversable $iterator
+     * @param iterable $iterator
      * @param array $selectors
      * @return array
      * @throws \Exception
      */
-    public function filterFilter(\Traversable $iterator, array $selectors = []): array
+    public function filterFilter(iterable $iterator, array $selectors = []): array
     {
+        if ($iterator instanceof \Traversable) {
+            $data = iterator_to_array($iterator);
+        } else {
+            $data = (array)$iterator;
+        }
         $selector = new Selector();
-        $data = iterator_to_array($iterator, true);
         return $selector->find($selectors, $data);
     }
 

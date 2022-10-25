@@ -30,7 +30,7 @@ final class PageTreeFilterIterator extends \RecursiveFilterIterator
     public function getChildren(): self
     {
         return new self(
-            $this->getInnerIterator()->getChildren(),
+            $this->getInnerIterator()->getChildren(), // @phpstan-ignore-line
             $this->enableFilter
         );
     }
