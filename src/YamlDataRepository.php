@@ -8,6 +8,7 @@ final class YamlDataRepository implements DataRepositoryInterface
 {
     private string $path;
 
+    /** @var string[] */
     private array $extensions;
 
     /**
@@ -59,7 +60,7 @@ final class YamlDataRepository implements DataRepositoryInterface
                 continue;
             }
             $info = pathinfo($file);
-            if (!in_array($info['extension'], $this->extensions)) {
+            if (!isset($info['extension']) || !in_array($info['extension'], $this->extensions)) {
                 continue;
             }
             $name = strtolower($info['filename']);
@@ -73,7 +74,7 @@ final class YamlDataRepository implements DataRepositoryInterface
 
     private function parseDataFile(string $filepath): array
     {
-        $yaml = file_get_contents($filepath);
+        $yaml = file_read($filepath);
         return Yaml::parse($yaml);
     }
 }

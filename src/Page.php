@@ -75,13 +75,4 @@ final class Page
             $this->__set($key, $value);
         }
     }
-
-    /**
-     * @return string
-     */
-    public function getDefaultBlocksPath(): string
-    {
-        $pathInfo = pathinfo($this->getPath());
-        return $pathInfo['dirname'] . '/_' . $pathInfo['filename'];
-    }
 }

@@ -26,7 +26,7 @@ final class FlatfilePageRepository implements PageRepositoryInterface
     public function find(string $id): ?Page
     {
         $data = $this->pagePersistence->findById($id);
-        return $this->createPage($data);
+        return $data ? $this->createPage($data) : null;
     }
 
     public function findAll(): PageList

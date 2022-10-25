@@ -33,6 +33,7 @@ final class Environment
 
     /**
      * Get the parts of the current route.
+     * @return string[]
      */
     public function getRouteParts(): array
     {
@@ -42,6 +43,7 @@ final class Environment
 
     /**
      * Get all routes from root to current page as an index array.
+     * @return string[]
      */
     public function getRouteLine(): array
     {
@@ -62,6 +64,9 @@ final class Environment
         return $route[1];
     }
 
+    /**
+     * @return string[]
+     */
     private function getRawRoute(): array
     {
         $pathInfo = trim($this->getPathInfo(), '/');
@@ -222,7 +227,7 @@ final class Environment
             return str_replace('\\', '/', dirname($baseUrl));
         }
         // Base path is identical to base URL
-        return rtrim($baseUrl, '/');
+        return str_untrailing_slash($baseUrl);
     }
 
     private function preparePathInfo(): string

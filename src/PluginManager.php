@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 
 final class PluginManager
@@ -13,9 +14,10 @@ final class PluginManager
 
     private Config $config;
 
-    /** @var InstallablePlugin[] */
+    /** @var array<string, InstallablePlugin> */
     private array $loadedPlugins;
 
+    /** @var array<string, string> */
     private array $pluginPaths;
 
     private ContainerInterface $container;
@@ -26,10 +28,13 @@ final class PluginManager
 
     private LoggerInterface $logger;
 
+    /** @var array<int, MiddlewareInterface|callable|string> */
     private array $appMiddlewares;
 
+    /** @var array<int, array{string, MiddlewareInterface|callable|string}> */
     private array $routeMiddlewares;
 
+    /** @var string[] */
     private array $commands;
 
     /**
@@ -64,8 +69,8 @@ final class PluginManager
             'virtual',
         ));
 
-        $enabledSystemPlugins = explode_list($this->config->getAsString('enabledSysPlugins'));
-        $enabledComposerOrLocalPlugins = explode_list($this->config->getAsString('enabledPlugins'));
+        $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
+        $enabledComposerOrLocalPlugins = str_explode_filtered($this->config->getAsString('enabledPlugins'), ',');
 
         // system plugins
         foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
@@ -109,6 +114,10 @@ final class PluginManager
         ));
     }
 
+    /**
+     * @param string[] $enabledPlugins
+     * @return InstallablePlugin[]
+     */
     private function getInstallablePlugins(array $enabledPlugins, string $type): array
     {
         $plugins = [];
@@ -144,19 +153,19 @@ final class PluginManager
         }
 
         foreach ($plugin->commands() as $command) {
-            $this->commands[] = $command;
+            $this->addCommand($command);
         }
 
         foreach ($plugin->filters() as $filter) {
-            $this->attachFilter(...$filter);
+            $this->addFilter(...$filter);
         }
 
         foreach ($plugin->appMiddlewares() as $appMiddleware) {
-            $this->appMiddlewares[] = $appMiddleware;
+            $this->addAppMiddleware($appMiddleware);
         }
 
         foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
-            $this->routeMiddlewares[] = $routeMiddleware;
+            $this->addRouteMiddleware($routeMiddleware);
         }
 
         foreach ($plugin->twigFilters() as $twigFilter) {
@@ -194,7 +203,7 @@ final class PluginManager
         }
 
         foreach ($plugin->events() as $event) {
-            $this->attachListener(...$event);
+            $this->addListener(...$event);
         }
 
         $key = $installablePlugin->getKey();
@@ -215,37 +224,75 @@ final class PluginManager
         $this->logger->debug($message);
     }
 
+    /**
+     * @return array<string, InstallablePlugin>
+     */
     public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCommands(): array
     {
         return $this->commands;
     }
 
+    /**
+     * @return array<int, MiddlewareInterface|callable|string>
+     */
     public function getAppMiddlewares(): array
     {
         return $this->appMiddlewares;
     }
 
+    /**
+     * @return array<int, array{string, MiddlewareInterface|callable|string}>
+     */
     public function getRouteMiddlewares(): array
     {
         return $this->routeMiddlewares;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getPluginPaths(): array
     {
         return $this->pluginPaths;
     }
 
-    private function attachFilter(string $name, callable $callable): void
+    private function addCommand(string $command): void
+    {
+        $this->commands[] = $command;
+    }
+
+    private function addFilter(string $name, callable $callable): void
     {
         $this->filterChainManager->attach($name, $callable);
     }
 
-    private function attachListener(string $name, callable $callable, int $priority = 1): void
+    /**
+     * @param MiddlewareInterface|callable|string $middleware
+     * @return void
+     */
+    private function addAppMiddleware($middleware): void
+    {
+        $this->appMiddlewares[] = $middleware;
+    }
+
+    /**
+     * @param array{string, MiddlewareInterface|callable|string} $routeWithMiddleware
+     * @return void
+     */
+    private function addRouteMiddleware(array $routeWithMiddleware): void
+    {
+        $this->routeMiddlewares[] = $routeWithMiddleware;
+    }
+
+    private function addListener(string $name, callable $callable, int $priority = 1): void
     {
         $this->eventManager->attach($name, $callable, $priority);
     }

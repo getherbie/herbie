@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Console\Command\Command;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -21,6 +22,8 @@ final class Application
     private array $appMiddlewares;
     private ApplicationPaths $appPaths;
     private Container $container;
+    /** @var string[] */
+    private array $commands;
     private array $events;
     private array $filters;
     private array $routeMiddlewares;
@@ -43,6 +46,7 @@ final class Application
 
         $this->appMiddlewares = [];
         $this->appPaths = $paths;
+        $this->commands = [];
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
@@ -66,7 +70,7 @@ final class Application
         ini_set('display_errors', self::isDebug() ? '1' : '0');
         ini_set('display_startup_errors', self::isDebug() ? '1' : '0');
         ini_set('log_errors', '1');
-        ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date('Y-m')));
+        ini_set('error_log', sprintf('%s/%s-error.log', $logDir, date_format('Y-m')));
 
         $this->container = (new ContainerBuilder($this, $cache, $logger))->build();
 
@@ -117,9 +121,12 @@ final class Application
         $application = new \Symfony\Component\Console\Application();
         $application->setName("-------------------\nHERBIE CMS CLI-Tool\n-------------------");
 
+        /** @var class-string<PluginInterface> $command */
         foreach ($this->getPluginManager()->getCommands() as $command) {
             $params = get_constructor_params_to_inject($command, $this->container);
-            $application->add(new $command(...$params));
+            /** @var Command $commandInstance */
+            $commandInstance = new $command(...$params);
+            $application->add($commandInstance);
         }
 
         $application->run();
@@ -179,6 +186,17 @@ final class Application
     public function getRouteMiddlewares(): array
     {
         return $this->routeMiddlewares;
+    }
+
+    public function addCommand(string $command): Application
+    {
+        $this->commands[] = $command;
+        return $this;
+    }
+
+    public function getCommands(): array
+    {
+        return $this->commands;
     }
 
     /**

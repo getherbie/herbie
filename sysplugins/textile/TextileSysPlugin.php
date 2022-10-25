@@ -6,6 +6,7 @@ namespace herbie\sysplugin\textile;
 
 use herbie\Config;
 use herbie\FilterInterface;
+use herbie\Page;
 use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
@@ -25,9 +26,6 @@ final class TextileSysPlugin extends Plugin
         }
     }
 
-    /**
-     * @return array
-     */
     public function filters(): array
     {
         return [
@@ -35,9 +33,6 @@ final class TextileSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFilters(): array
     {
         if (!$this->config->getAsBool('enableTwigFilter')) {
@@ -48,9 +43,6 @@ final class TextileSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFunctions(): array
     {
         if (!$this->config->getAsBool('enableTwigFunction')) {
@@ -61,11 +53,15 @@ final class TextileSysPlugin extends Plugin
         ];
     }
 
+    /**
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     */
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         if ($params['page']->format === 'textile') {
             $context = $this->parseTextile($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

@@ -1,7 +1,7 @@
 ---
 layout: ""
 content_type: text/xml
-keep_extension: 1
+keep_extension: true
 ---
 {% apply spaceless %}
 <?xml version="1.0" encoding="UTF-8" ?>        

@@ -21,6 +21,11 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function herbie\date_format;
+use function herbie\file_size;
+use function herbie\str_trailing_slash;
+use function herbie\time_format;
+
 final class TwigCoreExtension extends AbstractExtension
 {
     private Alias $alias;
@@ -107,6 +112,9 @@ final class TwigCoreExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param array<string, string> $htmlOptions
+     */
     private function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
@@ -145,11 +153,12 @@ final class TwigCoreExtension extends AbstractExtension
      */
     public function filterFilter(iterable $iterator, array $selectors = []): array
     {
+        if ($iterator instanceof \Traversable) {
+            $data = iterator_to_array($iterator);
+        } else {
+            $data = (array)$iterator;
+        }
         $selector = new Selector();
-        // TODO check for Traversable too
-        $data = $iterator instanceof \IteratorAggregate
-            ? (array)$iterator->getIterator()
-            : $iterator;
         return $selector->find($selectors, $data);
     }
 
@@ -168,14 +177,14 @@ final class TwigCoreExtension extends AbstractExtension
     {
         // timestamp?
         if (is_numeric($date)) {
-            $date = date('Y-m-d H:i:s', (int)$date);
+            $date = date_format('Y-m-d H:i:s', (int)$date);
         }
         try {
             $dateTime = new \DateTime($date);
         } catch (\Exception $e) {
             return $date;
         }
-        return strftime($format, $dateTime->getTimestamp());
+        return time_format($format, $dateTime->getTimestamp());
     }
 
     public function filterVisible(PageTree $tree): PageTreeFilterIterator
@@ -222,8 +231,8 @@ final class TwigCoreExtension extends AbstractExtension
 
         /** @var Config $config from download middleware */
         $config = $context['config'];
-        $baseUrl = rtrim($config->getAsString('components.downloadMiddleware.baseUrl'), '/') . '/';
-        $storagePath = rtrim($config->getAsString('components.downloadMiddleware.storagePath'), '/') . '/';
+        $baseUrl = str_trailing_slash($config->getAsString('components.downloadMiddleware.baseUrl'));
+        $storagePath = str_trailing_slash($config->getAsString('components.downloadMiddleware.storagePath'));
 
         // combine url and path
         $href = $baseUrl . $path;
@@ -282,10 +291,10 @@ final class TwigCoreExtension extends AbstractExtension
         $attribs['src'] = $this->environment->getBasePath() . '/' . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
-            $attribs['width'] = $width;
+            $attribs['width'] = (string)$width;
         }
         if (!empty($height)) {
-            $attribs['height'] = $height;
+            $attribs['height'] = (string)$height;
         }
         if (!empty($class)) {
             $attribs['class'] = $class;
@@ -357,7 +366,7 @@ final class TwigCoreExtension extends AbstractExtension
             return '';
         }
         $replace = [
-            '{size}' => $this->filterFilesize(filesize($path)),
+            '{size}' => $this->filterFilesize(file_size($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
         ];
         return strtr(' ({extension}, {size})', $replace);

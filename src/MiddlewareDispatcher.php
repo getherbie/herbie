@@ -79,6 +79,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
             $current = new CallableMiddleware($current);
         }
 
+        /** @var MiddlewareInterface */
         return $current;
     }
 

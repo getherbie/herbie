@@ -1,6 +1,6 @@
 ---
 layout: ""
 content_type: text/plain
-keep_extension: 1
+keep_extension: true
 ---
 Sitemap: {{ abs_url() }}sitemap.xml

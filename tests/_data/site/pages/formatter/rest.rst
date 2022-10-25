@@ -1,6 +1,6 @@
 ---
 title: reStructuredText 2
-hidden: 0
+hidden: false
 ---
 
 REST Page

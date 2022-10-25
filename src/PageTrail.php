@@ -6,10 +6,13 @@ namespace herbie;
 
 final class PageTrail implements \IteratorAggregate, \Countable
 {
+    /** @var PageItem[] */
     private array $items;
 
     /**
      * PageTrail constructor.
+     *
+     * @param PageItem[] $items
      */
     public function __construct(array $items)
     {

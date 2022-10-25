@@ -9,8 +9,12 @@ final class TwigFilter
     private string $name;
     /** @var callable */
     private $callable;
+    /** @var array<string, scalar|null> */
     private array $options;
 
+    /**
+     * @param array<string, scalar|null> $options
+     */
     public function __construct(string $name, callable $callable, array $options = [])
     {
         $this->name = $name;

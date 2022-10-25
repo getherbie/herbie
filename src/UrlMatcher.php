@@ -22,9 +22,9 @@ final class UrlMatcher
     /**
      * Returns a path to a valid page file.
      * @param string $route The route of the current request.
-     * @return array
+     * @return array{route: string, path: string, params: array<string, string>}|null
      */
-    public function match(string $route): array
+    public function match(string $route): ?array
     {
         $pageList = $this->pageRepository->findAll();
 
@@ -51,9 +51,13 @@ final class UrlMatcher
             }
         }
 
-        return [];
+        return null;
     }
 
+    /**
+     * @param string $route
+     * @return array{rule: string, route: string, params: array<string, string>}|null
+     */
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
@@ -84,9 +88,7 @@ final class UrlMatcher
     }
 
     /**
-     * @param $pattern
-     * @param array $replacements
-     * @return string
+     * @param array<string, string> $replacements
      * @see https://stackoverflow.com/questions/30130913/how-to-do-url-matching-regex-for-routing-framework
      * @see https://laravel.com/docs/5.7/routing
      */

@@ -23,7 +23,8 @@ final class PageTree extends AbstractNode
     public function findByRoute(string $route): ?PageTree
     {
         if (empty($route)) {
-            return $this->root(); // @phpstan-ignore-line
+            /** @var PageTree|null */
+            return $this->root();
         }
         $menuItem = $this->getMenuItem();
         if (isset($menuItem) && ($menuItem->route == $route)) {

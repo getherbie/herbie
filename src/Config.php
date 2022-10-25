@@ -46,6 +46,9 @@ final class Config
         return $current;
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     public function getAsArray(string $path, array $default = []): array
     {
         $arrayValue = $this->get($path, $default);
@@ -109,6 +112,9 @@ final class Config
         return $value !== null;
     }
 
+    /**
+     * @return array<string, scalar|null>
+     */
     public function flatten(): array
     {
         $recItIt = new RecursiveIteratorIterator(

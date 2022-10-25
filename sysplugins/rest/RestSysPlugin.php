@@ -6,6 +6,7 @@ namespace herbie\sysplugin\rest;
 
 use herbie\Config;
 use herbie\FilterInterface;
+use herbie\Page;
 use herbie\Plugin;
 
 final class RestSysPlugin extends Plugin
@@ -49,11 +50,15 @@ final class RestSysPlugin extends Plugin
         ];
     }
 
+    /**
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     */
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         if ($params['page']->format === 'rest') {
             $context = $this->parseRest($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

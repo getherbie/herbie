@@ -1,6 +1,6 @@
 ---
 title: Markdown 2
-hidden: 0
+hidden: false
 ---
 
 # Markdown Page

@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionFunction;
 use ReflectionNamedType;
 
-function camelize(string $input, string $separator = '_'): string
+function str_camelize(string $input, string $separator = '_'): string
 {
     return str_replace($separator, '', ucwords($input, $separator));
 }
@@ -18,14 +18,54 @@ function camelize(string $input, string $separator = '_'): string
 /**
  * @throws SystemException
  */
-function normalize_path(string $path): string
+function path_normalize(string $path): string
 {
     $realpath = realpath($path);
     if ($realpath === false) {
         $message = sprintf('Could not normalize path "%s"', $path);
         throw SystemException::serverError($message);
     }
-    return rtrim($realpath, '/');
+    return str_trailing_slash($realpath);
+}
+
+/**
+ * Prepends a leading slash.
+ *
+ * @since 2.0.0
+ */
+function str_leading_slash(string $string): string
+{
+    return '/' . str_unleading_slash($string);
+}
+
+/**
+ * Appends a trailing slash.
+ *
+ * @since 2.0.0
+ */
+function str_trailing_slash(string $string): string
+{
+    return str_untrailing_slash($string) . '/';
+}
+
+/**
+ * Removes leading forward slashes and backslashes if they exist.
+ *
+ * @since 2.0.0
+ */
+function str_unleading_slash(string $string): string
+{
+    return ltrim($string, '/\\');
+}
+
+/**
+ * Removes trailing forward slashes and backslashes if they exist.
+ *
+ * @since 2.0.0
+ */
+function str_untrailing_slash(string $string): string
+{
+    return rtrim($string, '/\\');
 }
 
 /**
@@ -47,7 +87,9 @@ function render_exception(\Throwable $exception): string
 
         // remove path
         $path = realpath(__DIR__ . '/../../');
-        $message = str_replace($path, '', $message);
+        if (is_string($path)) {
+            $message = str_replace($path, '', $message);
+        }
         return sprintf('<pre class="error error--exception error--debug">%s</pre>', $message);
     }
 
@@ -56,17 +98,28 @@ function render_exception(\Throwable $exception): string
     return sprintf('<pre class="error error--exception">%s</pre>', $message);
 }
 
-function explode_list(string $list, string $delim = ','): array
+/**
+ * Split a string by a delimiter.
+ *
+ * Unlike the original PHP explode function, an empty array is returned, if string is empty.
+ * Additionally, the returned array items are trimmed and empty items are filtered.
+ *
+ * @return string[]
+ */
+function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_MAX): array
 {
     $list = trim($list);
     $delim = trim($delim);
     if ((strlen($list) === 0) || (strlen($delim) === 0)) {
         return [];
     }
-    $values = explode($delim, $list);
-    return array_map('trim', $values);
+    $values = explode($delim, $list, $limit);
+    return array_filter(array_map('trim', $values));
 }
 
+/**
+ * @return array<string, mixed>
+ */
 function load_php_config(string $path, ?callable $processor = null): array
 {
     $data = include($path);
@@ -76,6 +129,9 @@ function load_php_config(string $path, ?callable $processor = null): array
     return $data;
 }
 
+/**
+ * @return array<string, mixed>
+ */
 function load_plugin_config(string $path, string $pluginLocation, ?callable $processor = null): array
 {
     $config = array_merge(
@@ -94,20 +150,31 @@ function load_plugin_config(string $path, string $pluginLocation, ?callable $pro
     return $config;
 }
 
+/**
+ * @return array<string, array<string, mixed>>
+ */
 function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callable $processor = null): array
 {
     $globPattern = "{$pluginDir}/*/config.php";
     $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
 
+    if ($configFiles === false) {
+        return [];
+    }
+
     $pluginConfigs = [];
     foreach ($configFiles as $configFile) {
         $config = load_plugin_config($configFile, $pluginLocation, $processor);
+        /** @var string $pluginName */
         $pluginName = $config['pluginName'];
         $pluginConfigs[$pluginName] = $config;
     }
     return $pluginConfigs;
 }
 
+/**
+ * @return array<string, array<string, mixed>>
+ */
 function load_composer_plugin_configs(): array
 {
     $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
@@ -117,6 +184,7 @@ function load_composer_plugin_configs(): array
         $composerPluginConfigPath = $path . '/config.php';
         if (is_readable($composerPluginConfigPath)) {
             $composerPluginConfig = load_plugin_config($composerPluginConfigPath, 'composer');
+            /** @var string $composerPluginName */
             $composerPluginName = $composerPluginConfig['pluginName'];
             $pluginConfigs[$composerPluginName] = $composerPluginConfig;
         }
@@ -125,17 +193,18 @@ function load_composer_plugin_configs(): array
 }
 
 /**
- * @param string|array $find
- * @param string|array $replace
+ * @param string|string[] $find
+ * @param string|string[] $replace
  * @param array|scalar $array
  * @return array|scalar
  */
 function recursive_array_replace($find, $replace, $array)
 {
+    if (is_string($array)) {
+        return str_replace($find, $replace, $array);
+    }
+
     if (!is_array($array)) {
-        if (is_string($array)) {
-            return str_replace($find, $replace, $array);
-        }
         return $array;
     }
 
@@ -179,56 +248,7 @@ function handle_internal_webserver_assets(string $file): void
 }
 
 /**
- * @see https://stackoverflow.com/questions/7153000/get-class-name-from-file
- */
-function get_fully_qualified_class_name(string $file): string
-{
-    $tokens = token_get_all(file_get_contents($file));
-    $tokensCount = count($tokens);
-
-    $className = '';
-    $namespaceName = '';
-
-    for ($i = 0; $i < $tokensCount; $i++) {
-        // namespace token
-        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_NAMESPACE')) {
-            for ($j = $i + 1; $j < $tokensCount; $j++) {
-                if ($tokens[$j][0] === ';') {
-                    break;
-                }
-                $tokenName = token_name($tokens[$j][0]);
-                if ($tokenName === 'T_WHITESPACE') {
-                    continue;
-                }
-                if (in_array($tokenName, ['T_NAME_QUALIFIED', 'T_NS_SEPARATOR', 'T_STRING'])) {
-                    $namespaceName .= $tokens[$j][1];
-                }
-            }
-        }
-        // class token
-        if (is_array($tokens[$i]) && (token_name($tokens[$i][0]) === 'T_CLASS')) {
-            for ($j = $i + 1; $j < count($tokens); $j++) {
-                $tokenName = token_name($tokens[$j][0]);
-                if ($tokenName === 'T_WHITESPACE') {
-                    continue;
-                }
-                if ($tokenName === 'T_STRING') {
-                    $className = $tokens[$j][1];
-                    break;
-                }
-            }
-        }
-    }
-
-    if (strlen($namespaceName) === 0) {
-        return $className;
-    }
-
-    return $namespaceName . '\\' . $className;
-}
-
-/**
- * @phpstan-return array<int,string>
+ * @return array<int, string>
  */
 function defined_classes(string $prefix = ''): array
 {
@@ -244,7 +264,7 @@ function defined_classes(string $prefix = ''): array
 }
 
 /**
- * @phpstan-return array<string,string>
+ * @return array<string, string>
  */
 function defined_constants(string $prefix = ''): array
 {
@@ -263,7 +283,7 @@ function defined_constants(string $prefix = ''): array
 }
 
 /**
- * @phpstan-return array<int,string>
+ * @return array<int, string>
  */
 function defined_functions(string $prefix = ''): array
 {
@@ -279,8 +299,8 @@ function defined_functions(string $prefix = ''): array
 }
 
 /**
- * @param string|array|Closure|object $callable
- * @return array<int, string|null>
+ * @param Closure|string|array<object|string, string>|object|callable $callable
+ * @return array{string, string}
  * @see https://stackoverflow.com/a/68113840/6161354
  */
 function get_callable_name($callable): array
@@ -295,16 +315,32 @@ function get_callable_name($callable): array
         case is_array($callable):
             return ['static', $callable[0]  . '::' . $callable[1]];
         case $callable instanceof Closure:
-            $reflectionClosure = new ReflectionFunction($callable);
-            $class = $reflectionClosure->getClosureScopeClass();
-            return ['closure', $class ? $class->getName() : '{closure}'];
+            try {
+                $reflectionClosure = new ReflectionFunction($callable);
+                $closureName = $reflectionClosure->getName();
+                $class = $reflectionClosure->getClosureScopeClass();
+                $className = $class ? $class->getName() : null;
+                return ['closure', $className ? $className . '--' . $closureName : $closureName];
+            } catch (\ReflectionException $e) {
+                return ['unknown', ''];
+            }
         case is_object($callable):
-            return ['invokable', get_class($callable)];
+            if (is_callable($callable)) {
+                return ['invokable', get_class($callable)];
+            }
+            return ['-', get_class($callable)];
         default:
-            return ['unknown', null];
+            return ['unknown', ''];
     }
 }
 
+/**
+ * @param class-string<PluginInterface> $pluginClassName
+ * @return array<int, object>
+ * @throws \Psr\Container\ContainerExceptionInterface
+ * @throws \Psr\Container\NotFoundExceptionInterface
+ * @throws \ReflectionException
+ */
 function get_constructor_params_to_inject(string $pluginClassName, ContainerInterface $container): array
 {
     $reflectedClass = new \ReflectionClass($pluginClassName);
@@ -327,4 +363,69 @@ function get_constructor_params_to_inject(string $pluginClassName, ContainerInte
         $constructorParams[] = $container->get($classNameToInject);
     }
     return $constructorParams;
+}
+
+function file_mtime(string $path): int
+{
+    $timestamp = filemtime($path);
+    if ($timestamp === false) {
+        return 0;
+    }
+    return $timestamp;
+}
+
+
+function file_read(string $path): string
+{
+    // see Symfony/Component/Finder/SplFileInfo.php
+    set_error_handler(function (int $type, string $msg) use (&$error): bool {
+        $error = $msg;
+        return true;
+    });
+
+    try {
+        $content = file_get_contents($path);
+    } finally {
+        restore_error_handler();
+    }
+
+    if (false === $content) {
+        throw new \RuntimeException($error);
+    }
+
+    return $content;
+}
+
+function file_size(string $path): int
+{
+    $size = filesize($path);
+    if ($size === false) {
+        return 0;
+    }
+    return $size;
+}
+
+function time_from_string(string $datetime): int
+{
+    $timestamp = strtotime($datetime);
+    if ($timestamp === false) {
+        return 0;
+    }
+    return $timestamp;
+}
+
+function time_format(string $format, ?int $timestamp = null): string
+{
+    $timestamp = $timestamp ?? time();
+    $formatted = strftime($format, $timestamp);
+    if ($formatted === false) {
+        return '';
+    }
+    return $formatted;
+}
+
+function date_format(string $format, ?int $timestamp = null): string
+{
+    $timestamp = $timestamp ?? time();
+    return date($format, $timestamp);
 }

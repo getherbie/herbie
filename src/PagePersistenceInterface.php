@@ -6,7 +6,7 @@ namespace herbie;
 
 interface PagePersistenceInterface
 {
-    public function findById(string $id): array;
+    public function findById(string $id): ?array;
 
     public function findAll(): array;
 }

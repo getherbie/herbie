@@ -17,22 +17,31 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfPhpFunctions(AcceptanceTester $I)
     {
         $functions = [
-            'herbie\camelize',
+            'herbie\date_format',
             'herbie\defined_classes',
             'herbie\defined_constants',
             'herbie\defined_functions',
-            'herbie\explode_list',
+            'herbie\file_mtime',
+            'herbie\file_read',
+            'herbie\file_size',
             'herbie\get_callable_name',
             'herbie\get_constructor_params_to_inject',
-            'herbie\get_fully_qualified_class_name',
             'herbie\handle_internal_webserver_assets',
             'herbie\load_composer_plugin_configs',
             'herbie\load_php_config',
             'herbie\load_plugin_config',
             'herbie\load_plugin_configs',
-            'herbie\normalize_path',
+            'herbie\path_normalize',
             'herbie\recursive_array_replace',
             'herbie\render_exception',
+            'herbie\str_camelize',
+            'herbie\str_explode_filtered',
+            'herbie\str_leading_slash',
+            'herbie\str_trailing_slash',
+            'herbie\str_unleading_slash',
+            'herbie\str_untrailing_slash',
+            'herbie\time_format',
+            'herbie\time_from_string',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('PHP Functions (' . count($functions) . ')', 'h2');
@@ -55,6 +64,7 @@ final class HerbieInfoCest
             'herbie\ErrorHandlerMiddleware',
             'herbie\Event',
             'herbie\EventManager',
+            'herbie\FileInfo',
             'herbie\FileInfoSortableIterator',
             'herbie\FilterChain',
             'herbie\FilterChainManager',
@@ -75,6 +85,7 @@ final class HerbieInfoCest
             'herbie\PageResolverMiddleware',
             'herbie\Plugin',
             'herbie\PluginManager',
+            'herbie\RecursiveDirectoryIterator',
             'herbie\ResponseTimeMiddleware',
             'herbie\Site',
             'herbie\Translator',
@@ -108,12 +119,14 @@ final class HerbieInfoCest
         $middlewares = [
             'herbie\ErrorHandlerMiddleware',
             'herbie\sysplugin\dummy\DummySysPlugin->appMiddleware',
+            'tests\_data\src\CustomHeader',
             'herbie\ResponseTimeMiddleware',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
             'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
+            'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'herbie\HttpBasicAuthMiddleware',
@@ -557,5 +570,19 @@ final class HerbieInfoCest
         $I->amOnPage('/herbie-info');
         $I->see('Plugins (' . count($plugins) . ')', 'h2');
         $I->see(join(',', $plugins), '.herbie-info-plugins');
+    }
+
+    public function testNumberAndSortingOfCommands(AcceptanceTester $I)
+    {
+        $commands = [
+            'herbie\ClearCacheCommand',
+            'herbie\sysplugin\dummy\DummyCommand',
+            'tests\_data\site\extend\commands\CustomCommand',
+            'tests\_data\src\CustomCommand',
+            'tests\_data\src\CustomCommand'
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Commands (' . count($commands) . ')', 'h2');
+        $I->see(join(',', $commands), '.herbie-info-commands');
     }
 }

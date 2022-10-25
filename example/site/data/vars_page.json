@@ -22,12 +22,12 @@
     },
     {
         "key": "page.modified",
-        "desc": "The modification time of the page",
+        "desc": "The modification time of the page as ISO 8601 formatted string. This value is set automatically.",
         "type": "string"
     },
     {
         "key": "page.created",
-        "desc": "The creation time of the page",
+        "desc": "The creation time of the page. This value is not set automatically.",
         "type": "string"
     },
     {
@@ -37,7 +37,7 @@
     },
     {
         "key": "page.excerpt",
-        "desc": "The excerpt of the page body",
+        "desc": "The excerpt of the page body.",
         "type": "string"
     },
     {
@@ -47,12 +47,12 @@
     },
     {
         "key": "page.hidden",
-        "desc": "If set the page is not visible in navigation elements like sitemap or breadcrumb",
+        "desc": "If set the page is not visible in navigation elements like sitemap or breadcrumb.",
         "type": "bool"
     },
     {
         "key": "page.id",
-        "desc": "The ID of the page",
+        "desc": "The ID of the page.",
         "type": "string"
     },
     {
@@ -73,52 +73,52 @@
     },
     {
         "key": "page.parent",
-        "desc": "The parent route",
+        "desc": "The parent route.",
         "type": "string"
     },
     {
         "key": "page.path",
-        "desc": "The path to the page file, set per default",
+        "desc": "The path to the page file, set per default.",
         "type": "string"
     },
     {
         "key": "page.redirect",
-        "desc": "If set the request will be redirected to the given page",
+        "desc": "If set the request will be redirected to the given page.",
         "type": "string|object"
     },
     {
         "key": "page.route",
-        "desc": "The route to the page",
+        "desc": "The route to the page.",
         "type": "string"
     },
     {
         "key": "page.segments",
-        "desc": "The page content",
+        "desc": "The page content.",
         "type": "array"
     },
     {
         "key": "page.tags",
-        "desc": "One or more tags that belongs to the page",
+        "desc": "One or more tags that belongs to the page.",
         "type": "string[]"
     },
     {
         "key": "page.title",
-        "desc": "The title of the page",
+        "desc": "The title of the page.",
         "type": "string"
     },
     {
         "key": "page.twig",
-        "desc": "If set the page will be parsed by the Twig Renderer first (default = true)",
+        "desc": "If set the page will be parsed by the Twig Renderer first (default = true).",
         "type": "bool"
     },
     {
         "key": "page.type",
-        "desc": "The page type (default: page)",
+        "desc": "The page type (default: page).",
         "type": "string"
     },
     {
         "key": "page.<NAME>",
-        "desc": "Any numbers of custom variables",
+        "desc": "Any numbers of custom variables.",
         "type": "mixed"
     }
 ]

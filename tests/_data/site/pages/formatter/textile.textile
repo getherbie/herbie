@@ -1,6 +1,6 @@
 ---
 title: Textile
-hidden: 0
+hidden: false
 ---
 
 h1. Textile Page

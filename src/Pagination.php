@@ -6,6 +6,7 @@ namespace herbie;
 
 final class Pagination implements \IteratorAggregate, \Countable
 {
+    /** @var array<int, mixed> */
     private array $items;
 
     private int $limit;
@@ -13,6 +14,7 @@ final class Pagination implements \IteratorAggregate, \Countable
     private string $name;
 
     /**
+     * @param array<int, mixed> $items
      * @throws \Exception
      * @throws \LogicException
      */

@@ -1,6 +1,7 @@
 <div class="herbie-info">
     <h1 class="herbie-info-h1">Herbie CMS Info</h1>
     <ul>
+        <li><a href="{{ route }}#herbie-commands">Commands</a></li>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
         <li><a href="{{ route }}#herbie-events">Events</a></li>
         <li><a href="{{ route }}#herbie-filters">Filters</a></li>
@@ -27,8 +28,30 @@
             </tr>
         {% endfor %}
     </table> #}
+
+    <h2 id="herbie-commands" class="herbie-info-h2">Commands ({{ commands|length }})</h2>
+    <p>Attached console commands, ordered by installation time.</p>
+    <div class="herbie-info-commands" style="display:none">
+        {% for command in commands %}
+            {{- command -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+        </tr>
+        {% for command in commands %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ command }}</td>
+            </tr>
+        {% endfor %}
+    </table>
     
     <h2 id="herbie-config" class="herbie-info-h2">Configuration ({{ config|length }})</h2>
+    <p>Parsed configuration settings, ordered by name.</p>
     <div class="herbie-info-config" style="display:none">
         {% for key, _ in config %}
             {{- key -}}
@@ -51,6 +74,7 @@
     </table>
 
     <h2 id="herbie-events" class="herbie-info-h2">Events ({{ events|length }})</h2>
+    <p>Handled runtime events, ordered by installation time.</p>
     <div class="herbie-info-events" style="display:none">
         {%- for event in events -%}
             {{- event[0] -}}
@@ -77,6 +101,7 @@
     </table>
     
     <h2 id="herbie-filters" class="herbie-info-h2">Filters ({{ filters|length }})</h2>
+    <p>Attached intercepting filters, ordered by installation time.</p>
     <div class="herbie-info-filters" style="display:none">
         {%- for filter in filters -%}
             {{- filter[0] -}}
@@ -94,13 +119,14 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ filter[0] }}</td>
-                <td>{{ filter[1][0] }}</td>
-                <td>{{ filter[1][1] }}</td>
+                <td>{{ filter[1] }}</td>
+                <td>{{ filter[2] }}</td>
             </tr>
         {% endfor %}
     </table>
 
     <h2 id="herbie-middlewares" class="herbie-info-h2">Middlewares ({{ middlewares|length }})</h2>
+    <p>Attached middlewares, ordered by installation time.</p>
     <div class="herbie-info-twig-middlewares" style="display:none">
         {%- for middleware in middlewares -%}
             {{- middleware[2] -}}
@@ -125,6 +151,7 @@
     </table>
     
     <h2 id="herbie-php-classes" class="herbie-info-h2">PHP Classes ({{ php_classes|length }})</h2>
+    <p>Parsed runtime PHP classes, ordered by name.</p>
     <div class="herbie-info-php-classes" style="display:none">
         {%- for class in php_classes -%}
             {{- class -}}
@@ -145,6 +172,7 @@
     </table>
 
     <h2 id="herbie-php-functions" class="herbie-info-h2">PHP Functions ({{ php_functions|length }})</h2>
+    <p>Parsed runtime PHP functions, ordered by name.</p>
     <div class="herbie-info-php-functions" style="display:none">
         {%- for function in php_functions -%}
             {{- function -}}
@@ -165,6 +193,7 @@
     </table>
 
     <h2 id="herbie-plugins" class="herbie-info-h2">Plugins ({{ plugins|length }})</h2>
+    <p>Attached plugins, ordered by installation time.</p>
     <div class="herbie-info-plugins" style="display:none">
         {%- for plugin in plugins -%}
             {{- plugin[0] -}}
@@ -189,6 +218,7 @@
     </table>
     
     <h2 id="herbie-twig-filters" class="herbie-info-h2">Twig Filters ({{ twig_filters|length }})</h2>
+    <p>Attached Twig filters, ordered by installation time.</p>
     <div class="herbie-info-twig-filters" style="display:none">
         {%- for filter in twig_filters -%}
             {{- filter[0] -}}
@@ -206,13 +236,14 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ filter[0] }}</td>
-                <td>{{ filter[1][0] }}</td>
-                <td>{{ filter[1][1] }}</td>
+                <td>{{ filter[1] }}</td>
+                <td>{{ filter[2] }}</td>
             </tr>
         {% endfor %}
     </table>
 
     <h2 id="herbie-twig-globals" class="herbie-info-h2">Twig Globals ({{ twig_globals|length }})</h2>
+    <p>Attached Twig globals, ordered by installation time.</p>
     <div class="herbie-info-twig-globals" style="display:none">
         {%- for global in twig_globals -%}
             {{- global[0] -}}
@@ -237,6 +268,7 @@
     </table>
     
     <h2 id="herbie-twig-functions" class="herbie-info-h2">Twig Functions ({{ twig_functions|length }})</h2>
+    <p>Attached Twig functions, ordered by installation time.</p>
     <div class="herbie-info-twig-functions" style="display:none">
         {%- for function in twig_functions -%}
             {{- function[0] -}}
@@ -254,13 +286,14 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ function[0] }}</td>
-                <td>{{ function[1][0] }}</td>
-                <td>{{ function[1][1] }}</td>
+                <td>{{ function[1] }}</td>
+                <td>{{ function[2] }}</td>
             </tr>
         {% endfor %}
     </table>
 
     <h2 id="herbie-twig-tests" class="herbie-info-h2">Twig Tests ({{ twig_tests|length }})</h2>
+    <p>Attached Twig tests, ordered by installation time.</p>
     <div class="herbie-info-twig-tests" style="display:none">
         {%- for test in twig_tests -%}
             {{- test[0] -}}
@@ -278,8 +311,8 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ test[0] }}</td>
-                <td>{{ test[1][0] }}</td>
-                <td>{{ test[1][1] }}</td>
+                <td>{{ test[1] }}</td>
+                <td>{{ test[2] }}</td>
             </tr>
         {% endfor %}
     </table>

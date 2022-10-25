@@ -8,8 +8,14 @@ final class Translator
 {
     private string $language;
 
+    /**
+     * @var array<string, string[]>
+     */
     private array $paths;
 
+    /**
+     * @var array<string, array<string, array<string, string>>>
+     */
     private array $messages;
 
     /**
@@ -30,11 +36,17 @@ final class Translator
         $this->loadMessages();
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     public function t(string $category, string $message, array $params = []): string
     {
         return $this->translate($category, $message, $params);
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     public function translate(string $category, string $message, array $params = []): string
     {
         if (isset($this->messages[$this->language][$category][$message])) {
@@ -46,6 +58,9 @@ final class Translator
         return $this->replacePlaceholders($message, $params);
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     private function replacePlaceholders(string $message, array $params): string
     {
         $paramsWithBrackets = [];
@@ -70,7 +85,7 @@ final class Translator
     }
 
     /**
-     * @param array|string $path
+     * @param string[]|string $path
      */
     public function addPath(string $category, $path): void
     {

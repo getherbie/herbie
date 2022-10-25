@@ -67,7 +67,7 @@ final class TwigPlusExtension extends AbstractExtension
             new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
             new TwigFunction('page_title', [$this, 'functionPageTitle']),
             new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
-            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_variadic' => true]),
+            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
             new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
             new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
             new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
@@ -90,6 +90,10 @@ final class TwigPlusExtension extends AbstractExtension
         return $asciiTree->render();
     }
 
+    /**
+     * @param array<string, mixed> $context
+     * @return string
+     */
     public function functionBodyClass(array $context): string
     {
         $page = 'error';
@@ -118,7 +122,7 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param array|string $homeLink
+     * @param array{0: string, 1?: string}|string $homeLink
      */
     public function functionBreadcrumb(
         string $delim = '',
@@ -180,12 +184,12 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         if (!empty($filter)) {
-            list($field, $value) = explode('|', $filter);
+            [$field, $value] = explode('|', $filter);
             $pageList = $pageList->filter($field, $value);
         }
 
         if (!empty($sort)) {
-            list($field, $direction) = explode('|', $sort);
+            [$field, $direction] = explode('|', $sort);
             $pageList = $pageList->sort($field, $direction);
         }
 
@@ -318,6 +322,7 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
+     * @param array<string, string> $routeParams
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -410,14 +415,14 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
+     * @param array<string, mixed> $variables
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionSnippet(string $path, array $options = []): string
+    public function functionSnippet(string $path, array $variables = []): string
     {
-        // TODO fix transformation of variadic camelCase to snake_case keys
-        return $this->twigRenderer->renderTemplate($path, $options);
+        return $this->twigRenderer->renderTemplate($path, $variables);
     }
 
     /**
@@ -524,6 +529,9 @@ final class TwigPlusExtension extends AbstractExtension
         ]);
     }
 
+    /**
+     * @param array<string, string> $htmlOptions
+     */
     protected function buildHtmlAttributes(array $htmlOptions = []): string
     {
         $attributes = '';
@@ -533,6 +541,9 @@ final class TwigPlusExtension extends AbstractExtension
         return trim($attributes);
     }
 
+    /**
+     * @param array<string, string> $htmlAttributes
+     */
     protected function createLink(string $route, string $label, array $htmlAttributes = []): string
     {
         $url = $this->urlGenerator->generate($route);

@@ -15,7 +15,7 @@ final class FileInfoSortableIterator implements \IteratorAggregate
     private \Traversable $iterator;
 
     /**
-     * @var int|callable
+     * @var callable
      */
     private $sort;
 

@@ -13,6 +13,7 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
 
     private string $output;
 
+    /** @var array<string, string> */
     private array $template = [
         'beginIteration' => '<div class="{class}"><ul>',
         'endIteration' => '</ul></div>',
@@ -40,6 +41,9 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
         $this->class = $class;
     }
 
+    /**
+     * @param array<string, string> $options
+     */
     public function setTemplate(array $options = []): void
     {
         foreach ($options as $key => $value) {

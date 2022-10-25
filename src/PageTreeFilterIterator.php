@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use RecursiveIterator;
-
 final class PageTreeFilterIterator extends \RecursiveFilterIterator
 {
     private bool $enableFilter;
 
-    public function __construct(RecursiveIterator $recursiveIterator, bool $enableFilter = true)
+    public function __construct(PageTreeIterator $recursiveIterator, bool $enableFilter = true)
     {
         $this->enableFilter = $enableFilter;
         parent::__construct($recursiveIterator);
@@ -29,7 +27,7 @@ final class PageTreeFilterIterator extends \RecursiveFilterIterator
         return false;
     }
 
-    public function getChildren(): PageTreeFilterIterator
+    public function getChildren(): self
     {
         return new self(
             $this->getInnerIterator()->getChildren(), // @phpstan-ignore-line

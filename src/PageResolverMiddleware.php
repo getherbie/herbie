@@ -39,13 +39,15 @@ final class PageResolverMiddleware implements MiddlewareInterface
         $route = $this->environment->getRoute();
         $matchedRoute = $this->urlMatcher->match($route);
 
-        if (empty($matchedRoute)) {
-            $page = null;
-            $routeParams = [];
-        } else {
+        $page = null;
+        $routeParams = [];
+
+        if ($matchedRoute) {
             $page = $this->pageRepository->find($matchedRoute['path']);
-            $page->setRoute($matchedRoute['route']); // inject route
-            $routeParams = $matchedRoute['params'];
+            if ($page) {
+                $page->setRoute($matchedRoute['route']); // inject route
+                $routeParams = $matchedRoute['params'];
+            }
         }
 
         $request = $request

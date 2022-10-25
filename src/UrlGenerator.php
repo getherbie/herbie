@@ -31,7 +31,7 @@ final class UrlGenerator
      */
     public function generate(string $route): string
     {
-        $route = ltrim($route, '/');
+        $route = str_unleading_slash($route);
         if ($this->niceUrls) {
             $url = $this->environment->getBasePath() . '/' . $route;
         } else {
@@ -60,7 +60,7 @@ final class UrlGenerator
     private function filterUrl(string $url): string
     {
         $url = preg_replace('/\/index$/', '', $url);
-        $url = rtrim($url, '/');
+        $url = str_untrailing_slash($url);
         return empty($url) ? '/' : $url;
     }
 }

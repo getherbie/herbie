@@ -6,6 +6,7 @@ namespace herbie\sysplugin\dummy;
 
 use herbie\EventInterface;
 use herbie\FilterInterface;
+use herbie\Page;
 use herbie\PluginInterface;
 use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
@@ -38,9 +39,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function events(): array
     {
         $this->logger->debug(__METHOD__);
@@ -58,9 +56,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function filters(): array
     {
         $this->logger->debug(__METHOD__);
@@ -71,9 +66,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function appMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
@@ -82,9 +74,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function routeMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
@@ -94,9 +83,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFilters(): array
     {
         $this->logger->debug(__METHOD__);
@@ -112,9 +98,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigFunctions(): array
     {
         $this->logger->debug(__METHOD__);
@@ -123,9 +106,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * @return array[]
-     */
     public function twigTests(): array
     {
         $this->logger->debug(__METHOD__);
@@ -139,22 +119,35 @@ final class DummySysPlugin implements PluginInterface
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
+    /**
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     */
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
         $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 
+    /**
+     * @param array<string, string> $context
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     * @return array<string, string>
+     */
     public function renderContent(array $context, array $params, FilterInterface $filter): array
     {
         $this->logger->debug(__METHOD__);
         foreach ($context as $key => $value) {
             $context[$key] = $value . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
         }
+        /** @var array */
         return $filter->next($context, $params, $filter);
     }
 
+    /**
+     * @param array{content: array<string, string>, page: Page, routeParams: array<string, mixed>} $params
+     */
     public function renderLayout(string $context, array $params, FilterInterface $filter): string
     {
         $this->logger->debug(__METHOD__);
@@ -163,6 +156,7 @@ final class DummySysPlugin implements PluginInterface
             $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
             $context
         );
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

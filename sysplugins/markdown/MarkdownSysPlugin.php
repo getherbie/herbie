@@ -6,6 +6,7 @@ namespace herbie\sysplugin\markdown;
 
 use herbie\Config;
 use herbie\FilterInterface;
+use herbie\Page;
 use herbie\Plugin;
 use Parsedown;
 use ParsedownExtra;
@@ -63,11 +64,15 @@ final class MarkdownSysPlugin extends Plugin
         ];
     }
 
+    /**
+     * @param array{page: Page, routeParams: array<string, mixed>} $params
+     */
     public function renderSegment(string $context, array $params, FilterInterface $filter): string
     {
         if ($params['page']->format === 'markdown') {
             $context = $this->parseMarkdown($context);
         }
+        /** @var string */
         return $filter->next($context, $params, $filter);
     }
 

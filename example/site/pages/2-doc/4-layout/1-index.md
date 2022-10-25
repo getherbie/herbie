@@ -1,7 +1,7 @@
 ---
 title: Layout
 layout: doc
-twig: 0
+twig: false
 ---
 
 # Layouts

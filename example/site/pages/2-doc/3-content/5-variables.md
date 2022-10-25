@@ -23,14 +23,14 @@ Nachfolgend sind die Details zu diesen Daten aufgelistet.
 
 ## Globale Variablen
 
-{{ snippet(path="@site/snippets/variables.twig", type="vars_global")|raw }}
+{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
 
 ## Site-Variablen
 
-{{ snippet(path="@site/snippets/variables.twig", type="vars_site")|raw }}
+{{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
 
 
 ## Page-Variablen
 
-{{ snippet(path="@site/snippets/variables.twig", type="vars_page")|raw }}
+{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}

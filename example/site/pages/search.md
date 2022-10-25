@@ -1,7 +1,7 @@
 ---
 title: Search
-cached: 0
-hidden: 1
+cached: false
+hidden: true
 ---
 
 # Search

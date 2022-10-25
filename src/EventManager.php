@@ -21,7 +21,7 @@ final class EventManager
 
     public function attach(string $eventName, callable $listener, int $priority = 1): callable
     {
-        $this->events[$eventName][$priority][0][] = $listener; // TODO reduce for one level
+        $this->events[$eventName][$priority][] = $listener;
         return $listener;
     }
 
@@ -68,7 +68,7 @@ final class EventManager
 
             if (isset($this->events['*'])) {
                 foreach ($this->events['*'] as $priority => $listOfListeners) {
-                    $listOfListenersByPriority[$priority][] = $listOfListeners[0];
+                    $listOfListenersByPriority[$priority][] = $listOfListeners;
                 }
             }
         } elseif (isset($this->events['*'])) {
@@ -85,13 +85,11 @@ final class EventManager
 
         // Execute listeners
         foreach ($listOfListenersByPriority as $listOfListeners) {
-            foreach ($listOfListeners as $listeners) {
-                foreach ($listeners as $listener) {
-                    $listener($event);
-                    // If the event was asked to stop propagating, do so
-                    if ($event->propagationIsStopped()) {
-                        return;
-                    }
+            foreach ($listOfListeners as $listener) {
+                $listener($event);
+                // If the event was asked to stop propagating, do so
+                if ($event->propagationIsStopped()) {
+                    return;
                 }
             }
         }
