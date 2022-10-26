@@ -82,6 +82,10 @@ final class TwigPlusExtension extends AbstractExtension
     ): string {
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
         $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 
@@ -215,6 +219,10 @@ final class TwigPlusExtension extends AbstractExtension
     ): string {
         // TODO use $showHidden parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
@@ -400,6 +408,10 @@ final class TwigPlusExtension extends AbstractExtension
         string $class = 'sitemap'
     ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
         $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 

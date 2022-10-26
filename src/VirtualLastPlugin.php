@@ -193,9 +193,10 @@ final class VirtualLastPlugin extends Plugin
     {
         $items = [];
         foreach ($this->twigRenderer->getTwigEnvironment()->getFilters() as $f) {
+            $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                ...get_callable_name($f->getCallable())
+                ...get_callable_name($callable)
             ];
         }
         return $items;
@@ -208,9 +209,10 @@ final class VirtualLastPlugin extends Plugin
     {
         $items = [];
         foreach ($this->twigRenderer->getTwigEnvironment()->getFunctions() as $f) {
+            $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                ...get_callable_name($f->getCallable())
+                ...get_callable_name($callable)
             ];
         }
         return $items;
