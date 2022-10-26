@@ -180,7 +180,14 @@ function load_composer_plugin_configs(): array
     $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
     $pluginConfigs = [];
     foreach (array_unique($installedPackages) as $pluginKey) {
-        $path = realpath(InstalledVersions::getInstallPath($pluginKey));
+        $installPath = InstalledVersions::getInstallPath($pluginKey);
+        if ($installPath === null) {
+            continue;
+        }
+        $path = realpath($installPath);
+        if ($path === false) {
+            continue;
+        }
         $composerPluginConfigPath = $path . '/config.php';
         if (is_readable($composerPluginConfigPath)) {
             $composerPluginConfig = load_plugin_config($composerPluginConfigPath, 'composer');
@@ -378,6 +385,7 @@ function file_mtime(string $path): int
 function file_read(string $path): string
 {
     // see Symfony/Component/Finder/SplFileInfo.php
+    $error = '';
     set_error_handler(function (int $type, string $msg) use (&$error): bool {
         $error = $msg;
         return true;

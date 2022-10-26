@@ -60,7 +60,9 @@ final class UrlGenerator
     private function filterUrl(string $url): string
     {
         $url = preg_replace('/\/index$/', '', $url);
-        $url = str_untrailing_slash($url);
+        if (is_string($url)) {
+            $url = str_untrailing_slash($url);
+        }
         return empty($url) ? '/' : $url;
     }
 }
