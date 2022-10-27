@@ -131,7 +131,7 @@ final class Environment
         // (double slash problem).
         $iisUrlRewritten = $this->getServer('IIS_WasUrlRewritten');
         $unencodedUrl    = $this->getServer('UNENCODED_URL', '');
-        if ('1' == $iisUrlRewritten && '' !== $unencodedUrl) {
+        if ($iisUrlRewritten !== null && '1' == $iisUrlRewritten && $unencodedUrl !== null && '' !== $unencodedUrl) {
             return $unencodedUrl;
         }
         // HTTP proxy requests setup request URI with scheme and host [and port]
@@ -140,7 +140,7 @@ final class Environment
             $requestUri = $this->getServer('REQUEST_URI');
         }
         if ($requestUri !== null) {
-            return preg_replace('#^[^/:]+://[^/]+#', '', $requestUri);
+            return (string)preg_replace('#^[^/:]+://[^/]+#', '', $requestUri);
         }
         // IIS 5.0, PHP as CGI.
         $origPathInfo = $this->getServer('ORIG_PATH_INFO');
@@ -156,7 +156,7 @@ final class Environment
 
     private function detectBaseUrl(): string
     {
-        $filename       = $this->getServer('SCRIPT_FILENAME', '');
+        $filename       = (string)$this->getServer('SCRIPT_FILENAME');
         $scriptName     = $this->getServer('SCRIPT_NAME');
         $phpSelf        = $this->getServer('PHP_SELF');
         $origScriptName = $this->getServer('ORIG_SCRIPT_NAME');
@@ -216,7 +216,7 @@ final class Environment
 
     private function detectBasePath(): string
     {
-        $filename = basename($this->getServer('SCRIPT_FILENAME', ''));
+        $filename = basename((string)$this->getServer('SCRIPT_FILENAME', ''));
         $baseUrl  = $this->getBaseUrl();
         // Empty base url detected
         if ($baseUrl === '') {
@@ -255,7 +255,7 @@ final class Environment
      */
     public function getScriptName(): string
     {
-        return $this->getServer('SCRIPT_NAME', $this->getServer('ORIG_SCRIPT_NAME', ''));
+        return (string)$this->getServer('SCRIPT_NAME', (string)$this->getServer('ORIG_SCRIPT_NAME', ''));
     }
 
     private function getServer(string $name, ?string $default = null): ?string

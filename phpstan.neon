@@ -1,7 +1,7 @@
 parameters:
 	checkMissingIterableValueType: false
 	checkGenericClassInNonGenericObjectType: false
-	level: 7
+	level: 8
 	paths:
 		- config
 		- messages
