@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\_data\site\extend\events;
 
 use herbie\EventInterface;
