@@ -117,7 +117,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         if (strpos($redirect['url'], 'http') === 0) { // A valid URL? Take it.
             $location = $redirect['url'];
         } else {
-            $location = $this->urlGenerator->generate($redirect['url']); // A internal route? Generate URL.
+            $location = $this->urlGenerator->generate($redirect['url']); // An internal route? Generate URL.
         }
         $response = $this->httpFactory
             ->createResponse($redirect['status'])

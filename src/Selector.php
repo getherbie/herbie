@@ -59,7 +59,7 @@ final class Selector
 
         $return = [];
         $i = 1;
-        foreach ($data as $key => $item) {
+        foreach ($data as $item) {
             if (($limit > 0) && ($i > $limit)) {
                 break;
             }
