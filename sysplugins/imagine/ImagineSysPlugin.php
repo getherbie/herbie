@@ -65,11 +65,11 @@ final class ImagineSysPlugin extends Plugin
             );
         }
 
-        $sanatizedFilter = $this->sanatizeFilterName($filter);
+        $sanitizedFilter = $this->sanatizeFilterName($filter);
 
-        $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanatizedFilter);
+        $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanitizedFilter);
 
-        $cachePath = $this->applyFilter($path, $sanatizedFilter);
+        $cachePath = $this->applyFilter($path, $sanitizedFilter);
 
         $attribs['alt'] = $attribs['alt'] ?? '';
 
