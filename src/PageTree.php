@@ -27,7 +27,7 @@ final class PageTree extends AbstractNode
             return $this->root();
         }
         $menuItem = $this->getMenuItem();
-        if (isset($menuItem) && ($menuItem->route == $route)) {
+        if (isset($menuItem) && ($menuItem->route === $route)) {
             return $this;
         }
         foreach ($this->getChildren() as $child) {

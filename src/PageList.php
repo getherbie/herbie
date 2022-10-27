@@ -63,7 +63,7 @@ final class PageList implements \IteratorAggregate, \Countable
     public function find(string $value, string $key): ?PageItem
     {
         foreach ($this->items as $item) {
-            if ($item->$key == $value) {
+            if ($item->$key === $value) {
                 return $item;
             }
         }
@@ -83,7 +83,7 @@ final class PageList implements \IteratorAggregate, \Countable
         }
         if (is_string($key) && is_scalar($value)) {
             return new self(array_filter($this->items, function ($val) use ($key, $value) {
-                if ($val->{$key} == $value) {
+                if ($val->{$key} === $value) {
                     return true;
                 }
                 return false;
@@ -121,10 +121,10 @@ final class PageList implements \IteratorAggregate, \Countable
 
         $field = is_string($mixed) ? $mixed : 'title';
         uasort($items, function ($a, $b) use ($field, $direction) {
-            if ($a->{$field} == $b->{$field}) {
+            if ($a->{$field} === $b->{$field}) {
                 return 0;
             }
-            if ($direction == 'asc') {
+            if ($direction === 'asc') {
                 return ($a->{$field} < $b->{$field}) ? -1 : 1;
             } else {
                 return ($b->{$field} < $a->{$field}) ? -1 : 1;
@@ -266,7 +266,7 @@ final class PageList implements \IteratorAggregate, \Countable
             }
             if (isset($params['year'], $params['month'], $params['day'])) {
                 $date = sprintf('%s-%s-%s', $params['year'], $params['month'], $params['day']);
-                if ($item->getDate() == $date) {
+                if ($item->getDate() === $date) {
                     $items[] = $item;
                 }
                 continue;
@@ -274,13 +274,13 @@ final class PageList implements \IteratorAggregate, \Countable
             if (isset($params['year'], $params['month'])) {
                 $date = substr($item->getDate(), 0, 7);
                 $month = sprintf('%s-%s', $params['year'], $params['month']);
-                if ($date == $month) {
+                if ($date === $month) {
                     $items[] = $item;
                 }
                 continue;
             }
             if (isset($params['year'])) {
-                if (substr($item->getDate(), 0, 4) == $params['year']) {
+                if (substr($item->getDate(), 0, 4) === $params['year']) {
                     $items[] = $item;
                 }
                 continue;

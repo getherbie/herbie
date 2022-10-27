@@ -135,7 +135,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
 
         $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
-        if ($matched === 1 && count($matches) == 3) {
+        if ($matched === 1 && count($matches) === 3) {
             $yaml = $matches[1];
 
             $splitContent = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -144,7 +144,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             }
 
             $count = count($splitContent);
-            if ($count % 2 == 0) {
+            if ($count % 2 === 0) {
                 throw new \UnexpectedValueException('Error at reading file content');
             }
 
@@ -164,7 +164,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             $last = count($segments) - 1;
             foreach ($segments as $key => $segment) {
                 /** @var string $segment */
-                if ($i == $last) {
+                if ($i === $last) {
                     $segments[$key] = $segment;
                 } else {
                     $replaced = preg_replace('/\R?$/', '', $segment, 1);

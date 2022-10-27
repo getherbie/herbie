@@ -131,7 +131,7 @@ final class Environment
         // (double slash problem).
         $iisUrlRewritten = $this->getServer('IIS_WasUrlRewritten');
         $unencodedUrl    = $this->getServer('UNENCODED_URL', '');
-        if ($iisUrlRewritten !== null && '1' == $iisUrlRewritten && $unencodedUrl !== null && '' !== $unencodedUrl) {
+        if ('1' === $iisUrlRewritten && $unencodedUrl !== null && '' !== $unencodedUrl) {
             return $unencodedUrl;
         }
         // HTTP proxy requests setup request URI with scheme and host [and port]

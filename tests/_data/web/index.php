@@ -26,7 +26,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-if (php_sapi_name() == 'cli-server') {
+if (php_sapi_name() === 'cli-server') {
     if (preg_match('/\.(?:js|css|gif|jpg|jpeg|png)$/', $_SERVER["REQUEST_URI"])) {
         return false;
     }

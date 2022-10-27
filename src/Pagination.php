@@ -50,7 +50,7 @@ final class Pagination implements \IteratorAggregate, \Countable
 
     public function setLimit(int $limit): void
     {
-        $limit = (0 == $limit) ? 1000 : intval($limit);
+        $limit = (0 === $limit) ? 1000 : intval($limit);
         $this->limit = $limit;
     }
 

@@ -89,7 +89,7 @@ final class Selector
     {
         $sort = "";
         foreach ($selectors as $index => $selector) {
-            if ($selector[0] == "sort") {
+            if ($selector[0] === "sort") {
                 $sort = $selector[1];
                 unset($selectors[$index]);
                 break;
@@ -102,7 +102,7 @@ final class Selector
     {
         $limit = 0;
         foreach ($selectors as $index => $selector) {
-            if ($selector[0] == "limit") {
+            if ($selector[0] === "limit") {
                 $limit = abs(intval($selector[1]));
                 unset($selectors[$index]);
                 break;
@@ -124,12 +124,12 @@ final class Selector
 
     protected function matchEqual(string $value1, string $value2): bool
     {
-        return $value1 == $value2;
+        return $value1 === $value2;
     }
 
     protected function matchNotEqual(string $value1, string $value2): bool
     {
-        return $value1 != $value2;
+        return $value1 !== $value2;
     }
 
     protected function matchGreaterThan(string $value1, string $value2): bool
@@ -185,7 +185,7 @@ final class Selector
     {
         $value2 = trim($value2);
         $value1 = substr($value1, -1 * strlen($value2));
-        return strcasecmp($value1, $value2) == 0;
+        return strcasecmp($value1, $value2) === 0;
     }
 
     /**
@@ -250,10 +250,10 @@ final class Selector
             if (!isset($value1[$field]) || !isset($value2[$field])) {
                 return 0;
             }
-            if ($value1[$field] == $value2[$field]) {
+            if ($value1[$field] === $value2[$field]) {
                 return 0;
             }
-            if ($direction == 'asc') {
+            if ($direction === 'asc') {
                 return ($value1[$field] < $value2[$field]) ? -1 : 1;
             } else {
                 return ($value2[$field] < $value1[$field]) ? -1 : 1;
