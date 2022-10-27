@@ -11,6 +11,9 @@ return [
     'enabledPlugins' => 'simplesearch',
     'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,rest,textile',
     'components' => [
+        'dataRepository' => [
+            'adapter' => 'yaml'
+        ],
         'twigRenderer' => [
             'debug' => true
         ],

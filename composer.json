@@ -45,7 +45,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "example\\": "example/src",
             "example\\site\\": "example/site",
             "tests\\": "tests"
         }

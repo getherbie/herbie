@@ -1,0 +1,82 @@
+---
+- key: page.authors
+  desc: One or more authors of the page
+  type: string[]
+- key: page.cached
+  desc: If set the page is cached (depending if caching is active)
+  type: bool
+- key: page.categories
+  desc: One or more categories, that belongs to the page
+  type: string[]
+- key: page.content_type
+  desc: The Content-Type of the page for the HTTP response, automatically set by Herbie CMS.
+  default: text/html
+  type: string
+- key: page.modified
+  desc: The modification time of the page as ISO 8601 formatted string. 
+    This value is set automatically.
+  type: string
+- key: page.created
+  desc: The creation time of the page. 
+    This value is not set automatically.
+  type: string
+- key: page.date
+  desc: The date of the page. 
+    The modification date or an explicitly set date.
+  type: string
+- key: page.excerpt
+  desc: The excerpt of the page body.
+  type: string
+- key: page.format
+  desc: The formatter like markdown or textile. 
+    Is set by Herbie CMS automatically depending on the file extension.
+  type: string
+- key: page.hidden
+  desc: If set the page is not visible in navigation elements like sitemap or breadcrumb.
+  type: bool
+- key: page.id
+  desc: The ID of the page.
+  type: string
+- key: page.keep_extension
+  desc: If true the file extension is used for urls. 
+    Useful for xml pages like sitemap for search engines.
+  default: false
+  type: bool
+- key: page.layout
+  desc: The layout as basename (without file extension). 
+    Layout files are located in folder `site/themes/`.
+  type: string
+- key: page.menu
+  desc: The title for navigation elements like sitemap or breadcrumb. 
+    If empty the page title will be shown.
+  type: string
+- key: page.parent
+  desc: The parent route.
+  type: string
+- key: page.path
+  desc: The path to the page file, set per default.
+  type: string
+- key: page.redirect
+  desc: If set the request will be redirected to the given page.
+  type: string|object
+- key: page.route
+  desc: The route to the page.
+  type: string
+- key: page.segments
+  desc: The page content.
+  type: array
+- key: page.tags
+  desc: One or more tags that belongs to the page.
+  type: string[]
+- key: page.title
+  desc: The title of the page.
+  type: string
+- key: page.twig
+  desc: If set the page will be parsed by the Twig Renderer first (default = true).
+  type: bool
+- key: page.type
+  desc: 'The page type (default: page).'
+  type: string
+- key: page.<NAME>
+  desc: Any numbers of custom variables.
+  type: mixed

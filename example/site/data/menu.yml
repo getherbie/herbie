@@ -1,0 +1,9 @@
+---
+- route: ''
+  label: About
+- route: doc
+  label: Docs
+- route: blog
+  label: Recipes
+- route: development
+  label: DEV

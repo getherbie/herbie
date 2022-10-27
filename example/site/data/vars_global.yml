@@ -1,0 +1,22 @@
+---
+- key: baseUrl
+  desc: The base url.
+  type: string
+- key: config
+  desc: The configurations as Config object.
+  type: Object
+- key: page
+  desc: Page wide variables.
+  type: Object
+- key: route
+  desc: The requested route to a page, i.e. `documentation/variables`.
+  type: string
+- key: routeParams
+  desc: The requested route params.
+  type: array
+- key: site
+  desc: Project-wide variables.
+  type: Object
+- key: theme
+  desc: The configured theme.
+  type: string
