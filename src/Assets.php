@@ -186,8 +186,8 @@ final class Assets
     {
         $url = $file;
         if ('@' === substr($file, 0, 1)) {
-            $trimmed = $this->removeAlias($file);
-            $url = $this->assetsUrl . '/' . $trimmed;
+            $trimed = $this->removeAlias($file);
+            $url = $this->assetsUrl . '/' . $trimed;
         }
         return $url;
     }
