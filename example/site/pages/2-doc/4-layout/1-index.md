@@ -109,8 +109,14 @@ The page properties block is now used to apply one of the prepared layouts to ea
     layout: twocolumn
     ---
 
+    This is content for the default segment.
 
-Further information on how the page contents must be formatted can be found in the chapter [Contents](doc/contents).
+    --- sidebar ---
 
-Another good example are the layout files of this website itself.
+    And here is content for the sidebar segment.
+
+
+Further information on how page contents must be formatted can be found in the chapter [Contents](doc/contents).
+
+Another good ressource are the layout files of this website itself.
 They are available on GitHub at <https://github.com/getherbie/website/>.
