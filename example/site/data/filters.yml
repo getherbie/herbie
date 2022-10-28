@@ -2,9 +2,6 @@
 - name: renderSegment
   desc: Renders segment
   order: 1
-- name: renderContent
-  desc: Renders content
-  order: 2
 - name: renderLayout
   desc: Renders layout
-  order: 3
+  order: 2

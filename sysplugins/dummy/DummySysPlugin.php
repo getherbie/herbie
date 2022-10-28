@@ -61,7 +61,6 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
         return [
             ['renderSegment', [$this, 'renderSegment']],
-            ['renderContent', [$this, 'renderContent']],
             ['renderLayout', [$this, 'renderLayout']]
         ];
     }
@@ -127,21 +126,6 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
         $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
         /** @var string */
-        return $filter->next($context, $params, $filter);
-    }
-
-    /**
-     * @param array<string, string> $context
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     * @return array<string, string>
-     */
-    public function renderContent(array $context, array $params, FilterInterface $filter): array
-    {
-        $this->logger->debug(__METHOD__);
-        foreach ($context as $key => $value) {
-            $context[$key] = $value . $this->wrapHtmlBlock('dummy-plugin-render-content', __METHOD__);
-        }
-        /** @var array */
         return $filter->next($context, $params, $filter);
     }
 

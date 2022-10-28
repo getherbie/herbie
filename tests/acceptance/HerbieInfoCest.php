@@ -503,8 +503,7 @@ final class HerbieInfoCest
             'renderSegment',
             'renderSegment',
             'renderSegment',
-            'renderSegment',
-            'renderContent',
+            'renderSegment'
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Filters (' . count($filters) . ')', 'h2');

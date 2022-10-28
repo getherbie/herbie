@@ -87,7 +87,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
                 $renderedSegment = (string)$this->filterChainManager->execute('renderSegment', $segment, $context);
                 $segments[$segmentId] = $renderedSegment;
             }
-            $segments = (array)$this->filterChainManager->execute('renderContent', $segments, $context);
             $this->eventManager->trigger('onContentRendered', $segments, $page->toArray());
 
             // render layout

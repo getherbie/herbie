@@ -15,7 +15,6 @@ final class DummySysPluginCest
         $I->seeInTitle('Dummy Plugin');
         $I->see('Dummy Plugin', 'h1');
         $I->seeElement('.dummy-plugin-render-segment');
-        $I->seeElement('.dummy-plugin-render-content');
         $I->seeElement('.dummy-plugin-render-layout');
         $I->seeElement('.dummy-plugin-app-middleware');
         $I->seeElement('.dummy-plugin-route-middleware');

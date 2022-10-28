@@ -222,14 +222,6 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(RenderLayoutFilter::class, function () {
-            return new RenderLayoutFilter();
-        });
-
-        $c->set(RenderSegmentFilter::class, function () {
-            return new RenderSegmentFilter();
-        });
-
         $c->set(ServerRequestInterface::class, function (Container $c) {
             return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
         });
