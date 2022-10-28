@@ -6,37 +6,37 @@ layout: doc
 # Installation
 
 
-## Systemanforderungen
+## System requirements
 
-Es gibt nur wenige Anforderungen an das Host-System, die erfüllt sein müssen. 
-Diese sind:
+There are only a few host system requirements that must be met.
+These are:
 
-- Betriebssystem: Windows, Linux oder Mac
+- Operating system: Windows, Linux or Mac
 - PHP: >=7.4
 - Composer: >=2.x
 
 
-## Composer-Unterstützung
+## Composer support
 
-Herbie CMS wird am einfachsten via Composer installiert. 
-Dazu führt man im Terminal den folgenden Befehl aus:
+The easiest way to install Herbie CMS is via Composer.
+To do this, run the following command in the terminal:
 
     composer create-project getherbie/start-website mywebsite
 
-Composer erstellt im Verzeichnis *mywebsite* eine Website-Vorlage und installiert alle abhängigen Pakete.
+Composer creates a website template in the *mywebsite* directory and installs all dependent packages.
 
-Tipp: Um die Installation zu beschleunigen und das Vendor-Verzeichnis so schlank wie möglich zu halten, kann man die Option `--prefer-dist` verwenden.
+Tip: To speed up the installation and keep the vendor directory as lean as possible, you can use the `--prefer-dist` option.
 
     composer create-project --prefer-dist getherbie/start-website mywebsite
 
-Eventuell muss der Eigentümer des erstellten Verzeichnisses rekursiv geändert werden.
-Dies ist abhängig vom Host-System und dessen Einstellungen.
+It may be necessary to recursively change the owner of the created directory.
+This depends on the host system and its settings.
 
     chown -R new-owner mywebsite
 
-Danach wechselt man in das `web`-Verzeichnis des erstellten Projektes und startet den internen PHP-Webserver.
+Then change to the `web` directory of the created project and start the internal PHP webserver.
 
     cd mywebsite/web
     php -S localhost:8888 index.php
 
-Die Website kann nun im Browser unter `http://localhost:8888` geöffent werden.
+The website can now be published in the browser under `http://localhost:8888`.

@@ -1,25 +1,25 @@
 ---
 - name: project
-  desc: Das Projektverzeichnis auf dem Webserver.
+  desc: The project directory on the web server.
 - name: site
-  desc: Der eigentliche Inhalt der Website (siehe unten). 
-    Dieses Verzeichnis ist normalerweise nicht über das Web zugänglich. 
-    Es kann aber auch im öffentlichen Verzeichnis abgelegt werden.
+  desc: The actual content of the website (see below).
+    This directory is normally not accessible via the web.
+    However, it can also be placed in the public directory.
 - name: vendor
-  desc: In diesem Verzeichnis ist Herbie CMS mit allen abhängigen Komponenten und Drittanbieter-Programmen enthalten. 
-    Dieses Verzeichnis ist nicht über das Web zugänglich.
+  desc: This directory is the Composer vendor and contains all dependent third-party libraries.
+    This directory is not accessible via the web.
 - name: web
-  desc: Das öffentliche Verzeichnis des Webservers. 
-    Darauf hat man über den Webbrowser Zugriff.
+  desc: The public directory of the web server.
+    This can be accessed via the web browser.
 - name: web/assets
-  desc: Die Ablage für JavaScript-, CSS- und Bilddateien, welche für das Layout der Website benötigt werden.
+  desc: The repository for JavaScript, CSS and image files, which are needed for the layout of the website.
 - name: web/cache
-  desc: Der Cache für Dateien, die öffentlich zugänglich sein sollen, z.B. verkleinerte Bilder.
+  desc: The cache for files that should be publicly accessible, e.g. resized images.
 - name: web/media
-  desc: In diesem Verzeichnis sind Dateien abgelegt, die über die Inhalte verlinkt sind. 
-    Zum Beispiel Bilder, PDFs, Videos, MP3s, etc.
+  desc: This directory contains files that are linked through the content.
+    For example, images, PDFs, videos, MP3s, etc.
 - name: web/.htaccess
-  desc: Falls in der Konfiguration die Option niceUrls aktiviert ist, muss diese Datei mit den entsprechenden Anweisungen vorhanden sein.
+  desc: If `niceUrls` option is enabled in the configuration, this file must exist with corresponding instructions.
 - name: web/index.php
-  desc: Die Bootstrap-Datei und Teil von Herbie CMS. 
-    Über diese Datei laufen alle Anfragen an den Webserver.
+  desc: The bootstrap file and part of Herbie CMS.
+    All requests to the web server go through this file.

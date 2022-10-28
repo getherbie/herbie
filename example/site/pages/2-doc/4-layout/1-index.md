@@ -1,35 +1,35 @@
 ---
-title: Layout
+title: Layouts
 layout: doc
 twig: false
 ---
 
 # Layouts
 
-Layoutdateien werden in Herbie CMS mit Hilfe der Template Engine Twig umgesetzt. 
-Twig Templates sind recht einfach zu verstehen und sehr gut dokumentiert, siehe <https://twig.symfony.com/>.
+Layout files are implemented in Herbie CMS using the Twig template engine.
+Twig templates are quite easy to understand and very well documented, see <https://twig.symfony.com/>.
 
-Layoutdateien werden unter `site/layouts/default` abgelegt, wobei das letzte Pfadsegment für das Theme steht. 
-Herbie CMS erwartet mindestens zwei Layoutdateien:
+Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
+Herbie CMS expects at least two layout files:
 
-    site/layouts/default/
-    |-- default.html        # das Default-Template
-    └── error.html          # die Fehlerseite
+    site/themes/default/
+    |-- default.html        # the default template
+    └── error.html          # the error page
 
 
-Sinnvollerweise unterteilt man die Layouts in ein Haupttemplate und ein oder mehrere Subtemplates. 
-Diese erben die Blöcke des Haupttemplates und können diese mit Inhalt befüllen.
+It makes sense to divide the layouts into a main template and one or more sub templates.
+These sub templates inherit the blocks of the main template and can fill them with content.
 
-    site/layouts/default/
-    |-- default.html        # das Default-Template
-    |-- twocols.html        # ein Zweispalter-Template
-    |-- homepage.html       # das Homepage-Template
-    |-- error.html          # die Fehlerseite
-    └── main.html           # das Main-Template
+    site/themes/default/
+    |-- default.html        # the default template (required)
+    |-- twocols.html        # the two-column template
+    |-- homepage.html       # the homepage template
+    |-- error.html          # the error page (required)
+    └── main.html           # the main template
 
-Ein einfaches Haupttemplate sieht vielleicht so aus:
+A simple main template might look like this:
 
-## Main-Template
+## Main template
 
     # main.html
 
@@ -42,17 +42,17 @@ Ein einfaches Haupttemplate sieht vielleicht so aus:
         <body>
             <div id="content">{% block content %}{% endblock %}</div>
             <div id="sidebar">{% block sidebar %}{% endblock %}</div>
-            <div id="footer">Copyright 2015 by you.</div>
+            <div id="footer">Copyright 2022 by you.</div>
         </body>
     </html>
 
-Im Haupttemplate wurden damit drei Blöcke (title, content, sidebar) definiert. 
-Diese Blöcke enthalten aber noch keinen Inhalt.
+In the main template, three blocks (title, content, sidebar) have been defined.
+But these blocks do not contain any content yet.
 
 
-## Sub-Template
+## Sub template
 
-Das Subtemplate "erbt" vom Haupttemplate und füllt die im Haupttemplate definierten Blöcke mit Inhalten.
+The sub template inherits from the main template and fills the blocks, that are defined in the main template, with content.
 
     # default.html
     
@@ -66,11 +66,11 @@ Das Subtemplate "erbt" vom Haupttemplate und füllt die im Haupttemplate definie
     {% endblock %}
 
 
-Damit das Ganze auch dynamisch funktioniert, muss eine content-Funktion angewendet werden. 
-Diese hat zur Aufgabe, die Inhalte eines Seitensegmentes auszugeben. 
-Intern durchläuft die Funktion einen oder mehrere Formatierungsprozesse wie das Rendern von Twig oder das Parsen von Shortcode-, Markdown- oder Textile-Code.
+In order for the whole thing to work dynamically, a content function must be used.
+This has the task of outputting the contents of a page segment.
+Internally, the function goes through one or more formatting processes such as rendering Twig or parsing shortcode, markdown or Textile code.
 
-Das angepasste (dynamisierte) Subtemplate sieht nun also so aus:
+So the customized (dynamized) sub template now looks like this:
 
     # default.html
     
@@ -79,12 +79,13 @@ Das angepasste (dynamisierte) Subtemplate sieht nun also so aus:
     {% block title %}{{ page.title }}{% endblock %}
     
     {% block content %}  
-        {{ content(0) }}
+        {{ content('default') }}
     {% endblock %}
 
 
-Sowohl der Block `title` für den Seitentitel als auch der Block `content` für den Seiteninhalt werden dynamisch abgefüllt. 
-Möchte man neben der normalen Inhaltsspalte eine Sidebar platzieren, kannst man dies wie folgt machen.
+Both the `title` block for the page title and the `content` block for the page content are filled dynamically.
+
+If you want to place a sidebar next to the normal content column, you can do this as follows.
 
     # twocolumn.html
      
@@ -93,23 +94,23 @@ Möchte man neben der normalen Inhaltsspalte eine Sidebar platzieren, kannst man
     {% block title %}{{ page.title }}{% endblock %}
     
     {% block content %}  
-        {{ content(0) }}
+        {{ content('default') }}
     {% endblock %}     
     
     {% block sidebar %}  
-        {{ content(1) }}
+        {{ content('sidebar') }}
     {% endblock %}
 
 
-Über den Seiteneigenschaften-Block wird nun für jede Seite eines der vorbereiteten Layouts angewendet.
+The page properties block is now used to apply one of the prepared layouts to each page.
 
     ---
-    title: Meine Zweispalter-Seite
-    layout: twocolumn.html
+    title: My Two-Column Page
+    layout: twocolumn
     ---
 
 
-Wie die Seiteninhalte formatiert sein müssen und weitere Informationen findet man im Kapitel [Inhalte](doc/content). 
+Further information on how the page contents must be formatted can be found in the chapter [Contents](doc/contents).
 
-Ein anderes gutes Anschauungs-Beispiel stellen die Layoutdateien dieser Website dar. 
-Diese sind auf GitHub erreichbar unter <https://github.com/getherbie/website/>.
+Another good example are the layout files of this website itself.
+They are available on GitHub at <https://github.com/getherbie/website/>.

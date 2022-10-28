@@ -1,9 +1,9 @@
 ---
-title: Inhalte
+title: Contents
 layout: doc
 ---
 
-# Inhalte
+# Contents
 
 <ul>
     {% for item in site.pageList|filter("route^=doc/content/") %}

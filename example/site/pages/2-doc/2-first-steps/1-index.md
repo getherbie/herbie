@@ -1,9 +1,9 @@
 ---
-title: Erste Schritte
+title: First Steps
 layout: doc
 ---
 
-# Erste Schritte
+# First Steps
 
 <ul>
     {% for item in site.pageList|filter("route^=doc/first-steps/") %}
