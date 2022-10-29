@@ -1,0 +1,3 @@
+---
+- name: clear-cache
+  desc: Clears Herbie's internal and public caches

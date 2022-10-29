@@ -1,0 +1,39 @@
+<div class="plugins">
+    {% set plugins = site.data.plugins|filter(v => v.enabled == true)|sort((a, b) => a.id <=> b.id) %}
+    <p>There are currently <b>{{ plugins|length }}</b> plugins available.</p>
+    {% for item in plugins %}
+        {% if item.enabled == true %}
+        <div class="plugin">
+            <p><strong>{{ attribute(item, 'name') }}</strong></p>
+            <p>{{ attribute(item, 'text') }}</p>
+            <table>
+                <tr>
+                    <td style="width:20%">Autor</td>
+                    <td>{{ attribute(item, 'author') }}</td>
+                </tr>
+                <tr>
+                    <td>API-Version</td>
+                    <td>{{ attribute(item, 'version') }}</td>
+                </tr>
+                {% if item.composer %}
+                    <tr>
+                        <td style="white-space:nowrap">Composer</td>
+                        <td>{{ item.composer }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+            <p class="links">
+                {% if item.github %}
+                    <a class="pure-button button-small" target="_blank" href="{{ item.github }}">
+                        {{ icon('github', fill='white') }} GitHub
+                    </a>
+                {% endif %}
+                {% if item.packagist %}
+                    <a class="pure-button button-small" target="_blank" href="{{ item.packagist }}">
+                        {{ icon('archive-fill', fill='white') }} Packagist
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>

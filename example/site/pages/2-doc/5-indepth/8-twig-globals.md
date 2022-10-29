@@ -2,14 +2,16 @@
 title: Twig Globals
 layout: doc
 ---
-<h1>Twig Globals</h1>
+# Twig Globals
+
+The following variables are available in layout and content files.
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
-<h2>Site Variables</h2>
+# Site Variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_site"}) }}
 
-<h2>Page Variables</h2>
+# Page Variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}

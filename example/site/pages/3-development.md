@@ -9,10 +9,10 @@ title: Development
 
 ## Support
 
-Support is given through GitHub. 
+Support is given through GitHub only. 
 If possible, try to reproduce your issue before asking your question.
 
-If you want to discuss the enhancement of Herbie CMS, file an [issue](https://github.com/getherbie/herbie/issues) on Github or submit a [pull request](https://github.com/getherbie/herbie).
+If you want to discuss the enhancement of Herbie CMS, file an [issue](https://github.com/getherbie/herbie/issues) on GitHub or submit a [pull request](https://github.com/getherbie/herbie).
 
 ## Bug Reports
 

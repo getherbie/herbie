@@ -4,10 +4,10 @@
   type: string
 - key: config
   desc: The configurations as Config object.
-  type: Object
+  type: herbie\Config
 - key: page
   desc: Page wide variables.
-  type: Object
+  type: herbie\Page
 - key: route
   desc: The requested route to a page, i.e. `documentation/variables`.
   type: string
@@ -16,7 +16,7 @@
   type: array
 - key: site
   desc: Project-wide variables.
-  type: Object
+  type: herbie\Site
 - key: theme
   desc: The configured theme.
   type: string

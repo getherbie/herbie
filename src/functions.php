@@ -240,6 +240,7 @@ function handle_internal_webserver_assets(string $file): void
         'jpeg' => 'image/jpeg',
         'js' => 'text/javascript',
         'png' => 'image/png',
+        'svg' => 'image/svg+xml'
     ];
 
     $extensions = implode('|', array_keys($mimeTypes));

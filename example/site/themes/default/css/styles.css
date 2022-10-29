@@ -215,12 +215,6 @@ div.highlight pre {
     padding-left:0.5em;
     padding-right:0.5em;
 }
-.pure-button i.fa-chevron-left {
-    padding-left:0;
-}
-.pure-button i.fa-chevron-right {
-    padding-right:0;
-}
 .button-xsmall {
     font-size: 70%;
 }
@@ -347,6 +341,33 @@ span.e {
 
 .video {
     margin-bottom:2em;
+}
+
+/* Plugin */
+.plugin {
+    background-color:#f6f6f5;
+    padding:1em;
+    margin-bottom:1em;
+}
+.plugin p {
+    margin-top:0;
+    margin-bottom:0.5em;
+}
+.plugin table {
+    width:100%;
+    border-bottom:1px solid #eee;
+    margin-bottom:1.4em;
+}
+.plugin td {
+    border-top:1px solid #eee;
+}
+.plugin td:first-child {
+    width:10%;
+    padding-right:2em;
+}
+.plugin p.links {
+    margin:0;
+    text-align:center;
 }
 
 /* Plugin Simplesearch */

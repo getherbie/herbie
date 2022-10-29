@@ -17,12 +17,10 @@
         </section>
         <nav class="pagination">
             {% if pagination.hasPrevPage() %}
-                <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getPrevPage() }}"><i class="fa fa-chevron-left"></i>
-                    Vorherige Seite</a>
+                <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getPrevPage() }}">&lt; Vorherige Seite</a>
             {% endif %}
             {% if pagination.hasNextPage() %}
-                <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getNextPage() }}">Nächste Seite
-                    <i class="fa fa-chevron-right"></i></a>
+                <a class="pure-button" href="{{ url(route) }}?page={{ pagination.getNextPage() }}">Nächste Seite &gt;</a>
             {% endif %}
         </nav>
     </div>
