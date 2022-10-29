@@ -64,8 +64,8 @@ jobs:
           tools: composer:v2
 
       - name: Install PHP dependencies
-        run: composer install --working-dir example --no-dev --prefer-dist --no-progress --no-suggest --optimize
-
+        run: composer install --working-dir example --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
+      
       - name: Deploy to server via scp
         uses: appleboy/scp-action@master
         with:
