@@ -65,7 +65,10 @@ jobs:
 
       - name: Install PHP dependencies
         run: composer install --working-dir example --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
-      
+        
+      - name: Rename index-prod.php
+        run: rm example/web/index.php && mv example/web/index-prod.php example/web/index.php
+
       - name: Deploy to server via scp
         uses: appleboy/scp-action@master
         with:
