@@ -104,6 +104,7 @@ table {
     text-transform:uppercase;
     margin:0 0 0 0;
     padding:0.21em 0;
+    white-space: nowrap;
 }
 .brand-title a {
     color:#29251F;
