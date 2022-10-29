@@ -1,0 +1,12 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "erusev/parsedown-extra": "^0.8",
+        "getherbie/herbie": "2.x-dev",
+        "getherbie/plugin-simplecontact": "dev-master",
+        "getherbie/plugin-simplesearch": "dev-master",
+        "laminas/laminas-diactoros": "^2.0",
+        "monolog/monolog": "^2.8"
+    }
+}

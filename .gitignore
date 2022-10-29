@@ -3,9 +3,11 @@
 
 # composer vendor dir
 /vendor
+/example/vendor
 
 # composer lock files
 /composer.lock
+/example/composer.lock
 
 # site folder
 /site
