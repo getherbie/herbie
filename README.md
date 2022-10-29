@@ -105,18 +105,18 @@ Change to the `example/web` directory.
 
 Start PHP's internal web server.
 
-    php -S localhost:9999 index-dev.php
+    php -S localhost:9999 index.php
 
 Now, open `localhost:9999` with your favorite web browser.
 
 If you want to have additional console output or logging information, set Herbie CMS's debug environment variable.
 
-    HERBIE_DEBUG=1 php -S localhost:9999 index-dev.php
+    HERBIE_DEBUG=1 php -S localhost:9999 index.php
 
 If you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
-    XDEBUG_MODE=debug php -S localhost:9999 index-dev.php
+    XDEBUG_MODE=debug php -S localhost:9999 index.php
 
 ## Tests
 

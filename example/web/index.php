@@ -2,21 +2,28 @@
 
 declare(strict_types=1);
 
-require_once(dirname(__DIR__) . '/vendor/autoload.php');
+require_once(dirname(__DIR__, 2) . '/vendor/autoload.php');
+
+herbie\handle_internal_webserver_assets(__FILE__);
 
 use herbie\Application;
 use herbie\ApplicationPaths;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-$appPath = dirname(__DIR__);
+// create app paths
+$appPaths = new ApplicationPaths(
+    dirname(__DIR__, 2),
+    dirname(__DIR__) . '/site',
+);
 
-// create application paths
-$appPaths = new ApplicationPaths($appPath);
-
-// create a logger channel
+// create a log channel
 $logger = new Logger('herbie');
-$logger->pushHandler(new StreamHandler($appPath . '/site/runtime/log/logger.log', Logger::WARNING));
+$logger->pushHandler(new StreamHandler(__DIR__ . '/../site/runtime/log/logger.log', Logger::DEBUG));
 
-// run application
-(new Application($appPaths, $logger))->run();
+$app = new Application(
+    $appPaths,
+    $logger
+);
+
+$app->run();
