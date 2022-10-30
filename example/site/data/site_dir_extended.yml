@@ -1,38 +1,44 @@
 ---
 - name: assets
-  desc: Das Assets-Verzeichnis von Herbie CMS. 
-    Darin sind CSS- und JS-Dateien abgelegt, die zur Laufzeit ins Web-Assets-Verzeichnis kopiert werden.
+  desc: The assets directory of Herbie CMS.
+    It contains CSS and JS files that are copied to the web assets directory at runtime.
 - name: config
-  desc: Das Konfigurationsverzeichnis mit Dateien im YAML-Format (die Hauptdatei kann auch eine PHP-Datei sein).
-    Konfigurationen für Plugins sind als einzelne Dateien im Unterordner <code>plugins</code> abgelegt.
+  desc: The configuration directory with files in YAML format (the main file can also be a PHP file).
+    Configurations for plugins are stored as individual files in the plugins subfolder.
 - name: data
-  desc: Das Daten-Verzeichnis, im dem verschiedene Daten-Dateien im YAML-Format gespeichert werden können.
+  desc: The data directory where various data files in YAML format can be stored.
 - name: extend
-  desc: Das Verzeichnis mit den verschiedenen Erweiterungen.
+  desc: The directory with various extensions.
+- name: extend/commands
+  desc: Directory with console commands.  
 - name: extend/events
-  desc: Verzeichnis mit Event Handlern.
+  desc: Directory with event handlers.
 - name: extend/filters
-  desc: Verzeichnis mit Intercepting Filtern.
+  desc: Directory with intercepting filters.
+- name: extend/middlewares_app
+  desc: Directory with application middlewares.
+- name: extend/middlewares_route
+  desc: Directory with route middlewares.
 - name: extend/plugins
-  desc: Verzeichnis mit Plugins.
+  desc: Directory with Plugins.
 - name: extend/twig_filters
-  desc: Verzeichnis mit Twig Filtern.
+  desc: Directory with Twig Filters.
 - name: extend/twig_functions
-  desc: Verzeichnis mit Twig Funktionen.
+  desc: Directory with Twig Functions.
 - name: extend/twig_globals
-  desc: Verzeichnis mit Twig Globals.
+  desc: Directory with Twig Globals.
 - name: extend/twig_tests
-  desc: Verzeichnis mit Twig Tests.
+  desc: Directory with Twig Tests.
 - name: pages
-  desc: Die CMS-Seiten der Website. 
-    Diese sind als Textdateien (Markdown, Textile, Text, HTML) abgespeichert.
+  desc: The CMS pages of the website.
+    These are saved as text files (Markdown, Textile, Text, HTML).
 - name: runtime
-  desc: Verzeichnis mit temporären Dateien, die während der Laufzeit des Programms erstellt werden.
+  desc: Directory with temporary files created during the program runtime.
 - name: runtime/cache
-  desc: Verzeichnis mit Cache-Dateien für Daten, Seiten und Twig.
+  desc: Directory with cache files for data, pages and Twig.
 - name: runtime/log
-  desc: Verzeichnis mit Logdateien von PHP oder eines PSR-3 kompatiblen Loggers.
+  desc: Directory with log files from PHP or a PSR-3 compatible logger.
 - name: themes
-  desc: Verzeichnis mit Theme-Verzeichnissen und -Dateien.
+  desc: Directory with theme directories and files.
 - name: themes/default
-  desc: Das Verzeichnis mit dem Default-Theme.
+  desc: The directory with the default theme.
