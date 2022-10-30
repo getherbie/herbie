@@ -24,10 +24,15 @@ Herbie CMS is powered by proven libraries:
 
 Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
 
-* Application and Route Middlewares
-* Event Handlers and Intercepting Filters
-* Twig Filters, Twig Globals, Twig Functions and Twig Tests
-* Symfony Console Commands
+* Application Middlewares
+* Route Middlewares
+* Event Listeners
+* Intercepting Filters
+* Twig Filters
+* Twig Globals
+* Twig Functions
+* Twig Tests
+* Console Commands
 
 Herbie CMS implements the following PHP standard recommendations:
 
@@ -44,6 +49,6 @@ Herbie CMS implements the following PHP standard recommendations:
 
 Herbie CMS is well tested:
 
-- Unit, Integration and Acceptance Tests with [Codeception](https://codeception.com)
+- Unit Tests, Integration Tests and Acceptance Tests with [Codeception](https://codeception.com)
 - Static Code Analysis with [PHPStan](https://phpstan.org)
 - Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
