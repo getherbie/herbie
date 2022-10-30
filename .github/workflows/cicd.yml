@@ -1,8 +1,9 @@
 # GitHub Action for Herbie CMS
-name: Testing Herbie CMS
+name: CI/CD for Herbie CMS
 on: [push, pull_request]
 jobs:
-  build:
+  test:
+    name: CI - Analyse & Test
     strategy:
       matrix:
         # operating-systems: ubuntu-latest, windows-latest, macos-latest
@@ -46,3 +47,36 @@ jobs:
 
       - name: Test code with Codeception
         run: vendor/bin/codecept run
+
+  publish:
+    name: CD - Push to server
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          tools: composer:v2
+
+      - name: Install PHP dependencies
+        run: composer install --working-dir example --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
+        
+      - name: Rename index-prod.php
+        run: rm example/web/index.php && mv example/web/index-prod.php example/web/index.php
+
+      - name: Deploy to server via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "example"
+          target: ${{ secrets.SSH_TARGET }}
+          rm: true
+          strip_components: 1
