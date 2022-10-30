@@ -2,6 +2,7 @@
 title: Twig Globals
 layout: doc
 ---
+
 # Twig Globals
 
 The following variables are available in layout and content files.

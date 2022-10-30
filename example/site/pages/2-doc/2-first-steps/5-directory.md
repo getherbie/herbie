@@ -23,8 +23,8 @@ What these files and directories stand for can be seen in the following table:
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th width="35%">File/Directory</th>
-            <th width="65%">Description</th>
+            <th style="width:35%">File/Directory</th>
+            <th style="width:65%">Description</th>
         </tr>
     </thead>
     <tbody>
@@ -86,8 +86,8 @@ The following table shows what each of these files and directories stand for:
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th width="35%">File/Directory</th>
-            <th width="65%">Description</th>
+            <th style="width:35%">File/Directory</th>
+            <th style="width:65%">Description</th>
         </tr>
     </thead>
     <tbody>

@@ -2,6 +2,7 @@
 title: Twig Functions
 layout: doc
 ---
+
 # Twig Functions
 
 Herbie CMS is using [Twig Functions](https://twig.symfony.com/doc/3.x/functions/index.html) for generating content in layout and content files.

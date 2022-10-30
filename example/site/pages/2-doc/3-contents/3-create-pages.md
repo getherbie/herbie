@@ -20,9 +20,9 @@ Herbie CMS currently supports the following file types:
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th width="35%">Extension</th>
-            <th width="65%">Formatter</th>
-            <th width="65%">Conversion</th>
+            <th style="width:35%">Extension</th>
+            <th style="width:65%">Formatter</th>
+            <th style="width:65%">Conversion</th>
         </tr>
     </thead>
     <tbody>
