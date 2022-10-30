@@ -50,8 +50,11 @@ This is usually structured as follows:
     ├── data
     |   └── persons.yml
     ├── extend
+    |   ├── commands
     |   ├── events
     |   ├── filters
+    |   ├── middlewares_app
+    |   ├── middlewares_route
     |   ├── plugins
     |   ├── twig_filters
     |   ├── twig_functions
