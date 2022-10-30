@@ -78,4 +78,5 @@ jobs:
           port: 22
           source: "example"
           target: ${{ secrets.SSH_TARGET }}
+          rm: true
           strip_components: 1
