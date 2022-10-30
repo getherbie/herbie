@@ -1,7 +1,9 @@
 {% apply spaceless %}
     {{ add_css('@site/themes/default/css/purecss@3.0.0-pure.min.css') }}
     {{ add_css('@site/themes/default/css/purecss@3.0.0-grids-responsive.min.css') }}
+    {{ add_css('@site/themes/default/css/prism@1.29.0.min.css') }}
     {{ add_css('@site/themes/default/css/styles.css') }}
+    {{ add_js('@site/themes/default/js/prism@1.29.0.min.js') }}
     {{ add_js('@site/themes/default/js/scripts.js') }}
 {% endapply %}
 <!DOCTYPE html>
@@ -13,6 +15,17 @@
     <title>{{ page_title(delim=' / ', siteTitle='Herbie CMS', rootTitle='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
     <base href="{{ baseUrl }}">
     {{ output_css() }}
+    <style>
+        :not(pre)>code[class*=language-] {
+            font-size: 0.9em;
+            padding: 0 0.1em;
+            border-radius: 0.3em;
+            white-space: normal;
+        }
+        pre[class*=language-]>code[class*=language-] {
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body class="{{ body_class() }}">
 <div class="header">
