@@ -5,7 +5,7 @@ layout: doc
 
 # Documentation
 
-This documentation teaches the most important topics to create a website or blog with Herbie CMS.
+This documentation explains the most important topics for creating a website or blog with Herbie CMS.
 
 ## What exactly is Herbie CMS?
 
@@ -23,6 +23,12 @@ The development was based on a current version of PHP and the use of proven conc
     <li><a href="{{ item.route }}">{{ item.title }}</a></li>
     {% endfor %}
 </ul>
+
+## Where is the name coming from?
+
+Well, the name comes from Herbie Hancock. 
+He is one of the most impressive and influential jazz musicians of all time. 
+So in a way, this project is dedicated to him and his work.
 
 [1]: http://jekyllrb.com
 [2]: http://statamic.com

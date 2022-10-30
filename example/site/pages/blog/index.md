@@ -3,7 +3,7 @@ title: Recipes
 layout: blog
 ---
 
-<h1>Recipes</h1>
+# Recipes
 
 {{ pages_filtered(routeParams) }}
 
@@ -33,7 +33,7 @@ layout: blog
     {% else %}
     <section class="post">
         <div class="post-description">
-            <p>Es sind keine Blogposts vorhanden.</p>
+            <p>There are no entries available.</p>
         </div>
     </section>
     {% endfor %}

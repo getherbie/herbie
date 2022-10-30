@@ -51,20 +51,23 @@ p + ul {
     margin-top:-0.5em;
 }
 code {
-    color:#000;
-    font-weight:normal;
+    color:#222;
+    background-color: #e9e6e2;
+    font-size: 0.9em;
+    padding: 0 0.25em;
 }
 pre {
-    background: none repeat scroll 0 0 #e9e6e2;
-    font-family: "Courier 10 Pitch",Courier,monospace;
-    font-size: 0.9em;
-    line-height: 1.3;
+    background-color: #e9e6e2;
+    line-height: 1;
     margin-bottom: 2em;
-    padding: 30px;
-    color:#222;
+    padding: 1em;
     overflow: auto;
     word-wrap: normal;
     white-space: pre;
+}
+pre code {
+    background: inherit;
+    padding: 0;
 }
 table {
     margin-bottom:2.6em;

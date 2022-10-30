@@ -53,7 +53,7 @@ Output content segments in layout files:
 
 **Twig Globals**
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"vars_global"}) }}
 
 **Twig Functions**
 
@@ -65,8 +65,8 @@ Output content segments in layout files:
 
 **Commands**
 
-TBD
+{{ snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
 
 **Plugins**
 
-TBD
+{{ snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}

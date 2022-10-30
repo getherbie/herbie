@@ -67,8 +67,8 @@ The easiest way to add pages is to add a text file with an appropriate name in t
 For a site with a home page, an about page, and a contact page, the page directory and their corresponding URLs would look like this:
 
     site/pages
-    |-- index.md        # https://example.com
-    |-- about.md        # https://example.com/about
+    ├── index.md        # https://example.com
+    ├── about.md        # https://example.com/about
     └── contact.md      # https://example.com/contact
 
 
@@ -101,10 +101,10 @@ By prefixing files with a number followed by a hyphen, you can control sorting a
 It looks like this, for example:
 
     site/pages
-    |-- 1-index.md      # visible and sorted
-    |-- 2-about-us.md   # visible and sorted
-    |-- 3-contact.md    # visible and sorted
-    |-- sitemap.md      # not visible
+    ├── 1-index.md      # visible and sorted
+    ├── 2-about-us.md   # visible and sorted
+    ├── 3-contact.md    # visible and sorted
+    ├── sitemap.md      # not visible
     └── imprint.md      # not visible
 
 The pages *index*, *about-us* and *contact* are visible in menus and sorting is defined.

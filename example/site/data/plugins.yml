@@ -1,7 +1,7 @@
 -
   id: adminpanel
   name: Adminpanel
-  text: Stellt eine Administrationsoberfläche zur Verfügung, mit der du Seiten, Blogposts, Daten, Mediadateien und mehr verwalten kannst.
+  desc: Stellt eine Administrationsoberfläche zur Verfügung, mit der du Seiten, Blogposts, Daten, Mediadateien und mehr verwalten kannst.
   author: Herbie-Team
   version: dev-master
   composer: getherbie/plugin-adminpanel
@@ -11,7 +11,7 @@
 -
   id: blanktarget
   name: Blanktarget
-  text: Mit dem Blanktarget-Plugin werden Markdown-Links in einem neuen Fenster geöffnet, falls der Linktitel mit einem Unterstrich beginnt.
+  desc: Mit dem Blanktarget-Plugin werden Markdown-Links in einem neuen Fenster geöffnet, falls der Linktitel mit einem Unterstrich beginnt.
   author: Netzweberei
   version: dev-master
   github: https://github.com/Netzweberei/plugin-blanktarget
@@ -19,7 +19,7 @@
 -
   id: disqus
   name: Disqus
-  text: Bindet den Webservice Disqus ein.
+  desc: Bindet den Webservice Disqus ein.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-disqus
@@ -29,7 +29,7 @@
 -
   id: dummy
   name: Dummy
-  text: This system plugin shows all possibilities how to extend Herbie CMS.
+  desc: This system plugin shows all possibilities how to extend Herbie CMS.
     The plugin is helpful during development, but should be disabled in productive environment.
   author: Herbie-Team
   version: 2.0.0
@@ -41,7 +41,7 @@
 -  
   id: feed
   name: Feed
-  text: Generiert aus deinen Seiten und Blogposts automatisch einen RSS- und einen Atom-Feed im XML-Format und stellt diese als Seiten bereit.
+  desc: Generiert aus deinen Seiten und Blogposts automatisch einen RSS- und einen Atom-Feed im XML-Format und stellt diese als Seiten bereit.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-feed
@@ -51,7 +51,7 @@
 -
   id: fileproxy
   name: Fileproxy
-  text: Das Fileproxy-Plugin ermöglicht dir die Veröffentlichung von (Bild-)Dateien direkt aus dem Seitenbaum heraus.
+  desc: Das Fileproxy-Plugin ermöglicht dir die Veröffentlichung von (Bild-)Dateien direkt aus dem Seitenbaum heraus.
   author: Netzweberei
   version: dev-master
   github: https://github.com/Netzweberei/plugin-fileproxy
@@ -59,7 +59,7 @@
 -
   id: gist
   name: Gist
-  text: Mit dem Gist-Plugin bettest du Snippets von Gist in deine Website ein.
+  desc: Mit dem Gist-Plugin bettest du Snippets von Gist in deine Website ein.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-gist
@@ -69,7 +69,7 @@
 -
   id: googlemaps
   name: Google Maps
-  text: Bindet eine Google Map via JavaScript inklusive eines statischen Bildes als Fallback ein.
+  desc: Bindet eine Google Map via JavaScript inklusive eines statischen Bildes als Fallback ein.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-googlemaps
@@ -79,7 +79,7 @@
 -
   id: grid
   name: Grid
-  text: Mit dem Gist-Plugin erstellst du in deinen Inhalten (HTML-/CSS-)Grids.
+  desc: Mit dem Gist-Plugin erstellst du in deinen Inhalten (HTML-/CSS-)Grids.
   author: Herbie-Team
   version: dev-master
   composer: getherbie/plugin-grid
@@ -89,7 +89,7 @@
 -
   id: highlight
   name: Highlight
-  text: Hebt die Syntax einer bestimmten Programmiersprache hervor. Das Plugin ist ein Wrapper für den hervorragenden Syntax-Highlighter GeSHi.
+  desc: Hebt die Syntax einer bestimmten Programmiersprache hervor. Das Plugin ist ein Wrapper für den hervorragenden Syntax-Highlighter GeSHi.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-highlight
@@ -99,7 +99,7 @@
 -
   id: highlightjs
   name: HighlightJS
-  text: Mit dem HighlightJS-Plugin nutzt du den javascript-basierten Syntax-Highlighter highlight.js mit 130 Sprachen und 65 Stilen.
+  desc: Mit dem HighlightJS-Plugin nutzt du den javascript-basierten Syntax-Highlighter highlight.js mit 130 Sprachen und 65 Stilen.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-highlightjs
@@ -109,7 +109,7 @@
 -
   id: imagine
   name: Imagine
-  text: This system plugin integrates Imagine, an OOP image editing library, into your Herbie CMS website.
+  desc: This system plugin integrates Imagine, an OOP image editing library, into your Herbie CMS website.
     Thanks to Imagine, you can edit images directly and apply ready-made filters and effects to them. 
   author: Herbie-Team
   version: 2.0.0
@@ -120,7 +120,7 @@
 -
   id: lipsum
   name: Lipsum
-  text: Bietet die Möglichkeit, einfach und schnell Blindtext auszugeben.
+  desc: Bietet die Möglichkeit, einfach und schnell Blindtext auszugeben.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-lipsum
@@ -130,7 +130,7 @@
 -
   id: markdown
   name: Markdown
-  text: This system plugin can be used to parse markdown-formatted texts.
+  desc: This system plugin can be used to parse markdown-formatted texts.
     Internally, the plugin is responsible for parsing markdown-formatted page content.
   author: Herbie-Team
   version: 2.0.0
@@ -142,7 +142,7 @@
 -
   id: mathjax
   name: MathJax
-  text: Mit dem MathJax-Plugin bindest du die gleichnamige JavaScript display engine MathJax in deine Website ein und schreibst damit schöne mathematische Formeln.
+  desc: Mit dem MathJax-Plugin bindest du die gleichnamige JavaScript display engine MathJax in deine Website ein und schreibst damit schöne mathematische Formeln.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-mathjax
@@ -153,7 +153,7 @@
 -
   id: random
   name: Random
-  text: Ermöglicht es, auf einer beliebigen Seite zufallsgesteurt den Inhalt einer anderen Seite anzuzeigen.
+  desc: Ermöglicht es, auf einer beliebigen Seite zufallsgesteurt den Inhalt einer anderen Seite anzuzeigen.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-random
@@ -163,7 +163,7 @@
 -
   id: redirect
   name: Redirect
-  text: Mit diesem Plugin kannst du auf Seitenbasis eine Weiterleitung zu einer URL vornehmen.
+  desc: Mit diesem Plugin kannst du auf Seitenbasis eine Weiterleitung zu einer URL vornehmen.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-redirect
@@ -173,7 +173,7 @@
 -
   id: ress
   name: RESS
-  text: Mit Hilfe dess RESS-Plugins kann die Ausgabe des Servers an das Gerät angepasst werden kann, mit dem die Website aktuell besucht wird.
+  desc: Mit Hilfe dess RESS-Plugins kann die Ausgabe des Servers an das Gerät angepasst werden kann, mit dem die Website aktuell besucht wird.
   author: Netzweberei
   version: dev-master
   github: https://github.com/Netzweberei/plugin-ress
@@ -181,7 +181,7 @@
 -
   id: rest
   name: reStructuredText
-  text: This system plugin can be used to parse reStructuredText-formatted texts.
+  desc: This system plugin can be used to parse reStructuredText-formatted texts.
     Internally, the plugin is responsible for parsing reStructuredText-formatted page content.
   author: Herbie-Team
   version: 2.0.0
@@ -193,7 +193,7 @@
 -
   id: shortcode
   name: Shortcode
-  text: Shortcodes sind BBTags, die man mit PHP beliebig durch Funktionalität erweitern kann. Shortcodes gibt es in WordPress seit der Version 2.5.
+  desc: Shortcodes sind BBTags, die man mit PHP beliebig durch Funktionalität erweitern kann. Shortcodes gibt es in WordPress seit der Version 2.5.
   author: Herbie-Team
   version: 1.0.0
   composer:
@@ -204,7 +204,7 @@
 -
   id: simplecontact
   name: Simplecontact
-  text: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie CMS.
+  desc: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie CMS.
   author: Herbie-Team
   version: 2.0.0
   composer: getherbie/plugin-simplecontact
@@ -214,7 +214,7 @@
 -
   id: simplesearch
   name: Simplesearch
-  text: Simplesearch adds a simple but effective search functionality to a website created with Herbie CMS.
+  desc: Simplesearch adds a simple but effective search functionality to a website created with Herbie CMS.
   author: Herbie-Team
   version: 2.0.0
   composer: getherbie/plugin-simplesearch
@@ -224,7 +224,7 @@
 -
   id: smartypants
   name: Smartypants
-  text: Mit Hilfe des Smartypants-Parsers von Michel Fortin werden typografische Anpassungen am Inhalt und Seitentitel vorgenommen.
+  desc: Mit Hilfe des Smartypants-Parsers von Michel Fortin werden typografische Anpassungen am Inhalt und Seitentitel vorgenommen.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-smartypants
@@ -234,7 +234,7 @@
 -
   id: test
   name: Test
-  text: Das Testplugin lotet die Möglichkeiten von Herbie aus.
+  desc: Das Testplugin lotet die Möglichkeiten von Herbie aus.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-test
@@ -244,7 +244,7 @@
 -
   id: textile
   name: Textile
-  text: This system plugin can be used to parse textile-formatted texts.
+  desc: This system plugin can be used to parse textile-formatted texts.
     Internally, the plugin is responsible for parsing textile-formatted page content.
   author: Herbie-Team
   version: 2.0.0
@@ -256,7 +256,7 @@
 -
   id: twig
   name: Twig
-  text: Das Twig-Plugin ist für das Parsen der HTML-Layoutdateien zuständig und bringt viele Funktionen, Filter und Tests mit.
+  desc: Das Twig-Plugin ist für das Parsen der HTML-Layoutdateien zuständig und bringt viele Funktionen, Filter und Tests mit.
   author: Herbie-Team
   version: 1.0.0
   composer:
@@ -267,7 +267,7 @@
 -
   id: twig_core
   name: Twig Core
-  text: This system plugin provides basic Twig filters, functions and tests that are useful for creating a web project with Herbie CMS.
+  desc: This system plugin provides basic Twig filters, functions and tests that are useful for creating a web project with Herbie CMS.
   author: Herbie-Team
   version: 2.0.0
   composer:
@@ -278,7 +278,7 @@
 -
   id: twig_plus
   name: Twig Plus
-  text: This system plugin provides extended Twig functions that are useful for creating a web project with Herbie CMS.
+  desc: This system plugin provides extended Twig functions that are useful for creating a web project with Herbie CMS.
   author: Herbie-Team
   version: 2.0.0
   composer:
@@ -289,7 +289,7 @@
 -
   id: video
   name: Video
-  text: Bettet ein Video ein, das sich automatisch der Grösse des Displays des Benutzers anpasst. Aktuell wird YouTube und Vimeo unterstützt.
+  desc: Bettet ein Video ein, das sich automatisch der Grösse des Displays des Benutzers anpasst. Aktuell wird YouTube und Vimeo unterstützt.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-video
@@ -299,7 +299,7 @@
 -
   id: xmlsitemap
   name: XML-Sitemap
-  text: Generiert aus deinen Seiten und Blogposts automatisch eine XML-Sitemap für Google und Co. und stellt sie als Seite bereit.
+  desc: Generiert aus deinen Seiten und Blogposts automatisch eine XML-Sitemap für Google und Co. und stellt sie als Seite bereit.
   author: Herbie-Team
   version: 1.0.0
   composer: getherbie/plugin-xmlsitemap

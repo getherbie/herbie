@@ -31,6 +31,7 @@ Herbie CMS console commands can be executed with the following syntax:
     php vendor/bin/herbie
 
 This will give you a list of all available commands.
+The output looks like this:
 
     -------------------
     HERBIE CMS CLI-Tool
@@ -52,5 +53,9 @@ This will give you a list of all available commands.
     completion   Dump the shell completion script
     help         Display help for a command
     list         List commands
+
+The call to clear the caches then looks like this, for example.
+
+    php vendor/bin/herbie clear-cache
 
 Additional information on how to execute commands can be found at <https://symfony.com/doc/current/components/console/usage.html>.
