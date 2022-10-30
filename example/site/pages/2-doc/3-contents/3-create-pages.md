@@ -81,12 +81,12 @@ For example, if a team page, a vision page, and a route page are added to the ab
     site/pages
     ├── index.md        # https://example.com
     ├── about/
-    |   ├── index.md    # https://example.com/about
-    |   ├── team.md     # https://example.com/about/team
-    |   └── vision.md   # https://example.com/about/vision
+    │   ├── index.md    # https://example.com/about
+    │   ├── team.md     # https://example.com/about/team
+    │   └── vision.md   # https://example.com/about/vision
     ├── contact/
-    |   ├── index.md    # https://example.com/contact
-    |   └── route.md    # https://example.com/contact/route
+    │   ├── index.md    # https://example.com/contact
+    │   └── route.md    # https://example.com/contact/route
     └── index.md        # https://example.com
 
 
@@ -123,9 +123,9 @@ Such pages and folders are not taken into account when scanning the file system.
     site/pages
     ├── index.md
     ├── _about/         # The folder incl. subpages is disabled
-    |   ├── index.md
-    |   ├── team.md
-    |   └── vision.md
+    │   ├── index.md
+    │   ├── team.md
+    │   └── vision.md
     └── contact/
         ├── index.md
         └── _route.md   # The page is disabled

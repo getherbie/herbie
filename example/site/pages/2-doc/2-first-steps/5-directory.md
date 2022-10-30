@@ -46,35 +46,35 @@ This is usually structured as follows:
     site
     ├── assets
     ├── config
-    |   └── main.yml
+    │   └── main.yml
     ├── data
-    |   └── persons.yml
+    │   └── persons.yml
     ├── extend
-    |   ├── commands
-    |   ├── events
-    |   ├── filters
-    |   ├── middlewares_app
-    |   ├── middlewares_route
-    |   ├── plugins
-    |   ├── twig_filters
-    |   ├── twig_functions
-    |   ├── twig_globals
-    |   └── twig_tests
+    │   ├── commands
+    │   ├── events
+    │   ├── filters
+    │   ├── middlewares_app
+    │   ├── middlewares_route
+    │   ├── plugins
+    │   ├── twig_filters
+    │   ├── twig_functions
+    │   ├── twig_globals
+    │   └── twig_tests
     ├── pages
-    |   ├── index.md
-    |   ├── company
-    |   |   ├── index.md
-    |   |   ├── about-us.md
-    |   |   ├── our-vision.md
-    |   |   └── team.md
-    |   ├── services.md
-    |   └── contact.md
+    │   ├── index.md
+    │   ├── company
+    │   │   ├── index.md
+    │   │   ├── about-us.md
+    │   │   ├── our-vision.md
+    │   │   └── team.md
+    │   ├── services.md
+    │   └── contact.md
     ├── runtime
-    |   ├── cache
-    |   |   ├── data
-    |   |   ├── page
-    |   |   └── twig
-    |   └── log
+    │   ├── cache
+    │   │   ├── data
+    │   │   ├── page
+    │   │   └── twig
+    │   └── log
     └── themes
         └─ default
             ├── error.html

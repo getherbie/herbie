@@ -8,7 +8,7 @@
     </thead>
     {% for data in attribute(site.data, type) %}
         <tr>
-            <td><code>{{ data.name }}</code></td>
+            <td>{{ data.name }}</td>
             <td markdown="1">{{ data.desc|raw }}</td>
             <td>{{ data.type }}</td>
         </tr>
