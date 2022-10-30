@@ -1,0 +1,8 @@
+/.github            export-ignore
+/example            export-ignore
+/tests              export-ignore
+/.php-cs-fixer.php  export-ignore
+/apigen.neon        export-ignore
+/codeception.yml    export-ignore
+/phpcs.xml          export-ignore
+/phpstan.neon       export-ignore
