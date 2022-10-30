@@ -7,7 +7,9 @@ twig: false
 # Layouts
 
 Layout files are implemented in Herbie CMS using the Twig template engine.
-Twig templates are quite easy to understand and very well documented, see <https://twig.symfony.com/>.
+Twig templates are quite easy to understand and very well documented.
+
+The Twig documentation can be found at <https://twig.symfony.com>.
 
 Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
 Herbie CMS expects at least two layout files:
@@ -17,7 +19,7 @@ Herbie CMS expects at least two layout files:
     └── error.html          # the error page
 
 
-It makes sense to divide the layouts into a main template and one or more sub templates.
+Often it makes sense to divide the layouts into a main template and one or more sub templates.
 These sub templates inherit the blocks of the main template and can fill them with content.
 
     site/themes/default/
@@ -52,7 +54,7 @@ But these blocks do not contain any content yet.
 
 ## Sub template
 
-The sub template inherits from the main template and fills the blocks, that are defined in the main template, with content.
+The sub template inherits from the main template and fills the blocks with content, that are defined in the main template.
 
     # default.html
     
@@ -66,11 +68,11 @@ The sub template inherits from the main template and fills the blocks, that are 
     {% endblock %}
 
 
-In order for the whole thing to work dynamically, a content function must be used.
-This has the task of outputting the contents of a page segment.
+In order for the whole thing to work dynamically, the content function must be used.
+This content function renders the content of a page segment and inserts it into the layout.
 Internally, the function goes through one or more formatting processes such as rendering Twig or parsing shortcode, markdown or Textile code.
 
-So the customized (dynamized) sub template now looks like this:
+So, the customized (dynamized) sub template now looks like this:
 
     # default.html
     
@@ -116,7 +118,7 @@ The page properties block is now used to apply one of the prepared layouts to ea
     And here is content for the sidebar segment.
 
 
-Further information on how page contents must be formatted can be found in the chapter [Contents](doc/contents).
+Further information on how page contents must be formatted can be found in the [Contents](doc/contents) chapter.
 
 Another good ressource are the layout files of this website itself.
 They are available on GitHub at <https://github.com/getherbie/website/>.
