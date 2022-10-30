@@ -19,7 +19,7 @@ Here are some examples:
     {{ page.tags }}
 {% endverbatim %}
 
-The details of these dates are listed below.
+The details of these variables are listed below.
 
 ## Global variables
 

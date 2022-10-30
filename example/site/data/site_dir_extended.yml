@@ -35,7 +35,7 @@
 - name: runtime
   desc: Directory with temporary files created during the program runtime.
 - name: runtime/cache
-  desc: Directory with cache files for data, pages and Twig.
+  desc: Directory with cached files for data, pages and Twig.
 - name: runtime/log
   desc: Directory with log files from PHP or a PSR-3 compatible logger.
 - name: themes

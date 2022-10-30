@@ -17,23 +17,31 @@ In order for Herbie CMS to recognize these files and convert them to HTML, they 
 
 Herbie CMS currently supports the following file types:
 
-    DATEIENDUNG     FORMATIERER
-    .htm            HTML (no conversion)
-    .html           HTML (no conversion)
-    .markdown       Markdown
-    .md             Markdown
-    .rss            Text (no conversion)
-    .rst            reStructuredText
-    .textile        Textile
-    .txt            Text (no conversion)
-    .xml            Text (no conversion)
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th width="35%">Extension</th>
+            <th width="65%">Formatter</th>
+            <th width="65%">Conversion</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for data in site.data.page_extensions %}
+        <tr>
+            <td>.{{ data.extension }}</td>
+            <td>{{ data.formatter }}</td>
+            <td>{{ data.conversion }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 When parsing the content, the formatter corresponding to the file extension is used.
 Thus, the content of a file with the extension .md is converted by the Markdown parser.
 And a file with the extension .textile by a Textile parser.
 
 
-## Create a page
+## Creating a page
 
 To create a new page, add a new file with one of the allowed extensions in the `site/pages` directory.
 You must respect the following rules:
@@ -93,17 +101,18 @@ By prefixing files with a number followed by a hyphen, you can control sorting a
 It looks like this, for example:
 
     site/pages
-    |-- 1-index.md
-    |-- 2-about-us.md
-    |-- 3-contact.md
-    |-- sitemap.md
-    └── imprint.md
+    |-- 1-index.md      # visible and sorted
+    |-- 2-about-us.md   # visible and sorted
+    |-- 3-contact.md    # visible and sorted
+    |-- sitemap.md      # not visible
+    └── imprint.md      # not visible
 
 The pages *index*, *about-us* and *contact* are visible in menus and sorting is defined.
 The pages *sitemap* and *imprint* are not visible in menus and sorting is therefore not relevant.
 
 **Note:** For folders, the preceding number only affects the sorting, but not the visibility.
 
+The visibility of folders is controlled by the index file in the folders.
 
 ## Disable page or folder
 

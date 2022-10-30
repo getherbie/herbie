@@ -20,7 +20,7 @@ A Herbie CMS website is usually structured as follows:
 
 What these files and directories stand for can be seen in the following table:
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
             <th width="35%">File/Directory</th>
@@ -83,7 +83,7 @@ This is usually structured as follows:
 
 The following table shows what each of these files and directories stand for:
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
             <th width="35%">File/Directory</th>
@@ -103,7 +103,7 @@ The following table shows what each of these files and directories stand for:
 
 ## .htaccess file
 
-If the `niceUrls` option is enabled in the configuration, there must be an .htaccess file with the appropriate instructions in the `web` directory.
+If the option `niceUrls` is enabled in the configuration, there must be an `.htaccess` file with the appropriate instructions in the `web` directory.
 
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -113,4 +113,4 @@ If the `niceUrls` option is enabled in the configuration, there must be an .htac
 Thus, all page views are passed on to the central index file.
 This is important for search engine optimization, for example, but also for visitors to the website.
 
-Note: The above configuration is designed for the Apache web server.
+Note: The above configuration is designed for Apache web server.

@@ -5,11 +5,11 @@ layout: doc
 
 # Page Properties
 
-Any file that contains a page properties (aka front matter) block is considered a valid page by Herbie CMS.
+Any file that contains a page properties block as known as front matter is considered a valid page by Herbie CMS.
 The page properties block must be at the beginning of the file.
-There must be valid YAML between two lines of three minus signs.
+There must be valid YAML between two lines of three hyphens.
 This sounds a bit complicated, but it is quite simple.
-Here is an example:
+Here is an example for a page properties block:
 
     ---
     title: Get started with your own website
@@ -28,7 +28,7 @@ Here is an example:
 
 ## Predefined variables
 
-There are some predefined (=reserved) variables that are used by the system.
+There are some predefined and reserved variables that are used by the system.
 These can be assigned a value in the page properties block of a page.
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
@@ -67,4 +67,4 @@ And in layout files you output the variables the same:
     </html>
 {% endverbatim %}
 
-This allows page variables to be used and enriched with additional variables of your own.
+This allows page variables to be used and enriched with additional custom variables of your choice.

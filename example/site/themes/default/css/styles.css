@@ -71,6 +71,16 @@ table {
     font-size:0.88em;
 }
 
+.pure-table {
+    width: 100%;
+}
+.pure-table td {
+    vertical-align: top;
+}
+.pure-table td p:last-child {
+    margin-bottom: 0;
+}
+
 /* Container */
 .container {
     max-width:1260px;

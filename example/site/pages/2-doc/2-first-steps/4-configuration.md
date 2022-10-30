@@ -8,7 +8,7 @@ layout: doc
 Herbie CMS uses a configuration file to hold settings.
 These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/2.x/config/defaults.php) file.
 
-The following variables are available in the configuration file as PHP constants and simple strings:
+The following variables are available in the configuration file as PHP constants as constant strings:
 
     APP_PATH
     SITE_PATH
@@ -45,7 +45,7 @@ return [
 ];
 ~~~
 
-This overrode the desired settings.
+This overrides the desired settings.
 
 ## Dot notation
 
@@ -54,13 +54,13 @@ All configuration values can be accessed via a function with support for dot not
 The following function calls:
 
 {% verbatim %}
-    {{ site.config.getAsString('charset') }}
-    {{ site.config.getAsString('paths.web') }}
-    {{ site.config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    {{ config.getAsString('charset') }}
+    {{ config.getAsString('fileExtensions.pages') }}
+    {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
 {% endverbatim %}
 
 Return the following values:
 
-    Charset = {{ site.config.getAsString('charset') }}
-    Web-Path = {{ site.config.getAsString('paths.web') }}
-    Enabled = {{ site.config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    Charset = {{ config.getAsString('charset') }}
+    Page extensions = {{ config.getAsString('fileExtensions.pages') }}
+    Enable twig = {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}

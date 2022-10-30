@@ -8,7 +8,7 @@ layout: doc
 Herbie CMS is using an event manager inspired by [Laminas' EventManager](https://docs.laminas.dev/laminas-eventmanager) component.
 During the application lifecycle the following events are triggered.
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
     <tr>
         <th width="25%">Name</th>

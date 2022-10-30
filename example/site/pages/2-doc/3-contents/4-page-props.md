@@ -22,42 +22,42 @@ Herbie CMS creates a page title and adds the text to the default content segment
 Unfortunately, most websites are not that simple.
 Usually they are based on multi-column layouts that you want to fill independently.
 This can be achieved with Herbie CMS by using named content segments.
-A named content segment is defined with three minus signs followed by a number and another three minus signs, for example:
+A named content segment is defined with three minus signs followed by a string and another three minus signs, for example:
 
-    --- 2 ---
+    --- sidebar ---
 
-The following text is then assigned to the content segment with ID 2.
+The following text is then assigned to the content segment with ID sidebar.
 Let's look at a slightly more complicated example:
 
     ---
     title: A page with content segments
     ---
 
-    This text is assigned to segment default.
+    This text is assigned to default segment.
 
     --- left ---
 
-    This text is assigned to segment left.
+    This text is assigned to left segment.
 
     --- right ---
 
-    This text is assigned to segment right.
+    This text is assigned to right segment.
 
 
-With this simple rule you can fill content of a page into several "containers" and address them in the layout.
-In this way, more complex layouts can be handled even with the simple text files of Herbie CMS.
+With this simple rule you can fill content of a page into several containers and address them within the layout.
+In this way, more complex layouts can be handled even with simple text files.
 
 
-## Output content segments in layout
+## Render content segments in layout
 
-Content segments are output to the layout files using Twig's content feature.
+In layout files content segments are rendered using a content function.
 
 {% verbatim %}
     {{ content('default') }}
 {% endverbatim %}
 
 The content function expects the segment ID as the only parameter.
-If no parameter is specified, the default content segment is output.
+If no parameter is specified, the default content segment is rendered.
 
 {% verbatim %}
     <body>
@@ -73,4 +73,4 @@ If no parameter is specified, the default content segment is output.
     </body>
 {% endverbatim %}
 
-An illustrative example can also be found in the website repository on GitHub.
+An illustrative example can also be found in the website repository at GitHub.

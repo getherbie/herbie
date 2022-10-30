@@ -9,7 +9,7 @@ layout: doc
 Herbie CMS is using an intercepting filter inspired by [Laminas' FilterChain](https://docs.laminas.dev/laminas-filter/filter-chains/) for providing a mechanism to alter the workflow of the rendering process.
 During the application lifecycle The following filters are used.
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
     <tr>
         <th width="25%">Name</th>
