@@ -21,7 +21,7 @@ Basically, you can do this in four different ways from easy to difficult.
         <tr>
             <td>1</td>
             <td>Using the filesystem</td>
-            <td>Easy</td>
+            <td>Very easy</td>
             <td>Low</td>
         </tr>
         <tr>
@@ -45,9 +45,78 @@ Basically, you can do this in four different ways from easy to difficult.
     </tbody>
 </table>
 
+And for all these types, Herbie CMS provides the following extension points to change the flow of the application lifecycle.
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>How-to</th>
+            <th>Difficulty</th>
+            <th>How often?</th>
+            <th>When?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Console commands</td>
+            <td>Medium</td>
+            <td>Rarely</td>
+            <td>Access via CLI</td>
+        </tr>
+        <tr>
+            <td>Event listeners</td>
+            <td>Medium</td>
+            <td>Rarely</td>
+            <td>Hook the system</td>
+        </tr>
+        <tr>
+            <td>Intercepting filters</td>
+            <td>Easy</td>
+            <td>Frequently</td>
+            <td>Value transformation</td>
+        </tr>
+        <tr>
+            <td>Application middlewares</td>
+            <td>Medium</td>
+            <td>Rarely</td>
+            <td>Change HTTP request/response</td>
+        </tr>
+        <tr>
+            <td>Route middlewares</td>
+            <td>Medium</td>
+            <td>Rarely</td>
+            <td>Change HTTP request/response</td>
+        </tr>
+        <tr>
+            <td>Twig filters</td>
+            <td>Very easy</td>
+            <td>Frequently</td>
+            <td>Value transformation</td>
+        </tr>
+        <tr>
+            <td>Twig globals</td>
+            <td>Very easy</td>
+            <td>Frequently</td>
+            <td>Helper object</td>
+        </tr>
+        <tr>
+            <td>Twig functions</td>
+            <td>Very easy</td>
+            <td>Frequently</td>
+            <td>Content generation</td>
+        </tr>
+        <tr>
+            <td>Twig tests</td>
+            <td>Very easy</td>
+            <td>Frequently</td>
+            <td>Boolean decision</td>
+        </tr>
+    </tbody>
+</table>
+
 ## 1. Using the filesystem for the project
 
-### Commands
+### Console commands
 
 For adding a command you can create a PHP file in the directory `site/extends/commands` that returns a Command class.
 The command is automatically registered and available in the CLI application.
@@ -79,7 +148,7 @@ class CustomCommand extends Command
 return CustomCommand::class;
 ~~~
 
-### Events
+### Event listeners
 
 For adding an event handler you can create a PHP file in the directory `site/extends/events` that returns an array{string, callable} with the name of the event and a valid PHP callback.
 The event is then registered automatically.
@@ -96,7 +165,7 @@ $event = function (EventInterface $event): void {
 return ['onTwigInitialized', $event];
 ~~~
 
-### Filters
+### Intercepting filters
 
 For adding a filter you can create a PHP file in the directory `site/extends/filters` that returns an array{string, callable} with the name of the filter and a valid PHP callback.
 The filter is then registered automatically.

@@ -7,6 +7,12 @@ layout: doc
 
 This documentation explains the most important topics for creating a website or blog with Herbie CMS.
 
+<ul>
+    {% for item in site.pageList|filter("parentRoute=doc") %}
+    <li><a href="{{ item.route }}">{{ item.title }}</a></li>
+    {% endfor %}
+</ul>
+
 ## What exactly is Herbie CMS?
 
 Herbie CMS is a content management system based on flat-files and does not require a database.
@@ -17,12 +23,6 @@ Herbie CMS is influenced by flat-file CMS systems from the Ruby, Go and PHP worl
 Among them are names like [Grav][4], [Hugo][3], [Jekyll][1], [Stacey][5] or [Statamic][2], just to name a few.
 The project was born out of the need to have a system available to easily and quickly implement websites.
 The development was based on a current version of PHP and the use of proven concepts and components.
-
-<ul>
-    {% for item in site.pageList|filter("parentRoute=doc") %}
-    <li><a href="{{ item.route }}">{{ item.title }}</a></li>
-    {% endfor %}
-</ul>
 
 ## Where is the name coming from?
 
