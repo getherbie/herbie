@@ -12,7 +12,7 @@
 - name: extend/commands
   desc: Directory with console commands.  
 - name: extend/events
-  desc: Directory with event handlers.
+  desc: Directory with event listeners.
 - name: extend/filters
   desc: Directory with intercepting filters.
 - name: extend/middlewares_app

@@ -1,9 +1,9 @@
 ---
-title: Commands
+title: Console Commands
 layout: doc
 ---
 
-# Commands
+# Console Commands
 
 Herbie CMS is using [Console Components](https://symfony.com/doc/current/components/console.html) for creating command-line commands.
 Console commands can be used for any recurring task, such as cronjobs, imports, or other batch jobs.

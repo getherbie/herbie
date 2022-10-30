@@ -58,55 +58,55 @@ And for all these types, Herbie CMS provides the following extension points to c
     </thead>
     <tbody>
         <tr>
-            <td>Console commands</td>
+            <td>Console command</td>
             <td>Medium</td>
             <td>Rarely</td>
             <td>Access via CLI</td>
         </tr>
         <tr>
-            <td>Event listeners</td>
+            <td>Event listener</td>
             <td>Medium</td>
             <td>Rarely</td>
             <td>Hook the system</td>
         </tr>
         <tr>
-            <td>Intercepting filters</td>
+            <td>Intercepting filter</td>
             <td>Easy</td>
             <td>Frequently</td>
             <td>Value transformation</td>
         </tr>
         <tr>
-            <td>Application middlewares</td>
+            <td>Application middleware</td>
             <td>Medium</td>
             <td>Rarely</td>
             <td>Change HTTP request/response</td>
         </tr>
         <tr>
-            <td>Route middlewares</td>
+            <td>Route middleware</td>
             <td>Medium</td>
             <td>Rarely</td>
             <td>Change HTTP request/response</td>
         </tr>
         <tr>
-            <td>Twig filters</td>
+            <td>Twig filter</td>
             <td>Very easy</td>
             <td>Frequently</td>
             <td>Value transformation</td>
         </tr>
         <tr>
-            <td>Twig globals</td>
+            <td>Twig global</td>
             <td>Very easy</td>
             <td>Frequently</td>
             <td>Helper object</td>
         </tr>
         <tr>
-            <td>Twig functions</td>
+            <td>Twig function</td>
             <td>Very easy</td>
             <td>Frequently</td>
             <td>Content generation</td>
         </tr>
         <tr>
-            <td>Twig tests</td>
+            <td>Twig test</td>
             <td>Very easy</td>
             <td>Frequently</td>
             <td>Boolean decision</td>
@@ -114,7 +114,7 @@ And for all these types, Herbie CMS provides the following extension points to c
     </tbody>
 </table>
 
-## 1. Using the filesystem for the project
+## 1. Extending using the filesystem for the project
 
 ### Console commands
 
@@ -150,7 +150,7 @@ return CustomCommand::class;
 
 ### Event listeners
 
-For adding an event handler you can create a PHP file in the directory `site/extends/events` that returns an array{string, callable} with the name of the event and a valid PHP callback.
+For adding an event listener you can create a PHP file in the directory `site/extends/events` that returns an array{string, callable} with the name of the event and a valid PHP callback.
 The event is then registered automatically.
 
 ~~~php
@@ -167,7 +167,7 @@ return ['onTwigInitialized', $event];
 
 ### Intercepting filters
 
-For adding a filter you can create a PHP file in the directory `site/extends/filters` that returns an array{string, callable} with the name of the filter and a valid PHP callback.
+For adding an intercepting filter you can create a PHP file in the directory `site/extends/filters` that returns an array{string, callable} with the name of the filter and a valid PHP callback.
 The filter is then registered automatically.
 
 ~~~php
@@ -285,14 +285,14 @@ $twigTest = function (int $value): bool {
 return ['odd', $twigTest];
 ~~~
 
-## 2. Using a programmatic approach for the project
+## 2. Extending using a programmatic approach
 
 TBD
 
-## 3. Using a plugin for the project
+## 3. Extending using a plugin
 
 TBD
 
-## 4. Using a distributed plugin for the project
+## 4. Extending using a distributed plugin
 
 TBD

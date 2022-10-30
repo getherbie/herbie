@@ -39,11 +39,11 @@ Output content segments in layout files:
     {{ content("right") }}
 {% endverbatim %}
 
-**Events**
+**Event Listeners**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
 
-**Filters**
+**Intercepting Filters**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"filters"}) }}
 

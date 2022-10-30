@@ -1,12 +1,12 @@
 ---
-title: Filters
+title: Intercepting filters
 layout: doc
 ---
 
-# Filters
+# Intercepting filters
 
 Herbie CMS is using an intercepting filter inspired by [Laminas' FilterChain](https://docs.laminas.dev/laminas-filter/filter-chains/) for providing a mechanism to alter the workflow of the rendering process.
-During the application lifecycle The following filters are used.
+During the application lifecycle The following intercepting filters are used.
 
 <table class="pure-table pure-table-horizontal">
     <thead>

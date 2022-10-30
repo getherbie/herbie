@@ -1,11 +1,11 @@
 ---
-title: Events
+title: Event Listeners
 layout: doc
 ---
 
-# Events
+# Event Listeners
 
-Herbie CMS is using an event manager inspired by [Laminas' EventManager](https://docs.laminas.dev/laminas-eventmanager) component.
+Herbie CMS is using event listeners inspired by [Laminas' EventManager](https://docs.laminas.dev/laminas-eventmanager) component.
 During the application lifecycle the following events are triggered.
 
 <table class="pure-table pure-table-horizontal">

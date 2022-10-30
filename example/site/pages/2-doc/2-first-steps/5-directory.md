@@ -30,7 +30,7 @@ What these files and directories stand for can be seen in the following table:
     <tbody>
     {% for data in site.data.site_dir_basic %}
         <tr>
-            <td><code>{{ data.name }}</code></td>
+            <td>{{ data.name }}</td>
             <td>{{ data.desc }}</td>
         </tr>
     {% endfor %}
@@ -93,7 +93,7 @@ The following table shows what each of these files and directories stand for:
     <tbody>
     {% for data in site.data.site_dir_extended %}
         <tr>
-            <td><code>{{ data.name }}</code></td>
+            <td>{{ data.name }}</td>
             <td>{{ data.desc }}</td>
         </tr>
     {% endfor %}
