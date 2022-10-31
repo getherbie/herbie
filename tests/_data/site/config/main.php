@@ -9,6 +9,7 @@ return [
         'layouts' => 'twig'
     ],
     'components' => [
+        'fileLogger' => null,
         'twigRenderer' => [
             'debug' => true
         ],

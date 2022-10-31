@@ -68,7 +68,6 @@ final class HerbieInfoCest
             'herbie\EventManager',
             'herbie\FileInfo',
             'herbie\FileInfoSortableIterator',
-            'herbie\FileLogger',
             'herbie\FilterChain',
             'herbie\FilterChainManager',
             'herbie\FilterIterator',
@@ -148,9 +147,7 @@ final class HerbieInfoCest
             'components.dataRepository.adapter',
             'components.downloadMiddleware.baseUrl',
             'components.downloadMiddleware.storagePath',
-            'components.fileLogger.channel',
-            'components.fileLogger.level',
-            'components.fileLogger.path',
+            'components.fileLogger',
             'components.twigRenderer.autoescape',
             'components.twigRenderer.cache',
             'components.twigRenderer.charset',
@@ -509,7 +506,7 @@ final class HerbieInfoCest
             'renderSegment'
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Filters (' . count($filters) . ')', 'h2');
+        $I->see('Intercepting Filters (' . count($filters) . ')', 'h2');
         $I->see(join(',', $filters), '.herbie-info-filters');
     }
 
@@ -552,7 +549,7 @@ final class HerbieInfoCest
             'onLocalPluginsAttached',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Events (' . count($events) . ')', 'h2');
+        $I->see('Event Listeners (' . count($events) . ')', 'h2');
         $I->see(join(',', $events), '.herbie-info-events');
     }
 
