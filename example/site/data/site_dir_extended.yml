@@ -8,27 +8,27 @@
 - name: data
   desc: The data directory where various data files in YAML format can be stored.
 - name: extend
-  desc: The directory with various extensions.
+  desc: The directory with various customized extensions.
 - name: extend/commands
-  desc: Directory with console commands.  
+  desc: Directory with customized console commands.  
 - name: extend/events
-  desc: Directory with event listeners.
+  desc: Directory with customized event listeners.
 - name: extend/filters
-  desc: Directory with intercepting filters.
+  desc: Directory with customized intercepting filters.
 - name: extend/middlewares_app
-  desc: Directory with application middlewares.
+  desc: Directory with customized application middlewares.
 - name: extend/middlewares_route
-  desc: Directory with route middlewares.
+  desc: Directory with customized route middlewares.
 - name: extend/plugins
-  desc: Directory with Plugins.
+  desc: Directory with customized Plugins.
 - name: extend/twig_filters
-  desc: Directory with Twig Filters.
+  desc: Directory with customized Twig Filters.
 - name: extend/twig_functions
-  desc: Directory with Twig Functions.
+  desc: Directory with customized Twig Functions.
 - name: extend/twig_globals
-  desc: Directory with Twig Globals.
+  desc: Directory with customized Twig Globals.
 - name: extend/twig_tests
-  desc: Directory with Twig Tests.
+  desc: Directory with customized Twig Tests.
 - name: pages
   desc: The CMS pages of the website.
     These are saved as text files (Markdown, Textile, Text, HTML).
