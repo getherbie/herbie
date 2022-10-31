@@ -1,36 +1,36 @@
 ---
-title: Konfiguration
+title: Configuration
 layout: doc
 ---
 
-# Konfiguration
+# Configuration
 
-Herbie CMS nutzt eine Konfigurationsdatei, um Einstellungen festzuhalten.
-Diese Default-Konfigurationen sind in der Datei [config/defaults.php](https://github.com/getherbie/herbie/blob/2.x/config/defaults.php) festgelegt.
+Herbie CMS uses a configuration file to hold settings.
+These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/2.x/config/defaults.php) file.
 
-In der Konfigurationsdatei stehen die folgenden Variablen als PHP-Konstanten und einfache Strings zur Verfügung:
+The following variables are available in the configuration file as PHP constants as constant strings:
 
     APP_PATH
     SITE_PATH
     WEB_PATH
     WEB_URL
 
-Diese Konstanten-Strings werden zur Laufzeit geparst.
+These constant strings are parsed at runtime.
 
 
-## Einstellungen übersteuern
+## Override settings
 
-Alle Default-Einstellungen können in einer eigenen Konfigurationsdatei übersteuert werden.
-Diese Datei muss unter `site/config/main.php` abgelegt sein.
+All default settings can be overridden in a separate configuration file.
+This file must be located at `site/config/main.php`.
 
-Findet Herbie CMS eine Datei mit gültigen Werten, werden die Default-Einstellungen mit diesen überschrieben.
+If Herbie CMS finds a file with valid values, the default settings will be overwritten with them.
 
 
-## Beispiel
+## Example
 
-Für ein Projekt sollen schön lesbare URLs und das Twig-Debugging aktiviert werden.
+For a project, nice readable URLs and Twig debugging should be enabled.
 
-Dazu wird eine Datei `site/config/main.php` mit folgendem Inhalt erstellt:
+For this purpose a file `site/config/main.php` is created with the following content:
 
 ~~~php
 <?php
@@ -45,22 +45,22 @@ return [
 ];
 ~~~
 
-Damit wurden die gewünschten Einstellungen übersteuert.
+This overrides the desired settings.
 
-## Punkt-Notation
+## Dot notation
 
-Auf alle Konfigurationswerte kann über eine Funktion mit Unterstützung für Punktnotation zugegriffen werden.
+All configuration values can be accessed via a function with support for dot notation.
 
-Die folgenden Funktionsaufrufe:
+The following function calls:
 
 {% verbatim %}
-    {{ site.config.getAsString('charset') }}
-    {{ site.config.getAsString('paths.web') }}
-    {{ site.config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    {{ config.getAsString('charset') }}
+    {{ config.getAsString('fileExtensions.pages') }}
+    {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
 {% endverbatim %}
 
-Geben die folgenden Werte zurück:
+Return the following values:
 
-    Charset = {{ site.config.getAsString('charset') }}
-    Web-Path = {{ site.config.getAsString('paths.web') }}
-    Enabled = {{ site.config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    Charset = {{ config.getAsString('charset') }}
+    Page extensions = {{ config.getAsString('fileExtensions.pages') }}
+    Enable twig = {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}

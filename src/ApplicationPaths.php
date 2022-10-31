@@ -22,12 +22,12 @@ final class ApplicationPaths
         return $this->app . $append;
     }
 
-    public function getSite(string $append = ''): ?string
+    public function getSite(string $append = ''): string
     {
         return $this->site . $append;
     }
 
-    public function getVendor(): ?string
+    public function getVendor(): string
     {
         return $this->vendor;
     }

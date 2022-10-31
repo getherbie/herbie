@@ -33,7 +33,7 @@ final class FlatfilePageRepository implements PageRepositoryInterface
     {
         if (is_null($this->pageList)) {
             $this->pageList = $this->pageFactory->newPageList();
-            foreach ($this->pagePersistence->findAll() as $id => $data) {
+            foreach ($this->pagePersistence->findAll() as $data) {
                 $pageItem = $this->pageFactory->newPageItem($data['data']);
                 $this->pageList->addItem($pageItem);
             }

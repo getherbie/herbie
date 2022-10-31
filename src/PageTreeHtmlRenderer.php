@@ -106,7 +106,7 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
     {
         $menuItem = $this->getMenuItem();
         $cssClasses = [];
-        if ($route == $menuItem->route) {
+        if ($route === $menuItem->route) {
             $cssClasses[] = 'current';
         }
         if (!empty($menuItem->route)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\acceptance;
 
 use AcceptanceTester;
@@ -76,7 +78,6 @@ final class HerbieInfoCest
             'herbie\JsonDataRepository',
             'herbie\MiddlewareDispatcher',
             'herbie\NullCache',
-            'herbie\NullLogger',
             'herbie\Page',
             'herbie\PageFactory',
             'herbie\PageItem',
@@ -146,6 +147,7 @@ final class HerbieInfoCest
             'components.dataRepository.adapter',
             'components.downloadMiddleware.baseUrl',
             'components.downloadMiddleware.storagePath',
+            'components.fileLogger',
             'components.twigRenderer.autoescape',
             'components.twigRenderer.cache',
             'components.twigRenderer.charset',
@@ -501,11 +503,10 @@ final class HerbieInfoCest
             'renderSegment',
             'renderSegment',
             'renderSegment',
-            'renderSegment',
-            'renderContent',
+            'renderSegment'
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Filters (' . count($filters) . ')', 'h2');
+        $I->see('Intercepting Filters (' . count($filters) . ')', 'h2');
         $I->see(join(',', $filters), '.herbie-info-filters');
     }
 
@@ -548,7 +549,7 @@ final class HerbieInfoCest
             'onLocalPluginsAttached',
         ];
         $I->amOnPage('/herbie-info');
-        $I->see('Events (' . count($events) . ')', 'h2');
+        $I->see('Event Listeners (' . count($events) . ')', 'h2');
         $I->see(join(',', $events), '.herbie-info-events');
     }
 

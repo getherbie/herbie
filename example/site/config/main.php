@@ -9,8 +9,14 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplesearch',
-    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,rest,textile',
+    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
     'components' => [
+        'dataRepository' => [
+            'adapter' => 'yaml'
+        ],
+        'fileLogger' => [
+            'level' => 'debug',
+        ],
         'twigRenderer' => [
             'debug' => true
         ],

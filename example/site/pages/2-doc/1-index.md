@@ -3,31 +3,35 @@ title: Documentation
 layout: doc
 ---
 
-# Dokumentation
+# Documentation
 
-In dieser Dokumentation werden die wichtigsten Themen vermittelt, um eine Website oder einen Blog mit Herbie CMS zu erstellen.
-
-## Was ist Herbie CMS genau?
-
-Herbie CMS ist ein dateibasiertes CMS-System, das ohne Datenbank auskommt.
-Die Inhalte der Website werden vom Dateisystem aus einfachen Textdateien geladen.
-Das Programm durchläuft dabei ein definiertes Verzeichnis mit Textdateien, wandelt diese Dateien entsprechend ihrer Dateiendung um
-und gibt sie - eingebettet in ein HTML-Layout - als vollständige Website aus.
-
-Herbie CMS ist beinflusst von flat-file CMS-Systemen aus der Ruby- , Go- und PHP-Welt. Darunter sind
-Namen wie [Grav][4], [Hugo][3], [Jekyll][1], [Stacey][5] oder [Statamic][2], um nur einige zu nennen. 
-Das Projekt entstand aus dem Bedürfnis, ein System zur Verfügung zu haben, mit dem sich einfach und schnell Websites umsetzen lassen. 
-Bei der Entwicklung wurde auf eine aktuelle PHP-Version und die
-Verwendung bewährter Konzepte und Komponenten gesetzt. 
-
-[1]: http://jekyllrb.com
-[2]: http://statamic.com
-[3]: http://gohugo.io
-[4]: http://getgrav.org
-[5]: http://www.staceyapp.com
+This documentation explains the most important topics for creating a website or blog with Herbie CMS.
 
 <ul>
     {% for item in site.pageList|filter("parentRoute=doc") %}
     <li><a href="{{ item.route }}">{{ item.title }}</a></li>
     {% endfor %}
 </ul>
+
+## What exactly is Herbie CMS?
+
+Herbie CMS is a content management system based on flat-files and does not require a database.
+The content of the website is loaded from the file system from simple text files.
+The program runs through a defined directory with text files, converts these files according to their file extension and outputs them - embedded in an HTML layout - as a complete website.
+
+Herbie CMS is influenced by flat-file CMS systems from the Ruby, Go and PHP world. 
+Among them are names like [Grav][4], [Hugo][3], [Jekyll][1], [Stacey][5] or [Statamic][2], just to name a few.
+The project was born out of the need to have a system available to easily and quickly implement websites.
+The development was based on a current version of PHP and the use of proven concepts and components.
+
+## Where is the name coming from?
+
+Well, the name comes from Herbie Hancock. 
+He is one of the most impressive and influential jazz musicians of all time. 
+So in a way, this project is dedicated to him and his work.
+
+[1]: http://jekyllrb.com
+[2]: http://statamic.com
+[3]: http://gohugo.io
+[4]: http://getgrav.org
+[5]: http://www.staceyapp.com

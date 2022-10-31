@@ -1,4 +1,5 @@
 ---
+title: robots.txt
 layout: ""
 content_type: text/plain
 keep_extension: true

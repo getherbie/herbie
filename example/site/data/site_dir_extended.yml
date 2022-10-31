@@ -1,0 +1,44 @@
+---
+- name: assets
+  desc: The assets directory of Herbie CMS.
+    It contains CSS and JS files that are copied to the web assets directory at runtime.
+- name: config
+  desc: The configuration directory with files in YAML format (the main file can also be a PHP file).
+    Configurations for plugins are stored as individual files in the plugins subfolder.
+- name: data
+  desc: The data directory where various data files in YAML format can be stored.
+- name: extend
+  desc: The directory with various customized extensions.
+- name: extend/commands
+  desc: Directory with customized console commands.  
+- name: extend/events
+  desc: Directory with customized event listeners.
+- name: extend/filters
+  desc: Directory with customized intercepting filters.
+- name: extend/middlewares_app
+  desc: Directory with customized application middlewares.
+- name: extend/middlewares_route
+  desc: Directory with customized route middlewares.
+- name: extend/plugins
+  desc: Directory with customized Plugins.
+- name: extend/twig_filters
+  desc: Directory with customized Twig Filters.
+- name: extend/twig_functions
+  desc: Directory with customized Twig Functions.
+- name: extend/twig_globals
+  desc: Directory with customized Twig Globals.
+- name: extend/twig_tests
+  desc: Directory with customized Twig Tests.
+- name: pages
+  desc: The CMS pages of the website.
+    These are saved as text files (Markdown, Textile, Text, HTML).
+- name: runtime
+  desc: Directory with temporary files created during the program runtime.
+- name: runtime/cache
+  desc: Directory with cached files for data, pages and Twig.
+- name: runtime/log
+  desc: Directory with log files from PHP or a PSR-3 compatible logger.
+- name: themes
+  desc: Directory with theme directories and files.
+- name: themes/default
+  desc: The directory with the default theme.

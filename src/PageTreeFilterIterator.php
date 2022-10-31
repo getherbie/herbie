@@ -20,7 +20,6 @@ final class PageTreeFilterIterator extends \RecursiveFilterIterator
             return true;
         }
         $menuItem = $this->current()->getMenuItem();
-        $route = $menuItem->route;
         if (empty($menuItem->hidden)) {
             return true;
         }

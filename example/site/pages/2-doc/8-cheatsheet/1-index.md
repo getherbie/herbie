@@ -5,35 +5,33 @@ layout: doc
 
 # Cheat Sheet
 
-Das Cheat Sheet befindet sich noch im Aufbau, aber hier ist schon mal ein erster Teil.
+The cheat sheet is still under construction, but here is a first part.
 
-**Seiteneigeschaften**
+**Page properties**
 
     ---
-    title: Seitentitel
-    layout: default.html
+    title: Page title
+    layout: default
     ---
 
-**Seiteneigeschaften ausgeben**
-
-Im Layout- und Seitendateien
+Output page properties in layout and content files:
 
     {{ '{{' }} page.title }}
     {{ '{{' }} page.layout }}
 
-**Erlaubte Dateiendungen**<br>
+**Allowed file extensions**<br>
 htm, html, markdown, md, rss, rst, textile, txt, xml
 
 **Homepage**<br>
 index.md
 
-**Inhaltssegmente**
+**Content segments**
 
     --- default ---
     --- left ---
     --- right ---
 
-**Inhaltssegmente im Layout** ausgeben
+Output content segments in layout files:
 
 {% verbatim %}
     {{ content("default") }}
@@ -41,23 +39,23 @@ index.md
     {{ content("right") }}
 {% endverbatim %}
 
-**Events**
+**Event Listeners**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
 
-**Filters**
+**Intercepting Filters**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"filters"}) }}
 
-**Twig Filter**
+**Twig Filters**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}
 
 **Twig Globals**
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+{{ snippet("@site/snippets/simple_data.twig", {type:"vars_global"}) }}
 
-**Twig Funktionen**
+**Twig Functions**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"twig_functions"}) }}
 
@@ -65,6 +63,10 @@ index.md
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
 
+**Console Commands**
+
+{{ snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
+
 **Plugins**
 
-TBD
+{{ snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}

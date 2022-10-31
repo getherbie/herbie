@@ -6,8 +6,6 @@ namespace tests\integration\SysPlugins;
 
 use herbie\Application;
 use herbie\ApplicationPaths;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
 use function herbie\file_read;
 
@@ -20,11 +18,7 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         if (is_file($logPath)) {
             unlink($logPath); // delete log file if exists
         }
-
-        $logger = new Logger('herbie');
-        $logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
-
-        return new Application(new ApplicationPaths($appPath, $sitePath), $logger);
+        return new Application(new ApplicationPaths($appPath, $sitePath));
     }
 
     public function testTextileFilter(): void

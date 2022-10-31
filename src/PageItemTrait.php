@@ -233,7 +233,7 @@ trait PageItemTrait
     {
         $author = $this->slugify($author);
         foreach ($this->authors as $a) {
-            if ($this->slugify($a) == $author) {
+            if ($this->slugify($a) === $author) {
                 return $a;
             }
         }
@@ -249,7 +249,7 @@ trait PageItemTrait
     {
         $category = $this->slugify($category);
         foreach ($this->categories as $c) {
-            if ($this->slugify($c) == $category) {
+            if ($this->slugify($c) === $category) {
                 return $c;
             }
         }
@@ -270,7 +270,7 @@ trait PageItemTrait
     {
         $tag = $this->slugify($tag);
         foreach ($this->getTags() as $t) {
-            if ($this->slugify($t) == $tag) {
+            if ($this->slugify($t) === $tag) {
                 return $t;
             }
         }
@@ -335,7 +335,7 @@ trait PageItemTrait
     {
         $author = $this->slugify($author);
         foreach ($this->getAuthors() as $c) {
-            if ($this->slugify($c) == $author) {
+            if ($this->slugify($c) === $author) {
                 return true;
             }
         }
@@ -346,7 +346,7 @@ trait PageItemTrait
     {
         $category = $this->slugify($category);
         foreach ($this->getCategories() as $c) {
-            if ($this->slugify($c) == $category) {
+            if ($this->slugify($c) === $category) {
                 return true;
             }
         }
@@ -357,7 +357,7 @@ trait PageItemTrait
     {
         $tag = $this->slugify($tag);
         foreach ($this->getTags() as $t) {
-            if ($this->slugify($t) == $tag) {
+            if ($this->slugify($t) === $tag) {
                 return true;
             }
         }

@@ -8,6 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 
@@ -66,11 +67,10 @@ final class ContainerBuilder
         }
 
         $c->set(Config::class, function (Container $c) {
-            $webPath = preg_replace('#\/?index.php#', '', dirname($_SERVER['SCRIPT_FILENAME']));
             $const = [
                 'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
-                'WEB_PATH' => str_untrailing_slash($webPath),
+                'WEB_PATH' => str_untrailing_slash(dirname($_SERVER['SCRIPT_FILENAME'])),
                 'WEB_URL' => str_untrailing_slash($c->get(Environment::class)->getBaseUrl())
             ];
 
@@ -154,7 +154,15 @@ final class ContainerBuilder
         if ($this->logger) {
             $c->set(LoggerInterface::class, $this->logger);
         } else {
-            $c->set(LoggerInterface::class, function () {
+            $c->set(LoggerInterface::class, function (Container $c) {
+                $config = $c->get(Config::class)->getAsArray('components.fileLogger');
+                if (isset($config['path'], $config['channel'], $config['level'])) {
+                    return new FileLogger(
+                        $c->get(Alias::class)->get($config['path']),
+                        $config['channel'],
+                        $config['level']
+                    );
+                }
                 return new NullLogger();
             });
         }
@@ -221,14 +229,6 @@ final class ContainerBuilder
                 $c->get(LoggerInterface::class),
                 $c // needed for DI in plugins
             );
-        });
-
-        $c->set(RenderLayoutFilter::class, function () {
-            return new RenderLayoutFilter();
-        });
-
-        $c->set(RenderSegmentFilter::class, function () {
-            return new RenderSegmentFilter();
         });
 
         $c->set(ServerRequestInterface::class, function (Container $c) {

@@ -1,0 +1,25 @@
+---
+- name: project
+  desc: The project directory on the web server.
+- name: site
+  desc: The actual content of the website (see below).
+    This directory is normally not accessible via the web.
+    However, it can also be placed in the public directory.
+- name: vendor
+  desc: This directory is the Composer vendor and contains all dependent third-party libraries.
+    This directory is not accessible via the web.
+- name: web
+  desc: The public directory of the web server.
+    This can be accessed via the web browser.
+- name: web/assets
+  desc: The repository for JavaScript, CSS and image files, which are needed for the layout of the website.
+- name: web/cache
+  desc: The cache for files that should be publicly accessible, e.g. resized images.
+- name: web/media
+  desc: This directory contains files that are linked through the content.
+    For example, images, PDFs, videos, MP3s, etc.
+- name: web/.htaccess
+  desc: If `niceUrls` option is enabled in the configuration, this file must exist with corresponding instructions.
+- name: web/index.php
+  desc: The bootstrap file and part of Herbie CMS.
+    All requests to the web server go through this file.

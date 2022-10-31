@@ -1,0 +1,7 @@
+---
+- name: renderSegment
+  desc: Renders segment
+  order: 1
+- name: renderLayout
+  desc: Renders layout
+  order: 2

@@ -13,8 +13,9 @@ function toggleClass(element, className) {
     element.className = classString;
 }
 
-document.getElementById('menuLink').addEventListener('click', function() {
+document.getElementById('menuLink').addEventListener('click', function(e) {
     toggleClass(document.getElementById('mobile-menu'), 'pure-hidden-phone');
+    e.preventDefault();
 });
 
 /*

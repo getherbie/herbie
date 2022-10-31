@@ -135,7 +135,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
 
         $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
 
-        if ($matched === 1 && count($matches) == 3) {
+        if ($matched === 1 && count($matches) === 3) {
             $yaml = $matches[1];
 
             $splitContent = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -144,7 +144,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             }
 
             $count = count($splitContent);
-            if ($count % 2 == 0) {
+            if ($count % 2 === 0) {
                 throw new \UnexpectedValueException('Error at reading file content');
             }
 
@@ -163,7 +163,15 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
             $i = 0;
             $last = count($segments) - 1;
             foreach ($segments as $key => $segment) {
-                $segments[$key] = ($i == $last) ? $segment : preg_replace('/\R?$/', '', $segment, 1);
+                /** @var string $segment */
+                if ($i === $last) {
+                    $segments[$key] = $segment;
+                } else {
+                    $replaced = preg_replace('/\R?$/', '', $segment, 1);
+                    if ($replaced !== null) {
+                        $segments[$key] = $replaced;
+                    }
+                }
                 $i++;
             }
         }
@@ -171,55 +179,11 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         return [$yaml, $segments];
     }
 
-    public static function getRouteToIdMapping(string $contentDir, array $contentExt): array
-    {
-        $path = $contentDir;
-
-        $di = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-
-        /** @var FileInfo[] $it */
-        $it = new \RecursiveIteratorIterator($di);
-
-        $files = [];
-        foreach ($it as $file) {
-            if (in_array($file->getExtension(), $contentExt)) {
-                $files[] = (string)$file;
-            }
-        }
-
-        sort($files);
-
-        $mapping = [];
-        foreach ($files as $file) {
-            $route = str_replace($path, '', $file);
-            foreach ($contentExt as $ex) {
-                $route = str_replace('.' . $ex, '', $route);
-            }
-            $route = preg_replace('/^([0-9])+-/', '', $route);
-            $route = preg_replace('/\/[0-9]+-/', '/', $route);
-            $route = trim($route, '/');
-
-            if ($route === 'index') {
-                $route = '';
-            } else {
-                $pos = strrpos($route, '/index');
-                if ($pos !== false) {
-                    $route = substr($route, 0, $pos);
-                }
-            }
-
-            $mapping['@page' . str_replace($contentDir, '', $file)] = $route;
-        }
-
-        return $mapping;
-    }
-
     private function createRoute(string $path, bool $trimExtension = false): string
     {
         $route = str_unleading_slash($path);
 
-        // remove leading numbers (sorting) from url segments
-        $segments = explode('/', $route);
+        $segments = str_explode_filtered($route, '/');
 
         if (isset($segments[0])) {
             if (substr($segments[0], 0, 1) === '@') {
@@ -228,6 +192,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         }
 
         foreach ($segments as $i => $segment) {
+            /** @var string $segment */
             if (!preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $segment)) {
                 $segments[$i] = preg_replace('/^[0-9]+-/', '', $segment);
             }
@@ -244,6 +209,6 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         $route = preg_replace('#\/index$#', '', trim($imploded, '\/'));
 
         // handle index route
-        return ($route == 'index') ? '' : $route;
+        return ($route === null || $route === 'index') ? '' : $route;
     }
 }

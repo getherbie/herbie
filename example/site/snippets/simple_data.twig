@@ -1,6 +1,17 @@
-<table class="pure-table pure-table-horizontal" width="100%">
-    {% for item in attribute(site.data, type) %}
-        <tr><td width="20%"><strong>{{ attribute(item, 'name') }}</strong></td>
-            <td>{{ attribute(item, field) }}</td></tr>
+<table class="pure-table pure-table-horizontal">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    {% set data = attribute(site.data, type)|sort((a, b) => a.name <=> b.name) %}
+    {% for item in data %}
+        {% if not enabled or attribute(item, enabled) == true %}
+        <tr>
+            <td style="width:20%">{{ attribute(item, 'name') }}</td>
+            <td>{{ attribute(item, 'desc') }}</td>
+        </tr>
+        {% endif %}
     {% endfor %}
 </table>

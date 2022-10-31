@@ -5,12 +5,17 @@ layout: doc
 
 # Plugins
 
-Für Herbie CMS stehen schon einige Plugins zur Verfügung. 
-Ein Plugin installiert man am einfachsten via Composer.
+There are already some plugins available for Herbie CMS.
+The easiest way to install plugins is with the help of Composer.
 
-    $ composer require getherbie/plugin-disqus
+    $ composer require getherbie/plugin-simplecontact
 
-Danach aktiviert man das Plugin in der Konfigurationsdatei und passt Plugin-Einstellungen nach Belieben an. 
-Fertig!
+After installation, the plugin only needs to be activated in the configuration file.
+Plugin settings can also be customized there as desired.
 
-[include path="@site/snippets/plugins.twig" linkto="dokumentation/plugins"]
+## Available plugins
+
+{{ snippet("@site/snippets/plugins.twig", {linkto:"doc/plugins"}) }}
+
+If you have a useful plugin for Herbie CMS, [let us know](/development).
+Thanks in advance for your support!

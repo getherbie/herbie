@@ -11,16 +11,16 @@ use Twig\TwigTest;
 
 final class VirtualLocalPlugin extends Plugin
 {
-    private Config $config;
+    protected Application $application;
 
-    public function __construct(Config $config)
+    public function __construct(Application $application)
     {
-        $this->config = $config;
+        $this->application = $application;
     }
 
     public function commands(): array
     {
-        $dir = $this->config->getAsString('paths.site') . '/extend/commands';
+        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/commands';
         $files = $this->findPhpFilesInDir($dir);
 
         $commands = [];
@@ -33,7 +33,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function events(): array
     {
-        $dir = $this->config->getAsString('paths.site') . '/extend/events';
+        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/events';
         $files = $this->findPhpFilesInDir($dir);
 
         $events = [];
@@ -46,7 +46,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function filters(): array
     {
-        $dir = $this->config->getAsString('paths.site') . '/extend/filters';
+        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/filters';
         $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
@@ -59,7 +59,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function appMiddlewares(): array
     {
-        $dir = $this->config->getAsString('paths.site') . '/extend/middlewares_app';
+        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/middlewares_app';
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -72,7 +72,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function routeMiddlewares(): array
     {
-        $dir = $this->config->getAsString('paths.site') . '/extend/middlewares_route';
+        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/middlewares_route';
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -85,7 +85,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigFilters(): array
     {
-        $dir = $this->config->getAsString('paths.twigFilters');
+        $dir = $this->application->getConfig()->getAsString('paths.twigFilters');
         $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
@@ -98,7 +98,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigGlobals(): array
     {
-        $dir = $this->config->getAsString('paths.twigGlobals');
+        $dir = $this->application->getConfig()->getAsString('paths.twigGlobals');
         $files = $this->findPhpFilesInDir($dir);
 
         $globals = [];
@@ -111,7 +111,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigFunctions(): array
     {
-        $dir = $this->config->getAsString('paths.twigFunctions');
+        $dir = $this->application->getConfig()->getAsString('paths.twigFunctions');
         $files = $this->findPhpFilesInDir($dir);
 
         $functions = [];
@@ -124,7 +124,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigTests(): array
     {
-        $dir = $this->config->getAsString('paths.twigTests');
+        $dir = $this->application->getConfig()->getAsString('paths.twigTests');
         $files = $this->findPhpFilesInDir($dir);
 
         $tests = [];
@@ -151,17 +151,26 @@ final class VirtualLocalPlugin extends Plugin
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigFilter(string $file): TwigFilter
+    /**
+     * @return array{string, callable}|TwigFilter
+     */
+    private function includeTwigFilter(string $file)
     {
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigFunction(string $file): TwigFunction
+    /**
+     * @return array{string, callable}|TwigFunction
+     */
+    private function includeTwigFunction(string $file)
     {
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigTests(string $file): TwigTest
+    /**
+     * @return array{string, callable}|TwigTest
+     */
+    private function includeTwigTests(string $file)
     {
         return $this->includePhpFile($file);
     }

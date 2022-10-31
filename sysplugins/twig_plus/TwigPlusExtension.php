@@ -82,6 +82,10 @@ final class TwigPlusExtension extends AbstractExtension
     ): string {
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
         $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 
@@ -193,7 +197,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $pageList->sort($field, $direction);
         }
 
-        if (1 == (int)$shuffle) {
+        if (1 === (int)$shuffle) {
             $pageList = $pageList->shuffle();
         }
 
@@ -215,6 +219,10 @@ final class TwigPlusExtension extends AbstractExtension
     ): string {
         // TODO use $showHidden parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
 
         // using FilterCallback for better filtering of nested items
@@ -280,7 +288,7 @@ final class TwigPlusExtension extends AbstractExtension
                     $next = $item;
                     break;
                 }
-                if ($route == $item->route) {
+                if ($route === $item->route) {
                     $cur = $item;
                 }
                 $keys[] = $i;
@@ -380,7 +388,7 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         foreach ($pageTrail as $item) {
-            if ((1 == $count) && $item->isStartPage() && !empty($rootTitle)) {
+            if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
             $titles[] = $item->title;
@@ -400,6 +408,10 @@ final class TwigPlusExtension extends AbstractExtension
         string $class = 'sitemap'
     ): string {
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
         $treeIterator = new PageTreeIterator($branch);
         $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 

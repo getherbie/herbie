@@ -1,4 +1,6 @@
 {% apply spaceless %}
+    {{ add_css('@site/themes/default/css/purecss@3.0.0-pure.min.css') }}
+    {{ add_css('@site/themes/default/css/purecss@3.0.0-grids-responsive.min.css') }}
     {{ add_css('@site/themes/default/css/styles.css') }}
     {{ add_js('@site/themes/default/js/scripts.js') }}
 {% endapply %}
@@ -10,15 +12,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ page_title(delim=' / ', siteTitle='Herbie CMS', rootTitle='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
     <base href="{{ baseUrl }}">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
-    <!--<![endif]-->
     {{ output_css() }}
 </head>
 <body class="{{ body_class() }}">
@@ -94,8 +87,9 @@
                 <h3>Links</h3>
                 <ul>
                     <li>{{ page_link('sitemap', 'Sitemap') }}</li>
-                    <li>{{ page_link('development', 'Contact') }}</li>
                     <li>{{ page_link('search', 'Search') }}</li>
+                    <li>{{ page_link('privacy-policy', 'Privacy policy') }}</li>
+                    <li>{{ page_link('imprint', 'Imprint') }}</li>
                 </ul>
             </div>
             <div class="pure-u-1 pure-u-md-1-4">

@@ -65,11 +65,11 @@ final class ImagineSysPlugin extends Plugin
             );
         }
 
-        $sanatizedFilter = $this->sanatizeFilterName($filter);
+        $sanitizedFilter = $this->sanatizeFilterName($filter);
 
-        $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanatizedFilter);
+        $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanitizedFilter);
 
-        $cachePath = $this->applyFilter($path, $sanatizedFilter);
+        $cachePath = $this->applyFilter($path, $sanitizedFilter);
 
         $attribs['alt'] = $attribs['alt'] ?? '';
 
@@ -207,7 +207,7 @@ final class ImagineSysPlugin extends Plugin
         // Defaults
         $size = new Box(120, 120);
 
-        if (isset($options['size']) && (count($options['size']) == 2)) {
+        if (isset($options['size']) && (count($options['size']) === 2)) {
             [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }
@@ -221,12 +221,12 @@ final class ImagineSysPlugin extends Plugin
         $size = new Box(120, 120);
         $mode = ImageInterface::THUMBNAIL_OUTBOUND;
 
-        if (isset($options['size']) && (count($options['size']) == 2)) {
+        if (isset($options['size']) && (count($options['size']) === 2)) {
             [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }
 
-        if (isset($options['mode']) && ($options['mode'] == 'inset')) {
+        if (isset($options['mode']) && ($options['mode'] === 'inset')) {
             $mode = ImageInterface::THUMBNAIL_INSET;
         }
 
@@ -239,12 +239,12 @@ final class ImagineSysPlugin extends Plugin
         $start = new Point(0, 0);
         $size = new Box(120, 120);
 
-        if (isset($options['start']) && (count($options['start']) == 2)) {
+        if (isset($options['start']) && (count($options['start']) === 2)) {
             [$x, $y] = $options['start'];
             $start = new Point($x, $y);
         }
 
-        if (isset($options['size']) && (count($options['size']) == 2)) {
+        if (isset($options['size']) && (count($options['size']) === 2)) {
             [$width, $height] = $options['size'];
             $size = new Box($width, $height);
         }

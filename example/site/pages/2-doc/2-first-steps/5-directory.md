@@ -1,11 +1,11 @@
 ---
-title: Verzeichnisstruktur
+title: Directory structure
 layout: doc
 ---
 
-# Verzeichnisstruktur
+# Directory structure
 
-Eine Herbie CMS Website ist in der Regel wie folgt aufgebaut:
+A Herbie CMS website is usually structured as follows:
 
     project
     ├── site
@@ -18,19 +18,19 @@ Eine Herbie CMS Website ist in der Regel wie folgt aufgebaut:
         └── index.php
 
 
-Wofür diese Dateien und Verzeichnisse stehen, ist in der folgenden Tabelle ersichtlich:
+What these files and directories stand for can be seen in the following table:
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th width="35%">Datei/Verzeichnis</th>
-            <th width="65%">Beschreibung</th>
+            <th style="width:35%">File/Directory</th>
+            <th style="width:65%">Description</th>
         </tr>
     </thead>
     <tbody>
     {% for data in site.data.site_dir_basic %}
         <tr>
-            <td><code>{{ data.name }}</code></td>
+            <td>{{ data.name }}</td>
             <td>{{ data.desc }}</td>
         </tr>
     {% endfor %}
@@ -38,59 +38,62 @@ Wofür diese Dateien und Verzeichnisse stehen, ist in der folgenden Tabelle ersi
 </table>
 
 
-## site-Verzeichnis
+## Site directory
 
-Normalerweise arbeitet man ausschliessliche im `site`-Verzeichnis des Webprojektes.
-Dieses ist normalerweise wie folgt aufgebaut:
+Normally one works exclusively in the `site` directory of the web project.
+This is usually structured as follows:
 
     site
     ├── assets
     ├── config
-    |   └── main.yml
+    │   └── main.yml
     ├── data
-    |   └── persons.yml
+    │   └── persons.yml
     ├── extend
-    |   ├── events
-    |   ├── filters
-    |   ├── plugins
-    |   ├── twig_filters
-    |   ├── twig_functions
-    |   ├── twig_globals
-    |   └── twig_tests
+    │   ├── commands
+    │   ├── events
+    │   ├── filters
+    │   ├── middlewares_app
+    │   ├── middlewares_route
+    │   ├── plugins
+    │   ├── twig_filters
+    │   ├── twig_functions
+    │   ├── twig_globals
+    │   └── twig_tests
     ├── pages
-    |   ├── index.md
-    |   ├── company
-    |   |   ├── index.md
-    |   |   ├── about-us.md
-    |   |   ├── our-vision.md
-    |   |   └── team.md
-    |   ├── services.md
-    |   └── contact.md
+    │   ├── company
+    │   │   ├── about-us.md
+    │   │   ├── index.md
+    │   │   ├── our-vision.md
+    │   │   └── team.md
+    │   ├── contact.md
+    │   ├── index.md
+    │   └── services.md
     ├── runtime
-    |   ├── cache
-    |   |   ├── data
-    |   |   ├── page
-    |   |   └── twig
-    |   └── log
+    │   ├── cache
+    │   │   ├── data
+    │   │   ├── page
+    │   │   └── twig
+    │   └── log
     └── themes
         └─ default
-            ├── error.html
-            └── default.html
+            ├── default.html
+            └── error.html
 
 
-In der folgenden Tabelle ist ersichtlich, wofür jede dieser Dateien und Verzeichnisse stehen:
+The following table shows what each of these files and directories stand for:
 
-<table class="pure-table pure-table-horizontal" width="100%">
+<table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th width="35%">Datei/Verzeichnis</th>
-            <th width="65%">Beschreibung</th>
+            <th style="width:35%">File/Directory</th>
+            <th style="width:65%">Description</th>
         </tr>
     </thead>
     <tbody>
     {% for data in site.data.site_dir_extended %}
         <tr>
-            <td><code>{{ data.name }}</code></td>
+            <td>{{ data.name }}</td>
             <td>{{ data.desc }}</td>
         </tr>
     {% endfor %}
@@ -98,16 +101,16 @@ In der folgenden Tabelle ist ersichtlich, wofür jede dieser Dateien und Verzeic
 </table>
 
 
-## .htaccess-Datei
+## .htaccess file
 
-Falls in der Konfiguration die Option `niceUrls` aktiviert ist, muss im `web`-Verzeichnis eine .htaccess-Datei mit den entsprechenden Anweisungen vorhanden sein.
+If the option `niceUrls` is enabled in the configuration, there must be an `.htaccess` file with the appropriate instructions in the `web` directory.
 
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . index.php
 
-Damit werden alle Seitenaufrufe an die zentrale Index-Datei weitergereicht.
-Dies ist zum Beispiel für die Suchmaschinen-Optimierung wichtig, aber auch für die Besucher der Website.
+Thus, all page views are passed on to the central index file.
+This is important for search engine optimization, for example, but also for visitors to the website.
 
-Hinweis: Die obige Konfiguration ist für den Apache Webserver ausgelegt.
+Note: The above configuration is designed for Apache web server.

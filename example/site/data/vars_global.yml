@@ -1,0 +1,22 @@
+---
+- name: baseUrl
+  desc: The base url.
+  type: string
+- name: config
+  desc: The configurations as Config object.
+  type: herbie\Config
+- name: page
+  desc: Page wide variables.
+  type: herbie\Page
+- name: route
+  desc: The requested route to a page, i.e. `documentation/variables`.
+  type: string
+- name: routeParams
+  desc: The requested route params.
+  type: array
+- name: site
+  desc: Project-wide variables.
+  type: herbie\Site
+- name: theme
+  desc: The configured theme.
+  type: string

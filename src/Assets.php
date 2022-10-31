@@ -111,7 +111,7 @@ final class Assets
     {
         if (!self::$sorted) {
             uasort($this->assets, function ($a, $b) {
-                if ($a['pos'] == $b['pos']) {
+                if ($a['pos'] === $b['pos']) {
                     if ($a['counter'] < $b['counter']) {
                         return -1;
                     }
@@ -129,7 +129,7 @@ final class Assets
     {
         $assets = [];
         foreach ($this->assets as $asset) {
-            if (($asset['type'] == $type) && ($asset['group'] == $group)) {
+            if (($asset['type'] === $type) && ($asset['group'] === $group)) {
                 $assets[] = $asset;
             }
         }
@@ -142,7 +142,7 @@ final class Assets
     private function search(string $path)
     {
         foreach ($this->assets as $index => $asset) {
-            if ($asset['path'] == $path) {
+            if ($asset['path'] === $path) {
                 return $index;
             }
         }
@@ -185,7 +185,7 @@ final class Assets
     private function buildUrl(string $file): string
     {
         $url = $file;
-        if ('@' == substr($file, 0, 1)) {
+        if ('@' === substr($file, 0, 1)) {
             $trimed = $this->removeAlias($file);
             $url = $this->assetsUrl . '/' . $trimed;
         }
