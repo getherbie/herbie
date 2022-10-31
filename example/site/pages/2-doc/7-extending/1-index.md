@@ -330,7 +330,7 @@ $app = new Application(
 $app->addCommand();
 $app->addEvent();
 $app->addFilter();
-$app->addCommand();
+$app->addAppMiddleware();
 $app->addRouteMiddleware();
 $app->addTwigFilter();
 $app->addTwigFunction();
