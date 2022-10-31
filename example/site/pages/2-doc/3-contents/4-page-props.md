@@ -12,7 +12,7 @@ In the simplest case, a text file looks something like this:
     title: A simple page
     ---
 
-    This is a simple page with a text on a specific topic.
+    The content about the simple page.
 
 Herbie CMS creates a page title and adds the text to the default content segment below the page properties.
 
@@ -33,15 +33,15 @@ Let's look at a slightly more complicated example:
     title: A page with content segments
     ---
 
-    This text is assigned to default segment.
+    Content is assigned to the default segment.
 
     --- left ---
 
-    This text is assigned to left segment.
+    Content is assigned to the left segment.
 
     --- right ---
 
-    This text is assigned to right segment.
+    Content is assigned to the right segment.
 
 
 With this simple rule you can fill content of a page into several containers and address them within the layout.

@@ -15,19 +15,19 @@ Layout files are stored under `site/themes/default`, where the last path segment
 Herbie CMS expects at least two layout files:
 
     site/themes/default/
-    ├── default.html        # the default template
-    └── error.html          # the error page
+    ├── error.html          # error page
+    └── default.html        # default template  
 
 
 Often it makes sense to divide the layouts into a main template and one or more sub templates.
 These sub templates inherit the blocks of the main template and can fill them with content.
 
     site/themes/default/
-    ├── default.html        # the default template (required)
-    ├── twocols.html        # the two-column template
-    ├── homepage.html       # the homepage template
-    ├── error.html          # the error page (required)
-    └── main.html           # the main template
+    ├── default.html        # default template (required)
+    ├── error.html          # error page (required)
+    ├── homepage.html       # homepage template
+    ├── main.html           # main template
+    └── twocols.html        # two-column template
 
 A simple main template might look like this:
 

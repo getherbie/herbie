@@ -63,7 +63,7 @@ Output content segments in layout files:
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
 
-**Commands**
+**Console Commands**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
 

@@ -61,14 +61,14 @@ This is usually structured as follows:
     │   ├── twig_globals
     │   └── twig_tests
     ├── pages
-    │   ├── index.md
     │   ├── company
-    │   │   ├── index.md
     │   │   ├── about-us.md
+    │   │   ├── index.md
     │   │   ├── our-vision.md
     │   │   └── team.md
-    │   ├── services.md
-    │   └── contact.md
+    │   ├── contact.md
+    │   ├── index.md
+    │   └── services.md
     ├── runtime
     │   ├── cache
     │   │   ├── data
@@ -77,8 +77,8 @@ This is usually structured as follows:
     │   └── log
     └── themes
         └─ default
-            ├── error.html
-            └── default.html
+            ├── default.html
+            └── error.html
 
 
 The following table shows what each of these files and directories stand for:

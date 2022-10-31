@@ -67,9 +67,9 @@ The easiest way to add pages is to add a text file with an appropriate name in t
 For a site with a home page, an about page, and a contact page, the page directory and their corresponding URLs would look like this:
 
     site/pages
-    ├── index.md        # https://example.com
     ├── about.md        # https://example.com/about
-    └── contact.md      # https://example.com/contact
+    ├── contact.md      # https://example.com/contact
+    └── index.md        # https://example.com
 
 
 ## Named folders with index files
@@ -79,12 +79,11 @@ However, often you want to add more pages or group existing pages into a topic.
 For example, if a team page, a vision page, and a route page are added to the above website, the page index might look like this:
 
     site/pages
-    ├── index.md        # https://example.com
-    ├── about/
+    ├── about
     │   ├── index.md    # https://example.com/about
     │   ├── team.md     # https://example.com/about/team
     │   └── vision.md   # https://example.com/about/vision
-    ├── contact/
+    ├── contact
     │   ├── index.md    # https://example.com/contact
     │   └── route.md    # https://example.com/contact/route
     └── index.md        # https://example.com
@@ -104,8 +103,8 @@ It looks like this, for example:
     ├── 1-index.md      # visible and sorted
     ├── 2-about-us.md   # visible and sorted
     ├── 3-contact.md    # visible and sorted
-    ├── sitemap.md      # not visible
-    └── imprint.md      # not visible
+    ├── imprint.md      # not visible
+    └── sitemap.md      # not visible
 
 The pages *index*, *about-us* and *contact* are visible in menus and sorting is defined.
 The pages *sitemap* and *imprint* are not visible in menus and sorting is therefore not relevant.
@@ -121,13 +120,13 @@ This can be done by prefixing the name of the page or folder with an underscore.
 Such pages and folders are not taken into account when scanning the file system.
 
     site/pages
-    ├── index.md
-    ├── _about/         # The folder incl. subpages is disabled
+    ├── _about          # The folder incl. subpages is disabled
     │   ├── index.md
     │   ├── team.md
     │   └── vision.md
-    └── contact/
-        ├── index.md
-        └── _route.md   # The page is disabled
+    ├── contact
+    │   ├── _route.md   # The page is disabled
+    │   └── index.md   
+    └── index.md
 
 This is helpful, for example, when pages should be temporarily disabled.
