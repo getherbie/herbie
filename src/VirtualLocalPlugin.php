@@ -151,17 +151,26 @@ final class VirtualLocalPlugin extends Plugin
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigFilter(string $file): TwigFilter
+    /**
+     * @return array{string, callable}|TwigFilter
+     */
+    private function includeTwigFilter(string $file)
     {
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigFunction(string $file): TwigFunction
+    /**
+     * @return array{string, callable}|TwigFunction
+     */
+    private function includeTwigFunction(string $file)
     {
         return $this->includePhpFile($file);
     }
 
-    private function includeTwigTests(string $file): TwigTest
+    /**
+     * @return array{string, callable}|TwigTest
+     */
+    private function includeTwigTests(string $file)
     {
         return $this->includePhpFile($file);
     }
