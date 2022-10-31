@@ -8,6 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Tebe\HttpFactory\HttpFactory;
 

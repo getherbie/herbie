@@ -78,7 +78,6 @@ final class HerbieInfoCest
             'herbie\JsonDataRepository',
             'herbie\MiddlewareDispatcher',
             'herbie\NullCache',
-            'herbie\NullLogger',
             'herbie\Page',
             'herbie\PageFactory',
             'herbie\PageItem',
