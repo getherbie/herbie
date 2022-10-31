@@ -82,7 +82,7 @@ Redirect 301 /impressum https://herbie.tebe.ch/imprint
 Redirect 301 /kontakt https://herbie.tebe.ch/development
 Redirect 301 /license https://herbie.tebe.ch/imprint
 #Redirect 301 /rss.xml https://herbie.tebe.ch/
-Redirect 301 /sitemap https://herbie.tebe.ch/sitemap
+#Redirect 301 /sitemap https://herbie.tebe.ch/sitemap
 #Redirect 301 /sitemap.xml https://herbie.tebe.ch/
 Redirect 301 /suche https://herbie.tebe.ch/search
 #Redirect 301 /test https://herbie.tebe.ch/
