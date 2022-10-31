@@ -14,6 +14,9 @@ return [
         'dataRepository' => [
             'adapter' => 'yaml'
         ],
+        'fileLogger' => [
+            'level' => 'debug',
+        ],
         'twigRenderer' => [
             'debug' => true
         ],

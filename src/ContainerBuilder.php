@@ -154,7 +154,15 @@ final class ContainerBuilder
         if ($this->logger) {
             $c->set(LoggerInterface::class, $this->logger);
         } else {
-            $c->set(LoggerInterface::class, function () {
+            $c->set(LoggerInterface::class, function (Container $c) {
+                $config = $c->get(Config::class)->getAsArray('components.fileLogger');
+                if (isset($config['path'], $config['channel'], $config['level'])) {
+                    return new FileLogger(
+                        $c->get(Alias::class)->get($config['path']),
+                        $config['channel'],
+                        $config['level']
+                    );
+                }
                 return new NullLogger();
             });
         }
