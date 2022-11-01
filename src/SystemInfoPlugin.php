@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class VirtualLastPlugin extends Plugin
+final class SystemInfoPlugin extends Plugin
 {
     private Config $config;
     private EventManager $eventManager;

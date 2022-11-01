@@ -9,7 +9,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-final class VirtualLocalPlugin extends Plugin
+final class LocalExtensionsPlugin extends Plugin
 {
     protected Application $application;
 
@@ -20,7 +20,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function commands(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/commands';
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathConsoleCommands');
         $files = $this->findPhpFilesInDir($dir);
 
         $commands = [];
@@ -33,7 +33,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function events(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/events';
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathEventListeners');
         $files = $this->findPhpFilesInDir($dir);
 
         $events = [];
@@ -46,7 +46,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function filters(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/filters';
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathInterceptingFilters');
         $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
@@ -59,7 +59,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function appMiddlewares(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/middlewares_app';
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -72,7 +72,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function routeMiddlewares(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.site') . '/extend/middlewares_route';
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathRouteMiddlewares');
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -85,7 +85,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigFilters(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.twigFilters');
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigFilters');
         $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
@@ -98,7 +98,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigGlobals(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.twigGlobals');
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigGlobals');
         $files = $this->findPhpFilesInDir($dir);
 
         $globals = [];
@@ -111,7 +111,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigFunctions(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.twigFunctions');
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigFunctions');
         $files = $this->findPhpFilesInDir($dir);
 
         $functions = [];
@@ -124,7 +124,7 @@ final class VirtualLocalPlugin extends Plugin
 
     public function twigTests(): array
     {
-        $dir = $this->application->getConfig()->getAsString('paths.twigTests');
+        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigTests');
         $files = $this->findPhpFilesInDir($dir);
 
         $tests = [];

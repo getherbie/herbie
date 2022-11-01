@@ -63,9 +63,9 @@ final class PluginManager
     public function init(): void
     {
         $this->loadPlugin(new InstallablePlugin(
-            'virtual_core_plugin',
+            'CORE',
             __DIR__,
-            VirtualCorePlugin::class,
+            CorePlugin::class,
             'virtual',
         ));
 
@@ -91,25 +91,25 @@ final class PluginManager
         $this->eventManager->trigger('onLocalPluginsAttached', $this);
 
         $this->loadPlugin(new InstallablePlugin(
-            'virtual_local_plugin',
+            'LOCAL_EXT',
             __DIR__,
-            VirtualLocalPlugin::class,
+            LocalExtensionsPlugin::class,
             'virtual',
         ));
 
         $this->loadPlugin(new InstallablePlugin(
-            'virtual_app_plugin',
+            'APP_EXT',
             __DIR__,
-            VirtualAppPlugin::class,
+            ApplicationExtensionsPlugin::class,
             'virtual',
         ));
 
         $this->eventManager->trigger('onPluginsAttached', $this);
 
         $this->loadPlugin(new InstallablePlugin(
-            'virtual_last_plugin',
+            'SYS_INFO',
             __DIR__,
-            VirtualLastPlugin::class,
+            SystemInfoPlugin::class,
             'virtual',
         ));
     }
