@@ -101,6 +101,7 @@ $settings['plugins']['CORE']['enableTwigInSegmentFilter'] = true;
 /**
  * Local Extensions Plugin
  */
+$settings['plugins']['LOCAL_EXT'] = [];
 $settings['plugins']['LOCAL_EXT']['pathApplicationMiddlewares'] = 'SITE_PATH/extend/middlewares_app';
 $settings['plugins']['LOCAL_EXT']['pathConsoleCommands'] = 'SITE_PATH/extend/commands';
 $settings['plugins']['LOCAL_EXT']['pathEventListeners'] = 'SITE_PATH/extend/events';
