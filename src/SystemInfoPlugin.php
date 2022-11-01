@@ -76,7 +76,7 @@ final class SystemInfoPlugin extends Plugin
     }
 
     /**
-     * @return array<string, scalar|null>
+     * @return array<int, array{string, string, mixed}>
      */
     private function getConfig(): array
     {
