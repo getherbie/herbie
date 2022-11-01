@@ -19,13 +19,9 @@ $settings['paths']['app'] = 'APP_PATH';
 $settings['paths']['data'] = 'SITE_PATH/data';
 $settings['paths']['media'] = 'SITE_PATH/media';
 $settings['paths']['pages'] = 'SITE_PATH/pages';
-$settings['paths']['plugins'] = 'SITE_PATH/extend/plugins';
+$settings['paths']['plugins'] = 'SITE_PATH/extend/plugins'; // TODO move config
 $settings['paths']['site'] = 'SITE_PATH';
 $settings['paths']['themes'] = 'SITE_PATH/themes';
-$settings['paths']['twigFilters'] = 'SITE_PATH/extend/twig_filters';
-$settings['paths']['twigGlobals'] = 'SITE_PATH/extend/twig_globals';
-$settings['paths']['twigFunctions'] = 'SITE_PATH/extend/twig_functions';
-$settings['paths']['twigTests'] = 'SITE_PATH/extend/twig_tests';
 $settings['paths']['web'] = 'WEB_PATH';
 
 /**
@@ -101,6 +97,18 @@ $settings['components']['virtualCorePlugin']['enableTwigInSegmentFilter'] = true
  * Plugin Configurations
  */
 $settings['plugins'] = [];
+
+/** Virtual Local Plugin */
+$settings['plugins']['virtual_local_plugin']['pathApplicationMiddlewares'] = 'SITE_PATH/extend/middlewares_app';
+$settings['plugins']['virtual_local_plugin']['pathConsoleCommands'] = 'SITE_PATH/extend/commands';
+$settings['plugins']['virtual_local_plugin']['pathEventListeners'] = 'SITE_PATH/extend/events';
+$settings['plugins']['virtual_local_plugin']['pathInterceptingFilters'] = 'SITE_PATH/extend/filters';
+$settings['plugins']['virtual_local_plugin']['pathPlugins'] = 'SITE_PATH/extend/plugins';
+$settings['plugins']['virtual_local_plugin']['pathRouteMiddlewares'] = 'SITE_PATH/extend/middlewares_route';
+$settings['plugins']['virtual_local_plugin']['pathTwigFilters'] = 'SITE_PATH/extend/twig_filters';
+$settings['plugins']['virtual_local_plugin']['pathTwigGlobals'] = 'SITE_PATH/extend/twig_globals';
+$settings['plugins']['virtual_local_plugin']['pathTwigFunctions'] = 'SITE_PATH/extend/twig_functions';
+$settings['plugins']['virtual_local_plugin']['pathTwigTests'] = 'SITE_PATH/extend/twig_tests';
 
 /**
  * Enabled Plugins
