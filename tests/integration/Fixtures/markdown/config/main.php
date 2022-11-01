@@ -2,6 +2,7 @@
 
 return [
     'components' => [
+        'fileCache' => null,
         'fileLogger' => null,
         'twigRenderer' => [
             'debug' => true,

@@ -61,7 +61,13 @@ final class ContainerBuilder
         if ($this->cache) {
             $c->set(CacheInterface::class, $this->cache);
         } else {
-            $c->set(CacheInterface::class, function () {
+            $c->set(CacheInterface::class, function (Container $c) {
+                $config = $c->get(Config::class)->getAsArray('components.fileCache');
+                if (isset($config['path'])) {
+                    return new FileCache(
+                        $c->get(Alias::class)->get($config['path'])
+                    );
+                }
                 return new NullCache();
             });
         }

@@ -63,6 +63,12 @@ $settings['components']['downloadMiddleware']['baseUrl'] = '/download/';
 $settings['components']['downloadMiddleware']['storagePath'] = '@site/media';
 
 /**
+ * PSR-16 File Cache Component
+ */
+$settings['components']['fileCache'] = [];
+$settings['components']['fileCache']['path'] = '@site/runtime/cache/page';
+
+/**
  * PSR-3 File Logger Component
  */
 $settings['components']['fileLogger'] = [];

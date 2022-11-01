@@ -64,8 +64,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $redirect = $page->getRedirect();
 
         if (!empty($redirect)) {
-            $response = $this->createRedirectResponse($redirect);
-            return $response;
+            return $this->createRedirectResponse($redirect);
         }
 
         $rendered = null;
@@ -118,9 +117,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
         } else {
             $location = $this->urlGenerator->generate($redirect['url']); // An internal route? Generate URL.
         }
-        $response = $this->httpFactory
+        return $this->httpFactory
             ->createResponse($redirect['status'])
             ->withHeader('Location', $location);
-        return $response;
     }
 }
