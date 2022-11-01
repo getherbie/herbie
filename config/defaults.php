@@ -19,13 +19,9 @@ $settings['paths']['app'] = 'APP_PATH';
 $settings['paths']['data'] = 'SITE_PATH/data';
 $settings['paths']['media'] = 'SITE_PATH/media';
 $settings['paths']['pages'] = 'SITE_PATH/pages';
-$settings['paths']['plugins'] = 'SITE_PATH/extend/plugins';
+$settings['paths']['plugins'] = 'SITE_PATH/extend/plugins'; // TODO move config
 $settings['paths']['site'] = 'SITE_PATH';
 $settings['paths']['themes'] = 'SITE_PATH/themes';
-$settings['paths']['twigFilters'] = 'SITE_PATH/extend/twig_filters';
-$settings['paths']['twigGlobals'] = 'SITE_PATH/extend/twig_globals';
-$settings['paths']['twigFunctions'] = 'SITE_PATH/extend/twig_functions';
-$settings['paths']['twigTests'] = 'SITE_PATH/extend/twig_tests';
 $settings['paths']['web'] = 'WEB_PATH';
 
 /**
@@ -91,16 +87,30 @@ $settings['components']['urlMatcher'] = [];
 $settings['components']['urlMatcher']['rules'] = [];
 
 /**
- * VirtualCorePlugin Component
- */
-$settings['components']['virtualCorePlugin'] = [];
-$settings['components']['virtualCorePlugin']['enableTwigInLayoutFilter'] = true;
-$settings['components']['virtualCorePlugin']['enableTwigInSegmentFilter'] = true;
-
-/**
  * Plugin Configurations
  */
 $settings['plugins'] = [];
+
+/**
+ * Core Plugin
+ */
+$settings['plugins']['CORE'] = [];
+$settings['plugins']['CORE']['enableTwigInLayoutFilter'] = true;
+$settings['plugins']['CORE']['enableTwigInSegmentFilter'] = true;
+
+/**
+ * Local Extensions Plugin
+ */
+$settings['plugins']['LOCAL_EXT'] = [];
+$settings['plugins']['LOCAL_EXT']['pathApplicationMiddlewares'] = 'SITE_PATH/extend/middlewares_app';
+$settings['plugins']['LOCAL_EXT']['pathConsoleCommands'] = 'SITE_PATH/extend/commands';
+$settings['plugins']['LOCAL_EXT']['pathEventListeners'] = 'SITE_PATH/extend/events';
+$settings['plugins']['LOCAL_EXT']['pathInterceptingFilters'] = 'SITE_PATH/extend/filters';
+$settings['plugins']['LOCAL_EXT']['pathRouteMiddlewares'] = 'SITE_PATH/extend/middlewares_route';
+$settings['plugins']['LOCAL_EXT']['pathTwigFilters'] = 'SITE_PATH/extend/twig_filters';
+$settings['plugins']['LOCAL_EXT']['pathTwigGlobals'] = 'SITE_PATH/extend/twig_globals';
+$settings['plugins']['LOCAL_EXT']['pathTwigFunctions'] = 'SITE_PATH/extend/twig_functions';
+$settings['plugins']['LOCAL_EXT']['pathTwigTests'] = 'SITE_PATH/extend/twig_tests';
 
 /**
  * Enabled Plugins

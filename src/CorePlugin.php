@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class VirtualCorePlugin extends Plugin
+final class CorePlugin extends Plugin
 {
     private TwigRenderer $twigRenderer;
     private string $layoutFileExtension;
@@ -13,8 +13,8 @@ final class VirtualCorePlugin extends Plugin
 
     public function __construct(Config $config, TwigRenderer $twigRenderer)
     {
-        $this->enableTwigInLayoutFilter = $config->getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter');
-        $this->enableTwigInSegmentFilter = $config->getAsBool('components.virtualCorePlugin.enableTwigInSegmentFilter');
+        $this->enableTwigInLayoutFilter = $config->getAsBool('plugins.CORE.enableTwigInLayoutFilter');
+        $this->enableTwigInSegmentFilter = $config->getAsBool('plugins.CORE.enableTwigInSegmentFilter');
         $this->layoutFileExtension = trim($config->getAsString('fileExtensions.layouts'));
         $this->twigRenderer = $twigRenderer;
     }

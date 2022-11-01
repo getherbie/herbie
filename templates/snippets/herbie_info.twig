@@ -50,11 +50,11 @@
         {% endfor %}
     </table>
     
-    <h2 id="herbie-config" class="herbie-info-h2">Configuration ({{ config|length }})</h2>
+    <h2 id="herbie-config" class="herbie-info-h2">Configuration ({{ configs|length }})</h2>
     <p>Parsed configuration settings, ordered by name.</p>
     <div class="herbie-info-config" style="display:none">
-        {% for key, _ in config %}
-            {{- key -}}
+        {% for config in configs %}
+            {{- config[0] -}}
             {%- if loop.last == false -%},{%- endif -%}
         {%- endfor -%}
     </div>    
@@ -62,13 +62,15 @@
         <tr>
             <th style="width:1%">#</th>
             <th>Name</th>
+            <th>Type</th>
             <th>Value</th>
         </tr>
-        {% for key, value in config %}
+        {% for config in configs %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ key }}</td>
-                <td>{{ value }}</td>
+                <td>{{ config[0] }}</td>
+                <td>{{ config[1] }}</td>
+                <td>{{ config[2] }}</td>
             </tr>
         {% endfor %}
     </table>

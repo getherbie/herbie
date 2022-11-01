@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class VirtualLastPlugin extends Plugin
+final class SystemInfoPlugin extends Plugin
 {
     private Config $config;
     private EventManager $eventManager;
@@ -48,7 +48,7 @@ final class VirtualLastPlugin extends Plugin
     {
         $info = [
             'commands' => $this->getCommands(),
-            'config' => $this->getConfig(),
+            'configs' => $this->getConfig(),
             'events' => $this->getEvents(),
             'filters' => $this->getFilters(),
             'middlewares' => $this->getMiddlewares(),
@@ -76,13 +76,17 @@ final class VirtualLastPlugin extends Plugin
     }
 
     /**
-     * @return array<string, scalar|null>
+     * @return array<int, array{string, string, mixed}>
      */
     private function getConfig(): array
     {
-        $configs = $this->config->flatten();
-        foreach ($configs as &$value) {
-            $value = $this->filterValue($value);
+        $configs = [];
+        foreach ($this->config->flatten() as $key => $value) {
+            $configs[] = [
+                $key,
+                gettype($value),
+                $this->filterValue($value)
+            ];
         }
         return $configs;
     }
