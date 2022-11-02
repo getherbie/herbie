@@ -38,8 +38,8 @@ final class Application
      */
     public function __construct(
         ApplicationPaths $paths,
-        ?LoggerInterface $logger = null,
-        ?CacheInterface $cache = null
+        ?CacheInterface $cache = null,
+        ?LoggerInterface $logger = null
     ) {
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
@@ -55,14 +55,14 @@ final class Application
         $this->twigFunctions = [];
         $this->twigTests = [];
 
-        $this->init($logger, $cache);
+        $this->init($cache, $logger);
     }
 
     /**
      * Initialize the application.
      * @throws SystemException
      */
-    private function init(?LoggerInterface $logger = null, ?CacheInterface $cache = null): void
+    private function init(?CacheInterface $cache = null, ?LoggerInterface $logger = null): void
     {
         $logDir = $this->appPaths->getSite('/runtime/log');
 
@@ -82,9 +82,9 @@ final class Application
             $this->getLogger()->error(sprintf('Directory "%s" is not writable', $logDir));
         }
 
-        $config = $this->container->get(Config::class);
+        $config = $this->getConfig();
 
-        setlocale(LC_ALL, $config->get('locale'));
+        setlocale(LC_ALL, $config->getAsString('locale'));
 
         // Set slug generator to page and page item
         PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
@@ -176,6 +176,11 @@ final class Application
     public function getVendorDir(): string
     {
         return $this->appPaths->getVendor();
+    }
+
+    public function getWebPath(): string
+    {
+        return $this->appPaths->getWeb();
     }
 
     public function getAppMiddlewares(): array
@@ -286,6 +291,11 @@ final class Application
     public function getConfig(): Config
     {
         return $this->container->get(Config::class);
+    }
+
+    public function getCache(): CacheInterface
+    {
+        return $this->container->get(CacheInterface::class);
     }
 
     public function getLogger(): LoggerInterface

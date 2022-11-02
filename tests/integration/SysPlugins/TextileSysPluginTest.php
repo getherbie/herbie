@@ -14,7 +14,12 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
 
     protected function initApplication(string $appPath, string $sitePath): TwigRenderer
     {
-        $app = new Application(new ApplicationPaths($appPath, $sitePath));
+        $app = new Application(new ApplicationPaths(
+            $appPath,
+            $sitePath,
+            dirname(__DIR__, 5) . '/vendor',
+            dirname(__DIR__, 2) . '/_data/web'
+        ));
         $app->getPluginManager()->init();
         ($twigRenderer = $app->getTwigRenderer())->init();
         return $twigRenderer;

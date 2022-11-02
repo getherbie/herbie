@@ -22,7 +22,7 @@ final class CorePlugin extends Plugin
     public function commands(): array
     {
         return [
-            ClearCacheCommand::class
+            ClearFileCommand::class
         ];
     }
 

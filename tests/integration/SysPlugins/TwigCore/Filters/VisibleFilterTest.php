@@ -14,7 +14,12 @@ final class VisibleFilterTest extends \Codeception\Test\Unit
 
     protected function _setUp(): void
     {
-        $app = new Application(new ApplicationPaths(dirname(__DIR__, 5), dirname(__DIR__, 3) . '/Fixtures/site'));
+        $app = new Application(new ApplicationPaths(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site',
+            dirname(__DIR__, 5) . '/vendor',
+            dirname(__DIR__, 4) . '/_data/web'
+        ));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $this->twigRenderer = $app->getTwigRenderer();

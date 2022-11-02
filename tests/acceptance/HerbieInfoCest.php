@@ -149,6 +149,8 @@ final class HerbieInfoCest
             'components.downloadMiddleware.storagePath',
             'components.fileCache',
             'components.fileLogger',
+            'components.pageRendererMiddleware.cache',
+            'components.pageRendererMiddleware.cacheTTL',
             'components.twigRenderer.autoescape',
             'components.twigRenderer.cache',
             'components.twigRenderer.charset',
@@ -584,7 +586,7 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfCommands(AcceptanceTester $I)
     {
         $commands = [
-            'herbie\ClearCacheCommand',
+            'herbie\ClearFileCommand',
             'herbie\sysplugin\dummy\DummyCommand',
             'tests\_data\site\extend\commands\CustomCommand',
             'tests\_data\src\CustomCommand',

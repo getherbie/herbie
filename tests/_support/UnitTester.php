@@ -28,7 +28,8 @@ class UnitTester extends \Codeception\Actor
 
     public function initApplication(string $appDir, string $siteDir, ?string $vendorDir = null): Application
     {
-        $app = new Application(new ApplicationPaths($appDir, $siteDir, $vendorDir));
+        $webDir = dirname(__DIR__) . '/_data/web';
+        $app = new Application(new ApplicationPaths($appDir, $siteDir, $vendorDir, $webDir));
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $app->getTranslator()->init();

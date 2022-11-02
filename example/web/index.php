@@ -10,10 +10,9 @@ use herbie\Application;
 use herbie\ApplicationPaths;
 
 // create app paths
-$appPaths = new ApplicationPaths(
-    dirname(__DIR__, 2),
-    dirname(__DIR__) . '/site',
-);
+$appPaths = (new ApplicationPaths(dirname(__DIR__, 2)))
+    ->setSite(dirname(__DIR__) . '/site')
+    ->setWeb(__DIR__);
 
 $app = new Application($appPaths);
 

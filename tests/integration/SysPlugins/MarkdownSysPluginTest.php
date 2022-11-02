@@ -13,7 +13,13 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
 
     protected function initApplication(string $appPath, string $sitePath): Application
     {
-        $app = new Application(new ApplicationPaths($appPath, $sitePath));
+        $paths = new ApplicationPaths(
+            $appPath,
+            $sitePath,
+            dirname(__DIR__, 4) . '/vendor',
+            dirname(__DIR__, 2) . '/_data/web'
+        );
+        $app = new Application($paths);
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         return $app;

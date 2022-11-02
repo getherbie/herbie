@@ -18,7 +18,7 @@ final class FileCache implements CacheInterface
             throw new \InvalidArgumentException('Path was not provided');
         }
 
-        if (!is_dir($path) && !@mkdir($path, 0777, true) && !is_dir($path)) {
+        if (!is_dir($path) && !@mkdir($path, 0644, true) && !is_dir($path)) {
             throw new \InvalidArgumentException('Provided path directory does not exist and/or could not be created');
         }
 
@@ -85,7 +85,17 @@ final class FileCache implements CacheInterface
 
     public function clear(): bool
     {
-        throw new \RuntimeException('FilecacheClient clear() support is not implemented.');
+        $filenames = glob($this->path . '/*.cache');
+        if ($filenames === false) {
+            return false;
+        }
+        foreach ($filenames as $filename) {
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
+        }
+
+        return true;
     }
 
     public function has($key)
@@ -99,12 +109,11 @@ final class FileCache implements CacheInterface
 
     public function getMultiple($keys, $default = null)
     {
-        return array_map(
-            function ($key) use ($default) {
-                return $this->get($key, $default);
-            },
-            (array)array_combine((array)$keys, (array)$keys)
-        );
+        $multiple = [];
+        foreach ($keys as $key) {
+            $multiple[$key] = $this->get($key, $default);
+        }
+        return $multiple;
     }
 
     public function setMultiple($values, $ttl = null)
@@ -118,12 +127,9 @@ final class FileCache implements CacheInterface
 
     public function deleteMultiple($keys)
     {
-        array_map(
-            function ($key) {
-                return $this->delete($key);
-            },
-            (array)$keys
-        );
+        foreach ((array)$keys as $key) {
+            $this->delete($key);
+        }
 
         return true;
     }

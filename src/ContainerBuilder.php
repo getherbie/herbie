@@ -76,7 +76,7 @@ final class ContainerBuilder
             $const = [
                 'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
-                'WEB_PATH' => str_untrailing_slash(dirname($_SERVER['SCRIPT_FILENAME'])),
+                'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
                 'WEB_URL' => str_untrailing_slash($c->get(Environment::class)->getBaseUrl())
             ];
 
@@ -201,13 +201,15 @@ final class ContainerBuilder
         });
 
         $c->set(PageRendererMiddleware::class, function (Container $c) {
+            $options = $c->get(Config::class)->getAsArray('components.pageRendererMiddleware');
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(HttpFactory::class),
-                $c->get(UrlGenerator::class)
+                $c->get(UrlGenerator::class),
+                $options
             );
         });
 
