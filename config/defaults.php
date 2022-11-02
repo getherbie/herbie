@@ -80,7 +80,7 @@ $settings['components']['fileLogger']['level'] = 'debug';
  * Page Renderer Middleware Component
  */
 $settings['components']['pageRendererMiddleware'] = [];
-$settings['components']['pageRendererMiddleware']['cache'] = true;
+$settings['components']['pageRendererMiddleware']['cache'] = false;
 $settings['components']['pageRendererMiddleware']['cacheTTL'] = 60 * 60 * 24;
 
 /**
