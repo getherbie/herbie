@@ -11,9 +11,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Twig\TwigTest;
 
 final class Application
 {
@@ -38,8 +35,8 @@ final class Application
      */
     public function __construct(
         ApplicationPaths $paths,
-        ?LoggerInterface $logger = null,
-        ?CacheInterface $cache = null
+        ?CacheInterface $cache = null,
+        ?LoggerInterface $logger = null
     ) {
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
@@ -55,14 +52,14 @@ final class Application
         $this->twigFunctions = [];
         $this->twigTests = [];
 
-        $this->init($logger, $cache);
+        $this->init($cache, $logger);
     }
 
     /**
      * Initialize the application.
      * @throws SystemException
      */
-    private function init(?LoggerInterface $logger = null, ?CacheInterface $cache = null): void
+    private function init(?CacheInterface $cache = null, ?LoggerInterface $logger = null): void
     {
         $logDir = $this->appPaths->getSite('/runtime/log');
 
@@ -82,9 +79,9 @@ final class Application
             $this->getLogger()->error(sprintf('Directory "%s" is not writable', $logDir));
         }
 
-        $config = $this->container->get(Config::class);
+        $config = $this->getConfig();
 
-        setlocale(LC_ALL, $config->get('locale'));
+        setlocale(LC_ALL, $config->getAsString('locale'));
 
         // Set slug generator to page and page item
         PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
@@ -178,6 +175,11 @@ final class Application
         return $this->appPaths->getVendor();
     }
 
+    public function getWebPath(): string
+    {
+        return $this->appPaths->getWeb();
+    }
+
     public function getAppMiddlewares(): array
     {
         return $this->appMiddlewares;
@@ -217,9 +219,12 @@ final class Application
         return $this;
     }
 
-    public function addTwigFilter(TwigFilter $twigFilter): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigFilter(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigFilters[] = $twigFilter;
+        $this->twigFilters[] = [$name, $callable, $options];
         return $this;
     }
 
@@ -239,9 +244,12 @@ final class Application
         return $this->twigGlobals;
     }
 
-    public function addTwigFunction(TwigFunction $twigFunction): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigFunction(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigFunctions[] = $twigFunction;
+        $this->twigFunctions[] = [$name, $callable, $options];
         return $this;
     }
 
@@ -250,9 +258,12 @@ final class Application
         return $this->twigFunctions;
     }
 
-    public function addTwigTest(TwigTest $twigTest): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigTest(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigTests[] = $twigTest;
+        $this->twigTests[] = [$name, $callable, $options];
         return $this;
     }
 
@@ -286,6 +297,11 @@ final class Application
     public function getConfig(): Config
     {
         return $this->container->get(Config::class);
+    }
+
+    public function getCache(): CacheInterface
+    {
+        return $this->container->get(CacheInterface::class);
     }
 
     public function getLogger(): LoggerInterface

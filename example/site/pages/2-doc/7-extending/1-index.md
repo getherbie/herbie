@@ -303,7 +303,7 @@ The test is then registered automatically.
 
 $twigTest = function (int $value): bool {
     return ($value % 2) !== 0;
-}
+};
 
 return ['odd', $twigTest];
 ~~~
@@ -342,10 +342,357 @@ $app->addTwigTest();
 $app->run();
 ~~~
 
+So, in the end, you have to do exactly the same with the programmatic approach as you do with the file system approach.
+In detail, it then looks like this.
+
+Adding a console command:
+
+~~~php
+class CustomCommand extends Command
+{
+    // see class definition above
+}
+
+$app->addCommand(CustomCommand::class);
+~~~ 
+
+Adding an event listener:
+
+~~~php
+$event = function (herbie\EventInterface $event): void {
+    // do something with $event
+};
+
+$app->addEvent('onTwigInitialized', $event);
+~~~
+
+Adding an intercepting filter:
+
+~~~php
+$filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
+    // do something with $context
+    return $filter->next($context, $params, $filter);
+};
+
+$app->addFilter('renderLayout', $filter);
+~~~
+
+Adding an application middleware:
+
+~~~php
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+$middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+    // do something with the request
+    $response = $handler->handle($request);
+    // do something with the response
+    return $response;
+};
+
+$app->addAppMiddleware($middleware);
+~~~
+
+Adding a route middleware:
+
+~~~php
+the route middleware is the same the application middleware
+
+$app->addRouteMiddleware('route/to/page', $middleware);
+~~~
+
+Adding a Twig filter:
+
+~~~php
+$twigFilter = function (string $string): string {
+    return strrev($string);
+};
+
+$app->addTwigFilter('reverse', $twigFilter);
+~~~
+
+Adding a Twig function:
+
+~~~php
+$twigFunction = function (string $name): string {
+    return "Hello {$name}!";
+};
+
+$app->addTwigFunction('hello', $twigFunction);
+~~~
+
+Adding a Twig test:
+
+~~~php
+$twigTest = function (int $value): bool {
+    return ($value % 2) !== 0;
+};
+
+$app->addTwigTest('odd', $twigTest);
+~~~
+
+
 ## 3. Extending using a plugin
 
-TBD
+With the approach of creating a plugin, you can achieve exactly the same as before.
+I know, I repeat myself.
+The main differences are:
+
+- this approach of extending is the most flexible and powerful
+- you need to know a little more about programming with PHP
+- within the plugin, you have access to all objects of the application
+
+The latter is achieved through dependency injection.
+
+A plugin needs the following structure.
+
+    myplugin
+    ├── config.php
+    └── MyPlugin.php
+
+The config file must look like this:
+
+~~~php
+<?php
+
+require_once 'MyPlugin.php';
+
+return [
+    'apiVersion' => 2,
+    'pluginName' => 'myplugin',
+    'pluginClass' => MyPlugin::class,
+    'pluginPath' => __DIR__,
+];
+~~~
+
+The plugin itself is a PHP class with the following methods:
+
+~~~php 
+<?php
+
+class MyPlugin implements herbie\PluginInterface
+{
+    public function apiVersion(): int
+    {
+        return 2;
+    }
+
+    public function commands(): array
+    {
+        return [];
+    }
+
+    public function events(): array
+    {
+        return [];
+    }
+
+    public function filters(): array
+    {
+        return [];
+    }
+
+    public function appMiddlewares(): array
+    {
+        return [];
+    }
+
+    public function routeMiddlewares(): array
+    {
+        return [];
+    }
+
+    public function twigFilters(): array
+    {
+        return [];
+    }
+
+    public function twigGlobals(): array
+    {
+        return [];
+    }
+
+    public function twigFunctions(): array
+    {
+        return [];
+    }
+
+    public function twigTests(): array
+    {
+        return [];
+    }
+}
+~~~
+
+To install the plugin, you need to place the plugin folder into the `site/extend/plugins` directory.
+
+To enable the plugin, you need to edit the configuration file `site/config/main.php` and add an entry to the comma-separated list of the `enabledPlugins` setting.
+
+~~~
+<?php 
+return [
+    'enabledPlugins' => 'markdown,myplugin,textile',
+];
+~~~
+
+Of course, you need to implement the methods according to the requirements.
+So the complete class looks like:
+
+~~~php
+<?php
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class CustomCommand extends Command
+{
+    protected static $defaultName = 'custom';
+    protected static $defaultDescription = 'A custom command.';
+
+    protected function configure(): void
+    {
+        $this->setHelp('This is a custom command.');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $output->writeln('Message from custom command.');
+        return Command::SUCCESS;
+    }
+}
+
+class MyPlugin implements herbie\PluginInterface
+{
+    public function apiVersion(): int
+    {
+        return 2;
+    }
+
+    public function commands(): array
+    {
+        return [
+            CustomCommand::class
+        ];
+    }
+
+    public function events(): array
+    {
+        $event = function (herbie\EventInterface $event): void {
+            // do something with $event
+        };
+        return [
+            ['onTwigInitialized', $event]
+        ];
+    }
+
+    public function filters(): array
+    {
+        $filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
+            // do something with $context
+            return $filter->next($context, $params, $filter);
+        };
+        return [
+            ['renderLayout', $filter]
+        ];
+    }
+
+    public function appMiddlewares(): array
+    {
+        $middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            // do something with the request
+            $response = $handler->handle($request);
+            // do something with the response
+            return $response;
+        };
+        return [
+            $middleware
+        ];
+    }
+
+    public function routeMiddlewares(): array
+    {
+        $middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            // do something with the request
+            $response = $handler->handle($request);
+            // do something with the response
+            return $response;
+        };
+        return [
+            ['route/to/page', $middleware]
+        ];
+    }
+
+    public function twigFilters(): array
+    {
+        $twigFilter = function (string $string): string {
+            return strrev($string);
+        };
+        return [
+            ['reverse', $twigFilter]
+        ];
+    }
+
+    public function twigGlobals(): array
+    {
+        return [
+            'hello' => 'world'
+        ];
+    }
+
+    public function twigFunctions(): array
+    {
+        $twigFunction = function (string $name): string {
+            return "Hello {$name}!";
+        };
+        return [
+            ['hello', $twigFunction]
+        ];
+    }
+
+    public function twigTests(): array
+    {
+        $twigTest = function (int $value): bool {
+            return ($value % 2) !== 0;
+        };
+        return [
+            ['odd', $twigTest]
+        ];
+    }
+}
+~~~
+
+That's all you have to do.
+
+A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/2.x/sysplugins/dummy), by the way.
 
 ## 4. Extending using a distributed plugin
 
-TBD
+To distribute your plugin now, you need to make it a Composer package.
+To do this, you need to create a JSON file `composer.json` in the plugin folder.
+The file must contain a type with `herbie-plugin`.
+
+~~~json
+{
+    "name": "myvendor/myplugin",
+    "type": "herbie-plugin",
+    "require-dev": {
+        "getherbie/herbie": "dev-2.x-develop"
+    }
+}
+~~~
+
+How to deploy the plugin on <https://packagist.org> can be found on <https://getcomposer.org>.
+
+After deployment, the plugin can be installed using Composer.
+All you need to do is run the following CLI command in your project root directory.
+
+    composer require myvendor/myplugin
+
+After that, the plugin needs to be enabled in the configuration.
+
+Good examples are the plugins [simple contact](https://github.com/getherbie-plugin/simplecontact) and [simple search](https://github.com/getherbie-plugin/simplesearch).

@@ -71,8 +71,7 @@ This is usually structured as follows:
     │   └── services.md
     ├── runtime
     │   ├── cache
-    │   │   ├── data
-    │   │   ├── page
+    │   │   ├── system
     │   │   └── twig
     │   └── log
     └── themes

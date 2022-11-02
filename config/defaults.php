@@ -63,12 +63,25 @@ $settings['components']['downloadMiddleware']['baseUrl'] = '/download/';
 $settings['components']['downloadMiddleware']['storagePath'] = '@site/media';
 
 /**
+ * PSR-16 File Cache Component
+ */
+$settings['components']['fileCache'] = [];
+$settings['components']['fileCache']['path'] = '@site/runtime/cache/system';
+
+/**
  * PSR-3 File Logger Component
  */
 $settings['components']['fileLogger'] = [];
 $settings['components']['fileLogger']['path'] = '@site/runtime/log/logger.log';
 $settings['components']['fileLogger']['channel'] = 'herbie';
 $settings['components']['fileLogger']['level'] = 'debug';
+
+/**
+ * Page Renderer Middleware Component
+ */
+$settings['components']['pageRendererMiddleware'] = [];
+$settings['components']['pageRendererMiddleware']['cache'] = false;
+$settings['components']['pageRendererMiddleware']['cacheTTL'] = 60 * 60 * 24;
 
 /**
  * Twig Renderer Component

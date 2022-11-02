@@ -7,7 +7,7 @@ namespace herbie;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class FileLogger implements LoggerInterface
+final class FileLogger implements LoggerInterface
 {
     private const TAB = "\t";
     private const LEVELS = [

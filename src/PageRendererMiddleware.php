@@ -14,16 +14,13 @@ use Tebe\HttpFactory\HttpFactory;
 final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
-
     private Environment $environment;
-
     private HttpFactory $httpFactory;
-
     private EventManager $eventManager;
-
     private FilterChainManager $filterChainManager;
-
     private UrlGenerator $urlGenerator;
+    private bool $cacheEnable;
+    private int $cacheTTL;
 
     /**
      * PageRendererMiddleware constructor.
@@ -34,7 +31,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         HttpFactory $httpFactory,
-        UrlGenerator $urlGenerator
+        UrlGenerator $urlGenerator,
+        array $options = []
     ) {
         $this->cache = $cache;
         $this->environment = $environment;
@@ -42,6 +40,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
         $this->urlGenerator = $urlGenerator;
+        $this->cacheEnable = (bool)($options['cache'] ?? false);
+        $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -64,14 +64,13 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $redirect = $page->getRedirect();
 
         if (!empty($redirect)) {
-            $response = $this->createRedirectResponse($redirect);
-            return $response;
+            return $this->createRedirectResponse($redirect);
         }
 
         $rendered = null;
 
         $cacheId = 'page-' . $this->environment->getRoute();
-        if (!empty($page->getCached())) {
+        if ($this->cacheEnable && !empty($page->getCached())) {
             $rendered = $this->cache->get($cacheId);
         }
 
@@ -100,8 +99,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
             }
             $this->eventManager->trigger('onLayoutRendered', $content, ['page' => $page]);
 
-            if (!empty($page->getCached())) {
-                $this->cache->set($cacheId, $content);
+            if ($this->cacheEnable && !empty($page->getCached())) {
+                $this->cache->set($cacheId, $content, $this->cacheTTL);
             }
             $rendered = $content;
         }
@@ -118,9 +117,8 @@ final class PageRendererMiddleware implements MiddlewareInterface
         } else {
             $location = $this->urlGenerator->generate($redirect['url']); // An internal route? Generate URL.
         }
-        $response = $this->httpFactory
+        return $this->httpFactory
             ->createResponse($redirect['status'])
             ->withHeader('Location', $location);
-        return $response;
     }
 }

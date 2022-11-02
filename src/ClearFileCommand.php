@@ -9,11 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ClearCacheCommand extends Command
+final class ClearFileCommand extends Command
 {
     private Config $config;
-    protected static $defaultName = 'clear-cache';
-    protected static $defaultDescription = 'Clears herbies internal cache';
+    protected static $defaultName = 'clear-file';
+    protected static $defaultDescription = 'Clears asset, cache and log files';
 
     public function __construct(Config $config)
     {
@@ -24,8 +24,8 @@ final class ClearCacheCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The clear-cache deletes cached files from herbies cache directory.')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Type of cache to delete', 'all')
+            ->setHelp('The clear-file deletes asset, cache and log files from several directories.')
+            ->addArgument('type', InputArgument::OPTIONAL, 'Type of files to delete', 'all')
         ;
     }
 
@@ -33,13 +33,15 @@ final class ClearCacheCommand extends Command
     {
         $type = $input->getArgument('type');
         $pathsToClear = $this->getPathsToClear($type);
-        $filesToIgnores = ['.gitignore'];
+        $filesToIgnores = ['.gitignore', '.gitkeep'];
 
-        foreach ($pathsToClear as $path) {
+        foreach ($pathsToClear as $key => $path) {
             $this->clearPath($path, $filesToIgnores);
+            $message = sprintf('Clearing files (%s): %s', $key, $path);
+            $output->writeln($message);
         }
 
-        $output->writeln('You cleared the cache!');
+        $output->writeln('All files cleared.');
         return Command::SUCCESS;
     }
 
@@ -49,18 +51,28 @@ final class ClearCacheCommand extends Command
     private function getPathsToClear(string $type): array
     {
         $runtimePath = $this->config->getAsString('paths.site');
+        $webPath = $this->config->getAsString('paths.web');
 
         $cachePaths = [
-            'data' => $runtimePath . '/runtime/cache/data',
-            'page' => $runtimePath . '/runtime/cache/page',
-            'twig' => $runtimePath . '/runtime/cache/twig',
+            'site-cache-system' => $runtimePath . '/runtime/cache/system',
+            'site-cache-twig' => $runtimePath . '/runtime/cache/twig',
+            'site-log' => $runtimePath . '/runtime/log',
+            'web-assets' => $webPath . '/assets',
+            'web-cache' => $webPath . '/cache',
         ];
 
         if ($type === 'all') {
-            return array_values($cachePaths);
+            return $cachePaths;
         }
 
-        return isset($cachePaths[$type]) ? [$cachePaths[$type]] : [];
+        $items = [];
+        foreach ($cachePaths as $key => $value) {
+            if (strpos($key, $type) === 0) {
+                $items[$key] = $value;
+            }
+        }
+
+        return $items;
     }
 
     private function clearPath(string $path, array $filesToIgnore): void

@@ -18,7 +18,12 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         if (is_file($logPath)) {
             unlink($logPath); // delete log file if exists
         }
-        return new Application(new ApplicationPaths($appPath, $sitePath));
+        return new Application(new ApplicationPaths(
+            $appPath,
+            $sitePath,
+            dirname(__DIR__, 4) . '/vendor',
+            dirname(__DIR__, 2) . '/_data/web'
+        ));
     }
 
     public function testTextileFilter(): void

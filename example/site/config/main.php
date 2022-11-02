@@ -17,6 +17,9 @@ return [
         'fileLogger' => [
             'level' => 'debug',
         ],
+        'pageRendererMiddleware' => [
+            'cache' => false
+        ],
         'twigRenderer' => [
             'debug' => true
         ],
