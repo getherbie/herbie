@@ -250,6 +250,10 @@ function handle_internal_webserver_assets(string $file): void
         $requestedAbsoluteFile = dirname($file) . $requestUri;
         $extension = pathinfo($requestedAbsoluteFile, PATHINFO_EXTENSION);
         header('Content-Type: ' . ($mimeTypes[$extension] ?? 'text/plain'));
+        if (!is_readable($requestedAbsoluteFile)) {
+            http_response_code(404);
+            exit;
+        }
         readfile($requestedAbsoluteFile);
         exit;
     }
