@@ -18,7 +18,7 @@ return [
             'level' => 'debug',
         ],
         'pageRendererMiddleware' => [
-            'cache' => true
+            'cache' => false
         ],
         'twigRenderer' => [
             'debug' => true

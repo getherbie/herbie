@@ -303,7 +303,7 @@ The test is then registered automatically.
 
 $twigTest = function (int $value): bool {
     return ($value % 2) !== 0;
-}
+};
 
 return ['odd', $twigTest];
 ~~~
@@ -341,6 +341,97 @@ $app->addTwigTest();
 
 $app->run();
 ~~~
+
+So, in the end, you have to do exactly the same with the programmatic approach as you do with the file system approach.
+In detail, it then looks like this.
+
+Adding a console command:
+
+~~~php
+class CustomCommand extends Command
+{
+    // see class definition above
+}
+
+$app->addCommand(CustomCommand::class);
+~~~ 
+
+Adding an event listener:
+
+~~~php
+$event = function (herbie\EventInterface $event): void {
+    // do something with $event
+};
+
+$app->addEvent('onTwigInitialized', $event);
+~~~
+
+Adding an intercepting filter:
+
+~~~php
+$filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
+    // do something with $context
+    return $filter->next($context, $params, $filter);
+};
+
+$app->addFilter('renderLayout', $filter);
+~~~
+
+Adding an application middleware:
+
+~~~php
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+$middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+    // do something with the request
+    $response = $handler->handle($request);
+    // do something with the response
+    return $response;
+};
+
+$app->addAppMiddleware($middleware);
+~~~
+
+Adding a route middleware:
+
+~~~php
+the route middleware is the same the application middleware
+
+$app->addRouteMiddleware('route/to/page', $middleware);
+~~~
+
+Adding a Twig filter:
+
+~~~php
+$twigFilter = function (string $string): string {
+    return strrev($string);
+};
+
+$app->addTwigFilter('reverse', $twigFilter);
+~~~
+
+Adding a Twig function:
+
+~~~php
+$twigFunction = function (string $name): string {
+    return "Hello {$name}!";
+};
+
+$app->addTwigFunction('hello', $twigFunction);
+~~~
+
+Adding a Twig test:
+
+~~~php
+$twigTest = function (int $value): bool {
+    return ($value % 2) !== 0;
+};
+
+$app->addTwigTest('odd', $twigTest);
+~~~
+
 
 ## 3. Extending using a plugin
 

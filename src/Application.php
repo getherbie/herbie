@@ -11,9 +11,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Twig\TwigTest;
 
 final class Application
 {
@@ -222,9 +219,12 @@ final class Application
         return $this;
     }
 
-    public function addTwigFilter(TwigFilter $twigFilter): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigFilter(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigFilters[] = $twigFilter;
+        $this->twigFilters[] = [$name, $callable, $options];
         return $this;
     }
 
@@ -244,9 +244,12 @@ final class Application
         return $this->twigGlobals;
     }
 
-    public function addTwigFunction(TwigFunction $twigFunction): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigFunction(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigFunctions[] = $twigFunction;
+        $this->twigFunctions[] = [$name, $callable, $options];
         return $this;
     }
 
@@ -255,9 +258,12 @@ final class Application
         return $this->twigFunctions;
     }
 
-    public function addTwigTest(TwigTest $twigTest): Application
+    /**
+     * @param callable $callable
+     */
+    public function addTwigTest(string $name, $callable = null, array $options = []): Application
     {
-        $this->twigTests[] = $twigTest;
+        $this->twigTests[] = [$name, $callable, $options];
         return $this;
     }
 
