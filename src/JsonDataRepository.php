@@ -14,9 +14,9 @@ final class JsonDataRepository implements DataRepositoryInterface
     /**
      * YamlDataRepository constructor.
      */
-    public function __construct(string $path)
+    public function __construct(array $options = [])
     {
-        $this->path = $path;
+        $this->path = (string)($options['path'] ?? '');
         $this->extensions = ['json'];
     }
 

@@ -10,8 +10,9 @@ final class FileCache implements CacheInterface
 {
     private string $path;
 
-    public function __construct(string $path)
+    public function __construct(array $options = [])
     {
+        $path = (string)($options['path'] ?? '');
         $path = rtrim($path, DIRECTORY_SEPARATOR);
 
         if (empty($path)) {

@@ -21,9 +21,9 @@ final class Translator
     /**
      * Translator constructor.
      */
-    public function __construct(string $language)
+    public function __construct(array $options = [])
     {
-        $this->language = $language;
+        $this->language = (string)($options['language'] ?? '');
         $this->paths = [];
         $this->messages = [];
     }

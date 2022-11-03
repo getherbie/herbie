@@ -25,10 +25,10 @@ final class PageTest extends \Codeception\Test\Unit
                 new Alias([
                     '@page' => __DIR__ . '/Fixtures/site/pages'
                 ]),
-                new Config([
-                    'paths' => ['pages' => __DIR__ . '/Fixtures/site/pages'],
-                    'fileExtensions' => ['pages' => 'md']
-                ])
+                [
+                    'pagePath' => ['pages' => __DIR__ . '/Fixtures/site/pages'],
+                    'pageFileExtensions' => ['pages' => 'md']
+                ]
             )
         );
     }

@@ -9,14 +9,13 @@ namespace herbie;
  */
 final class UrlMatcher
 {
-    private Config $config;
-
     private PageRepositoryInterface $pageRepository;
+    private array $rules;
 
-    public function __construct(Config $config, PageRepositoryInterface $pageRepository)
+    public function __construct(PageRepositoryInterface $pageRepository, array $options = [])
     {
-        $this->config = $config;
         $this->pageRepository = $pageRepository;
+        $this->rules = (array)($options['rules'] ?? []);
     }
 
     /**
@@ -61,8 +60,7 @@ final class UrlMatcher
     private function matchRules(string $route): ?array
     {
         $matchedRoute = null;
-        $rules = $this->config->getAsArray('rules');
-        foreach ($rules as $rule) {
+        foreach ($this->rules as $rule) {
             if (count($rule) < 2) {
                 throw new \UnexpectedValueException(sprintf('Invalid rule %s', $rule[0]));
             }

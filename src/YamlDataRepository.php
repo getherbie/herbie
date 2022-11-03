@@ -15,8 +15,9 @@ final class YamlDataRepository implements DataRepositoryInterface
      * YamlDataRepository constructor.
      * @throws SystemException
      */
-    public function __construct(string $path)
+    public function __construct(array $options = [])
     {
+        $path = (string)($options['path'] ?? '');
         if (!is_dir($path)) {
             throw SystemException::directoryNotExist($path);
         }

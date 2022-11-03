@@ -12,8 +12,6 @@ final class PluginManager
 {
     private EventManager $eventManager;
 
-    private Config $config;
-
     /** @var array<string, InstallablePlugin> */
     private array $loadedPlugins;
 
@@ -37,18 +35,25 @@ final class PluginManager
     /** @var string[] */
     private array $commands;
 
+    /** @var string[] */
+    private array $enabledSystemPlugins;
+
+    /** @var string[] */
+    private array $enabledComposerOrLocalPlugins;
+
+    private array $pluginConfigurations;
+
     /**
      * PluginManager constructor.
      */
     public function __construct(
-        Config $config,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         Translator $translator,
         LoggerInterface $logger,
-        ContainerInterface $container
+        ContainerInterface $container,
+        array $options = []
     ) {
-        $this->config = $config;
         $this->container = $container;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
@@ -58,6 +63,9 @@ final class PluginManager
         $this->routeMiddlewares = [];
         $this->pluginPaths = [];
         $this->translator = $translator;
+        $this->enabledSystemPlugins = (array)($options['enabledSystemPlugins'] ?? []);
+        $this->enabledComposerOrLocalPlugins = (array)($options['enabledComposerOrLocalPlugins'] ?? []);
+        $this->pluginConfigurations = (array)($options['pluginConfigurations'] ?? []);
     }
 
     public function init(): void
@@ -69,23 +77,20 @@ final class PluginManager
             'virtual',
         ));
 
-        $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
-        $enabledComposerOrLocalPlugins = str_explode_filtered($this->config->getAsString('enabledPlugins'), ',');
-
         // system plugins
-        foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
+        foreach ($this->getInstallablePlugins($this->enabledSystemPlugins, 'system') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onSystemPluginsAttached', $this);
 
         // composer plugins
-        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
+        foreach ($this->getInstallablePlugins($this->enabledComposerOrLocalPlugins, 'composer') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onComposerPluginsAttached', $this);
 
         // local plugins
-        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
+        foreach ($this->getInstallablePlugins($this->enabledComposerOrLocalPlugins, 'local') as $plugin) {
             $this->loadPlugin($plugin);
         }
         $this->eventManager->trigger('onLocalPluginsAttached', $this);
@@ -122,8 +127,7 @@ final class PluginManager
     {
         $plugins = [];
         foreach ($enabledPlugins as $pluginKey) {
-            $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
-            $pluginConfig = $this->config->getAsArray($pluginConfigPath);
+            $pluginConfig = (array)($this->pluginConfigurations[$pluginKey] ?? []);
             if (
                 empty($pluginConfig)
                 || ($pluginConfig['location'] !== $type)

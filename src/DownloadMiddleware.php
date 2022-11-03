@@ -22,11 +22,11 @@ final class DownloadMiddleware implements MiddlewareInterface
     /**
      * DownloadMiddleware constructor.
      */
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(Alias $alias, array $options = [])
     {
         $this->alias = $alias;
-        $this->baseUrl = str_trailing_slash($config->getAsString('baseUrl'));
-        $this->storagePath = str_trailing_slash($config->getAsString('storagePath'));
+        $this->baseUrl = str_trailing_slash((string)$options['baseUrl']);
+        $this->storagePath = str_trailing_slash((string)$options['storagePath']);
     }
 
     /**

@@ -17,11 +17,13 @@ $settings['niceUrls'] = false;
 $settings['paths'] = [];
 $settings['paths']['app'] = 'APP_PATH';
 $settings['paths']['data'] = 'SITE_PATH/data';
+$settings['paths']['herbie'] = 'HERBIE_PATH';
 $settings['paths']['media'] = 'SITE_PATH/media';
 $settings['paths']['pages'] = 'SITE_PATH/pages';
 $settings['paths']['plugins'] = 'SITE_PATH/extend/plugins'; // TODO move config
 $settings['paths']['site'] = 'SITE_PATH';
 $settings['paths']['themes'] = 'SITE_PATH/themes';
+$settings['paths']['vendor'] = 'VENDOR_PATH';
 $settings['paths']['web'] = 'WEB_PATH';
 
 /**
@@ -48,6 +50,21 @@ $settings['fileExtensions']['pages'] = 'htm,html,markdown,md,rss,rst,textile,txt
  * Components
  */
 $settings['components'] = [];
+
+/**
+ * Alias
+ */
+$settings['components']['alias'] = [];
+$settings['components']['alias']['@app'] = $settings['paths']['app'];
+$settings['components']['alias']['@asset'] = $settings['paths']['site'] . '/assets';
+$settings['components']['alias']['@media'] = $settings['paths']['media'];
+$settings['components']['alias']['@page'] = $settings['paths']['pages'];
+$settings['components']['alias']['@plugin'] = $settings['paths']['plugins'];
+$settings['components']['alias']['@site'] = $settings['paths']['site'];
+$settings['components']['alias']['@sysplugin'] = $settings['paths']['herbie'] . '/sysplugins';
+$settings['components']['alias']['@vendor'] = $settings['paths']['vendor'];
+$settings['components']['alias']['@web'] = $settings['paths']['web'];
+$settings['components']['alias']['@snippet'] = $settings['paths']['app'] . '/templates/snippets';
 
 /**
  * Data Repository Component

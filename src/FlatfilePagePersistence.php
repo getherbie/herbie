@@ -10,13 +10,15 @@ namespace herbie;
 final class FlatfilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
+    private string $pagePath;
+    /** @var string[] */
+    private array $pageFileExtensions;
 
-    private Config $config;
-
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(Alias $alias, array $options = [])
     {
         $this->alias = $alias;
-        $this->config = $config;
+        $this->pagePath = (string)($options['pagePath'] ?? '');
+        $this->pageFileExtensions = (array)($options['pageFileExtensions'] ?? []);
     }
 
     /**
@@ -36,12 +38,9 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
      */
     public function findAll(): array
     {
-        $path = $this->config->getAsString('paths.pages');
-        $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
+        $recDirectoryIt = new RecursiveDirectoryIterator($this->pagePath, \RecursiveDirectoryIterator::SKIP_DOTS);
 
-        $recDirectoryIt = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-
-        $callback = function (FileInfo $current, $key, \RecursiveDirectoryIterator $iterator) use ($extensions) {
+        $callback = function (FileInfo $current, $key, \RecursiveDirectoryIterator $iterator) {
             // Allow recursion
             if ($iterator->hasChildren()) {
                 return true;
@@ -50,7 +49,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
                 return false;
             }
             // Check for file extensions
-            if (in_array($current->getExtension(), $extensions)) {
+            if (in_array($current->getExtension(), $this->pageFileExtensions)) {
                 return true;
             }
             return false;

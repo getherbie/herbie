@@ -6,7 +6,7 @@ namespace herbie;
 
 interface DataRepositoryInterface
 {
-    public function __construct(string $path);
+    public function __construct(array $options = []);
     public function load(string $name): array;
     public function loadAll(): array;
 }

@@ -18,40 +18,32 @@ final class ContainerBuilder
     private ?CacheInterface $cache;
     private ?LoggerInterface $logger;
 
-    public function __construct(Application $app, ?CacheInterface $cache = null, ?LoggerInterface $logger = null)
-    {
+    public function __construct(
+        Application $app,
+        ?CacheInterface $cache = null,
+        ?LoggerInterface $logger = null
+    ) {
         $this->app = $app;
         $this->cache = $cache;
         $this->logger = $logger;
     }
 
-    public function build(): Container
+    public function build(): ContainerInterface
     {
         $c = new Container();
 
         $c->set(Application::class, $this->app);
 
-        $c->set(ContainerInterface::class, function (Container $c) {
+        $c->set(ContainerInterface::class, function (ContainerInterface $c) {
             return $c;
         });
 
-        $c->set(Alias::class, function (Container $c) {
-            $paths = $c->get(Config::class)->get('paths');
-            return new Alias([
-                '@app' => $paths['app'],
-                '@asset' => $this->app->getSitePath() . '/assets',
-                '@media' => $paths['media'],
-                '@page' => $paths['pages'],
-                '@plugin' => $paths['plugins'],
-                '@site' => $this->app->getSitePath(),
-                '@sysplugin' => Application::getHerbiePath('/sysplugins'),
-                '@vendor' => $this->app->getVendorDir(),
-                '@web' => $paths['web'],
-                '@snippet' => $paths['app'] . '/templates/snippets'
-            ]);
+        $c->set(Alias::class, function (ContainerInterface $c) {
+            $aliases = $c->get(Config::class)->get('components.alias');
+            return new Alias($aliases);
         });
 
-        $c->set(Assets::class, function (Container $c) {
+        $c->set(Assets::class, function (ContainerInterface $c) {
             return new Assets(
                 $c->get(Alias::class),
                 $c->get(Environment::class)
@@ -61,21 +53,23 @@ final class ContainerBuilder
         if ($this->cache) {
             $c->set(CacheInterface::class, $this->cache);
         } else {
-            $c->set(CacheInterface::class, function (Container $c) {
-                $config = $c->get(Config::class)->getAsArray('components.fileCache');
-                if (isset($config['path'])) {
-                    return new FileCache(
-                        $c->get(Alias::class)->get($config['path'])
-                    );
+            $c->set(CacheInterface::class, function (ContainerInterface $c) {
+                $options = $c->get(Config::class)->getAsArray('components.fileCache');
+                if (isset($options['path'])) {
+                    return new FileCache([
+                        'path' => $c->get(Alias::class)->get($options['path'])
+                    ]);
                 }
                 return new NullCache();
             });
         }
 
-        $c->set(Config::class, function (Container $c) {
+        $c->set(Config::class, function (ContainerInterface $c) {
             $const = [
                 'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
+                'HERBIE_PATH' => Application::getHerbiePath(''),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
+                'VENDOR_PATH' => str_untrailing_slash($this->app->getVendorDir()),
                 'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
                 'WEB_URL' => str_untrailing_slash($c->get(Environment::class)->getBaseUrl())
             ];
@@ -119,19 +113,19 @@ final class ContainerBuilder
             return new Config($allConfig);
         });
 
-        $c->set(DataRepositoryInterface::class, function (Container $c) {
-            $adapter = $c->get(Config::class)->get('components.dataRepository.adapter');
-            $path = $c->get(Config::class)->get('paths.data');
+        $c->set(DataRepositoryInterface::class, function (ContainerInterface $c) {
+            $adapter = $c->get(Config::class)->getAsString('components.dataRepository.adapter');
+            $options = ['path' => $c->get(Config::class)->getAsString('paths.data')];
             if ($adapter === 'json') {
-                return new JsonDataRepository($path);
+                return new JsonDataRepository($options);
             }
-            return new YamlDataRepository($path);
+            return new YamlDataRepository($options);
         });
 
-        $c->set(DownloadMiddleware::class, function (Container $c) {
+        $c->set(DownloadMiddleware::class, function (ContainerInterface $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
-                $c->get(Config::class)->getAsConfig('components.downloadMiddleware')
+                $c->get(Config::class)->getAsArray('components.downloadMiddleware')
             );
         });
 
@@ -139,7 +133,7 @@ final class ContainerBuilder
             return new Environment();
         });
 
-        $c->set(ErrorHandlerMiddleware::class, function (Container $c) {
+        $c->set(ErrorHandlerMiddleware::class, function (ContainerInterface $c) {
             return new ErrorHandlerMiddleware(
                 $c->get(TwigRenderer::class)
             );
@@ -160,20 +154,17 @@ final class ContainerBuilder
         if ($this->logger) {
             $c->set(LoggerInterface::class, $this->logger);
         } else {
-            $c->set(LoggerInterface::class, function (Container $c) {
-                $config = $c->get(Config::class)->getAsArray('components.fileLogger');
-                if (isset($config['path'], $config['channel'], $config['level'])) {
-                    return new FileLogger(
-                        $c->get(Alias::class)->get($config['path']),
-                        $config['channel'],
-                        $config['level']
-                    );
+            $c->set(LoggerInterface::class, function (ContainerInterface $c) {
+                $options = $c->get(Config::class)->getAsArray('components.fileLogger');
+                if (isset($options['path'], $options['channel'], $options['level'])) {
+                    $options['path'] = $c->get(Alias::class)->get($options['path']);
+                    return new FileLogger($options);
                 }
                 return new NullLogger();
             });
         }
 
-        $c->set(MiddlewareDispatcher::class, function (Container $c) {
+        $c->set(MiddlewareDispatcher::class, function (ContainerInterface $c) {
             return new MiddlewareDispatcher(
                 [
                     $c->get(ErrorHandlerMiddleware::class) // only one at the moment
@@ -193,14 +184,19 @@ final class ContainerBuilder
             return new PageFactory();
         });
 
-        $c->set(PagePersistenceInterface::class, function (Container $c) {
+        $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class);
+            $options = [
+                'pagePath' => $config->getAsString('paths.pages'),
+                'pageFileExtensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ',')
+            ];
             return new FlatfilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(Config::class)
+                $options
             );
         });
 
-        $c->set(PageRendererMiddleware::class, function (Container $c) {
+        $c->set(PageRendererMiddleware::class, function (ContainerInterface $c) {
             $options = $c->get(Config::class)->getAsArray('components.pageRendererMiddleware');
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
@@ -213,14 +209,14 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(PageRepositoryInterface::class, function (Container $c) {
+        $c->set(PageRepositoryInterface::class, function (ContainerInterface $c) {
             return new FlatfilePageRepository(
                 $c->get(PageFactory::class),
                 $c->get(PagePersistenceInterface::class)
             );
         });
 
-        $c->set(PageResolverMiddleware::class, function (Container $c) {
+        $c->set(PageResolverMiddleware::class, function (ContainerInterface $c) {
             return new PageResolverMiddleware(
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class),
@@ -228,47 +224,55 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(PluginManager::class, function (Container $c) {
+        $c->set(PluginManager::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class);
+            $options = [
+                'enabledSystemPlugins' => str_explode_filtered($config->getAsString('enabledSysPlugins'), ','),
+                'enabledComposerOrLocalPlugins' => str_explode_filtered($config->getAsString('enabledPlugins'), ','),
+                'pluginConfigurations' => $config->getAsArray('plugins')
+            ];
             return new PluginManager(
-                $c->get(Config::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(Translator::class),
                 $c->get(LoggerInterface::class),
-                $c // needed for DI in plugins
+                $c, // NOTE needed for DI in plugins
+                $options
             );
         });
 
-        $c->set(ServerRequestInterface::class, function (Container $c) {
+        $c->set(ServerRequestInterface::class, function (ContainerInterface $c) {
             return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
         });
 
-        $c->set(Site::class, function (Container $c) {
+        $c->set(Site::class, function (ContainerInterface $c) {
             return new Site(
-                $c->get(Config::class),
+                $c->get(Config::class), // needed for site.config global
                 $c->get(DataRepositoryInterface::class),
                 $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class)
             );
         });
 
-        $c->set(SlugGenerator::class, function (Container $c) {
+        $c->set(SlugGenerator::class, function (ContainerInterface $c) {
             $options = [
-                'locale' => $c->get(Config::class)->get('language'),
+                'locale' => $c->get(Config::class)->getAsString('language'),
                 'delimiter' => '-'
             ];
             return new SlugGenerator($options);
         });
 
-        $c->set(Translator::class, function (Container $c) {
-            $translator = new Translator($c->get(Config::class)->get('language'));
+        $c->set(Translator::class, function (ContainerInterface $c) {
+            $translator = new Translator([
+                'language' => $c->get(Config::class)->getAsString('language')
+            ]);
             $translator->addPath('app', Application::getHerbiePath('/messages'));
             return $translator;
         });
 
-        $c->set(TwigRenderer::class, function (Container $c) {
+        $c->set(TwigRenderer::class, function (ContainerInterface $c) {
             return new TwigRenderer(
-                $c->get(Config::class),
+                $c->get(Config::class), // needed for global context
                 $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
@@ -276,18 +280,18 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(UrlGenerator::class, function (Container $c) {
+        $c->set(UrlGenerator::class, function (ContainerInterface $c) {
             return new UrlGenerator(
-                $c->get(Config::class),
                 $c->get(Environment::class),
-                $c->get(ServerRequestInterface::class)
+                $c->get(ServerRequestInterface::class),
+                ['niceUrls' => $c->get(Config::class)->getAsBool('niceUrls')]
             );
         });
 
-        $c->set(UrlMatcher::class, function (Container $c) {
+        $c->set(UrlMatcher::class, function (ContainerInterface $c) {
             return new UrlMatcher(
-                $c->get(Config::class)->getAsConfig('components.urlMatcher'),
-                $c->get(PageRepositoryInterface::class)
+                $c->get(PageRepositoryInterface::class),
+                $c->get(Config::class)->getAsArray('components.urlMatcher')
             );
         });
 

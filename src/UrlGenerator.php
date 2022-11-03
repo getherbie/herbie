@@ -17,10 +17,10 @@ final class UrlGenerator
 
     private bool $niceUrls;
 
-    public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
+    public function __construct(Environment $environment, ServerRequestInterface $request, array $options = [])
     {
         $this->environment = $environment;
-        $this->niceUrls = $config->getAsBool('niceUrls');
+        $this->niceUrls = (bool)($options['niceUrls'] ?? false);
         $this->request = $request;
     }
 

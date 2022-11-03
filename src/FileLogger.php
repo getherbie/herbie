@@ -24,11 +24,11 @@ final class FileLogger implements LoggerInterface
     private string $channel;
     private int $level;
 
-    public function __construct(string $file, string $channel, string $level = LogLevel::DEBUG)
+    public function __construct(array $options = [])
     {
-        $this->file = $file;
-        $this->channel = $channel;
-        $this->setLevel($level);
+        $this->file = (string)($options['path'] ?? '');
+        $this->channel = (string)($options['channel'] ?? '');
+        $this->setLevel((string)($options['level'] ?? LogLevel::DEBUG));
     }
 
     public function setLevel(string $level): void
