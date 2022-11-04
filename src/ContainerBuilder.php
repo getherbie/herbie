@@ -153,6 +153,14 @@ final class ContainerBuilder
             return new FilterChainManager();
         });
 
+        $c->set(FlatFileIterator::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class);
+            return new FlatFileIterator(
+                $config->getAsString('paths.pages'),
+                str_explode_filtered($config->getAsString('fileExtensions.pages'), ',')
+            );
+        });
+
         $c->set(HttpFactory::class, function () {
             return new HttpFactory();
         });
@@ -194,9 +202,9 @@ final class ContainerBuilder
         });
 
         $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
-            return new FlatfilePagePersistence(
+            return new FlatFilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(Config::class)
+                $c->get(FlatFileIterator::class)
             );
         });
 
@@ -214,7 +222,7 @@ final class ContainerBuilder
         });
 
         $c->set(PageRepositoryInterface::class, function (ContainerInterface $c) {
-            return new FlatfilePageRepository(
+            return new FlatFilePageRepository(
                 $c->get(PageFactory::class),
                 $c->get(PagePersistenceInterface::class)
             );

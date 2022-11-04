@@ -7,16 +7,15 @@ namespace herbie;
 /**
  * Loads the whole page.
  */
-final class FlatfilePagePersistence implements PagePersistenceInterface
+final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
+    private FlatFileIterator $flatFileIterator;
 
-    private Config $config;
-
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(Alias $alias, FlatFileIterator $flatFileIterator)
     {
         $this->alias = $alias;
-        $this->config = $config;
+        $this->flatFileIterator = $flatFileIterator;
     }
 
     /**
@@ -26,47 +25,21 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
     {
         try {
             return $this->readFile($id);
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }
 
-    /**
-     * @throws \Exception
-     */
     public function findAll(): array
     {
-        $path = $this->config->getAsString('paths.pages');
-        $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
-
-        $recDirectoryIt = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-
-        $callback = function (FileInfo $current, $key, \RecursiveDirectoryIterator $iterator) use ($extensions) {
-            // Allow recursion
-            if ($iterator->hasChildren()) {
-                return true;
-            }
-            if (strpos($current->getFilename(), '.') === 0) {
-                return false;
-            }
-            // Check for file extensions
-            if (in_array($current->getExtension(), $extensions)) {
-                return true;
-            }
-            return false;
-        };
-
-        $recCallbackFilterIt = new \RecursiveCallbackFilterIterator($recDirectoryIt, $callback);
-        $recIteratorIt = new \RecursiveIteratorIterator($recCallbackFilterIt);
-        $sortIt = new FileInfoSortableIterator($recIteratorIt, FileInfoSortableIterator::SORT_BY_NAME);
-
         $items = [];
 
-        /** @var FileInfo[] $sortIt */
-        foreach ($sortIt as $fileInfo) {
+        foreach ($this->flatFileIterator as $fileInfo) {
             try {
-                $items[] = $this->readFile($fileInfo->getAliasedPathname());
-            } catch (\RuntimeException $e) {
+                /** @var FileInfo $fileInfo */
+                $aliasedPath = '@page/' . $fileInfo->getRelativePathname();
+                $items[] = $this->readFile($aliasedPath);
+            } catch (\Exception $e) {
             }
         }
 

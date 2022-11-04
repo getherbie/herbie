@@ -7,7 +7,7 @@ namespace herbie;
 final class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {
     /**
-     * Return an instance of SplFileInfo with support for relative paths
+     * Return an instance of FileInfo with support for relative paths
      */
     public function current(): FileInfo
     {
