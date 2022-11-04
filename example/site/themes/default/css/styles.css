@@ -72,14 +72,17 @@ pre {
     white-space: pre;
 }
 pre code {
-    background: inherit;
-    padding: 0;
-}
-
-pre code:not([class]), pre code[class*="language-"] {
     background-color: #e9e6e2;
     display: block;
     padding: 1em;
+    line-height: 1.275;
+}
+
+pre code[class*="language-"] {
+    background-color: #e9e6e2;
+    display: block;
+    padding: 1em;
+    line-height: 1.5;
 }
 
 .hljs {
