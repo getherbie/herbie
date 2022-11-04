@@ -7,16 +7,15 @@ namespace herbie;
 /**
  * Loads the whole page.
  */
-final class FlatfilePagePersistence implements PagePersistenceInterface
+final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
+    private FlatFileIterator $flatFileIterator;
 
-    private Config $config;
-
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(Alias $alias, FlatFileIterator $flatFileIterator)
     {
         $this->alias = $alias;
-        $this->config = $config;
+        $this->flatFileIterator = $flatFileIterator;
     }
 
     /**
@@ -33,22 +32,13 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
 
     public function findAll(): array
     {
-        $path = $this->config->getAsString('paths.pages');
-        $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
-
-        $recDirectoryIt = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-        $callback = new FileInfoFilterCallback($extensions);
-        $recCallbackFilterIt = new \RecursiveCallbackFilterIterator($recDirectoryIt, $callback);
-
-        $recIteratorIt = new \RecursiveIteratorIterator($recCallbackFilterIt);
-        $sortIt = new FileInfoSortableIterator($recIteratorIt, FileInfoSortableIterator::SORT_BY_NAME);
-
         $items = [];
 
-        /** @var FileInfo[] $sortIt */
-        foreach ($sortIt as $fileInfo) {
+        foreach ($this->flatFileIterator as $fileInfo) {
             try {
-                $items[] = $this->readFile($fileInfo->getAliasedPathname());
+                /** @var FileInfo $fileInfo */
+                $aliasedPath = '@page/' . $fileInfo->getRelativePathname();
+                $items[] = $this->readFile($aliasedPath);
             } catch (\Exception $e) {
             }
         }

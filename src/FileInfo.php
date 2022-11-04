@@ -33,11 +33,6 @@ final class FileInfo extends \SplFileInfo
         return $this->relativePathname;
     }
 
-    public function getAliasedPathname(): string
-    {
-        return '@page/' . $this->relativePathname;
-    }
-
     public function isDot(): bool
     {
         return in_array($this->getBasename(), ['.', '..']);

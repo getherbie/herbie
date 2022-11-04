@@ -4,8 +4,9 @@ namespace tests\unit;
 
 use herbie\Alias;
 use herbie\Config;
-use herbie\FlatfilePagePersistence;
-use herbie\FlatfilePageRepository;
+use herbie\FlatFileIterator;
+use herbie\FlatFilePagePersistence;
+use herbie\FlatFilePageRepository;
 use herbie\Page;
 use herbie\PageFactory;
 use InvalidArgumentException;
@@ -15,20 +16,20 @@ use function herbie\date_format;
 
 final class PageTest extends \Codeception\Test\Unit
 {
-    protected FlatfilePageRepository $repository;
+    protected FlatFilePageRepository $repository;
 
     protected function _before()
     {
-        $this->repository = new FlatfilePageRepository(
+        $this->repository = new FlatFilePageRepository(
             new PageFactory(),
-            new FlatfilePagePersistence(
+            new FlatFilePagePersistence(
                 new Alias([
                     '@page' => __DIR__ . '/Fixtures/site/pages'
                 ]),
-                new Config([
-                    'paths' => ['pages' => __DIR__ . '/Fixtures/site/pages'],
-                    'fileExtensions' => ['pages' => 'md']
-                ])
+                new FlatFileIterator(
+                    dirname(__DIR__) . '/integration/Fixtures/site/pages',
+                    ['md']
+                )
             )
         );
     }
