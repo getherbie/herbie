@@ -56,15 +56,17 @@ In the page content itself, you can access these variables as follows:
 And in layout files you output the variables the same:
 
 {% verbatim %}
-    <!DOCTYPE HTML>
-    <html>
-    <head>
-        <title>{{ page.title }}</title>
-    </head>
-    <body class="{{ page.class }}">
-        ...
-    </body>
-    </html>
+~~~html
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{{ page.title }}</title>
+</head>
+<body class="{{ page.class }}">
+    ...
+</body>
+</html>
+~~~
 {% endverbatim %}
 
 This allows page variables to be used and enriched with additional custom variables of your choice.

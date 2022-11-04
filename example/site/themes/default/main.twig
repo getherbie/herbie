@@ -1,7 +1,9 @@
 {% apply spaceless %}
     {{ add_css('@site/themes/default/css/purecss@3.0.0-pure.min.css') }}
     {{ add_css('@site/themes/default/css/purecss@3.0.0-grids-responsive.min.css') }}
+    {{ add_css('@site/themes/default/css/highlight-stackoverflow-light@11.6.0.min.css') }}
     {{ add_css('@site/themes/default/css/styles.css') }}
+    {{ add_js('@site/themes/default/js/highlight@11.6.0.min.js') }}
     {{ add_js('@site/themes/default/js/scripts.js') }}
 {% endapply %}
 <!DOCTYPE html>
@@ -109,5 +111,11 @@
     </div>
 </div>
 {{ output_js() }}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre code[class*=language-]').forEach((el) => {
+      hljs.highlightElement(el);
+    });
+  });    
+</script>
 </body>
-</html>

@@ -144,7 +144,7 @@ So, let's get started.
 For adding a command you can create a PHP file in the directory `site/extend/commands` that returns a Command class.
 The command is automatically registered and available in the CLI application.
 
-~~~
+~~~php
 <?php
 
 use Symfony\Component\Console\Command\Command;
@@ -397,7 +397,7 @@ $app->addAppMiddleware($middleware);
 Adding a route middleware:
 
 ~~~php
-the route middleware is the same the application middleware
+// the route middleware can be the same as the application middleware
 
 $app->addRouteMiddleware('route/to/page', $middleware);
 ~~~
@@ -529,7 +529,7 @@ To install the plugin, you need to place the plugin folder into the `site/extend
 
 To enable the plugin, you need to edit the configuration file `site/config/main.php` and add an entry to the comma-separated list of the `enabledPlugins` setting.
 
-~~~
+~~~php
 <?php 
 return [
     'enabledPlugins' => 'markdown,myplugin,textile',

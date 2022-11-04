@@ -65,10 +65,8 @@ span.token.php.language-php {
     font-size: 0.9em !important;
 }
 pre {
-    background-color: #e9e6e2;
     line-height: 1;
     margin-bottom: 2em;
-    padding: 1em;
     overflow: auto;
     word-wrap: normal;
     white-space: pre;
@@ -76,6 +74,16 @@ pre {
 pre code {
     background: inherit;
     padding: 0;
+}
+
+pre code:not([class]), pre code[class*="language-"] {
+    background-color: #e9e6e2;
+    display: block;
+    padding: 1em;
+}
+
+.hljs {
+    background-color: #e9e6e2;
 }
 table {
     margin-bottom:2.6em;
