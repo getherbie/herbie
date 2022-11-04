@@ -26,37 +26,20 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
     {
         try {
             return $this->readFile($id);
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }
 
-    /**
-     * @throws \Exception
-     */
     public function findAll(): array
     {
         $path = $this->config->getAsString('paths.pages');
         $extensions = str_explode_filtered($this->config->getAsString('fileExtensions.pages'), ',');
 
         $recDirectoryIt = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-
-        $callback = function (FileInfo $current, $key, \RecursiveDirectoryIterator $iterator) use ($extensions) {
-            // Allow recursion
-            if ($iterator->hasChildren()) {
-                return true;
-            }
-            if (strpos($current->getFilename(), '.') === 0) {
-                return false;
-            }
-            // Check for file extensions
-            if (in_array($current->getExtension(), $extensions)) {
-                return true;
-            }
-            return false;
-        };
-
+        $callback = new FileInfoFilterCallback($extensions);
         $recCallbackFilterIt = new \RecursiveCallbackFilterIterator($recDirectoryIt, $callback);
+
         $recIteratorIt = new \RecursiveIteratorIterator($recCallbackFilterIt);
         $sortIt = new FileInfoSortableIterator($recIteratorIt, FileInfoSortableIterator::SORT_BY_NAME);
 
@@ -66,7 +49,7 @@ final class FlatfilePagePersistence implements PagePersistenceInterface
         foreach ($sortIt as $fileInfo) {
             try {
                 $items[] = $this->readFile($fileInfo->getAliasedPathname());
-            } catch (\RuntimeException $e) {
+            } catch (\Exception $e) {
             }
         }
 
