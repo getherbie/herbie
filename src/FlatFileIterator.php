@@ -13,7 +13,6 @@ use Traversable;
 
 final class FlatFileIterator implements IteratorAggregate
 {
-    private Traversable $iterator;
     private string $path;
     private array $extensions;
 
