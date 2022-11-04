@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -18,7 +19,7 @@ final class Application
     public const VERSION_API = 2;
     private array $appMiddlewares;
     private ApplicationPaths $appPaths;
-    private Container $container;
+    private ContainerInterface $container;
     /** @var string[] */
     private array $commands;
     private array $events;
