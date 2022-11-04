@@ -46,7 +46,7 @@ final class PluginManager
         FilterChainManager $filterChainManager,
         Translator $translator,
         LoggerInterface $logger,
-        ContainerInterface $container
+        ContainerInterface $container // bad but necessary to enable constructor injection of the plugins
     ) {
         $this->config = $config;
         $this->container = $container;
