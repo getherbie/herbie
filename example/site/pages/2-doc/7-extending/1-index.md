@@ -397,7 +397,7 @@ $app->addAppMiddleware($middleware);
 Adding a route middleware:
 
 ~~~php
-the route middleware is the same the application middleware
+// the route middleware can be the same as the application middleware
 
 $app->addRouteMiddleware('route/to/page', $middleware);
 ~~~
