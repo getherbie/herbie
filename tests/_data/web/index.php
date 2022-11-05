@@ -14,9 +14,11 @@ include dirname(__DIR__, 3) . '/c3.php';
 
 use herbie\Application;
 use herbie\ApplicationPaths;
+use herbie\Config;
 use herbie\EventInterface;
 use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
+use herbie\PageItem;
 use herbie\ResponseTimeMiddleware;
 use herbie\TwigRenderer;
 use tests\_data\src\CustomCommand;

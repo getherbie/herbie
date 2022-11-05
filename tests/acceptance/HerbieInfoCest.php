@@ -29,6 +29,8 @@ final class HerbieInfoCest
             'herbie\get_callable_name',
             'herbie\get_constructor_params_to_inject',
             'herbie\handle_internal_webserver_assets',
+            'herbie\is_digit',
+            'herbie\is_natural',
             'herbie\load_composer_plugin_configs',
             'herbie\load_php_config',
             'herbie\load_plugin_config',

@@ -126,7 +126,7 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertSame(date_format('c'), $page->getDate());
 
         $page->setDate('2013-12-24');
-        $this->assertSame('2013-12-24', $page->getDate());
+        $this->assertSame('2013-12-24T00:00:00+01:00', $page->getDate());
     }
 
     public function testToArray()
@@ -138,13 +138,14 @@ final class PageTest extends \Codeception\Test\Unit
             'cached' => true,
             'categories' => [],
             'content_type' => 'text/html',
+            'created' => '',
             'date' => '2013-12-24T01:00:00+01:00',
             'excerpt' => 'This is a short text.',
             'format' => 'markdown',
             'hidden' => true,
             'keep_extension' => false,
             'layout' => 'layout.html',
-            'menu' => '',
+            'menu_title' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
             'path' => '@page/pagedata.md',
             'redirect' => [],
@@ -155,8 +156,11 @@ final class PageTest extends \Codeception\Test\Unit
             'type' => 'my_type'
         ];
 
+        $expected = array_merge($data, ['segments' => []]);
+        $expected['menu_title'] = $expected['title'];
+
         $page = (new PageFactory())->newPage('@page/pagedata.md', 'parent', $data, []);
-        $this->assertEquals(array_merge($data, ['segments' => []]), $page->toArray());
+        $this->assertEquals($expected, $page->toArray());
 
         return $page;
     }
