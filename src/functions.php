@@ -442,3 +442,26 @@ function date_format(string $format, ?int $timestamp = null): string
     $timestamp = $timestamp ?? time();
     return date($format, $timestamp);
 }
+
+function is_digit($value): bool
+{
+    if (is_int($value)) {
+        return true;
+    }
+    if (!is_string($value)) {
+        return false;
+    }
+    return $value === (string)(int)$value;
+}
+
+function is_natural($value, bool $includingZero = false): bool
+{
+    $compare = 0;
+    if ($includingZero === true) {
+        $compare = -1;
+    }
+    if (is_digit($value) && (int)$value > $compare) {
+        return true;
+    }
+    return false;
+}
