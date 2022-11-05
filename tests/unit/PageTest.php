@@ -93,12 +93,18 @@ final class PageTest extends \Codeception\Test\Unit
 
     public function testSetData()
     {
-        $page = new Page(['title' => 'Testtitle', 'layout' => 'test']);
-        $this->assertSame('Testtitle', $page->getTitle());
+        $page = new Page(['title' => 'Test title', 'layout' => 'test']);
+        $this->assertSame('Test title', $page->getTitle());
         $this->assertSame('test', $page->getLayout());
     }
 
     public function testSetDataException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Page(['data' => []]);
+    }
+
+    public function testSetSegmentsException()
     {
         $this->expectException(InvalidArgumentException::class);
         new Page(['segments' => []]);
