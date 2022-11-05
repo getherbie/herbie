@@ -32,6 +32,18 @@ final class AliasTest extends \Codeception\Test\Unit
         $this->alias->set('my', 'value');
     }
 
+    public function testSetEmpytAlias()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->alias->set('@', 'value');
+    }
+
+    public function testSetAliasWithMultipleAtChars()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->alias->set('@one@two', 'value');
+    }
+
     public function testSetExistingAlias()
     {
         $this->expectException(\Exception::class);
