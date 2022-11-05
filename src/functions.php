@@ -443,6 +443,9 @@ function date_format(string $format, ?int $timestamp = null): string
     return date($format, $timestamp);
 }
 
+/**
+ * @param int|string $value
+ */
 function is_digit($value): bool
 {
     if (is_int($value)) {
@@ -454,6 +457,9 @@ function is_digit($value): bool
     return $value === (string)(int)$value;
 }
 
+/**
+ * @param int|string $value
+ */
 function is_natural($value, bool $includingZero = false): bool
 {
     $compare = 0;
