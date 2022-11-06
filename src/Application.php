@@ -332,7 +332,7 @@ final class Application
 
     public function getServerRequest(): ServerRequestInterface
     {
-        return $this->container->get(ServerRequestInterface::class);
+        return $this->container->get(ServerRequest::class);
     }
 
     public function getEventManager(): EventManager

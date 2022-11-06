@@ -24,11 +24,11 @@ final class Assets
     private static bool $sorted = false;
     private static array $published = [];
 
-    public function __construct(Alias $alias, Environment $environment)
+    public function __construct(Alias $alias, string $baseUrl)
     {
         $this->alias = $alias;
         $this->assetsPath = $alias->get('@web') . $this->assetsDir;
-        $this->assetsUrl = $environment->getBasePath() . $this->assetsDir;
+        $this->assetsUrl = str_leading_slash($baseUrl . $this->assetsDir);
     }
 
     /**

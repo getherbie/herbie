@@ -14,10 +14,10 @@ use Tebe\HttpFactory\HttpFactory;
 final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
-    private Environment $environment;
-    private HttpFactory $httpFactory;
     private EventManager $eventManager;
     private FilterChainManager $filterChainManager;
+    private HttpFactory $httpFactory;
+    private ServerRequest $serverRequest;
     private UrlGenerator $urlGenerator;
     private bool $cacheEnable;
     private int $cacheTTL;
@@ -27,18 +27,18 @@ final class PageRendererMiddleware implements MiddlewareInterface
      */
     public function __construct(
         CacheInterface $cache,
-        Environment $environment,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         HttpFactory $httpFactory,
+        ServerRequest $serverRequest,
         UrlGenerator $urlGenerator,
         array $options = []
     ) {
         $this->cache = $cache;
-        $this->environment = $environment;
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
+        $this->serverRequest = $serverRequest;
         $this->urlGenerator = $urlGenerator;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
@@ -50,7 +50,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
         if (is_null($page)) {
-            throw HttpException::notFound($this->environment->getRoute());
+            throw HttpException::notFound($this->serverRequest->getRoute());
         }
 
         /** @var array $routeParams */
@@ -69,7 +69,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
 
         $rendered = null;
 
-        $cacheId = 'page-' . $this->environment->getRoute();
+        $cacheId = 'page-' . $this->serverRequest->getRoute();
         if ($this->cacheEnable && !empty($page->getCached())) {
             $rendered = $this->cache->get($cacheId);
         }

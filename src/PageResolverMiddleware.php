@@ -15,28 +15,26 @@ final class PageResolverMiddleware implements MiddlewareInterface
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
 
-    private Environment $environment;
-
-    private UrlMatcher $urlMatcher;
-
     private PageRepositoryInterface $pageRepository;
+    private ServerRequest $serverRequest;
+    private UrlMatcher $urlMatcher;
 
     /**
      * PageResolverMiddleware constructor.
      */
     public function __construct(
-        Environment $environment,
         PageRepositoryInterface $pageRepository,
+        ServerRequest $serverRequest,
         UrlMatcher $urlMatcher
     ) {
-        $this->environment = $environment;
-        $this->urlMatcher = $urlMatcher;
         $this->pageRepository = $pageRepository;
+        $this->serverRequest = $serverRequest;
+        $this->urlMatcher = $urlMatcher;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = $this->environment->getRoute();
+        $route = $this->serverRequest->getRoute();
         $matchedRoute = $this->urlMatcher->match($route);
 
         $page = null;

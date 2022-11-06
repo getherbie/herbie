@@ -21,15 +21,10 @@ final class TwigRenderer
     private bool $initialized;
 
     private Config $config;
-
-    private Environment $environment;
-
     private TwigEnvironment $twig;
-
     private EventManager $eventManager;
-
     private LoggerInterface $logger;
-
+    private ServerRequest $serverRequest;
     private Site $site;
 
     /**
@@ -37,16 +32,16 @@ final class TwigRenderer
      */
     public function __construct(
         Config $config,
-        Environment $environment,
         EventManager $eventManager,
         LoggerInterface $logger,
+        ServerRequest $serverRequest,
         Site $site
     ) {
         $this->initialized = false;
-        $this->environment = $environment;
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->logger = $logger;
+        $this->serverRequest = $serverRequest;
         $this->site = $site;
     }
 
@@ -136,9 +131,9 @@ final class TwigRenderer
     public function getContext(): array
     {
         return [
-            'route' => $this->environment->getRoute(),
+            'route' => $this->serverRequest->getRoute(),
             'routeParams' => [], // will be set by page renderer middleware
-            'baseUrl' => $this->environment->getBaseUrl(),
+            'baseUrl' => $this->serverRequest->getBaseUrl(),
             'theme' => $this->config->getAsString('theme'),
             'site' => $this->site,
             'page' => null, // will be set by page renderer middleware

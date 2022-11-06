@@ -11,17 +11,15 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class UrlGenerator
 {
+    private ServerRequest $serverRequest;
     private ServerRequestInterface $request;
-
-    private Environment $environment;
-
     private bool $niceUrls;
 
-    public function __construct(Config $config, Environment $environment, ServerRequestInterface $request)
+    public function __construct(Config $config, ServerRequest $serverRequest, ServerRequestInterface $request)
     {
-        $this->environment = $environment;
-        $this->niceUrls = $config->getAsBool('niceUrls');
+        $this->serverRequest = $serverRequest;
         $this->request = $request;
+        $this->niceUrls = $config->getAsBool('niceUrls');
     }
 
     /**
@@ -33,9 +31,9 @@ final class UrlGenerator
     {
         $route = str_unleading_slash($route);
         if ($this->niceUrls) {
-            $url = $this->environment->getBasePath() . '/' . $route;
+            $url = $this->serverRequest->getBaseUrl() . '/' . $route;
         } else {
-            $url = $this->environment->getScriptName() . '/' . $route;
+            $url = $this->serverRequest->getScriptUrl() . '/' . $route;
         }
         return $this->filterUrl($url);
     }

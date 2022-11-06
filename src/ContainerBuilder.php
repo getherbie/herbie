@@ -54,7 +54,7 @@ final class ContainerBuilder
         $c->set(Assets::class, function (ContainerInterface $c) {
             return new Assets(
                 $c->get(Alias::class),
-                $c->get(Environment::class)
+                $c->get(ServerRequest::class)->getBaseUrl()
             );
         });
 
@@ -77,7 +77,7 @@ final class ContainerBuilder
                 'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
                 'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
-                'WEB_URL' => str_untrailing_slash($c->get(Environment::class)->getBaseUrl())
+                'WEB_URL' => str_untrailing_slash($c->get(ServerRequest::class)->getBaseUrl())
             ];
 
             $processor = function (array $data) use ($const) {
@@ -193,7 +193,7 @@ final class ContainerBuilder
                     $c->get(PageResolverMiddleware::class),
                     $c->get(PageRendererMiddleware::class)
                 ],
-                $c->get(Environment::class)->getRoute()
+                $c->get(ServerRequest::class)->getRoute()
             );
         });
 
@@ -212,10 +212,10 @@ final class ContainerBuilder
             $options = $c->get(Config::class)->getAsArray('components.pageRendererMiddleware');
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
-                $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(HttpFactory::class),
+                $c->get(ServerRequest::class),
                 $c->get(UrlGenerator::class),
                 $options
             );
@@ -230,8 +230,8 @@ final class ContainerBuilder
 
         $c->set(PageResolverMiddleware::class, function (ContainerInterface $c) {
             return new PageResolverMiddleware(
-                $c->get(Environment::class),
                 $c->get(PageRepositoryInterface::class),
+                $c->get(ServerRequest::class),
                 $c->get(UrlMatcher::class)
             );
         });
@@ -247,6 +247,10 @@ final class ContainerBuilder
             );
         });
 
+        $c->set(ServerRequest::class, function (ContainerInterface $c) {
+            return new ServerRequest($c->get(ServerRequestInterface::class));
+        });
+
         $c->set(ServerRequestInterface::class, function (ContainerInterface $c) {
             return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
         });
@@ -255,8 +259,8 @@ final class ContainerBuilder
             return new Site(
                 $c->get(Config::class),
                 $c->get(DataRepositoryInterface::class),
-                $c->get(Environment::class),
-                $c->get(PageRepositoryInterface::class)
+                $c->get(PageRepositoryInterface::class),
+                $c->get(ServerRequest::class),
             );
         });
 
@@ -277,9 +281,9 @@ final class ContainerBuilder
         $c->set(TwigRenderer::class, function (ContainerInterface $c) {
             return new TwigRenderer(
                 $c->get(Config::class),
-                $c->get(Environment::class),
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
+                $c->get(ServerRequest::class),
                 $c->get(Site::class)
             );
         });
@@ -287,8 +291,8 @@ final class ContainerBuilder
         $c->set(UrlGenerator::class, function (ContainerInterface $c) {
             return new UrlGenerator(
                 $c->get(Config::class),
-                $c->get(Environment::class),
-                $c->get(ServerRequestInterface::class)
+                $c->get(ServerRequest::class),
+                $c->get(ServerRequestInterface::class),
             );
         });
 

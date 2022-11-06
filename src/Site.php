@@ -10,12 +10,9 @@ namespace herbie;
 final class Site
 {
     private Config $config;
-
     private DataRepositoryInterface $dataRepository;
-
-    private Environment $environment;
-
     private PageRepositoryInterface $pageRepository;
+    private ServerRequest $serverRequest;
 
     /**
      * Site constructor.
@@ -23,13 +20,13 @@ final class Site
     public function __construct(
         Config $config,
         DataRepositoryInterface $dataRepository,
-        Environment $environment,
-        PageRepositoryInterface $pageRepository
+        PageRepositoryInterface $pageRepository,
+        ServerRequest $serverRequest
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
         $this->pageRepository = $pageRepository;
-        $this->environment = $environment;
+        $this->serverRequest = $serverRequest;
     }
 
     public function getTime(): string
@@ -57,7 +54,7 @@ final class Site
 
     public function getPageTrail(): PageTrail
     {
-        $route = $this->environment->getRoute();
+        $route = $this->serverRequest->getRoute();
         return $this->getPageList()->getPageTrail($route);
     }
 
