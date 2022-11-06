@@ -9,7 +9,7 @@ This documentation explains the most important topics for creating a website or 
 
 <ul>
     {% for item in site.pageList|filter("parentRoute=doc") %}
-    <li><a href="{{ item.route }}">{{ item.title }}</a></li>
+    <li><a href="{{ url(item.route) }}">{{ item.title }}</a></li>
     {% endfor %}
 </ul>
 
