@@ -19,7 +19,7 @@
 <a href="/">Herbie Tests</a>
 {%- for menu in site.pageTrail -%}
     {{- ' / ' -}}
-    <a href="{{ menu.route }}">{{ menu.title }}</a>
+    <a href="{{ url(menu.route) }}">{{ menu.title }}</a>
 {%- endfor -%}
 </div>
 
