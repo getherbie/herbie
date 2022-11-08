@@ -12,11 +12,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class PageResolverMiddleware implements MiddlewareInterface
 {
     public const HERBIE_REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
+    public const HERBIE_REQUEST_ATTRIBUTE_PATH = 'HERBIE_PATH';
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
 
     private PageRepositoryInterface $pageRepository;
-    private ServerRequest $serverRequest;
+    private Route $route;
     private UrlMatcher $urlMatcher;
 
     /**
@@ -24,17 +25,19 @@ final class PageResolverMiddleware implements MiddlewareInterface
      */
     public function __construct(
         PageRepositoryInterface $pageRepository,
-        ServerRequest $serverRequest,
+        Route $route,
         UrlMatcher $urlMatcher
     ) {
         $this->pageRepository = $pageRepository;
-        $this->serverRequest = $serverRequest;
+        $this->route = $route;
         $this->urlMatcher = $urlMatcher;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = $this->serverRequest->getRoute();
+        $pathInfo = $this->route->getPath();
+        $route = $this->route->getRoute();
+
         $matchedRoute = $this->urlMatcher->match($route);
 
         $page = null;
@@ -50,6 +53,7 @@ final class PageResolverMiddleware implements MiddlewareInterface
 
         $request = $request
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)
+            ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_PATH, $pathInfo)
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
 

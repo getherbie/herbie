@@ -6,7 +6,6 @@ namespace herbie;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
@@ -35,45 +34,53 @@ final class DownloadMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $uri = $request->getUri();
+        $pathInfo = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PATH);
+
+        if ($pathInfo === null) {
+            throw new SystemException(sprintf(
+                'Server Request Attribute "%s" not found',
+                PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PATH
+            ));
+        }
 
         // no download request? go to next middleware
-        if (!$this->isDownloadRequest($uri)) {
+        if (!$this->isDownloadRequest($pathInfo)) {
             return $handler->handle($request);
         }
 
-        $filepath = $this->getFilePath($uri);
+        $filepath = $this->getFilePath($pathInfo);
 
         // no valid file? throw exception
         if (!is_file($filepath) || !is_readable($filepath)) {
-            throw HttpException::fileNotFound($uri->getPath());
+            throw HttpException::fileNotFound($pathInfo);
         }
 
         // everything ok, create response
         $httpFactory = HttpFactory::instance();
         $stream = $httpFactory->createStreamFromFile($filepath);
         $contentType = $this->determineContentType($filepath);
+
         return $httpFactory->createResponse()
-            ->withHeader('Content-type', $contentType)
+            ->withHeader('Content-Disposition', sprintf('attachment; filename="%s"', basename($filepath)))
+            ->withHeader('Content-Length', $stream->getSize())
+            ->withHeader('Content-Type', $contentType)
             ->withBody($stream);
     }
 
-    private function isDownloadRequest(UriInterface $uri): bool
+    private function isDownloadRequest(string $pathInfo): bool
     {
-        $uriPath = $uri->getPath();
-        $pos = strpos($uriPath, $this->baseUrl);
+        $pos = strpos($pathInfo, $this->baseUrl);
         if ($pos === 0) {
             return true;
         }
         return false;
     }
 
-    private function getFilePath(UriInterface $uri): string
+    private function getFilePath(string $pathInfo): string
     {
-        $uriPath = $uri->getPath();
-        $pos = strpos($uriPath, $this->baseUrl);
+        $pos = strpos($pathInfo, $this->baseUrl);
         if ($pos === 0) {
-            $filePath = $this->storagePath . substr($uriPath, strlen($this->baseUrl));
+            $filePath = $this->storagePath . substr($pathInfo, strlen($this->baseUrl));
             return $this->alias->get($filePath);
         }
         return '';

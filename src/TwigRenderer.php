@@ -24,8 +24,9 @@ final class TwigRenderer
     private TwigEnvironment $twig;
     private EventManager $eventManager;
     private LoggerInterface $logger;
-    private ServerRequest $serverRequest;
     private Site $site;
+    private string $baseUrl;
+    private string $route;
 
     /**
      * TwigRenderer constructor.
@@ -34,15 +35,17 @@ final class TwigRenderer
         Config $config,
         EventManager $eventManager,
         LoggerInterface $logger,
-        ServerRequest $serverRequest,
-        Site $site
+        Site $site,
+        string $baseUrl,
+        string $route
     ) {
         $this->initialized = false;
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->logger = $logger;
-        $this->serverRequest = $serverRequest;
         $this->site = $site;
+        $this->baseUrl = $baseUrl;
+        $this->route = $route;
     }
 
     /**
@@ -131,9 +134,9 @@ final class TwigRenderer
     public function getContext(): array
     {
         return [
-            'route' => $this->serverRequest->getRoute(),
+            'route' => $this->route,
             'routeParams' => [], // will be set by page renderer middleware
-            'baseUrl' => $this->serverRequest->getBaseUrl(),
+            'baseUrl' => $this->baseUrl,
             'theme' => $this->config->getAsString('theme'),
             'site' => $this->site,
             'page' => null, // will be set by page renderer middleware

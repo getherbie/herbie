@@ -12,7 +12,7 @@ final class Site
     private Config $config;
     private DataRepositoryInterface $dataRepository;
     private PageRepositoryInterface $pageRepository;
-    private ServerRequest $serverRequest;
+    private Route $route;
 
     /**
      * Site constructor.
@@ -21,12 +21,12 @@ final class Site
         Config $config,
         DataRepositoryInterface $dataRepository,
         PageRepositoryInterface $pageRepository,
-        ServerRequest $serverRequest
+        Route $Route
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
         $this->pageRepository = $pageRepository;
-        $this->serverRequest = $serverRequest;
+        $this->route = $Route;
     }
 
     public function getTime(): string
@@ -54,7 +54,7 @@ final class Site
 
     public function getPageTrail(): PageTrail
     {
-        $route = $this->serverRequest->getRoute();
+        $route = $this->route->getRoute();
         return $this->getPageList()->getPageTrail($route);
     }
 

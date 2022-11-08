@@ -1,22 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 namespace herbie;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * The URLGenerator creates URLs based on the given route.
- */
-final class UrlGenerator
+class UrlManager
 {
     private ServerRequestInterface $serverRequest;
     private string $baseUrl;
-    private string $scriptUrl;
     private bool $niceUrls;
+    private string $scriptUrl;
 
-    public function __construct(ServerRequestInterface $serverRequest, array $options)
+    public function __construct(ServerRequestInterface $serverRequest, array $options = [])
     {
         $this->serverRequest = $serverRequest;
         $this->baseUrl = (string)($options['baseUrl'] ?? '');
@@ -24,12 +19,7 @@ final class UrlGenerator
         $this->scriptUrl = (string)($options['scriptUrl'] ?? '');
     }
 
-    /**
-     * Generates a relative URL based on the given route.
-     * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
-     * @return string The generated relative URL.
-     */
-    public function generate(string $route): string
+    public function createUrl(string $route)
     {
         $route = str_unleading_slash($route);
         if ($this->niceUrls) {
@@ -40,16 +30,19 @@ final class UrlGenerator
         return $this->filterUrl($url);
     }
 
-    /**
-     * Generates an absolute URL based on the given route.
-     * @param string $route The URL route. This should be in the format of 'route/to/a/page'.
-     * @return string The generated absolute URL.
-     */
-    public function generateAbsolute(string $route): string
+    public function createAbsoluteUrl(string $route): string
     {
         $path = $this->generate($route);
         $absUrl = $this->serverRequest->getUri()->withPath($path);
         return strval($absUrl);
+    }
+
+    public function parseRequest()
+    {
+        return [
+            (string)'route',
+            []
+        ];
     }
 
     /**

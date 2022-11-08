@@ -30,6 +30,9 @@ class UnitTester extends \Codeception\Actor
     {
         $webDir = dirname(__DIR__) . '/_data/web';
         $app = new Application(new ApplicationPaths($appDir, $siteDir, $vendorDir, $webDir));
+        $app->setBaseUrl('');
+        $app->setScriptFile('');
+        $app->setScriptUrl('');
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();
         $app->getTranslator()->init();

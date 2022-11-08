@@ -54,7 +54,7 @@ final class ContainerBuilder
         $c->set(Assets::class, function (ContainerInterface $c) {
             return new Assets(
                 $c->get(Alias::class),
-                $c->get(ServerRequest::class)->getBaseUrl()
+                $this->app->getBaseUrl()
             );
         });
 
@@ -77,7 +77,7 @@ final class ContainerBuilder
                 'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
                 'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
-                'WEB_URL' => str_untrailing_slash($c->get(ServerRequest::class)->getBaseUrl())
+                'WEB_URL' => str_untrailing_slash($this->app->getBaseUrl())
             ];
 
             $processor = function (array $data) use ($const) {
@@ -183,17 +183,18 @@ final class ContainerBuilder
 
         $c->set(MiddlewareDispatcher::class, function (ContainerInterface $c) {
             return new MiddlewareDispatcher(
+                $c,
                 [
-                    $c->get(ErrorHandlerMiddleware::class) // only one at the moment
+                    $c->get(ErrorHandlerMiddleware::class), // only one at the moment
+                    $c->get(PageResolverMiddleware::class),
                 ],
                 $c->get(PluginManager::class)->getAppMiddlewares(),
                 $c->get(PluginManager::class)->getRouteMiddlewares(),
                 [
                     $c->get(DownloadMiddleware::class),
-                    $c->get(PageResolverMiddleware::class),
                     $c->get(PageRendererMiddleware::class)
                 ],
-                $c->get(ServerRequest::class)->getRoute()
+                $c->get(ServerRequestInterface::class)->getUri()->getPath()
             );
         });
 
@@ -215,7 +216,6 @@ final class ContainerBuilder
                 $c->get(EventManager::class),
                 $c->get(FilterChainManager::class),
                 $c->get(HttpFactory::class),
-                $c->get(ServerRequest::class),
                 $c->get(UrlGenerator::class),
                 $options
             );
@@ -231,7 +231,7 @@ final class ContainerBuilder
         $c->set(PageResolverMiddleware::class, function (ContainerInterface $c) {
             return new PageResolverMiddleware(
                 $c->get(PageRepositoryInterface::class),
-                $c->get(ServerRequest::class),
+                $c->get(Route::class),
                 $c->get(UrlMatcher::class)
             );
         });
@@ -247,10 +247,6 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(ServerRequest::class, function (ContainerInterface $c) {
-            return new ServerRequest($c->get(ServerRequestInterface::class));
-        });
-
         $c->set(ServerRequestInterface::class, function (ContainerInterface $c) {
             return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
         });
@@ -260,7 +256,7 @@ final class ContainerBuilder
                 $c->get(Config::class),
                 $c->get(DataRepositoryInterface::class),
                 $c->get(PageRepositoryInterface::class),
-                $c->get(ServerRequest::class),
+                $c->get(Route::class),
             );
         });
 
@@ -283,16 +279,20 @@ final class ContainerBuilder
                 $c->get(Config::class),
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
-                $c->get(ServerRequest::class),
-                $c->get(Site::class)
+                $c->get(Site::class),
+                $this->app->getBaseUrl(),
+                $c->get(Route::class)->getRoute(),
             );
         });
 
         $c->set(UrlGenerator::class, function (ContainerInterface $c) {
             return new UrlGenerator(
-                $c->get(Config::class),
-                $c->get(ServerRequest::class),
                 $c->get(ServerRequestInterface::class),
+                [
+                    'baseUrl' => $this->app->getBaseUrl(),
+                    'niceUrls' => $c->get(Config::class)->getAsBool('niceUrls'),
+                    'scriptUrl' => $this->app->getScriptUrl(),
+                ]
             );
         });
 
@@ -301,6 +301,12 @@ final class ContainerBuilder
                 $c->get(Config::class)->getAsConfig('components.urlMatcher'),
                 $c->get(PageRepositoryInterface::class)
             );
+        });
+
+        $c->set(Route::class, function (ContainerInterface $c) {
+            /** @var ServerRequestInterface $serverRequest */
+            $serverRequest = $c->get(ServerRequestInterface::class);
+            return new Route($serverRequest->getUri()->getPath());
         });
 
         return $c;

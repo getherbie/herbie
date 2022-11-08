@@ -11,6 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class MiddlewareDispatcher implements RequestHandlerInterface
 {
+    private Container $container;
     /** @var MiddlewareInterface[]|string[] */
     private array $composedMiddlewares;
     private array $middlewares;
@@ -19,12 +20,14 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
      * Dispatcher constructor.
      */
     public function __construct(
+        Container $container,
         array $prependMiddlewares,
         array $appMiddlewares,
         array $routeMiddlewares,
         array $appendMiddlewares,
         string $route
     ) {
+        $this->container = $container;
         $this->middlewares = array_merge($prependMiddlewares, $appMiddlewares, $routeMiddlewares, $appendMiddlewares);
         $this->composedMiddlewares = $this->composeMiddlewares(
             $prependMiddlewares,
@@ -63,6 +66,9 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();
+        $this->container->set(ServerRequestInterface::class, function () use ($request) {
+            return $request;
+        });
         next($this->composedMiddlewares);
         return $current->process($request, $this);
     }
