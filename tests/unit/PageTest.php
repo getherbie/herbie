@@ -148,12 +148,17 @@ final class PageTest extends \Codeception\Test\Unit
             'menu_title' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
             'path' => '@page/pagedata.md',
-            'redirect' => [],
+            'redirect' => ['test', 301],
             'route' => '',
             'tags' => [],
             'title' => 'Page Data',
             'twig' => true,
-            'type' => 'my_type'
+            'type' => 'my_type',
+            'a' => 'A',
+            'b' => 2,
+            'c' => true,
+            'd' => ['one', 'two'],
+            'e' => 5.74
         ];
 
         $expected = array_merge($data, ['segments' => []]);
