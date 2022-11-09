@@ -60,6 +60,9 @@ final class UrlManager
         if (is_string($url)) {
             $url = str_untrailing_slash($url);
         }
+        if ($url === $this->scriptUrl) {
+            $url = '/';
+        }
         return empty($url) ? '/' : $url;
     }
 
