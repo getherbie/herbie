@@ -9,6 +9,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 /**
  * @property string[] $authors
  * @property bool $cached
+ * @property-read string $cacheId
  * @property string[] $categories
  * @property string $content_type
  * @property string $created
@@ -100,6 +101,11 @@ trait PageItemTrait
     public function setTitle(string $title): void
     {
         $this->title = trim($title);
+    }
+
+    public function getCacheId(): string
+    {
+        return 'page-' . $this->path;
     }
 
     public function getType(): string

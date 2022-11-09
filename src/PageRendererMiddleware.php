@@ -66,7 +66,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
 
         $rendered = null;
 
-        $cacheId = 'page-' . $page->getPath();
+        $cacheId = $page->getCacheId();
         if ($this->cacheEnable && !empty($page->getCached())) {
             $rendered = $this->cache->get($cacheId);
         }
