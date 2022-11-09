@@ -13,6 +13,7 @@ final class UrlManager
     private bool $niceUrls;
     private array $rules;
     private string $scriptUrl;
+    /** @var array{string, array<string, string>}|null */
     private ?array $parsedRequest;
 
     public function __construct(ServerRequestInterface $serverRequest, array $options = [])
@@ -63,11 +64,11 @@ final class UrlManager
     }
 
     /**
-     * @return array{rule: string, route: string, params: array<string, string>}|null
+     * @return array{string, array<string, string>}
      */
-    public function parseRequest(): ?array
+    public function parseRequest(): array
     {
-        if ($this->parsedRequest) {
+        if (isset($this->parsedRequest)) {
             return $this->parsedRequest;
         }
         $path = $this->serverRequest->getUri()->getPath();

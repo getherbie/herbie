@@ -21,8 +21,8 @@ final class Application
     private array $appMiddlewares;
     private ApplicationPaths $appPaths;
     private ContainerInterface $container;
-    /** @var string[] */
     private ?string $baseUrl;
+    /** @var string[] */
     private array $commands;
     private array $events;
     private array $filters;
@@ -186,13 +186,14 @@ final class Application
         if ($this->scriptUrl === null) {
             $scriptFile = $this->getScriptFile();
             $scriptName = basename($scriptFile);
+            $phpSelf = $_SERVER['PHP_SELF'] ?? null;
             if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) === $scriptName) {
                 $this->scriptUrl = $_SERVER['SCRIPT_NAME'];
-            } elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) === $scriptName) {
-                $this->scriptUrl = $_SERVER['PHP_SELF'];
+            } elseif (isset($phpSelf) && basename($phpSelf) === $scriptName) {
+                $this->scriptUrl = $phpSelf;
             } elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === $scriptName) {
                 $this->scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
-            } elseif (isset($_SERVER['PHP_SELF']) && ($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
+            } elseif (isset($phpSelf) && ($pos = strpos($phpSelf, '/' . $scriptName)) !== false) {
                 $this->scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
                 $this->scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);

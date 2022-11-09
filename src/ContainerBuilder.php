@@ -193,7 +193,7 @@ final class ContainerBuilder
                     $c->get(DownloadMiddleware::class),
                     $c->get(PageRendererMiddleware::class),
                 ],
-                reset($c->get(UrlManager::class)->parseRequest())
+                $c->get(UrlManager::class)->parseRequest()[0]
             );
         });
 
