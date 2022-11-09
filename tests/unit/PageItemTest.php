@@ -3,6 +3,8 @@
 namespace tests\unit;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use BadMethodCallException;
+use InvalidArgumentException;
 use herbie\PageItem;
 
 final class PageItemTest extends \Codeception\Test\Unit
@@ -20,6 +22,27 @@ final class PageItemTest extends \Codeception\Test\Unit
     // Tests for...
     // ---------------------------------------------------------
     // string[] $authors
+    public function testAuthors()
+    {
+        PageItem::setSlugGenerator(new SlugGenerator());
+
+        $pageItem = new PageItem();
+        $this->assertFalse($pageItem->hasAuthor('None Existing'));
+        $this->assertEquals('', $pageItem->getAuthor('None Existing'));
+
+        $pageItem->setAuthor(' Jaco Pastorius ');
+        $pageItem->setAuthor("\n\nJames Jamerson\t\n\r");
+        $this->assertTrue($pageItem->hasAuthor('Jaco Pastorius'));
+        $this->assertTrue($pageItem->hasAuthor('James Jamerson'));
+        $this->assertEquals('Jaco Pastorius', $pageItem->getAuthor('Jaco Pastorius'));
+        $this->assertEquals('James Jamerson', $pageItem->getAuthor('James Jamerson'));
+
+        $pageItem->setAuthors(['Carol Kaye', 'Mark King']);
+        $this->assertTrue($pageItem->hasAuthor('Carol Kaye'));
+        $this->assertTrue($pageItem->hasAuthor('Mark King'));
+
+        PageItem::unsetSlugGenerator();
+    }
 
     // bool $cached
     public function testCached()
@@ -38,6 +61,27 @@ final class PageItemTest extends \Codeception\Test\Unit
     }
 
     // string[] $categories
+    public function testCategories()
+    {
+        PageItem::setSlugGenerator(new SlugGenerator());
+
+        $pageItem = new PageItem();
+        $this->assertFalse($pageItem->hasCategory('None Existing Category'));
+        $this->assertEquals('', $pageItem->getCategory('None Existing Category'));
+
+        $pageItem->setCategory('Cool Jazz');
+        $pageItem->setCategory('Modern Jazz');
+        $this->assertTrue($pageItem->hasCategory('Cool Jazz'));
+        $this->assertTrue($pageItem->hasCategory('Modern Jazz'));
+        $this->assertEquals('Cool Jazz', $pageItem->getCategory('Cool Jazz'));
+        $this->assertEquals('Modern Jazz', $pageItem->getCategory('Modern Jazz'));
+
+        $pageItem->setCategories(['New-Orleans-Jazz', 'Soul-Jazz']);
+        $this->assertTrue($pageItem->hasCategory('New-Orleans-Jazz'));
+        $this->assertTrue($pageItem->hasCategory('Soul-Jazz'));
+
+        PageItem::unsetSlugGenerator();
+    }
 
     // string $content_type
     public function testContentType()
@@ -235,17 +279,20 @@ final class PageItemTest extends \Codeception\Test\Unit
         // invalid values with exceptions
         $invalidValues = [
             [42, 'Redirect must be a string or an array{string,int}.'],
-            ['', 'Redirect URL must be a non-empty string.'],
+            [true, 'Redirect must be a string or an array{string,int}.'],
+            ['', 'Redirect must be a non-empty string.'],
+            [[], 'Redirect must be a non-empty array.'],
             [['one-entry'], 'Redirect array must be an array{string,int}.'],
+            [['/foo', 'no-integer'], 'Redirect array[1] must be a integer.'],
             [[false, 301], 'Redirect array[0] must be a string.'],
+            [['', 300], 'Redirect array[0] must be a non-empty string.'],
             [['/foo', 299], 'Redirect array[1] must be a status code between 300 and 308.'],
             [['/bar', 309], 'Redirect array[1] must be a status code between 300 and 308.'],
-            [['', 300], 'Redirect URL must be a non-empty string.'],
         ];
         foreach ($invalidValues as $value) {
             try {
                 $pageItem->setRedirect($value[0]);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $message = 'Testing ' . json_encode($value[0]);
                 $this->assertEquals($value[1], $e->getMessage(), $message);
             }
@@ -267,6 +314,27 @@ final class PageItemTest extends \Codeception\Test\Unit
     }
 
     // string[] $tags
+    public function testTags()
+    {
+        PageItem::setSlugGenerator(new SlugGenerator());
+
+        $pageItem = new PageItem();
+        $this->assertFalse($pageItem->hasTag('None Existing Tag'));
+        $this->assertEquals('', $pageItem->getTag('None Existing Tag'));
+
+        $pageItem->setTag('Calypso');
+        $pageItem->setTag('Son Cubano');
+        $this->assertTrue($pageItem->hasTag('Calypso'));
+        $this->assertTrue($pageItem->hasTag('Son Cubano'));
+        $this->assertEquals('Calypso', $pageItem->getTag('Calypso'));
+        $this->assertEquals('Son Cubano', $pageItem->getTag('Son Cubano'));
+
+        $pageItem->setTags(['Merengue', 'Salsa']);
+        $this->assertTrue($pageItem->hasTag('Merengue'));
+        $this->assertTrue($pageItem->hasTag('Salsa'));
+
+        PageItem::unsetSlugGenerator();
+    }
 
     // string $title
     public function testTitle()
@@ -310,6 +378,86 @@ final class PageItemTest extends \Codeception\Test\Unit
         // magic setter/getter
         $pageItem->type = "\n blog "; // with whitespace
         $this->assertEquals('blog', $pageItem->type);
+    }
+
+    public function testToString()
+    {
+        $pageItem = new PageItem();
+        $this->assertEquals('', (string)$pageItem);
+        $pageItem->title = 'Title';
+        $this->assertEquals('Title', (string)$pageItem);
+    }
+
+    public function testToArray()
+    {
+        $data = [
+            // member data
+            'authors' => [],
+            'cached' => true,
+            'categories' => [],
+            'content_type' => 'text/html',
+            'created' => '',
+            'date' => '',
+            'excerpt' => '',
+            'format' => 'raw',
+            'hidden' => false,
+            'keep_extension' => false,
+            'layout' => 'default',
+            'menu_title' => '',
+            'modified' => '',
+            'path' => '',
+            'redirect' => ['test', 302],
+            'route' => '',
+            'tags' => [],
+            'title' => '',
+            'twig' => true,
+            'type' => 'page',
+            // custom data
+            'aaa' => 'a',
+            'bbb' => [],
+            'ccc' => true,
+            'ddd' => 42,
+            'eee' => 23.375
+        ];
+        $pageItem = new PageItem($data);
+        $this->assertEquals($data, $pageItem->toArray());
+    }
+
+    public function testMagicMethods()
+    {
+        $pageItem = new PageItem(['title' => 'My Title']);
+        $this->assertTrue(isset($pageItem->title));
+        $this->assertEquals('My Title', $pageItem->title);
+        $pageItem->customTitle = 'Custom Title';
+        $this->assertTrue(isset($pageItem->customTitle));
+        $this->assertEquals('Custom Title', $pageItem->customTitle);
+        $this->assertFalse(isset($pageItem->nonExistingVariable));
+        $this->expectExceptionMessage('Field nonExistingVariable does not exist.');
+        (string)$pageItem->nonExistingVariable;
+    }
+
+    public function testWithSlugGenerator()
+    {
+        $pageItem = new PageItem(['author' => 'Niels-Henning Ørsted Pedersen']);
+        try {
+        } catch (BadMethodCallException $e) {
+            $this->assertEquals('SlugGenerator not set.', $e->getMessage());
+        }
+        $this->assertNull(PageItem::setSlugGenerator(new SlugGenerator()));
+        $this->assertEquals('Niels-Henning Ørsted Pedersen', $pageItem->getAuthor('Niels-Henning Ørsted Pedersen'));
+        $this->assertNull(PageItem::unsetSlugGenerator());
+        try {
+            $pageItem->getAuthor('Niels-Henning Ørsted Pedersen');
+        } catch (BadMethodCallException $e) {
+            $this->assertEquals('SlugGenerator not set.', $e->getMessage());
+        }
+    }
+
+    public function testSetDataWithDataKey()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Field data is not allowed.');
+        new PageItem(['data' => 'foo/bar']);
     }
 
     // ---------------------------------------------------------

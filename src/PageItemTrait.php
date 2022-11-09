@@ -58,7 +58,7 @@ trait PageItemTrait
     private bool $twig;
     private string $type;
 
-    private static ?SlugGenerator $slugGenerator;
+    private static ?SlugGenerator $slugGenerator = null;
 
     /**
      * @param array<string, mixed> $data
@@ -145,29 +145,35 @@ trait PageItemTrait
      */
     public function setRedirect($redirect): void
     {
+        if (!is_array($redirect) && !is_string($redirect)) {
+            throw new \InvalidArgumentException('Redirect must be a string or an array{string,int}.');
+        }
         if (is_string($redirect)) {
             $redirect = trim($redirect);
             if (strlen($redirect) === 0) {
-                return;
+                throw new \InvalidArgumentException('Redirect must be a non-empty string.');
             }
             $redirect = [$redirect, 302];
-        } elseif (is_array($redirect)) {
-            $count = count($redirect);
-            if ($count === 0) {
-                return;
-            }
-            if ($count <> 2) {
-                throw new \InvalidArgumentException('Redirect array must be an array{string,int}.');
-            }
-            if (!is_string($redirect[0])) {
-                throw new \InvalidArgumentException('Redirect array[0] must be a string.');
-            }
-            if (!is_natural($redirect[1]) || $redirect[1] < 300 || $redirect[1] > 308) {
-                throw new \InvalidArgumentException('Redirect array[1] must be a status code between 300 and 308.');
-            }
-            $redirect[0] = trim($redirect[0]);
-        } else {
-            throw new \InvalidArgumentException('Redirect must be a string or an array{string,int}.');
+        }
+        $count = count($redirect);
+        if ($count === 0) {
+            throw new \InvalidArgumentException('Redirect must be a non-empty array.');
+        }
+        if ($count <> 2) {
+            throw new \InvalidArgumentException('Redirect array must be an array{string,int}.');
+        }
+        if (!is_string($redirect[0])) {
+            throw new \InvalidArgumentException('Redirect array[0] must be a string.');
+        }
+        $redirect[0] = trim($redirect[0]);
+        if (strlen($redirect[0]) === 0) {
+            throw new \InvalidArgumentException('Redirect array[0] must be a non-empty string.');
+        }
+        if (!is_natural($redirect[1])) {
+            throw new \InvalidArgumentException('Redirect array[1] must be a integer.');
+        }
+        if ($redirect[1] < 300 || $redirect[1] > 308) {
+            throw new \InvalidArgumentException('Redirect array[1] must be a status code between 300 and 308.');
         }
         $this->redirect = $redirect;
     }
@@ -300,9 +306,9 @@ trait PageItemTrait
      */
     public function setCategories(array $categories): void
     {
-        $categories = array_map('trim', $categories);
-        $categories = array_unique($categories);
-        $this->categories = $categories;
+        foreach ($categories as $category) {
+            $this->setCategory($category);
+        }
     }
 
     public function setCategory(string $category): void
@@ -318,9 +324,9 @@ trait PageItemTrait
      */
     public function setTags(array $tags): void
     {
-        $tags = array_map('trim', $tags);
-        $tags = array_unique($tags);
-        $this->tags = $tags;
+        foreach ($tags as $tag) {
+            $this->setTag($tag);
+        }
     }
 
     public function setTag(string $tag): void
@@ -336,9 +342,9 @@ trait PageItemTrait
      */
     public function setAuthors(array $authors): void
     {
-        $authors = array_map('trim', $authors);
-        $authors = array_unique($authors);
-        $this->authors = $authors;
+        foreach ($authors as $author) {
+            $this->setAuthor($author);
+        }
     }
 
     public function setAuthor(string $author): void
@@ -546,13 +552,13 @@ trait PageItemTrait
                 $array[$name] = $this->$method();
             }
         }
-        return $array;
+        return array_merge($array, $this->customData);
     }
 
     private function slugify(string $slug): string
     {
         if (is_null(self::$slugGenerator)) {
-            throw new \BadMethodCallException('SlugGenerator not set');
+            throw new \BadMethodCallException('SlugGenerator not set.');
         }
         return self::$slugGenerator->generate($slug);
     }
@@ -560,6 +566,11 @@ trait PageItemTrait
     public static function setSlugGenerator(SlugGenerator $slugGenerator): void
     {
         self::$slugGenerator = $slugGenerator;
+    }
+
+    public static function unsetSlugGenerator(): void
+    {
+        self::$slugGenerator = null;
     }
 
     /**
