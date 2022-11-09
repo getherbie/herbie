@@ -12,8 +12,7 @@ use herbie\EventInterface;
 use herbie\Plugin;
 use herbie\Translator;
 use herbie\TwigRenderer;
-use herbie\UrlGenerator;
-use Psr\Log\LoggerInterface;
+use herbie\UrlManager;
 
 final class TwigCorePlugin extends Plugin
 {
@@ -22,7 +21,7 @@ final class TwigCorePlugin extends Plugin
     private Environment $environment;
     private SlugGenerator $slugGenerator;
     private Translator $translator;
-    private UrlGenerator $urlGenerator;
+    private UrlManager $urlManager;
 
     public function __construct(
         Alias $alias,
@@ -30,14 +29,14 @@ final class TwigCorePlugin extends Plugin
         Environment $environment,
         SlugGenerator $slugGenerator,
         Translator $translator,
-        UrlGenerator $urlGenerator
+        UrlManager $urlManager
     ) {
         $this->alias = $alias;
         $this->assets = $assets;
         $this->environment = $environment;
         $this->slugGenerator = $slugGenerator;
         $this->translator = $translator;
-        $this->urlGenerator = $urlGenerator;
+        $this->urlManager = $urlManager;
     }
 
     public function events(): array
@@ -58,7 +57,7 @@ final class TwigCorePlugin extends Plugin
             $this->slugGenerator,
             $this->translator,
             $twigRenderer,
-            $this->urlGenerator
+            $this->urlManager
         ));
     }
 }

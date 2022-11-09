@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -24,8 +25,9 @@ final class TwigRenderer
     private TwigEnvironment $twig;
     private EventManager $eventManager;
     private LoggerInterface $logger;
-    private ServerRequest $serverRequest;
     private Site $site;
+    private UrlManager $urlManager;
+    private string $baseUrl;
 
     /**
      * TwigRenderer constructor.
@@ -34,15 +36,17 @@ final class TwigRenderer
         Config $config,
         EventManager $eventManager,
         LoggerInterface $logger,
-        ServerRequest $serverRequest,
-        Site $site
+        Site $site,
+        UrlManager $urlManager,
+        string $baseUrl
     ) {
         $this->initialized = false;
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->logger = $logger;
-        $this->serverRequest = $serverRequest;
         $this->site = $site;
+        $this->urlManager = $urlManager;
+        $this->baseUrl = $baseUrl;
     }
 
     /**
@@ -130,10 +134,11 @@ final class TwigRenderer
      */
     public function getContext(): array
     {
+        [$route, $routeParams] = $this->urlManager->parseRequest();
         return [
-            'route' => $this->serverRequest->getRoute(),
-            'routeParams' => [], // will be set by page renderer middleware
-            'baseUrl' => $this->serverRequest->getBaseUrl(),
+            'route' => $route,
+            'routeParams' => $routeParams,
+            'baseUrl' => $this->baseUrl,
             'theme' => $this->config->getAsString('theme'),
             'site' => $this->site,
             'page' => null, // will be set by page renderer middleware

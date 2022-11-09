@@ -15,7 +15,7 @@ use herbie\PageTreeIterator;
 use herbie\Selector;
 use herbie\Translator;
 use herbie\TwigRenderer;
-use herbie\UrlGenerator;
+use herbie\UrlManager;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -23,6 +23,7 @@ use Twig\TwigTest;
 
 use function herbie\date_format;
 use function herbie\file_size;
+use function herbie\str_leading_slash;
 use function herbie\str_trailing_slash;
 use function herbie\time_format;
 
@@ -40,7 +41,7 @@ final class TwigCoreExtension extends AbstractExtension
 
     private TwigRenderer $twigRenderer;
 
-    private UrlGenerator $urlGenerator;
+    private UrlManager $urlManager;
 
     /**
      * TwigExtension constructor.
@@ -52,7 +53,7 @@ final class TwigCoreExtension extends AbstractExtension
         SlugGenerator $slugGenerator,
         Translator $translator,
         TwigRenderer $twigRenderer,
-        UrlGenerator $urlGenerator
+        UrlManager $urlManager
     ) {
         $this->alias = $alias;
         $this->assets = $assets;
@@ -60,7 +61,7 @@ final class TwigCoreExtension extends AbstractExtension
         $this->slugGenerator = $slugGenerator;
         $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
-        $this->urlGenerator = $urlGenerator;
+        $this->urlManager = $urlManager;
     }
 
     /**
@@ -231,11 +232,11 @@ final class TwigCoreExtension extends AbstractExtension
 
         /** @var Config $config from download middleware */
         $config = $context['config'];
-        $baseUrl = str_trailing_slash($config->getAsString('components.downloadMiddleware.baseUrl'));
+        $baseUrl = str_trailing_slash($config->getAsString('components.downloadMiddleware.route'));
         $storagePath = str_trailing_slash($config->getAsString('components.downloadMiddleware.storagePath'));
 
         // combine url and path
-        $href = $baseUrl . $path;
+        $href = $this->urlManager->createUrl($baseUrl . $path);
         $path = $this->alias->get($storagePath . $path);
 
         if (!empty($info)) {
@@ -307,7 +308,7 @@ final class TwigCoreExtension extends AbstractExtension
         $scheme = parse_url($route, PHP_URL_SCHEME);
         if (is_null($scheme)) {
             $class = 'link--internal';
-            $href = $this->urlGenerator->generate($route);
+            $href = $this->urlManager->createUrl($route);
         } else {
             $class = 'link--external';
             $href = $route;
@@ -334,12 +335,12 @@ final class TwigCoreExtension extends AbstractExtension
 
     public function functionUrl(string $route = ''): string
     {
-        return $this->urlGenerator->generate($route);
+        return $this->urlManager->createUrl($route);
     }
 
     public function functionAbsUrl(string $route = ''): string
     {
-        return $this->urlGenerator->generateAbsolute($route);
+        return $this->urlManager->createAbsoluteUrl($route);
     }
 
     public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string

@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 
 final class Application
@@ -21,10 +22,13 @@ final class Application
     private ApplicationPaths $appPaths;
     private ContainerInterface $container;
     /** @var string[] */
+    private ?string $baseUrl;
     private array $commands;
     private array $events;
     private array $filters;
     private array $routeMiddlewares;
+    private ?string $scriptFile;
+    private ?string $scriptUrl;
     private array $twigFilters;
     private array $twigGlobals;
     private array $twigFunctions;
@@ -44,10 +48,13 @@ final class Application
 
         $this->appMiddlewares = [];
         $this->appPaths = $paths;
+        $this->baseUrl = null;
         $this->commands = [];
         $this->events = [];
         $this->filters = [];
         $this->routeMiddlewares = [];
+        $this->scriptFile = null;
+        $this->scriptUrl = null;
         $this->twigFilters = [];
         $this->twigGlobals = [];
         $this->twigFunctions = [];
@@ -159,6 +166,66 @@ final class Application
             $herbiePath = dirname(__DIR__);
         }
         return $herbiePath . $append;
+    }
+
+    public function getScriptFile(): string
+    {
+        if (isset($this->scriptFile)) {
+            return $this->scriptFile;
+        }
+
+        if (isset($_SERVER['SCRIPT_FILENAME'])) {
+            return $_SERVER['SCRIPT_FILENAME'];
+        }
+
+        throw new RuntimeException('Unable to determine the entry script file path.');
+    }
+
+    public function getScriptUrl(): string
+    {
+        if ($this->scriptUrl === null) {
+            $scriptFile = $this->getScriptFile();
+            $scriptName = basename($scriptFile);
+            if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) === $scriptName) {
+                $this->scriptUrl = $_SERVER['SCRIPT_NAME'];
+            } elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) === $scriptName) {
+                $this->scriptUrl = $_SERVER['PHP_SELF'];
+            } elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === $scriptName) {
+                $this->scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
+            } elseif (isset($_SERVER['PHP_SELF']) && ($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
+                $this->scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
+            } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
+                $this->scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
+            } else {
+                throw new RuntimeException('Unable to determine the entry script URL.');
+            }
+        }
+
+        return $this->scriptUrl;
+    }
+
+    public function getBaseUrl(): string
+    {
+        if ($this->baseUrl === null) {
+            $this->baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
+        }
+
+        return $this->baseUrl;
+    }
+
+    public function setBaseUrl(string $baseUrl): void
+    {
+        $this->baseUrl = $baseUrl;
+    }
+
+    public function setScriptFile(string $scriptFile): void
+    {
+        $this->scriptFile = $scriptFile;
+    }
+
+    public function setScriptUrl(string $scriptUrl): void
+    {
+        $this->scriptUrl = $scriptUrl;
     }
 
     public function getAppPath(): string
@@ -332,7 +399,7 @@ final class Application
 
     public function getServerRequest(): ServerRequestInterface
     {
-        return $this->container->get(ServerRequest::class);
+        return $this->container->get(ServerRequestInterface::class);
     }
 
     public function getEventManager(): EventManager

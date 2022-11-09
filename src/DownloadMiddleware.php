@@ -6,7 +6,6 @@ namespace herbie;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
@@ -15,18 +14,18 @@ final class DownloadMiddleware implements MiddlewareInterface
 {
     private Alias $alias;
 
-    private string $baseUrl;
+    private string $route;
 
     private string $storagePath;
 
     /**
      * DownloadMiddleware constructor.
      */
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(Alias $alias, array $config)
     {
         $this->alias = $alias;
-        $this->baseUrl = str_trailing_slash($config->getAsString('baseUrl'));
-        $this->storagePath = str_trailing_slash($config->getAsString('storagePath'));
+        $this->route = str_trailing_slash((string)($config['route'] ?? ''));
+        $this->storagePath = str_trailing_slash((string)($config['storagePath'] ?? ''));
     }
 
     /**
@@ -35,18 +34,18 @@ final class DownloadMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $uri = $request->getUri();
+        $route = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE);
 
         // no download request? go to next middleware
-        if (!$this->isDownloadRequest($uri)) {
+        if (!$this->isDownloadRequest($route)) {
             return $handler->handle($request);
         }
 
-        $filepath = $this->getFilePath($uri);
+        $filepath = $this->getFilePath($route);
 
         // no valid file? throw exception
         if (!is_file($filepath) || !is_readable($filepath)) {
-            throw HttpException::fileNotFound($uri->getPath());
+            throw HttpException::fileNotFound($filepath);
         }
 
         // everything ok, create response
@@ -58,22 +57,20 @@ final class DownloadMiddleware implements MiddlewareInterface
             ->withBody($stream);
     }
 
-    private function isDownloadRequest(UriInterface $uri): bool
+    private function isDownloadRequest(string $route): bool
     {
-        $uriPath = $uri->getPath();
-        $pos = strpos($uriPath, $this->baseUrl);
+        $pos = strpos($route, $this->route);
         if ($pos === 0) {
             return true;
         }
         return false;
     }
 
-    private function getFilePath(UriInterface $uri): string
+    private function getFilePath(string $route): string
     {
-        $uriPath = $uri->getPath();
-        $pos = strpos($uriPath, $this->baseUrl);
+        $pos = strpos($route, $this->route);
         if ($pos === 0) {
-            $filePath = $this->storagePath . substr($uriPath, strlen($this->baseUrl));
+            $filePath = $this->storagePath . substr($route, strlen($this->route));
             return $this->alias->get($filePath);
         }
         return '';

@@ -7,23 +7,19 @@ namespace tests\integration\SysPlugins\TwigCore\Functions;
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
+use UnitTester;
 
 final class AbsUrlFunctionTest extends \Codeception\Test\Unit
 {
     protected TwigRenderer $twigRenderer;
+    protected UnitTester $tester;
 
-    protected function _setUp(): void
+    private function twig(): TwigRenderer
     {
-        $_SERVER['SCRIPT_NAME'] = '';
-        $app = new Application(new ApplicationPaths(
+        return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site',
-            dirname(__DIR__, 5) . '/vendor',
-            dirname(__DIR__, 4) . '/_data/web'
-        ));
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testUrlWithoutRoute(): void
@@ -33,7 +29,7 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
             ['http:/', '{{ abs_url("") }}'],
         ];
         foreach ($tests as $test) {
-            $this->assertSame($test[0], $this->twigRenderer->renderString($test[1]));
+            $this->assertSame($test[0], $this->twig()->renderString($test[1]));
         }
     }
 
@@ -45,7 +41,7 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
             ['http:/one/two/three', '{{ abs_url("one/two/three") }}']
         ];
         foreach ($tests as $test) {
-            $this->assertSame($test[0], $this->twigRenderer->renderString($test[1]));
+            $this->assertSame($test[0], $this->twig()->renderString($test[1]));
         }
     }
 }

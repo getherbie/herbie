@@ -22,7 +22,7 @@ final class PageLinkFunctionTest extends \Codeception\Test\Unit
     public function testPowerOn(): void
     {
         $this->assertEquals(
-            '<span class="link link--internal"><a href="vendor/bin/codecept/route" class="link__label">label</a></span>',
+            '<span class="link link--internal"><a href="/route" class="link__label">label</a></span>',
             $this->twig()->renderString('{{ page_link("route", "label") }}')
         );
     }

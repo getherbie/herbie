@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Stores the site.
  */
@@ -12,7 +14,7 @@ final class Site
     private Config $config;
     private DataRepositoryInterface $dataRepository;
     private PageRepositoryInterface $pageRepository;
-    private ServerRequest $serverRequest;
+    private UrlManager $urlManager;
 
     /**
      * Site constructor.
@@ -21,12 +23,12 @@ final class Site
         Config $config,
         DataRepositoryInterface $dataRepository,
         PageRepositoryInterface $pageRepository,
-        ServerRequest $serverRequest
+        UrlManager $urlManager
     ) {
         $this->config = $config;
         $this->dataRepository = $dataRepository;
         $this->pageRepository = $pageRepository;
-        $this->serverRequest = $serverRequest;
+        $this->urlManager = $urlManager;
     }
 
     public function getTime(): string
@@ -54,7 +56,7 @@ final class Site
 
     public function getPageTrail(): PageTrail
     {
-        $route = $this->serverRequest->getRoute();
+        [$route] = $this->urlManager->parseRequest();
         return $this->getPageList()->getPageTrail($route);
     }
 

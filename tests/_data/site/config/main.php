@@ -4,7 +4,6 @@ return [
     'language' => 'de',
     'locale' => 'de_DE',
     'theme' => 'default',
-    'niceUrls' => true,
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
@@ -14,6 +13,9 @@ return [
         'twigRenderer' => [
             'debug' => true
         ],
+        'urlManager' => [
+            'niceUrls' => false,
+        ]
     ],
     'enabledPlugins' => '',
     'enabledSysPlugins' => 'twig_core,twig_plus,markdown,rest,textile,imagine,dummy',
