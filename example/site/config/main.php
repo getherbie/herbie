@@ -23,7 +23,7 @@ return [
             'debug' => true
         ],
         'urlManager' => [
-            'niceUrls' => false,
+            'niceUrls' => true,
             'rules' => [
                 ['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
