@@ -17,7 +17,7 @@ return [
             'level' => 'debug',
         ],
         'pageRendererMiddleware' => [
-            'cache' => false
+            'cache' => true
         ],
         'twigRenderer' => [
             'debug' => true
@@ -41,6 +41,11 @@ return [
                     'year' => '[0-9]{4}'
                 ]]
             ]
+        ]
+    ],
+    'plugins' => [
+        'simplesearch' => [
+            'usePageCache' => true
         ]
     ]
 ];
