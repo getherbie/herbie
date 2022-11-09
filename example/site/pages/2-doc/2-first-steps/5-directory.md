@@ -102,7 +102,7 @@ The following table shows what each of these files and directories stand for:
 
 ## .htaccess file
 
-If the option `niceUrls` is enabled in the configuration, there must be an `.htaccess` file with the appropriate instructions in the `web` directory.
+If the option `components.urlManager.niceUrls` is enabled in the configuration, there must be an `.htaccess` file with the appropriate instructions in the `web` directory.
 
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f

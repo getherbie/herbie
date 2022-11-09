@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ page_title(delim=' / ', siteTitle='Herbie CMS', rootTitle='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
-    <base href="{{ baseUrl }}">
+    <base href="{{ baseUrl == '' ? '/' : baseUrl }}">
     {{ output_css() }}
 </head>
 <body class="{{ body_class() }}">

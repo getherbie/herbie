@@ -19,7 +19,7 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property bool $hidden
  * @property bool $keep_extension
  * @property string $layout
- * @property string $menu
+ * @property string $menu_title
  * @property string $modified
  * @property string $path
  * @property array<void>|array{status: int, url: string} $redirect
@@ -46,10 +46,10 @@ trait PageItemTrait
     private bool $hidden;
     private bool $keep_extension;
     private string $layout;
-    private string $menu;
+    private string $menu_title;
     private string $modified;
     private string $path;
-    /** @var array{status: int, url: string} */
+    /** @var array{string, int} */
     private array $redirect;
     private string $route;
     /** @var string[] */
@@ -58,7 +58,7 @@ trait PageItemTrait
     private bool $twig;
     private string $type;
 
-    private static ?SlugGenerator $slugGenerator;
+    private static ?SlugGenerator $slugGenerator = null;
 
     /**
      * @param array<string, mixed> $data
@@ -74,11 +74,11 @@ trait PageItemTrait
         $this->customData = [];
         $this->date = '';
         $this->excerpt = '';
-        $this->format = '';
+        $this->format = 'raw';
         $this->hidden = false;
         $this->keep_extension = false;
         $this->layout = 'default';
-        $this->menu = '';
+        $this->menu_title = '';
         $this->modified = '';
         $this->path = '';
         $this->redirect = [];
@@ -122,14 +122,17 @@ trait PageItemTrait
         $this->layout = trim($layout);
     }
 
-    public function getMenu(): string
+    public function getMenuTitle(): string
     {
-        return $this->menu;
+        if (strlen($this->menu_title) > 0) {
+            return $this->menu_title;
+        }
+        return $this->title;
     }
 
-    public function setMenu(string $menu): void
+    public function setMenuTitle(string $menuTitle): void
     {
-        $this->menu = trim($menu);
+        $this->menu_title = trim($menuTitle);
     }
 
     public function getRedirect(): array
@@ -138,25 +141,41 @@ trait PageItemTrait
     }
 
     /**
-     * @param array|string $redirect
+     * @param string|array|mixed $redirect
      */
     public function setRedirect($redirect): void
     {
+        if (!is_array($redirect) && !is_string($redirect)) {
+            throw new \InvalidArgumentException('Redirect must be a string or an array{string,int}.');
+        }
         if (is_string($redirect)) {
-            $redirectArray = [
-                'status' => 302,
-                'url' => $redirect
-            ];
-        } else {
-            $redirectArray = $redirect;
-        }
-        foreach ($redirectArray as $key => $value) {
-            if (!in_array($key, ['url', 'status'])) {
-                $message = sprintf('Key "%s" not allowed', $key);
-                throw new \InvalidArgumentException($message);
+            $redirect = trim($redirect);
+            if (strlen($redirect) === 0) {
+                throw new \InvalidArgumentException('Redirect must be a non-empty string.');
             }
+            $redirect = [$redirect, 302];
         }
-        $this->redirect = $redirectArray;
+        $count = count($redirect);
+        if ($count === 0) {
+            throw new \InvalidArgumentException('Redirect must be a non-empty array.');
+        }
+        if ($count <> 2) {
+            throw new \InvalidArgumentException('Redirect array must be an array{string,int}.');
+        }
+        if (!is_string($redirect[0])) {
+            throw new \InvalidArgumentException('Redirect array[0] must be a string.');
+        }
+        $redirect[0] = trim($redirect[0]);
+        if (strlen($redirect[0]) === 0) {
+            throw new \InvalidArgumentException('Redirect array[0] must be a non-empty string.');
+        }
+        if (!is_natural($redirect[1])) {
+            throw new \InvalidArgumentException('Redirect array[1] must be a integer.');
+        }
+        if ($redirect[1] < 300 || $redirect[1] > 308) {
+            throw new \InvalidArgumentException('Redirect array[1] must be a status code between 300 and 308.');
+        }
+        $this->redirect = $redirect;
     }
 
     public function getRoute(): string
@@ -208,6 +227,19 @@ trait PageItemTrait
         $this->format = $format;
     }
 
+    public function getCreated(): string
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param int|string $date
+     */
+    public function setCreated($date): void
+    {
+        $this->created = $this->formatDate($date);
+    }
+
     public function getDate(): string
     {
         return $this->date;
@@ -218,15 +250,7 @@ trait PageItemTrait
      */
     public function setDate($date): void
     {
-        $this->date = is_numeric($date) ? date_format('c', (int)$date) : trim($date);
-    }
-
-    public function getMenuTitle(): string
-    {
-        if (!empty($this->menu)) {
-            return $this->menu;
-        }
-        return $this->title;
+        $this->date = $this->formatDate($date);
     }
 
     public function getAuthor(string $author): string
@@ -282,9 +306,9 @@ trait PageItemTrait
      */
     public function setCategories(array $categories): void
     {
-        $categories = array_map('trim', $categories);
-        $categories = array_unique($categories);
-        $this->categories = $categories;
+        foreach ($categories as $category) {
+            $this->setCategory($category);
+        }
     }
 
     public function setCategory(string $category): void
@@ -300,9 +324,9 @@ trait PageItemTrait
      */
     public function setTags(array $tags): void
     {
-        $tags = array_map('trim', $tags);
-        $tags = array_unique($tags);
-        $this->tags = $tags;
+        foreach ($tags as $tag) {
+            $this->setTag($tag);
+        }
     }
 
     public function setTag(string $tag): void
@@ -318,9 +342,9 @@ trait PageItemTrait
      */
     public function setAuthors(array $authors): void
     {
-        $authors = array_map('trim', $authors);
-        $authors = array_unique($authors);
-        $this->authors = $authors;
+        foreach ($authors as $author) {
+            $this->setAuthor($author);
+        }
     }
 
     public function setAuthor(string $author): void
@@ -364,9 +388,12 @@ trait PageItemTrait
         return false;
     }
 
-    public function setModified(string $modified): void
+    /**
+     * @param int|string $modified
+     */
+    public function setModified($modified): void
     {
-        $this->modified = $modified;
+        $this->modified = $this->formatDate($modified);
     }
 
     public function getModified(): string
@@ -525,13 +552,13 @@ trait PageItemTrait
                 $array[$name] = $this->$method();
             }
         }
-        return $array;
+        return array_merge($array, $this->customData);
     }
 
     private function slugify(string $slug): string
     {
         if (is_null(self::$slugGenerator)) {
-            throw new \BadMethodCallException('SlugGenerator not set');
+            throw new \BadMethodCallException('SlugGenerator not set.');
         }
         return self::$slugGenerator->generate($slug);
     }
@@ -539,5 +566,29 @@ trait PageItemTrait
     public static function setSlugGenerator(SlugGenerator $slugGenerator): void
     {
         self::$slugGenerator = $slugGenerator;
+    }
+
+    public static function unsetSlugGenerator(): void
+    {
+        self::$slugGenerator = null;
+    }
+
+    /**
+     * @param int|string $date
+     */
+    private function formatDate($date): string
+    {
+        if (is_string($date)) {
+            $date = trim($date);
+        }
+        if (is_natural($date, true)) {
+            return date_format('c', (int)$date);
+        } elseif (is_string($date)) {
+            $time = time_from_string($date);
+            if ($time > 0) {
+                return date_format('c', $time);
+            }
+        }
+        return '';
     }
 }

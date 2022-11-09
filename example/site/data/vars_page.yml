@@ -46,8 +46,8 @@
   desc: The layout as basename (without file extension). 
     Layout files are located in folder `site/themes/`.
   type: string
-- name: page.menu
-  desc: The title for navigation elements like sitemap or breadcrumb. 
+- name: page.menu_title
+  desc: The title for menu elements like sitemap or breadcrumb. 
     If empty the page title will be shown.
   type: string
 - name: page.parent

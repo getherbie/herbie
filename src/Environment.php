@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
+/**
+ * @deprecated since 2.0.0
+ */
 final class Environment
 {
     private ?string $basePath;

@@ -4,7 +4,6 @@ return [
     'language' => 'en',
     'locale' => 'en_EN',
     'theme' => 'default',
-    'niceUrls' => true,
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
@@ -23,7 +22,8 @@ return [
         'twigRenderer' => [
             'debug' => true
         ],
-        'urlMatcher' => [
+        'urlManager' => [
+            'niceUrls' => false,
             'rules' => [
                 ['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],

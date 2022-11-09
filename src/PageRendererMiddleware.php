@@ -14,11 +14,10 @@ use Tebe\HttpFactory\HttpFactory;
 final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
-    private Environment $environment;
-    private HttpFactory $httpFactory;
     private EventManager $eventManager;
     private FilterChainManager $filterChainManager;
-    private UrlGenerator $urlGenerator;
+    private HttpFactory $httpFactory;
+    private UrlManager $urlManager;
     private bool $cacheEnable;
     private int $cacheTTL;
 
@@ -27,19 +26,17 @@ final class PageRendererMiddleware implements MiddlewareInterface
      */
     public function __construct(
         CacheInterface $cache,
-        Environment $environment,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
         HttpFactory $httpFactory,
-        UrlGenerator $urlGenerator,
+        UrlManager $urlManager,
         array $options = []
     ) {
         $this->cache = $cache;
-        $this->environment = $environment;
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
-        $this->urlGenerator = $urlGenerator;
+        $this->urlManager = $urlManager;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
@@ -50,7 +47,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
         if (is_null($page)) {
-            throw HttpException::notFound($this->environment->getRoute());
+            throw HttpException::notFound(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE);
         }
 
         /** @var array $routeParams */
@@ -64,12 +61,12 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $redirect = $page->getRedirect();
 
         if (!empty($redirect)) {
-            return $this->createRedirectResponse($redirect);
+            return $this->createRedirectResponse(...$redirect);
         }
 
         $rendered = null;
 
-        $cacheId = 'page-' . $this->environment->getRoute();
+        $cacheId = 'page-' . $page->getPath();
         if ($this->cacheEnable && !empty($page->getCached())) {
             $rendered = $this->cache->get($cacheId);
         }
@@ -110,15 +107,15 @@ final class PageRendererMiddleware implements MiddlewareInterface
         return $response->withHeader('Content-Type', $page->getContentType());
     }
 
-    private function createRedirectResponse(array $redirect): ResponseInterface
+    private function createRedirectResponse(string $url, int $status): ResponseInterface
     {
-        if (strpos($redirect['url'], 'http') === 0) { // A valid URL? Take it.
-            $location = $redirect['url'];
+        if (strpos($url, 'http') === 0) { // A valid URL? Take it.
+            $location = $url;
         } else {
-            $location = $this->urlGenerator->generate($redirect['url']); // An internal route? Generate URL.
+            $location = $this->urlManager->createUrl($url); // An internal route? Generate URL.
         }
         return $this->httpFactory
-            ->createResponse($redirect['status'])
+            ->createResponse($status)
             ->withHeader('Location', $location);
     }
 }

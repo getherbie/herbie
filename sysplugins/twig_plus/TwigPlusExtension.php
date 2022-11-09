@@ -17,7 +17,7 @@ use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
 use herbie\TwigRenderer;
-use herbie\UrlGenerator;
+use herbie\UrlManager;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -30,7 +30,7 @@ final class TwigPlusExtension extends AbstractExtension
 
     private PageRepositoryInterface $pageRepository;
 
-    private UrlGenerator $urlGenerator;
+    private UrlManager $urlManager;
 
     private TwigRenderer $twigRenderer;
 
@@ -41,12 +41,12 @@ final class TwigPlusExtension extends AbstractExtension
         Environment $environment,
         PageRepositoryInterface $pageRepository,
         TwigRenderer $twigRenderer,
-        UrlGenerator $urlGenerator
+        UrlManager $urlManager
     ) {
         $this->environment = $environment;
         $this->pageRepository = $pageRepository;
         $this->twigRenderer = $twigRenderer;
-        $this->urlGenerator = $urlGenerator;
+        $this->urlManager = $urlManager;
     }
 
     /**
@@ -235,7 +235,7 @@ final class TwigPlusExtension extends AbstractExtension
         $htmlTree->setClass($class);
         $htmlTree->setItemCallback(function (PageTree $node) {
             $menuItem = $node->getMenuItem();
-            $href = $this->urlGenerator->generate($menuItem->route);
+            $href = $this->urlManager->createUrl($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
         return $htmlTree->render($this->environment->getRoute());
@@ -420,7 +420,7 @@ final class TwigPlusExtension extends AbstractExtension
         $htmlTree->setClass($class);
         $htmlTree->setItemCallback(function (PageTree $node) {
             $menuItem = $node->getMenuItem();
-            $href = $this->urlGenerator->generate($menuItem->route);
+            $href = $this->urlManager->createUrl($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
         return $htmlTree->render();
@@ -558,7 +558,7 @@ final class TwigPlusExtension extends AbstractExtension
      */
     protected function createLink(string $route, string $label, array $htmlAttributes = []): string
     {
-        $url = $this->urlGenerator->generate($route);
+        $url = $this->urlManager->createUrl($route);
         $attributesAsString = $this->buildHtmlAttributes($htmlAttributes);
         return sprintf('<a href="%s"%s>%s</a>', $url, $attributesAsString, $label);
     }

@@ -19,7 +19,7 @@
   desc: This directory contains files that are linked through the content.
     For example, images, PDFs, videos, MP3s, etc.
 - name: web/.htaccess
-  desc: If `niceUrls` option is enabled in the configuration, this file must exist with corresponding instructions.
+  desc: If `components.urlManager.niceUrls` option is enabled in the configuration, this file must exist with corresponding instructions.
 - name: web/index.php
   desc: The bootstrap file and part of Herbie CMS.
     All requests to the web server go through this file.

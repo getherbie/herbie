@@ -29,6 +29,8 @@ final class HerbieInfoCest
             'herbie\get_callable_name',
             'herbie\get_constructor_params_to_inject',
             'herbie\handle_internal_webserver_assets',
+            'herbie\is_digit',
+            'herbie\is_natural',
             'herbie\load_composer_plugin_configs',
             'herbie\load_php_config',
             'herbie\load_plugin_config',
@@ -99,8 +101,7 @@ final class HerbieInfoCest
             'herbie\TwigRenderer',
             'herbie\TwigStringLoader',
             'herbie\UncaughtExceptionHandler',
-            'herbie\UrlGenerator',
-            'herbie\UrlMatcher',
+            'herbie\UrlManager',
             'herbie\Yaml',
             'herbie\sysplugin\dummy\DummySysPlugin',
             'herbie\sysplugin\imagine\ImagineSysPlugin',
@@ -121,6 +122,7 @@ final class HerbieInfoCest
     {
         $middlewares = [
             'herbie\ErrorHandlerMiddleware',
+            'herbie\PageResolverMiddleware',
             'herbie\sysplugin\dummy\DummySysPlugin->appMiddleware',
             'tests\_data\src\CustomHeader',
             'herbie\ResponseTimeMiddleware',
@@ -134,7 +136,6 @@ final class HerbieInfoCest
             'tests\_data\src\CustomHeader',
             'herbie\HttpBasicAuthMiddleware',
             'herbie\DownloadMiddleware',
-            'herbie\PageResolverMiddleware',
             'herbie\PageRendererMiddleware',
         ];
         $I->amOnPage('/herbie-info');
@@ -147,7 +148,7 @@ final class HerbieInfoCest
         $configs = [
             'charset',
             'components.dataRepository.adapter',
-            'components.downloadMiddleware.baseUrl',
+            'components.downloadMiddleware.route',
             'components.downloadMiddleware.storagePath',
             'components.fileCache',
             'components.fileLogger',
@@ -158,13 +159,13 @@ final class HerbieInfoCest
             'components.twigRenderer.charset',
             'components.twigRenderer.debug',
             'components.twigRenderer.strictVariables',
+            'components.urlManager.niceUrls',
             'enabledPlugins',
             'enabledSysPlugins',
             'fileExtensions.layouts',
             'fileExtensions.pages',
             'language',
             'locale',
-            'niceUrls',
             'paths.app',
             'paths.data',
             'paths.media',

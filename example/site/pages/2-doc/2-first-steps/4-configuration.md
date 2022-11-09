@@ -36,10 +36,12 @@ For this purpose a file `site/config/main.php` is created with the following con
 <?php
 
 return [
-    'niceUrls' => true,
     'components' => [
         'twigRenderer' => [
             'debug' => true
+        ],
+        'urlManager' => [
+            'niceUrls' => true,
         ]
     ]
 ];

@@ -10,12 +10,30 @@ final class ConfigTest extends \Codeception\Test\Unit
      * @var Config
      */
     private $config;
+
     private $testValues = [
         'bool' => true,
         'int' => 2,
         'float' => 1.75,
         'array' => [1, 2, 3],
-        'string' => 'yes'
+        'string' => 'yes',
+    ];
+    private $nestedTestValues = [
+        'one' => [
+            'bool' => false,
+            'two' => [
+                'int' => 3,
+                'three' => [
+                    'float' => 2.25,
+                    'four' => [
+                        'array' => [true, 4, 3.5, ['a', 'b', 'c'], 'true'],
+                        'five' => [
+                            'string' => 'no'
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ];
 
     protected function _before()
@@ -82,5 +100,59 @@ final class ConfigTest extends \Codeception\Test\Unit
     {
         $this->assertTrue($this->config->check('string'));
         $this->assertFalse($this->config->check('not-existing-key'));
+    }
+
+    public function testGetWithEmptyName()
+    {
+        $values = $this->config->get('');
+        $this->assertIsArray($values);
+        $this->assertEquals($this->testValues, $values);
+    }
+
+    public function testNestedValues()
+    {
+        $config = new Config($this->nestedTestValues);
+        $this->assertIsBool($config->get('one.bool'));
+        $this->assertIsInt($config->get('one.two.int'));
+        $this->assertIsFloat($config->get('one.two.three.float'));
+        $this->assertIsArray($config->get('one.two.three.four.array'));
+        $this->assertIsString($config->get('one.two.three.four.five.string'));
+    }
+
+    public function testFlatten()
+    {
+        $flatten = $this->config->flatten();
+        $this->assertIsArray($flatten);
+        $expected = [
+            'array.0' => 1,
+            'array.1' => 2,
+            'array.2' => 3,
+            'bool' => true,
+            'float' => 1.75,
+            'int' => 2,
+            'string' => 'yes',
+        ];
+        $this->assertEquals($expected, $flatten);
+    }
+
+    public function testFlattenWithNested()
+    {
+        $config = new Config($this->nestedTestValues);
+        $flatten = $config->flatten();
+        $this->assertIsArray($flatten);
+        $expected = [
+            'one.bool' => false,
+            'one.two.int' => 3,
+            'one.two.three.float' => 2.25,
+            'one.two.three.four.array.0' => true,
+            'one.two.three.four.array.1' => 4,
+            'one.two.three.four.array.2' => 3.5,
+            'one.two.three.four.array.3.0' => 'a',
+            'one.two.three.four.array.3.1' => 'b',
+            'one.two.three.four.array.3.2' => 'c',
+            'one.two.three.four.array.4' => 'true',
+            'one.two.three.four.five.string' => 'no',
+        ];
+        $this->assertEquals($expected, $flatten);
     }
 }

@@ -9,7 +9,6 @@ $settings['language'] = 'de';
 $settings['locale'] = 'de_DE.UTF-8';
 $settings['charset'] = 'UTF-8';
 $settings['theme'] = 'default';
-$settings['niceUrls'] = false;
 
 /**
  * Paths
@@ -59,7 +58,7 @@ $settings['components']['dataRepository']['adapter'] = 'json';
  * Download Middleware Component
  */
 $settings['components']['downloadMiddleware'] = [];
-$settings['components']['downloadMiddleware']['baseUrl'] = '/download/';
+$settings['components']['downloadMiddleware']['route'] = 'download';
 $settings['components']['downloadMiddleware']['storagePath'] = '@site/media';
 
 /**
@@ -94,10 +93,11 @@ $settings['components']['twigRenderer']['debug'] = false;
 $settings['components']['twigRenderer']['strictVariables'] = false;
 
 /**
- * URL-Matcher Component
+ * URL-Manager Component
  */
-$settings['components']['urlMatcher'] = [];
-$settings['components']['urlMatcher']['rules'] = [];
+$settings['components']['urlManager'] = [];
+$settings['components']['urlManager']['niceUrls'] = false;
+$settings['components']['urlManager']['rules'] = [];
 
 /**
  * Plugin Configurations

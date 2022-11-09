@@ -28,11 +28,13 @@ final class Config
      */
     public function get(string $name, $default = null)
     {
-        $path = explode(self::DELIM, $name);
+        $name = trim($name);
 
-        if (!is_array($path)) {
-            return null;
+        if (strlen($name) === 0) {
+            return $this->data;
         }
+
+        $path = explode(self::DELIM, $name);
 
         $current = $this->data;
         foreach ($path as $field) {
@@ -96,7 +98,7 @@ final class Config
 
     public function getAsConfig(string $path): Config
     {
-        $data = $this->get($path, null);
+        $data = $this->get($path);
         if (is_null($data)) {
             throw new \UnexpectedValueException("Config for \"$path\" not found");
         }

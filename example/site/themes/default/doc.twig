@@ -15,18 +15,18 @@
                 </div>
                 <div class="pure-u-1 pure-u-md-1-4">
                     <div class="sidebar">
-                        <h3><a href="{{ url('/doc') }}">Documentation</a></h3>
+                        <h3><a href="{{ url('doc') }}">Documentation</a></h3>
                         <ul>
                             {%- for levelOneItem in site.pageList|filter("parentRoute=doc") -%}
                                 <li>
-                                    <a href="{{ levelOneItem.route }}">{{- levelOneItem.title -}}</a>
+                                    <a href="{{ url(levelOneItem.route) }}">{{- levelOneItem.title -}}</a>
                                     {% if levelOneItem.route in route %}
                                         {% set levelTwoItems = site.pageList|filter("parentRoute=" ~ levelOneItem.route) %}
                                         {% if levelTwoItems %}
                                             <ul>
                                                 {%- for levelTwoItem in levelTwoItems -%}
                                                     <li>•
-                                                        <a href="{{ levelTwoItem.route }}">{{- levelTwoItem.title -}}</a>
+                                                        <a href="{{ url(levelTwoItem.route) }}">{{- levelTwoItem.title -}}</a>
                                                     </li>
                                                 {%- endfor -%}
                                             </ul>

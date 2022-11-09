@@ -93,12 +93,18 @@ final class PageTest extends \Codeception\Test\Unit
 
     public function testSetData()
     {
-        $page = new Page(['title' => 'Testtitle', 'layout' => 'test']);
-        $this->assertSame('Testtitle', $page->getTitle());
+        $page = new Page(['title' => 'Test title', 'layout' => 'test']);
+        $this->assertSame('Test title', $page->getTitle());
         $this->assertSame('test', $page->getLayout());
     }
 
     public function testSetDataException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Page(['data' => []]);
+    }
+
+    public function testSetSegmentsException()
     {
         $this->expectException(InvalidArgumentException::class);
         new Page(['segments' => []]);
@@ -120,7 +126,7 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertSame(date_format('c'), $page->getDate());
 
         $page->setDate('2013-12-24');
-        $this->assertSame('2013-12-24', $page->getDate());
+        $this->assertSame('2013-12-24T00:00:00+01:00', $page->getDate());
     }
 
     public function testToArray()
@@ -132,25 +138,34 @@ final class PageTest extends \Codeception\Test\Unit
             'cached' => true,
             'categories' => [],
             'content_type' => 'text/html',
+            'created' => '',
             'date' => '2013-12-24T01:00:00+01:00',
             'excerpt' => 'This is a short text.',
             'format' => 'markdown',
             'hidden' => true,
             'keep_extension' => false,
             'layout' => 'layout.html',
-            'menu' => '',
+            'menu_title' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
             'path' => '@page/pagedata.md',
-            'redirect' => [],
+            'redirect' => ['test', 301],
             'route' => '',
             'tags' => [],
             'title' => 'Page Data',
             'twig' => true,
-            'type' => 'my_type'
+            'type' => 'my_type',
+            'a' => 'A',
+            'b' => 2,
+            'c' => true,
+            'd' => ['one', 'two'],
+            'e' => 5.74
         ];
 
+        $expected = array_merge($data, ['segments' => []]);
+        $expected['menu_title'] = $expected['title'];
+
         $page = (new PageFactory())->newPage('@page/pagedata.md', 'parent', $data, []);
-        $this->assertEquals(array_merge($data, ['segments' => []]), $page->toArray());
+        $this->assertEquals($expected, $page->toArray());
 
         return $page;
     }

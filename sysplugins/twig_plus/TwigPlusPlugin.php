@@ -9,25 +9,25 @@ use herbie\EventInterface;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
-use herbie\UrlGenerator;
+use herbie\UrlManager;
 
 final class TwigPlusPlugin extends Plugin
 {
     private Environment $environment;
     private PageRepositoryInterface $pageRepository;
     private TwigRenderer $twigRenderer;
-    private UrlGenerator $urlGenerator;
+    private UrlManager $urlManager;
 
     public function __construct(
         Environment $environment,
         PageRepositoryInterface $pageRepository,
         TwigRenderer $twigRenderer,
-        UrlGenerator $urlGenerator
+        UrlManager $urlManager
     ) {
         $this->environment = $environment;
         $this->pageRepository = $pageRepository;
         $this->twigRenderer = $twigRenderer;
-        $this->urlGenerator = $urlGenerator;
+        $this->urlManager = $urlManager;
     }
 
     public function events(): array
@@ -45,7 +45,7 @@ final class TwigPlusPlugin extends Plugin
             $this->environment,
             $this->pageRepository,
             $this->twigRenderer,
-            $this->urlGenerator
+            $this->urlManager
         ));
     }
 }

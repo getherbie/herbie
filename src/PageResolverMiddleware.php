@@ -15,39 +15,32 @@ final class PageResolverMiddleware implements MiddlewareInterface
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
     public const HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
 
-    private Environment $environment;
-
-    private UrlMatcher $urlMatcher;
-
     private PageRepositoryInterface $pageRepository;
+    private UrlManager $urlManager;
 
     /**
      * PageResolverMiddleware constructor.
      */
     public function __construct(
-        Environment $environment,
         PageRepositoryInterface $pageRepository,
-        UrlMatcher $urlMatcher
+        UrlManager $urlManager
     ) {
-        $this->environment = $environment;
-        $this->urlMatcher = $urlMatcher;
         $this->pageRepository = $pageRepository;
+        $this->urlManager = $urlManager;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = $this->environment->getRoute();
-        $matchedRoute = $this->urlMatcher->match($route);
+        [$route, $routeParams] = $this->urlManager->parseRequest();
 
-        $page = null;
-        $routeParams = [];
+        $pageList = $this->pageRepository->findAll();
 
-        if ($matchedRoute) {
-            $page = $this->pageRepository->find($matchedRoute['path']);
-            if ($page) {
-                $page->setRoute($matchedRoute['route']); // inject route
-                $routeParams = $matchedRoute['params'];
-            }
+        // match by normal route
+        $pageItem = $pageList->getItem($route);
+        if (isset($pageItem)) {
+            $page = $this->pageRepository->find($pageItem->getPath());
+        } else {
+            $page = null;
         }
 
         $request = $request
