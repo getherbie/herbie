@@ -141,7 +141,7 @@ trait PageItemTrait
     }
 
     /**
-     * @param array|string $redirect
+     * @param string|array|mixed $redirect
      */
     public function setRedirect($redirect): void
     {
