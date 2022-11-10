@@ -2,7 +2,7 @@
 <div class="doc-function">
     <h3>{{ attribute(item, 'name') }}</h3>
     <p>
-        {{ attribute(item, 'desc') }}
+        {{ attribute(item, 'desc')|raw }}
         {% set see = attribute(item, 'see') %}
         {% if see %}
             See: <a href="{{ see[0] }}">{{ see[1] }}</a>
