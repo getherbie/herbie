@@ -60,10 +60,17 @@ final class Assets
         $return = '';
         foreach ($this->collect(self::TYPE_CSS, $group) as $asset) {
             if (empty($asset['raw'])) {
-                $href = $this->buildUrl($asset['path']);
-                $return .= sprintf('<link href="%s" type="text/css" rel="stylesheet">', $href);
+                $return .= sprintf(
+                    '<link href="%s" type="text/css" rel="stylesheet"%s>',
+                    $this->buildUrl($asset['path']),
+                    $this->buildAttribs($asset['attr'])
+                );
             } else {
-                $return .= sprintf('<style>%s</style>', $asset['path']);
+                $return .= sprintf(
+                    '<style%s>%s</style>',
+                    $this->buildAttribs($asset['attr']),
+                    $asset['path']
+                );
             }
         }
         return $return;
@@ -76,10 +83,17 @@ final class Assets
         $return = '';
         foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
             if (empty($asset['raw'])) {
-                $href = $this->buildUrl($asset['path']);
-                $return .= sprintf('<script src="%s"></script>', $href);
+                $return .= sprintf(
+                    '<script src="%s"%s></script>',
+                    $this->buildUrl($asset['path']),
+                    $this->buildAttribs($asset['attr'])
+                );
             } else {
-                $return .= sprintf('<script>%s</script>', $asset['path']);
+                $return .= sprintf(
+                    '<script%s>%s</script>',
+                    $this->buildAttribs($asset['attr']),
+                    $asset['path']
+                );
             }
         }
         return $return;
@@ -197,5 +211,14 @@ final class Assets
         $parts = explode('/', $file);
         array_shift($parts);
         return implode('/', $parts);
+    }
+
+    private function buildAttribs(array $attribs = []): string
+    {
+        $html = '';
+        foreach ($attribs as $key => $value) {
+            $html .= ' ' . $key . '="' . $value . '" ';
+        }
+        return trim($html);
     }
 }
