@@ -5,16 +5,15 @@
 - name: page.cached
   desc: If set the page is cached (depending if caching is active)
   type: bool
+- name: page.cache_id
+  desc: The cache ID used for identifying when caching (read-only)
+  type: string  
 - name: page.categories
   desc: One or more categories, that belongs to the page
   type: string[]
 - name: page.content_type
   desc: The Content-Type of the page for the HTTP response, automatically set by Herbie CMS.
   default: text/html
-  type: string
-- name: page.modified
-  desc: The modification time of the page as ISO 8601 formatted string. 
-    This value is set automatically.
   type: string
 - name: page.created
   desc: The creation time of the page. 
@@ -50,6 +49,10 @@
   desc: The title for menu elements like sitemap or breadcrumb. 
     If empty the page title will be shown.
   type: string
+- name: page.modified
+  desc: The modification time of the page as ISO 8601 formatted string.
+    This value is set automatically.
+  type: string  
 - name: page.parent
   desc: The parent route.
   type: string

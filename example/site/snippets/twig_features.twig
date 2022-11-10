@@ -8,9 +8,6 @@
             See: <a href="{{ see[0] }}">{{ see[1] }}</a>
         {% endif %}
     </p>
-    {% if item.code is defined %}
-        <p>{{ item.code }}</p>
-    {% endif %}
     <table class="pure-table pure-table-horizontal">
         <tr class="code">
             <td>Parameter</td>
@@ -32,6 +29,9 @@
             <td colspan="2">{{ item.return.1 }}</td>
         </tr>
     </table>
-    {# <pre><code>{{ attribute(item, 'code') }}</code></pre> #}
+    {% if item.code is defined and item.code != '' %}
+        <div>Example:</div>
+        <pre><code class="twig-language">&#123&#123 {{ item.code }} &#125;&#125;</code></pre>
+    {% endif %}
 </div>
 {% endfor %}
