@@ -6,8 +6,8 @@
     - string
     - The file size in human readable format
 - name: filter
-  code: site.pageList|filter("title^=this", "title~=is", "title$=end")
-  desc: "Filters the page list by one or more filters as variadic arguments. The filters are logical AND-connected. A filter can be one of the following:
+  code: site.pageList|filter("title^=this", "title~=is", "title$=great")
+  desc: "Filters a traversable list by one or more filters as variadic arguments. The filters are logical AND-connected. A filter can be one of the following:
     <table>
     <tr><td style='width:5%'>!=</td><td>Not equal</td></tr>
     <tr><td>&gt;=</td><td>Greater than equal</td></tr>
@@ -23,20 +23,20 @@
     </table>"
   params:
     - name: filters
-      type: string (variadic)
-      desc: One or more filters (optional)
+      type: string
+      desc: One or more filters (optional, variadic)
       default:
   return:
     - pageList
     - The filtered page list
 - name: slugify
   code: '"A string with spaces, Umlauts or special characters (?!&#)."|slugify'
-  desc: Returns a string slug for using as URL segment.
+  desc: Returns a string slug for using as an URL segment.
   return:
     - string
     - The slugified string
 - name: strftime
-  code: string date|strftime([string format = "%x" ])
+  code: '"2022-09-13"|strftime("%Y-%m-%d")'
   desc: Formats a local time/date according to locale settings. 
     This is a wrapper for the same-named PHP function.
   params:
@@ -48,7 +48,7 @@
     - string
     - The formatted time or date
 - name: visible
-  code: string site.pageTree|visible
+  code: site.pageTree|visible
   desc: Filters the page tree by visible and active page items.
   return:
     - pageTree

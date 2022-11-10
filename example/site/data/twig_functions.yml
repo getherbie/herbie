@@ -1,6 +1,6 @@
 ---
 - name: abs_url
-  code: string abs_url(string route)
+  code: abs_url("doc/contents/variables")
   desc: Returns the absolute URL for a given route.
   params:
     - name: route
@@ -11,7 +11,7 @@
     - string
     - The absolute URL.
 - name: add_css
-  code: add_css(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])
+  code: 'add_css("@site/themes/styles.css", {class: "styles"}, "default", false, 1)'
   desc: Adds a CSS asset to the html page.
   params:
     - name: paths
@@ -28,7 +28,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: Returns CSS directly instead of in a link.
+      desc: Returns CSS inline instead of as a link.
       default: 'false'
     - name: pos
       type: int
@@ -37,7 +37,7 @@
   return:
     - void
 - name: add_js
-  code: add_js(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])
+  code: 'add_js("@site/themes/script.js", {class: "scripts"}, "default", false, 1)'
   desc: Adds a JavaScript asset to the html page.
   params:
     - name: paths
@@ -54,7 +54,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: Returns JavaScript directly instead of a link.
+      desc: Returns JavaScript inline instead of as a link.
       default: 'false'
     - name: pos
       type: int
@@ -63,7 +63,7 @@
   return:
     - void
 - name: ascii_tree
-  code: string ascii_tree([array options = {}])
+  code: ascii_tree("doc", 2, true)
   desc: Creates a text based (=ascii) tree of all pages. 
     All parameters are optional and passed as named parameters.
   params:
@@ -79,16 +79,18 @@
       type: bool
       desc: Show hidden pages.
       default: 'false'
-    - name: class
-      type: string
-      desc: The CSS class name.
-      default: sitemap
+    #- name: class
+    #  type: string
+    #  desc: The CSS class name.
+    #  default: sitemap
   return:
     - string
     - The tree rendered as ascii text
 - name: body_class
-  code: string body_class()
-  desc: Returns a string with CSS classes, to be used within the class attribute of the body tag.
+  code: body_class()
+  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the html or body tag.
+    This allows to address any page, theme, layout or language via CSS selector.
+    Such a string looks like: "page-blog theme-default layout-blog language-en"'
   return:
     - string
     - The string with CSS classes
