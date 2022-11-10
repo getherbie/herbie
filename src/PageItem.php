@@ -40,6 +40,6 @@ final class PageItem implements \ArrayAccess
      */
     public function offsetUnset($offset): void
     {
-        throw new \BadMethodCallException('Unset is not supported');
+        throw new \BadMethodCallException('Unset is not supported.');
     }
 }
