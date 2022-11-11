@@ -12,7 +12,7 @@
     - The absolute URL.
 - name: add_css
   code: 'add_css("@site/themes/styles.css", {class: "styles"}, "default", false, 1)'
-  desc: Adds a CSS asset to the html page.
+  desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
       type: string|array
@@ -38,7 +38,7 @@
     - void
 - name: add_js
   code: 'add_js("@site/themes/script.js", {class: "scripts"}, "default", false, 1)'
-  desc: Adds a JavaScript asset to the html page.
+  desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
       type: string|array
@@ -46,7 +46,7 @@
       default: ''
     - name: attr
       type: array
-      desc: Attribute for the HTML-Tag.
+      desc: Attribute for the HTML tag.
       default: "[]"
     - name: group
       type: string
@@ -73,29 +73,29 @@
       default: '""'
     - name: maxDepth
       type: int
-      desc: The maximum depth level of the tree (-1 = unlimited)
+      desc: The maximum depth level of the tree (-1 = unlimited).
       default: "-1"
     - name: showHidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
-    #- name: class
-    #  type: string
-    #  desc: The CSS class name.
-    #  default: sitemap
+#    - name: class
+#      type: string
+#      desc: The CSS class name.
+#      default: sitemap
   return:
     - string
     - The tree rendered as ascii text
 - name: body_class
   code: body_class()
-  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the html or body tag.
+  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the HTML or body tag.
     This allows to address any page, theme, layout or language via CSS selector.
     Such a string looks like: "page-blog theme-default layout-blog language-en"'
   return:
     - string
-    - The string with CSS classes
+    - The string with CSS classes.
 - name: breadcrumb
-  code: string breadcrumb([array options = {}])
+  code: 'breadcrumb(" / ", ["", "Homepage"], true)'
   desc: Returns a breadcrumb path for the given page. 
     All parameters are passed as an associative array.
   params:
@@ -105,7 +105,7 @@
       default: '""'
     - name: homeLink
       type: array|string
-      desc: The link to the homepage
+      desc: The link to the homepage. An array must be like [route, label].
       default: '""'
     - name: reverse
       type: bool
@@ -113,35 +113,36 @@
       default: 'false'
   return:
     - string
-    - The breadcrumb path as HTMl
+    - The breadcrumb path as HTML.
 - name: file
-  code: ''
-  desc: Returns a link to a file with file info.
+  code: 'file("media/download.pdf", "Download", true, {class:"download"})'
+  desc: Returns a link to a file with additional info like file type and size.
   params:
     - name: path
       type: string
-      desc: The path to the file.
+      desc: The relative web path to the file.
       default: ''
     - name: label
       type: string
-      desc: The label for the html tag.
+      desc: The label for the HTML tag.
       default: "\""
     - name: info
       type: bool
-      desc: If true file info will be added after the link
+      desc: If true file info will be added after the link.
       default: 'false'
     - name: attribs
       type: array
-      desc: One or more html attributes.
+      desc: One or more HTML attributes.
       default: "[ ]"
   return: []
 - name: image
-  code: string image(string src [, string width = ''][, string height = ''][, string alt = ''][, string class = ''])
-  desc: Returns an image markup tag.
+  code: image("media/portrait.jpg", 100, 200, "Portrait", "photo")
+  desc: Returns an image markup tag. 
+    No image processing is performed.
   params:
     - name: src
       type: string
-      desc: The relative path to the image file.
+      desc: The relative web path to the image file.
       default: ''
     - name: width
       type: int
@@ -157,14 +158,14 @@
       default: '""'
     - name: class
       type: string
-      desc: The html class attribute.
+      desc: The HTML class attribute.
       default: '""'
   return:
     - string
     - The image markup
 - name: page_link
-  code: string page_link(string route, string label [, array attribs = {}])
-  desc: Returns a html link with label and attributes for a given route.
+  code: 'page_link("doc/contents/variables", "Content variables", {class: "page-link"})'
+  desc: Returns a HTML link with label and attributes for a given route or an URL.
   params:
     - name: route
       type: string
@@ -176,30 +177,31 @@
       default: ''
     - name: attribs
       type: array
-      desc: The html attributes passed as an associative array.
+      desc: The HTML attributes passed as an associative array.
       default: ''
   return:
     - string
     - The link to a route
 - name: listing
-  code: ''
-  desc: Returns a paginated list of page items.
+  code: 'listing(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig")'
+  desc: Returns a paginated list of page items with links to the previous and next page. 
+    For the paging the GET parameter "page" is used.
   params:
     - name: pageList
       type: PageList
-      desc: The page list
+      desc: The page list.
       default: 'null'
     - name: filter
       type: string
-      desc: One or more filters
+      desc: One or more filters.
       default: '""'
     - name: sort
       type: string
-      desc: The sort field
+      desc: The sort field.
       default: '""'
     - name: shuffle
       type: bool
-      desc: If set the list is shuffled
+      desc: If set the list is shuffled.
       default: 'false'
     - name: limit
       type: int
@@ -207,14 +209,14 @@
       default: '10'
     - name: template
       type: string
-      desc: The path to the twig template
+      desc: The path to the twig template.
       default: "@snippet/listing.twig"
   return:
     - string
     - The rendered markup
 - name: menu
-  code: string menu([array options = {}])
-  desc: Returns a html menu as unordered list. 
+  code: 'menu("doc", 1, false, "nav-menu")'
+  desc: Returns an HTML menu as unordered list. 
     All parameters are optional and passed as named parameters.
   params:
     - name: route

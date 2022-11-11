@@ -197,7 +197,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $pageList->sort($field, $direction);
         }
 
-        if (1 === (int)$shuffle) {
+        if ($shuffle) {
             $pageList = $pageList->shuffle();
         }
 
@@ -215,20 +215,17 @@ final class TwigPlusExtension extends AbstractExtension
     public function functionMenu(
         string $route = '',
         int $maxDepth = -1,
+        bool $showHidden = false,
         string $class = 'menu'
     ): string {
-        // TODO use $showHidden parameter
+        // NOTE duplicated code, see function sitemap
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         if ($branch === null) {
             return '';
         }
 
         $treeIterator = new PageTreeIterator($branch);
-
-        // using FilterCallback for better filtering of nested items
-        $routeLine = $this->environment->getRouteLine();
-        $filterCallback = new PageTreeFilterCallback($routeLine);
-        $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $filterCallback);
+        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
@@ -238,7 +235,7 @@ final class TwigPlusExtension extends AbstractExtension
             $href = $this->urlManager->createUrl($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
-        return $htmlTree->render($this->environment->getRoute());
+        return $htmlTree->render();
     }
 
     /**

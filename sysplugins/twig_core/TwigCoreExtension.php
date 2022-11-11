@@ -90,7 +90,7 @@ final class TwigCoreExtension extends AbstractExtension
                 'is_safe' => ['html'],
                 'needs_context' => true
             ]),
-            #new TwigFunction('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
+            new TwigFunction('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
             new TwigFunction('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
             new TwigFunction('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
             new TwigFunction('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
@@ -345,7 +345,6 @@ final class TwigCoreExtension extends AbstractExtension
 
     public function functionFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
-        $attribs['alt'] = $attribs['alt'] ?? '';
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 
         if (!empty($info)) {
