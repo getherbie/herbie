@@ -99,9 +99,9 @@ Install Composer dependencies.
 
     composer install
 
-Change to the `example/web` directory.
+Change to the `website/web` directory.
 
-    cd example/web/
+    cd website/web/
 
 Start PHP's internal web server.
 
