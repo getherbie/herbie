@@ -18,14 +18,14 @@ final class Application
 {
     public const VERSION_SEMVER = '2.0.0';
     public const VERSION_API = 2;
-    private array $appMiddlewares;
-    private ApplicationPaths $appPaths;
-    private ContainerInterface $container;
+    private array $applicationMiddlewares;
+    private ApplicationPaths $applicationPaths;
     private ?string $baseUrl;
     /** @var string[] */
-    private array $commands;
-    private array $events;
-    private array $filters;
+    private array $consoleCommands;
+    private ContainerInterface $container;
+    private array $eventListeners;
+    private array $interceptingFilters;
     private array $routeMiddlewares;
     private ?string $scriptFile;
     private ?string $scriptUrl;
@@ -46,12 +46,12 @@ final class Application
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());
 
-        $this->appMiddlewares = [];
-        $this->appPaths = $paths;
+        $this->applicationMiddlewares = [];
+        $this->applicationPaths = $paths;
         $this->baseUrl = null;
-        $this->commands = [];
-        $this->events = [];
-        $this->filters = [];
+        $this->consoleCommands = [];
+        $this->eventListeners = [];
+        $this->interceptingFilters = [];
         $this->routeMiddlewares = [];
         $this->scriptFile = null;
         $this->scriptUrl = null;
@@ -69,7 +69,7 @@ final class Application
      */
     private function init(?CacheInterface $cache = null, ?LoggerInterface $logger = null): void
     {
-        $logDir = $this->appPaths->getSite('/runtime/log');
+        $logDir = $this->applicationPaths->getSite('/runtime/log');
 
         error_reporting(self::isDebug() ? E_ALL : E_ERROR);
         ini_set('display_errors', self::isDebug() ? '1' : '0');
@@ -127,7 +127,7 @@ final class Application
         $application->setName("-------------------\nHERBIE CMS CLI-Tool\n-------------------");
 
         /** @var class-string<PluginInterface> $command */
-        foreach ($this->getPluginManager()->getCommands() as $command) {
+        foreach ($this->getPluginManager()->getConsoleCommands() as $command) {
             $params = get_constructor_params_to_inject($command, $this->container);
             /** @var Command $commandInstance */
             $commandInstance = new $command(...$params);
@@ -229,29 +229,29 @@ final class Application
         $this->scriptUrl = $scriptUrl;
     }
 
-    public function getAppPath(): string
+    public function getApplicationPath(): string
     {
-        return $this->appPaths->getApp();
+        return $this->applicationPaths->getApp();
     }
 
     public function getSitePath(): string
     {
-        return $this->appPaths->getSite();
+        return $this->applicationPaths->getSite();
     }
 
-    public function getVendorDir(): string
+    public function getVendorPath(): string
     {
-        return $this->appPaths->getVendor();
+        return $this->applicationPaths->getVendor();
     }
 
     public function getWebPath(): string
     {
-        return $this->appPaths->getWeb();
+        return $this->applicationPaths->getWeb();
     }
 
-    public function getAppMiddlewares(): array
+    public function getApplicationMiddlewares(): array
     {
-        return $this->appMiddlewares;
+        return $this->applicationMiddlewares;
     }
 
     public function getRouteMiddlewares(): array
@@ -259,23 +259,23 @@ final class Application
         return $this->routeMiddlewares;
     }
 
-    public function addCommand(string $command): Application
+    public function addConsoleCommand(string $command): Application
     {
-        $this->commands[] = $command;
+        $this->consoleCommands[] = $command;
         return $this;
     }
 
-    public function getCommands(): array
+    public function getConsoleCommands(): array
     {
-        return $this->commands;
+        return $this->consoleCommands;
     }
 
     /**
      * @param MiddlewareInterface|string $middleware
      */
-    public function addAppMiddleware($middleware): Application
+    public function addApplicationMiddleware($middleware): Application
     {
-        $this->appMiddlewares[] = $middleware;
+        $this->applicationMiddlewares[] = $middleware;
         return $this;
     }
 
@@ -341,26 +341,26 @@ final class Application
         return $this->twigTests;
     }
 
-    public function addFilter(string $filterName, callable $filter): Application
+    public function addInterceptingFilter(string $filterName, callable $filter): Application
     {
-        $this->filters[] = [$filterName, $filter];
+        $this->interceptingFilters[] = [$filterName, $filter];
         return $this;
     }
 
-    public function getFilters(): array
+    public function getInterceptingFilters(): array
     {
-        return $this->filters;
+        return $this->interceptingFilters;
     }
 
-    public function addEvent(string $eventName, callable $listener, int $priority = 1): Application
+    public function addEventListener(string $eventName, callable $listener, int $priority = 1): Application
     {
-        $this->events[] = [$eventName, $listener, $priority];
+        $this->eventListeners[] = [$eventName, $listener, $priority];
         return $this;
     }
 
-    public function getEvents(): array
+    public function getEventListeners(): array
     {
-        return $this->events;
+        return $this->eventListeners;
     }
 
     public function getConfig(): Config

@@ -327,10 +327,10 @@ $app = new Application(
 
 // --> start adding your extensions
 
-$app->addCommand();
-$app->addEvent();
-$app->addFilter();
-$app->addAppMiddleware();
+$app->addConsoleCommand();
+$app->addEventListener();
+$app->addInterceptingFilter();
+$app->addApplicationMiddleware();
 $app->addRouteMiddleware();
 $app->addTwigFilter();
 $app->addTwigFunction();
@@ -353,7 +353,7 @@ class CustomCommand extends Command
     // see class definition above
 }
 
-$app->addCommand(CustomCommand::class);
+$app->addConsoleCommand(CustomCommand::class);
 ~~~ 
 
 Adding an event listener:
@@ -363,7 +363,7 @@ $event = function (herbie\EventInterface $event): void {
     // do something with $event
 };
 
-$app->addEvent('onTwigInitialized', $event);
+$app->addEventListener('onTwigInitialized', $event);
 ~~~
 
 Adding an intercepting filter:
@@ -374,7 +374,7 @@ $filter = function (string $context, array $params, herbie\FilterInterface $filt
     return $filter->next($context, $params, $filter);
 };
 
-$app->addFilter('renderLayout', $filter);
+$app->addInterceptingFilter('renderLayout', $filter);
 ~~~
 
 Adding an application middleware:
@@ -391,7 +391,7 @@ $middleware = function (ServerRequestInterface $request, RequestHandlerInterface
     return $response;
 };
 
-$app->addAppMiddleware($middleware);
+$app->addApplicationMiddleware($middleware);
 ~~~
 
 Adding a route middleware:
@@ -478,22 +478,22 @@ class MyPlugin implements herbie\PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [];
     }
 
-    public function events(): array
+    public function eventFilters(): array
     {
         return [];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         return [];
     }
@@ -573,14 +573,14 @@ class MyPlugin implements herbie\PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [
             CustomCommand::class
         ];
     }
 
-    public function events(): array
+    public function eventFilters(): array
     {
         $event = function (herbie\EventInterface $event): void {
             // do something with $event
@@ -590,7 +590,7 @@ class MyPlugin implements herbie\PluginInterface
         ];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         $filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
             // do something with $context
@@ -601,7 +601,7 @@ class MyPlugin implements herbie\PluginInterface
         ];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         $middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
             // do something with the request

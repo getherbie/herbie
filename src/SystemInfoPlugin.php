@@ -82,7 +82,7 @@ final class SystemInfoPlugin extends Plugin
     private function getCommands(): array
     {
         $items = [];
-        foreach ($this->pluginManager->getCommands() as $command) {
+        foreach ($this->pluginManager->getConsoleCommands() as $command) {
             $items[] = $command;
         }
         return $items;

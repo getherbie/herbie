@@ -23,7 +23,7 @@ final class RestSysPlugin extends Plugin
         $this->parserClassExists = class_exists('\\Doctrine\\RST\\Parser');
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [
             ['renderSegment', [$this, 'renderSegment']]

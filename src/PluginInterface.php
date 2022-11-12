@@ -13,22 +13,22 @@ interface PluginInterface
     /**
      * @return string[]
      */
-    public function commands(): array;
+    public function consoleCommands(): array;
 
     /**
      * @return array<int, array{0: string, 1: callable, 2?: int}>
      */
-    public function events(): array;
+    public function eventListeners(): array;
 
     /**
      * @return array<int, array{string, callable}>
      */
-    public function filters(): array;
+    public function interceptingFilters(): array;
 
     /**
      * @return array<int, MiddlewareInterface|callable|string>
      */
-    public function appMiddlewares(): array;
+    public function applicationMiddlewares(): array;
 
     /**
      * @return array<int, array{string, MiddlewareInterface|callable|string}>

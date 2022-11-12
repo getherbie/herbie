@@ -29,13 +29,13 @@ final class PluginManager
     private LoggerInterface $logger;
 
     /** @var array<int, MiddlewareInterface|callable|string> */
-    private array $appMiddlewares;
+    private array $applicationMiddlewares;
 
     /** @var array<int, array{string, MiddlewareInterface|callable|string}> */
     private array $routeMiddlewares;
 
     /** @var string[] */
-    private array $commands;
+    private array $consoleCommands;
 
     /**
      * PluginManager constructor.
@@ -54,7 +54,7 @@ final class PluginManager
         $this->filterChainManager = $filterChainManager;
         $this->loadedPlugins = [];
         $this->logger = $logger;
-        $this->appMiddlewares = [];
+        $this->applicationMiddlewares = [];
         $this->routeMiddlewares = [];
         $this->pluginPaths = [];
         $this->translator = $translator;
@@ -62,7 +62,7 @@ final class PluginManager
 
     public function init(): void
     {
-        $this->loadPlugin(new InstallablePlugin(
+        $this->loadInstallablePlugin(new InstallablePlugin(
             'CORE',
             __DIR__,
             CorePlugin::class,
@@ -74,30 +74,30 @@ final class PluginManager
 
         // system plugins
         foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
-            $this->loadPlugin($plugin);
+            $this->loadInstallablePlugin($plugin);
         }
         $this->eventManager->trigger('onSystemPluginsAttached', $this);
 
         // composer plugins
         foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
-            $this->loadPlugin($plugin);
+            $this->loadInstallablePlugin($plugin);
         }
         $this->eventManager->trigger('onComposerPluginsAttached', $this);
 
         // local plugins
         foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
-            $this->loadPlugin($plugin);
+            $this->loadInstallablePlugin($plugin);
         }
         $this->eventManager->trigger('onLocalPluginsAttached', $this);
 
-        $this->loadPlugin(new InstallablePlugin(
+        $this->loadInstallablePlugin(new InstallablePlugin(
             'LOCAL_EXT',
             __DIR__,
             LocalExtensionsPlugin::class,
             'virtual',
         ));
 
-        $this->loadPlugin(new InstallablePlugin(
+        $this->loadInstallablePlugin(new InstallablePlugin(
             'APP_EXT',
             __DIR__,
             ApplicationExtensionsPlugin::class,
@@ -106,7 +106,7 @@ final class PluginManager
 
         $this->eventManager->trigger('onPluginsAttached', $this);
 
-        $this->loadPlugin(new InstallablePlugin(
+        $this->loadInstallablePlugin(new InstallablePlugin(
             'SYS_INFO',
             __DIR__,
             SystemInfoPlugin::class,
@@ -144,7 +144,7 @@ final class PluginManager
         return $plugins;
     }
 
-    private function loadPlugin(InstallablePlugin $installablePlugin): void
+    private function loadInstallablePlugin(InstallablePlugin $installablePlugin): void
     {
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
@@ -152,16 +152,16 @@ final class PluginManager
             return; // TODO log info
         }
 
-        foreach ($plugin->commands() as $command) {
-            $this->addCommand($command);
+        foreach ($plugin->consoleCommands() as $command) {
+            $this->addConsoleCommand($command);
         }
 
-        foreach ($plugin->filters() as $filter) {
-            $this->addFilter(...$filter);
+        foreach ($plugin->interceptingFilters() as $filter) {
+            $this->addInterceptingFilter(...$filter);
         }
 
-        foreach ($plugin->appMiddlewares() as $appMiddleware) {
-            $this->addAppMiddleware($appMiddleware);
+        foreach ($plugin->applicationMiddlewares() as $appMiddleware) {
+            $this->addApplicationMiddleware($appMiddleware);
         }
 
         foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
@@ -202,8 +202,8 @@ final class PluginManager
             }
         }
 
-        foreach ($plugin->events() as $event) {
-            $this->addListener(...$event);
+        foreach ($plugin->eventListeners() as $event) {
+            $this->addEventListener(...$event);
         }
 
         $key = $installablePlugin->getKey();
@@ -235,17 +235,17 @@ final class PluginManager
     /**
      * @return string[]
      */
-    public function getCommands(): array
+    public function getConsoleCommands(): array
     {
-        return $this->commands;
+        return $this->consoleCommands;
     }
 
     /**
      * @return array<int, MiddlewareInterface|callable|string>
      */
-    public function getAppMiddlewares(): array
+    public function getApplicationMiddlewares(): array
     {
-        return $this->appMiddlewares;
+        return $this->applicationMiddlewares;
     }
 
     /**
@@ -264,12 +264,12 @@ final class PluginManager
         return $this->pluginPaths;
     }
 
-    private function addCommand(string $command): void
+    private function addConsoleCommand(string $command): void
     {
-        $this->commands[] = $command;
+        $this->consoleCommands[] = $command;
     }
 
-    private function addFilter(string $name, callable $callable): void
+    private function addInterceptingFilter(string $name, callable $callable): void
     {
         $this->filterChainManager->attach($name, $callable);
     }
@@ -278,9 +278,9 @@ final class PluginManager
      * @param MiddlewareInterface|callable|string $middleware
      * @return void
      */
-    private function addAppMiddleware($middleware): void
+    private function addApplicationMiddleware($middleware): void
     {
-        $this->appMiddlewares[] = $middleware;
+        $this->applicationMiddlewares[] = $middleware;
     }
 
     /**
@@ -292,7 +292,7 @@ final class PluginManager
         $this->routeMiddlewares[] = $routeWithMiddleware;
     }
 
-    private function addListener(string $name, callable $callable, int $priority = 1): void
+    private function addEventListener(string $name, callable $callable, int $priority = 1): void
     {
         $this->eventManager->attach($name, $callable, $priority);
     }

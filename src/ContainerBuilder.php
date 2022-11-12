@@ -45,7 +45,7 @@ final class ContainerBuilder
                 '@plugin' => $paths['plugins'],
                 '@site' => $this->app->getSitePath(),
                 '@sysplugin' => Application::getHerbiePath('/sysplugins'),
-                '@vendor' => $this->app->getVendorDir(),
+                '@vendor' => $this->app->getVendorPath(),
                 '@web' => $paths['web'],
                 '@snippet' => $paths['app'] . '/templates/snippets'
             ]);
@@ -74,7 +74,7 @@ final class ContainerBuilder
 
         $c->set(Config::class, function (ContainerInterface $c) {
             $const = [
-                'APP_PATH' => str_untrailing_slash($this->app->getAppPath()),
+                'APP_PATH' => str_untrailing_slash($this->app->getApplicationPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
                 'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
                 'WEB_URL' => str_untrailing_slash($this->app->getBaseUrl())
@@ -187,7 +187,7 @@ final class ContainerBuilder
                     $c->get(ErrorHandlerMiddleware::class), // only one at the moment
                     $c->get(PageResolverMiddleware::class),
                 ],
-                $c->get(PluginManager::class)->getAppMiddlewares(),
+                $c->get(PluginManager::class)->getApplicationMiddlewares(),
                 $c->get(PluginManager::class)->getRouteMiddlewares(),
                 [
                     $c->get(DownloadMiddleware::class),

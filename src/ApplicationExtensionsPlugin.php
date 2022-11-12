@@ -13,24 +13,24 @@ final class ApplicationExtensionsPlugin extends Plugin
         $this->application = $application;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
-        return $this->application->getCommands();
+        return $this->application->getConsoleCommands();
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
-        return $this->application->getEvents();
+        return $this->application->getEventListeners();
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
-        return $this->application->getFilters();
+        return $this->application->getInterceptingFilters();
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
-        return $this->application->getAppMiddlewares();
+        return $this->application->getApplicationMiddlewares();
     }
 
     public function routeMiddlewares(): array

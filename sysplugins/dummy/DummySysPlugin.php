@@ -32,14 +32,14 @@ final class DummySysPlugin implements PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [
             DummyCommand::class,
         ];
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -56,7 +56,7 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -65,7 +65,7 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
         return [
