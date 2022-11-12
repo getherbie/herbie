@@ -17,7 +17,7 @@ return [
             'level' => 'debug',
         ],
         'pageRendererMiddleware' => [
-            'cache' => true
+            'cache' => isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] !== 'localhost')
         ],
         'twigRenderer' => [
             'debug' => true
