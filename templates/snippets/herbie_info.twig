@@ -52,7 +52,7 @@
     </table>
 
     <h2 id="herbie-aliases" class="herbie-info-h2">Aliases ({{ aliases|length }})</h2>
-    <p>Aliases ordered by name.</p>
+    <p>Registered aliases, ordered by name.</p>
     <div class="herbie-info-aliases" style="display:none">
         {% for alias in aliases %}
             {{- alias[0] -}}
@@ -65,7 +65,7 @@
             <th>Name</th>
             <th>Value</th>
         </tr>
-        {% for alias in aliases %}
+        {% for alias in aliases|sort %}
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ alias[0] }}</td>
