@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageTreeTextRenderer extends \RecursiveTreeIterator
+use RecursiveTreeIterator;
+
+final class PageTreeTextRenderer extends RecursiveTreeIterator
 {
     public string $emptyTitle = '[]';
 

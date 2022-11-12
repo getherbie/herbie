@@ -60,6 +60,18 @@ final class PageItemTest extends \Codeception\Test\Unit
         $this->assertTrue(isset($pageItem->cached));
     }
 
+    public function testCacheId()
+    {
+        // default value
+        $pageItem = new PageItem();
+        $this->assertTrue(isset($pageItem->cacheId));
+        $this->assertEquals('page-', $pageItem->cacheId);
+        $pageItem['id'] = 'path-to-page';
+        $this->assertEquals('page-path-to-page', $pageItem->cacheId);
+        $pageItem['cacheId'] = 'some-value'; // read-only
+        $this->assertEquals('page-path-to-page', $pageItem->cacheId); // still same value as before
+    }
+
     // string[] $categories
     public function testCategories()
     {
@@ -401,10 +413,13 @@ final class PageItemTest extends \Codeception\Test\Unit
             'excerpt' => '',
             'format' => 'raw',
             'hidden' => false,
+            'id' => '',
             'keep_extension' => false,
             'layout' => 'default',
             'menu_title' => '',
             'modified' => '',
+            'parent_id' => '',
+            'parent_route' => '',
             'path' => '',
             'redirect' => ['test', 302],
             'route' => '',
@@ -458,6 +473,17 @@ final class PageItemTest extends \Codeception\Test\Unit
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Field data is not allowed.');
         new PageItem(['data' => 'foo/bar']);
+    }
+
+    public function testArrayAccessMethods()
+    {
+        $pageItem = new PageItem();
+        $pageItem['title'] = 'Title';
+        $this->assertEquals('Title', $pageItem['title']);
+        $this->assertTrue(isset($pageItem['title']));
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Unset is not supported.');
+        unset($pageItem['title']);
     }
 
     // ---------------------------------------------------------

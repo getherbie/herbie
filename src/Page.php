@@ -6,36 +6,18 @@ namespace herbie;
 
 /**
  * Stores the page.
- * @property string $id
- * @property string $parent
  * @property string[] $segments
  */
 final class Page
 {
     use PageItemTrait;
 
-    private string $id;
-    private string $parent;
     private array $segments = [];
 
-    public function getId(): string
+    public function __construct(array $data = [], array $segments = [])
     {
-        return $this->id;
-    }
-
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getParent(): string
-    {
-        return $this->parent;
-    }
-
-    public function setParent(string $parent): void
-    {
-        $this->parent = $parent;
+        $this->initData($data);
+        $this->setSegments($segments);
     }
 
     public function getSegments(): array
@@ -65,11 +47,11 @@ final class Page
      */
     public function setData(array $data): void
     {
-        if (array_key_exists('segments', $data)) {
-            throw new \InvalidArgumentException("Field segments is not allowed.");
-        }
         if (array_key_exists('data', $data)) {
             throw new \InvalidArgumentException("Field data is not allowed.");
+        }
+        if (array_key_exists('segments', $data)) {
+            throw new \InvalidArgumentException("Field segments is not allowed.");
         }
         foreach ($data as $key => $value) {
             $this->__set($key, $value);

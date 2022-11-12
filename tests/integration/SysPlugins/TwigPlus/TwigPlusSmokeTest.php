@@ -69,7 +69,9 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
 
     public function testPagerFunction(): void
     {
-        $expected = '<a href="/zeta/psi"><span>Zeta Psi</span></a>';
+        $expected = '<div class="pager">'
+            . '<a href="/zeta/psi"class="pager-link-next"><span class="pager-label-next">Zeta Psi</span></a>'
+            . '</div>';
         $actual = $this->twig()->renderString('{{ pager() }}');
         $this->assertEquals($expected, $actual);
     }

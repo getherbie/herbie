@@ -437,6 +437,7 @@ final class HerbieInfoCest
             'add_css',
             'add_js',
             'file_link',
+            'file',
             'image',
             'page_link',
             'output_css',
@@ -598,5 +599,24 @@ final class HerbieInfoCest
         $I->amOnPage('/herbie-info');
         $I->see('Commands (' . count($commands) . ')', 'h2');
         $I->see(join(',', $commands), '.herbie-info-commands');
+    }
+
+    public function testNumberAndSortingOfAliases(AcceptanceTester $I)
+    {
+        $aliases = [
+            '@app',
+            '@asset',
+            '@media',
+            '@page',
+            '@plugin',
+            '@site',
+            '@sysplugin',
+            '@vendor',
+            '@web',
+            '@snippet'
+        ];
+        $I->amOnPage('/herbie-info');
+        $I->see('Aliases (' . count($aliases) . ')', 'h2');
+        $I->see(join(',', $aliases), '.herbie-info-aliases');
     }
 }

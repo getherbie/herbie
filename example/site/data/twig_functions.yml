@@ -1,6 +1,7 @@
 ---
 - name: abs_url
-  code: string abs_url(string route)
+  code: >-
+    {{ abs_url("doc/contents/variables") }}
   desc: Returns the absolute URL for a given route.
   params:
     - name: route
@@ -11,8 +12,9 @@
     - string
     - The absolute URL.
 - name: add_css
-  code: add_css(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])
-  desc: Adds a CSS asset to the html page.
+  code: >-
+    {{ add_css("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
+  desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
       type: string|array
@@ -28,7 +30,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: Returns CSS directly instead of in a link.
+      desc: Returns CSS inline instead of as a link.
       default: 'false'
     - name: pos
       type: int
@@ -37,8 +39,9 @@
   return:
     - void
 - name: add_js
-  code: add_js(array|strong paths[, attr = []][, group = null][, raw = false][, pos = 1])
-  desc: Adds a JavaScript asset to the html page.
+  code: >-
+    {{ add_js("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
+  desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
       type: string|array
@@ -46,7 +49,7 @@
       default: ''
     - name: attr
       type: array
-      desc: Attribute for the HTML-Tag.
+      desc: Attribute for the HTML tag.
       default: "[]"
     - name: group
       type: string
@@ -54,7 +57,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: Returns JavaScript directly instead of a link.
+      desc: Returns JavaScript inline instead of as a link.
       default: 'false'
     - name: pos
       type: int
@@ -63,7 +66,8 @@
   return:
     - void
 - name: ascii_tree
-  code: string ascii_tree([array options = {}])
+  code: >-
+   {{ ascii_tree("doc", 2, true) }}
   desc: Creates a text based (=ascii) tree of all pages. 
     All parameters are optional and passed as named parameters.
   params:
@@ -73,27 +77,31 @@
       default: '""'
     - name: maxDepth
       type: int
-      desc: The maximum depth level of the tree (-1 = unlimited)
+      desc: The maximum depth level of the tree (-1 = unlimited).
       default: "-1"
     - name: showHidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
-    - name: class
-      type: string
-      desc: The CSS class name.
-      default: sitemap
+#    - name: class
+#      type: string
+#      desc: The CSS class name.
+#      default: sitemap
   return:
     - string
     - The tree rendered as ascii text
 - name: body_class
-  code: string body_class()
-  desc: Returns a string with CSS classes, to be used within the class attribute of the body tag.
+  code: >-
+    {{ body_class() }}
+  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the HTML or body tag.
+    This allows to address any page, theme, layout or language via CSS selector.
+    Such a string looks like: "page-blog theme-default layout-blog language-en"'
   return:
     - string
-    - The string with CSS classes
+    - The string with CSS classes.
 - name: breadcrumb
-  code: string breadcrumb([array options = {}])
+  code: >-
+   {{ breadcrumb(" / ", ["", "Homepage"], true) }}
   desc: Returns a breadcrumb path for the given page. 
     All parameters are passed as an associative array.
   params:
@@ -103,7 +111,7 @@
       default: '""'
     - name: homeLink
       type: array|string
-      desc: The link to the homepage
+      desc: The link to the homepage. An array must be like [route, label].
       default: '""'
     - name: reverse
       type: bool
@@ -111,35 +119,38 @@
       default: 'false'
   return:
     - string
-    - The breadcrumb path as HTMl
+    - The breadcrumb path as HTML.
 - name: file
-  code: ''
-  desc: Returns a link to a file with file info.
+  code: >-
+    {{ file("media/download.pdf", "Download", true, {class:"download"}) }}
+  desc: Returns a link to a file with additional info like file type and size.
   params:
     - name: path
       type: string
-      desc: The path to the file.
+      desc: The relative web path to the file.
       default: ''
     - name: label
       type: string
-      desc: The label for the html tag.
+      desc: The label for the HTML tag.
       default: "\""
     - name: info
       type: bool
-      desc: If true file info will be added after the link
+      desc: If true file info will be added after the link.
       default: 'false'
     - name: attribs
       type: array
-      desc: One or more html attributes.
+      desc: One or more HTML attributes.
       default: "[ ]"
   return: []
 - name: image
-  code: string image(string src [, string width = ''][, string height = ''][, string alt = ''][, string class = ''])
-  desc: Returns an image markup tag.
+  code: >-
+   {{ image("media/portrait.jpg", 100, 200, "Portrait", "photo") }}
+  desc: Returns an image markup tag. 
+    No image processing is performed.
   params:
     - name: src
       type: string
-      desc: The relative path to the image file.
+      desc: The relative web path to the image file.
       default: ''
     - name: width
       type: int
@@ -155,14 +166,15 @@
       default: '""'
     - name: class
       type: string
-      desc: The html class attribute.
+      desc: The HTML class attribute.
       default: '""'
   return:
     - string
     - The image markup
 - name: page_link
-  code: string page_link(string route, string label [, array attribs = {}])
-  desc: Returns a html link with label and attributes for a given route.
+  code: >-
+   {{ page_link("doc/contents/variables", "Content variables", {class: "page-link"}) }}
+  desc: Returns a HTML link with label and attributes for a given route or an URL.
   params:
     - name: route
       type: string
@@ -174,30 +186,32 @@
       default: ''
     - name: attribs
       type: array
-      desc: The html attributes passed as an associative array.
+      desc: The HTML attributes passed as an associative array.
       default: ''
   return:
     - string
     - The link to a route
 - name: listing
-  code: ''
-  desc: Returns a paginated list of page items.
+  code: >-
+   {{ listing(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+  desc: Returns a paginated list of page items with links to the previous and next page. 
+    For the paging the GET parameter "page" is used.
   params:
     - name: pageList
       type: PageList
-      desc: The page list
+      desc: The page list.
       default: 'null'
     - name: filter
       type: string
-      desc: One or more filters
+      desc: One or more filters.
       default: '""'
     - name: sort
       type: string
-      desc: The sort field
+      desc: The sort field.
       default: '""'
     - name: shuffle
       type: bool
-      desc: If set the list is shuffled
+      desc: If set the list is shuffled.
       default: 'false'
     - name: limit
       type: int
@@ -205,14 +219,15 @@
       default: '10'
     - name: template
       type: string
-      desc: The path to the twig template
+      desc: The path to the twig template.
       default: "@snippet/listing.twig"
   return:
     - string
     - The rendered markup
 - name: menu
-  code: string menu([array options = {}])
-  desc: Returns a html menu as unordered list. 
+  code: >- 
+    {{ menu("doc", 1, false, "nav-menu") }}
+  desc: Returns an HTML menu as unordered list. 
     All parameters are optional and passed as named parameters.
   params:
     - name: route
@@ -235,7 +250,8 @@
     - string
     - The menu as unordered list
 - name: output_css
-  code: string output_css([string group])
+  code: >-
+    {{ output_css("default") }}
   desc: Outputs the CSS assets for a given group.
   params:
     - name: group
@@ -246,7 +262,8 @@
     - void
     - The CSS assets
 - name: output_js
-  code: string output_js([string group])
+  code: >-
+    {{ output_js("default") }}
   desc: Outputs the JavaScript assets for a given group.
   params:
     - name: group
@@ -257,22 +274,15 @@
     - string
     - The JavaScript assets
 - name: pager
-  code: string pager([string limit = ""][, string template = "{prev}{next}"][, string linkClass = ""][, string prevPageLabel = ""][, string nextPageLabel = ""][, string prevPageIcon = ""][, string nextPageIcon = ""])
+  code: >-
+    {{ pager("doc/contents/", "Previous", "Next", "&lt;", "&gt;", "nav-pager", "<div class=\"{class}\">{prev}{next}</div>") }}
   desc: Creates a pagination with links to the previous an next page within the current page branch. 
     All parameters are optional and passed as named parameters (see twig).
   params:
     - name: limit
       type: string
       desc: Limits the pagination to a certain branch of the page tree.
-      default: ''
-    - name: template
-      type: string
-      desc: The template.
-      default: "{prev}{next}"
-    - name: linkClass
-      type: string
-      desc: The CSS class names for the links.
-      default: ''
+      default: ''    
     - name: prevPageLabel
       type: string
       desc: The label for the "previous" link. 
@@ -291,35 +301,48 @@
       type: string
       desc: The icon for the "next" link.
       default: ''
+    - name: linkClass
+      type: string
+      desc: The CSS class name for the element.
+        Various other class names are assembled from this class name.
+      default: ''
+    - name: template
+      type: string
+      desc: The template.
+      default: "<div class=\"{class}\">{prev}{next}</div>"
   return:
     - string
     - The generated markup
 - name: page_title
-  code: string page_title([array options = {}])
+  code: >-
+    {{ page_title(" / ", "My Blog", "Welcome to My Blog", true) }}
   desc: Returns the SEO optimized page title of the website. 
-    All parameters are optional and passed as an named parameters.
+    All parameters are optional and passed as named parameters.
   params:
     - name: delim
       type: string
       desc: The delim.
-      default: "/"
+      default: '" / "'
     - name: siteTitle
       type: string
       desc: The title of the website.
+        If set this title is appended on every page.
       default: 'null'
     - name: rootTitle
       type: string
       desc: The title of the root page of the website.
+        If set this title is displayed on root page only.
       default: 'null'
     - name: reverse
       type: bool
-      desc: Reverse the page title "path".
+      desc: Reverse the page title path.
       default: 'false'
   return:
     - string
     - The page title of the website
 - name: snippet
-  code: ''
+  code: >-
+    {{ snippet("@site/custom-snippet.twig", {foo: "bar"}) }}
   desc: Includes and renders a custom snippet. 
     Automatic escaping is disabled for all escaping strategies.
   see: []
@@ -328,15 +351,16 @@
       type: string
       desc: The path to the snippet.
       default: ''
-    - name: variables
+    - name: context
       type: array
-      desc: The variables to pass to the snippet.
+      desc: The context variables to pass to the snippet.
       default: "[]"
   return:
     - string
     - The included snippet
 - name: sitemap
-  code: string sitemap()
+  code: >-
+    {{ sitemap("doc", 1, false, "nav-sitemap") }}
   desc: Creates a simple sitemap for all pages of the website based on an unordered list. 
     All parameters are optional and passed as named parameters.
   params:
@@ -344,14 +368,14 @@
       type: string
       desc: Limits the sitemap to a certain branch of the page tree.
       default: '""'
-    - name: showHidden
-      type: bool
-      desc: Show hidden pages.
-      default: 'false'
     - name: maxDepth
       type: int
       desc: The maximum depth level of the sitemap.
       default: "-1"
+    - name: showHidden
+      type: bool
+      desc: Show hidden pages.
+      default: 'false'      
     - name: class
       type: string
       desc: The CSS class name.
@@ -360,7 +384,8 @@
     - string
     - The generated markup
 - name: translate
-  code: string translate(string category, string message, array params={})
+  code: >-
+    {{ translate("app", "Plugin \"{plugin}\" enabled but not found!", {plugin: "dummy"}) }}
   desc: Translates a string according to the configuration and locale settings.
   params:
     - name: category
@@ -379,7 +404,8 @@
     - string
     - The translated message
 - name: url
-  code: string url(string route)
+  code: >-
+    {{ url("doc/contents") }}
   desc: Returns the relative URL to a given route.
   params:
     - name: route

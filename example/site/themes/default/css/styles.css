@@ -70,6 +70,7 @@ pre {
     overflow: auto;
     word-wrap: normal;
     white-space: pre;
+    background-color: #e9e6e2;
 }
 pre code {
     background-color: #e9e6e2;

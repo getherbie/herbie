@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageItem implements \ArrayAccess
+use ArrayAccess;
+
+final class PageItem implements ArrayAccess
 {
     use PageItemTrait;
+
+    public function __construct(array $data = [])
+    {
+        $this->initData($data);
+    }
 
     /**
      * @param mixed $offset
@@ -40,6 +47,6 @@ final class PageItem implements \ArrayAccess
      */
     public function offsetUnset($offset): void
     {
-        throw new \BadMethodCallException('Unset is not supported');
+        throw new \BadMethodCallException('Unset is not supported.');
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use RecursiveIteratorIterator;
+
 /**
  * @method PageItem getMenuItem()
  */
-final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
+final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
 {
     private string $class;
 
@@ -28,7 +30,7 @@ final class PageTreeHtmlRenderer extends \RecursiveIteratorIterator
 
     public function __construct(
         \RecursiveIterator $iterator,
-        int $mode = \RecursiveIteratorIterator::SELF_FIRST,
+        int $mode = RecursiveIteratorIterator::SELF_FIRST,
         int $flags = 0
     ) {
         parent::__construct($iterator, $mode, $flags);

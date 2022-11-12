@@ -3,6 +3,7 @@
     <ul>
         <li><a href="{{ route }}#herbie-php-classes">PHP Classes</a></li>
         <li><a href="{{ route }}#herbie-php-functions">PHP Functions</a></li>
+        <li><a href="{{ route }}#herbie-aliases">Aliases</a></li>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
         <li><a href="{{ route }}#herbie-plugins">Plugins</a></li>
         <li><a href="{{ route }}#herbie-commands">Console Commands</a></li>
@@ -46,6 +47,29 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ command }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2 id="herbie-aliases" class="herbie-info-h2">Aliases ({{ aliases|length }})</h2>
+    <p>Registered aliases, ordered by name.</p>
+    <div class="herbie-info-aliases" style="display:none">
+        {% for alias in aliases %}
+            {{- alias[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        {% for alias in aliases|sort %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ alias[0] }}</td>
+                <td>{{ alias[1] }}</td>
             </tr>
         {% endfor %}
     </table>

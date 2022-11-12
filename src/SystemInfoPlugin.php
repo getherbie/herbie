@@ -6,6 +6,7 @@ namespace herbie;
 
 final class SystemInfoPlugin extends Plugin
 {
+    private Alias $alias;
     private Config $config;
     private EventManager $eventManager;
     private FilterChainManager $filterChainManager;
@@ -15,6 +16,7 @@ final class SystemInfoPlugin extends Plugin
     private string $appPath;
 
     public function __construct(
+        Alias $alias,
         Config $config,
         EventManager $eventManager,
         FilterChainManager $filterChainManager,
@@ -22,6 +24,7 @@ final class SystemInfoPlugin extends Plugin
         PluginManager $pluginManager,
         TwigRenderer $twigRenderer
     ) {
+        $this->alias = $alias;
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
@@ -47,6 +50,7 @@ final class SystemInfoPlugin extends Plugin
     public function herbieInfo(array $context, string $template = '@snippet/herbie_info.twig'): string
     {
         $info = [
+            'aliases' => $this->getAlias(),
             'commands' => $this->getCommands(),
             'configs' => $this->getConfig(),
             'events' => $this->getEvents(),
@@ -61,6 +65,15 @@ final class SystemInfoPlugin extends Plugin
             'twig_tests' => $this->getTwigTests(),
         ];
         return $this->twigRenderer->renderTemplate($template, $info);
+    }
+
+    private function getAlias(): array
+    {
+        $items = [];
+        foreach ($this->alias->getAll() as $key => $value) {
+            $items[] = [$key, $value];
+        }
+        return $items;
     }
 
     /**

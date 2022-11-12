@@ -197,7 +197,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $pageList->sort($field, $direction);
         }
 
-        if (1 === (int)$shuffle) {
+        if ($shuffle) {
             $pageList = $pageList->shuffle();
         }
 
@@ -215,20 +215,17 @@ final class TwigPlusExtension extends AbstractExtension
     public function functionMenu(
         string $route = '',
         int $maxDepth = -1,
+        bool $showHidden = false,
         string $class = 'menu'
     ): string {
-        // TODO use $showHidden parameter
+        // NOTE duplicated code, see function sitemap
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
         if ($branch === null) {
             return '';
         }
 
         $treeIterator = new PageTreeIterator($branch);
-
-        // using FilterCallback for better filtering of nested items
-        $routeLine = $this->environment->getRouteLine();
-        $filterCallback = new PageTreeFilterCallback($routeLine);
-        $filterIterator = new \RecursiveCallbackFilterIterator($treeIterator, $filterCallback);
+        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
 
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
@@ -238,7 +235,7 @@ final class TwigPlusExtension extends AbstractExtension
             $href = $this->urlManager->createUrl($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
-        return $htmlTree->render($this->environment->getRoute());
+        return $htmlTree->render();
     }
 
     /**
@@ -268,62 +265,63 @@ final class TwigPlusExtension extends AbstractExtension
      */
     public function functionPager(
         string $limit = '',
-        string $template = '{prev}{next}',
-        string $linkClass = '',
-        string $nextPageLabel = '',
         string $prevPageLabel = '',
+        string $nextPageLabel = '',
         string $prevPageIcon = '',
-        string $nextPageIcon = ''
+        string $nextPageIcon = '',
+        string $cssClass = 'pager',
+        string $template = '<div class="{class}">{prev}{next}</div>'
     ): string {
         $route = $this->environment->getRoute();
-        $iterator = $this->pageRepository->findAll()->getIterator();
+        $pageList = $this->pageRepository->findAll();
 
-        $prev = null;
-        $cur = null;
-        $next = null;
-        $keys = [];
-        foreach ($iterator as $i => $item) {
-            if (empty($limit) || (strpos($item->route, $limit) === 0)) {
-                if (isset($cur)) {
-                    $next = $item;
-                    break;
-                }
-                if ($route === $item->route) {
-                    $cur = $item;
-                }
-                $keys[] = $i;
-            }
+        if (strlen($limit) > 0) {
+            $pageList = $pageList->filter(function ($pageItem) use ($limit) {
+                return strpos($pageItem->route, $limit) === 0;
+            });
         }
 
-        $position = count($keys) - 2;
-        if ($position >= 0) {
-            $iterator->seek($position);
-            $prev = $iterator->current();
+        $prevPageItem = null;
+        $currentPageItem = null;
+        $nextPageItem = null;
+        $lastPageItem = null;
+        foreach ($pageList as $key => $pageItem) {
+            if ($currentPageItem) {
+                $nextPageItem = $pageItem;
+                break;
+            }
+            if ($key === $route) {
+                $prevPageItem = $lastPageItem;
+                $currentPageItem = $pageItem;
+                continue;
+            }
+            $lastPageItem = $pageItem;
         }
 
         $replacements = [
+            '{class}' => $cssClass,
             '{prev}' => '',
             '{next}' => ''
         ];
-        $attribs = [];
-        if (!empty($linkClass)) {
-            $attribs['class'] = $linkClass;
-        }
-        if (isset($prev)) {
-            $label = empty($prevPageLabel) ? $prev->getMenuTitle() : $prevPageLabel;
-            $label = sprintf('<span>%s</span>', $label);
+
+        if (isset($prevPageItem)) {
+            $label = empty($prevPageLabel) ? $prevPageItem->getMenuTitle() : $prevPageLabel;
+            $label = sprintf('<span class="%s-label-prev">%s</span>', $cssClass, $label);
             if ($prevPageIcon) {
-                $label = $prevPageIcon . $label;
+                $label = sprintf('<span class="%s-icon-prev">%s</span>%s', $cssClass, $prevPageIcon, $label);
             }
-            $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
+            $attribs = ['class' => $cssClass . '-link-prev'];
+            $replacements['{prev}'] = $this->createLink($prevPageItem->route, $label, $attribs);
         }
-        if (isset($next)) {
-            $label = empty($nextPageLabel) ? $next->getMenuTitle() : $nextPageLabel;
-            $label = sprintf('<span>%s</span>', $label);
+
+        if (isset($nextPageItem)) {
+            $label = empty($nextPageLabel) ? $nextPageItem->getMenuTitle() : $nextPageLabel;
+            $label = sprintf('<span class="%s-label-next">%s</span>', $cssClass, $label);
             if ($nextPageIcon) {
-                $label = $label . $nextPageIcon;
+                $label = sprintf('%s<span class="%s-icon-next">%s</span>', $label, $cssClass, $nextPageIcon);
             }
-            $replacements['{next}'] = $this->createLink($next->route, $label, $attribs);
+            $attribs = ['class' => $cssClass . '-link-next'];
+            $replacements['{next}'] = $this->createLink($nextPageItem->route, $label, $attribs);
         }
 
         return strtr($template, $replacements);
@@ -372,7 +370,7 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     public function functionPagetitle(
-        string $delim = '/',
+        string $delim = ' / ',
         string $siteTitle = '',
         string $rootTitle = '',
         bool $reverse = false
@@ -402,39 +400,23 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     public function functionSitemap(
-        int $maxDepth = -1,
         string $route = '',
+        int $maxDepth = -1,
         bool $showHidden = false,
         string $class = 'sitemap'
     ): string {
-        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        if ($branch === null) {
-            return '';
-        }
-
-        $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
-
-        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
-        $htmlTree->setMaxDepth($maxDepth);
-        $htmlTree->setClass($class);
-        $htmlTree->setItemCallback(function (PageTree $node) {
-            $menuItem = $node->getMenuItem();
-            $href = $this->urlManager->createUrl($menuItem->route);
-            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
-        });
-        return $htmlTree->render();
+        return $this->functionMenu($route, $maxDepth, $showHidden, $class);
     }
 
     /**
-     * @param array<string, mixed> $variables
+     * @param array<string, mixed> $context
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionSnippet(string $path, array $variables = []): string
+    public function functionSnippet(string $path, array $context = []): string
     {
-        return $this->twigRenderer->renderTemplate($path, $variables);
+        return $this->twigRenderer->renderTemplate($path, $context);
     }
 
     /**

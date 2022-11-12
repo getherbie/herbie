@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageTrail implements \IteratorAggregate, \Countable
+use Countable;
+use IteratorAggregate;
+
+/**
+ * @implements IteratorAggregate<int, PageItem>
+ */
+final class PageTrail implements IteratorAggregate, Countable
 {
     /** @var PageItem[] */
     private array $items;

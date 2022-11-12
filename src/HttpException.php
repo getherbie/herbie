@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class HttpException extends \Exception
+use Exception;
+
+final class HttpException extends Exception
 {
     public static function notFound(string $path, ?string $format = null): HttpException
     {

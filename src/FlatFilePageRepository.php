@@ -56,8 +56,6 @@ final class FlatFilePageRepository implements PageRepositoryInterface
     private function createPage(array $data): Page
     {
         return $this->pageFactory->newPage(
-            $data['id'],
-            $data['parent'],
             $data['data'],
             $data['segments']
         );

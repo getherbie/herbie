@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class FileInfoSortableIterator implements \IteratorAggregate
+use IteratorAggregate;
+
+final class FileInfoSortableIterator implements IteratorAggregate
 {
     public const SORT_BY_NAME = 1;
     public const SORT_BY_TYPE = 2;

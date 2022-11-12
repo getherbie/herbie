@@ -6,14 +6,9 @@ namespace herbie;
 
 final class PageFactory
 {
-    public function newPage(string $id, string $parent, array $data, array $segments): Page
+    public function newPage(array $data, array $segments): Page
     {
-        $page = new Page();
-        $page->setId($id);
-        $page->setParent($parent);
-        $page->setData($data);
-        $page->setSegments($segments);
-        return $page;
+        return new Page($data, $segments);
     }
 
     public function newPageItem(array $data = []): PageItem
