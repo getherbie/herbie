@@ -66,7 +66,7 @@ final class PageItemTest extends \Codeception\Test\Unit
         $pageItem = new PageItem();
         $this->assertTrue(isset($pageItem->cacheId));
         $this->assertEquals('page-', $pageItem->cacheId);
-        $pageItem['path'] = 'path-to-page';
+        $pageItem['id'] = 'path-to-page';
         $this->assertEquals('page-path-to-page', $pageItem->cacheId);
         $pageItem['cacheId'] = 'some-value'; // read-only
         $this->assertEquals('page-path-to-page', $pageItem->cacheId); // still same value as before
