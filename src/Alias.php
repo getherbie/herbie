@@ -27,6 +27,11 @@ final class Alias
         $this->setInternal($alias, $path);
     }
 
+    public function getAll(): array
+    {
+        return $this->aliases;
+    }
+
     public function get(string $alias): string
     {
         return strtr($alias, $this->aliases);
