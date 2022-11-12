@@ -437,6 +437,7 @@ final class HerbieInfoCest
             'add_css',
             'add_js',
             'file_link',
+            'file',
             'image',
             'page_link',
             'output_css',
