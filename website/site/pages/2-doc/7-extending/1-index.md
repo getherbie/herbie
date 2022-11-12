@@ -334,7 +334,7 @@ $app->addApplicationMiddleware();
 $app->addRouteMiddleware();
 $app->addTwigFilter();
 $app->addTwigFunction();
-$app->addTwigGlobals();
+$app->addTwigGlobal();
 $app->addTwigTest();
 
 // <-- finish adding your extensions

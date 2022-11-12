@@ -302,9 +302,12 @@ final class Application
         return $this->twigFilters;
     }
 
-    public function addTwigGlobals(array $twigGlobals): Application
+    /**
+     * @param mixed $mixed
+     */
+    public function addTwigGlobal(string $name, $mixed): Application
     {
-        $this->twigGlobals = $twigGlobals;
+        $this->twigGlobals[$name] = $mixed;
         return $this;
     }
 
