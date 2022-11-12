@@ -483,7 +483,7 @@ class MyPlugin implements herbie\PluginInterface
         return [];
     }
 
-    public function eventFilters(): array
+    public function eventListeners(): array
     {
         return [];
     }
@@ -580,7 +580,7 @@ class MyPlugin implements herbie\PluginInterface
         ];
     }
 
-    public function eventFilters(): array
+    public function eventListeners(): array
     {
         $event = function (herbie\EventInterface $event): void {
             // do something with $event
