@@ -41,15 +41,15 @@ $app = new Application(
     )
 );
 
-$app->addCommand(CustomCommand::class);
+$app->addConsoleCommand(CustomCommand::class);
 
-$app->addAppMiddleware(ResponseTimeMiddleware::class);
+$app->addApplicationMiddleware(ResponseTimeMiddleware::class);
 
-$app->addAppMiddleware(new CustomHeader('one'));
+$app->addApplicationMiddleware(new CustomHeader('one'));
 
-$app->addAppMiddleware(new CustomHeader('two'));
+$app->addApplicationMiddleware(new CustomHeader('two'));
 
-$app->addAppMiddleware(new CustomHeader('three'));
+$app->addApplicationMiddleware(new CustomHeader('three'));
 
 $app->addRouteMiddleware('blog/2015-07-30', new CustomHeader('blog'));
 
@@ -69,19 +69,19 @@ $app->addTwigTest('mytest', function () {
     return true;
 });
 
-$app->addFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
+$app->addInterceptingFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
 
-$app->addFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
+$app->addInterceptingFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
     // do something with content
     return $chain->next($content, $args, $chain);
 });
 
-$app->addFilter('renderSegment', new TestFilter());
+$app->addInterceptingFilter('renderSegment', new TestFilter());
 
-$app->addEvent('onTwigInitialized', function (EventInterface $event): void {
+$app->addEventListener('onTwigInitialized', function (EventInterface $event): void {
     /** @var TwigRenderer $twigRenderer */
     $twigRenderer = $event->getTarget();
     $twigRenderer->addFilter(new TwigFilter('my_filter', function (string $content): string {
