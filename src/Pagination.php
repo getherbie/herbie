@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class Pagination implements \IteratorAggregate, \Countable
+use Countable;
+use IteratorAggregate;
+
+final class Pagination implements IteratorAggregate, Countable
 {
     /** @var array<int, mixed> */
     private array $items;
@@ -23,10 +26,10 @@ final class Pagination implements \IteratorAggregate, \Countable
         $this->items = [];
         if (is_array($items)) {
             $this->items = $items;
-        } elseif ($items instanceof \IteratorAggregate) {
+        } elseif ($items instanceof IteratorAggregate) {
             $this->items = (array)$items->getIterator();
         } else {
-            $message = 'The param $items must be an array or an object implementing \IteratorAggregate.';
+            $message = 'The param $items must be an array or an object implementing IteratorAggregate.';
             throw new \InvalidArgumentException($message, 500);
         }
         $this->setLimit($limit);

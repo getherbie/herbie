@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageItem implements \ArrayAccess
+use ArrayAccess;
+
+final class PageItem implements ArrayAccess
 {
     use PageItemTrait;
 

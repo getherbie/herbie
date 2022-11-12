@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class FilterIterator implements \Iterator, \Countable, FilterInterface
+use Countable;
+use Iterator;
+
+final class FilterIterator implements Iterator, Countable, FilterInterface
 {
     private int $position = 0;
 

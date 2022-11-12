@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Exception;
 use Throwable;
 
-final class SystemException extends \Exception
+final class SystemException extends Exception
 {
     public static function classNotExist(string $class, ?string $format = null): SystemException
     {

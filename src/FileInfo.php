@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class FileInfo extends \SplFileInfo
+use SplFileInfo;
+
+final class FileInfo extends SplFileInfo
 {
     private string $relativePath;
 

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
+use RecursiveDirectoryIterator as RecursiveDirectoryIteratorAlias;
+
+final class RecursiveDirectoryIterator extends RecursiveDirectoryIteratorAlias
 {
     /**
      * Return an instance of FileInfo with support for relative paths

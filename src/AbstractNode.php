@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-abstract class AbstractNode implements \IteratorAggregate
+use IteratorAggregate;
+
+abstract class AbstractNode implements IteratorAggregate
 {
     /**
      * @var mixed
