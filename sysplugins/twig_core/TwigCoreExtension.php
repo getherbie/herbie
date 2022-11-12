@@ -23,7 +23,6 @@ use Twig\TwigTest;
 
 use function herbie\date_format;
 use function herbie\file_size;
-use function herbie\str_leading_slash;
 use function herbie\str_trailing_slash;
 use function herbie\time_format;
 

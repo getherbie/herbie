@@ -31,7 +31,7 @@
     </table>
     {% if item.code is defined and item.code != '' %}
         <div>Example:</div>
-        <pre><code class="twig-language">&#123&#123 {{ item.code }} &#125;&#125;</code></pre>
+        <pre><code class="twig-language">{{ item.code }}</code></pre>
     {% endif %}
 </div>
 {% endfor %}

@@ -400,8 +400,8 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     public function functionSitemap(
-        int $maxDepth = -1,
         string $route = '',
+        int $maxDepth = -1,
         bool $showHidden = false,
         string $class = 'sitemap'
     ): string {
@@ -409,14 +409,14 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     /**
-     * @param array<string, mixed> $variables
+     * @param array<string, mixed> $context
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionSnippet(string $path, array $variables = []): string
+    public function functionSnippet(string $path, array $context = []): string
     {
-        return $this->twigRenderer->renderTemplate($path, $variables);
+        return $this->twigRenderer->renderTemplate($path, $context);
     }
 
     /**
