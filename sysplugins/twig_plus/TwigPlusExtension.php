@@ -404,23 +404,7 @@ final class TwigPlusExtension extends AbstractExtension
         bool $showHidden = false,
         string $class = 'sitemap'
     ): string {
-        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        if ($branch === null) {
-            return '';
-        }
-
-        $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
-
-        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
-        $htmlTree->setMaxDepth($maxDepth);
-        $htmlTree->setClass($class);
-        $htmlTree->setItemCallback(function (PageTree $node) {
-            $menuItem = $node->getMenuItem();
-            $href = $this->urlManager->createUrl($menuItem->route);
-            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
-        });
-        return $htmlTree->render();
+        return $this->functionMenu($route, $maxDepth, $showHidden, $class);
     }
 
     /**
