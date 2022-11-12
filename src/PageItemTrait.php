@@ -18,10 +18,13 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property string $excerpt
  * @property string $format
  * @property bool $hidden
+ * @property string $id
  * @property bool $keep_extension
  * @property string $layout
  * @property string $menu_title
  * @property string $modified
+ * @property string $parent_id
+ * @property string $parent_route
  * @property string $path
  * @property array<void>|array{status: int, url: string} $redirect
  * @property string $route
@@ -45,10 +48,13 @@ trait PageItemTrait
     private string $excerpt;
     private string $format;
     private bool $hidden;
+    private string $id;
     private bool $keep_extension;
     private string $layout;
     private string $menu_title;
     private string $modified;
+    private string $parent_id;
+    private string $parent_route;
     private string $path;
     /** @var array{string, int} */
     private array $redirect;
@@ -64,7 +70,7 @@ trait PageItemTrait
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data = [])
+    public function initData(array $data = []): void
     {
         // set defaults
         $this->authors = [];
@@ -77,10 +83,13 @@ trait PageItemTrait
         $this->excerpt = '';
         $this->format = 'raw';
         $this->hidden = false;
+        $this->id = '';
         $this->keep_extension = false;
         $this->layout = 'default';
         $this->menu_title = '';
         $this->modified = '';
+        $this->parent_id = '';
+        $this->parent_route = '';
         $this->path = '';
         $this->redirect = [];
         $this->route = '';
@@ -105,7 +114,7 @@ trait PageItemTrait
 
     public function getCacheId(): string
     {
-        return 'page-' . $this->path;
+        return 'page-' . $this->id;
     }
 
     public function getType(): string
@@ -194,9 +203,34 @@ trait PageItemTrait
         $this->route = trim($route);
     }
 
+    public function setId(string $id): void
+    {
+        $this->id = trim($id);
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function setParentId(string $parentId): void
+    {
+        $this->parent_id = trim($parentId);
+    }
+
+    public function getParentId(): string
+    {
+        return $this->parent_id;
+    }
+
+    public function setParentRoute(string $parentRoute): void
+    {
+        $this->parent_route = trim($parentRoute);
+    }
+
     public function getParentRoute(): string
     {
-        return trim(dirname($this->getRoute()), '.');
+        return $this->parent_route;
     }
 
     public function getPath(): string

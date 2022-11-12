@@ -67,8 +67,6 @@ final class PageTest extends \Codeception\Test\Unit
     public function testLoad()
     {
         $page = (new PageFactory())->newPage(
-            'id',
-            'parent',
             [
                 'title' => 'Segments'
             ],
@@ -132,7 +130,6 @@ final class PageTest extends \Codeception\Test\Unit
     public function testToArray()
     {
         $data = [
-            'id' => '@page/pagedata.md',
             'parent' => '',
             'authors' => [],
             'cached' => true,
@@ -143,13 +140,16 @@ final class PageTest extends \Codeception\Test\Unit
             'excerpt' => 'This is a short text.',
             'format' => 'markdown',
             'hidden' => true,
+            'id' => '@page/pagedata.md',
             'keep_extension' => false,
             'layout' => 'layout.html',
             'menu_title' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
+            'parent_id' => '@page/index.md',
+            'parent_route' => '',
             'path' => '@page/pagedata.md',
             'redirect' => ['test', 301],
-            'route' => '',
+            'route' => 'pagedata',
             'tags' => [],
             'title' => 'Page Data',
             'twig' => true,
@@ -164,7 +164,7 @@ final class PageTest extends \Codeception\Test\Unit
         $expected = array_merge($data, ['segments' => []]);
         $expected['menu_title'] = $expected['title'];
 
-        $page = (new PageFactory())->newPage('@page/pagedata.md', 'parent', $data, []);
+        $page = (new PageFactory())->newPage($data, []);
         $this->assertEquals($expected, $page->toArray());
 
         return $page;

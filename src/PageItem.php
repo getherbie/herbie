@@ -10,6 +10,11 @@ final class PageItem implements ArrayAccess
 {
     use PageItemTrait;
 
+    public function __construct(array $data = [])
+    {
+        $this->initData($data);
+    }
+
     /**
      * @param mixed $offset
      */

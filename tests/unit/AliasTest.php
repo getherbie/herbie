@@ -20,6 +20,17 @@ final class AliasTest extends \Codeception\Test\Unit
         ]);
     }
 
+    public function testGetAll()
+    {
+        $data = [
+            '@foo' => 'foo',
+            '@bar' => 'bar',
+            '@baz' => 'baz'
+        ];
+        $alias = new Alias($data);
+        $this->assertEquals($data, $alias->getAll());
+    }
+
     public function testSetAlias()
     {
         $this->alias->set('@new', 'new');

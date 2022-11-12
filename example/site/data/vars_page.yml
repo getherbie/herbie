@@ -34,7 +34,7 @@
   desc: If set the page is not visible in navigation elements like sitemap or breadcrumb.
   type: bool
 - name: page.id
-  desc: The ID of the page.
+  desc: The aliased ID of the page like `@page/2-company/3-about-us.md`.
   type: string
 - name: page.keep_extension
   desc: If true the file extension is used for urls. 
@@ -53,8 +53,11 @@
   desc: The modification time of the page as ISO 8601 formatted string.
     This value is set automatically.
   type: string  
-- name: page.parent
-  desc: The parent route.
+- name: page.parent_id
+  desc: The aliased parent ID of the page like `@page/2-company/1-index.md`
+  type: string
+- name: page.parent_route
+  desc: The parent route of the page like `company`.
   type: string
 - name: page.path
   desc: The path to the page file, set per default.
@@ -63,7 +66,7 @@
   desc: If set the request will be redirected to the given page.
   type: string|array
 - name: page.route
-  desc: The route to the page.
+  desc: The route of the page like `company/about-us`.
   type: string
 - name: page.segments
   desc: The page content.
@@ -75,7 +78,7 @@
   desc: The title of the page.
   type: string
 - name: page.twig
-  desc: If set the page will be parsed by the Twig Renderer first (default = true).
+  desc: 'If set the page will be parsed by the Twig Renderer first (default: true).'
   type: bool
 - name: page.type
   desc: 'The page type (default: page).'

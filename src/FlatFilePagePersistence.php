@@ -19,7 +19,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     }
 
     /**
-     * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
+     * @param string $id The aliased unique path to the file (i.e. @page/1-about/2-company.md)
      */
     public function findById(string $id): ?array
     {
@@ -89,12 +89,82 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             $data['route'] = $this->createRoute($alias, $trimExtension);
         }
 
+        if (!isset($data['parent_route'])) {
+            $data['parent_route'] = trim(dirname($data['route']), '.');
+        }
+
+        if (!isset($data['id'])) {
+            $data['id'] = $alias;
+        }
+
+        if (!isset($data['parent_id'])) {
+            $data['parent_id'] = $this->determineParentId($alias);
+        }
+
         return [
-            'id' => $alias,
-            'parent' => '', // TODO determine parent
             'data' => $data,
             'segments' => $segments
         ];
+    }
+
+    private function determineParentId(string $alias): string
+    {
+        $parents = $this->findParents($this->alias->get('@page'), '@page');
+        $filename = $this->getFilenameWithoutPrefix($alias);
+
+        if ($filename === 'index') {
+            $segment = dirname(dirname($alias));
+        } else {
+            $segment = dirname($alias);
+        }
+
+        if ($segment === '.') {
+            return '';
+        }
+
+        $segmentDepth = substr_count($segment, '/');
+
+        foreach ($parents as $parent) {
+            if (strpos($parent, $segment) !== 0) {
+                continue;
+            }
+            $parentDepth = substr_count($parent, '/');
+            if ($parentDepth > ($segmentDepth + 1)) {
+                continue;
+            }
+            $basename = basename($parent);
+            if (preg_match('/^([0-9]+[-]+)?index\.[A-Za-z0-9]+$/', $basename) === 1) {
+                return $parent;
+            }
+        }
+
+        return '';
+    }
+
+    private function findParents(string $folder, string $alias): array
+    {
+        static $parents;
+        if (!isset($parents)) {
+            $parents = [];
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
+            foreach ($iterator as $file) {
+                if (!$file->isDir()) {
+                    $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+                    $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
+                    if ($filename === 'index') {
+                        $parents[] = str_replace($folder, $alias, $file->getPathname());
+                    }
+                }
+            }
+            sort($parents);
+        }
+        return $parents;
+    }
+
+    private function getFilenameWithoutPrefix(string $filepath): string
+    {
+        $filename = pathinfo($filepath, PATHINFO_FILENAME);
+        return (string)preg_replace('/^([0-9]+[-]+)(.+)$/', '\\2', $filename);
     }
 
     private function parseFileContent(string $content): array
