@@ -370,7 +370,7 @@ final class TwigPlusExtension extends AbstractExtension
     }
 
     public function functionPagetitle(
-        string $delim = '/',
+        string $delim = ' / ',
         string $siteTitle = '',
         string $rootTitle = '',
         bool $reverse = false
