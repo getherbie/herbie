@@ -51,10 +51,10 @@ final class SystemInfoPlugin extends Plugin
     {
         $info = [
             'aliases' => $this->getAlias(),
-            'commands' => $this->getCommands(),
+            'commands' => $this->getConsoleCommands(),
             'configs' => $this->getConfig(),
-            'events' => $this->getEvents(),
-            'filters' => $this->getFilters(),
+            'events' => $this->getEventListeners(),
+            'filters' => $this->getInterceptingFilters(),
             'middlewares' => $this->getMiddlewares(),
             'php_classes' => defined_classes('herbie'),
             'php_functions' => defined_functions('herbie'),
@@ -71,7 +71,7 @@ final class SystemInfoPlugin extends Plugin
     {
         $items = [];
         foreach ($this->alias->getAll() as $key => $value) {
-            $items[] = [$key, $value];
+            $items[] = [$key, $this->filterValue($value)];
         }
         return $items;
     }
@@ -79,7 +79,7 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return string[]
      */
-    private function getCommands(): array
+    private function getConsoleCommands(): array
     {
         $items = [];
         foreach ($this->pluginManager->getConsoleCommands() as $command) {
@@ -107,7 +107,7 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return array<int, string[]>
      */
-    private function getEvents(): array
+    private function getEventListeners(): array
     {
         $items = [];
         foreach ($this->eventManager->getEvents() as $eventName => $eventsWithPriority) {
@@ -126,7 +126,7 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return array<int, string[]>
      */
-    private function getFilters(): array
+    private function getInterceptingFilters(): array
     {
         $items = [];
         foreach ($this->filterChainManager->getAllFilters() as $category => $filterChain) {
