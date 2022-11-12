@@ -265,62 +265,63 @@ final class TwigPlusExtension extends AbstractExtension
      */
     public function functionPager(
         string $limit = '',
-        string $template = '{prev}{next}',
-        string $linkClass = '',
-        string $nextPageLabel = '',
         string $prevPageLabel = '',
+        string $nextPageLabel = '',
         string $prevPageIcon = '',
-        string $nextPageIcon = ''
+        string $nextPageIcon = '',
+        string $cssClass = 'pager',
+        string $template = '<div class="{class}">{prev}{next}</div>'
     ): string {
         $route = $this->environment->getRoute();
-        $iterator = $this->pageRepository->findAll()->getIterator();
+        $pageList = $this->pageRepository->findAll();
 
-        $prev = null;
-        $cur = null;
-        $next = null;
-        $keys = [];
-        foreach ($iterator as $i => $item) {
-            if (empty($limit) || (strpos($item->route, $limit) === 0)) {
-                if (isset($cur)) {
-                    $next = $item;
-                    break;
-                }
-                if ($route === $item->route) {
-                    $cur = $item;
-                }
-                $keys[] = $i;
-            }
+        if (strlen($limit) > 0) {
+            $pageList = $pageList->filter(function ($pageItem) use ($limit) {
+                return strpos($pageItem->route, $limit) === 0;
+            });
         }
 
-        $position = count($keys) - 2;
-        if ($position >= 0) {
-            $iterator->seek($position);
-            $prev = $iterator->current();
+        $prevPageItem = null;
+        $currentPageItem = null;
+        $nextPageItem = null;
+        $lastPageItem = null;
+        foreach ($pageList as $key => $pageItem) {
+            if ($currentPageItem) {
+                $nextPageItem = $pageItem;
+                break;
+            }
+            if ($key === $route) {
+                $prevPageItem = $lastPageItem;
+                $currentPageItem = $pageItem;
+                continue;
+            }
+            $lastPageItem = $pageItem;
         }
 
         $replacements = [
+            '{class}' => $cssClass,
             '{prev}' => '',
             '{next}' => ''
         ];
-        $attribs = [];
-        if (!empty($linkClass)) {
-            $attribs['class'] = $linkClass;
-        }
-        if (isset($prev)) {
-            $label = empty($prevPageLabel) ? $prev->getMenuTitle() : $prevPageLabel;
-            $label = sprintf('<span>%s</span>', $label);
+
+        if (isset($prevPageItem)) {
+            $label = empty($prevPageLabel) ? $prevPageItem->getMenuTitle() : $prevPageLabel;
+            $label = sprintf('<span class="%s-label-prev">%s</span>', $cssClass, $label);
             if ($prevPageIcon) {
-                $label = $prevPageIcon . $label;
+                $label = sprintf('<span class="%s-icon-prev">%s</span>%s', $cssClass, $prevPageIcon, $label);
             }
-            $replacements['{prev}'] = $this->createLink($prev->route, $label, $attribs);
+            $attribs = ['class' => $cssClass . '-link-prev'];
+            $replacements['{prev}'] = $this->createLink($prevPageItem->route, $label, $attribs);
         }
-        if (isset($next)) {
-            $label = empty($nextPageLabel) ? $next->getMenuTitle() : $nextPageLabel;
-            $label = sprintf('<span>%s</span>', $label);
+
+        if (isset($nextPageItem)) {
+            $label = empty($nextPageLabel) ? $nextPageItem->getMenuTitle() : $nextPageLabel;
+            $label = sprintf('<span class="%s-label-next">%s</span>', $cssClass, $label);
             if ($nextPageIcon) {
-                $label = $label . $nextPageIcon;
+                $label = sprintf('%s<span class="%s-icon-next">%s</span>', $label, $cssClass, $nextPageIcon);
             }
-            $replacements['{next}'] = $this->createLink($next->route, $label, $attribs);
+            $attribs = ['class' => $cssClass . '-link-next'];
+            $replacements['{next}'] = $this->createLink($nextPageItem->route, $label, $attribs);
         }
 
         return strtr($template, $replacements);
