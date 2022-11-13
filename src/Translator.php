@@ -100,4 +100,9 @@ final class Translator
         }
         $this->paths[$category] = array_merge($this->paths[$category], $path);
     }
+
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
 }

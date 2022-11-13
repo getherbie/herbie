@@ -5,6 +5,7 @@
         <li><a href="{{ route }}#herbie-php-functions">PHP Functions</a></li>
         <li><a href="{{ route }}#herbie-aliases">Aliases</a></li>
         <li><a href="{{ route }}#herbie-config">Configuration</a></li>
+        <li><a href="{{ route }}#herbie-translations">Translations</a></li>
         <li><a href="{{ route }}#herbie-plugins">Plugins</a></li>
         <li><a href="{{ route }}#herbie-commands">Console Commands</a></li>
         <li><a href="{{ route }}#herbie-events">Event Listeners</a></li>
@@ -99,6 +100,31 @@
         {% endfor %}
     </table>
 
+    <h2 id="herbie-translations" class="herbie-info-h2">Translations ({{ translations|length }})</h2>
+    <p>Loaded translations for current language, ordered by key.</p>
+    <div class="herbie-info-translations" style="display:none">
+        {% for translation in translations %}
+            {{- translation[0] -}}
+            {%- if loop.last == false -%},{%- endif -%}
+        {%- endfor -%}
+    </div>
+    <table class="herbie-info-table">
+        <tr>
+            <th style="width:1%">#</th>
+            <th>Category</th>
+            <th>Key</th>
+            <th>Translation ({{ site.language }})</th>
+        </tr>
+        {% for translation in translations %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ translation[0] }}</td>
+                <td>{{ translation[1] }}</td>
+                <td>{{ translation[2] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    
     <h2 id="herbie-events" class="herbie-info-h2">Event Listeners ({{ events|length }})</h2>
     <p>Handled runtime events, ordered by installation time.</p>
     <div class="herbie-info-events" style="display:none">

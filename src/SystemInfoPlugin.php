@@ -12,6 +12,7 @@ final class SystemInfoPlugin extends Plugin
     private FilterChainManager $filterChainManager;
     private MiddlewareDispatcher $middlewareDispatcher;
     private PluginManager $pluginManager;
+    private Translator $translator;
     private TwigRenderer $twigRenderer;
     private string $appPath;
 
@@ -22,6 +23,7 @@ final class SystemInfoPlugin extends Plugin
         FilterChainManager $filterChainManager,
         MiddlewareDispatcher $middlewareDispatcher,
         PluginManager $pluginManager,
+        Translator $translator,
         TwigRenderer $twigRenderer
     ) {
         $this->alias = $alias;
@@ -30,6 +32,7 @@ final class SystemInfoPlugin extends Plugin
         $this->filterChainManager = $filterChainManager;
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->pluginManager = $pluginManager;
+        $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
@@ -59,6 +62,7 @@ final class SystemInfoPlugin extends Plugin
             'php_classes' => defined_classes('herbie'),
             'php_functions' => defined_functions('herbie'),
             'plugins' => $this->getPlugins(),
+            'translations' => $this->getTranslations(),
             'twig_globals' => $this->getTwigGlobalsFromContext($context),
             'twig_filters' => $this->getTwigFilters(),
             'twig_functions' => $this->getTwigFunctions(),
@@ -178,6 +182,21 @@ final class SystemInfoPlugin extends Plugin
             ];
         }
         return $plugins;
+    }
+
+    private function getTranslations(): array
+    {
+        $items = [];
+        foreach ($this->translator->getMessages() as $language => $messagesPerLanguage) {
+            ksort($messagesPerLanguage);
+            foreach ($messagesPerLanguage as $category => $messagesPerCategory) {
+                ksort($messagesPerCategory);
+                foreach ($messagesPerCategory as $english => $translation) {
+                    $items[] = [$category, $english, $translation, $language];
+                }
+            }
+        }
+        return $items;
     }
 
     /**
