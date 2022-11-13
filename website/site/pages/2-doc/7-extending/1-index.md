@@ -282,15 +282,13 @@ return ['hello', $twigFunction];
 
 ### Twig globals
 
-For adding Twig globals you can create a PHP file in the directory `site/extend/twig_globals` that returns an array<string, mixed>.
-The array is then automatically merged recursively with the existing Twig globals.
+For adding a Twig global you can create a PHP file in the directory `site/extend/twig_globals` that returns an array{string, mixed}.
+The global is then registered automatically.
 
 ~~~php
 <?php
 
-return [
-    'hello' => 'world'
-];
+return ['hello', 'world'];
 ~~~
 
 ### Twig tests
@@ -640,7 +638,7 @@ class MyPlugin implements herbie\PluginInterface
     public function twigGlobals(): array
     {
         return [
-            'hello' => 'world'
+            ['hello', 'world']
         ];
     }
 

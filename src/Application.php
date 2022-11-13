@@ -307,7 +307,7 @@ final class Application
      */
     public function addTwigGlobal(string $name, $mixed): Application
     {
-        $this->twigGlobals[$name] = $mixed;
+        $this->twigGlobals[] = [$name, $mixed];
         return $this;
     }
 

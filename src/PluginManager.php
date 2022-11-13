@@ -178,8 +178,8 @@ final class PluginManager
             }
         }
 
-        foreach ($plugin->twigGlobals() as $twigGlobalName => $twigGlobalMixed) {
-            $this->addTwigGlobal($twigGlobalName, $twigGlobalMixed);
+        foreach ($plugin->twigGlobals() as $twigGlobal) {
+            $this->addTwigGlobal(...$twigGlobal);
         }
 
         foreach ($plugin->twigFunctions() as $twigFunction) {

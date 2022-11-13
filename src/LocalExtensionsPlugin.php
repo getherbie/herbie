@@ -103,7 +103,7 @@ final class LocalExtensionsPlugin extends Plugin
 
         $globals = [];
         foreach ($files as $file) {
-            $globals = array_merge($globals, $this->includePhpFile($file));
+            $globals[] = $this->includePhpFile($file);
         }
 
         return $globals;

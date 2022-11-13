@@ -41,7 +41,7 @@ interface PluginInterface
     public function twigFilters(): array;
 
     /**
-     * @return array<string, mixed>
+     * @return array<int, array{string, mixed}>
      */
     public function twigGlobals(): array;
 
