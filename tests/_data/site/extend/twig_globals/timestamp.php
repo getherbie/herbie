@@ -1,5 +1,3 @@
 <?php
 
-return [
-    'timestamp' => time()
-];
+return ['timestamp', time()];
