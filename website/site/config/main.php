@@ -7,7 +7,7 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig'
     ],
-    'enabledPlugins' => 'simplesearch',
+    'enabledPlugins' => 'simplesearch,simplecontact',
     'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
     'components' => [
         'dataRepository' => [
@@ -44,8 +44,13 @@ return [
         ]
     ],
     'plugins' => [
+        'simplecontact' => [
+            'config' => [
+                'recipient' => 'me+herbie@tebe.ch'
+            ]
+        ],
         'simplesearch' => [
             'usePageCache' => true
-        ]
+        ],
     ]
 ];

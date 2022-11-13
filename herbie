@@ -9,9 +9,9 @@ if (getenv('HERBIE_ENV') === 'dev') {
     require __DIR__ . '/vendor/autoload.php';
     $appPaths = new ApplicationPaths(
         __DIR__,
-        __DIR__ . '/example/site',
         __DIR__ . '/vendor',
-        __DIR__ . '/example/web'
+        __DIR__ . '/website/site',
+        __DIR__ . '/website/web'
     );
 } else {
     require dirname(__DIR__, 3) . '/vendor/autoload.php';

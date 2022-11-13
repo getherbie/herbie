@@ -12,6 +12,7 @@ final class SystemInfoPlugin extends Plugin
     private FilterChainManager $filterChainManager;
     private MiddlewareDispatcher $middlewareDispatcher;
     private PluginManager $pluginManager;
+    private Translator $translator;
     private TwigRenderer $twigRenderer;
     private string $appPath;
 
@@ -22,6 +23,7 @@ final class SystemInfoPlugin extends Plugin
         FilterChainManager $filterChainManager,
         MiddlewareDispatcher $middlewareDispatcher,
         PluginManager $pluginManager,
+        Translator $translator,
         TwigRenderer $twigRenderer
     ) {
         $this->alias = $alias;
@@ -30,6 +32,7 @@ final class SystemInfoPlugin extends Plugin
         $this->filterChainManager = $filterChainManager;
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->pluginManager = $pluginManager;
+        $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
@@ -51,14 +54,15 @@ final class SystemInfoPlugin extends Plugin
     {
         $info = [
             'aliases' => $this->getAlias(),
-            'commands' => $this->getCommands(),
+            'commands' => $this->getConsoleCommands(),
             'configs' => $this->getConfig(),
-            'events' => $this->getEvents(),
-            'filters' => $this->getFilters(),
+            'events' => $this->getEventListeners(),
+            'filters' => $this->getInterceptingFilters(),
             'middlewares' => $this->getMiddlewares(),
             'php_classes' => defined_classes('herbie'),
             'php_functions' => defined_functions('herbie'),
             'plugins' => $this->getPlugins(),
+            'translations' => $this->getTranslations(),
             'twig_globals' => $this->getTwigGlobalsFromContext($context),
             'twig_filters' => $this->getTwigFilters(),
             'twig_functions' => $this->getTwigFunctions(),
@@ -71,7 +75,7 @@ final class SystemInfoPlugin extends Plugin
     {
         $items = [];
         foreach ($this->alias->getAll() as $key => $value) {
-            $items[] = [$key, $value];
+            $items[] = [$key, $this->filterValue($value)];
         }
         return $items;
     }
@@ -79,10 +83,10 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return string[]
      */
-    private function getCommands(): array
+    private function getConsoleCommands(): array
     {
         $items = [];
-        foreach ($this->pluginManager->getCommands() as $command) {
+        foreach ($this->pluginManager->getConsoleCommands() as $command) {
             $items[] = $command;
         }
         return $items;
@@ -107,7 +111,7 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return array<int, string[]>
      */
-    private function getEvents(): array
+    private function getEventListeners(): array
     {
         $items = [];
         foreach ($this->eventManager->getEvents() as $eventName => $eventsWithPriority) {
@@ -126,7 +130,7 @@ final class SystemInfoPlugin extends Plugin
     /**
      * @return array<int, string[]>
      */
-    private function getFilters(): array
+    private function getInterceptingFilters(): array
     {
         $items = [];
         foreach ($this->filterChainManager->getAllFilters() as $category => $filterChain) {
@@ -178,6 +182,21 @@ final class SystemInfoPlugin extends Plugin
             ];
         }
         return $plugins;
+    }
+
+    private function getTranslations(): array
+    {
+        $items = [];
+        foreach ($this->translator->getMessages() as $language => $messagesPerLanguage) {
+            ksort($messagesPerLanguage);
+            foreach ($messagesPerLanguage as $category => $messagesPerCategory) {
+                ksort($messagesPerCategory);
+                foreach ($messagesPerCategory as $english => $translation) {
+                    $items[] = [$category, $english, $translation, $language];
+                }
+            }
+        }
+        return $items;
     }
 
     /**
@@ -273,6 +292,11 @@ final class SystemInfoPlugin extends Plugin
             if (strpos($value, $v) === 0) {
                 $value = substr($value, strlen($v));
             }
+        }
+
+        // filter emails
+        if (strpos($value, '@') > 0) {
+            $value = '~filtered~';
         }
 
         return $value;

@@ -26,7 +26,7 @@ final class TextileSysPlugin extends Plugin
         }
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [
             ['renderSegment', [$this, 'renderSegment']]

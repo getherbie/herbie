@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace example\site\extend\twig_functions;
+namespace website\site\extend\twig_functions;
 
 use Twig\TwigFunction;
 

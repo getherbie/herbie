@@ -18,7 +18,7 @@ final class LocalExtensionsPlugin extends Plugin
         $this->application = $application;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathConsoleCommands');
         $files = $this->findPhpFilesInDir($dir);
@@ -31,7 +31,7 @@ final class LocalExtensionsPlugin extends Plugin
         return $commands;
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathEventListeners');
         $files = $this->findPhpFilesInDir($dir);
@@ -44,7 +44,7 @@ final class LocalExtensionsPlugin extends Plugin
         return $events;
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathInterceptingFilters');
         $files = $this->findPhpFilesInDir($dir);
@@ -57,7 +57,7 @@ final class LocalExtensionsPlugin extends Plugin
         return $filters;
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');
         $files = $this->findPhpFilesInDir($dir);
@@ -103,7 +103,7 @@ final class LocalExtensionsPlugin extends Plugin
 
         $globals = [];
         foreach ($files as $file) {
-            $globals = array_merge($globals, $this->includePhpFile($file));
+            $globals[] = $this->includePhpFile($file);
         }
 
         return $globals;

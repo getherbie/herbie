@@ -39,7 +39,7 @@ final class TwigCorePlugin extends Plugin
         $this->urlManager = $urlManager;
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         return [
             ['onTwigAddExtension', [$this, 'onTwigAddExtension']],

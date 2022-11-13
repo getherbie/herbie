@@ -11,22 +11,22 @@ abstract class Plugin implements PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [];
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         return [];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         return [];
     }

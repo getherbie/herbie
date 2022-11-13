@@ -32,7 +32,7 @@ final class Dummy2Plugin implements PluginInterface
     /**
      * @return array[]
      */
-    public function events(): array
+    public function eventListeners(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -43,7 +43,7 @@ final class Dummy2Plugin implements PluginInterface
     /**
      * @return array[]
      */
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         $this->logger->debug(__METHOD__);
         return [
@@ -163,7 +163,7 @@ final class Dummy2Plugin implements PluginInterface
         return strlen($content) > 0;
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         // TODO: Implement appMiddlewares() method.
     }

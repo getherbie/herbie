@@ -11,6 +11,7 @@ Birsweg 5<br>
 CH-4203 Grellingen<br>
 
 Phone: +41 79 332 67 81<br>
+Email: {{ page_link("contact", "Use the contact form") }}
 
 ## Disclaimer
 

@@ -282,15 +282,13 @@ return ['hello', $twigFunction];
 
 ### Twig globals
 
-For adding Twig globals you can create a PHP file in the directory `site/extend/twig_globals` that returns an array<string, mixed>.
-The array is then automatically merged recursively with the existing Twig globals.
+For adding a Twig global you can create a PHP file in the directory `site/extend/twig_globals` that returns an array{string, mixed}.
+The global is then registered automatically.
 
 ~~~php
 <?php
 
-return [
-    'hello' => 'world'
-];
+return ['hello', 'world'];
 ~~~
 
 ### Twig tests
@@ -327,14 +325,14 @@ $app = new Application(
 
 // --> start adding your extensions
 
-$app->addCommand();
-$app->addEvent();
-$app->addFilter();
-$app->addAppMiddleware();
+$app->addConsoleCommand();
+$app->addEventListener();
+$app->addInterceptingFilter();
+$app->addApplicationMiddleware();
 $app->addRouteMiddleware();
 $app->addTwigFilter();
 $app->addTwigFunction();
-$app->addTwigGlobals();
+$app->addTwigGlobal();
 $app->addTwigTest();
 
 // <-- finish adding your extensions
@@ -353,7 +351,7 @@ class CustomCommand extends Command
     // see class definition above
 }
 
-$app->addCommand(CustomCommand::class);
+$app->addConsoleCommand(CustomCommand::class);
 ~~~ 
 
 Adding an event listener:
@@ -363,7 +361,7 @@ $event = function (herbie\EventInterface $event): void {
     // do something with $event
 };
 
-$app->addEvent('onTwigInitialized', $event);
+$app->addEventListener('onTwigInitialized', $event);
 ~~~
 
 Adding an intercepting filter:
@@ -374,7 +372,7 @@ $filter = function (string $context, array $params, herbie\FilterInterface $filt
     return $filter->next($context, $params, $filter);
 };
 
-$app->addFilter('renderLayout', $filter);
+$app->addInterceptingFilter('renderLayout', $filter);
 ~~~
 
 Adding an application middleware:
@@ -391,7 +389,7 @@ $middleware = function (ServerRequestInterface $request, RequestHandlerInterface
     return $response;
 };
 
-$app->addAppMiddleware($middleware);
+$app->addApplicationMiddleware($middleware);
 ~~~
 
 Adding a route middleware:
@@ -478,22 +476,22 @@ class MyPlugin implements herbie\PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [];
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         return [];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         return [];
     }
@@ -573,14 +571,14 @@ class MyPlugin implements herbie\PluginInterface
         return 2;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [
             CustomCommand::class
         ];
     }
 
-    public function events(): array
+    public function eventListeners(): array
     {
         $event = function (herbie\EventInterface $event): void {
             // do something with $event
@@ -590,7 +588,7 @@ class MyPlugin implements herbie\PluginInterface
         ];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         $filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
             // do something with $context
@@ -601,7 +599,7 @@ class MyPlugin implements herbie\PluginInterface
         ];
     }
 
-    public function appMiddlewares(): array
+    public function applicationMiddlewares(): array
     {
         $middleware = function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
             // do something with the request
@@ -640,7 +638,7 @@ class MyPlugin implements herbie\PluginInterface
     public function twigGlobals(): array
     {
         return [
-            'hello' => 'world'
+            ['hello', 'world']
         ];
     }
 

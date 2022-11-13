@@ -45,7 +45,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "example\\site\\": "example/site",
+            "website\\site\\": "website/site",
             "tests\\": "tests"
         }
     },
@@ -77,9 +77,9 @@
         "codecept": "./vendor/bin/codecept run",
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
         "start:test": "cd tests/_data/web/; php -S localhost:9999 index.php",
-        "start:website": "cd example/web/; php -S localhost:9999 index.php",
+        "start:website": "cd website/web/; php -S localhost:9999 index.php",
         "debug:test": "cd tests/_data/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
-        "debug:website": "cd example/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php"
+        "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php"
     },
     "bin":["herbie"]
 }

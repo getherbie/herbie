@@ -19,14 +19,14 @@ final class CorePlugin extends Plugin
         $this->twigRenderer = $twigRenderer;
     }
 
-    public function commands(): array
+    public function consoleCommands(): array
     {
         return [
             ClearFileCommand::class
         ];
     }
 
-    public function filters(): array
+    public function interceptingFilters(): array
     {
         return [
             ['renderLayout', [$this, 'renderLayout']],
