@@ -34,14 +34,14 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
 
     public function testTranslateFromPlugin(): void
     {
-        $this->assertSame('Dummy-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "Dummy translation") }}'));
+        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "exampleTranslation") }}'));
     }
 
     public function testTranslateFromPluginWithParams(): void
     {
         $actual = $this->twig()->renderString(
-            '{{ translate("dummy", "Dummy translation with params {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
+            '{{ translate("dummy", "exampleTranslationWithParamsOneAndTwo", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
         );
-        $this->assertSame('Dummy-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);
+        $this->assertSame('Beispiel-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);
     }
 }
