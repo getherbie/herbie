@@ -294,6 +294,11 @@ final class SystemInfoPlugin extends Plugin
             }
         }
 
+        // filter emails
+        if (strpos($value, '@') > 0) {
+            $value = '~filtered~';
+        }
+
         return $value;
     }
 }
