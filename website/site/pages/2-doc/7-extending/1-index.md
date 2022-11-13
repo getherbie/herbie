@@ -410,6 +410,14 @@ $twigFilter = function (string $string): string {
 $app->addTwigFilter('reverse', $twigFilter);
 ~~~
 
+Adding a Twig global:
+
+~~~php
+$twigGlobal = new My\Custom\DateTime();
+
+$app->addTwigGlobal('datetime', $twigGlobal);
+~~~
+
 Adding a Twig function:
 
 ~~~php
