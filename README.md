@@ -55,14 +55,12 @@ TBD
 The easiest way to install Herbie CMS is with Composer.
 To do this, run the following commands in your terminal:
 
-For the upcoming version 2.x:
+For the upcoming version 2.x with support for PHP 7.4, 8.0, 8.1:
 
-    # create project and install dependent libraries
     composer create-project getherbie/start-website:dev-master mywebsite
 
-For the stable version 1.x:
+For the stable version 1.x with support for PHP 5.x:
 
-    # create project and install dependent libraries
     composer create-project getherbie/start-website mywebsite
 
 Change to the `mywebsite/web` directory:
