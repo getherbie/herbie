@@ -3,8 +3,8 @@ coverage:
     include:
         - config/*
         - messages/*
+        - plugins/*
         - src/*
-        - sysplugins/*
         - templates/*
     exclude:
         - vendor/*

@@ -34,7 +34,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/dummy
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/dummy
   packagist:
   status: stable
   enabled: true
@@ -114,7 +114,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/imagine
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/imagine
   packagist:
   enabled: true
 -
@@ -135,7 +135,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/markdown
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/markdown
   packagist:
   status: stable
   enabled: true
@@ -186,7 +186,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/rest
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/rest
   packagist:
   status: stable
   enabled: true
@@ -249,7 +249,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/textile
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/textile
   packagist:
   status: stable
   enabled: true
@@ -271,7 +271,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/twig_core
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/twig_core
   packagist:
   status: stable
   enabled: true
@@ -282,7 +282,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/sysplugins/twig_plus
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/twig_plus
   packagist:
   status: stable
   enabled: true  

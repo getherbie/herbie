@@ -410,6 +410,14 @@ $twigFilter = function (string $string): string {
 $app->addTwigFilter('reverse', $twigFilter);
 ~~~
 
+Adding a Twig global:
+
+~~~php
+$twigGlobal = new My\Custom\DateTime();
+
+$app->addTwigGlobal('datetime', $twigGlobal);
+~~~
+
 Adding a Twig function:
 
 ~~~php
@@ -666,7 +674,7 @@ class MyPlugin implements herbie\PluginInterface
 
 That's all you have to do.
 
-A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/2.x/sysplugins/dummy), by the way.
+A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/2.x/plugins/dummy), by the way.
 
 ## 4. Extending using a distributed plugin
 

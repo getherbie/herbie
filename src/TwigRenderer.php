@@ -195,7 +195,7 @@ final class TwigRenderer
             'page' => $this->config->getAsString('paths.pages'),
             'site' => $this->config->getAsString('paths.site'),
             'snippet' => Application::getHerbiePath('/templates/snippets'),
-            'sysplugin' => Application::getHerbiePath('/sysplugins'),
+            'sysplugin' => Application::getHerbiePath('/plugins'),
             'template' => Application::getHerbiePath('/templates'),
             'vendor' => $this->config->getAsString('paths.app') . '/vendor',
         ];

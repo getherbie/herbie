@@ -5,5 +5,5 @@ parameters:
 	paths:
 		- config
 		- messages
+		- plugins
 		- src
-		- sysplugins
