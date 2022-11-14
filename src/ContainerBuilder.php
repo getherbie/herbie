@@ -44,7 +44,7 @@ final class ContainerBuilder
                 '@page' => $paths['pages'],
                 '@plugin' => $paths['plugins'],
                 '@site' => $this->app->getSitePath(),
-                '@sysplugin' => Application::getHerbiePath('/sysplugins'),
+                '@sysplugin' => Application::getHerbiePath('/plugins'),
                 '@vendor' => $this->app->getVendorPath(),
                 '@web' => $paths['web'],
                 '@snippet' => $paths['app'] . '/templates/snippets'
@@ -96,7 +96,7 @@ final class ContainerBuilder
             }
 
             // system plugin configs
-            $systemPluginPath = Application::getHerbiePath('/sysplugins');
+            $systemPluginPath = Application::getHerbiePath('/plugins');
             $systemPluginConfigs = load_plugin_configs($systemPluginPath, 'system', $processor);
 
             // composer plugin configs
