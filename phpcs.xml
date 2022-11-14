@@ -18,7 +18,7 @@
     <file>config</file>
     <file>messages</file>
     <file>plugins</file>
-    <file>src</file>
+    <file>system</file>
     <!-- file>tests</file -->
     <file>website</file>
 </ruleset>

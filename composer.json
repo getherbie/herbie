@@ -36,11 +36,11 @@
     },
     "autoload": {
         "psr-4": {
-            "herbie\\": "src",
+            "herbie\\": "system",
             "herbie\\sysplugin\\": "plugins"
         },
         "files": [
-            "src/functions.php"
+            "system/functions.php"
         ]
     },
     "autoload-dev": {

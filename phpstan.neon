@@ -6,4 +6,4 @@ parameters:
 		- config
 		- messages
 		- plugins
-		- src
+		- system
