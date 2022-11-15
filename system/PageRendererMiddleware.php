@@ -86,7 +86,10 @@ final class PageRendererMiddleware implements MiddlewareInterface
                 $renderedSegment = (string)$this->filterChainManager->execute('renderSegment', $segment, $context);
                 $segments[$segmentId] = $renderedSegment;
             }
-            $segments = $this->eventManager->dispatch(new ContentRenderedEvent($segments))->getSegments();
+
+            /** @var ContentRenderedEvent $contentRenderedEvent */
+            $contentRenderedEvent = $this->eventManager->dispatch(new ContentRenderedEvent($segments));
+            $segments = $contentRenderedEvent->getSegments();
 
             // render layout
             if (empty($page->getLayout())) {
@@ -97,7 +100,9 @@ final class PageRendererMiddleware implements MiddlewareInterface
                 ], $context));
             }
 
-            $content = $this->eventManager->dispatch(new LayoutRenderedEvent($content))->getContent();
+            /** @var LayoutRenderedEvent $layoutRenderedEvent */
+            $layoutRenderedEvent = $this->eventManager->dispatch(new LayoutRenderedEvent($content));
+            $content = $layoutRenderedEvent->getContent();
 
             if ($this->cacheEnable && !empty($page->getCached())) {
                 $this->cache->set($cacheId, $content, $this->cacheTTL);

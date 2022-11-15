@@ -129,7 +129,9 @@ final class Application
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
-        $response = $this->getEventManager()->dispatch(new ResponseGeneratedEvent($response))->getResponse();
+        /** @var ResponseGeneratedEvent $responseGeneratedEvent */
+        $responseGeneratedEvent = $this->getEventManager()->dispatch(new ResponseGeneratedEvent($response));
+        $response = $responseGeneratedEvent->getResponse();
 
         $this->emitResponse($response);
 
