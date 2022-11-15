@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugin\twig_plus;
 
 use herbie\Environment;
-use herbie\EventInterface;
+use herbie\event\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
@@ -33,19 +33,19 @@ final class TwigPlusPlugin extends Plugin
     public function eventListeners(): array
     {
         return [
-            ['onTwigAddExtension', [$this, 'onTwigAddExtension']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
         ];
     }
 
-    public function onTwigAddExtension(EventInterface $event): void
+    public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        /** @var TwigRenderer $twigRenderer */
-        $twigRenderer = $event->getTarget();
-        $twigRenderer->getTwigEnvironment()->addExtension(new TwigPlusExtension(
-            $this->environment,
-            $this->pageRepository,
-            $this->twigRenderer,
-            $this->urlManager
-        ));
+        $event->getTwigRenderer()
+            ->getTwigEnvironment()
+            ->addExtension(new TwigPlusExtension(
+                $this->environment,
+                $this->pageRepository,
+                $this->twigRenderer,
+                $this->urlManager
+            ));
     }
 }

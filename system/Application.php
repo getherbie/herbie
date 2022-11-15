@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use herbie\event\PluginsAttachedEvent;
+use herbie\event\ResponseEmittedEvent;
+use herbie\event\ResponseGeneratedEvent;
+use herbie\event\TranslatorInitializedEvent;
+use herbie\event\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -102,21 +107,33 @@ final class Application
      */
     public function run(): void
     {
+        $eventManager = $this->getEventManager();
+
         // init components
-        $this->getPluginManager()->init();
-        $this->getTwigRenderer()->init();
-        $this->getTranslator()->init();
+        $pluginManager = $this->getPluginManager()->init();
+        $eventManager->dispatch(new PluginsAttachedEvent(
+            $pluginManager->getLoadedPlugins(),
+            $pluginManager->getPluginPaths()
+        ));
+
+        $twigRenderer = $this->getTwigRenderer();
+        $twigRenderer->init();
+        $eventManager->dispatch(new TwigInitializedEvent($twigRenderer));
+
+        $translator = $this->getTranslator();
+        $translator->init();
+        $eventManager->dispatch(new TranslatorInitializedEvent($translator));
 
         // dispatch middlewares
         $dispatcher = $this->getMiddlewareDispatcher();
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
-        $this->getEventManager()->trigger('onResponseGenerated', $response);
+        $response = $this->getEventManager()->dispatch(new ResponseGeneratedEvent($response))->getResponse();
 
         $this->emitResponse($response);
 
-        $this->getEventManager()->trigger('onResponseEmitted');
+        $this->getEventManager()->dispatch(new ResponseEmittedEvent($this));
     }
 
     public function runCli(): void

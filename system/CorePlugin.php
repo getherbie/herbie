@@ -22,7 +22,7 @@ final class CorePlugin extends Plugin
     public function consoleCommands(): array
     {
         return [
-            ClearFileCommand::class
+            ClearFilesCommand::class
         ];
     }
 

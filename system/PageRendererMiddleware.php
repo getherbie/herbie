@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\event\ContentRenderedEvent;
+use herbie\event\LayoutRenderedEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -64,14 +67,14 @@ final class PageRendererMiddleware implements MiddlewareInterface
             return $this->createRedirectResponse(...$redirect);
         }
 
-        $rendered = null;
+        $content = null;
 
         $cacheId = $page->getCacheId();
         if ($this->cacheEnable && !empty($page->getCached())) {
-            $rendered = $this->cache->get($cacheId);
+            $content = $this->cache->get($cacheId);
         }
 
-        if (null === $rendered) {
+        if (null === $content) {
             $context = [
                 'page' => $page,
                 'routeParams' => $routeParams
@@ -83,27 +86,26 @@ final class PageRendererMiddleware implements MiddlewareInterface
                 $renderedSegment = (string)$this->filterChainManager->execute('renderSegment', $segment, $context);
                 $segments[$segmentId] = $renderedSegment;
             }
-            $this->eventManager->trigger('onContentRendered', $segments, $page->toArray());
+            $segments = $this->eventManager->dispatch(new ContentRenderedEvent($segments))->getSegments();
 
             // render layout
-            $content = '';
             if (empty($page->getLayout())) {
                 $content = implode('', $segments);
             } else {
-                $content = (string)$this->filterChainManager->execute('renderLayout', $content, array_merge([
+                $content = (string)$this->filterChainManager->execute('renderLayout', (string)$content, array_merge([
                     'content' => $segments
                 ], $context));
             }
-            $this->eventManager->trigger('onLayoutRendered', $content, ['page' => $page]);
+
+            $content = $this->eventManager->dispatch(new LayoutRenderedEvent($content))->getContent();
 
             if ($this->cacheEnable && !empty($page->getCached())) {
                 $this->cache->set($cacheId, $content, $this->cacheTTL);
             }
-            $rendered = $content;
         }
 
         $response = $this->httpFactory->createResponse();
-        $response->getBody()->write($rendered);
+        $response->getBody()->write($content);
         return $response->withHeader('Content-Type', $page->getContentType());
     }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -23,7 +22,6 @@ final class TwigRenderer
 
     private Config $config;
     private TwigEnvironment $twig;
-    private EventManager $eventManager;
     private LoggerInterface $logger;
     private Site $site;
     private UrlManager $urlManager;
@@ -34,7 +32,6 @@ final class TwigRenderer
      */
     public function __construct(
         Config $config,
-        EventManager $eventManager,
         LoggerInterface $logger,
         Site $site,
         UrlManager $urlManager,
@@ -42,7 +39,6 @@ final class TwigRenderer
     ) {
         $this->initialized = false;
         $this->config = $config;
-        $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->site = $site;
         $this->urlManager = $urlManager;
@@ -53,11 +49,11 @@ final class TwigRenderer
      * @throws LoaderError
      * @throws SystemException
      */
-    public function init(): void
+    public function init(): self
     {
         // initialize only once
         if ($this->isInitialized()) {
-            return;
+            return $this;
         }
 
         $loader = $this->getTwigFilesystemLoader();
@@ -86,10 +82,9 @@ final class TwigRenderer
             $this->twig->addExtension(new DebugExtension());
         }
 
-        $this->eventManager->trigger('onTwigAddExtension', $this);
-
         $this->initialized = true;
-        $this->eventManager->trigger('onTwigInitialized', $this);
+
+        return $this;
     }
 
     public function getTwigEnvironment(): TwigEnvironment

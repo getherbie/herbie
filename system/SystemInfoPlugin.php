@@ -114,7 +114,7 @@ final class SystemInfoPlugin extends Plugin
     private function getEventListeners(): array
     {
         $items = [];
-        foreach ($this->eventManager->getEvents() as $eventName => $eventsWithPriority) {
+        foreach ($this->eventManager->getListeners() as $eventName => $eventsWithPriority) {
             foreach ($eventsWithPriority as $priority => $events) {
                 foreach ($events as $event) {
                     $items[] = array_merge(

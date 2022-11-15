@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace herbie\sysplugin\dummy;
 
-use herbie\EventInterface;
+use herbie\event\ContentRenderedEvent;
+use herbie\event\LayoutRenderedEvent;
+use herbie\event\PluginsAttachedEvent;
+use herbie\event\ResponseEmittedEvent;
+use herbie\event\ResponseGeneratedEvent;
+use herbie\event\TranslatorInitializedEvent;
+use herbie\event\TwigInitializedEvent;
 use herbie\FilterInterface;
 use herbie\Page;
 use herbie\PluginInterface;
-use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -43,16 +48,17 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onGenericEventHandler']],
-            ['onLayoutRendered', [$this, 'onGenericEventHandler']],
-            ['onPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onResponseEmitted', [$this, 'onGenericEventHandler']],
-            ['onResponseGenerated', [$this, 'onGenericEventHandler']],
-            ['onTwigInitialized', [$this, 'onGenericEventHandler']],
-            ['onTwigInitialized', [$this, 'onTwigInitializedEventHandler']],
-            ['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
+            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
+            [LayoutRenderedEvent::class, [$this, 'onLayoutRendered']],
+            [PluginsAttachedEvent::class, [$this, 'onPluginsAttached']],
+            [ResponseEmittedEvent::class, [$this, 'onResponseEmitted']],
+            [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
+            [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitializedAddFilter']],
+            //['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
+            //['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
+            //['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
         ];
     }
 
@@ -144,17 +150,46 @@ final class DummySysPlugin implements PluginInterface
         return $filter->next($context, $params, $filter);
     }
 
-    public function onGenericEventHandler(EventInterface $event): void
+    public function onContentRendered(ContentRenderedEvent $event): void
     {
-        $this->logger->debug('Event ' . $event->getName() . ' was triggered');
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
     }
 
-    public function onTwigInitializedEventHandler(EventInterface $event): void
+    public function onLayoutRendered(LayoutRenderedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onPluginsAttached(PluginsAttachedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onResponseEmitted(ResponseEmittedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onResponseGenerated(ResponseGeneratedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTranslatorInitialized(TranslatorInitializedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTwigInitialized(TwigInitializedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        /** @var TwigRenderer $twigRenderer */
-        $twigRenderer = $event->getTarget();
-        $twigRenderer->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+        $twigEnvironment = $event->getTwigRenderer()->getTwigEnvironment();
+        $twigEnvironment->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
             return $content . 'Dummy Filter Dynamic';
         }));
     }

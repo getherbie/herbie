@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\event\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
@@ -60,7 +61,7 @@ final class PluginManager
         $this->translator = $translator;
     }
 
-    public function init(): void
+    public function init(): self
     {
         $this->loadInstallablePlugin(new InstallablePlugin(
             'CORE',
@@ -76,19 +77,16 @@ final class PluginManager
         foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
             $this->loadInstallablePlugin($plugin);
         }
-        $this->eventManager->trigger('onSystemPluginsAttached', $this);
 
         // composer plugins
         foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
             $this->loadInstallablePlugin($plugin);
         }
-        $this->eventManager->trigger('onComposerPluginsAttached', $this);
 
         // local plugins
         foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
             $this->loadInstallablePlugin($plugin);
         }
-        $this->eventManager->trigger('onLocalPluginsAttached', $this);
 
         $this->loadInstallablePlugin(new InstallablePlugin(
             'LOCAL_EXT',
@@ -104,14 +102,14 @@ final class PluginManager
             'virtual',
         ));
 
-        $this->eventManager->trigger('onPluginsAttached', $this);
-
         $this->loadInstallablePlugin(new InstallablePlugin(
             'SYS_INFO',
             __DIR__,
             SystemInfoPlugin::class,
             'virtual',
         ));
+
+        return $this;
     }
 
     /**
@@ -208,9 +206,6 @@ final class PluginManager
 
         $key = $installablePlugin->getKey();
 
-        $eventName = sprintf('onPlugin%sAttached', ucfirst($key));
-        $this->eventManager->trigger($eventName, $plugin);
-
         $this->translator->addPath($key, $installablePlugin->getPath() . '/messages');
 
         $this->loadedPlugins[$key] = $installablePlugin;
@@ -294,49 +289,41 @@ final class PluginManager
 
     private function addEventListener(string $name, callable $callable, int $priority = 1): void
     {
-        $this->eventManager->attach($name, $callable, $priority);
+        $this->eventManager->addListener($name, $callable, $priority);
     }
 
-    private function addTwigFilter(\Twig\TwigFilter $filter): callable
+    private function addTwigFilter(\Twig\TwigFilter $filter): void
     {
-        $closure = function (Event $event) use ($filter) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addFilter($filter);
+        $closure = function (TwigInitializedEvent $event) use ($filter) {
+            $event->getTwigRenderer()->getTwigEnvironment()->addFilter($filter);
         };
-        return $this->eventManager->attach('onTwigInitialized', $closure);
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
 
     /**
      * @param mixed $mixed
      */
-    private function addTwigGlobal(string $name, $mixed): callable
+    private function addTwigGlobal(string $name, $mixed): void
     {
-        $closure = function (Event $event) use ($name, $mixed) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addGlobal($name, $mixed);
+        $closure = function (TwigInitializedEvent $event) use ($name, $mixed) {
+            $event->getTwigRenderer()->getTwigEnvironment()->addGlobal($name, $mixed);
         };
-        return $this->eventManager->attach('onTwigInitialized', $closure);
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
 
-    private function addTwigFunction(\Twig\TwigFunction $function): callable
+    private function addTwigFunction(\Twig\TwigFunction $function): void
     {
-        $closure = function (Event $event) use ($function) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addFunction($function);
+        $closure = function (TwigInitializedEvent $event) use ($function) {
+            $event->getTwigRenderer()->getTwigEnvironment()->addFunction($function);
         };
-        return $this->eventManager->attach('onTwigInitialized', $closure);
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
 
-    private function addTwigTest(\Twig\TwigTest $test): callable
+    private function addTwigTest(\Twig\TwigTest $test): void
     {
-        $closure = function (Event $event) use ($test) {
-            /** @var TwigRenderer $twig */
-            $twig = $event->getTarget();
-            $twig->addTest($test);
+        $closure = function (TwigInitializedEvent $event) use ($test) {
+            $event->getTwigRenderer()->getTwigEnvironment()->addTest($test);
         };
-        return $this->eventManager->attach('onTwigInitialized', $closure);
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
 }

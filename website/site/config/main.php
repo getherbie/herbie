@@ -8,7 +8,7 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplesearch,simplecontact',
-    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
+    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,dummy',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml'

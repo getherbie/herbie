@@ -8,10 +8,9 @@ use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Environment;
-use herbie\EventInterface;
+use herbie\event\TwigInitializedEvent;
 use herbie\Plugin;
 use herbie\Translator;
-use herbie\TwigRenderer;
 use herbie\UrlManager;
 
 final class TwigCorePlugin extends Plugin
@@ -42,14 +41,13 @@ final class TwigCorePlugin extends Plugin
     public function eventListeners(): array
     {
         return [
-            ['onTwigAddExtension', [$this, 'onTwigAddExtension']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
         ];
     }
 
-    public function onTwigAddExtension(EventInterface $event): void
+    public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        /** @var TwigRenderer $twigRenderer */
-        $twigRenderer = $event->getTarget();
+        $twigRenderer = $event->getTwigRenderer();
         $twigRenderer->getTwigEnvironment()->addExtension(new TwigCoreExtension(
             $this->alias,
             $this->assets,
