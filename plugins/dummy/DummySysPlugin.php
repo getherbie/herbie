@@ -56,9 +56,6 @@ final class DummySysPlugin implements PluginInterface
             [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
             [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
             [TwigInitializedEvent::class, [$this, 'onTwigInitializedAddFilter']],
-            //['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
-            //['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
-            //['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
         ];
     }
 

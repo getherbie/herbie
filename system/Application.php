@@ -110,16 +110,8 @@ final class Application
         $eventManager = $this->getEventManager();
 
         // init components
-        $pluginManager = $this->getPluginManager()->init();
-        $eventManager->dispatch(new PluginsInitializedEvent(
-            $pluginManager->getLoadedPlugins(),
-            $pluginManager->getPluginPaths()
-        ));
-
-        $twigRenderer = $this->getTwigRenderer();
-        $twigRenderer->init();
-        $eventManager->dispatch(new TwigInitializedEvent($twigRenderer->getTwigEnvironment()));
-
+        $this->getPluginManager()->init();
+        $this->getTwigRenderer()->init();
         $translator = $this->getTranslator();
         $translator->init();
         $eventManager->dispatch(new TranslatorInitializedEvent($translator));

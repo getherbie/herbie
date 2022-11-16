@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\event\PluginsInitializedEvent;
 use herbie\event\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,6 +38,7 @@ final class PluginManager
 
     /** @var string[] */
     private array $consoleCommands;
+    private bool $initialized;
 
     /**
      * PluginManager constructor.
@@ -53,6 +55,7 @@ final class PluginManager
         $this->container = $container;
         $this->eventManager = $eventManager;
         $this->filterChainManager = $filterChainManager;
+        $this->initialized = false;
         $this->loadedPlugins = [];
         $this->logger = $logger;
         $this->applicationMiddlewares = [];
@@ -61,8 +64,12 @@ final class PluginManager
         $this->translator = $translator;
     }
 
-    public function init(): self
+    public function init(): void
     {
+        if ($this->isInitialized()) {
+            return;
+        }
+
         $this->loadInstallablePlugin(new InstallablePlugin(
             'CORE',
             __DIR__,
@@ -109,7 +116,14 @@ final class PluginManager
             'virtual',
         ));
 
-        return $this;
+        $this->eventManager->dispatch(new PluginsInitializedEvent($this->loadedPlugins, $this->pluginPaths));
+
+        $this->initialized = true;
+    }
+
+    public function isInitialized(): bool
+    {
+        return $this->initialized;
     }
 
     /**

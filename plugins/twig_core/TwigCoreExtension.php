@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie\sysplugin\twig_core;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Exception;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
@@ -16,6 +15,7 @@ use herbie\Selector;
 use herbie\Translator;
 use herbie\UrlManager;
 use Twig\Environment;
+use Twig\Error\Error;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -265,8 +265,8 @@ final class TwigCoreExtension extends AbstractExtension
 
         try {
             return $this->environment->render($template, $context);
-        } catch (Exception $e) {
-            return $template;
+        } catch (Error $e) {
+            return $email;
         }
     }
 

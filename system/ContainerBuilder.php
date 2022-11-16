@@ -275,6 +275,7 @@ final class ContainerBuilder
         $c->set(TwigRenderer::class, function (ContainerInterface $c) {
             return new TwigRenderer(
                 $c->get(Config::class),
+                $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
                 $c->get(Site::class),
                 $c->get(UrlManager::class),
