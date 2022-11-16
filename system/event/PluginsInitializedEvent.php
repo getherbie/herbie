@@ -7,7 +7,7 @@ namespace herbie\event;
 use herbie\AbstractEvent;
 use herbie\InstallablePlugin;
 
-final class PluginsAttachedEvent extends AbstractEvent
+final class PluginsInitializedEvent extends AbstractEvent
 {
     /** @var array<string, InstallablePlugin> */
     private array $loadedPlugins;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use herbie\event\PluginsAttachedEvent;
+use herbie\event\PluginsInitializedEvent;
 use herbie\event\ResponseEmittedEvent;
 use herbie\event\ResponseGeneratedEvent;
 use herbie\event\TranslatorInitializedEvent;
@@ -111,7 +111,7 @@ final class Application
 
         // init components
         $pluginManager = $this->getPluginManager()->init();
-        $eventManager->dispatch(new PluginsAttachedEvent(
+        $eventManager->dispatch(new PluginsInitializedEvent(
             $pluginManager->getLoadedPlugins(),
             $pluginManager->getPluginPaths()
         ));

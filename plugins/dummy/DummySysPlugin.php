@@ -6,7 +6,7 @@ namespace herbie\sysplugin\dummy;
 
 use herbie\event\ContentRenderedEvent;
 use herbie\event\LayoutRenderedEvent;
-use herbie\event\PluginsAttachedEvent;
+use herbie\event\PluginsInitializedEvent;
 use herbie\event\ResponseEmittedEvent;
 use herbie\event\ResponseGeneratedEvent;
 use herbie\event\TranslatorInitializedEvent;
@@ -50,7 +50,7 @@ final class DummySysPlugin implements PluginInterface
         return [
             [ContentRenderedEvent::class, [$this, 'onContentRendered']],
             [LayoutRenderedEvent::class, [$this, 'onLayoutRendered']],
-            [PluginsAttachedEvent::class, [$this, 'onPluginsAttached']],
+            [PluginsInitializedEvent::class, [$this, 'onPluginsInitialized']],
             [ResponseEmittedEvent::class, [$this, 'onResponseEmitted']],
             [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
             [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
@@ -160,7 +160,7 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug('Event ' . get_class($event) . ' was triggered');
     }
 
-    public function onPluginsAttached(PluginsAttachedEvent $event): void
+    public function onPluginsInitialized(PluginsInitializedEvent $event): void
     {
         $this->logger->debug('Event ' . get_class($event) . ' was triggered');
     }
