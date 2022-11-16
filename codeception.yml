@@ -4,7 +4,7 @@ coverage:
         - config/*
         - messages/*
         - plugins/*
-        - src/*
+        - system/*
         - templates/*
     exclude:
         - vendor/*

@@ -5,7 +5,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/config',
         __DIR__ . '/messages',
         __DIR__ . '/plugins',
-        __DIR__ . '/src',
+        __DIR__ . '/system',
         __DIR__ . '/website',
     ]);
 
