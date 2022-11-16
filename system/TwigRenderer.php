@@ -82,6 +82,10 @@ final class TwigRenderer
             $this->twig->addExtension(new DebugExtension());
         }
 
+        foreach ($this->getContext() as $key => $value) {
+            $this->twig->addGlobal($key, $value);
+        }
+
         $this->initialized = true;
 
         return $this;
@@ -100,7 +104,7 @@ final class TwigRenderer
      */
     public function renderString(string $string, array $context = []): string
     {
-        $context = array_merge($this->getContext(), $context);
+        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($string, $context);
     }
 
@@ -112,7 +116,7 @@ final class TwigRenderer
      */
     public function renderTemplate(string $name, array $context = []): string
     {
-        $context = array_merge($this->getContext(), $context);
+        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
     }
 
@@ -127,7 +131,7 @@ final class TwigRenderer
      *     config: Config
      * }
      */
-    public function getContext(): array
+    private function getContext(): array
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();
         return [

@@ -14,11 +14,10 @@ include dirname(__DIR__, 3) . '/c3.php';
 
 use herbie\Application;
 use herbie\ApplicationPaths;
-use herbie\EventInterface;
+use herbie\event\TwigInitializedEvent;
 use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
-use herbie\TwigRenderer;
 use tests\_data\src\CustomCommand;
 use tests\_data\src\CustomHeader;
 use tests\_data\src\TestFilter;
@@ -81,10 +80,8 @@ $app->addInterceptingFilter('renderLayout', function (string $content, array $ar
 
 $app->addInterceptingFilter('renderSegment', new TestFilter());
 
-$app->addEventListener('onTwigInitialized', function (EventInterface $event): void {
-    /** @var TwigRenderer $twigRenderer */
-    $twigRenderer = $event->getTarget();
-    $twigRenderer->addFilter(new TwigFilter('my_filter', function (string $content): string {
+$app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {
+    $event->getEnvironment()->addFilter(new TwigFilter('my_filter', function (string $content): string {
         return $content . ' My Filter';
     }));
 });

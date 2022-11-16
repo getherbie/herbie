@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\plugins\dummy2;
 
-use herbie\EventInterface;
+use herbie\event\ContentRenderedEvent;
 use herbie\FilterInterface;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,7 +36,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onContentRendered']],
+            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
         ];
     }
 
@@ -119,9 +119,9 @@ final class Dummy2Plugin implements PluginInterface
         return $filter->next($context, $params, $filter);
     }
 
-    public function onContentRendered(EventInterface $event): void
+    public function onContentRendered(ContentRenderedEvent $event): void
     {
-        $this->logger->debug(__METHOD__);
+        $this->logger->debug(get_class($event));
         // TODO add test
     }
 

@@ -188,8 +188,7 @@ final class DummySysPlugin implements PluginInterface
     public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $twigEnvironment = $event->getTwigRenderer()->getTwigEnvironment();
-        $twigEnvironment->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+        $event->getEnvironment()->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
             return $content . 'Dummy Filter Dynamic';
         }));
     }

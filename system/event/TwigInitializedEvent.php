@@ -6,18 +6,19 @@ namespace herbie\event;
 
 use herbie\AbstractEvent;
 use herbie\TwigRenderer;
+use Twig\Environment;
 
 final class TwigInitializedEvent extends AbstractEvent
 {
-    private TwigRenderer $twigRenderer;
+    private Environment $environment;
 
-    public function __construct(TwigRenderer $twigRenderer)
+    public function __construct(Environment $environment)
     {
-        $this->twigRenderer = $twigRenderer;
+        $this->environment = $environment;
     }
 
-    public function getTwigRenderer(): TwigRenderer
+    public function getEnvironment(): Environment
     {
-        return $this->twigRenderer;
+        return $this->environment;
     }
 }

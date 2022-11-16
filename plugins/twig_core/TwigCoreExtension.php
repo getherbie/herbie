@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace herbie\sysplugin\twig_core;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Exception;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
-use herbie\Environment;
 use herbie\PageTree;
 use herbie\PageTreeFilterIterator;
 use herbie\PageTreeIterator;
 use herbie\Selector;
 use herbie\Translator;
-use herbie\TwigRenderer;
 use herbie\UrlManager;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -38,8 +38,6 @@ final class TwigCoreExtension extends AbstractExtension
 
     private Translator $translator;
 
-    private TwigRenderer $twigRenderer;
-
     private UrlManager $urlManager;
 
     /**
@@ -51,7 +49,6 @@ final class TwigCoreExtension extends AbstractExtension
         Environment $environment,
         SlugGenerator $slugGenerator,
         Translator $translator,
-        TwigRenderer $twigRenderer,
         UrlManager $urlManager
     ) {
         $this->alias = $alias;
@@ -59,7 +56,6 @@ final class TwigCoreExtension extends AbstractExtension
         $this->environment = $environment;
         $this->slugGenerator = $slugGenerator;
         $this->translator = $translator;
-        $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
     }
 
@@ -267,7 +263,11 @@ final class TwigCoreExtension extends AbstractExtension
             'label' => $label ?? $email,
         ];
 
-        return $this->twigRenderer->renderTemplate($template, $context);
+        try {
+            return $this->environment->render($template, $context);
+        } catch (Exception $e) {
+            return $template;
+        }
     }
 
     public function functionOutputCss(?string $group = null): string
@@ -288,7 +288,7 @@ final class TwigCoreExtension extends AbstractExtension
         string $class = ''
     ): string {
         $attribs = [];
-        $attribs['src'] = $this->environment->getBasePath() . '/' . $src;
+        $attribs['src'] = $this->urlManager->createUrl('/') . $src;
         $attribs['alt'] = $alt;
         if (!empty($width)) {
             $attribs['width'] = (string)$width;

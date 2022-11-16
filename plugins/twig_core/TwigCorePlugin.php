@@ -7,7 +7,6 @@ namespace herbie\sysplugin\twig_core;
 use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
-use herbie\Environment;
 use herbie\event\TwigInitializedEvent;
 use herbie\Plugin;
 use herbie\Translator;
@@ -17,7 +16,6 @@ final class TwigCorePlugin extends Plugin
 {
     private Alias $alias;
     private Assets $assets;
-    private Environment $environment;
     private SlugGenerator $slugGenerator;
     private Translator $translator;
     private UrlManager $urlManager;
@@ -25,14 +23,12 @@ final class TwigCorePlugin extends Plugin
     public function __construct(
         Alias $alias,
         Assets $assets,
-        Environment $environment,
         SlugGenerator $slugGenerator,
         Translator $translator,
         UrlManager $urlManager
     ) {
         $this->alias = $alias;
         $this->assets = $assets;
-        $this->environment = $environment;
         $this->slugGenerator = $slugGenerator;
         $this->translator = $translator;
         $this->urlManager = $urlManager;
@@ -47,14 +43,12 @@ final class TwigCorePlugin extends Plugin
 
     public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        $twigRenderer = $event->getTwigRenderer();
-        $twigRenderer->getTwigEnvironment()->addExtension(new TwigCoreExtension(
+        $event->getEnvironment()->addExtension(new TwigCoreExtension(
             $this->alias,
             $this->assets,
-            $this->environment,
+            $event->getEnvironment(),
             $this->slugGenerator,
             $this->translator,
-            $twigRenderer,
             $this->urlManager
         ));
     }

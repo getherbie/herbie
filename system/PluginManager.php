@@ -295,7 +295,7 @@ final class PluginManager
     private function addTwigFilter(\Twig\TwigFilter $filter): void
     {
         $closure = function (TwigInitializedEvent $event) use ($filter) {
-            $event->getTwigRenderer()->getTwigEnvironment()->addFilter($filter);
+            $event->getEnvironment()->addFilter($filter);
         };
         $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
@@ -306,7 +306,7 @@ final class PluginManager
     private function addTwigGlobal(string $name, $mixed): void
     {
         $closure = function (TwigInitializedEvent $event) use ($name, $mixed) {
-            $event->getTwigRenderer()->getTwigEnvironment()->addGlobal($name, $mixed);
+            $event->getEnvironment()->addGlobal($name, $mixed);
         };
         $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
@@ -314,7 +314,7 @@ final class PluginManager
     private function addTwigFunction(\Twig\TwigFunction $function): void
     {
         $closure = function (TwigInitializedEvent $event) use ($function) {
-            $event->getTwigRenderer()->getTwigEnvironment()->addFunction($function);
+            $event->getEnvironment()->addFunction($function);
         };
         $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
@@ -322,7 +322,7 @@ final class PluginManager
     private function addTwigTest(\Twig\TwigTest $test): void
     {
         $closure = function (TwigInitializedEvent $event) use ($test) {
-            $event->getTwigRenderer()->getTwigEnvironment()->addTest($test);
+            $event->getEnvironment()->addTest($test);
         };
         $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }

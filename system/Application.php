@@ -118,7 +118,7 @@ final class Application
 
         $twigRenderer = $this->getTwigRenderer();
         $twigRenderer->init();
-        $eventManager->dispatch(new TwigInitializedEvent($twigRenderer));
+        $eventManager->dispatch(new TwigInitializedEvent($twigRenderer->getTwigEnvironment()));
 
         $translator = $this->getTranslator();
         $translator->init();
