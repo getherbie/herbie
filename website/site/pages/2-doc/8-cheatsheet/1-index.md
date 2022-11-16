@@ -34,9 +34,9 @@ index.md
 Output content segments in layout files:
 
 {% verbatim %}
-    {{ content("default") }}
-    {{ content("left") }}
-    {{ content("right") }}
+    {{ content.default }}
+    {{ content.left }}
+    {{ content.right }}
 {% endverbatim %}
 
 **Event Listeners**

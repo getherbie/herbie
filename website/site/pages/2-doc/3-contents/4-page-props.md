@@ -50,25 +50,25 @@ In this way, more complex layouts can be handled even with simple text files.
 
 ## Render content segments in layout
 
-In layout files content segments are rendered using a content function.
+In layout files content segments are rendered using a global content object.
 
 {% verbatim %}
-    {{ content('default') }}
+    {{ content.default }}
 {% endverbatim %}
 
-The content function expects the segment ID as the only parameter.
-If no parameter is specified, the default content segment is rendered.
+The content object expects the segment ID as the key name.
+If no segment was specified in the page file, the default name must be used.
 
 {% verbatim %}
     <body>
         <div class="segment-default">
-            {{ content('default') }}
+            {{ content.default }}
         </div>
         <div class="segment-left">
-            {{ content('left') }}
+            {{ content.left }}
         </div>
         <div class="segment-right">
-            {{ content('right') }}
+            {{ content.right }}
         </div>
     </body>
 {% endverbatim %}
