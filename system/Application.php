@@ -30,7 +30,6 @@ final class Application
     private array $consoleCommands;
     private ContainerInterface $container;
     private array $eventListeners;
-    private array $interceptingFilters;
     private array $routeMiddlewares;
     private ?string $scriptFile;
     private ?string $scriptUrl;
@@ -56,7 +55,6 @@ final class Application
         $this->baseUrl = null;
         $this->consoleCommands = [];
         $this->eventListeners = [];
-        $this->interceptingFilters = [];
         $this->routeMiddlewares = [];
         $this->scriptFile = null;
         $this->scriptUrl = null;
@@ -353,17 +351,6 @@ final class Application
     public function getTwigTests(): array
     {
         return $this->twigTests;
-    }
-
-    public function addInterceptingFilter(string $filterName, callable $filter): Application
-    {
-        $this->interceptingFilters[] = [$filterName, $filter];
-        return $this;
-    }
-
-    public function getInterceptingFilters(): array
-    {
-        return $this->interceptingFilters;
     }
 
     public function addEventListener(string $eventName, callable $listener, int $priority = 1): Application

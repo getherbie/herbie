@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\filters;
 
-use herbie\FilterInterface;
+use herbie\event\RenderLayoutEvent;
 
-return ['renderLayout', function (string $context, array $params, FilterInterface $filter): string {
-    $context = str_replace(
+return [RenderLayoutEvent::class, function (RenderLayoutEvent $event): void {
+    $content = str_replace(
         '</body>',
-        '<div style="display:none" class="example-site-extend-filters-layout">' . __FUNCTION__ . '</div></body>',
-        $context
+        '<div style="display:none" class="example-site-extend-filters-layout">'
+            . __FUNCTION__
+            . '</div></body>',
+        $event->getContent()
     );
-    return $filter->next($context, $params, $filter);
+    $event->setContent($content);
 }];

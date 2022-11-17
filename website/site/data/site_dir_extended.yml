@@ -13,8 +13,6 @@
   desc: Directory with customized console commands.  
 - name: extend/events
   desc: Directory with customized event listeners.
-- name: extend/filters
-  desc: Directory with customized intercepting filters.
 - name: extend/middlewares_app
   desc: Directory with customized application middlewares.
 - name: extend/middlewares_route

@@ -7,12 +7,12 @@ namespace herbie\sysplugin\dummy;
 use herbie\event\ContentRenderedEvent;
 use herbie\event\LayoutRenderedEvent;
 use herbie\event\PluginsInitializedEvent;
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderSegmentEvent;
 use herbie\event\ResponseEmittedEvent;
 use herbie\event\ResponseGeneratedEvent;
 use herbie\event\TranslatorInitializedEvent;
 use herbie\event\TwigInitializedEvent;
-use herbie\FilterInterface;
-use herbie\Page;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -51,20 +51,13 @@ final class DummySysPlugin implements PluginInterface
             [ContentRenderedEvent::class, [$this, 'onContentRendered']],
             [LayoutRenderedEvent::class, [$this, 'onLayoutRendered']],
             [PluginsInitializedEvent::class, [$this, 'onPluginsInitialized']],
+            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
             [ResponseEmittedEvent::class, [$this, 'onResponseEmitted']],
             [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
             [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
             [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
             [TwigInitializedEvent::class, [$this, 'onTwigInitializedAddFilter']],
-        ];
-    }
-
-    public function interceptingFilters(): array
-    {
-        $this->logger->debug(__METHOD__);
-        return [
-            ['renderSegment', [$this, 'renderSegment']],
-            ['renderLayout', [$this, 'renderLayout']]
         ];
     }
 
@@ -121,30 +114,23 @@ final class DummySysPlugin implements PluginInterface
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
-    /**
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderLayout(RenderLayoutEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
-        /** @var string */
-        return $filter->next($context, $params, $filter);
-    }
-
-    /**
-     * @param array{content: array<string, string>, page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderLayout(string $context, array $params, FilterInterface $filter): string
-    {
-        $this->logger->debug(__METHOD__);
-        $context = str_replace(
+        $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
-            $context
+            $event->getContent(),
         );
-        /** @var string */
-        return $filter->next($context, $params, $filter);
+        $event->setContent($content);
+    }
+
+    public function onRenderSegment(RenderSegmentEvent $event): void
+    {
+        $this->logger->debug(__METHOD__);
+        $segment = $event->getSegment()
+            . $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
+        $event->setSegment($segment);
     }
 
     public function onContentRendered(ContentRenderedEvent $event): void

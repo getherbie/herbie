@@ -24,8 +24,6 @@ final class PluginManager
 
     private ContainerInterface $container;
 
-    private FilterChainManager $filterChainManager;
-
     private Translator $translator;
 
     private LoggerInterface $logger;
@@ -46,7 +44,6 @@ final class PluginManager
     public function __construct(
         Config $config,
         EventManager $eventManager,
-        FilterChainManager $filterChainManager,
         Translator $translator,
         LoggerInterface $logger,
         ContainerInterface $container // bad but necessary to enable constructor injection of the plugins
@@ -54,7 +51,6 @@ final class PluginManager
         $this->config = $config;
         $this->container = $container;
         $this->eventManager = $eventManager;
-        $this->filterChainManager = $filterChainManager;
         $this->initialized = false;
         $this->loadedPlugins = [];
         $this->logger = $logger;
@@ -168,10 +164,6 @@ final class PluginManager
             $this->addConsoleCommand($command);
         }
 
-        foreach ($plugin->interceptingFilters() as $filter) {
-            $this->addInterceptingFilter(...$filter);
-        }
-
         foreach ($plugin->applicationMiddlewares() as $appMiddleware) {
             $this->addApplicationMiddleware($appMiddleware);
         }
@@ -276,11 +268,6 @@ final class PluginManager
     private function addConsoleCommand(string $command): void
     {
         $this->consoleCommands[] = $command;
-    }
-
-    private function addInterceptingFilter(string $name, callable $callable): void
-    {
-        $this->filterChainManager->attach($name, $callable);
     }
 
     /**

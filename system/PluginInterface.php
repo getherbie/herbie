@@ -21,11 +21,6 @@ interface PluginInterface
     public function eventListeners(): array;
 
     /**
-     * @return array<int, array{string, callable}>
-     */
-    public function interceptingFilters(): array;
-
-    /**
      * @return array<int, MiddlewareInterface|callable|string>
      */
     public function applicationMiddlewares(): array;

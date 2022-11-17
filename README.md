@@ -21,7 +21,7 @@ Herbie CMS is powered by proven libraries:
 Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
 
 * Application and Route Middlewares
-* Event Listeners and Intercepting Filters
+* Event Listeners
 * Twig Filters, Twig Globals, Twig Functions and Twig Tests
 * Symfony Console Commands
 

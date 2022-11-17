@@ -44,19 +44,6 @@ final class LocalExtensionsPlugin extends Plugin
         return $events;
     }
 
-    public function interceptingFilters(): array
-    {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathInterceptingFilters');
-        $files = $this->findPhpFilesInDir($dir);
-
-        $filters = [];
-        foreach ($files as $file) {
-            $filters[] = $this->includePhpFile($file);
-        }
-
-        return $filters;
-    }
-
     public function applicationMiddlewares(): array
     {
         $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');

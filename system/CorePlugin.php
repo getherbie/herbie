@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderPageEvent;
+use herbie\event\RenderSegmentEvent;
+
 final class CorePlugin extends Plugin
 {
     private TwigRenderer $twigRenderer;
@@ -26,11 +30,12 @@ final class CorePlugin extends Plugin
         ];
     }
 
-    public function interceptingFilters(): array
+    public function eventListeners(): array
     {
         return [
-            ['renderLayout', [$this, 'renderLayout']],
-            ['renderSegment', [$this, 'renderSegment']]
+            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
+            [RenderPageEvent::class, [$this, 'onRenderPage']],
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
         ];
     }
 
@@ -51,44 +56,53 @@ final class CorePlugin extends Plugin
         return Application::isDebug();
     }
 
-    /**
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderPage(RenderPageEvent $event): void
     {
-        /** @var Page $page */
-        $page = $params['page'];
-        if ($this->enableTwigInSegmentFilter && !empty($page->getTwig())) {
-            $context = $this->twigRenderer->renderString($context, $params);
-        }
-        /** @var string */
-        return $filter->next($context, $params, $filter);
+        $twig = $this->twigRenderer->getTwigEnvironment();
+        $twig->addGlobal('page', $event->getPage());
+        $twig->addGlobal('route', $event->getRoute());
+        $twig->addGlobal('routeParams', $event->getRouteParams());
     }
 
     /**
-     * @param array{content: array<string, string>, page: Page, routeParams: array<string, mixed>} $params
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
      */
-    public function renderLayout(string $_, array $params, FilterInterface $filter): string
+    public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        /** @var Page $page */
-        $page = $params['page'];
+        if (!$this->enableTwigInSegmentFilter || !$event->enableTwig()) {
+            return;
+        }
+        $segment = $event->getSegment();
+        $renderedSegment = $this->twigRenderer->renderString($segment);
+        $event->setSegment($renderedSegment);
+    }
+
+    /**
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
+     */
+    public function onRenderLayout(RenderLayoutEvent $event): void
+    {
         if (strlen($this->layoutFileExtension) > 0) {
-            $name = sprintf('%s.%s', $page->getLayout(), $this->layoutFileExtension);
+            $templateName = sprintf('%s.%s', $event->getLayout(), $this->layoutFileExtension);
         } else {
-            $name = $page->getLayout();
+            $templateName = $event->getLayout();
         }
+
         if ($this->enableTwigInLayoutFilter) {
-            $context = $this->twigRenderer->renderTemplate($name, $params);
+            $context = ['content' => $event->getSegments()];
+            $content = $this->twigRenderer->renderTemplate($templateName, $context);
         } else {
-            $context = join('', $params['content']);
+            $content = join('', $event->getSegments());
         }
-        /** @var string */
-        return $filter->next($context, $params, $filter);
+
+        // The rendered content, that must be used in next listeners.
+        $event->setContent($content);
+
+        // Unset segments to make it obvious for the next listener.
+        $event->unsetSegments();
     }
 }

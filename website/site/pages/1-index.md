@@ -27,7 +27,6 @@ Thanks to its plugin system Herbie CMS is highly customizable and brings support
 * Application Middlewares
 * Route Middlewares
 * Event Listeners
-* Intercepting Filters
 * Twig Filters
 * Twig Globals
 * Twig Functions

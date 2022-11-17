@@ -9,7 +9,6 @@ final class SystemInfoPlugin extends Plugin
     private Alias $alias;
     private Config $config;
     private EventManager $eventManager;
-    private FilterChainManager $filterChainManager;
     private MiddlewareDispatcher $middlewareDispatcher;
     private PluginManager $pluginManager;
     private Translator $translator;
@@ -20,7 +19,6 @@ final class SystemInfoPlugin extends Plugin
         Alias $alias,
         Config $config,
         EventManager $eventManager,
-        FilterChainManager $filterChainManager,
         MiddlewareDispatcher $middlewareDispatcher,
         PluginManager $pluginManager,
         Translator $translator,
@@ -29,7 +27,6 @@ final class SystemInfoPlugin extends Plugin
         $this->alias = $alias;
         $this->config = $config;
         $this->eventManager = $eventManager;
-        $this->filterChainManager = $filterChainManager;
         $this->middlewareDispatcher = $middlewareDispatcher;
         $this->pluginManager = $pluginManager;
         $this->translator = $translator;
@@ -57,7 +54,6 @@ final class SystemInfoPlugin extends Plugin
             'commands' => $this->getConsoleCommands(),
             'configs' => $this->getConfig(),
             'events' => $this->getEventListeners(),
-            'filters' => $this->getInterceptingFilters(),
             'middlewares' => $this->getMiddlewares(),
             'php_classes' => defined_classes('herbie'),
             'php_functions' => defined_functions('herbie'),
@@ -122,24 +118,6 @@ final class SystemInfoPlugin extends Plugin
                         get_callable_name($event)
                     );
                 }
-            }
-        }
-        return $items;
-    }
-
-    /**
-     * @return array<int, string[]>
-     */
-    private function getInterceptingFilters(): array
-    {
-        $items = [];
-        foreach ($this->filterChainManager->getAllFilters() as $category => $filterChain) {
-            $filters = $filterChain->getFilters()->items();
-            foreach ($filters as $filter) {
-                $items[] = [
-                    $category,
-                    ...get_callable_name($filter)
-                ];
             }
         }
         return $items;

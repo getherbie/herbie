@@ -43,10 +43,6 @@ Output content segments in layout files:
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
 
-**Intercepting Filters**
-
-{{ snippet("@site/snippets/simple_data.twig", {type:"filters"}) }}
-
 **Twig Filters**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}

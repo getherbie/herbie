@@ -14,8 +14,9 @@ include dirname(__DIR__, 3) . '/c3.php';
 
 use herbie\Application;
 use herbie\ApplicationPaths;
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderSegmentEvent;
 use herbie\event\TwigInitializedEvent;
-use herbie\FilterInterface;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use tests\_data\src\CustomCommand;
@@ -68,17 +69,15 @@ $app->addTwigTest('mytest', function () {
     return true;
 });
 
-$app->addInterceptingFilter('renderSegment', function (string $content, array $args, FilterInterface $chain) {
-    // do something with content
-    return $chain->next($content, $args, $chain);
+$app->addEventListener(RenderSegmentEvent::class, function (RenderSegmentEvent $event) {
+    // do something with $event
 });
 
-$app->addInterceptingFilter('renderLayout', function (string $content, array $args, FilterInterface $chain) {
-    // do something with content
-    return $chain->next($content, $args, $chain);
+$app->addEventListener(RenderLayoutEvent::class, function (RenderLayoutEvent $event) {
+    // do something with $event
 });
 
-$app->addInterceptingFilter('renderSegment', new TestFilter());
+$app->addEventListener(RenderSegmentEvent::class, new TestFilter());
 
 $app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {
     $event->getEnvironment()->addFilter(new TwigFilter('my_filter', function (string $content): string {

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugin\rest;
 
 use herbie\Config;
-use herbie\FilterInterface;
-use herbie\Page;
+use herbie\event\RenderSegmentEvent;
 use herbie\Plugin;
 
 final class RestSysPlugin extends Plugin
@@ -23,10 +22,10 @@ final class RestSysPlugin extends Plugin
         $this->parserClassExists = class_exists('\\Doctrine\\RST\\Parser');
     }
 
-    public function interceptingFilters(): array
+    public function eventListeners(): array
     {
         return [
-            ['renderSegment', [$this, 'renderSegment']]
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
         ];
     }
 
@@ -50,16 +49,11 @@ final class RestSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if ($params['page']->format === 'rest') {
-            $context = $this->parseRest($context);
+        if ($event->getFormatter() === 'rest') {
+            $event->setSegment($this->parseRest($event->getSegment()));
         }
-        /** @var string */
-        return $filter->next($context, $params, $filter);
     }
 
     public function parseRest(string $string): string

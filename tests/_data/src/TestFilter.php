@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace tests\_data\src;
 
-use herbie\FilterInterface;
+use herbie\event\RenderSegmentEvent;
 
 class TestFilter
 {
-    public function __invoke(string $content, array $args, FilterInterface $chain)
+    public function __invoke(RenderSegmentEvent $event)
     {
-        return $chain->next($content, $args, $chain);
+        // do someghint with $event
     }
 }

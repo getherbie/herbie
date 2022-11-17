@@ -72,9 +72,6 @@ final class HerbieInfoCest
             'herbie\FileInfo',
             'herbie\FileInfoFilterCallback',
             'herbie\FileInfoSortableIterator',
-            'herbie\FilterChain',
-            'herbie\FilterChainManager',
-            'herbie\FilterIterator',
             'herbie\FlatFileIterator',
             'herbie\FlatFilePagePersistence',
             'herbie\FlatFilePageRepository',
@@ -103,6 +100,8 @@ final class HerbieInfoCest
             'herbie\UrlManager',
             'herbie\Yaml',
             'herbie\event\PluginsInitializedEvent',
+            'herbie\event\RenderPageEvent',
+            'herbie\event\RenderSegmentEvent',
             'herbie\event\TranslatorInitializedEvent',
             'herbie\event\TwigInitializedEvent',
             'herbie\sysplugin\dummy\DummySysPlugin',
@@ -181,7 +180,6 @@ final class HerbieInfoCest
             'plugins.LOCAL_EXT.pathApplicationMiddlewares',
             'plugins.LOCAL_EXT.pathConsoleCommands',
             'plugins.LOCAL_EXT.pathEventListeners',
-            'plugins.LOCAL_EXT.pathInterceptingFilters',
             'plugins.LOCAL_EXT.pathRouteMiddlewares',
             'plugins.LOCAL_EXT.pathTwigFilters',
             'plugins.LOCAL_EXT.pathTwigFunctions',
@@ -333,12 +331,12 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfTwigGlobals(AcceptanceTester $I)
     {
         $globals = [
-            'page',
-            'routeParams',
             'route',
+            'routeParams',
             'baseUrl',
             'theme',
             'site',
+            'page',
             'config',
             'dummy',
             'timestamp'
@@ -488,28 +486,6 @@ final class HerbieInfoCest
         $I->see(join(',', $tests), '.herbie-info-twig-tests');
     }
 
-    public function testNumberAndSortingOfFilters(AcceptanceTester $I)
-    {
-        $filters = [
-            'renderLayout',
-            'renderLayout',
-            'renderLayout',
-            'renderLayout',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment',
-            'renderSegment'
-        ];
-        $I->amOnPage('/herbie-info');
-        $I->see('Intercepting Filters (' . count($filters) . ')', 'h2');
-        $I->see(join(',', $filters), '.herbie-info-filters');
-    }
-
     public function testNumberAndSortingOfEvents(AcceptanceTester $I)
     {
         $events = [
@@ -540,6 +516,17 @@ final class HerbieInfoCest
             'herbie\event\TwigInitializedEvent',
             'herbie\event\TwigInitializedEvent',
             'herbie\event\TwigInitializedEvent',
+            'herbie\event\RenderLayoutEvent',
+            'herbie\event\RenderLayoutEvent',
+            'herbie\event\RenderLayoutEvent',
+            'herbie\event\RenderPageEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
+            'herbie\event\RenderSegmentEvent',
             'herbie\event\ContentRenderedEvent',
             'herbie\event\LayoutRenderedEvent',
             'herbie\event\PluginsInitializedEvent',
