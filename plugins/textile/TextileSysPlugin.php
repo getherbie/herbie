@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugin\textile;
 
 use herbie\Config;
-use herbie\FilterInterface;
-use herbie\Page;
+use herbie\event\RenderSegmentEvent;
 use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
@@ -26,10 +25,10 @@ final class TextileSysPlugin extends Plugin
         }
     }
 
-    public function interceptingFilters(): array
+    public function eventListeners(): array
     {
         return [
-            ['renderSegment', [$this, 'renderSegment']]
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
         ];
     }
 
@@ -53,16 +52,11 @@ final class TextileSysPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if ($params['page']->format === 'textile') {
-            $context = $this->parseTextile($context);
+        if ($event->getFormatter() === 'textile') {
+            $event->setSegment($this->parseTextile($event->getSegment()));
         }
-        /** @var string */
-        return $filter->next($context, $params, $filter);
     }
 
     public function parseTextile(string $value): string

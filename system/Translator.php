@@ -31,9 +31,10 @@ final class Translator
     /**
      * Initializer
      */
-    public function init(): void
+    public function init(): self
     {
         $this->loadMessages();
+        return $this;
     }
 
     /**

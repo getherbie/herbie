@@ -67,9 +67,8 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
 
     public function testLinkWithNotExistingCustomTemplate(): void
     {
-        $this->expectException(\Twig\Error\LoaderError::class);
         $twig = '{{ mail_link("me@example.com", template="@not/existing/template.twig") }}';
-        $this->twig()->renderString($twig);
+        $this->assertEquals('me@example.com', $this->twig()->renderString($twig));
     }
 
     private function getHtml(string $link): string

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Http\Message\ServerRequestInterface;
+use herbie\event\TwigInitializedEvent;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -20,10 +20,9 @@ use Twig\Environment as TwigEnvironment;
 final class TwigRenderer
 {
     private bool $initialized;
-
     private Config $config;
-    private TwigEnvironment $twig;
     private EventManager $eventManager;
+    private TwigEnvironment $twig;
     private LoggerInterface $logger;
     private Site $site;
     private UrlManager $urlManager;
@@ -55,7 +54,6 @@ final class TwigRenderer
      */
     public function init(): void
     {
-        // initialize only once
         if ($this->isInitialized()) {
             return;
         }
@@ -86,10 +84,13 @@ final class TwigRenderer
             $this->twig->addExtension(new DebugExtension());
         }
 
-        $this->eventManager->trigger('onTwigAddExtension', $this);
+        foreach ($this->getContext() as $key => $value) {
+            $this->twig->addGlobal($key, $value);
+        }
 
         $this->initialized = true;
-        $this->eventManager->trigger('onTwigInitialized', $this);
+
+        $this->eventManager->dispatch(new TwigInitializedEvent($this->twig));
     }
 
     public function getTwigEnvironment(): TwigEnvironment
@@ -105,7 +106,7 @@ final class TwigRenderer
      */
     public function renderString(string $string, array $context = []): string
     {
-        $context = array_merge($this->getContext(), $context);
+        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($string, $context);
     }
 
@@ -117,7 +118,7 @@ final class TwigRenderer
      */
     public function renderTemplate(string $name, array $context = []): string
     {
-        $context = array_merge($this->getContext(), $context);
+        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
     }
 
@@ -132,7 +133,7 @@ final class TwigRenderer
      *     config: Config
      * }
      */
-    public function getContext(): array
+    private function getContext(): array
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();
         return [

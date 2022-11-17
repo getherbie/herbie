@@ -1,22 +1,31 @@
 ---
-- name: onPlugin<NAME>Attached
-  desc: Triggered after plugin with <NAME> was attached
-  order: 1
-- name: onPluginsAttached
-  desc: Triggered after plugins where attached
-  order: 2
-- name: onTwigInitialized
-  desc: Triggered after twig was initialized
-  order: 3
-- name: onContentRendered
+- name: ContentRenderedEvent
   desc: Triggered after content was rendered
-  order: 4
-- name: onLayoutRendered
+  order: 1
+- name: LayoutRenderedEvent
   desc: Triggered after layout was rendered
-  order: 5
-- name: onResponseGenerated
+  order: 2  
+- name: PluginsInitializedEvent
+  desc: Triggered after plugins where initialized
+  order: 3
+- name: ResponseGeneratedEvent
   desc: Triggered after HTTP Response was generated
-  order: 6
-- name: onResponseEmitted
+  order: 4
+- name: ResponseEmittedEvent
   desc: Triggered after HTTP Response was emitted
+  order: 5
+- name: RenderLayoutEvent
+  desc: Triggered when layout is rendered
+  order: 6
+- name: RenderPageEvent
+  desc: Triggered when page is rendered
   order: 7
+- name: RenderSegmentEvent
+  desc: Triggered when segment is rendered
+  order: 8
+- name: TranslatorInitializedEvent
+  desc: Triggered after translator was initialized
+  order: 9  
+- name: TwigInitializedEvent
+  desc: Triggered after twig was initialized
+  order: 10  

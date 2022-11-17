@@ -9,7 +9,6 @@
         <li><a href="{{ route }}#herbie-plugins">Plugins</a></li>
         <li><a href="{{ route }}#herbie-commands">Console Commands</a></li>
         <li><a href="{{ route }}#herbie-events">Event Listeners</a></li>
-        <li><a href="{{ route }}#herbie-filters">Intercepting Filters</a></li>
         <li><a href="{{ route }}#herbie-middlewares">Middlewares</a></li>
         <li><a href="{{ route }}#herbie-twig-filters">Twig Filters</a></li>
         <li><a href="{{ route }}#herbie-twig-globals">Twig Globals</a></li>
@@ -148,31 +147,6 @@
                 <td>{{ event[1] }}</td>
                 <td>{{ event[2] }}</td>
                 <td>{{ event[3] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-    
-    <h2 id="herbie-filters" class="herbie-info-h2">Intercepting Filters ({{ filters|length }})</h2>
-    <p>Attached intercepting filters, ordered by installation time.</p>
-    <div class="herbie-info-filters" style="display:none">
-        {%- for filter in filters -%}
-            {{- filter[0] -}}
-            {%- if loop.last == false -%},{%- endif -%}
-        {%- endfor -%}
-    </div>
-    <table class="herbie-info-table">
-        <tr>
-            <th style="width:1%">#</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Callable</th>
-        </tr>
-        {% for filter in filters %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ filter[0] }}</td>
-                <td>{{ filter[1] }}</td>
-                <td>{{ filter[2] }}</td>
             </tr>
         {% endfor %}
     </table>

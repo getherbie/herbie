@@ -9,10 +9,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ClearFileCommand extends Command
+final class ClearFilesCommand extends Command
 {
     private Config $config;
-    protected static $defaultName = 'clear-file';
+    protected static $defaultName = 'clear-files';
     protected static $defaultDescription = 'Clears asset, cache and log files';
 
     public function __construct(Config $config)
@@ -24,7 +24,7 @@ final class ClearFileCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The clear-file deletes asset, cache and log files from several directories.')
+            ->setHelp('The clear-files deletes asset, cache and log files from several directories.')
             ->addArgument('type', InputArgument::OPTIONAL, 'Type of files to delete', 'all')
         ;
     }

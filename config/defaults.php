@@ -118,7 +118,6 @@ $settings['plugins']['LOCAL_EXT'] = [];
 $settings['plugins']['LOCAL_EXT']['pathApplicationMiddlewares'] = 'SITE_PATH/extend/middlewares_app';
 $settings['plugins']['LOCAL_EXT']['pathConsoleCommands'] = 'SITE_PATH/extend/commands';
 $settings['plugins']['LOCAL_EXT']['pathEventListeners'] = 'SITE_PATH/extend/events';
-$settings['plugins']['LOCAL_EXT']['pathInterceptingFilters'] = 'SITE_PATH/extend/filters';
 $settings['plugins']['LOCAL_EXT']['pathRouteMiddlewares'] = 'SITE_PATH/extend/middlewares_route';
 $settings['plugins']['LOCAL_EXT']['pathTwigFilters'] = 'SITE_PATH/extend/twig_filters';
 $settings['plugins']['LOCAL_EXT']['pathTwigGlobals'] = 'SITE_PATH/extend/twig_globals';

@@ -34,18 +34,14 @@ index.md
 Output content segments in layout files:
 
 {% verbatim %}
-    {{ content("default") }}
-    {{ content("left") }}
-    {{ content("right") }}
+    {{ content.default }}
+    {{ content.left }}
+    {{ content.right }}
 {% endverbatim %}
 
 **Event Listeners**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
-
-**Intercepting Filters**
-
-{{ snippet("@site/snippets/simple_data.twig", {type:"filters"}) }}
 
 **Twig Filters**
 

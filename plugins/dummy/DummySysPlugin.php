@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace herbie\sysplugin\dummy;
 
-use herbie\EventInterface;
-use herbie\FilterInterface;
-use herbie\Page;
+use herbie\event\ContentRenderedEvent;
+use herbie\event\LayoutRenderedEvent;
+use herbie\event\PluginsInitializedEvent;
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderSegmentEvent;
+use herbie\event\ResponseEmittedEvent;
+use herbie\event\ResponseGeneratedEvent;
+use herbie\event\TranslatorInitializedEvent;
+use herbie\event\TwigInitializedEvent;
 use herbie\PluginInterface;
-use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -43,25 +48,16 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onGenericEventHandler']],
-            ['onLayoutRendered', [$this, 'onGenericEventHandler']],
-            ['onPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onResponseEmitted', [$this, 'onGenericEventHandler']],
-            ['onResponseGenerated', [$this, 'onGenericEventHandler']],
-            ['onTwigInitialized', [$this, 'onGenericEventHandler']],
-            ['onTwigInitialized', [$this, 'onTwigInitializedEventHandler']],
-            ['onSystemPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onComposerPluginsAttached', [$this, 'onGenericEventHandler']],
-            ['onLocalPluginsAttached', [$this, 'onGenericEventHandler']],
-        ];
-    }
-
-    public function interceptingFilters(): array
-    {
-        $this->logger->debug(__METHOD__);
-        return [
-            ['renderSegment', [$this, 'renderSegment']],
-            ['renderLayout', [$this, 'renderLayout']]
+            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
+            [LayoutRenderedEvent::class, [$this, 'onLayoutRendered']],
+            [PluginsInitializedEvent::class, [$this, 'onPluginsInitialized']],
+            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
+            [ResponseEmittedEvent::class, [$this, 'onResponseEmitted']],
+            [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
+            [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
+            [TwigInitializedEvent::class, [$this, 'onTwigInitializedAddFilter']],
         ];
     }
 
@@ -118,43 +114,64 @@ final class DummySysPlugin implements PluginInterface
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
-    /**
-     * @param array{page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderLayout(RenderLayoutEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $context .= $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
-        /** @var string */
-        return $filter->next($context, $params, $filter);
-    }
-
-    /**
-     * @param array{content: array<string, string>, page: Page, routeParams: array<string, mixed>} $params
-     */
-    public function renderLayout(string $context, array $params, FilterInterface $filter): string
-    {
-        $this->logger->debug(__METHOD__);
-        $context = str_replace(
+        $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-render-layout', __METHOD__) . '</body>',
-            $context
+            $event->getContent(),
         );
-        /** @var string */
-        return $filter->next($context, $params, $filter);
+        $event->setContent($content);
     }
 
-    public function onGenericEventHandler(EventInterface $event): void
-    {
-        $this->logger->debug('Event ' . $event->getName() . ' was triggered');
-    }
-
-    public function onTwigInitializedEventHandler(EventInterface $event): void
+    public function onRenderSegment(RenderSegmentEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        /** @var TwigRenderer $twigRenderer */
-        $twigRenderer = $event->getTarget();
-        $twigRenderer->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+        $segment = $event->getSegment()
+            . $this->wrapHtmlBlock('dummy-plugin-render-segment', __METHOD__);
+        $event->setSegment($segment);
+    }
+
+    public function onContentRendered(ContentRenderedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onLayoutRendered(LayoutRenderedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onPluginsInitialized(PluginsInitializedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onResponseEmitted(ResponseEmittedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onResponseGenerated(ResponseGeneratedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTranslatorInitialized(TranslatorInitializedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTwigInitialized(TwigInitializedEvent $event): void
+    {
+        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+    }
+
+    public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
+    {
+        $this->logger->debug(__METHOD__);
+        $event->getEnvironment()->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
             return $content . 'Dummy Filter Dynamic';
         }));
     }

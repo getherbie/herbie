@@ -32,12 +32,6 @@ Basically, it provides the following extension points to change the flow of the 
             <td>Hook the system</td>
         </tr>
         <tr>
-            <td>Intercepting filter</td>
-            <td>Easy</td>
-            <td>Frequently</td>
-            <td>Value transformation</td>
-        </tr>
-        <tr>
             <td>Application middleware</td>
             <td>Medium</td>
             <td>Rarely</td>
@@ -188,24 +182,6 @@ $event = function (EventInterface $event): void {
 return ['onTwigInitialized', $event];
 ~~~
 
-### Intercepting filters
-
-For adding an intercepting filter you can create a PHP file in the directory `site/extend/filters` that returns an array{string, callable} with the name of the filter and a valid PHP callback.
-The filter is then registered automatically.
-
-~~~php
-<?php
-
-use herbie\FilterInterface;
-
-$filter = function (string $context, array $params, FilterInterface $filter): string {
-    // do something with $context
-    return $filter->next($context, $params, $filter);
-};
-
-return ['renderLayout', $filter];
-~~~ 
-
 ### Application middlewares
 
 For adding an application middleware you can create a PHP file in the directory `site/extend/middlewares_app` that returns a valid PHP callback.
@@ -327,7 +303,6 @@ $app = new Application(
 
 $app->addConsoleCommand();
 $app->addEventListener();
-$app->addInterceptingFilter();
 $app->addApplicationMiddleware();
 $app->addRouteMiddleware();
 $app->addTwigFilter();
@@ -362,17 +337,6 @@ $event = function (herbie\EventInterface $event): void {
 };
 
 $app->addEventListener('onTwigInitialized', $event);
-~~~
-
-Adding an intercepting filter:
-
-~~~php
-$filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
-    // do something with $context
-    return $filter->next($context, $params, $filter);
-};
-
-$app->addInterceptingFilter('renderLayout', $filter);
 ~~~
 
 Adding an application middleware:
@@ -494,11 +458,6 @@ class MyPlugin implements herbie\PluginInterface
         return [];
     }
 
-    public function interceptingFilters(): array
-    {
-        return [];
-    }
-
     public function applicationMiddlewares(): array
     {
         return [];
@@ -593,17 +552,6 @@ class MyPlugin implements herbie\PluginInterface
         };
         return [
             ['onTwigInitialized', $event]
-        ];
-    }
-
-    public function interceptingFilters(): array
-    {
-        $filter = function (string $context, array $params, herbie\FilterInterface $filter): string {
-            // do something with $context
-            return $filter->next($context, $params, $filter);
-        };
-        return [
-            ['renderLayout', $filter]
         ];
     }
 

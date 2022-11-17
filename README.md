@@ -21,7 +21,7 @@ Herbie CMS is powered by proven libraries:
 Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
 
 * Application and Route Middlewares
-* Event Handlers and Intercepting Filters
+* Event Listeners
 * Twig Filters, Twig Globals, Twig Functions and Twig Tests
 * Symfony Console Commands
 
@@ -34,6 +34,7 @@ Herbie CMS implements the following PHP standard recommendations:
 * [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP Message Interface
 * [PSR-11](https://www.php-fig.org/psr/psr-11/) Container Interface
 * [PSR-12](https://www.php-fig.org/psr/psr-12/) Extended Coding Style
+* [PSR-14](https://www.php-fig.org/psr/psr-14/) Event Dispatcher
 * [PSR-15](https://www.php-fig.org/psr/psr-15/) HTTP Handlers
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
@@ -52,17 +53,15 @@ TBD
 
 ### Composer 
 
-The easiest way to install Herbie CMS is with Composer.
-To do this, run the following commands in your terminal:
+The easiest way to install Herbie CMS is through Composer.
+Run the following commands in your terminal to create a new project and install all dependent libraries.
 
-For the upcoming version 2.x:
+For the upcoming 2.x version (PHP 7.4, 8.0, 8.1):
 
-    # create project and install dependent libraries
     composer create-project getherbie/start-website:dev-master mywebsite
 
-For the stable version 1.x:
+For the stable 1.x version (PHP 5.6):
 
-    # create project and install dependent libraries
     composer create-project getherbie/start-website mywebsite
 
 Change to the `mywebsite/web` directory:

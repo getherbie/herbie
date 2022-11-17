@@ -23,11 +23,6 @@ final class ApplicationExtensionsPlugin extends Plugin
         return $this->application->getEventListeners();
     }
 
-    public function interceptingFilters(): array
-    {
-        return $this->application->getInterceptingFilters();
-    }
-
     public function applicationMiddlewares(): array
     {
         return $this->application->getApplicationMiddlewares();

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\filters;
 
-use herbie\FilterInterface;
+use herbie\event\RenderSegmentEvent;
 
-return ['renderSegment', function (string $context, array $params, FilterInterface $filter): string {
-    $context = $context
+return [RenderSegmentEvent::class, function (RenderSegmentEvent $event): void {
+    $segment = $event->getSegment()
         . '<div style="display:none" class="example-site-extend-filters-segment">'
         . __FUNCTION__
         . '</div>';
-    return $filter->next($context, $params, $filter);
+    $event->setSegment($segment);
 }];

@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\event\ContentRenderedEvent;
+use herbie\event\LayoutRenderedEvent;
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderPageEvent;
+use herbie\event\RenderSegmentEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,7 +21,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
     private EventManager $eventManager;
-    private FilterChainManager $filterChainManager;
     private HttpFactory $httpFactory;
     private UrlManager $urlManager;
     private bool $cacheEnable;
@@ -27,7 +32,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
     public function __construct(
         CacheInterface $cache,
         EventManager $eventManager,
-        FilterChainManager $filterChainManager,
         HttpFactory $httpFactory,
         UrlManager $urlManager,
         array $options = []
@@ -35,7 +39,6 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $this->cache = $cache;
         $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
-        $this->filterChainManager = $filterChainManager;
         $this->urlManager = $urlManager;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
@@ -43,20 +46,23 @@ final class PageRendererMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var Page|null $page */
-        $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
-
-        if (is_null($page)) {
-            throw HttpException::notFound(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE);
-        }
+        /** @var string $route */
+        $route = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE, '');
 
         /** @var array $routeParams */
         $routeParams = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, []);
 
-        return $this->renderPage($page, $routeParams);
+        /** @var Page|null $page */
+        $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
+
+        if (is_null($page)) {
+            throw HttpException::notFound($route);
+        }
+
+        return $this->renderPage($page, $route, $routeParams);
     }
 
-    private function renderPage(Page $page, array $routeParams): ResponseInterface
+    private function renderPage(Page $page, string $route, array $routeParams): ResponseInterface
     {
         $redirect = $page->getRedirect();
 
@@ -64,46 +70,51 @@ final class PageRendererMiddleware implements MiddlewareInterface
             return $this->createRedirectResponse(...$redirect);
         }
 
-        $rendered = null;
+        $content = null;
 
         $cacheId = $page->getCacheId();
         if ($this->cacheEnable && !empty($page->getCached())) {
-            $rendered = $this->cache->get($cacheId);
+            $content = $this->cache->get($cacheId);
         }
 
-        if (null === $rendered) {
-            $context = [
-                'page' => $page,
-                'routeParams' => $routeParams
-            ];
+        if (null === $content) {
+            $this->eventManager->dispatch(new RenderPageEvent($page, $route, $routeParams));
 
             // render segments
             $segments = [];
             foreach ($page->getSegments() as $segmentId => $segment) {
-                $renderedSegment = (string)$this->filterChainManager->execute('renderSegment', $segment, $context);
+                /** @var RenderSegmentEvent $event */
+                $event = $this->eventManager->dispatch(
+                    new RenderSegmentEvent($segment, $segmentId, $page->getTwig(), $page->getFormat())
+                );
+                $renderedSegment = $event->getSegment();
                 $segments[$segmentId] = $renderedSegment;
             }
-            $this->eventManager->trigger('onContentRendered', $segments, $page->toArray());
+
+            /** @var ContentRenderedEvent $event */
+            $event = $this->eventManager->dispatch(new ContentRenderedEvent($segments));
+            $segments = $event->getSegments();
 
             // render layout
-            $content = '';
             if (empty($page->getLayout())) {
                 $content = implode('', $segments);
             } else {
-                $content = (string)$this->filterChainManager->execute('renderLayout', $content, array_merge([
-                    'content' => $segments
-                ], $context));
+                /** @var RenderLayoutEvent $event */
+                $event = $this->eventManager->dispatch(new RenderLayoutEvent($segments, $page->getLayout()));
+                $content = $event->getContent();
             }
-            $this->eventManager->trigger('onLayoutRendered', $content, ['page' => $page]);
+
+            /** @var LayoutRenderedEvent $event */
+            $event = $this->eventManager->dispatch(new LayoutRenderedEvent($content));
+            $content = $event->getContent();
 
             if ($this->cacheEnable && !empty($page->getCached())) {
                 $this->cache->set($cacheId, $content, $this->cacheTTL);
             }
-            $rendered = $content;
         }
 
         $response = $this->httpFactory->createResponse();
-        $response->getBody()->write($rendered);
+        $response->getBody()->write($content);
         return $response->withHeader('Content-Type', $page->getContentType());
     }
 

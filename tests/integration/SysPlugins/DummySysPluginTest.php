@@ -40,15 +40,12 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         // https://stackoverflow.com/a/70355297/6161354
 
         $logContent = file_read($logFile);
-        $this->assertStringContainsString('Event onSystemPluginsAttached was triggered', $logContent);
-        $this->assertStringContainsString('Event onComposerPluginsAttached was triggered', $logContent);
-        $this->assertStringContainsString('Event onLocalPluginsAttached was triggered', $logContent);
-        $this->assertStringContainsString('Event onPluginsAttached was triggered', $logContent);
-        $this->assertStringContainsString('Event onTwigInitialized was triggered', $logContent);
-        $this->assertStringContainsString('Event onContentRendered was triggered', $logContent);
-        // strangly, this event is not triggered
-        // $this->assertStringContainsString('Event onLayoutRendered was triggered', $logContent);
-        $this->assertStringContainsString('Event onResponseGenerated was triggered', $logContent);
-        $this->assertStringContainsString('Event onResponseEmitted was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\ContentRenderedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\LayoutRenderedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\PluginsInitializedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\ResponseEmittedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\ResponseGeneratedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\TranslatorInitializedEvent was triggered', $logContent);
+        $this->assertStringContainsString('Event herbie\event\TwigInitializedEvent was triggered', $logContent);
     }
 }
