@@ -6,7 +6,7 @@ namespace herbie\event;
 
 use herbie\AbstractEvent;
 
-class RenderLayoutEvent extends AbstractEvent
+final class RenderLayoutEvent extends AbstractEvent
 {
     private string $content;
     private array $segments;

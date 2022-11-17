@@ -5,8 +5,8 @@ layout: doc
 
 # Event Listeners
 
-Herbie CMS is using event listeners inspired by [Laminas' EventManager](https://docs.laminas.dev/laminas-eventmanager) component.
-During the application lifecycle the following events are triggered.
+Herbie CMS is implementing a simple event dispatcher according to the PSR-14 specification.
+During the application lifecycle the following events are dispatched.
 
 <table class="pure-table pure-table-horizontal">
     <thead>
