@@ -21,11 +21,6 @@ abstract class Plugin implements PluginInterface
         return [];
     }
 
-    public function interceptingFilters(): array
-    {
-        return [];
-    }
-
     public function applicationMiddlewares(): array
     {
         return [];

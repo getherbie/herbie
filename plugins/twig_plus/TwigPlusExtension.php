@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace herbie\sysplugin\twig_plus;
 
-use herbie\Environment;
 use herbie\Page;
 use herbie\PageItem;
 use herbie\PageList;
@@ -16,8 +15,8 @@ use herbie\PageTreeHtmlRenderer;
 use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
-use herbie\TwigRenderer;
 use herbie\UrlManager;
+use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -27,12 +26,8 @@ use Twig\TwigFunction;
 final class TwigPlusExtension extends AbstractExtension
 {
     private Environment $environment;
-
     private PageRepositoryInterface $pageRepository;
-
     private UrlManager $urlManager;
-
-    private TwigRenderer $twigRenderer;
 
     /**
      * TwigPlusExtension constructor.
@@ -40,12 +35,10 @@ final class TwigPlusExtension extends AbstractExtension
     public function __construct(
         Environment $environment,
         PageRepositoryInterface $pageRepository,
-        TwigRenderer $twigRenderer,
         UrlManager $urlManager
     ) {
         $this->environment = $environment;
         $this->pageRepository = $pageRepository;
-        $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
     }
 
@@ -148,7 +141,7 @@ final class TwigPlusExtension extends AbstractExtension
             $links[] = $this->createLink($route, $label);
         }
 
-        $route = $this->environment->getRoute();
+        [$route] = $this->urlManager->parseRequest();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         foreach ($pageTrail as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
@@ -209,7 +202,7 @@ final class TwigPlusExtension extends AbstractExtension
         $pagination = new Pagination($pageList);
         $pagination->setLimit($limit);
 
-        return $this->twigRenderer->renderTemplate($template, ['pagination' => $pagination]);
+        return $this->environment->render($template, ['pagination' => $pagination]);
     }
 
     public function functionMenu(
@@ -251,7 +244,7 @@ final class TwigPlusExtension extends AbstractExtension
         bool $renderTags = true,
         string $template = '@template/page/taxonomies.twig'
     ): string {
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'page' => $page,
             'pageRoute' => $pageRoute,
             'renderAuthors' => $renderAuthors,
@@ -272,7 +265,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $cssClass = 'pager',
         string $template = '<div class="{class}">{prev}{next}</div>'
     ): string {
-        $route = $this->environment->getRoute();
+        [$route] = $this->urlManager->parseRequest();
         $pageList = $this->pageRepository->findAll();
 
         if (strlen($limit) > 0) {
@@ -337,7 +330,7 @@ final class TwigPlusExtension extends AbstractExtension
         array $routeParams,
         string $template = '@template/pages/filtered.twig'
     ): string {
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'routeParams' => $routeParams
         ]);
     }
@@ -360,7 +353,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $this->pageRepository->findAll();
         }
         $recentPages = $pageList->getRecent($limit, $pageType);
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'recentPages' => $recentPages,
             'dateFormat' => $dateFormat,
             'pageType' => $pageType,
@@ -375,7 +368,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $rootTitle = '',
         bool $reverse = false
     ): string {
-        $route = $this->environment->getRoute();
+        [$route] = $this->urlManager->parseRequest();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         $count = count($pageTrail);
 
@@ -416,7 +409,7 @@ final class TwigPlusExtension extends AbstractExtension
      */
     public function functionSnippet(string $path, array $context = []): string
     {
-        return $this->twigRenderer->renderTemplate($path, $context);
+        return $this->environment->render($path, $context);
     }
 
     /**
@@ -436,7 +429,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $this->pageRepository->findAll();
         }
         $months = $pageList->getMonths($pageType);
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'months' => $months,
             'pageRoute' => $pageRoute,
             'pageType' => $pageType,
@@ -462,7 +455,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $this->pageRepository->findAll();
         }
         $authors = $pageList->getAuthors($pageType);
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'authors' => $authors,
             'pageRoute' => $pageRoute,
             'pageType' => $pageType,
@@ -488,7 +481,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $this->pageRepository->findAll();
         }
         $categories = $pageList->getCategories($pageType);
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'categories' => $categories,
             'pageRoute' => $pageRoute,
             'pageType' => $pageType,
@@ -514,7 +507,7 @@ final class TwigPlusExtension extends AbstractExtension
             $pageList = $this->pageRepository->findAll();
         }
         $tags = $pageList->getTags($pageType);
-        return $this->twigRenderer->renderTemplate($template, [
+        return $this->environment->render($template, [
             'pageRoute' => $pageRoute,
             'pageType' => $pageType,
             'showCount' => $showCount,

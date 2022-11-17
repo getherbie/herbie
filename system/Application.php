@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use herbie\event\PluginsInitializedEvent;
+use herbie\event\ResponseEmittedEvent;
+use herbie\event\ResponseGeneratedEvent;
+use herbie\event\TranslatorInitializedEvent;
+use herbie\event\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,7 +30,6 @@ final class Application
     private array $consoleCommands;
     private ContainerInterface $container;
     private array $eventListeners;
-    private array $interceptingFilters;
     private array $routeMiddlewares;
     private ?string $scriptFile;
     private ?string $scriptUrl;
@@ -51,7 +55,6 @@ final class Application
         $this->baseUrl = null;
         $this->consoleCommands = [];
         $this->eventListeners = [];
-        $this->interceptingFilters = [];
         $this->routeMiddlewares = [];
         $this->scriptFile = null;
         $this->scriptUrl = null;
@@ -102,21 +105,27 @@ final class Application
      */
     public function run(): void
     {
+        $eventManager = $this->getEventManager();
+
         // init components
         $this->getPluginManager()->init();
         $this->getTwigRenderer()->init();
-        $this->getTranslator()->init();
+        $translator = $this->getTranslator();
+        $translator->init();
+        $eventManager->dispatch(new TranslatorInitializedEvent($translator));
 
         // dispatch middlewares
         $dispatcher = $this->getMiddlewareDispatcher();
         $request = $this->getServerRequest();
         $response = $dispatcher->dispatch($request);
 
-        $this->getEventManager()->trigger('onResponseGenerated', $response);
+        /** @var ResponseGeneratedEvent $responseGeneratedEvent */
+        $responseGeneratedEvent = $this->getEventManager()->dispatch(new ResponseGeneratedEvent($response));
+        $response = $responseGeneratedEvent->getResponse();
 
         $this->emitResponse($response);
 
-        $this->getEventManager()->trigger('onResponseEmitted');
+        $this->getEventManager()->dispatch(new ResponseEmittedEvent($this));
     }
 
     public function runCli(): void
@@ -342,17 +351,6 @@ final class Application
     public function getTwigTests(): array
     {
         return $this->twigTests;
-    }
-
-    public function addInterceptingFilter(string $filterName, callable $filter): Application
-    {
-        $this->interceptingFilters[] = [$filterName, $filter];
-        return $this;
-    }
-
-    public function getInterceptingFilters(): array
-    {
-        return $this->interceptingFilters;
     }
 
     public function addEventListener(string $eventName, callable $listener, int $priority = 1): Application

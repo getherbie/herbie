@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\plugins\dummy2;
 
-use herbie\EventInterface;
-use herbie\FilterInterface;
+use herbie\event\ContentRenderedEvent;
+use herbie\event\RenderLayoutEvent;
+use herbie\event\RenderSegmentEvent;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,19 +37,9 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['onContentRendered', [$this, 'onContentRendered']],
-        ];
-    }
-
-    /**
-     * @return array[]
-     */
-    public function interceptingFilters(): array
-    {
-        $this->logger->debug(__METHOD__);
-        return [
-            ['renderSegment', [$this, 'renderSegment']],
-            ['renderLayout', [$this, 'renderLayout']]
+            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
+            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
         ];
     }
 
@@ -101,27 +92,28 @@ final class Dummy2Plugin implements PluginInterface
         return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
-    public function renderSegment(string $context, array $params, FilterInterface $filter): string
+    public function onRenderSegment(RenderSegmentEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $context .= $this->wrapHtmlBlock('dummy2-plugin-render-segment', __METHOD__);
-        return $filter->next($context, $params, $filter);
+        $segment = $event->getSegment()
+            . $this->wrapHtmlBlock('dummy2-plugin-render-segment', __METHOD__);
+        $event->setSegment($segment);
     }
 
-    public function renderLayout(string $context, array $params, FilterInterface $filter): string
+    public function onRenderLayout(RenderLayoutEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $context = str_replace(
+        $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy2-plugin-render-layout', __METHOD__) . '</body>',
-            $context
+            $event->getLayout()
         );
-        return $filter->next($context, $params, $filter);
+        $event->setContent($content);
     }
 
-    public function onContentRendered(EventInterface $event): void
+    public function onContentRendered(ContentRenderedEvent $event): void
     {
-        $this->logger->debug(__METHOD__);
+        $this->logger->debug(get_class($event));
         // TODO add test
     }
 
@@ -165,11 +157,21 @@ final class Dummy2Plugin implements PluginInterface
 
     public function applicationMiddlewares(): array
     {
-        // TODO: Implement appMiddlewares() method.
+        return [];
     }
 
     public function routeMiddlewares(): array
     {
-        // TODO: Implement routeMiddlewares() method.
+        return [];
+    }
+
+    public function consoleCommands(): array
+    {
+        return [];
+    }
+
+    public function twigGlobals(): array
+    {
+        return [];
     }
 }

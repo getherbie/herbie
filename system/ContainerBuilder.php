@@ -146,11 +146,7 @@ final class ContainerBuilder
         });
 
         $c->set(EventManager::class, function () {
-            return new EventManager(new Event());
-        });
-
-        $c->set(FilterChainManager::class, function () {
-            return new FilterChainManager();
+            return new EventManager();
         });
 
         $c->set(FlatFileIterator::class, function (ContainerInterface $c) {
@@ -213,7 +209,6 @@ final class ContainerBuilder
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
                 $c->get(EventManager::class),
-                $c->get(FilterChainManager::class),
                 $c->get(HttpFactory::class),
                 $c->get(UrlManager::class),
                 $options
@@ -238,7 +233,6 @@ final class ContainerBuilder
             return new PluginManager(
                 $c->get(Config::class),
                 $c->get(EventManager::class),
-                $c->get(FilterChainManager::class),
                 $c->get(Translator::class),
                 $c->get(LoggerInterface::class),
                 $c // needed for DI in plugins
