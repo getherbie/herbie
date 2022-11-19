@@ -133,7 +133,7 @@ final class Application
         $this->getPluginManager()->init();
 
         $application = new \Symfony\Component\Console\Application();
-        $application->setName("-------------------\nHERBIE CMS CLI-Tool\n-------------------");
+        $application->setName("-------------------\nHERBIE CLI-Tool\n-------------------");
 
         /** @var class-string<PluginInterface> $command */
         foreach ($this->getPluginManager()->getConsoleCommands() as $command) {

@@ -1,5 +1,5 @@
-# GitHub Action for Herbie CMS
-name: CI/CD for Herbie CMS
+# GitHub Action for Herbie
+name: CI/CD for Herbie
 on: [push, pull_request]
 jobs:
   test:

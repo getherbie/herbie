@@ -1,6 +1,6 @@
 ---
 - name: assets
-  desc: The assets directory of Herbie CMS.
+  desc: The assets directory of Herbie.
     It contains CSS and JS files that are copied to the web assets directory at runtime.
 - name: config
   desc: The configuration directory with files in YAML format (the main file can also be a PHP file).

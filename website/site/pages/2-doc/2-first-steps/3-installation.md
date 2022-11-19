@@ -16,7 +16,7 @@ These are:
 
 ## Composer support
 
-The easiest way to install Herbie CMS is with Composer.
+The easiest way to install Herbie is with Composer.
 To do this, run the following command in the terminal:
 
     composer create-project getherbie/start-website mywebsite

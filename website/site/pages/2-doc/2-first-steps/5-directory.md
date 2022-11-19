@@ -5,7 +5,7 @@ layout: doc
 
 # Directory structure
 
-A Herbie CMS website is usually structured as follows:
+A Herbie website is usually structured as follows:
 
     project
     ├── site

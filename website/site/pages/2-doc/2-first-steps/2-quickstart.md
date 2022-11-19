@@ -5,7 +5,7 @@ layout: doc
 
 # Quickstart
 
-Here is the short version of how to install a simple Herbie CMS website using a website template.
+Here is the short version of how to install a simple Herbie website using a website template.
 
     composer create-project getherbie/start-website mywebsite
     cd mywebsite/web

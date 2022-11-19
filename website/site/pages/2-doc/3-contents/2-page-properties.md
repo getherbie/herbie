@@ -5,7 +5,7 @@ layout: doc
 
 # Page Properties
 
-Any file that contains a page properties block as known as front matter is considered a valid page by Herbie CMS.
+Any file that contains a page properties block as known as front matter is considered a valid page by Herbie.
 The page properties block must be at the beginning of the file.
 There must be valid YAML between two lines of three hyphens.
 This sounds a bit complicated, but it is quite simple.
@@ -34,7 +34,7 @@ These can be assigned a value in the page properties block of a page.
 
 ## Custom variables
 
-Any custom variable in the page properties block that is not predefined will be automatically recognized by Herbie CMS and made available in the layout files and page content.
+Any custom variable in the page properties block that is not predefined will be automatically recognized by Herbie and made available in the layout files and page content.
 For example, if you declare a variable `class`, you can retrieve it in the layout file and use it to set a CSS class.
 
 In the page properties you declare the value of the variable:

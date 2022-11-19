@@ -7,14 +7,14 @@ layout: doc
 
 ## The pages directory
 
-All pages of a Herbie CMS website are stored in the directory `site/pages` as plain text files.
+All pages of a Herbie website are stored in the directory `site/pages` as plain text files.
 These text files can be plain text, markdown, textile or HTML files.
 
-In order for Herbie CMS to recognize these files and convert them to HTML, they must contain a block of page properties in the header of the file.
+In order for Herbie to recognize these files and convert them to HTML, they must contain a block of page properties in the header of the file.
 
 ## Allowed files
 
-Herbie CMS currently supports the following file types:
+Herbie currently supports the following file types:
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -53,7 +53,7 @@ If you follow the above rules, you will get nicely readable and working links to
 
 ## Homepage
 
-As the only file in the `site/pages` directory, Herbie CMS expects an index file with one of the above extensions.
+As the only file in the `site/pages` directory, Herbie expects an index file with one of the above extensions.
 This file takes over the function of the homepage or start page and is displayed when *http://www.example.com* is called in the browser.
 If the index file is missing, a 404 error page is displayed.
 

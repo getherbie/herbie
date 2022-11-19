@@ -1,7 +1,7 @@
 {
     "name": "getherbie/herbie",
     "homepage": "https://herbie.tebe.ch/",
-    "description": "Herbie CMS. Flat-file content management system with simple setup, no database, and just text files.",
+    "description": "Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.",
     "keywords": [
         "herbie",
         "flat-file",
