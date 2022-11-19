@@ -135,10 +135,6 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(Environment::class, function () {
-            return new Environment();
-        });
-
         $c->set(ErrorHandlerMiddleware::class, function (ContainerInterface $c) {
             return new ErrorHandlerMiddleware(
                 $c->get(TwigRenderer::class)
