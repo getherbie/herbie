@@ -402,7 +402,6 @@ $twigTest = function (int $value): bool {
 $app->addTwigTest('odd', $twigTest);
 ~~~
 
-
 ## 3. Extending using a plugin
 
 With the approach of creating a plugin, you can achieve exactly the same as before.

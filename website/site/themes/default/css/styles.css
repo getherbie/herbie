@@ -195,10 +195,14 @@ table {
 }
 .footer hr {
     margin-top:5em;
-    margin-bottom:3em;
+    margin-bottom:2em;
     background-color:#ccc;
     border:none;
     height:1px;
+}
+
+.footer-copyright {
+    margin-top: 1em;
 }
 
 /* Content */

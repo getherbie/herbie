@@ -17,14 +17,12 @@ The following variables are available in the configuration file as PHP constants
 
 These constant strings are parsed at runtime.
 
-
 ## Override settings
 
 All default settings can be overridden in a separate configuration file.
 This file must be located at `site/config/main.php`.
 
 If Herbie CMS finds a file with valid values, the default settings will be overwritten with them.
-
 
 ## Example
 

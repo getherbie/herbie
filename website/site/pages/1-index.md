@@ -18,9 +18,9 @@ Herbie CMS is a simple, modern, fast and highly customizable flat-file Content M
 Herbie CMS is powered by proven libraries:
 
 * [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](https://twig.symfony.com) Template Engine for rendering layouts and extending Herbie CMS's core
+* [Twig](https://twig.symfony.com) template engine for rendering layouts and extending core functionality
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
-* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
+* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for dependency and plugin management
 
 Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
 
@@ -42,6 +42,7 @@ Herbie CMS implements the following PHP standard recommendations:
 * [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP Message Interface
 * [PSR-11](https://www.php-fig.org/psr/psr-11/) Container Interface
 * [PSR-12](https://www.php-fig.org/psr/psr-12/) Extended Coding Style
+* [PSR-14](https://www.php-fig.org/psr/psr-14/) Event Dispatcher
 * [PSR-15](https://www.php-fig.org/psr/psr-15/) HTTP Handlers
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories

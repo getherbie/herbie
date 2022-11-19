@@ -1,3 +1,3 @@
 ---
-- name: clear-cache
-  desc: Clears Herbie's internal and public caches
+- name: clear-files
+  desc: The clear-files command deletes asset, cache and log files from several directories.

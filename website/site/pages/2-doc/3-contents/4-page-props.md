@@ -16,7 +16,6 @@ In the simplest case, a text file looks something like this:
 
 Herbie CMS creates a page title and adds the text to the default content segment below the page properties.
 
-
 ## Named content segments
 
 Unfortunately, most websites are not that simple.
@@ -46,7 +45,6 @@ Let's look at a slightly more complicated example:
 
 With this simple rule you can fill content of a page into several containers and address them within the layout.
 In this way, more complex layouts can be handled even with simple text files.
-
 
 ## Render content segments in layout
 

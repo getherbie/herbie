@@ -17,7 +17,6 @@ A Herbie CMS website is usually structured as follows:
         ├── .htaccess
         └── index.php
 
-
 What these files and directories stand for can be seen in the following table:
 
 <table class="pure-table pure-table-horizontal">
@@ -36,7 +35,6 @@ What these files and directories stand for can be seen in the following table:
     {% endfor %}
     </tbody>
 </table>
-
 
 ## Site directory
 
@@ -79,7 +77,6 @@ This is usually structured as follows:
             ├── default.html
             └── error.html
 
-
 The following table shows what each of these files and directories stand for:
 
 <table class="pure-table pure-table-horizontal">
@@ -98,7 +95,6 @@ The following table shows what each of these files and directories stand for:
     {% endfor %}
     </tbody>
 </table>
-
 
 ## .htaccess file
 
