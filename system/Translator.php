@@ -79,7 +79,7 @@ final class Translator
                 $messagePath = sprintf('%s/%s.php', $path, $this->language);
                 if (file_exists($messagePath)) {
                     // NOTE this must be "require" here, not only "require_once"
-                    $this->messages[$this->language][$category] = require($messagePath);
+                    $this->messages[$this->language][$category] = require $messagePath;
                 }
             }
         }

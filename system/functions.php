@@ -122,7 +122,7 @@ function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_
  */
 function load_php_config(string $path, ?callable $processor = null): array
 {
-    $data = include($path);
+    $data = include $path;
     if ($processor) {
         $data = $processor($data);
     }

@@ -167,7 +167,7 @@ final class LocalExtensionsPlugin extends Plugin
      */
     private function includePhpFile(string $file)
     {
-        return include($file);
+        return include $file;
     }
 
     /**

@@ -30,7 +30,7 @@ if (php_sapi_name() === 'cli-server') {
     }
 }
 
-require_once(__DIR__ . '/../../../vendor/autoload.php');
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 $_ENV['HERBIE_DEBUG'] = '1';
 
