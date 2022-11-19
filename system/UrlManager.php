@@ -46,7 +46,7 @@ final class UrlManager
     {
         $path = $this->createUrl($route);
         $absUrl = $this->serverRequest->getUri()->withPath($path);
-        return strval($absUrl);
+        return (string)$absUrl;
     }
 
     /**

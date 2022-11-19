@@ -160,7 +160,6 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getRecent(int $limit, ?string $type = null): array
     {
-        $limit = intval($limit);
         $items = [];
         $i = 0;
         foreach ($this->items as $pageItem) {
