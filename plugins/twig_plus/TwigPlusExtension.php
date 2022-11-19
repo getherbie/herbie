@@ -268,7 +268,7 @@ final class TwigPlusExtension extends AbstractExtension
         [$route] = $this->urlManager->parseRequest();
         $pageList = $this->pageRepository->findAll();
 
-        if (strlen($limit) > 0) {
+        if ($limit !== '') {
             $pageList = $pageList->filter(function ($pageItem) use ($limit) {
                 return strpos($pageItem->route, $limit) === 0;
             });

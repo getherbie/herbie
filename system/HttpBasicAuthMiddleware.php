@@ -53,7 +53,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
         $username = trim($authorization['username'] ?? '');
         $password = trim($authorization['password'] ?? '');
 
-        if ((strlen($username) === 0) || (strlen($password) === 0)) {
+        if (($username === '') || ($password === '')) {
             return false;
         }
 

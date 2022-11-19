@@ -30,7 +30,7 @@ final class Config
     {
         $name = trim($name);
 
-        if (strlen($name) === 0) {
+        if ($name === '') {
             return $this->data;
         }
 

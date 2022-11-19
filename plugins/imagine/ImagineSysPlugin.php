@@ -185,11 +185,11 @@ final class ImagineSysPlugin extends Plugin
         $extension = $info['extension'] ?? '';
 
         $dirname = trim($dirname, '.');
-        if (strlen($dirname) > 0) {
+        if ($dirname !== '') {
             $dirname = '/' . $dirname;
         }
 
-        $dot = strlen($extension) > 0 ? '.' : '';
+        $dot = $extension !== '' ? '.' : '';
 
         return sprintf(
             '%s%s/%s-%s%s%s',
