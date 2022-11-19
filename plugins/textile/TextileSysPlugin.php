@@ -54,7 +54,7 @@ final class TextileSysPlugin extends Plugin
 
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if ($event->getFormatter() === 'textile') {
+        if ($event->getPage()->getFormat() === 'textile') {
             $event->setSegment($this->parseTextile($event->getSegment()));
         }
     }

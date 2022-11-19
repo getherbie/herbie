@@ -5,20 +5,32 @@ declare(strict_types=1);
 namespace herbie\event;
 
 use herbie\AbstractEvent;
+use herbie\Page;
+use herbie\UrlManager;
 
 final class RenderSegmentEvent extends AbstractEvent
 {
+    private Page $page;
     private string $segment;
     private string $segmentId;
-    private bool $enableTwig;
-    private string $formatter;
+    private UrlManager $urlManager;
 
-    public function __construct(string $segment, string $segmentId, bool $enableTwig, string $formatter)
-    {
+    public function __construct(
+        Page $page,
+        string $segment,
+        string $segmentId,
+        UrlManager $urlManager
+    ) {
+        $this->page = $page;
         $this->segment = $segment;
         $this->segmentId = $segmentId;
-        $this->enableTwig = $enableTwig;
-        $this->formatter = $formatter;
+        $this->urlManager = $urlManager;
+    }
+
+
+    public function getPage(): Page
+    {
+        return $this->page;
     }
 
     public function getSegment(): string
@@ -26,23 +38,18 @@ final class RenderSegmentEvent extends AbstractEvent
         return $this->segment;
     }
 
+    public function setSegment(string $segment): void
+    {
+        $this->segment = $segment;
+    }
+
     public function getSegmentId(): string
     {
         return $this->segmentId;
     }
 
-    public function enableTwig(): bool
+    public function getUrlManager(): UrlManager
     {
-        return $this->enableTwig;
-    }
-
-    public function getFormatter(): string
-    {
-        return $this->formatter;
-    }
-
-    public function setSegment(string $segment): void
-    {
-        $this->segment = $segment;
+        return $this->urlManager;
     }
 }

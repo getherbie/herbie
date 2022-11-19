@@ -85,7 +85,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
             foreach ($page->getSegments() as $segmentId => $segment) {
                 /** @var RenderSegmentEvent $event */
                 $event = $this->eventManager->dispatch(
-                    new RenderSegmentEvent($segment, $segmentId, $page->getTwig(), $page->getFormat())
+                    new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager)
                 );
                 $renderedSegment = $event->getSegment();
                 $segments[$segmentId] = $renderedSegment;
