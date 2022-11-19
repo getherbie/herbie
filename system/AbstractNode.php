@@ -89,7 +89,7 @@ abstract class AbstractNode implements IteratorAggregate
 
     public function root(): AbstractNode
     {
-        if (is_null($this->parent)) {
+        if ($this->parent === null) {
             return $this;
         } else {
             return $this->parent->root();

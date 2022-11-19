@@ -14,13 +14,13 @@ In the simplest case, a text file looks something like this:
 
     The content about the simple page.
 
-Herbie CMS creates a page title and adds the text to the default content segment below the page properties.
+Herbie creates a page title and adds the text to the default content segment below the page properties.
 
 ## Named content segments
 
 Unfortunately, most websites are not that simple.
 Usually they are based on multi-column layouts that you want to fill independently.
-This can be achieved with Herbie CMS by using named content segments.
+This can be achieved with Herbie by using named content segments.
 A named content segment is defined with three minus signs followed by a string and another three minus signs, for example:
 
     --- sidebar ---

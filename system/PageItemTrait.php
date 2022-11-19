@@ -139,7 +139,7 @@ trait PageItemTrait
 
     public function getMenuTitle(): string
     {
-        if (strlen($this->menu_title) > 0) {
+        if ($this->menu_title !== '') {
             return $this->menu_title;
         }
         return $this->title;
@@ -165,7 +165,7 @@ trait PageItemTrait
         }
         if (is_string($redirect)) {
             $redirect = trim($redirect);
-            if (strlen($redirect) === 0) {
+            if ($redirect === '') {
                 throw new \InvalidArgumentException('Redirect must be a non-empty string.');
             }
             $redirect = [$redirect, 302];
@@ -181,7 +181,7 @@ trait PageItemTrait
             throw new \InvalidArgumentException('Redirect array[0] must be a string.');
         }
         $redirect[0] = trim($redirect[0]);
-        if (strlen($redirect[0]) === 0) {
+        if ($redirect[0] === '') {
             throw new \InvalidArgumentException('Redirect array[0] must be a non-empty string.');
         }
         if (!is_natural($redirect[1])) {
@@ -597,7 +597,7 @@ trait PageItemTrait
 
     private function slugify(string $slug): string
     {
-        if (is_null(self::$slugGenerator)) {
+        if (self::$slugGenerator === null) {
             throw new \BadMethodCallException('SlugGenerator not set.');
         }
         return self::$slugGenerator->generate($slug);

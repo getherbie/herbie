@@ -5,7 +5,7 @@ layout: doc
 
 # Extending
 
-Depending on the use case extending Herbie CMS is really simple.
+Depending on the use case extending Herbie is really simple.
 
 Basically, it provides the following extension points to change the flow of the application lifecycle.
 

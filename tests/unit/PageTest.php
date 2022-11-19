@@ -222,6 +222,6 @@ final class PageTest extends \Codeception\Test\Unit
      */
     public function testToString(Page $page)
     {
-        $this->assertSame('Page Data', strval($page));
+        $this->assertSame('Page Data', (string)$page);
     }
 }

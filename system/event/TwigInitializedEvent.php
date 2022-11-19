@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie\event;
 
 use herbie\AbstractEvent;
-use herbie\TwigRenderer;
 use Twig\Environment;
 
 final class TwigInitializedEvent extends AbstractEvent

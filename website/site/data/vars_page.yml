@@ -12,7 +12,7 @@
   desc: One or more categories, that belongs to the page
   type: string[]
 - name: page.content_type
-  desc: The Content-Type of the page for the HTTP response, automatically set by Herbie CMS.
+  desc: The Content-Type of the page for the HTTP response, automatically set by Herbie.
   default: text/html
   type: string
 - name: page.created
@@ -28,7 +28,7 @@
   type: string
 - name: page.format
   desc: The formatter like markdown or textile. 
-    Is set by Herbie CMS automatically depending on the file extension.
+    Is set automatically depending on the file extension.
   type: string
 - name: page.hidden
   desc: If set the page is not visible in navigation elements like sitemap or breadcrumb.

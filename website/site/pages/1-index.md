@@ -7,22 +7,22 @@ title: Homepage
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/master/LICENCE.md)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 
-# Herbie CMS
+# Herbie
 
 > Create <u>small</u> but fully functional websites or blogs in no time and with little effort. 👌
 
-Herbie CMS is a simple, modern, fast and highly customizable flat-file Content Management System powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
+Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
 ## Featuring
 
-Herbie CMS is powered by proven libraries:
+Herbie is powered by proven libraries:
 
 * [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
 * [Twig](https://twig.symfony.com) template engine for rendering layouts and extending core functionality
 * [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
 * [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for dependency and plugin management
 
-Thanks to its plugin system Herbie CMS is highly customizable and brings support for:
+Thanks to its plugin system Herbie is highly customizable and brings support for:
 
 * Application Middlewares
 * Route Middlewares
@@ -33,7 +33,7 @@ Thanks to its plugin system Herbie CMS is highly customizable and brings support
 * Twig Tests
 * Console Commands
 
-Herbie CMS implements the following PHP standard recommendations:
+Herbie implements the following PHP standard recommendations:
 
 * [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
 * [PSR-2](https://www.php-fig.org/psr/psr-2/) Coding Style Guide
@@ -47,7 +47,7 @@ Herbie CMS implements the following PHP standard recommendations:
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 
-Herbie CMS is well tested:
+Herbie is well tested:
 
 - Unit Tests, Integration Tests and Acceptance Tests with [Codeception](https://codeception.com)
 - Static Code Analysis with [PHPStan](https://phpstan.org)

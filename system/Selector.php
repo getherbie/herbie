@@ -103,7 +103,7 @@ final class Selector
         $limit = 0;
         foreach ($selectors as $index => $selector) {
             if ($selector[0] === "limit") {
-                $limit = abs(intval($selector[1]));
+                $limit = abs((int)$selector[1]);
                 unset($selectors[$index]);
                 break;
             }

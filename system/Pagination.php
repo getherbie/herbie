@@ -38,12 +38,12 @@ final class Pagination implements IteratorAggregate, Countable
 
     public function getPage(): int
     {
-        $page = isset($_GET[$this->name]) ? intval($_GET[$this->name]) : 1;
+        $page = isset($_GET[$this->name]) ? (int)$_GET[$this->name] : 1;
         $calculated = ceil($this->count() / $this->limit);
         if ($page > $calculated) {
             $page = $calculated;
         }
-        return intval($page);
+        return (int)$page;
     }
 
     public function getLimit(): int
@@ -53,7 +53,7 @@ final class Pagination implements IteratorAggregate, Countable
 
     public function setLimit(int $limit): void
     {
-        $limit = (0 === $limit) ? 1000 : intval($limit);
+        $limit = (0 === $limit) ? 1000 : $limit;
         $this->limit = $limit;
     }
 

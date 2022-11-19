@@ -13,7 +13,7 @@ final class HerbieInfoCest
     {
         $I->amOnPage('/herbie-info');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Herbie CMS Info', 'h1');
+        $I->see('System Info', 'h1');
     }
 
     public function testNumberAndSortingOfPhpFunctions(AcceptanceTester $I)

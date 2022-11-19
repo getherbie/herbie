@@ -106,7 +106,6 @@ final class TwigRenderer
      */
     public function renderString(string $string, array $context = []): string
     {
-        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($string, $context);
     }
 
@@ -118,7 +117,6 @@ final class TwigRenderer
      */
     public function renderTemplate(string $name, array $context = []): string
     {
-        #$context = array_merge($this->getContext(), $context);
         return $this->twig->render($name, $context);
     }
 

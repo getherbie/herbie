@@ -235,6 +235,6 @@ final class DummySysPlugin implements PluginInterface
     public function twigDummyTest(string $content): bool
     {
         $this->logger->debug(__METHOD__);
-        return strlen($content) > 0;
+        return $content !== '';
     }
 }

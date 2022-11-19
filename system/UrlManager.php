@@ -46,7 +46,7 @@ final class UrlManager
     {
         $path = $this->createUrl($route);
         $absUrl = $this->serverRequest->getUri()->withPath($path);
-        return strval($absUrl);
+        return (string)$absUrl;
     }
 
     /**
@@ -98,7 +98,7 @@ final class UrlManager
 
     private function cleanPath(string $path): string
     {
-        if (strlen($this->scriptUrl) > 0) {
+        if ($this->scriptUrl !== '') {
             if (strpos($path, $this->scriptUrl) === 0) {
                 $path = substr($path, strlen($this->scriptUrl));
             }
@@ -125,7 +125,7 @@ final class UrlManager
             return '';
         }, $pattern);
 
-        if (is_null($string) || strlen($string) === 0) {
+        if ($string === null || $string === '') {
             return null;
         }
 

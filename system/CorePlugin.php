@@ -86,7 +86,7 @@ final class CorePlugin extends Plugin
      */
     public function onRenderLayout(RenderLayoutEvent $event): void
     {
-        if (strlen($this->layoutFileExtension) > 0) {
+        if ($this->layoutFileExtension !== '') {
             $templateName = sprintf('%s.%s', $event->getLayout(), $this->layoutFileExtension);
         } else {
             $templateName = $event->getLayout();

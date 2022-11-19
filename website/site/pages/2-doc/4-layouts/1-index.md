@@ -6,13 +6,13 @@ twig: false
 
 # Layouts
 
-Layout files are implemented in Herbie CMS using the Twig template engine.
+Layout files are implemented in Herbie using the Twig template engine.
 Twig templates are quite easy to understand and very well documented.
 
 The Twig documentation can be found at <https://twig.symfony.com>.
 
 Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
-Herbie CMS expects at least two layout files:
+Herbie expects at least two layout files:
 
     site/themes/default/
     ├── default.html        # default page

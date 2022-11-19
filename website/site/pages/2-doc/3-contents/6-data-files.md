@@ -5,7 +5,7 @@ layout: doc
 
 # Data Files
 
-In addition to the built-in variables of Herbie CMS, custom data can be defined and accessed through the Twig template engine.
+In addition to the built-in variables of Herbie, custom data can be defined and accessed through the Twig template engine.
 This data is stored as JSON or YAML files in the `site/data` directory.
 
 This useful feature prevents unnecessary repetitions and makes data structures globally available.

@@ -29,7 +29,7 @@
 -
   id: dummy
   name: Dummy
-  desc: This system plugin shows all possibilities how to extend Herbie CMS.
+  desc: This system plugin shows all possibilities how to extend Herbie.
     The plugin is helpful during development, but should be disabled in productive environment.
   author: Herbie-Team
   version: 2.0.0
@@ -109,7 +109,7 @@
 -
   id: imagine
   name: Imagine
-  desc: This system plugin integrates Imagine, an OOP image editing library, into your Herbie CMS website.
+  desc: This system plugin integrates Imagine, an OOP image editing library, into your Herbie website.
     Thanks to Imagine, you can edit images directly and apply ready-made filters and effects to them. 
   author: Herbie-Team
   version: 2.0.0
@@ -204,7 +204,7 @@
 -
   id: simplecontact
   name: Simplecontact
-  desc: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie CMS.
+  desc: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie.
   author: Herbie-Team
   version: 2.0.0
   composer: getherbie/plugin-simplecontact
@@ -214,7 +214,7 @@
 -
   id: simplesearch
   name: Simplesearch
-  desc: Simplesearch adds a simple but effective search functionality to a website created with Herbie CMS.
+  desc: Simplesearch adds a simple but effective search functionality to a website created with Herbie.
   author: Herbie-Team
   version: 2.0.0
   composer: getherbie/plugin-simplesearch
@@ -267,7 +267,7 @@
 -
   id: twig_core
   name: Twig Core
-  desc: This system plugin provides basic Twig filters, functions and tests that are useful for creating a web project with Herbie CMS.
+  desc: This system plugin provides basic Twig filters, functions and tests that are useful for creating a web project with Herbie.
   author: Herbie-Team
   version: 2.0.0
   composer:
@@ -278,7 +278,7 @@
 -
   id: twig_plus
   name: Twig Plus
-  desc: This system plugin provides extended Twig functions that are useful for creating a web project with Herbie CMS.
+  desc: This system plugin provides extended Twig functions that are useful for creating a web project with Herbie.
   author: Herbie-Team
   version: 2.0.0
   composer:

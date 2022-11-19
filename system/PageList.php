@@ -142,7 +142,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getAuthors(?string $type = null): array
     {
-        $type = is_null($type) ? '__all__' : $type;
+        $type = $type === null ? '__all__' : $type;
         $authorsPerType = $this->createTaxonomyFor('authors');
         $authors = $authorsPerType[$type] ?? [];
         ksort($authors);
@@ -151,7 +151,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getCategories(?string $type = null): array
     {
-        $type = is_null($type) ? '__all__' : $type;
+        $type = $type === null ? '__all__' : $type;
         $categoriesPerType = $this->createTaxonomyFor('categories');
         $categories = $categoriesPerType[$type] ?? [];
         ksort($categories);
@@ -160,7 +160,6 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getRecent(int $limit, ?string $type = null): array
     {
-        $limit = intval($limit);
         $items = [];
         $i = 0;
         foreach ($this->items as $pageItem) {
@@ -178,7 +177,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getTags(?string $type = null): array
     {
-        $type = is_null($type) ? '__all__' : $type;
+        $type = $type === null ? '__all__' : $type;
         $tagsPerType = $this->createTaxonomyFor('tags');
         $tags = $tagsPerType[$type] ?? [];
         ksort($tags);
@@ -202,7 +201,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getMonths(?string $type = null): array
     {
-        $type = is_null($type) ? '__all__' : $type;
+        $type = $type === null ? '__all__' : $type;
 
         // get items
         $items = ['__all__' => []];
@@ -325,7 +324,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getPageTree(): PageTree
     {
-        if (is_null($this->pageTree)) {
+        if ($this->pageTree === null) {
             $this->pageTree = (new PageFactory())->newPageTree($this);
         }
         return $this->pageTree;

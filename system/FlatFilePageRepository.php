@@ -31,7 +31,7 @@ final class FlatFilePageRepository implements PageRepositoryInterface
 
     public function findAll(): PageList
     {
-        if (is_null($this->pageList)) {
+        if ($this->pageList === null) {
             $this->pageList = $this->pageFactory->newPageList();
             foreach ($this->pagePersistence->findAll() as $data) {
                 $pageItem = $this->pageFactory->newPageItem($data['data']);

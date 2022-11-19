@@ -21,5 +21,5 @@
 - name: web/.htaccess
   desc: If `components.urlManager.niceUrls` option is enabled in the configuration, this file must exist with corresponding instructions.
 - name: web/index.php
-  desc: The bootstrap file and part of Herbie CMS.
+  desc: The bootstrap file and part of Herbie.
     All requests to the web server go through this file.

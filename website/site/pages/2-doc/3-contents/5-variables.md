@@ -5,8 +5,8 @@ layout: doc
 
 # Variables
 
-Herbie CMS traverses certain directories of the website and processes text files with a page properties block.
-For each of these files, Herbie CMS generates different data and makes it available through the Twig template engine.
+Herbie traverses certain directories of the website and processes text files with a page properties block.
+For each of these files, Herbie generates different data and makes it available through the Twig template engine.
 
 All variables can then be accessed in the layout and content files as normal Twig variables.
 Here are some examples:

@@ -110,7 +110,7 @@ function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_
 {
     $list = trim($list);
     $delim = trim($delim);
-    if ((strlen($list) === 0) || (strlen($delim) === 0)) {
+    if ($list === '' || $delim === '') {
         return [];
     }
     $values = explode($delim, $list, $limit);
@@ -122,7 +122,7 @@ function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_
  */
 function load_php_config(string $path, ?callable $processor = null): array
 {
-    $data = include($path);
+    $data = include $path;
     if ($processor) {
         $data = $processor($data);
     }
@@ -266,7 +266,7 @@ function defined_classes(string $prefix = ''): array
 {
     $classes = [];
     foreach (get_declared_classes() as $class) {
-        if ((strlen($prefix) > 0) && (stripos($class, $prefix) !== 0)) {
+        if (($prefix !== '') && (stripos($class, $prefix) !== 0)) {
             continue;
         }
         $classes[] = $class;
@@ -282,7 +282,7 @@ function defined_constants(string $prefix = ''): array
 {
     $constants = [];
     foreach (get_defined_constants() as $key => $value) {
-        if ((strlen($prefix) > 0) && (stripos($key, $prefix) !== 0)) {
+        if (($prefix !== '') && (stripos($key, $prefix) !== 0)) {
             continue;
         }
         if (is_array($value)) {
@@ -301,7 +301,7 @@ function defined_functions(string $prefix = ''): array
 {
     $functions = [];
     foreach (get_defined_functions()['user'] as $function) {
-        if ((strlen($prefix) > 0) && (stripos($function, $prefix) !== 0)) {
+        if (($prefix !== '') && (stripos($function, $prefix) !== 0)) {
             continue;
         }
         $functions[] = $function;

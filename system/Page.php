@@ -31,7 +31,7 @@ final class Page
         if (array_key_exists($id, $this->segments)) {
             $segment = $this->segments[$id];
         }
-        return strval($segment);
+        return (string)$segment;
     }
 
     /**

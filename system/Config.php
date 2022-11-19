@@ -30,7 +30,7 @@ final class Config
     {
         $name = trim($name);
 
-        if (strlen($name) === 0) {
+        if ($name === '') {
             return $this->data;
         }
 
@@ -57,7 +57,7 @@ final class Config
         if (!is_array($arrayValue)) {
             throw new \UnexpectedValueException("Value for \"$path\" is not an array");
         }
-        return (array)($arrayValue);
+        return $arrayValue;
     }
 
     public function getAsBool(string $path, bool $default = false): bool
@@ -66,7 +66,7 @@ final class Config
         if (!is_bool($boolValue)) {
             throw new \UnexpectedValueException("Value for \"$path\" is not a bool");
         }
-        return boolval($boolValue);
+        return $boolValue;
     }
 
     public function getAsFloat(string $path, float $default = 0.0): float
@@ -75,7 +75,7 @@ final class Config
         if (!is_float($floatValue)) {
             throw new \UnexpectedValueException("Value for \"$path\" is not a float");
         }
-        return floatval($floatValue);
+        return $floatValue;
     }
 
     public function getAsInt(string $path, int $default = 0): int
@@ -84,7 +84,7 @@ final class Config
         if (!is_int($intValue)) {
             throw new \UnexpectedValueException("Value for \"$path\" is not an int");
         }
-        return intval($intValue);
+        return $intValue;
     }
 
     public function getAsString(string $path, string $default = ''): string
@@ -93,13 +93,13 @@ final class Config
         if (!is_string($strValue)) {
             throw new \UnexpectedValueException("Value for \"$path\" is not a string");
         }
-        return strval($strValue);
+        return $strValue;
     }
 
     public function getAsConfig(string $path): Config
     {
         $data = $this->get($path);
-        if (is_null($data)) {
+        if ($data === null) {
             throw new \UnexpectedValueException("Config for \"$path\" not found");
         }
         if (!is_array($data)) {
