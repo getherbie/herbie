@@ -9,6 +9,8 @@ Depending on the use case extending Herbie CMS is really simple.
 
 Basically, it provides the following extension points to change the flow of the application lifecycle.
 
+## Extension points
+
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
@@ -109,7 +111,7 @@ And changing the flow of the application lifecycle can be done in four different
     </tbody>
 </table>
 
-## 1. Extending using the filesystem for the project
+## Extending using the filesystem
 
 Using the file system means that we work in the `site` directory of the project.
 More precisely, only simple PHP files need to be created and placed in the appropriate directories.
@@ -282,7 +284,7 @@ $twigTest = function (int $value): bool {
 return ['odd', $twigTest];
 ~~~
 
-## 2. Extending using a programmatic approach
+## Extending using a programmatic approach
 
 With the programmatic approach, you can achieve exactly the same.
 The difference is that you have to customize the `index.php` bootstrap file and add the extensions programmatically.
@@ -402,7 +404,7 @@ $twigTest = function (int $value): bool {
 $app->addTwigTest('odd', $twigTest);
 ~~~
 
-## 3. Extending using a plugin
+## Extending using a plugin
 
 With the approach of creating a plugin, you can achieve exactly the same as before.
 I know, I repeat myself.
@@ -623,7 +625,7 @@ That's all you have to do.
 
 A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/2.x/plugins/dummy), by the way.
 
-## 4. Extending using a distributed plugin
+## Extending using a distributed plugin
 
 To distribute your plugin now, you need to make it a Composer package.
 To do this, you need to create a JSON file `composer.json` in the plugin folder.

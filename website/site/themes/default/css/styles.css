@@ -205,6 +205,26 @@ table {
     margin-top: 1em;
 }
 
+.toc {
+    border-top: 1px solid #E3E0D8;
+    border-bottom: 1px solid #E3E0D8;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 0.8em;
+    margin-bottom: 2em;
+}
+.toc-title {
+    color: #5F5C52;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1.5;
+}
+.toc-links {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
 /* Content */
 .content {
     padding-right:55px;
