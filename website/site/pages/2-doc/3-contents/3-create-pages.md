@@ -12,7 +12,6 @@ These text files can be plain text, markdown, textile or HTML files.
 
 In order for Herbie CMS to recognize these files and convert them to HTML, they must contain a block of page properties in the header of the file.
 
-
 ## Allowed files
 
 Herbie CMS currently supports the following file types:
@@ -40,7 +39,6 @@ When parsing the content, the formatter corresponding to the file extension is u
 Thus, the content of a file with the extension .md is converted by the Markdown parser.
 And a file with the extension .textile by a Textile parser.
 
-
 ## Creating a page
 
 To create a new page, add a new file with one of the allowed extensions in the `site/pages` directory.
@@ -53,13 +51,11 @@ You must respect the following rules:
 How you name the file will affect the web address and how the page is viewed in the browser.
 If you follow the above rules, you will get nicely readable and working links to the subpages of the website.
 
-
 ## Homepage
 
 As the only file in the `site/pages` directory, Herbie CMS expects an index file with one of the above extensions.
 This file takes over the function of the homepage or start page and is displayed when *http://www.example.com* is called in the browser.
 If the index file is missing, a 404 error page is displayed.
-
 
 ## Named text files
 
@@ -70,7 +66,6 @@ For a site with a home page, an about page, and a contact page, the page directo
     ├── about.md        # https://example.com/about
     ├── contact.md      # https://example.com/contact
     └── index.md        # https://example.com
-
 
 ## Named folders with index files
 
@@ -88,11 +83,9 @@ For example, if a team page, a vision page, and a route page are added to the ab
     │   └── route.md    # https://example.com/contact/route
     └── index.md        # https://example.com
 
-
 Which way is better depends largely on the type of website.
 For small websites, named text files without further sub folders are enough.
 For large websites, there is no way around additional sub folders and text files.
-
 
 ## Visibility and sorting
 

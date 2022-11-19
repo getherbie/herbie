@@ -49,13 +49,13 @@ The output looks like this:
     -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
     
     Available commands:
-    clear-cache  Clears herbies internal cache
+    clear-files  Clears asset, cache and log files
     completion   Dump the shell completion script
     help         Display help for a command
     list         List commands
 
 The call to clear the caches then looks like this, for example.
 
-    php vendor/bin/herbie clear-cache
+    php vendor/bin/herbie clear-files
 
 Additional information on how to execute commands can be found at <https://symfony.com/doc/current/components/console/usage.html>.

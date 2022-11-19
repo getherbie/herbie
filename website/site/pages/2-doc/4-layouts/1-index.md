@@ -18,7 +18,6 @@ Herbie CMS expects at least two layout files:
     ├── default.html        # default page
     └── error.html          # error template  
 
-
 Often it makes sense to divide the layouts into a main template and one or more sub templates.
 These sub templates inherit the blocks of the main template and can fill them with content.
 
@@ -50,7 +49,6 @@ A simple main template might look like this:
 
 In the main template, three blocks (title, content, sidebar) have been defined.
 But these blocks do not contain any content yet.
-
 
 ## Sub template
 
@@ -84,7 +82,6 @@ So, the customized (dynamized) sub template now looks like this:
         {{ content('default') }}
     {% endblock %}
 
-
 Both the `title` block for the page title and the `content` block for the page content are filled dynamically.
 
 If you want to place a sidebar next to the normal content column, you can do this as follows.
@@ -103,7 +100,6 @@ If you want to place a sidebar next to the normal content column, you can do thi
         {{ content('sidebar') }}
     {% endblock %}
 
-
 The page properties block is now used to apply one of the prepared layouts to each page.
 
     ---
@@ -116,7 +112,6 @@ The page properties block is now used to apply one of the prepared layouts to ea
     --- sidebar ---
 
     And here is content for the sidebar segment.
-
 
 Further information on how page contents must be formatted can be found in the [Contents](doc/contents) chapter.
 

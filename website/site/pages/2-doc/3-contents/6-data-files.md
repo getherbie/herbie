@@ -11,12 +11,10 @@ This data is stored as JSON or YAML files in the `site/data` directory.
 This useful feature prevents unnecessary repetitions and makes data structures globally available.
 At the same time, one has access to data without changing the central configuration file.
 
-
 ## The data folder
 
 In the data folder you create one or more JSON or YAML files that can contain any structured data.
 You can access this data in the template via `site.data.<FILENAME>`.
-
 
 ### Example: A list of people
 

@@ -25,11 +25,9 @@ The details of these variables are listed below.
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
-
 ## Site variables
 
 {{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
-
 
 ## Page variables
 
