@@ -75,13 +75,6 @@ Start the internal webserver:
 Now open <http://localhost:8888> with your browser.
 You should see your first Herbie website. 
 
-### Docker
-
-You can achieve the same by using Docker.
-
-    docker run --rm -it -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website myproject 
-    cd myproject
-
 ## Development Environment
 
 If you need a development environment, you can follow these steps.
