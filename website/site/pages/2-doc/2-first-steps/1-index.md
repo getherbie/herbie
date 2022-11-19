@@ -1,12 +1,5 @@
 ---
 title: First Steps
 layout: doc
+redirect: doc/first-steps/quickstart
 ---
-
-# First Steps
-
-<ul>
-    {% for item in site.pageList|filter("route^=doc/first-steps/") %}
-    <li><a href="{{ url(item.route) }}">{{ item.title }}</a></li>
-    {% endfor %}
-</ul>

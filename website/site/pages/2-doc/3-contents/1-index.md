@@ -1,12 +1,5 @@
 ---
 title: Contents
 layout: doc
+redirect: doc/contents/page-properties
 ---
-
-# Contents
-
-<ul>
-    {% for item in site.pageList|filter("route^=doc/contents/") %}
-    <li><a href="{{ url(item.route) }}">{{ item.title }}</a></li>
-    {% endfor %}
-</ul>

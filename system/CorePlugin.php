@@ -71,7 +71,7 @@ final class CorePlugin extends Plugin
      */
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if (!$this->enableTwigInSegmentFilter || !$event->enableTwig()) {
+        if (!$this->enableTwigInSegmentFilter || !$event->getPage()->getTwig()) {
             return;
         }
         $segment = $event->getSegment();

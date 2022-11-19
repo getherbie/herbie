@@ -65,7 +65,7 @@ final class MarkdownSysPlugin extends Plugin
 
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if ($event->getFormatter() === 'markdown') {
+        if ($event->getPage()->getFormat() === 'markdown') {
             $event->setSegment($this->parseMarkdown($event->getSegment()));
         }
     }

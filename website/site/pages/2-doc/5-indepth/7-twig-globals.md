@@ -7,12 +7,14 @@ layout: doc
 
 The following variables are available in layout and content files.
 
+## Global Variables
+
 {{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
-# Site Variables
+## Site Variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_site"}) }}
 
-# Page Variables
+## Page Variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}

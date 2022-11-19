@@ -51,7 +51,7 @@ final class RestSysPlugin extends Plugin
 
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
-        if ($event->getFormatter() === 'rest') {
+        if ($event->getPage()->getFormat() === 'rest') {
             $event->setSegment($this->parseRest($event->getSegment()));
         }
     }
