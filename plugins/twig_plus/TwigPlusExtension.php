@@ -176,7 +176,7 @@ final class TwigPlusExtension extends AbstractExtension
         int $limit = 10,
         string $template = '@snippet/listing.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
 
@@ -349,7 +349,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $title = 'Recent posts',
         string $template = '@template/pages/recent.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
         $recentPages = $pageList->getRecent($limit, $pageType);
@@ -425,7 +425,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $title = 'Archive',
         string $template = '@template/taxonomy/archive.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
         $months = $pageList->getMonths($pageType);
@@ -451,7 +451,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $title = 'Authors',
         string $template = '@template/taxonomy/authors.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
         $authors = $pageList->getAuthors($pageType);
@@ -477,7 +477,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $title = 'Categories',
         string $template = '@template/taxonomy/categories.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
         $categories = $pageList->getCategories($pageType);
@@ -503,7 +503,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $title = 'Tags',
         string $template = '@template/taxonomy/tags.twig'
     ): string {
-        if (is_null($pageList)) {
+        if ($pageList === null) {
             $pageList = $this->pageRepository->findAll();
         }
         $tags = $pageList->getTags($pageType);

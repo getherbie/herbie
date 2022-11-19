@@ -55,7 +55,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         /** @var Page|null $page */
         $page = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE);
 
-        if (is_null($page)) {
+        if ($page === null) {
             throw HttpException::notFound($route);
         }
 

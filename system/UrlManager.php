@@ -125,7 +125,7 @@ final class UrlManager
             return '';
         }, $pattern);
 
-        if (is_null($string) || strlen($string) === 0) {
+        if (($string === null) || strlen($string) === 0) {
             return null;
         }
 

@@ -597,7 +597,7 @@ trait PageItemTrait
 
     private function slugify(string $slug): string
     {
-        if (is_null(self::$slugGenerator)) {
+        if (self::$slugGenerator === null) {
             throw new \BadMethodCallException('SlugGenerator not set.');
         }
         return self::$slugGenerator->generate($slug);

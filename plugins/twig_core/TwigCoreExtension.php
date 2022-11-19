@@ -305,7 +305,7 @@ final class TwigCoreExtension extends AbstractExtension
     public function functionPageLink(string $route, string $label, array $attribs = []): string
     {
         $scheme = parse_url($route, PHP_URL_SCHEME);
-        if (is_null($scheme)) {
+        if ($scheme === null) {
             $class = 'link--internal';
             $href = $this->urlManager->createUrl($route);
         } else {

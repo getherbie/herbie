@@ -99,7 +99,7 @@ final class Config
     public function getAsConfig(string $path): Config
     {
         $data = $this->get($path);
-        if (is_null($data)) {
+        if ($data === null) {
             throw new \UnexpectedValueException("Config for \"$path\" not found");
         }
         if (!is_array($data)) {
