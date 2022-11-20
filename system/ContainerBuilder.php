@@ -194,9 +194,12 @@ final class ContainerBuilder
         });
 
         $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
+            $options = $c->get(Config::class)->getAsArray('components.flatFilePagePersistence');
             return new FlatFilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(FlatFileIterator::class)
+                $c->get(CacheInterface::class),
+                $c->get(FlatFileIterator::class),
+                $options
             );
         });
 

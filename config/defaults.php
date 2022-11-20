@@ -76,6 +76,13 @@ $settings['components']['fileLogger']['channel'] = 'herbie';
 $settings['components']['fileLogger']['level'] = 'debug';
 
 /**
+ * Flat-File Page Persistence
+ */
+$settings['components']['flatFilePagePersistence'] = [];
+$settings['components']['flatFilePagePersistence']['cache'] = false;
+$settings['components']['flatFilePagePersistence']['cacheTTL'] = 60 * 60 * 24;
+
+/**
  * Page Renderer Middleware Component
  */
 $settings['components']['pageRendererMiddleware'] = [];
