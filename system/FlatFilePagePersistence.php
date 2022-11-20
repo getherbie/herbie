@@ -17,8 +17,12 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     private bool $cacheEnable;
     private int $cacheTTL;
 
-    public function __construct(Alias $alias, CacheInterface $cache, FlatFileIterator $flatFileIterator, array $options = [])
-    {
+    public function __construct(
+        Alias $alias,
+        CacheInterface $cache,
+        FlatFileIterator $flatFileIterator,
+        array $options = []
+    ) {
         $this->alias = $alias;
         $this->cache = $cache;
         $this->flatFileIterator = $flatFileIterator;
