@@ -38,7 +38,6 @@ final class HerbieInfoCest
             'herbie\path_normalize',
             'herbie\recursive_array_replace',
             'herbie\render_exception',
-            'herbie\str_camelize',
             'herbie\str_explode_filtered',
             'herbie\str_leading_slash',
             'herbie\str_trailing_slash',

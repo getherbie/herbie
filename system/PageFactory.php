@@ -34,7 +34,7 @@ final class PageFactory
 
         // first go through all index pages
         foreach ($pageList as $pageItem) {
-            if (!$this->isIndexPage($pageItem->path)) {
+            if (!$this->isIndexPage($pageItem->getPath())) {
                 continue;
             }
             $parentRoute = $pageItem->getParentRoute();
@@ -46,7 +46,7 @@ final class PageFactory
 
         // then go through all non-index pages
         foreach ($pageList as $pageItem) {
-            if ($this->isIndexPage($pageItem->path)) {
+            if ($this->isIndexPage($pageItem->getPath())) {
                 continue;
             }
             $parentRoute = $pageItem->getParentRoute();

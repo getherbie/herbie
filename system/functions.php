@@ -10,11 +10,6 @@ use Psr\Container\ContainerInterface;
 use ReflectionFunction;
 use ReflectionNamedType;
 
-function str_camelize(string $input, string $separator = '_'): string
-{
-    return str_replace($separator, '', ucwords($input, $separator));
-}
-
 /**
  * @throws SystemException
  */

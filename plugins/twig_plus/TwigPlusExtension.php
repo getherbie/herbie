@@ -144,7 +144,7 @@ final class TwigPlusExtension extends AbstractExtension
         [$route] = $this->urlManager->parseRequest();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         foreach ($pageTrail as $item) {
-            $links[] = $this->createLink($item->route, $item->getMenuTitle());
+            $links[] = $this->createLink($item->getRoute(), $item->getMenuTitle());
         }
 
         if (!empty($reverse)) {
@@ -225,7 +225,7 @@ final class TwigPlusExtension extends AbstractExtension
         $htmlTree->setClass($class);
         $htmlTree->setItemCallback(function (PageTree $node) {
             $menuItem = $node->getMenuItem();
-            $href = $this->urlManager->createUrl($menuItem->route);
+            $href = $this->urlManager->createUrl($menuItem->getRoute());
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
         return $htmlTree->render();
@@ -270,7 +270,7 @@ final class TwigPlusExtension extends AbstractExtension
 
         if ($limit !== '') {
             $pageList = $pageList->filter(function ($pageItem) use ($limit) {
-                return strpos($pageItem->route, $limit) === 0;
+                return strpos($pageItem->getRoute(), $limit) === 0;
             });
         }
 
@@ -304,7 +304,7 @@ final class TwigPlusExtension extends AbstractExtension
                 $label = sprintf('<span class="%s-icon-prev">%s</span>%s', $cssClass, $prevPageIcon, $label);
             }
             $attribs = ['class' => $cssClass . '-link-prev'];
-            $replacements['{prev}'] = $this->createLink($prevPageItem->route, $label, $attribs);
+            $replacements['{prev}'] = $this->createLink($prevPageItem->getRoute(), $label, $attribs);
         }
 
         if (isset($nextPageItem)) {
@@ -314,7 +314,7 @@ final class TwigPlusExtension extends AbstractExtension
                 $label = sprintf('%s<span class="%s-icon-next">%s</span>', $label, $cssClass, $nextPageIcon);
             }
             $attribs = ['class' => $cssClass . '-link-next'];
-            $replacements['{next}'] = $this->createLink($nextPageItem->route, $label, $attribs);
+            $replacements['{next}'] = $this->createLink($nextPageItem->getRoute(), $label, $attribs);
         }
 
         return strtr($template, $replacements);
@@ -382,7 +382,7 @@ final class TwigPlusExtension extends AbstractExtension
             if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
-            $titles[] = $item->title;
+            $titles[] = $item->getTitle();
         }
 
         if (!empty($reverse)) {
