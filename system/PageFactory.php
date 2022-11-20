@@ -28,12 +28,12 @@ final class PageFactory
         return $filenameWithoutPrefix === 'index';
     }
 
-    public function newMenuTree(MenuList $pageList): MenuTree
+    public function newMenuTree(MenuList $menuList): MenuTree
     {
         $tree = new MenuTree();
 
         // first go through all index pages
-        foreach ($pageList as $pageItem) {
+        foreach ($menuList as $pageItem) {
             if (!$this->isIndexPage($pageItem->path)) {
                 continue;
             }
@@ -45,7 +45,7 @@ final class PageFactory
         }
 
         // then go through all non-index pages
-        foreach ($pageList as $pageItem) {
+        foreach ($menuList as $pageItem) {
             if ($this->isIndexPage($pageItem->path)) {
                 continue;
             }

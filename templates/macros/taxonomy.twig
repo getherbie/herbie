@@ -1,4 +1,4 @@
-{% macro archives(pageList, pageRoute, pageType, showCount, title) %}
+{% macro archives(menuList, pageRoute, pageType, showCount, title) %}
 
     {# initialize variables #}
     {% set pageRoute = pageRoute|default('') %}
@@ -7,7 +7,7 @@
     {% set title = title|default('Archives') %}
 
     {# get months by page type #}
-    {% set months = pageList.getMonths(pageType) %}
+    {% set months = menuList.getMonths(pageType) %}
 
     {# render markup #}
     {% if months|length > 0 %}
@@ -28,7 +28,7 @@
 {% endmacro %}
 
 
-{% macro authors(pageList, pageRoute, pageType, showCount, title) %}
+{% macro authors(menuList, pageRoute, pageType, showCount, title) %}
 
     {# initialize variables #}
     {% set pageRoute = pageRoute|default('') %}
@@ -37,7 +37,7 @@
     {% set title = title|default('Authors') %}
 
     {# get authors by page type #}
-    {% set authors = pageList.getAuthors(pageType) %}
+    {% set authors = menuList.getAuthors(pageType) %}
 
     {# render markup #}
     {% if authors|length > 0 %}
@@ -57,7 +57,7 @@
 {% endmacro %}
 
 
-{% macro categories(pageList, pageRoute, pageType, showCount, title) %}
+{% macro categories(menuList, pageRoute, pageType, showCount, title) %}
 
     {# initialize variables #}
     {% set pageRoute = pageRoute|default('') %}
@@ -66,7 +66,7 @@
     {% set title = title|default('Categories') %}
 
     {# get categories by page type #}
-    {% set categories = pageList.categories(pageType) %}
+    {% set categories = menuList.categories(pageType) %}
 
     {# render markup #}
     {% if categories|length > 0 %}
@@ -86,7 +86,7 @@
 {% endmacro %}
 
 
-{% macro tags(pageList, pageRoute, pageType, showCount, title) %}
+{% macro tags(menuList, pageRoute, pageType, showCount, title) %}
 
     {# initialize variables #}
     {% set pageRoute = pageRoute|default('') %}
@@ -95,7 +95,7 @@
     {% set title = title|default('Tags') %}
 
     {# get tags by page type #}
-    {% set tags = pageList.getTags(pageType) %}
+    {% set tags = menuList.getTags(pageType) %}
 
     {# render markup #}
     {% if tags|length > 0 %}

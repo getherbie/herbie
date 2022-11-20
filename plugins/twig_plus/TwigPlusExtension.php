@@ -141,9 +141,9 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
-        foreach ($pageTrail as $item) {
-            $links[] = $this->createLink($item->route, $item->getMenuTitle());
+        $menuTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
+        foreach ($menuTrail as $item) {
+            $links[] = $this->createLink($item->getRoute(), $item->getMenuTitle());
         }
 
         if (!empty($reverse)) {
@@ -168,37 +168,37 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionListing(
-        ?MenuList $pageList = null,
-        string $filter = '',
-        string $sort = '',
-        bool $shuffle = false,
-        int $limit = 10,
-        string $template = '@snippet/listing.twig'
+        ?MenuList $menuList = null,
+        string    $filter = '',
+        string    $sort = '',
+        bool      $shuffle = false,
+        int       $limit = 10,
+        string    $template = '@snippet/listing.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
 
         if (!empty($filter)) {
             [$field, $value] = explode('|', $filter);
-            $pageList = $pageList->filter($field, $value);
+            $menuList = $menuList->filter($field, $value);
         }
 
         if (!empty($sort)) {
             [$field, $direction] = explode('|', $sort);
-            $pageList = $pageList->sort($field, $direction);
+            $menuList = $menuList->sort($field, $direction);
         }
 
         if ($shuffle) {
-            $pageList = $pageList->shuffle();
+            $menuList = $menuList->shuffle();
         }
 
         // filter pages with empty title
-        $pageList = $pageList->filter(function (MenuItem $page) {
+        $menuList = $menuList->filter(function (MenuItem $page) {
             return !empty($page->getTitle());
         });
 
-        $pagination = new Pagination($pageList);
+        $pagination = new Pagination($menuList);
         $pagination->setLimit($limit);
 
         return $this->environment->render($template, ['pagination' => $pagination]);
@@ -265,10 +265,10 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '<div class="{class}">{prev}{next}</div>'
     ): string {
         [$route] = $this->urlManager->parseRequest();
-        $pageList = $this->pageRepository->getMenuList();
+        $menuList = $this->pageRepository->getMenuList();
 
         if ($limit !== '') {
-            $pageList = $pageList->filter(function ($pageItem) use ($limit) {
+            $menuList = $menuList->filter(function ($pageItem) use ($limit) {
                 return strpos($pageItem->route, $limit) === 0;
             });
         }
@@ -277,7 +277,7 @@ final class TwigPlusExtension extends AbstractExtension
         $currentPageItem = null;
         $nextPageItem = null;
         $lastPageItem = null;
-        foreach ($pageList as $key => $pageItem) {
+        foreach ($menuList as $key => $pageItem) {
             if ($currentPageItem) {
                 $nextPageItem = $pageItem;
                 break;
@@ -340,18 +340,18 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionPagesRecent(
-        ?MenuList $pageList = null,
-        string $dateFormat = '%e. %B %Y',
-        int $limit = 5,
-        ?string $pageType = null,
-        bool $showDate = false,
-        string $title = 'Recent posts',
-        string $template = '@template/pages/recent.twig'
+        ?MenuList $menuList = null,
+        string    $dateFormat = '%e. %B %Y',
+        int       $limit = 5,
+        ?string   $pageType = null,
+        bool      $showDate = false,
+        string    $title = 'Recent posts',
+        string    $template = '@template/pages/recent.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
-        $recentPages = $pageList->getRecent($limit, $pageType);
+        $recentPages = $menuList->getRecent($limit, $pageType);
         return $this->environment->render($template, [
             'recentPages' => $recentPages,
             'dateFormat' => $dateFormat,
@@ -368,8 +368,8 @@ final class TwigPlusExtension extends AbstractExtension
         bool $reverse = false
     ): string {
         [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
-        $count = count($pageTrail);
+        $menuTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
+        $count = count($menuTrail);
 
         $titles = [];
 
@@ -377,11 +377,11 @@ final class TwigPlusExtension extends AbstractExtension
             $titles[] = $siteTitle;
         }
 
-        foreach ($pageTrail as $item) {
+        foreach ($menuTrail as $item) {
             if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
                 return $rootTitle;
             }
-            $titles[] = $item->title;
+            $titles[] = $item->getTitle();
         }
 
         if (!empty($reverse)) {
@@ -417,17 +417,17 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyArchive(
-        ?MenuList $pageList = null,
+        ?MenuList $menuList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
         string $title = 'Archive',
         string $template = '@template/taxonomy/archive.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
-        $months = $pageList->getMonths($pageType);
+        $months = $menuList->getMonths($pageType);
         return $this->environment->render($template, [
             'months' => $months,
             'pageRoute' => $pageRoute,
@@ -443,17 +443,17 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyAuthors(
-        ?MenuList $pageList = null,
+        ?MenuList $menuList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
         string $title = 'Authors',
         string $template = '@template/taxonomy/authors.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
-        $authors = $pageList->getAuthors($pageType);
+        $authors = $menuList->getAuthors($pageType);
         return $this->environment->render($template, [
             'authors' => $authors,
             'pageRoute' => $pageRoute,
@@ -469,17 +469,17 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyCategories(
-        ?MenuList $pageList = null,
+        ?MenuList $menuList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
         string $title = 'Categories',
         string $template = '@template/taxonomy/categories.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
-        $categories = $pageList->getCategories($pageType);
+        $categories = $menuList->getCategories($pageType);
         return $this->environment->render($template, [
             'categories' => $categories,
             'pageRoute' => $pageRoute,
@@ -495,17 +495,17 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyTags(
-        ?MenuList $pageList = null,
+        ?MenuList $menuList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
         string $title = 'Tags',
         string $template = '@template/taxonomy/tags.twig'
     ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->getMenuList();
+        if ($menuList === null) {
+            $menuList = $this->pageRepository->getMenuList();
         }
-        $tags = $pageList->getTags($pageType);
+        $tags = $menuList->getTags($pageType);
         return $this->environment->render($template, [
             'pageRoute' => $pageRoute,
             'pageType' => $pageType,

@@ -1,4 +1,4 @@
-{% macro recent(pageList, options) %}
+{% macro recent(menuList, options) %}
 
     {% set defaults = {
         'dateFormat': '%e. %B %Y',
@@ -13,7 +13,7 @@
     {% set options = defaults|merge(options) %}
 
     {# get recent pages by page type #}
-    {% set recentPages = pageList.getRecent(options.limit, options.pageType) %}
+    {% set recentPages = menuList.getRecent(options.limit, options.pageType) %}
 
     {# render markup #}
     {% if recentPages|length > 0 %}

@@ -16,8 +16,6 @@ final class MenuTrail implements IteratorAggregate, Countable
     private array $items;
 
     /**
-     * PageTrail constructor.
-     *
      * @param MenuItem[] $items
      */
     public function __construct(array $items)

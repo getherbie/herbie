@@ -519,25 +519,6 @@ trait PageItemTrait
         return $this->getRoute() === '';
     }
 
-    public function routeEquals(string $route): bool
-    {
-        return $this->getRoute() === $route;
-    }
-
-    public function routeInPageTrail(string $route): bool
-    {
-        $current = $this->getRoute();
-        if (empty($route) || empty($current)) {
-            return false;
-        }
-        return 0 === strpos($route, $current);
-    }
-
-    public function isStaticPage(): bool
-    {
-        return 0 === strpos($this->getPath(), '@page');
-    }
-
     /**
      * @return mixed
      */

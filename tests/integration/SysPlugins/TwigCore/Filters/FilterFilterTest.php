@@ -25,7 +25,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $this->twigRenderer = $app->getTwigRenderer();
     }
 
-    public function testFilterPageListWithoutSelectors()
+    public function testFilterMenuListWithoutSelectors()
     {
         $twig = <<<TWIG
             {%- for item in site.menuList|filter() -%}
@@ -37,7 +37,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $this->assertSame($expected, $actual);
     }
 
-    public function testFilterPageListWithOneSelector()
+    public function testFilterMenuListWithOneSelector()
     {
         $twig = <<<TWIG
             {%- for item in site.menuList|filter("route=alpha") -%}
@@ -49,7 +49,7 @@ final class FilterFilterTest extends \Codeception\Test\Unit
         $this->assertSame($expected, $actual);
     }
 
-    public function testFilterPageListWithSelectorsSortAndLimit()
+    public function testFilterMenuListWithSelectorsSortAndLimit()
     {
         $twig = <<<TWIG
             {%- for item in site.menuList|filter("type=page", "sort=-title", "limit=3") -%}
