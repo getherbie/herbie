@@ -4,18 +4,30 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Psr\SimpleCache\CacheInterface;
+
 /**
  * Loads the whole page.
  */
 final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
+    private CacheInterface $cache;
     private FlatFileIterator $flatFileIterator;
+    private bool $cacheEnable;
+    private int $cacheTTL;
 
-    public function __construct(Alias $alias, FlatFileIterator $flatFileIterator)
-    {
+    public function __construct(
+        Alias $alias,
+        CacheInterface $cache,
+        FlatFileIterator $flatFileIterator,
+        array $options = []
+    ) {
         $this->alias = $alias;
+        $this->cache = $cache;
         $this->flatFileIterator = $flatFileIterator;
+        $this->cacheEnable = (bool)($options['cache'] ?? false);
+        $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
 
     /**
@@ -34,6 +46,13 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     {
         $items = [];
 
+        if ($this->cacheEnable && $this->cacheTTL > 0) {
+            $cached = $this->cache->get(__METHOD__);
+            if (is_array($cached)) {
+                return $cached;
+            }
+        }
+
         foreach ($this->flatFileIterator as $fileInfo) {
             try {
                 /** @var FileInfo $fileInfo */
@@ -41,6 +60,10 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
                 $items[] = $this->readFile($aliasedPath);
             } catch (\Exception $e) {
             }
+        }
+
+        if ($this->cacheEnable && $this->cacheTTL > 0) {
+            $this->cache->set(__METHOD__, $items, $this->cacheTTL);
         }
 
         return $items;

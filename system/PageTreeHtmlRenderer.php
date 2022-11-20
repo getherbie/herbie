@@ -86,7 +86,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
             if (is_callable($this->itemCallback)) {
                 $this->output .= call_user_func($this->itemCallback, $item);
             } else {
-                $this->output .= $item->getMenuItem()->title;
+                $this->output .= $item->getMenuItem()->getTitle();
             }
             if (!$this->callHasChildren()) {
                 $this->output .= $this->getTemplate('endCurrent');
@@ -106,13 +106,13 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
 
     private function addCssClasses(string $beginCurrent, string $route): string
     {
-        $menuItem = $this->getMenuItem();
+        $menuItemRoute = $this->getMenuItem()->getRoute();
         $cssClasses = [];
-        if ($route === $menuItem->route) {
+        if ($route === $menuItemRoute) {
             $cssClasses[] = 'current';
         }
-        if (!empty($menuItem->route)) {
-            if (strpos($route, $menuItem->route) === 0) {
+        if (!empty($menuItemRoute)) {
+            if (strpos($route, $menuItemRoute) === 0) {
                 $cssClasses[] = 'active';
             }
         }

@@ -1,5 +1,7 @@
 <?php
 
+$isProduction = isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] !== 'localhost');
+
 return [
     'language' => 'en',
     'locale' => 'en_EN',
@@ -8,22 +10,25 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplesearch,simplecontact',
-    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,dummy',
+    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml'
         ],
         'fileLogger' => [
-            'level' => 'debug',
+            'level' => $isProduction ? 'error' : 'debug',
+        ],
+        'flatFilePagePersistence' => [
+            'cache' => $isProduction
         ],
         'pageRendererMiddleware' => [
-            'cache' => isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] !== 'localhost')
+            'cache' => $isProduction
         ],
         'twigRenderer' => [
-            'debug' => true
+            'debug' => !$isProduction
         ],
         'urlManager' => [
-            'niceUrls' => true,
+            'niceUrls' => $isProduction,
             'rules' => [
                 ['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
@@ -50,7 +55,7 @@ return [
             ]
         ],
         'simplesearch' => [
-            'usePageCache' => true
+            'usePageCache' => $isProduction
         ],
     ]
 ];

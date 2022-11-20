@@ -22,7 +22,7 @@ final class PageTreeFilterIterator extends RecursiveFilterIterator
             return true;
         }
         $menuItem = $this->current()->getMenuItem();
-        if (empty($menuItem->hidden)) {
+        if (empty($menuItem->getHidden())) {
             return true;
         }
         return false;
