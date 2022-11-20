@@ -8,17 +8,17 @@ use Countable;
 use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<int, PageItem>
+ * @implements IteratorAggregate<int, Page>
  */
 final class PageTrail implements IteratorAggregate, Countable
 {
-    /** @var PageItem[] */
+    /** @var Page[] */
     private array $items;
 
     /**
      * PageTrail constructor.
      *
-     * @param PageItem[] $items
+     * @param Page[] $items
      */
     public function __construct(array $items)
     {

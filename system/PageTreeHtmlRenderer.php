@@ -7,7 +7,7 @@ namespace herbie;
 use RecursiveIteratorIterator;
 
 /**
- * @method PageItem getMenuItem()
+ * @method Page getMenuItem()
  */
 final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
 {
