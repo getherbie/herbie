@@ -8,7 +8,7 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplesearch,simplecontact',
-    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown,dummy',
+    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml'
@@ -23,7 +23,7 @@ return [
             'debug' => true
         ],
         'urlManager' => [
-            'niceUrls' => true,
+            'niceUrls' => false,
             'rules' => [
                 ['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
