@@ -152,6 +152,8 @@ final class HerbieInfoCest
             'components.downloadMiddleware.storagePath',
             'components.fileCache',
             'components.fileLogger',
+            'components.flatFilePagePersistence.cache',
+            'components.flatFilePagePersistence.cacheTTL',
             'components.pageRendererMiddleware.cache',
             'components.pageRendererMiddleware.cacheTTL',
             'components.twigRenderer.autoescape',

@@ -7,6 +7,7 @@ use herbie\Config;
 use herbie\FlatFileIterator;
 use herbie\FlatFilePagePersistence;
 use herbie\FlatFilePageRepository;
+use herbie\NullCache;
 use herbie\Page;
 use herbie\PageFactory;
 use InvalidArgumentException;
@@ -26,6 +27,7 @@ final class PageTest extends \Codeception\Test\Unit
                 new Alias([
                     '@page' => __DIR__ . '/Fixtures/site/pages'
                 ]),
+                new NullCache(),
                 new FlatFileIterator(
                     dirname(__DIR__) . '/integration/Fixtures/site/pages',
                     ['md']
