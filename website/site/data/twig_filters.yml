@@ -8,7 +8,7 @@
     - The file size in human readable format
 - name: filter
   code: >-
-    {{ site.pageList|filter("title^=this", "title~=is", "title$=great") }}
+    {{ site.menuList|filter("title^=this", "title~=is", "title$=great") }}
   desc: "Filters a traversable list by one or more filters as variadic arguments. The filters are logical AND-connected. A filter can be one of the following:
     <table>
     <tr><td style='width:5%'>!=</td><td>Not equal</td></tr>
@@ -29,8 +29,8 @@
       desc: One or more filters (optional, variadic)
       default:
   return:
-    - pageList
-    - The filtered page list
+    - traversable
+    - The filtered list
 - name: slugify
   code: >-
     {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
@@ -53,8 +53,8 @@
     - The formatted time or date
 - name: visible
   code: >-
-    {{ site.pageTree|visible }}
-  desc: Filters the page tree by visible and active page items.
+    {{ site.menuTree|visible }}
+  desc: Filters the menu tree by visible and active menu items.
   return:
-    - pageTree
-    - The filtered page tree
+    - menuTree
+    - The filtered menu tree

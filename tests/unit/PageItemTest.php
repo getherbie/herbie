@@ -5,7 +5,7 @@ namespace tests\unit;
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
 use InvalidArgumentException;
-use herbie\PageItem;
+use herbie\MenuItem;
 
 final class PageItemTest extends \Codeception\Test\Unit
 {
@@ -15,7 +15,7 @@ final class PageItemTest extends \Codeception\Test\Unit
 
     private function initPage()
     {
-        PageItem::setSlugGenerator(new SlugGenerator(['locale' => 'en', 'delimiter' => '-']));
+        MenuItem::setSlugGenerator(new SlugGenerator(['locale' => 'en', 'delimiter' => '-']));
     }
 
     // ---------------------------------------------------------
@@ -24,9 +24,9 @@ final class PageItemTest extends \Codeception\Test\Unit
     // string[] $authors
     public function testAuthors()
     {
-        PageItem::setSlugGenerator(new SlugGenerator());
+        MenuItem::setSlugGenerator(new SlugGenerator());
 
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertFalse($pageItem->hasAuthor('None Existing'));
         $this->assertEquals('', $pageItem->getAuthor('None Existing'));
 
@@ -41,14 +41,14 @@ final class PageItemTest extends \Codeception\Test\Unit
         $this->assertTrue($pageItem->hasAuthor('Carol Kaye'));
         $this->assertTrue($pageItem->hasAuthor('Mark King'));
 
-        PageItem::unsetSlugGenerator();
+        MenuItem::unsetSlugGenerator();
     }
 
     // bool $cached
     public function testCached()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals(true, $pageItem->getCached());
         // setter/getter
         $pageItem->setCached(false);
@@ -63,7 +63,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testCacheId()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertTrue(isset($pageItem->cacheId));
         $this->assertEquals('page-', $pageItem->cacheId);
         $pageItem['id'] = 'path-to-page';
@@ -75,9 +75,9 @@ final class PageItemTest extends \Codeception\Test\Unit
     // string[] $categories
     public function testCategories()
     {
-        PageItem::setSlugGenerator(new SlugGenerator());
+        MenuItem::setSlugGenerator(new SlugGenerator());
 
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertFalse($pageItem->hasCategory('None Existing Category'));
         $this->assertEquals('', $pageItem->getCategory('None Existing Category'));
 
@@ -92,14 +92,14 @@ final class PageItemTest extends \Codeception\Test\Unit
         $this->assertTrue($pageItem->hasCategory('New-Orleans-Jazz'));
         $this->assertTrue($pageItem->hasCategory('Soul-Jazz'));
 
-        PageItem::unsetSlugGenerator();
+        MenuItem::unsetSlugGenerator();
     }
 
     // string $content_type
     public function testContentType()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('text/html', $pageItem->getContentType());
         // setter/getter
         $pageItem->setContentType(" application/json \t"); // with whitespace
@@ -113,7 +113,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testCreated()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getCreated());
         // setter/getter
         $pageItem->setCreated("2022-11-22"); // with whitespace
@@ -129,7 +129,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testDate()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getDate());
         // invalid date
         $pageItem->setDate('invalid date');
@@ -152,7 +152,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testExcert()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getExcerpt());
         // setter/getter
         $pageItem->setExcerpt(" This is an excerpt. \t"); // with whitespace
@@ -166,7 +166,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testFormat()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('raw', $pageItem->getFormat());
         // setter/getter
         $pageItem->setFormat(" md \t"); // with whitespace
@@ -188,7 +188,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testHidden()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertFalse($pageItem->getHidden());
         // setter/getter
         $pageItem->setHidden(true);
@@ -204,7 +204,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testKeepExtension()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertFalse($pageItem->getKeepExtension());
         // setter/getter
         $pageItem->setKeepExtension(true);
@@ -220,7 +220,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testLayout()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('default', $pageItem->getLayout());
         // setter/getter
         $pageItem->setLayout(" main \t"); // with whitespace
@@ -234,7 +234,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testMenuTitle()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getMenuTitle());
         // if title set but menuTitle not
         $pageItem->setTitle('My title');
@@ -251,7 +251,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testModified()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getModified());
         // setter/getter
         $pageItem->setModified("2022-11-22"); // with whitespace
@@ -266,7 +266,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testPath()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getPath());
         // setter/getter
         $pageItem->setPath(" path/to/this \t"); // with whitespace
@@ -280,7 +280,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testRedirect()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals([], $pageItem->getRedirect());
         // setter/getter
         $pageItem->setRedirect(" redirect/to/page \t"); // with whitespace
@@ -315,7 +315,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testRoute()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getRoute());
         // setter/getter
         $pageItem->setRoute(" route/to/this \t"); // with whitespace
@@ -328,9 +328,9 @@ final class PageItemTest extends \Codeception\Test\Unit
     // string[] $tags
     public function testTags()
     {
-        PageItem::setSlugGenerator(new SlugGenerator());
+        MenuItem::setSlugGenerator(new SlugGenerator());
 
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertFalse($pageItem->hasTag('None Existing Tag'));
         $this->assertEquals('', $pageItem->getTag('None Existing Tag'));
 
@@ -345,14 +345,14 @@ final class PageItemTest extends \Codeception\Test\Unit
         $this->assertTrue($pageItem->hasTag('Merengue'));
         $this->assertTrue($pageItem->hasTag('Salsa'));
 
-        PageItem::unsetSlugGenerator();
+        MenuItem::unsetSlugGenerator();
     }
 
     // string $title
     public function testTitle()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', $pageItem->getTitle());
         // setter/getter
         $pageItem->setTitle(" Title \t"); // with whitespace
@@ -366,7 +366,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testTwig()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertTrue($pageItem->getTwig());
         // setter/getter
         $pageItem->setTwig(false);
@@ -382,7 +382,7 @@ final class PageItemTest extends \Codeception\Test\Unit
     public function testType()
     {
         // default value
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('page', $pageItem->getType());
         // setter/getter
         $pageItem->setType(" news \t"); // with whitespace
@@ -394,7 +394,7 @@ final class PageItemTest extends \Codeception\Test\Unit
 
     public function testToString()
     {
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $this->assertEquals('', (string)$pageItem);
         $pageItem->title = 'Title';
         $this->assertEquals('Title', (string)$pageItem);
@@ -434,13 +434,13 @@ final class PageItemTest extends \Codeception\Test\Unit
             'ddd' => 42,
             'eee' => 23.375
         ];
-        $pageItem = new PageItem($data);
+        $pageItem = new MenuItem($data);
         $this->assertEquals($data, $pageItem->toArray());
     }
 
     public function testMagicMethods()
     {
-        $pageItem = new PageItem(['title' => 'My Title']);
+        $pageItem = new MenuItem(['title' => 'My Title']);
         $this->assertTrue(isset($pageItem->title));
         $this->assertEquals('My Title', $pageItem->title);
         $pageItem->customTitle = 'Custom Title';
@@ -453,14 +453,14 @@ final class PageItemTest extends \Codeception\Test\Unit
 
     public function testWithSlugGenerator()
     {
-        $pageItem = new PageItem(['author' => 'Niels-Henning Ørsted Pedersen']);
+        $pageItem = new MenuItem(['author' => 'Niels-Henning Ørsted Pedersen']);
         try {
         } catch (BadMethodCallException $e) {
             $this->assertEquals('SlugGenerator not set.', $e->getMessage());
         }
-        $this->assertNull(PageItem::setSlugGenerator(new SlugGenerator()));
+        $this->assertNull(MenuItem::setSlugGenerator(new SlugGenerator()));
         $this->assertEquals('Niels-Henning Ørsted Pedersen', $pageItem->getAuthor('Niels-Henning Ørsted Pedersen'));
-        $this->assertNull(PageItem::unsetSlugGenerator());
+        $this->assertNull(MenuItem::unsetSlugGenerator());
         try {
             $pageItem->getAuthor('Niels-Henning Ørsted Pedersen');
         } catch (BadMethodCallException $e) {
@@ -472,12 +472,12 @@ final class PageItemTest extends \Codeception\Test\Unit
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Field data is not allowed.');
-        new PageItem(['data' => 'foo/bar']);
+        new MenuItem(['data' => 'foo/bar']);
     }
 
     public function testArrayAccessMethods()
     {
-        $pageItem = new PageItem();
+        $pageItem = new MenuItem();
         $pageItem['title'] = 'Title';
         $this->assertEquals('Title', $pageItem['title']);
         $this->assertTrue(isset($pageItem['title']));

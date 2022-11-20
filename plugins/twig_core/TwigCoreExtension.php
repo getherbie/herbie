@@ -8,9 +8,9 @@ use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
-use herbie\PageTree;
-use herbie\PageTreeFilterIterator;
-use herbie\PageTreeIterator;
+use herbie\MenuTree;
+use herbie\MenuTreeFilterIterator;
+use herbie\MenuTreeIterator;
 use herbie\Selector;
 use herbie\Translator;
 use herbie\UrlManager;
@@ -183,10 +183,10 @@ final class TwigCoreExtension extends AbstractExtension
         return time_format($format, $dateTime->getTimestamp());
     }
 
-    public function filterVisible(PageTree $tree): PageTreeFilterIterator
+    public function filterVisible(MenuTree $tree): MenuTreeFilterIterator
     {
-        $treeIterator = new PageTreeIterator($tree);
-        return new PageTreeFilterIterator($treeIterator);
+        $treeIterator = new MenuTreeIterator($tree);
+        return new MenuTreeFilterIterator($treeIterator);
     }
 
     /**

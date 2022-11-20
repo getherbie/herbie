@@ -193,13 +193,13 @@
     - The link to a route
 - name: listing
   code: >-
-   {{ listing(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
-  desc: Returns a paginated list of page items with links to the previous and next page. 
+   {{ listing(site.menuList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+  desc: Returns a paginated list of menu items with links to the previous and next page. 
     For the paging the GET parameter "page" is used.
   params:
-    - name: pageList
-      type: PageList
-      desc: The page list.
+    - name: menuList
+      type: MenuList
+      desc: The menu list.
       default: 'null'
     - name: filter
       type: string

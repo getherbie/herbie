@@ -7,7 +7,7 @@ layout: blog
 
 {{ pages_filtered(routeParams) }}
 
-{% set items = site.pageList.filterItems('blog', 'blog', routeParams) %}
+{% set items = site.menuList.filterItems('blog', 'blog', routeParams) %}
 
 <div class="posts">
     {% for item in items %}

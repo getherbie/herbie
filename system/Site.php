@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Http\Message\ServerRequestInterface;
-
 /**
  * Stores the site.
  */
@@ -44,26 +42,26 @@ final class Site
         return $this->dataRepository->loadAll();
     }
 
-    public function getPageList(): PageList
+    public function getMenuList(): MenuList
     {
-        return $this->pageRepository->findAll();
+        return $this->pageRepository->getMenuList();
     }
 
-    public function getPageTree(): PageTree
+    public function getMenuTree(): MenuTree
     {
-        return $this->getPageList()->getPageTree();
+        return $this->getMenuList()->getMenuTree();
     }
 
-    public function getPageTrail(): PageTrail
+    public function getMenuTrail(): MenuTrail
     {
         [$route] = $this->urlManager->parseRequest();
-        return $this->getPageList()->getPageTrail($route);
+        return $this->getMenuList()->getMenuTrail($route);
     }
 
     public function getModified(): string
     {
         $lastModified = 0;
-        foreach ($this->pageRepository->findAll() as $item) {
+        foreach ($this->pageRepository->getMenuList() as $item) {
             $modified = time_from_string($item->getModified());
             if ($modified > $lastModified) {
                 $lastModified = $modified;

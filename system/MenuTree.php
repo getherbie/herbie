@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageTree extends AbstractNode
+final class MenuTree extends AbstractNode
 {
     public function __toString(): string
     {
@@ -20,10 +20,10 @@ final class PageTree extends AbstractNode
         return $this->getValue();
     }
 
-    public function findByRoute(string $route): ?PageTree
+    public function findByRoute(string $route): ?MenuTree
     {
         if (empty($route)) {
-            /** @var PageTree|null */
+            /** @var MenuTree|null */
             return $this->root();
         }
         $menuItem = $this->getMenuItem();
@@ -41,7 +41,7 @@ final class PageTree extends AbstractNode
 
     /**
      * @param mixed $value
-     * @return PageTree|bool
+     * @return MenuTree|bool
      */
     public function findBy(string $name, $value)
     {
@@ -50,7 +50,7 @@ final class PageTree extends AbstractNode
             return $this;
         }
         foreach ($this->getChildren() as $child) {
-            /** @var PageTree $child */
+            /** @var MenuTree $child */
             $node = $child->findBy($name, $value);
             if ($node) {
                 return $node;
