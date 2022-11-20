@@ -17,14 +17,14 @@
 - name: site.modified
   desc: The time of the last modified page in ISO-8601 format (2004-02-12T15:19:21+00:00).
   type: string
-- name: site.pageList
-  desc: A list of all available pages.
+- name: site.menuList
+  desc: A list of all available menu items.
   type: Traversable
-- name: site.pageTrail
-  desc: A trail from the current page up to the root page.
+- name: site.menuTrail
+  desc: A trail from the current menu item up to the root menu item.
   type: Traversable
-- name: site.pageTree
-  desc: A tree of all available pages.
+- name: site.menuTree
+  desc: A tree of all available menu items.
   type: Traversable
 - name: site.time
   desc: The current time in ISO-8601 format (2004-02-12T15:19:21+00:00).

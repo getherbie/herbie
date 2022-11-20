@@ -7,7 +7,7 @@ namespace herbie;
 final class FlatFilePageRepository implements PageRepositoryInterface
 {
     private PageFactory $pageFactory;
-    private ?PageList $pageList;
+    private ?MenuList $menuList;
     private PagePersistenceInterface $pagePersistence;
 
     /**
@@ -16,38 +16,38 @@ final class FlatFilePageRepository implements PageRepositoryInterface
     public function __construct(PageFactory $pageFactory, PagePersistenceInterface $pagePersistence)
     {
         $this->pageFactory = $pageFactory;
-        $this->pageList = null;
+        $this->menuList = null;
         $this->pagePersistence = $pagePersistence;
     }
 
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
      */
-    public function find(string $id): ?Page
+    public function getPage(string $id): ?Page
     {
         $data = $this->pagePersistence->findById($id);
         return $data ? $this->createPage($data) : null;
     }
 
-    public function findAll(): PageList
+    public function getMenuList(): MenuList
     {
-        if ($this->pageList === null) {
-            $this->pageList = $this->pageFactory->newPageList();
+        if ($this->menuList === null) {
+            $this->menuList = $this->pageFactory->newMenuList();
             foreach ($this->pagePersistence->findAll() as $data) {
-                $pageItem = $this->pageFactory->newPageItem($data['data']);
-                $this->pageList->addItem($pageItem);
+                $pageItem = $this->pageFactory->newMenuItem($data['data']);
+                $this->menuList->addItem($pageItem);
             }
         }
-        return $this->pageList;
+        return $this->menuList;
     }
 
-    public function save(Page $page): bool
+    public function savePage(Page $page): bool
     {
         // TODO: Implement save() method.
         return false;
     }
 
-    public function delete(Page $page): bool
+    public function deletePage(Page $page): bool
     {
         // TODO: Implement remove() method.
         return false;

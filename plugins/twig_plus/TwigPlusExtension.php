@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace herbie\sysplugin\twig_plus;
 
+use herbie\MenuItem;
+use herbie\MenuList;
+use herbie\MenuTree;
+use herbie\MenuTreeFilterIterator;
+use herbie\MenuTreeHtmlRenderer;
+use herbie\MenuTreeIterator;
+use herbie\MenuTreeTextRenderer;
 use herbie\Page;
-use herbie\PageItem;
-use herbie\PageList;
 use herbie\PageRepositoryInterface;
-use herbie\PageTree;
-use herbie\PageTreeFilterCallback;
-use herbie\PageTreeFilterIterator;
-use herbie\PageTreeHtmlRenderer;
-use herbie\PageTreeIterator;
-use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
 use herbie\UrlManager;
 use Twig\Environment;
@@ -74,15 +73,15 @@ final class TwigPlusExtension extends AbstractExtension
         bool $showHidden = false
     ): string {
         // TODO use $class parameter
-        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        $branch = $this->pageRepository->getMenuList()->getMenuTree()->findByRoute($route);
         if ($branch === null) {
             return '';
         }
 
-        $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
+        $treeIterator = new MenuTreeIterator($branch);
+        $filterIterator = new MenuTreeFilterIterator($treeIterator, !$showHidden);
 
-        $asciiTree = new PageTreeTextRenderer($filterIterator);
+        $asciiTree = new MenuTreeTextRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
     }
@@ -142,7 +141,7 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
+        $pageTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
         foreach ($pageTrail as $item) {
             $links[] = $this->createLink($item->route, $item->getMenuTitle());
         }
@@ -169,7 +168,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionListing(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $filter = '',
         string $sort = '',
         bool $shuffle = false,
@@ -177,7 +176,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@snippet/listing.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
 
         if (!empty($filter)) {
@@ -195,7 +194,7 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         // filter pages with empty title
-        $pageList = $pageList->filter(function (PageItem $page) {
+        $pageList = $pageList->filter(function (MenuItem $page) {
             return !empty($page->getTitle());
         });
 
@@ -212,18 +211,18 @@ final class TwigPlusExtension extends AbstractExtension
         string $class = 'menu'
     ): string {
         // NOTE duplicated code, see function sitemap
-        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        $branch = $this->pageRepository->getMenuList()->getMenuTree()->findByRoute($route);
         if ($branch === null) {
             return '';
         }
 
-        $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator, !$showHidden);
+        $treeIterator = new MenuTreeIterator($branch);
+        $filterIterator = new MenuTreeFilterIterator($treeIterator, !$showHidden);
 
-        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
+        $htmlTree = new MenuTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($maxDepth);
         $htmlTree->setClass($class);
-        $htmlTree->setItemCallback(function (PageTree $node) {
+        $htmlTree->setItemCallback(function (MenuTree $node) {
             $menuItem = $node->getMenuItem();
             $href = $this->urlManager->createUrl($menuItem->route);
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
@@ -266,7 +265,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '<div class="{class}">{prev}{next}</div>'
     ): string {
         [$route] = $this->urlManager->parseRequest();
-        $pageList = $this->pageRepository->findAll();
+        $pageList = $this->pageRepository->getMenuList();
 
         if ($limit !== '') {
             $pageList = $pageList->filter(function ($pageItem) use ($limit) {
@@ -341,7 +340,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionPagesRecent(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $dateFormat = '%e. %B %Y',
         int $limit = 5,
         ?string $pageType = null,
@@ -350,7 +349,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@template/pages/recent.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
         $recentPages = $pageList->getRecent($limit, $pageType);
         return $this->environment->render($template, [
@@ -369,7 +368,7 @@ final class TwigPlusExtension extends AbstractExtension
         bool $reverse = false
     ): string {
         [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
+        $pageTrail = $this->pageRepository->getMenuList()->getMenuTrail($route);
         $count = count($pageTrail);
 
         $titles = [];
@@ -418,7 +417,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyArchive(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -426,7 +425,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@template/taxonomy/archive.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
         $months = $pageList->getMonths($pageType);
         return $this->environment->render($template, [
@@ -444,7 +443,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyAuthors(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -452,7 +451,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@template/taxonomy/authors.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
         $authors = $pageList->getAuthors($pageType);
         return $this->environment->render($template, [
@@ -470,7 +469,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyCategories(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -478,7 +477,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@template/taxonomy/categories.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
         $categories = $pageList->getCategories($pageType);
         return $this->environment->render($template, [
@@ -496,7 +495,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function functionTaxonomyTags(
-        ?PageList $pageList = null,
+        ?MenuList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
         bool $showCount = false,
@@ -504,7 +503,7 @@ final class TwigPlusExtension extends AbstractExtension
         string $template = '@template/taxonomy/tags.twig'
     ): string {
         if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
+            $pageList = $this->pageRepository->getMenuList();
         }
         $tags = $pageList->getTags($pageType);
         return $this->environment->render($template, [

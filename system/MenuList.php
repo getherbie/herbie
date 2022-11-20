@@ -8,31 +8,31 @@ use Countable;
 use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<int, PageItem>
+ * @implements IteratorAggregate<int, MenuItem>
  */
-final class PageList implements IteratorAggregate, Countable
+final class MenuList implements IteratorAggregate, Countable
 {
     /**
-     * @var PageItem[]
+     * @var MenuItem[]
      */
     private array $items;
 
-    private ?PageTrail $pageTrail;
+    private ?MenuTrail $menuTrail;
 
-    private ?PageTree $pageTree;
+    private ?MenuTree $menuTree;
 
     /**
      * MenuList constructor.
-     * @param PageItem[] $items
+     * @param MenuItem[] $items
      */
     public function __construct(array $items = [])
     {
         $this->items = $items;
-        $this->pageTrail = null;
-        $this->pageTree = null;
+        $this->menuTrail = null;
+        $this->menuTree = null;
     }
 
-    public function addItem(PageItem $item): void
+    public function addItem(MenuItem $item): void
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -43,9 +43,9 @@ final class PageList implements IteratorAggregate, Countable
         return $this->items;
     }
 
-    public function getItem(string $route): ?PageItem
+    public function getItem(string $route): ?MenuItem
     {
-        return isset($this->items[$route]) ? $this->items[$route] : null;
+        return $this->items[$route] ?? null;
     }
 
     public function getIterator(): \ArrayIterator
@@ -58,7 +58,7 @@ final class PageList implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function getRandom(): PageItem
+    public function getRandom(): MenuItem
     {
         $routes = array_keys($this->items);
         $index = mt_rand(0, $this->count() - 1);
@@ -66,7 +66,7 @@ final class PageList implements IteratorAggregate, Countable
         return $this->items[$route];
     }
 
-    public function find(string $value, string $key): ?PageItem
+    public function find(string $value, string $key): ?MenuItem
     {
         foreach ($this->items as $item) {
             if ($item->$key === $value) {
@@ -82,7 +82,7 @@ final class PageList implements IteratorAggregate, Countable
      * @param callable|string|null $key
      * @param mixed $value
      */
-    public function filter($key = null, $value = null): PageList
+    public function filter($key = null, $value = null): MenuList
     {
         if (is_callable($key)) {
             return new self(array_filter($this->items, $key));
@@ -101,7 +101,7 @@ final class PageList implements IteratorAggregate, Countable
     /**
      * Shuffle the items in the list.
      */
-    public function shuffle(): PageList
+    public function shuffle(): MenuList
     {
         $items = $this->items;
         shuffle($items);
@@ -116,7 +116,7 @@ final class PageList implements IteratorAggregate, Countable
     /**
      * @param callable|string|null $mixed
      */
-    public function sort($mixed = null, string $direction = 'asc'): PageList
+    public function sort($mixed = null, string $direction = 'asc'): MenuList
     {
         $items = $this->items;
 
@@ -242,7 +242,7 @@ final class PageList implements IteratorAggregate, Countable
         return $months;
     }
 
-    public function filterItems(string $type, string $parentRoute, array $params): PageList
+    public function filterItems(string $type, string $parentRoute, array $params): MenuList
     {
         $items = [];
 
@@ -322,20 +322,20 @@ final class PageList implements IteratorAggregate, Countable
         return $items;
     }
 
-    public function getPageTree(): PageTree
+    public function getMenuTree(): MenuTree
     {
-        if ($this->pageTree === null) {
-            $this->pageTree = (new PageFactory())->newPageTree($this);
+        if ($this->menuTree === null) {
+            $this->menuTree = (new PageFactory())->newMenuTree($this);
         }
-        return $this->pageTree;
+        return $this->menuTree;
     }
 
-    public function getPageTrail(string $requestRoute): PageTrail
+    public function getMenuTrail(string $requestRoute): MenuTrail
     {
         // It would be possible to have multiple cached page trails.
         // But in fact, there is always only one for the requested route.
-        if ($this->pageTrail) {
-            return $this->pageTrail;
+        if ($this->menuTrail) {
+            return $this->menuTrail;
         }
 
         $items = [];
@@ -353,6 +353,6 @@ final class PageList implements IteratorAggregate, Countable
             }
         }
 
-        return $this->pageTrail = (new PageFactory())->newPageTrail($items);
+        return $this->menuTrail = (new PageFactory())->newMenuTrail($items);
     }
 }

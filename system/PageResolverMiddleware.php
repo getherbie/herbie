@@ -33,12 +33,12 @@ final class PageResolverMiddleware implements MiddlewareInterface
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();
 
-        $pageList = $this->pageRepository->findAll();
+        $pageList = $this->pageRepository->getMenuList();
 
         // match by normal route
         $pageItem = $pageList->getItem($route);
         if (isset($pageItem)) {
-            $page = $this->pageRepository->find($pageItem->getPath());
+            $page = $this->pageRepository->getPage($pageItem->getPath());
         } else {
             $page = null;
         }

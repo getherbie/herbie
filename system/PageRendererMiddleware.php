@@ -9,7 +9,6 @@ use herbie\event\LayoutRenderedEvent;
 use herbie\event\RenderLayoutEvent;
 use herbie\event\RenderPageEvent;
 use herbie\event\RenderSegmentEvent;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

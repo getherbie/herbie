@@ -6,25 +6,25 @@ namespace herbie;
 
 use RecursiveIterator;
 
-final class PageTreeIterator implements RecursiveIterator
+final class MenuTreeIterator implements RecursiveIterator
 {
     private array $children = [];
 
     private int $position = 0;
 
     /**
-     * @param PageTree|array $context
+     * @param MenuTree|array $context
      */
     public function __construct($context)
     {
-        if ($context instanceof PageTree) {
+        if ($context instanceof MenuTree) {
             $this->children = $context->getChildren();
         } elseif (is_array($context)) {
             $this->children = $context;
         }
     }
 
-    public function getChildren(): PageTreeIterator
+    public function getChildren(): MenuTreeIterator
     {
         return new self($this->children[$this->position]->getChildren());
     }
@@ -34,7 +34,7 @@ final class PageTreeIterator implements RecursiveIterator
         return $this->children[$this->position]->hasChildren();
     }
 
-    public function current(): PageTree
+    public function current(): MenuTree
     {
         return $this->children[$this->position];
     }
@@ -59,7 +59,7 @@ final class PageTreeIterator implements RecursiveIterator
         return isset($this->children[$this->position]);
     }
 
-    public function getMenuItem(): PageItem
+    public function getMenuItem(): MenuItem
     {
         return $this->children[$this->position]->getMenuItem();
     }

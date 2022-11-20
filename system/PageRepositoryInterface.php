@@ -6,11 +6,11 @@ namespace herbie;
 
 interface PageRepositoryInterface
 {
-    public function find(string $id): ?Page;
+    public function getPage(string $id): ?Page;
 
-    public function findAll(): PageList;
+    public function getMenuList(): MenuList;
 
-    public function save(Page $page): bool;
+    public function savePage(Page $page): bool;
 
-    public function delete(Page $page): bool;
+    public function deletePage(Page $page): bool;
 }

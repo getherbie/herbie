@@ -6,7 +6,7 @@ namespace herbie;
 
 use ArrayAccess;
 
-final class PageItem implements ArrayAccess
+final class MenuItem implements ArrayAccess
 {
     use PageItemTrait;
 

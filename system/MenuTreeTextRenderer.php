@@ -6,7 +6,7 @@ namespace herbie;
 
 use RecursiveTreeIterator;
 
-final class PageTreeTextRenderer extends RecursiveTreeIterator
+final class MenuTreeTextRenderer extends RecursiveTreeIterator
 {
     public string $emptyTitle = '[]';
 

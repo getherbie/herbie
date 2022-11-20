@@ -11,14 +11,14 @@ final class PageFactory
         return new Page($data, $segments);
     }
 
-    public function newPageItem(array $data = []): PageItem
+    public function newMenuItem(array $data = []): MenuItem
     {
-        return new PageItem($data);
+        return new MenuItem($data);
     }
 
-    public function newPageList(array $items = []): PageList
+    public function newMenuList(array $items = []): MenuList
     {
-        return new PageList($items);
+        return new MenuList($items);
     }
 
     private function isIndexPage(string $path): bool
@@ -28,9 +28,9 @@ final class PageFactory
         return $filenameWithoutPrefix === 'index';
     }
 
-    public function newPageTree(PageList $pageList): PageTree
+    public function newMenuTree(MenuList $pageList): MenuTree
     {
-        $tree = new PageTree();
+        $tree = new MenuTree();
 
         // first go through all index pages
         foreach ($pageList as $pageItem) {
@@ -40,7 +40,7 @@ final class PageFactory
             $parentRoute = $pageItem->getParentRoute();
             $parent = $tree->findByRoute($parentRoute);
             if ($parent) {
-                $parent->addChild(new PageTree($pageItem));
+                $parent->addChild(new MenuTree($pageItem));
             }
         }
 
@@ -52,15 +52,15 @@ final class PageFactory
             $parentRoute = $pageItem->getParentRoute();
             $parent = $tree->findByRoute($parentRoute);
             if ($parent) {
-                $parent->addChild(new PageTree($pageItem));
+                $parent->addChild(new MenuTree($pageItem));
             }
         }
 
         return $tree;
     }
 
-    public function newPageTrail(array $pageItems): PageTrail
+    public function newMenuTrail(array $pageItems): MenuTrail
     {
-        return new PageTrail($pageItems);
+        return new MenuTrail($pageItems);
     }
 }
