@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayAccess;
 use Ausi\SlugGenerator\SlugGenerator;
+use BadMethodCallException;
 
 /**
  * @property string[] $authors
@@ -34,7 +36,7 @@ use Ausi\SlugGenerator\SlugGenerator;
  * @property bool $twig
  * @property string $type
  */
-final class Page
+final class Page implements ArrayAccess
 {
     /** @var string[] */
     private array $authors;
@@ -652,7 +654,7 @@ final class Page
     private function slugify(string $slug): string
     {
         if (self::$slugGenerator === null) {
-            throw new \BadMethodCallException('SlugGenerator not set.');
+            throw new BadMethodCallException('SlugGenerator not set.');
         }
         return self::$slugGenerator->generate($slug);
     }
@@ -684,5 +686,39 @@ final class Page
             }
         }
         return '';
+    }
+    /**
+     * @param mixed $offset
+     */
+    public function offsetExists($offset): bool
+    {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset): void
+    {
+        throw new BadMethodCallException('Unset is not supported.');
     }
 }

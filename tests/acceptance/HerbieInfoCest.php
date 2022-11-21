@@ -82,7 +82,6 @@ final class HerbieInfoCest
             'herbie\NullCache',
             'herbie\Page',
             'herbie\PageFactory',
-            'herbie\PageItem',
             'herbie\PageList',
             'herbie\PageRendererMiddleware',
             'herbie\PageResolverMiddleware',
