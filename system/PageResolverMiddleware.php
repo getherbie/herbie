@@ -33,15 +33,7 @@ final class PageResolverMiddleware implements MiddlewareInterface
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();
 
-        $pageList = $this->pageRepository->findAll();
-
-        // match by normal route
-        $pageItem = $pageList->getItem($route);
-        if (isset($pageItem)) {
-            $page = $this->pageRepository->find($pageItem->getPath());
-        } else {
-            $page = null;
-        }
+        $page = $this->pageRepository->findAll()->getItem($route);
 
         $request = $request
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_PAGE, $page)

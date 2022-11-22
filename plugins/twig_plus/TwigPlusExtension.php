@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie\sysplugin\twig_plus;
 
 use herbie\Page;
-use herbie\PageItem;
 use herbie\PageList;
 use herbie\PageRepositoryInterface;
 use herbie\PageTree;
@@ -195,7 +194,7 @@ final class TwigPlusExtension extends AbstractExtension
         }
 
         // filter pages with empty title
-        $pageList = $pageList->filter(function (PageItem $page) {
+        $pageList = $pageList->filter(function (Page $page) {
             return !empty($page->getTitle());
         });
 
@@ -269,26 +268,26 @@ final class TwigPlusExtension extends AbstractExtension
         $pageList = $this->pageRepository->findAll();
 
         if ($limit !== '') {
-            $pageList = $pageList->filter(function ($pageItem) use ($limit) {
-                return strpos($pageItem->getRoute(), $limit) === 0;
+            $pageList = $pageList->filter(function ($page) use ($limit) {
+                return strpos($page->getRoute(), $limit) === 0;
             });
         }
 
-        $prevPageItem = null;
-        $currentPageItem = null;
-        $nextPageItem = null;
-        $lastPageItem = null;
-        foreach ($pageList as $key => $pageItem) {
-            if ($currentPageItem) {
-                $nextPageItem = $pageItem;
+        $prevPage = null;
+        $currentPage = null;
+        $nextPage = null;
+        $lastPage = null;
+        foreach ($pageList as $key => $page) {
+            if ($currentPage) {
+                $nextPage = $page;
                 break;
             }
             if ($key === $route) {
-                $prevPageItem = $lastPageItem;
-                $currentPageItem = $pageItem;
+                $prevPage = $lastPage;
+                $currentPage = $page;
                 continue;
             }
-            $lastPageItem = $pageItem;
+            $lastPage = $page;
         }
 
         $replacements = [
@@ -297,24 +296,24 @@ final class TwigPlusExtension extends AbstractExtension
             '{next}' => ''
         ];
 
-        if (isset($prevPageItem)) {
-            $label = empty($prevPageLabel) ? $prevPageItem->getMenuTitle() : $prevPageLabel;
+        if (isset($prevPage)) {
+            $label = empty($prevPageLabel) ? $prevPage->getMenuTitle() : $prevPageLabel;
             $label = sprintf('<span class="%s-label-prev">%s</span>', $cssClass, $label);
             if ($prevPageIcon) {
                 $label = sprintf('<span class="%s-icon-prev">%s</span>%s', $cssClass, $prevPageIcon, $label);
             }
             $attribs = ['class' => $cssClass . '-link-prev'];
-            $replacements['{prev}'] = $this->createLink($prevPageItem->getRoute(), $label, $attribs);
+            $replacements['{prev}'] = $this->createLink($prevPage->getRoute(), $label, $attribs);
         }
 
-        if (isset($nextPageItem)) {
-            $label = empty($nextPageLabel) ? $nextPageItem->getMenuTitle() : $nextPageLabel;
+        if (isset($nextPage)) {
+            $label = empty($nextPageLabel) ? $nextPage->getMenuTitle() : $nextPageLabel;
             $label = sprintf('<span class="%s-label-next">%s</span>', $cssClass, $label);
             if ($nextPageIcon) {
                 $label = sprintf('%s<span class="%s-icon-next">%s</span>', $label, $cssClass, $nextPageIcon);
             }
             $attribs = ['class' => $cssClass . '-link-next'];
-            $replacements['{next}'] = $this->createLink($nextPageItem->getRoute(), $label, $attribs);
+            $replacements['{next}'] = $this->createLink($nextPage->getRoute(), $label, $attribs);
         }
 
         return strtr($template, $replacements);

@@ -94,8 +94,7 @@ final class Application
 
         setlocale(LC_ALL, $config->getAsString('locale'));
 
-        // Set slug generator to page and page item
-        PageItem::setSlugGenerator($this->container->get(SlugGenerator::class));
+        // Set slug generator to page
         Page::setSlugGenerator($this->container->get(SlugGenerator::class));
     }
 

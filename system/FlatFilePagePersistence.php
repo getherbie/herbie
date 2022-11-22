@@ -79,7 +79,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
         $content = file_read($path);
 
-        [$yaml, $segments] = $this->parseFileContent($content);
+        [$yaml, $segments] = self::parseFileContent($content);
 
         $data = Yaml::parse($yaml);
 
@@ -88,7 +88,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         }
 
         if (!isset($data['path'])) {
-            $data['path'] = $alias;
+            $data['path'] = $path;
         }
 
         if (!isset($data['modified'])) {
@@ -190,7 +190,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         return (string)preg_replace('/^([0-9]+[-]+)(.+)$/', '\\2', $filename);
     }
 
-    private function parseFileContent(string $content): array
+    public static function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
             define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));

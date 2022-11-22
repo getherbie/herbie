@@ -8,12 +8,12 @@ use Countable;
 use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<int, PageItem>
+ * @implements IteratorAggregate<int, Page>
  */
 final class PageList implements IteratorAggregate, Countable
 {
     /**
-     * @var PageItem[]
+     * @var Page[]
      */
     private array $items;
 
@@ -23,7 +23,7 @@ final class PageList implements IteratorAggregate, Countable
 
     /**
      * MenuList constructor.
-     * @param PageItem[] $items
+     * @param Page[] $items
      */
     public function __construct(array $items = [])
     {
@@ -32,7 +32,7 @@ final class PageList implements IteratorAggregate, Countable
         $this->pageTree = null;
     }
 
-    public function addItem(PageItem $item): void
+    public function addItem(Page $item): void
     {
         $route = $item->getRoute();
         $this->items[$route] = $item;
@@ -43,7 +43,7 @@ final class PageList implements IteratorAggregate, Countable
         return $this->items;
     }
 
-    public function getItem(string $route): ?PageItem
+    public function getItem(string $route): ?Page
     {
         return isset($this->items[$route]) ? $this->items[$route] : null;
     }
@@ -58,7 +58,7 @@ final class PageList implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function getRandom(): PageItem
+    public function getRandom(): Page
     {
         $routes = array_keys($this->items);
         $index = mt_rand(0, $this->count() - 1);
@@ -66,7 +66,7 @@ final class PageList implements IteratorAggregate, Countable
         return $this->items[$route];
     }
 
-    public function find(string $value, string $key): ?PageItem
+    public function find(string $value, string $key): ?Page
     {
         foreach ($this->items as $item) {
             if ($item->$key === $value) {
@@ -162,14 +162,14 @@ final class PageList implements IteratorAggregate, Countable
     {
         $items = [];
         $i = 0;
-        foreach ($this->items as $pageItem) {
-            if ($type && ($pageItem->getType() !== $type)) {
+        foreach ($this->items as $page) {
+            if ($type && ($page->getType() !== $type)) {
                 continue;
             }
             if ($i >= $limit) {
                 break;
             }
-            $items[] = $pageItem;
+            $items[] = $page;
             $i++;
         }
         return $items;
@@ -205,17 +205,17 @@ final class PageList implements IteratorAggregate, Countable
 
         // get items
         $items = ['__all__' => []];
-        foreach ($this->items as $pageItem) {
-            $pageType = $pageItem->getType();
+        foreach ($this->items as $page) {
+            $pageType = $page->getType();
 
-            $year = substr($pageItem->getDate(), 0, 4);
-            $month = substr($pageItem->getDate(), 5, 2);
+            $year = substr($page->getDate(), 0, 4);
+            $month = substr($page->getDate(), 5, 2);
             $key = $year . '-' . $month;
 
             $item = [
                 'year' => $year,
                 'month' => $month,
-                'date' => $pageItem->getDate(),
+                'date' => $page->getDate(),
                 'count' => 1
             ];
 
@@ -298,9 +298,9 @@ final class PageList implements IteratorAggregate, Countable
     private function createTaxonomyFor(string $dataType): array
     {
         $items = ['__all__' => []];
-        foreach ($this->items as $pageItem) {
-            $pageType = $pageItem->getType();
-            foreach ($pageItem->{$dataType} as $item) {
+        foreach ($this->items as $page) {
+            $pageType = $page->getType();
+            foreach ($page->{$dataType} as $item) {
                 // for all
                 if (isset($items['__all__'][$item])) {
                     $items['__all__'][$item]++;

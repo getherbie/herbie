@@ -69,7 +69,8 @@
   desc: The route of the page like `company/about-us`.
   type: string
 - name: page.segments
-  desc: The page content.
+  desc: The page content as associative key value array.
+    The content is lazy loaded and not available until this member variable is accessed.    
   type: array
 - name: page.tags
   desc: One or more tags that belongs to the page.
