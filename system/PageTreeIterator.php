@@ -59,7 +59,7 @@ final class PageTreeIterator implements RecursiveIterator
         return isset($this->children[$this->position]);
     }
 
-    public function getMenuItem(): PageItem
+    public function getMenuItem(): Page
     {
         return $this->children[$this->position]->getMenuItem();
     }

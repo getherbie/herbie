@@ -11,9 +11,9 @@ final class PageFactory
         return new Page($data, $segments);
     }
 
-    public function newPageItem(array $data = []): PageItem
+    public function newPageItem(array $data = []): Page
     {
-        return new PageItem($data);
+        return new Page($data);
     }
 
     public function newPageList(array $items = []): PageList
@@ -33,34 +33,34 @@ final class PageFactory
         $tree = new PageTree();
 
         // first go through all index pages
-        foreach ($pageList as $pageItem) {
-            if (!$this->isIndexPage($pageItem->getPath())) {
+        foreach ($pageList as $page) {
+            if (!$this->isIndexPage($page->getPath())) {
                 continue;
             }
-            $parentRoute = $pageItem->getParentRoute();
+            $parentRoute = $page->getParentRoute();
             $parent = $tree->findByRoute($parentRoute);
             if ($parent) {
-                $parent->addChild(new PageTree($pageItem));
+                $parent->addChild(new PageTree($page));
             }
         }
 
         // then go through all non-index pages
-        foreach ($pageList as $pageItem) {
-            if ($this->isIndexPage($pageItem->getPath())) {
+        foreach ($pageList as $page) {
+            if ($this->isIndexPage($page->getPath())) {
                 continue;
             }
-            $parentRoute = $pageItem->getParentRoute();
+            $parentRoute = $page->getParentRoute();
             $parent = $tree->findByRoute($parentRoute);
             if ($parent) {
-                $parent->addChild(new PageTree($pageItem));
+                $parent->addChild(new PageTree($page));
             }
         }
 
         return $tree;
     }
 
-    public function newPageTrail(array $pageItems): PageTrail
+    public function newPageTrail(array $pages): PageTrail
     {
-        return new PageTrail($pageItems);
+        return new PageTrail($pages);
     }
 }
