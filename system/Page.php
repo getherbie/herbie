@@ -28,7 +28,7 @@ use BadMethodCallException;
  * @property string $parent_id
  * @property string $parent_route
  * @property string $path
- * @property array<void>|array{string, int} $redirect
+ * @property array $redirect
  * @property string $route
  * @property null|string[] $segments
  * @property string[] $tags
@@ -59,7 +59,6 @@ final class Page implements ArrayAccess
     private string $parent_id;
     private string $parent_route;
     private string $path;
-    /** @var array{string, int} */
     private array $redirect;
     private string $route;
     /** @var null|string[] */
@@ -74,7 +73,33 @@ final class Page implements ArrayAccess
 
     public function __construct(array $data = [], ?array $segments = null)
     {
-        $this->initData($data);
+        // set defaults
+        $this->authors = [];
+        $this->cached = true;
+        $this->categories = [];
+        $this->content_type = 'text/html';
+        $this->created = '';
+        $this->customData = [];
+        $this->date = '';
+        $this->excerpt = '';
+        $this->format = 'raw';
+        $this->hidden = false;
+        $this->id = '';
+        $this->keep_extension = false;
+        $this->layout = 'default';
+        $this->menu_title = '';
+        $this->modified = '';
+        $this->parent_id = '';
+        $this->parent_route = '';
+        $this->path = '';
+        $this->redirect = [];
+        $this->route = '';
+        $this->tags = [];
+        $this->title = '';
+        $this->twig = true;
+        $this->type = 'page';
+
+        $this->setData($data);
         if ($segments !== null) {
             $this->setSegments($segments);
         }
@@ -120,42 +145,6 @@ final class Page implements ArrayAccess
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
-    }
-
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public function initData(array $data = []): void
-    {
-        // set defaults
-        $this->authors = [];
-        $this->cached = true;
-        $this->categories = [];
-        $this->content_type = 'text/html';
-        $this->created = '';
-        $this->customData = [];
-        $this->date = '';
-        $this->excerpt = '';
-        $this->format = 'raw';
-        $this->hidden = false;
-        $this->id = '';
-        $this->keep_extension = false;
-        $this->layout = 'default';
-        $this->menu_title = '';
-        $this->modified = '';
-        $this->parent_id = '';
-        $this->parent_route = '';
-        $this->path = '';
-        $this->redirect = [];
-        $this->route = '';
-        $this->tags = [];
-        $this->title = '';
-        $this->twig = true;
-        $this->type = 'page';
-
-        // set values
-        $this->setData($data);
     }
 
     public function getTitle(): string
@@ -212,7 +201,7 @@ final class Page implements ArrayAccess
     }
 
     /**
-     * @param string|array{string, int} $redirect
+     * @param string|array $redirect
      */
     public function setRedirect($redirect): void
     {
@@ -556,19 +545,6 @@ final class Page implements ArrayAccess
     {
         $this->excerpt = trim($excerpt);
     }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    /*private function setData(array $data): void
-    {
-        if (array_key_exists('data', $data)) {
-            throw new \InvalidArgumentException("Field data is not allowed.");
-        }
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
-        }
-    }*/
 
     public function isStartPage(): bool
     {
