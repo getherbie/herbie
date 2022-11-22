@@ -227,7 +227,9 @@ final class TwigPlusExtension extends AbstractExtension
             $href = $this->urlManager->createUrl($menuItem->getRoute());
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
         });
-        return $htmlTree->render();
+
+        [$currenRoute] = $this->urlManager->parseRequest();
+        return $htmlTree->render($currenRoute);
     }
 
     /**
