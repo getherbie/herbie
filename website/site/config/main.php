@@ -30,7 +30,8 @@ return [
         'urlManager' => [
             'niceUrls' => $isProduction,
             'rules' => [
-                ['blog/author/{author}', 'blog'],
+                ['recipes/category/{category}', 'recipes'],
+                /*['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
                 ['blog/tag/{tag}', 'blog'],
                 ['blog/{year}/{month}/{day}', 'blog', [
@@ -44,7 +45,7 @@ return [
                 ]],
                 ['blog/{year}', 'blog', [
                     'year' => '[0-9]{4}'
-                ]]
+                ]]*/
             ]
         ]
     ],

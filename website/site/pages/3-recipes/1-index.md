@@ -1,13 +1,13 @@
 ---
 title: Recipes
-layout: blog
+layout: recipe
 ---
 
 # Recipes
 
 {{ pages_filtered(routeParams) }}
 
-{% set items = site.pageList.filterItems('blog', 'blog', routeParams) %}
+{% set items = site.pageList.filterItems('recipe', 'recipes', routeParams) %}
 
 <div class="posts">
     {% for item in items %}

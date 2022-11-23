@@ -70,10 +70,10 @@ Redirect 301 /dokumentation/plugins/textile https://herbie.tebe.ch/doc/plugins
 Redirect 301 /dokumentation/plugins/twig https://herbie.tebe.ch/doc/plugins
 Redirect 301 /dokumentation/plugins/video https://herbie.tebe.ch/doc/plugins
 Redirect 301 /dokumentation/plugins/xmlsitemap https://herbie.tebe.ch/doc/plugins
-Redirect 301 /dokumentation/schnipsel https://herbie.tebe.ch/blog
-Redirect 301 /dokumentation/schnipsel/daten-ausgeben https://herbie.tebe.ch/blog
-Redirect 301 /dokumentation/schnipsel/google-sitemap https://herbie.tebe.ch/blog
-Redirect 301 /dokumentation/schnipsel/rss-feed https://herbie.tebe.ch/blog
+Redirect 301 /dokumentation/schnipsel https://herbie.tebe.ch/recipes
+Redirect 301 /dokumentation/schnipsel/daten-ausgeben https://herbie.tebe.ch/recipes
+Redirect 301 /dokumentation/schnipsel/google-sitemap https://herbie.tebe.ch/recipes
+Redirect 301 /dokumentation/schnipsel/rss-feed https://herbie.tebe.ch/recipes
 Redirect 301 /dokumentation/twig https://herbie.tebe.ch/doc/indepth
 Redirect 301 /dokumentation/twig/erweitern https://herbie.tebe.ch/doc/indepth
 Redirect 301 /dokumentation/twig/filter https://herbie.tebe.ch/doc/indepth/twig-filters
