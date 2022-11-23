@@ -62,7 +62,7 @@ final class Page implements ArrayAccess
     private array $redirect;
     private string $route;
     /** @var null|string[] */
-    private ?array $segments = null;
+    private ?array $segments;
     /** @var string[] */
     private array $tags;
     private string $title;
@@ -94,6 +94,7 @@ final class Page implements ArrayAccess
         $this->path = '';
         $this->redirect = [];
         $this->route = '';
+        $this->segments = null;
         $this->tags = [];
         $this->title = '';
         $this->twig = true;
