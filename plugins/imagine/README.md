@@ -33,6 +33,10 @@ return [
 ];
 ~~~
 
+## Filter sets
+
+To use Imagine in Herbie, Filter sets must be defined, each containing one or more filters.
+
 The following default filter set is always enabled.
 
 ~~~php
@@ -53,9 +57,6 @@ return [
 ];
 ~~~
 
-## Filter sets
-
-To use Imagine in Herbie, Filter sets must be defined, each containing one or more filters.
 In the following configuration example, we see two simple filter sets for scaling and cropping an image.
 
 ~~~php
