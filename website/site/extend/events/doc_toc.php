@@ -30,7 +30,7 @@ $renderSegmentEvent = function (RenderSegmentEvent $event) {
     $links = [];
     $replace = [];
     foreach ($matches[0] as $index => $search) {
-        $id = preg_replace('/[^a-zA-z0-9]/', '-', strtolower($matches[2][$index]));
+        $id = trim(preg_replace('/[^a-zA-z0-9]/', '-', strtolower($matches[2][$index])), '-');
         $url = $urlManager->createUrl($page->getRoute());
         $replace[] = [
             $matches[0][$index],
