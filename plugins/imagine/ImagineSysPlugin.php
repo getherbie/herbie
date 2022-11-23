@@ -50,7 +50,7 @@ final class ImagineSysPlugin extends Plugin
         ];
     }
 
-    public function imagineFunction(string $path, string $filter = 'default', array $attribs = []): string
+    public function imagineFunction(string $path, string $filterSet = 'default', array $attribs = []): string
     {
         $abspath = $this->alias->get('@media/' . $path);
 
@@ -65,11 +65,11 @@ final class ImagineSysPlugin extends Plugin
             );
         }
 
-        $sanitizedFilter = $this->sanatizeFilterName($filter);
+        $sanitizedFilter = $this->sanitizeFilterName($filterSet);
 
         $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanitizedFilter);
 
-        $cachePath = $this->applyFilter($path, $sanitizedFilter);
+        $cachePath = $this->applyFilterSet($path, $sanitizedFilter);
 
         $attribs['alt'] = $attribs['alt'] ?? '';
 
@@ -98,7 +98,7 @@ final class ImagineSysPlugin extends Plugin
     /**
      * Gets the browser path for the image and filter to apply.
      */
-    public function imagineFilter(string $path, string $filter): Markup
+    public function imagineFilter(string $path, string $filterSet = 'default'): Markup
     {
         $abspath = $this->alias->get('@media/' . $path);
 
@@ -107,22 +107,22 @@ final class ImagineSysPlugin extends Plugin
             return new Markup($dataSrc, 'utf8');
         }
 
-        $sanatizedFilter = $this->sanatizeFilterName($filter);
+        $sanitizedFilterSet = $this->sanitizeFilterName($filterSet);
 
         return new Markup(
-            $this->basePath . $this->applyFilter($path, $sanatizedFilter),
+            $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
             'utf8'
         );
     }
 
-    private function sanatizeFilterName(string $filter): string
+    private function sanitizeFilterName(string $filterSet): string
     {
-        if ($filter !== 'default') {
-            if ($this->config->check("plugins.imagine.filterSets.{$filter}") === false) {
-                $filter = 'default';
+        if ($filterSet !== 'default') {
+            if ($this->config->check("plugins.imagine.filterSets.{$filterSet}") === false) {
+                $filterSet = 'default';
             }
         }
-        return $filter;
+        return $filterSet;
     }
 
     private function getImageSize(string $cachePath): array
@@ -137,12 +137,12 @@ final class ImagineSysPlugin extends Plugin
         return [$size[0], $size[1]];
     }
 
-    protected function applyFilter(string $relpath, string $filter): string
+    protected function applyFilterSet(string $relpath, string $filterSet): string
     {
         $path = $this->alias->get('@media/' . $relpath);
 
-        $filterConfig = $this->config->getAsArray("plugins.imagine.filterSets.{$filter}");
-        $cachePath = $this->resolveCachePath($relpath, $filter);
+        $filterConfig = $this->config->getAsArray("plugins.imagine.filterSets.{$filterSet}");
+        $cachePath = $this->resolveCachePath($relpath, $filterSet);
 
         if (!empty($filterConfig['test'])) {
             if (is_file($cachePath)) {
@@ -339,7 +339,7 @@ final class ImagineSysPlugin extends Plugin
             $widthRatio = $width / $origWidth;
             $heightRatio = $height / $origHeight;
 
-            $ratio = $widthRatio > $heightRatio ? $widthRatio : $heightRatio;
+            $ratio = max($widthRatio, $heightRatio);
 
             $filter = new Resize(new Box($origWidth * $ratio, $origHeight * $ratio));
 
