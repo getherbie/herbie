@@ -53,3 +53,7 @@ The Twig `textile` filter can be applied as follows:
 And the Twig `textile` function like this:
 
     {{ textile("My Textile formated content") }}
+
+## More Information
+
+For more information, see <https://herbie.tebe.ch>.

@@ -53,3 +53,7 @@ The Twig `rest` filter can be applied as follows:
 And the Twig `rest` function like this:
 
     {{ rest("My reStructured text formated content") }}
+
+## More Information
+
+For more information, see <https://herbie.tebe.ch>.

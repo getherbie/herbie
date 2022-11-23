@@ -58,3 +58,7 @@ The Twig filter can be applied as follows:
 And the Twig function like this:
 
     {{ markdown("# Title") }}
+
+## More Information
+
+For more information, see <https://herbie.tebe.ch>.

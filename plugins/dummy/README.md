@@ -13,3 +13,7 @@ return [
     'enabledSysPlugins' => 'dummy'
 ];
 ~~~
+
+## More Information
+
+For more information, see <https://herbie.tebe.ch>.
