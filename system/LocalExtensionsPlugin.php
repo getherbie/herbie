@@ -11,16 +11,16 @@ use Twig\TwigTest;
 
 final class LocalExtensionsPlugin extends Plugin
 {
-    protected Application $application;
+    protected Config $config;
 
-    public function __construct(Application $application)
+    public function __construct(Config $config)
     {
-        $this->application = $application;
+        $this->config = $config;
     }
 
     public function consoleCommands(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathConsoleCommands');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathConsoleCommands');
         $files = $this->findPhpFilesInDir($dir);
 
         $commands = [];
@@ -33,7 +33,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function eventListeners(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathEventListeners');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathEventListeners');
         $files = $this->findPhpFilesInDir($dir);
 
         $events = [];
@@ -46,7 +46,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function applicationMiddlewares(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -59,7 +59,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function routeMiddlewares(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathRouteMiddlewares');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathRouteMiddlewares');
         $files = $this->findPhpFilesInDir($dir);
 
         $middlewares = [];
@@ -72,7 +72,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function twigFilters(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigFilters');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigFilters');
         $files = $this->findPhpFilesInDir($dir);
 
         $filters = [];
@@ -85,7 +85,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function twigGlobals(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigGlobals');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigGlobals');
         $files = $this->findPhpFilesInDir($dir);
 
         $globals = [];
@@ -98,7 +98,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function twigFunctions(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigFunctions');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigFunctions');
         $files = $this->findPhpFilesInDir($dir);
 
         $functions = [];
@@ -111,7 +111,7 @@ final class LocalExtensionsPlugin extends Plugin
 
     public function twigTests(): array
     {
-        $dir = $this->application->getConfig()->getAsString('plugins.LOCAL_EXT.pathTwigTests');
+        $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigTests');
         $files = $this->findPhpFilesInDir($dir);
 
         $tests = [];
