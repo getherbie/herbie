@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ page_title(delim=' / ', siteTitle='Herbie CMS', rootTitle='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
     <base href="{{ baseUrl == '' ? '/' : baseUrl }}">
-    {{ output_css() }}
+    {{ output_css(addTimestamp=true) }}
 </head>
 <body class="{{ body_class() }}">
 <div class="header">
@@ -108,7 +108,7 @@
         </div>
     </div>
 </div>
-{{ output_js() }}
+{{ output_js(addTimestamp=true) }}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre code[class*=language-]').forEach((el) => {

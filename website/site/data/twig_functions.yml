@@ -258,6 +258,10 @@
       type: string
       desc: The grouped CSS.
       default: 'null'
+    - name: addTimestamp
+      type: bool
+      desc: If true, a GET param with the modification timestamp of the file is added.
+      default: false      
   return:
     - void
     - The CSS assets
@@ -270,6 +274,10 @@
       type: string
       desc: The grouped JavaScript.
       default: 'null'
+    - name: addTimestamp
+      type: bool
+      desc: If true, a GET param with the modification timestamp of the file is added.
+      default: false
   return:
     - string
     - The JavaScript assets
