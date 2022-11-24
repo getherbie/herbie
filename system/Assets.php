@@ -53,16 +53,17 @@ final class Assets
         }
     }
 
-    public function outputCss(?string $group = null): string
+    public function outputCss(?string $group = null, bool $addTimestamp = false): string
     {
         $this->sort();
         $this->publish();
         $return = '';
         foreach ($this->collect(self::TYPE_CSS, $group) as $asset) {
             if (empty($asset['raw'])) {
+                $timestamp = $addTimestamp ? '?t=' . $asset['timestamp'] : '';
                 $return .= sprintf(
                     '<link href="%s" type="text/css" rel="stylesheet"%s>',
-                    $this->buildUrl($asset['path']),
+                    $this->buildUrl($asset['path']) . $timestamp,
                     $this->buildAttribs($asset['attr'])
                 );
             } else {
@@ -76,16 +77,17 @@ final class Assets
         return $return;
     }
 
-    public function outputJs(?string $group = null): string
+    public function outputJs(?string $group = null, bool $addTimestamp = false): string
     {
         $this->sort();
         $this->publish();
         $return = '';
         foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
             if (empty($asset['raw'])) {
+                $timestamp = $addTimestamp ? '?t=' . $asset['timestamp'] : '';
                 $return .= sprintf(
                     '<script src="%s"%s></script>',
-                    $this->buildUrl($asset['path']),
+                    $this->buildUrl($asset['path']) . $timestamp,
                     $this->buildAttribs($asset['attr'])
                 );
             } else {
@@ -117,7 +119,8 @@ final class Assets
             'attr' => $attr,
             'raw' => $raw,
             'pos' => $pos,
-            'counter' => ++self::$counter
+            'counter' => ++self::$counter,
+            'timestamp' => 0,
         ];
     }
 
@@ -165,7 +168,7 @@ final class Assets
 
     private function publish(): void
     {
-        foreach ($this->assets as $asset) {
+        foreach ($this->assets as $index => $asset) {
             if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
                 continue;
             }
@@ -192,6 +195,7 @@ final class Assets
             if ($copy) {
                 copy($srcPath, $dstPath);
             }
+            $this->assets[$index]['timestamp'] = file_mtime($dstPath);
             self::$published[$srcPath] = true;
         }
     }

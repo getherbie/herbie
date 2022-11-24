@@ -226,6 +226,9 @@ function handle_internal_webserver_assets(string $file): void
     }
 
     $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+    if (($pos = strpos($requestUri, '?')) !== false) {
+        $requestUri = substr($requestUri, 0, $pos);
+    }
 
     $mimeTypes = [
         'css' => 'text/css',

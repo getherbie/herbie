@@ -270,14 +270,14 @@ final class TwigCoreExtension extends AbstractExtension
         }
     }
 
-    public function functionOutputCss(?string $group = null): string
+    public function functionOutputCss(?string $group = null, bool $addTimestamp = false): string
     {
-        return $this->assets->outputCss($group);
+        return $this->assets->outputCss($group, $addTimestamp);
     }
 
-    public function functionOutputJs(?string $group = null): string
+    public function functionOutputJs(?string $group = null, bool $addTimestamp = false): string
     {
-        return $this->assets->outputJs($group);
+        return $this->assets->outputJs($group, $addTimestamp);
     }
 
     public function functionImage(
