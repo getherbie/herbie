@@ -518,6 +518,27 @@ nav.breadcrumb a:hover {
     color:#57534a;
 }
 
+.gc {
+    line-height: 1.3;
+}
+.gc-subheader {
+    margin-bottom: 1em;
+}
+.gc-entry {
+    font-size: 0.9em;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.gc-entry-text {
+    font-size: 0.9em;
+    color: rgba(0, 0, 0, 0.4);
+}
+.sidebar .gc-entry-author {
+    color: rgba(0, 0, 0, 0.4);
+    text-decoration: underline;
+}
+
 /* Media Queries */
 @media (min-width:980px) {
 }
