@@ -8,24 +8,24 @@ use Exception;
 
 const CACHE_FILE = __DIR__ . '/git_commits.cache';
 
-function commits_from_cache(): ?string
-{
-    $exists = file_exists(CACHE_FILE);
-    if (!$exists || (time() > strtotime('+2 hours', filemtime(CACHE_FILE)))) {
-        try {
-            $data = implode(file('https://github.com/getherbie/herbie/commits/2.x-develop.atom'));
-        } catch (Exception $e) {
-            return null;
-        }
-        file_put_contents(CACHE_FILE, $data);
-    } else {
-        $data = file_get_contents(CACHE_FILE);
-    }
-    return $data;
-}
-
 return ['git_commits', function () {
-    $commits = commits_from_cache();
+
+    $commits_from_cache = function (): ?string {
+        $exists = file_exists(CACHE_FILE);
+        if (!$exists || (time() > strtotime('+2 hours', filemtime(CACHE_FILE)))) {
+            try {
+                $data = implode(file('https://github.com/getherbie/herbie/commits/2.x-develop.atom'));
+            } catch (Exception $e) {
+                return null;
+            }
+            file_put_contents(CACHE_FILE, $data);
+        } else {
+            $data = file_get_contents(CACHE_FILE);
+        }
+        return $data;
+    };
+
+    $commits = $commits_from_cache();
     if ($commits === null) {
         return '';
     }
