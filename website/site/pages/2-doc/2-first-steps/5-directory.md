@@ -42,15 +42,14 @@ Normally one works exclusively in the `site` directory of the web project.
 This is usually structured as follows:
 
     site
-    ├── assets
     ├── config
-    │   └── main.yml
+    │   └── main.php
     ├── data
+    │   ├── animals.json
     │   └── persons.yml
     ├── extend
     │   ├── commands
     │   ├── events
-    │   ├── filters
     │   ├── middlewares_app
     │   ├── middlewares_route
     │   ├── plugins
@@ -74,6 +73,7 @@ This is usually structured as follows:
     │   └── log
     └── themes
         └─ default
+            ├── assets
             ├── default.html
             └── error.html
 
@@ -98,7 +98,7 @@ The following table shows what each of these files and directories stand for:
 
 ## .htaccess file
 
-If the option `components.urlManager.niceUrls` is enabled in the configuration, there must be an `.htaccess` file with the appropriate instructions in the `web` directory.
+If configuration option `components.urlManager.niceUrls` is enabled, there must be an `.htaccess` file with appropriate instructions in the `web` directory.
 
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f

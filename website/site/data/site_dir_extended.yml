@@ -1,12 +1,8 @@
 ---
-- name: assets
-  desc: The assets directory of Herbie.
-    It contains CSS and JS files that are copied to the web assets directory at runtime.
 - name: config
-  desc: The configuration directory with files in YAML format (the main file can also be a PHP file).
-    Configurations for plugins are stored as individual files in the plugins subfolder.
+  desc: The configuration directory with files in PHP format (the main file can also be a PHP file).
 - name: data
-  desc: The data directory where various data files in YAML format can be stored.
+  desc: The data directory where various data files in JSON or YAML format can be stored.
 - name: extend
   desc: The directory with various customized extensions.
 - name: extend/commands
@@ -44,3 +40,4 @@
   desc: Directory with theme directories and files.
 - name: themes/default
   desc: The directory with the default theme.
+    Besides template files it contains CSS and JS files that are copied to the web assets directory at runtime.
