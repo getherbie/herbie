@@ -97,13 +97,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testSnippetFunction(): void
-    {
-        $expected = 'Hi there';
-        $actual = $this->twig()->renderString('{{ snippet("@site/snippets/test.twig") }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testTaxonomyArchiveFunction(): void
     {
         $expected = '';
