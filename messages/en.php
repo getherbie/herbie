@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'herbieCMS' => 'Herbie CMS',
-    'pluginEnabledButNotFound' => 'Plugin "{plugin}" enabled but not found!',
+    'Herbie CMS' => 'Herbie CMS',
+    'Plugin {plugin} enabled but not found.' => 'Plugin "{plugin}" enabled but not found!',
 ];
