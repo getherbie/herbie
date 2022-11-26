@@ -16,6 +16,9 @@ use herbie\Translator;
 use herbie\UrlManager;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -91,6 +94,7 @@ final class TwigCoreExtension extends AbstractExtension
             new TwigFunction('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
             new TwigFunction('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
             new TwigFunction('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
+            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
             new TwigFunction('translate', [$this, 'functionTranslate']),
             new TwigFunction('url', [$this, 'functionUrl']),
             new TwigFunction('abs_url', [$this, 'functionAbsUrl']),
@@ -310,6 +314,17 @@ final class TwigCoreExtension extends AbstractExtension
     public function functionOutputJs(?string $group = null, bool $addTimestamp = false): string
     {
         return $this->assets->outputJs($group, $addTimestamp);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function functionSnippet(string $path, array $context = []): string
+    {
+        return $this->environment->render($path, $context);
     }
 
     public function functionImage(

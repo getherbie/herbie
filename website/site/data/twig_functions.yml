@@ -351,7 +351,7 @@
 - name: snippet
   code: >-
     {{ snippet("@site/custom-snippet.twig", {foo: "bar"}) }}
-  desc: Includes and renders a custom snippet. 
+  desc: Includes a snippet and outputs the rendered content of that file.
     Automatic escaping is disabled for all escaping strategies.
   see: []
   params:

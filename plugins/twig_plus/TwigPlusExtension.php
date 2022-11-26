@@ -58,7 +58,6 @@ final class TwigPlusExtension extends AbstractExtension
             new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
             new TwigFunction('page_title', [$this, 'functionPageTitle']),
             new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
-            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
             new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
             new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
             new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
@@ -368,17 +367,6 @@ final class TwigPlusExtension extends AbstractExtension
         string $class = 'sitemap'
     ): string {
         return $this->functionMenu($route, $maxDepth, $showHidden, $class);
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function functionSnippet(string $path, array $context = []): string
-    {
-        return $this->environment->render($path, $context);
     }
 
     /**
