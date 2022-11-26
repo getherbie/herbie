@@ -51,6 +51,7 @@ jobs:
   publish:
     name: CD - Push to server
     needs: test
+    if: github.ref == 'refs/heads/2.x'
     runs-on: ubuntu-latest
 
     steps:
