@@ -81,6 +81,7 @@ final class TwigCoreExtension extends AbstractExtension
         return [
             new TwigFunction('add_css', [$this, 'functionAddCss']),
             new TwigFunction('add_js', [$this, 'functionAddJs']),
+            new TwigFunction('css_classes', [$this, 'functionCssClasses'], ['needs_context' => true]),
             new TwigFunction('file_link', [$this, 'functionFileLink'], [
                 'is_safe' => ['html'],
                 'needs_context' => true
@@ -213,6 +214,37 @@ final class TwigCoreExtension extends AbstractExtension
         int $pos = 1
     ): void {
         $this->assets->addJs($paths, $attr, $group, $raw, $pos);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @return string
+     */
+    public function functionCssClasses(array $context): string
+    {
+        $page = 'error';
+        if (isset($context['page'])) {
+            $route = $context['page']->getRoute();
+            $page = !empty($route) ? $route : 'index';
+        }
+
+        $layout = 'default';
+        if (isset($context['page'])) {
+            $layout = $context['page']->getLayout();
+        }
+
+        $theme = 'default';
+        if (!empty($context['theme'])) {
+            $theme = $context['theme'];
+        }
+
+        $language = 'en';
+        if (isset($context['site'])) {
+            $language = $context['site']->getLanguage();
+        }
+
+        $class = sprintf('page-%s theme-%s layout-%s language-%s', $page, $theme, $layout, $language);
+        return str_replace(['/', '.'], '-', $class);
     }
 
     public function functionFileLink(

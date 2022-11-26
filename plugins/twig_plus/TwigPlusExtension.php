@@ -49,7 +49,6 @@ final class TwigPlusExtension extends AbstractExtension
         $options = ['is_safe' => ['html']];
         return [
             new TwigFunction('ascii_tree', [$this, 'functionAsciiTree'], $options),
-            new TwigFunction('body_class', [$this, 'functionBodyClass'], ['needs_context' => true]),
             new TwigFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
             new TwigFunction('listing', [$this, 'functionListing'], $options),
             new TwigFunction('menu', [$this, 'functionMenu'], $options),
@@ -84,37 +83,6 @@ final class TwigPlusExtension extends AbstractExtension
         $asciiTree = new PageTreeTextRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @return string
-     */
-    public function functionBodyClass(array $context): string
-    {
-        $page = 'error';
-        if (isset($context['page'])) {
-            $route = $context['page']->getRoute();
-            $page = !empty($route) ? $route : 'index';
-        }
-
-        $layout = 'default';
-        if (isset($context['page'])) {
-            $layout = $context['page']->getLayout();
-        }
-
-        $theme = 'default';
-        if (!empty($context['theme'])) {
-            $theme = $context['theme'];
-        }
-
-        $language = 'en';
-        if (isset($context['site'])) {
-            $language = $context['site']->getLanguage();
-        }
-
-        $class = sprintf('page-%s theme-%s layout-%s language-%s', $page, $theme, $layout, $language);
-        return str_replace(['/', '.'], '-', $class);
     }
 
     /**
