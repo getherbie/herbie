@@ -90,15 +90,6 @@
   return:
     - string
     - The tree rendered as ascii text
-- name: body_class
-  code: >-
-    {{ body_class() }}
-  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the HTML or body tag.
-    This allows to address any page, theme, layout or language via CSS selector.
-    Such a string looks like: "page-blog theme-default layout-blog language-en"'
-  return:
-    - string
-    - The string with CSS classes.
 - name: breadcrumb
   code: >-
    {{ breadcrumb(" / ", ["", "Homepage"], true) }}
@@ -120,6 +111,15 @@
   return:
     - string
     - The breadcrumb path as HTML.
+- name: css_classes
+  code: >-
+    {{ css_classes() }}
+  desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the html or body tag.
+    This allows to address any page, theme, layout or language via CSS selector.
+    Such a string looks like: "page-blog theme-default layout-blog language-en"'
+  return:
+    - string
+    - The string with CSS classes.
 - name: file
   code: >-
     {{ file("media/download.pdf", "Download", true, {class:"download"}) }}

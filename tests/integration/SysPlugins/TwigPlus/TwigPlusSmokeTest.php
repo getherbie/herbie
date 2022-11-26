@@ -32,13 +32,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testBodyClassFunction(): void
-    {
-        $expected = 'page-error theme-default layout-default language-de';
-        $actual = $this->twig()->renderString('{{ body_class() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testBreadcrumbFunction(): void
     {
         $expected = '<ul class="breadcrumb"><li><a href="/">Index</a></li></ul>';
