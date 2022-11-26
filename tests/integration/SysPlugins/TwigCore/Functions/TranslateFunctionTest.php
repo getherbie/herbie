@@ -29,18 +29,18 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
 
     public function testTranslateFromApp(): void
     {
-        $this->assertSame('Herbie CMS', $this->twig()->renderString('{{ translate("app", "herbieCMS") }}'));
+        $this->assertSame('Herbie CMS', $this->twig()->renderString('{{ translate("app", "Herbie CMS") }}'));
     }
 
     public function testTranslateFromPlugin(): void
     {
-        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "exampleTranslation") }}'));
+        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "Example translation") }}'));
     }
 
     public function testTranslateFromPluginWithParams(): void
     {
         $actual = $this->twig()->renderString(
-            '{{ translate("dummy", "exampleTranslationWithParamsOneAndTwo", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
+            '{{ translate("dummy", "Example translation with param {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
         );
         $this->assertSame('Beispiel-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);
     }
