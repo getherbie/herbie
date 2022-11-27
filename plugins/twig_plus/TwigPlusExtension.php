@@ -14,7 +14,6 @@ use herbie\PageTreeHtmlRenderer;
 use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
-use herbie\Site;
 use herbie\UrlManager;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -49,15 +48,15 @@ final class TwigPlusExtension extends AbstractExtension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new TwigFunction('ascii_tree', [$this, 'functionAsciiTree'], $options),
-            new TwigFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
-            new TwigFunction('listing', [$this, 'functionListing'], $options),
-            new TwigFunction('menu', [$this, 'functionMenu'], $options),
+            new TwigFunction('menu_ascii_tree', [$this, 'functionAsciiTree'], $options),
+            new TwigFunction('menu_breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new TwigFunction('menu_list', [$this, 'functionListing'], $options),
+            new TwigFunction('menu_pager', [$this, 'functionPager'], $options),
+            new TwigFunction('menu_sitemap', [$this, 'functionSitemap'], $options),
+            new TwigFunction('menu_tree', [$this, 'functionMenu'], $options),
             new TwigFunction('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
-            new TwigFunction('pager', [$this, 'functionPager'], $options),
             new TwigFunction('pages_filtered', [$this, 'functionPagesFiltered'], $options),
             new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
             new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
             new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
             new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
