@@ -70,7 +70,7 @@ final class TwigCoreExtension extends AbstractExtension
     {
         return [
             new TwigFilter('filesize', [$this, 'filterFilesize']),
-            new TwigFilter('filter', [$this, 'filterFilter'], ['is_variadic' => true]),
+            new TwigFilter('find', [$this, 'filterFind'], ['is_variadic' => true]),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
             new TwigFilter('strftime', [$this, 'filterStrftime']),
             new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
@@ -144,17 +144,10 @@ final class TwigCoreExtension extends AbstractExtension
     }
 
     /**
-     * @throws \Exception
-     * @todo Implement und document this twig filter
-     */
-
-    /**
-     * @param iterable $iterator
-     * @param array $selectors
-     * @return array
+     * @param string[] $selectors
      * @throws \Exception
      */
-    public function filterFilter(iterable $iterator, array $selectors = []): array
+    public function filterFind(iterable $iterator, array $selectors = []): iterable
     {
         if ($iterator instanceof \Traversable) {
             $data = iterator_to_array($iterator);

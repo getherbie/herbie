@@ -6,31 +6,36 @@
   return:
     - string
     - The file size in human readable format
-- name: filter
+- name: find
   code: >-
-    {{ site.pageList|filter("title^=this", "title~=is", "title$=great") }}
-  desc: "Filters a traversable list by one or more filters as variadic arguments. The filters are logical AND-connected. A filter can be one of the following:
-    <table>
-    <tr><td style='width:5%'>!=</td><td>Not equal</td></tr>
-    <tr><td>&gt;=</td><td>Greater than equal</td></tr>
-    <tr><td>&lt;=</td><td>Less than equal</td></tr>
-    <tr><td>*=</td><td>Contains</td></tr>
-    <tr><td>^=</td><td>Starts with</td></tr>
-    <tr><td>~=</td><td>Contains words</td></tr>
-    <tr><td>$=</td><td>Ends with</td></tr>
-    <tr><td>&</td><td>Bitwise and</td></tr>
+    {{ site.pageList|find("title^=this", "title~=is", "title$=great") }}
+  desc: >-
+    Find items of a traversable list by one or more selectors.      
+    Selectors are simple strings of text that specify fields and values. 
+    They are logical AND-connected and given as variadic arguments.
+    Selectors in Herbie are loosely based around the idea and syntax of CSS attribute selectors. 
+    A selector can be one of the following:
+    <table class="pure-table pure-table-horizontal">
+    <tr><td style='width:5%'>=</td><td>Equal to</td></tr>    
+    <tr><td>!=</td><td>Not equal to</td></tr>
+    <tr><td>&lt;</td><td>Less than</td></tr>    
     <tr><td>&gt;</td><td>Greater than</td></tr>
-    <tr><td>&lt;</td><td>Less than</td></tr>
-    <tr><td>=</td><td>Equals</td></tr>
-    </table>"
+    <tr><td>&lt;=</td><td>Less than or equal to</td></tr>
+    <tr><td>&gt;=</td><td>Greater than or equal to</td></tr>
+    <tr><td>*=</td><td>Contains phrase/text</td></tr>
+    <tr><td>~=</td><td>Contains all words</td></tr>
+    <tr><td>^=</td><td>Starts with phrase/text</td></tr>
+    <tr><td>$=</td><td>Ends with phrase/text</td></tr>
+    <tr><td>&</td><td>Bitwise AND</td></tr>
+    </table>
   params:
-    - name: filters
+    - name: selectors
       type: string
-      desc: One or more filters (optional, variadic)
+      desc: One or more selectors (optional, variadic)
       default:
   return:
-    - pageList
-    - The filtered page list
+    - iterable
+    - The items matching the given selectors
 - name: slugify
   code: >-
     {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}

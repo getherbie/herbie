@@ -387,6 +387,7 @@ final class HerbieInfoCest
             'e',
             'raw',
             'filesize',
+            'find',
             'slugify',
             'strftime',
             'visible',
