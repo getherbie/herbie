@@ -56,7 +56,9 @@ return [
             ]
         ],
         'simplesearch' => [
-            'usePageCache' => $isProduction
+            'config' => [
+                'usePageCache' => $isProduction
+            ]
         ],
     ]
 ];
