@@ -124,7 +124,7 @@ More precisely, only simple PHP files need to be created and placed in the appro
         </tr>
     </thead>
     <tbody>
-    {% for data in site.data.site_dir_extended|filter("name^=extend")|filter("name!=extend/plugins") %}
+    {% for data in site.data.site_dir_extended|find("name^=extend")|find("name!=extend/plugins") %}
         <tr>
             <td>site/{{ data.name }}</td>
             <td>{{ data.desc }}</td>
