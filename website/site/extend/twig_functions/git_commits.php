@@ -31,7 +31,7 @@ return ['git_commits', function () {
     }
     $xml = simplexml_load_string($commits);
     $markup = '<div class="gc">';
-    $markup .= sprintf('<h3 class="gc-header">%s</h3>', 'GitHub Activity');
+    $markup .= sprintf('<h4 class="gc-header">%s</h4>', 'GitHub Activity');
     $markup .= sprintf('<div class="gc-subheader">%s</div>', $xml->title);
     $i = 0;
     foreach ($xml->entry as $entry) {

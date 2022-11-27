@@ -245,6 +245,7 @@ table {
 }
 .sidebar h4 {
     margin-top:0;
+    margin-bottom:1em;
 }
 .sidebar ul {
     list-style-type:none;
@@ -256,7 +257,7 @@ table {
     line-height:1.7;
 }
 .sidebar .widget-blog {
-    padding-bottom:50px;
+    padding-bottom:2em;
 }
 .sidebar a {
     color:#57534A;
