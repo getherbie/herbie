@@ -8,33 +8,10 @@ layout: recipe
 {{ pages_filtered(routeParams) }}
 
 {% set items = site.pageList.filterItems('recipe', 'recipes', routeParams) %}
-
-<div class="posts">
-    {% for item in items %}
-    <section class="post">
-        <header class="post-header">
-            <h2 class="post-title">{{ page_link(item.route, item.title) }}</h2>
-        </header>
-        <div class="blog-meta">
-            {{ item.date|strftime("%e. %B %Y") }}
-        </div>
-        {% if item.image %}
-        <div class="post-image">
-            <a href="{{ url(item.route) }}">
-                <img class="pure-img"
-                     src="{{ item.image }}{# item.image|imagine('t560x260') #}"
-                     alt=""/></a>
-        </div>
-        {% endif %}
-        <div class="post-description">
-            <p>{{ item.excerpt }}</p>
-        </div>
-    </section>
-    {% else %}
-    <section class="post">
-        <div class="post-description">
-            <p>There are no entries available.</p>
-        </div>
-    </section>
-    {% endfor %}
-</div>
+{% for item in items %}
+<p class="post-title"><b>{{ page_link(item.route, item.title) }}</b><br>
+    {{ item.date|strftime("%e. %B %Y") }}
+</p>
+{% else %}
+<p>There are no entries available.</p>
+{% endfor %}

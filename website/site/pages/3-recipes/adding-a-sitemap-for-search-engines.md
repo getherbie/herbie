@@ -2,6 +2,7 @@
 title: Adding a Sitemap for Search Engines
 type: recipe
 layout: recipe
+date: 2022-11-23
 categories: [SEO]
 ---
 
