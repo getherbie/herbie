@@ -12,6 +12,7 @@ use herbie\PageTree;
 use herbie\PageTreeFilterIterator;
 use herbie\PageTreeIterator;
 use herbie\Selector;
+use herbie\Site;
 use herbie\Translator;
 use herbie\UrlManager;
 use Twig\Environment;
@@ -92,6 +93,7 @@ final class TwigCoreExtension extends AbstractExtension
             new TwigFunction('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
             new TwigFunction('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
             new TwigFunction('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
+            new TwigFunction('page_title', [$this, 'functionPageTitle'], ['needs_context' => true]),
             new TwigFunction('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
             new TwigFunction('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
             new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
@@ -372,6 +374,39 @@ final class TwigCoreExtension extends AbstractExtension
 
         $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
         return strtr($template, $replace);
+    }
+
+    /**
+     * @param array{site: Site} $context
+     */
+    public function functionPageTitle(
+        array $context,
+        string $delim = ' / ',
+        string $siteTitle = '',
+        string $rootTitle = '',
+        bool $reverse = false
+    ): string {
+        $pageTrail = $context['site']->getPageTrail();
+        $count = count($pageTrail);
+
+        $titles = [];
+
+        if (!empty($siteTitle)) {
+            $titles[] = $siteTitle;
+        }
+
+        foreach ($pageTrail as $item) {
+            if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
+                return $rootTitle;
+            }
+            $titles[] = $item->getTitle();
+        }
+
+        if (!empty($reverse)) {
+            $titles = array_reverse($titles);
+        }
+
+        return implode($delim, $titles);
     }
 
     public function functionTranslate(string $category = '', string $message = '', array $params = []): string

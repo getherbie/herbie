@@ -83,13 +83,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPageTitleFunction(): void
-    {
-        $expected = 'Index';
-        $actual = $this->twig()->renderString('{{ page_title() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testSitemapFunction(): void
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';

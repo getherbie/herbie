@@ -14,6 +14,7 @@ use herbie\PageTreeHtmlRenderer;
 use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
+use herbie\Site;
 use herbie\UrlManager;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -56,7 +57,6 @@ final class TwigPlusExtension extends AbstractExtension
             new TwigFunction('pager', [$this, 'functionPager'], $options),
             new TwigFunction('pages_filtered', [$this, 'functionPagesFiltered'], $options),
             new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new TwigFunction('page_title', [$this, 'functionPageTitle']),
             new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
             new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
             new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
@@ -328,36 +328,6 @@ final class TwigPlusExtension extends AbstractExtension
             'showDate' => $showDate,
             'title' => $title
         ]);
-    }
-
-    public function functionPagetitle(
-        string $delim = ' / ',
-        string $siteTitle = '',
-        string $rootTitle = '',
-        bool $reverse = false
-    ): string {
-        [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
-        $count = count($pageTrail);
-
-        $titles = [];
-
-        if (!empty($siteTitle)) {
-            $titles[] = $siteTitle;
-        }
-
-        foreach ($pageTrail as $item) {
-            if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
-                return $rootTitle;
-            }
-            $titles[] = $item->getTitle();
-        }
-
-        if (!empty($reverse)) {
-            $titles = array_reverse($titles);
-        }
-
-        return implode($delim, $titles);
     }
 
     public function functionSitemap(
