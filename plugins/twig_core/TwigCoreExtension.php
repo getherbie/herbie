@@ -12,10 +12,14 @@ use herbie\PageTree;
 use herbie\PageTreeFilterIterator;
 use herbie\PageTreeIterator;
 use herbie\Selector;
+use herbie\Site;
 use herbie\Translator;
 use herbie\UrlManager;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -81,6 +85,7 @@ final class TwigCoreExtension extends AbstractExtension
         return [
             new TwigFunction('add_css', [$this, 'functionAddCss']),
             new TwigFunction('add_js', [$this, 'functionAddJs']),
+            new TwigFunction('css_classes', [$this, 'functionCssClasses'], ['needs_context' => true]),
             new TwigFunction('file_link', [$this, 'functionFileLink'], [
                 'is_safe' => ['html'],
                 'needs_context' => true
@@ -88,8 +93,10 @@ final class TwigCoreExtension extends AbstractExtension
             new TwigFunction('file', [$this, 'functionFile'], ['is_safe' => ['html']]),
             new TwigFunction('image', [$this, 'functionImage'], ['is_safe' => ['html']]),
             new TwigFunction('page_link', [$this, 'functionPageLink'], ['is_safe' => ['html']]),
+            new TwigFunction('page_title', [$this, 'functionPageTitle'], ['needs_context' => true]),
             new TwigFunction('output_css', [$this, 'functionOutputCss'], ['is_safe' => ['html']]),
             new TwigFunction('output_js', [$this, 'functionOutputJs'], ['is_safe' => ['html']]),
+            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
             new TwigFunction('translate', [$this, 'functionTranslate']),
             new TwigFunction('url', [$this, 'functionUrl']),
             new TwigFunction('abs_url', [$this, 'functionAbsUrl']),
@@ -215,6 +222,37 @@ final class TwigCoreExtension extends AbstractExtension
         $this->assets->addJs($paths, $attr, $group, $raw, $pos);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     * @return string
+     */
+    public function functionCssClasses(array $context): string
+    {
+        $page = 'error';
+        if (isset($context['page'])) {
+            $route = $context['page']->getRoute();
+            $page = !empty($route) ? $route : 'index';
+        }
+
+        $layout = 'default';
+        if (isset($context['page'])) {
+            $layout = $context['page']->getLayout();
+        }
+
+        $theme = 'default';
+        if (!empty($context['theme'])) {
+            $theme = $context['theme'];
+        }
+
+        $language = 'en';
+        if (isset($context['site'])) {
+            $language = $context['site']->getLanguage();
+        }
+
+        $class = sprintf('page-%s theme-%s layout-%s language-%s', $page, $theme, $layout, $language);
+        return str_replace(['/', '.'], '-', $class);
+    }
+
     public function functionFileLink(
         array $context,
         string $path,
@@ -280,6 +318,17 @@ final class TwigCoreExtension extends AbstractExtension
         return $this->assets->outputJs($group, $addTimestamp);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function functionSnippet(string $path, array $context = []): string
+    {
+        return $this->environment->render($path, $context);
+    }
+
     public function functionImage(
         string $src,
         int $width = 0,
@@ -325,6 +374,39 @@ final class TwigCoreExtension extends AbstractExtension
 
         $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
         return strtr($template, $replace);
+    }
+
+    /**
+     * @param array{site: Site} $context
+     */
+    public function functionPageTitle(
+        array $context,
+        string $delim = ' / ',
+        string $siteTitle = '',
+        string $rootTitle = '',
+        bool $reverse = false
+    ): string {
+        $pageTrail = $context['site']->getPageTrail();
+        $count = count($pageTrail);
+
+        $titles = [];
+
+        if (!empty($siteTitle)) {
+            $titles[] = $siteTitle;
+        }
+
+        foreach ($pageTrail as $item) {
+            if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
+                return $rootTitle;
+            }
+            $titles[] = $item->getTitle();
+        }
+
+        if (!empty($reverse)) {
+            $titles = array_reverse($titles);
+        }
+
+        return implode($delim, $titles);
     }
 
     public function functionTranslate(string $category = '', string $message = '', array $params = []): string

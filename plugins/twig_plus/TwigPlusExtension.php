@@ -48,18 +48,15 @@ final class TwigPlusExtension extends AbstractExtension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new TwigFunction('ascii_tree', [$this, 'functionAsciiTree'], $options),
-            new TwigFunction('body_class', [$this, 'functionBodyClass'], ['needs_context' => true]),
-            new TwigFunction('breadcrumb', [$this, 'functionBreadcrumb'], $options),
-            new TwigFunction('listing', [$this, 'functionListing'], $options),
-            new TwigFunction('menu', [$this, 'functionMenu'], $options),
+            new TwigFunction('menu_ascii_tree', [$this, 'functionAsciiTree'], $options),
+            new TwigFunction('menu_breadcrumb', [$this, 'functionBreadcrumb'], $options),
+            new TwigFunction('menu_list', [$this, 'functionListing'], $options),
+            new TwigFunction('menu_pager', [$this, 'functionPager'], $options),
+            new TwigFunction('menu_sitemap', [$this, 'functionSitemap'], $options),
+            new TwigFunction('menu_tree', [$this, 'functionMenu'], $options),
             new TwigFunction('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
-            new TwigFunction('pager', [$this, 'functionPager'], $options),
             new TwigFunction('pages_filtered', [$this, 'functionPagesFiltered'], $options),
             new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new TwigFunction('page_title', [$this, 'functionPageTitle']),
-            new TwigFunction('sitemap', [$this, 'functionSitemap'], $options),
-            new TwigFunction('snippet', [$this, 'functionSnippet'], ['is_safe' => ['all']]),
             new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
             new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
             new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
@@ -84,37 +81,6 @@ final class TwigPlusExtension extends AbstractExtension
         $asciiTree = new PageTreeTextRenderer($filterIterator);
         $asciiTree->setMaxDepth($maxDepth);
         return $asciiTree->render();
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @return string
-     */
-    public function functionBodyClass(array $context): string
-    {
-        $page = 'error';
-        if (isset($context['page'])) {
-            $route = $context['page']->getRoute();
-            $page = !empty($route) ? $route : 'index';
-        }
-
-        $layout = 'default';
-        if (isset($context['page'])) {
-            $layout = $context['page']->getLayout();
-        }
-
-        $theme = 'default';
-        if (!empty($context['theme'])) {
-            $theme = $context['theme'];
-        }
-
-        $language = 'en';
-        if (isset($context['site'])) {
-            $language = $context['site']->getLanguage();
-        }
-
-        $class = sprintf('page-%s theme-%s layout-%s language-%s', $page, $theme, $layout, $language);
-        return str_replace(['/', '.'], '-', $class);
     }
 
     /**
@@ -363,36 +329,6 @@ final class TwigPlusExtension extends AbstractExtension
         ]);
     }
 
-    public function functionPagetitle(
-        string $delim = ' / ',
-        string $siteTitle = '',
-        string $rootTitle = '',
-        bool $reverse = false
-    ): string {
-        [$route] = $this->urlManager->parseRequest();
-        $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
-        $count = count($pageTrail);
-
-        $titles = [];
-
-        if (!empty($siteTitle)) {
-            $titles[] = $siteTitle;
-        }
-
-        foreach ($pageTrail as $item) {
-            if ((1 === $count) && $item->isStartPage() && !empty($rootTitle)) {
-                return $rootTitle;
-            }
-            $titles[] = $item->getTitle();
-        }
-
-        if (!empty($reverse)) {
-            $titles = array_reverse($titles);
-        }
-
-        return implode($delim, $titles);
-    }
-
     public function functionSitemap(
         string $route = '',
         int $maxDepth = -1,
@@ -400,17 +336,6 @@ final class TwigPlusExtension extends AbstractExtension
         string $class = 'sitemap'
     ): string {
         return $this->functionMenu($route, $maxDepth, $showHidden, $class);
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function functionSnippet(string $path, array $context = []): string
-    {
-        return $this->environment->render($path, $context);
     }
 
     /**

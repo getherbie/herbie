@@ -36,7 +36,6 @@ Thanks to its plugin system Herbie is highly customizable and brings support for
 Herbie implements the following PHP standard recommendations:
 
 * [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
-* [PSR-2](https://www.php-fig.org/psr/psr-2/) Coding Style Guide
 * [PSR-3](https://www.php-fig.org/psr/psr-3/) Logger Interface
 * [PSR-4](https://www.php-fig.org/psr/psr-4/) Autoloading Standard
 * [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP Message Interface
