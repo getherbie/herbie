@@ -7,7 +7,6 @@
 
 # Redirects for Herbie CMS v1.x
 Redirect 301 /adminpanel https://herbie.tebe.ch/
-Redirect 301 /atom.xml https://herbie.tebe.ch/
 #Redirect 301 /blog https://herbie.tebe.ch/
 Redirect 301 /blog/2014/02/04-herbie-ist-da https://herbie.tebe.ch/
 Redirect 301 /blog/2014/02/18-neue-demo-blogs https://herbie.tebe.ch/
