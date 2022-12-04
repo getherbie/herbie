@@ -48,23 +48,21 @@ final class TwigPlusExtension extends AbstractExtension
     {
         $options = ['is_safe' => ['html']];
         return [
-            new TwigFunction('menu_ascii_tree', [$this, 'functionAsciiTree'], $options),
-            new TwigFunction('menu_breadcrumb', [$this, 'functionBreadcrumb'], $options),
-            new TwigFunction('menu_list', [$this, 'functionListing'], $options),
-            new TwigFunction('menu_pager', [$this, 'functionPager'], $options),
-            new TwigFunction('menu_sitemap', [$this, 'functionSitemap'], $options),
-            new TwigFunction('menu_tree', [$this, 'functionMenu'], $options),
-            new TwigFunction('page_taxonomies', [$this, 'functionPageTaxonomies'], $options),
-            new TwigFunction('pages_filtered', [$this, 'functionPagesFiltered'], $options),
-            new TwigFunction('pages_recent', [$this, 'functionPagesRecent'], $options),
-            new TwigFunction('taxonomy_archive', [$this, 'functionTaxonomyArchive'], $options),
-            new TwigFunction('taxonomy_authors', [$this, 'functionTaxonomyAuthors'], $options),
-            new TwigFunction('taxonomy_categories', [$this, 'functionTaxonomyCategories'], $options),
-            new TwigFunction('taxonomy_tags', [$this, 'functionTaxonomyTags'], $options)
+            new TwigFunction('menu_ascii_tree', [$this, 'menuAsciiTree'], $options),
+            new TwigFunction('menu_breadcrumb', [$this, 'menuBreadcrumb'], $options),
+            new TwigFunction('menu_list', [$this, 'menuList'], $options),
+            new TwigFunction('menu_pager', [$this, 'menuPager'], $options),
+            new TwigFunction('menu_sitemap', [$this, 'menuSitemap'], $options),
+            new TwigFunction('menu_tree', [$this, 'menuTree'], $options),
+            new TwigFunction('page_taxonomies', [$this, 'pageTaxonomies'], $options),
+            new TwigFunction('taxonomy_archive', [$this, 'taxonomyArchive'], $options),
+            new TwigFunction('taxonomy_authors', [$this, 'taxonomyAuthors'], $options),
+            new TwigFunction('taxonomy_categories', [$this, 'taxonomyCategories'], $options),
+            new TwigFunction('taxonomy_tags', [$this, 'taxonomyTags'], $options)
         ];
     }
 
-    public function functionAsciiTree(
+    public function menuAsciiTree(
         string $route = '',
         int $maxDepth = -1,
         bool $showHidden = false
@@ -86,7 +84,7 @@ final class TwigPlusExtension extends AbstractExtension
     /**
      * @param array{0: string, 1?: string}|string $homeLink
      */
-    public function functionBreadcrumb(
+    public function menuBreadcrumb(
         string $delim = '',
         $homeLink = '',
         bool $reverse = false
@@ -133,7 +131,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionListing(
+    public function menuList(
         ?PageList $pageList = null,
         string $filter = '',
         string $sort = '',
@@ -170,7 +168,7 @@ final class TwigPlusExtension extends AbstractExtension
         return $this->environment->render($template, ['pagination' => $pagination]);
     }
 
-    public function functionMenu(
+    public function menuTree(
         string $route = '',
         int $maxDepth = -1,
         bool $showHidden = false,
@@ -203,7 +201,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionPageTaxonomies(
+    public function pageTaxonomies(
         ?Page $page = null,
         string $pageRoute = '',
         bool $renderAuthors = true,
@@ -223,7 +221,7 @@ final class TwigPlusExtension extends AbstractExtension
     /**
      * @throws \Exception
      */
-    public function functionPager(
+    public function menuPager(
         string $limit = '',
         string $prevPageLabel = '',
         string $nextPageLabel = '',
@@ -287,55 +285,13 @@ final class TwigPlusExtension extends AbstractExtension
         return strtr($template, $replacements);
     }
 
-    /**
-     * @param array<string, string> $routeParams
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function functionPagesFiltered(
-        array $routeParams,
-        string $template = '@template/pages/filtered.twig'
-    ): string {
-        return $this->environment->render($template, [
-            'routeParams' => $routeParams
-        ]);
-    }
-
-    /**
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function functionPagesRecent(
-        ?PageList $pageList = null,
-        string $dateFormat = '%e. %B %Y',
-        int $limit = 5,
-        ?string $pageType = null,
-        bool $showDate = false,
-        string $title = 'Recent posts',
-        string $template = '@template/pages/recent.twig'
-    ): string {
-        if ($pageList === null) {
-            $pageList = $this->pageRepository->findAll();
-        }
-        $recentPages = $pageList->getRecent($limit, $pageType);
-        return $this->environment->render($template, [
-            'recentPages' => $recentPages,
-            'dateFormat' => $dateFormat,
-            'pageType' => $pageType,
-            'showDate' => $showDate,
-            'title' => $title
-        ]);
-    }
-
-    public function functionSitemap(
+    public function menuSitemap(
         string $route = '',
         int $maxDepth = -1,
         bool $showHidden = false,
         string $class = 'sitemap'
     ): string {
-        return $this->functionMenu($route, $maxDepth, $showHidden, $class);
+        return $this->menuTree($route, $maxDepth, $showHidden, $class);
     }
 
     /**
@@ -343,7 +299,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionTaxonomyArchive(
+    public function taxonomyArchive(
         ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
@@ -369,7 +325,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionTaxonomyAuthors(
+    public function taxonomyAuthors(
         ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
@@ -395,7 +351,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionTaxonomyCategories(
+    public function taxonomyCategories(
         ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',
@@ -421,7 +377,7 @@ final class TwigPlusExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function functionTaxonomyTags(
+    public function taxonomyTags(
         ?PageList $pageList = null,
         string $pageRoute = '',
         string $pageType = '',

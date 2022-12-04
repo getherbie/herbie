@@ -69,20 +69,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPagesFilteredFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ pages_filtered([]) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testPagesRecentFunction(): void
-    {
-        $expected = '<div class="widget-blog widget-blog-recent-posts"><h4>Recent posts</h4><ul><li><span class="link link--internal"><a href="/" class="link__label">Index</a></span></li></ul></div>';
-        $actual = $this->twig()->renderString('{{ pages_recent(limit=1) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testMenuSitemapFunction(): void
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';

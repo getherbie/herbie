@@ -442,8 +442,6 @@ final class HerbieInfoCest
             'menu_sitemap',
             'menu_tree',
             'page_taxonomies',
-            'pages_filtered',
-            'pages_recent',
             'taxonomy_archive',
             'taxonomy_authors',
             'taxonomy_categories',
