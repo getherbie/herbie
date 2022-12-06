@@ -18,7 +18,7 @@ return [
         ]
     ],
     'enabledPlugins' => '',
-    'enabledSysPlugins' => 'twig_core,twig_plus,markdown,rest,textile,imagine,dummy',
+    'enabledSysPlugins' => 'twig,markdown,rest,textile,imagine,dummy',
     'plugins' => [
         'imagine' => [
             'test' => true,

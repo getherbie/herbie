@@ -53,13 +53,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPageTaxonomiesFunction(): void
-    {
-        $expected = '<div class="blog-meta"></div>';
-        $actual = $this->twig()->renderString('{{ page_taxonomies() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testMenuPagerFunction(): void
     {
         $expected = '<div class="pager">'
@@ -73,34 +66,6 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
         $actual = $this->twig()->renderString('{{ menu_sitemap(maxDepth=0) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyArchiveFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_archive() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyAuthorsFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_authors() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyCategoriesFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_categories() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyTagsFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_tags() }}');
         $this->assertEquals($expected, $actual);
     }
 }
