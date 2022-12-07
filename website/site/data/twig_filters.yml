@@ -1,5 +1,5 @@
 ---
-- name: filesize
+- name: format_size
   code: >-
     {{ 12345678|format_size }}
   desc: Returns file size in a human readable format (B, KB, MB, GB, TB, PB).
@@ -43,7 +43,7 @@
   return:
     - string
     - The slugified string
-- name: strftime
+- name: format_date
   code: >-
     {{ "2022-09-13"|format_date("%Y-%m-%d") }}
   desc: Formats a local time/date according to locale settings. 
