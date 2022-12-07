@@ -22,8 +22,8 @@
             <ul>
                 {% for pageItem in recentPages %}
                     <li>
-                        {{ page_link(pageItem.route, pageItem.title) }}
-                        {% if options.showDate %}<br>{{ pageItem.date|strftime(options.dateFormat) }}{% endif %}
+                        {{ link_page(pageItem.route, pageItem.title) }}
+                        {% if options.showDate %}<br>{{ pageItem.date|format_date(options.dateFormat) }}{% endif %}
                     </li>
                 {% endfor %}
             </ul>

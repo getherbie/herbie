@@ -56,7 +56,7 @@ Instead we retrieve a page list and iterate over all pages and output their URL 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for page in site.pageList %}
 <url>
-    <loc>{{ abs_url(page.route) }}</loc>
+    <loc>{{ url_abs(page.route) }}</loc>
     {% if(item.date) %}
         <lastmod>{{ page.date|date("c") }}</lastmod>
     {% endif %}
@@ -103,7 +103,7 @@ So, create a new page `robots.txt` in the `site/pages` folder with the following
     ---
     User-agent: *
     Allow: /
-    Sitemap: {{ abs_url('sitemap.xml') }}
+    Sitemap: {{ url_abs('sitemap.xml') }}
 {% endverbatim %}
 
 In this case, we allow all robots on all paths.

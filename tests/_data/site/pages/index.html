@@ -4,21 +4,21 @@ title: Index
 
 <h1>Herbie Tests</h1>
 
-{{ 100000|filesize }}
+{{ 100000|format_size }}
 
 {{ menu_sitemap() }}
 
 <h2>Downloads</h2>
 
-{{ file_link('favicon.ico', 'File', true) }}
+{{ link_file('favicon.ico', 'File', true) }}
 
-<a href="{{ url('/download/dummy.pdf') }}">Download</a>
+<a href="{{ url_rel('/download/dummy.pdf') }}">Download</a>
 
 <ul>
-    <li>{{ file_link('dummy.pdf') }}</li>
-    <li>{{ file_link('dummy.pdf', 'Dummy', false) }}</li>
-    <li>{{ file_link('dummy.pdf', 'Dummy', true) }}</li>
-    <li>{{ file_link('dummy.pdf', 'Dummy', true, { target:"_blank"}) }}</li>
+    <li>{{ link_file('dummy.pdf') }}</li>
+    <li>{{ link_file('dummy.pdf', 'Dummy', false) }}</li>
+    <li>{{ link_file('dummy.pdf', 'Dummy', true) }}</li>
+    <li>{{ link_file('dummy.pdf', 'Dummy', true, { target:"_blank"}) }}</li>
 </ul>
 
 <h2>Imagine</h2>
@@ -36,13 +36,13 @@ title: Index
 <h2>Links</h2>
 
 <ul>
-    <li>{{ page_link('adfsafsdf', 'About') }}</li>
-    <li>{{ page_link('about', 'About') }}</li>
-    <li>{{ page_link('https://example.com/', 'About') }}</li>
+    <li>{{ link_page('adfsafsdf', 'About') }}</li>
+    <li>{{ link_page('about', 'About') }}</li>
+    <li>{{ link_page('https://example.com/', 'About') }}</li>
 </ul>
 
 <h2>Mailto-Links</h2>
 
 <ul>
-    <li>{{ mail_link('me@example.com', 'John Doe') }}</li>
+    <li>{{ link_mail('me@example.com', 'John Doe') }}</li>
 </ul>
