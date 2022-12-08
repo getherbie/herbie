@@ -7,17 +7,24 @@
                 <div class="pure-u-1 pure-u-md-3-4">
                     <div class="content">
                         {{ content.default|raw }}
-                        {# page_taxonomies(page, pageRoute='recipes') #}
                     </div>
                 </div>
                 <div class="pure-u-1 pure-u-md-1-4">
                     <div class="sidebar">
                         {{ include('includes/simplesearch.twig') }}
-                        {{ pages_recent(limit=3, pageType='recipe', showDate=false) }}
-                        {{ taxonomy_categories(pageRoute='recipes', pageType='recipe', showCount=true) }}
-                        {# taxonomy_tags(pageRoute='recipes', pageType='recipe', showCount=true) #}
-                        {# taxonomy_authors(pageRoute='recipes', pageType='recipe', showCount=true) #}
-                        {# taxonomy_archive(pageRoute='recipes', pageType='recipe', showCount=true) #}
+                        {% set recentPages = site.pageList.getRecent(3, 'recipe') %}
+                        {% if recentPages|length > 0 %}
+                            <div class="widget widget-pages-recent">
+                                <h4 class="widget-pages-recent-title">Recent recipes</h4>
+                                <ul class="widget-pages-recent-list">
+                                    {% for pageItem in recentPages %}
+                                        <li class="widget-pages-recent-item">
+                                            {{ link_page(pageItem.route, pageItem.title, {class: "widget-pages-recent-item-link"}) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

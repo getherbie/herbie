@@ -1,4 +1,4 @@
-{% for item in attribute(site.data, type) %}
+{% for item in attribute(site.data, type)|sort((a, b) => a.name <=> b.name) %}
 <div class="doc-function">
     <h2>{{ attribute(item, 'name') }}</h2>
     <p>

@@ -8,16 +8,16 @@ hidden: true
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>Herbie CMS Feed</title>
     <subtitle>Create small but fully functional websites or blogs in no time and with little effort 👌</subtitle>
-    <link href="{{ abs_url('atom.xml') }}" rel="self" />
-    <link href="{{ abs_url('/') }}" />
-    <id>{{ abs_url('/') }}</id>
+    <link href="{{ url_abs('atom.xml') }}" rel="self" />
+    <link href="{{ url_abs('/') }}" />
+    <id>{{ url_abs('/') }}</id>
     <updated>{{ "now"|date('r') }}</updated>
     {% for item in site.pageList %}
         {% if item.title != '' %}
         <entry>
             <title>{{ item.title }} / Herbie CMS</title>
-            <link href="{{ abs_url(item.route) }}"/>
-            <id>{{ abs_url(item.route) }}</id>
+            <link href="{{ url_abs(item.route) }}"/>
+            <id>{{ url_abs(item.route) }}</id>
             {% if item.date %}<published>{{ item.date|date("c") }}</published>{% endif %}
             {% if item.date %}<updated>{{ item.date|date("c") }}</updated>{% endif %}
             {% if item.abstract %}<summary>{{ item.abstract }}</summary>{% endif %}

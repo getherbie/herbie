@@ -10,7 +10,7 @@ return [
         'layouts' => 'twig'
     ],
     'enabledPlugins' => 'simplesearch,simplecontact',
-    'enabledSysPlugins' => 'twig_core,twig_plus,imagine,markdown',
+    'enabledSysPlugins' => 'twig,imagine,markdown',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml'
