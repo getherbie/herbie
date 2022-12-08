@@ -13,7 +13,7 @@ use BadMethodCallException;
  * @property bool $cached
  * @property-read string $cacheId
  * @property string[] $categories
- * @property string $content_type
+ * @property string $contentType
  * @property string $created
  * @property array<int|string, mixed> $customData
  * @property string $date
@@ -21,12 +21,12 @@ use BadMethodCallException;
  * @property string $format
  * @property bool $hidden
  * @property string $id
- * @property bool $keep_extension
+ * @property bool $keepExtension
  * @property string $layout
- * @property string $menu_title
+ * @property string $menuTitle
  * @property string $modified
- * @property string $parent_id
- * @property string $parent_route
+ * @property string $parentId
+ * @property string $parentRoute
  * @property string $path
  * @property array $redirect
  * @property string $route
@@ -43,7 +43,7 @@ final class Page implements ArrayAccess
     private bool $cached;
     /** @var string[] */
     private array $categories;
-    private string $content_type;
+    private string $contentType;
     private string $created;
     /** @var array<int|string, mixed> */
     private array $customData;
@@ -52,12 +52,12 @@ final class Page implements ArrayAccess
     private string $format;
     private bool $hidden;
     private string $id;
-    private bool $keep_extension;
+    private bool $keepExtension;
     private string $layout;
-    private string $menu_title;
+    private string $menuTitle;
     private string $modified;
-    private string $parent_id;
-    private string $parent_route;
+    private string $parentId;
+    private string $parentRoute;
     private string $path;
     private array $redirect;
     private string $route;
@@ -77,7 +77,7 @@ final class Page implements ArrayAccess
         $this->authors = [];
         $this->cached = true;
         $this->categories = [];
-        $this->content_type = 'text/html';
+        $this->contentType = 'text/html';
         $this->created = '';
         $this->customData = [];
         $this->date = '';
@@ -85,12 +85,12 @@ final class Page implements ArrayAccess
         $this->format = 'raw';
         $this->hidden = false;
         $this->id = '';
-        $this->keep_extension = false;
+        $this->keepExtension = false;
         $this->layout = 'default';
-        $this->menu_title = '';
+        $this->menuTitle = '';
         $this->modified = '';
-        $this->parent_id = '';
-        $this->parent_route = '';
+        $this->parentId = '';
+        $this->parentRoute = '';
         $this->path = '';
         $this->redirect = [];
         $this->route = '';
@@ -185,15 +185,15 @@ final class Page implements ArrayAccess
 
     public function getMenuTitle(): string
     {
-        if ($this->menu_title !== '') {
-            return $this->menu_title;
+        if ($this->menuTitle !== '') {
+            return $this->menuTitle;
         }
         return $this->title;
     }
 
     public function setMenuTitle(string $menuTitle): void
     {
-        $this->menu_title = trim($menuTitle);
+        $this->menuTitle = trim($menuTitle);
     }
 
     public function getRedirect(): array
@@ -261,22 +261,22 @@ final class Page implements ArrayAccess
 
     public function setParentId(string $parentId): void
     {
-        $this->parent_id = trim($parentId);
+        $this->parentId = trim($parentId);
     }
 
     public function getParentId(): string
     {
-        return $this->parent_id;
+        return $this->parentId;
     }
 
     public function setParentRoute(string $parentRoute): void
     {
-        $this->parent_route = trim($parentRoute);
+        $this->parentRoute = trim($parentRoute);
     }
 
     public function getParentRoute(): string
     {
-        return $this->parent_route;
+        return $this->parentRoute;
     }
 
     public function getPath(): string
@@ -499,22 +499,22 @@ final class Page implements ArrayAccess
 
     public function getKeepExtension(): bool
     {
-        return $this->keep_extension;
+        return $this->keepExtension;
     }
 
     public function setKeepExtension(bool $keepExtension): void
     {
-        $this->keep_extension = $keepExtension;
+        $this->keepExtension = $keepExtension;
     }
 
     public function getContentType(): string
     {
-        return $this->content_type;
+        return $this->contentType;
     }
 
     public function setContentType(string $contentType): void
     {
-        $this->content_type = trim($contentType);
+        $this->contentType = trim($contentType);
     }
 
     public function getCached(): bool

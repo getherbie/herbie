@@ -119,7 +119,6 @@ final class PageTest extends \Codeception\Test\Unit
         Page::unsetSlugGenerator();
     }
 
-    // string $content_type
     public function testContentType()
     {
         // default value
@@ -129,8 +128,8 @@ final class PageTest extends \Codeception\Test\Unit
         $page->setContentType(" application/json \t"); // with whitespace
         $this->assertEquals('application/json', $page->getContentType());
         // magic setter/getter
-        $page->content_type = "\n application/xml "; // with whitespace
-        $this->assertEquals('application/xml', $page->content_type);
+        $page->contentType = "\n application/xml "; // with whitespace
+        $this->assertEquals('application/xml', $page->contentType);
     }
 
     // string $created
@@ -233,11 +232,11 @@ final class PageTest extends \Codeception\Test\Unit
         // setter/getter
         $page->setKeepExtension(true);
         $this->assertTrue($page->getKeepExtension());
-        $this->assertTrue(isset($page->keep_extension));
+        $this->assertTrue(isset($page->keepExtension));
         // magic setter/getter
-        $page->keep_extension = false;
-        $this->assertFalse($page->keep_extension);
-        $this->assertFalse(!isset($page->keep_extension));
+        $page->keepExtension = false;
+        $this->assertFalse($page->keepExtension);
+        $this->assertFalse(!isset($page->keepExtension));
     }
 
     // string $layout
@@ -267,8 +266,8 @@ final class PageTest extends \Codeception\Test\Unit
         $page->setMenuTitle(" Title \t"); // with whitespace
         $this->assertEquals('Title', $page->getMenuTitle());
         // magic setter/getter
-        $page->menu_title = "\n New Title "; // with whitespace
-        $this->assertEquals('New Title', $page->menu_title);
+        $page->menuTitle = "\n New Title "; // with whitespace
+        $this->assertEquals('New Title', $page->menuTitle);
     }
 
     // string $modified
@@ -431,19 +430,19 @@ final class PageTest extends \Codeception\Test\Unit
             'authors' => [],
             'cached' => true,
             'categories' => [],
-            'content_type' => 'text/html',
+            'contentType' => 'text/html',
             'created' => '',
             'date' => '',
             'excerpt' => '',
             'format' => 'raw',
             'hidden' => false,
             'id' => '@page/index.md',
-            'keep_extension' => false,
+            'keepExtension' => false,
             'layout' => 'default',
-            'menu_title' => '',
+            'menuTitle' => '',
             'modified' => '',
-            'parent_id' => '',
-            'parent_route' => '',
+            'parentId' => '',
+            'parentRoute' => '',
             'path' => dirname(__DIR__) . '/_data/site/pages/herbie-info.html',
             'redirect' => ['test', 302],
             'route' => '',
@@ -613,19 +612,19 @@ final class PageTest extends \Codeception\Test\Unit
             'authors' => [],
             'cached' => true,
             'categories' => [],
-            'content_type' => 'text/html',
+            'contentType' => 'text/html',
             'created' => '',
             'date' => '2013-12-24T01:00:00+01:00',
             'excerpt' => 'This is a short text.',
             'format' => 'markdown',
             'hidden' => true,
             'id' => '@page/pagedata.md',
-            'keep_extension' => false,
+            'keepExtension' => false,
             'layout' => 'layout.html',
-            'menu_title' => '',
+            'menuTitle' => '',
             'modified' => '2022-09-13T04:43:13+02:00',
-            'parent_id' => '@page/index.md',
-            'parent_route' => '',
+            'parentId' => '@page/index.md',
+            'parentRoute' => '',
             'path' => '@page/pagedata.md',
             'redirect' => ['test', 301],
             'route' => 'pagedata',
@@ -641,7 +640,7 @@ final class PageTest extends \Codeception\Test\Unit
         ];
 
         $expected = array_merge($data, ['segments' => []]);
-        $expected['menu_title'] = $expected['title'];
+        $expected['menuTitle'] = $expected['title'];
 
         $page = (new PageFactory())->newPage($data, []);
         $this->assertEquals($expected, $page->toArray());

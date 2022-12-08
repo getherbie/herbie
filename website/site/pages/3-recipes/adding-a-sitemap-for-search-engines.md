@@ -40,8 +40,8 @@ First, add a new page called `sitemap.xml` in the `site.pages` folder with the f
 
     ---
     layout: ""
-    content_type: text/xml
-    keep_extension: true
+    contentType: text/xml
+    keepExtension: true
     ---
 
 ## Creating the XML entries
@@ -56,7 +56,7 @@ Instead we retrieve a page list and iterate over all pages and output their URL 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for page in site.pageList %}
 <url>
-    <loc>{{ url_abs(page.route) }}</loc>
+    <loc>{{ urlAbs(page.route) }}</loc>
     {% if(item.date) %}
         <lastmod>{{ page.date|date("c") }}</lastmod>
     {% endif %}
@@ -98,12 +98,12 @@ So, create a new page `robots.txt` in the `site/pages` folder with the following
 {% verbatim %}
     ---
     layout: ""
-    content_type: text/plain
-    keep_extension: true
+    contentType: text/plain
+    keepExtension: true
     ---
     User-agent: *
     Allow: /
-    Sitemap: {{ url_abs('sitemap.xml') }}
+    Sitemap: {{ urlAbs('sitemap.xml') }}
 {% endverbatim %}
 
 In this case, we allow all robots on all paths.

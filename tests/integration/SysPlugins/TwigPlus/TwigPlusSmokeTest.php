@@ -28,28 +28,28 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         └ Alpha Index
           └ Alpha Delta\n
         STRING;
-        $actual = $this->twig()->renderString('{{ menu_ascii_tree() }}');
+        $actual = $this->twig()->renderString('{{ menuAsciiTree() }}');
         $this->assertEquals($expected, $actual);
     }
 
     public function testMenuBreadcrumbFunction(): void
     {
         $expected = '<ul class="breadcrumb"><li><a href="/">Index</a></li></ul>';
-        $actual = $this->twig()->renderString('{{ menu_breadcrumb() }}');
+        $actual = $this->twig()->renderString('{{ menuBreadcrumb() }}');
         $this->assertEquals($expected, $actual);
     }
 
     public function testMenuListFunction(): void
     {
         $expected = '<div class="listing"><section><article><h2><span class="link link--internal"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
-        $actual = $this->twig()->renderString('{{ menu_list(filter="route|alpha") }}');
+        $actual = $this->twig()->renderString('{{ menuList(filter="route|alpha") }}');
         $this->assertEquals($expected, $actual);
     }
 
     public function testMenuTreeFunction(): void
     {
         $expected = '<div class="menu"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_tree(maxDepth=0) }}');
+        $actual = $this->twig()->renderString('{{ menuTree(maxDepth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 
@@ -58,14 +58,14 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $expected = '<div class="pager">'
             . '<a href="/zeta/psi"class="pager-link-next"><span class="pager-label-next">Zeta Psi</span></a>'
             . '</div>';
-        $actual = $this->twig()->renderString('{{ menu_pager() }}');
+        $actual = $this->twig()->renderString('{{ menuPager() }}');
         $this->assertEquals($expected, $actual);
     }
 
     public function testMenuSitemapFunction(): void
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_sitemap(maxDepth=0) }}');
+        $actual = $this->twig()->renderString('{{ menuSitemap(maxDepth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 }

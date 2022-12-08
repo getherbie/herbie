@@ -108,20 +108,20 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         }
 
         if (!isset($data['route'])) {
-            $trimExtension = empty($data['keep_extension']);
+            $trimExtension = empty($data['keepExtension']);
             $data['route'] = $this->createRoute($alias, $trimExtension);
         }
 
-        if (!isset($data['parent_route'])) {
-            $data['parent_route'] = trim(dirname($data['route']), '.');
+        if (!isset($data['parentRoute'])) {
+            $data['parentRoute'] = trim(dirname($data['route']), '.');
         }
 
         if (!isset($data['id'])) {
             $data['id'] = $alias;
         }
 
-        if (!isset($data['parent_id'])) {
-            $data['parent_id'] = $this->determineParentId($alias);
+        if (!isset($data['parentId'])) {
+            $data['parentId'] = $this->determineParentId($alias);
         }
 
         return [

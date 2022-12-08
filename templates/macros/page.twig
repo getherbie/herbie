@@ -58,7 +58,7 @@
                 {% set delim = '' %}
                         {% for category in categories %}
                             {%- set route = options.pageRoute ~ '/category/' ~ category|slugify -%}
-                            {{ delim|raw }}{{ link_page(route, category) }}
+                            {{ delim|raw }}{{ linkPage(route, category) }}
                             {%- set delim = '<span class="delim">, </span>' -%}
                         {% endfor %}
                 </span>
@@ -75,7 +75,7 @@
                 {% set delim = '' %}
                         {% for tag in tags %}
                             {%- set route = options.pageRoute ~ '/tag/' ~ tag|slugify -%}
-                            {{ delim|raw }}{{ link_page(route, tag) }}
+                            {{ delim|raw }}{{ linkPage(route, tag) }}
                             {%- set delim = '<span class="delim">, </span>' -%}
                         {% endfor %}
                 </span>
@@ -92,7 +92,7 @@
                 {% set delim = '' %}
                         {% for author in authors %}
                             {%- set route = options.pageRoute ~ '/author/' ~ author|slugify -%}
-                            {{ delim|raw }}{{ link_page(route, author) }}
+                            {{ delim|raw }}{{ linkPage(route, author) }}
                             {%- set delim = '<span class="delim">, </span>' -%}
                         {% endfor %}
                 </span>

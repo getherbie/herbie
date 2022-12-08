@@ -74,8 +74,8 @@ final class TwigExtension extends AbstractExtension
     {
         return [
             new TwigFilter('find', [$this, 'filterFind'], ['is_variadic' => true]),
-            new TwigFilter('format_date', [$this, 'filterStrftime']),
-            new TwigFilter('format_size', [$this, 'filterFilesize']),
+            new TwigFilter('formatDate', [$this, 'filterStrftime']),
+            new TwigFilter('formatSize', [$this, 'filterFilesize']),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
             new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
         ];
@@ -87,27 +87,27 @@ final class TwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('css_add', [$this, 'cssAdd']),
-            new TwigFunction('css_classes', [$this, 'cssClasses'], ['needs_context' => true]),
-            new TwigFunction('css_out', [$this, 'cssOut'], ['is_safe' => ['html']]),
+            new TwigFunction('cssAdd', [$this, 'cssAdd']),
+            new TwigFunction('cssClasses', [$this, 'cssClasses'], ['needs_context' => true]),
+            new TwigFunction('cssOut', [$this, 'cssOut'], ['is_safe' => ['html']]),
             new TwigFunction('file', [$this, 'file'], ['is_safe' => ['html']]),
             new TwigFunction('image', [$this, 'image'], ['is_safe' => ['html']]),
-            new TwigFunction('js_add', [$this, 'jsAdd']),
-            new TwigFunction('js_out', [$this, 'jsOut'], ['is_safe' => ['html']]),
-            new TwigFunction('link_file', [$this, 'linkFile'], ['is_safe' => ['html'], 'needs_context' => true]),
-            new TwigFunction('link_mail', [$this, 'linkMail'], ['is_safe' => ['html']]),
-            new TwigFunction('link_page', [$this, 'linkPage'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_ascii_tree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_breadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_list', [$this, 'menuList'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_pager', [$this, 'menuPager'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_sitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_tree', [$this, 'menuTree'], ['is_safe' => ['html']]),
-            new TwigFunction('page_title', [$this, 'pageTitle'], ['needs_context' => true]),
+            new TwigFunction('jsAdd', [$this, 'jsAdd']),
+            new TwigFunction('jsOut', [$this, 'jsOut'], ['is_safe' => ['html']]),
+            new TwigFunction('linkFile', [$this, 'linkFile'], ['is_safe' => ['html'], 'needs_context' => true]),
+            new TwigFunction('linkMailto', [$this, 'linkMail'], ['is_safe' => ['html']]),
+            new TwigFunction('linkPage', [$this, 'linkPage'], ['is_safe' => ['html']]),
+            new TwigFunction('menuAsciiTree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
+            new TwigFunction('menuBreadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
+            new TwigFunction('menuList', [$this, 'menuList'], ['is_safe' => ['html']]),
+            new TwigFunction('menuPager', [$this, 'menuPager'], ['is_safe' => ['html']]),
+            new TwigFunction('menuSitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
+            new TwigFunction('menuTree', [$this, 'menuTree'], ['is_safe' => ['html']]),
+            new TwigFunction('pageTitle', [$this, 'pageTitle'], ['needs_context' => true]),
             new TwigFunction('snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
             new TwigFunction('translate', [$this, 'translate']),
-            new TwigFunction('url_rel', [$this, 'urlRelative']),
-            new TwigFunction('url_abs', [$this, 'urlAbsolute']),
+            new TwigFunction('urlRel', [$this, 'urlRelative']),
+            new TwigFunction('urlAbs', [$this, 'urlAbsolute']),
         ];
     }
 
@@ -117,8 +117,8 @@ final class TwigExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('file_readable', [$this, 'testIsReadable']),
-            new TwigTest('file_writable', [$this, 'testIsWritable'])
+            new TwigTest('fileReadable', [$this, 'testIsReadable']),
+            new TwigTest('fileWritable', [$this, 'testIsWritable'])
         ];
     }
 
@@ -289,7 +289,7 @@ final class TwigExtension extends AbstractExtension
         string $email,
         ?string $label = null,
         array $attribs = [],
-        string $template = '@snippet/link_mail.twig'
+        string $template = '@snippet/link_mailto.twig'
     ): string {
         $attribs['href'] = 'mailto:' . $email;
         $attribs['class'] = $attribs['class'] ?? 'link__label';

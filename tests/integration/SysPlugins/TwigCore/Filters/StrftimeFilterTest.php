@@ -33,31 +33,31 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
         // timestamp as integer
         $this->assertSame(
             '12. September 2022',
-            $this->twigRenderer->renderString('{{ 1662952416|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ 1662952416|formatDate("%e. %B %Y") }}')
         );
 
         // timestamp as string
         $this->assertSame(
             '12. September 2022',
-            $this->twigRenderer->renderString('{{ "1662952416"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "1662952416"|formatDate("%e. %B %Y") }}')
         );
 
         // iso-date
         $this->assertSame(
             '12. September 2022',
-            $this->twigRenderer->renderString('{{ "2022-09-12"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "2022-09-12"|formatDate("%e. %B %Y") }}')
         );
 
         // empty string
         $this->assertSame(
             time_format("%e. %B %Y"),
-            $this->twigRenderer->renderString('{{ ""|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ ""|formatDate("%e. %B %Y") }}')
         );
 
         // year with month (without day)
         $this->assertSame(
             time_format(" 1. September 2022"),
-            $this->twigRenderer->renderString('{{ "2022-09"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "2022-09"|formatDate("%e. %B %Y") }}')
         );
     }
 
@@ -65,32 +65,32 @@ final class StrftimeFilterTest extends \Codeception\Test\Unit
     {
         $this->assertSame(
             'invalid-date',
-            $this->twigRenderer->renderString('{{ "invalid-date"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "invalid-date"|formatDate("%e. %B %Y") }}')
         );
 
         $this->assertSame(
             time_format('%e. %B %Y', time_from_string('1970-01-01')),
-            $this->twigRenderer->renderString('{{ 2000|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ 2000|formatDate("%e. %B %Y") }}')
         );
 
         $this->assertSame(
             '2000-13-32',
-            $this->twigRenderer->renderString('{{ "2000-13-32"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "2000-13-32"|formatDate("%e. %B %Y") }}')
         );
 
         $this->assertSame(
             time_format('%e. %B %Y', time_from_string('2000-12-31')), // quite random
-            $this->twigRenderer->renderString('{{ "20000-12-31"|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ "20000-12-31"|formatDate("%e. %B %Y") }}')
         );
 
         $this->assertSame(
             time_format("%e. %B %Y"),
-            $this->twigRenderer->renderString('{{ false|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ false|formatDate("%e. %B %Y") }}')
         );
 
         $this->assertSame(
             time_format('%e. %B %Y', time_from_string('1970-01-01')),
-            $this->twigRenderer->renderString('{{ true|format_date("%e. %B %Y") }}')
+            $this->twigRenderer->renderString('{{ true|formatDate("%e. %B %Y") }}')
         );
     }
 }

@@ -1,7 +1,7 @@
 ---
-- name: url_abs
+- name: urlAbs
   code: >-
-    {{ url_abs("doc/contents/variables") }}
+    {{ urlAbs("doc/contents/variables") }}
   desc: Returns the absolute URL for a given route.
   params:
     - name: route
@@ -11,9 +11,9 @@
   return:
     - string
     - The absolute URL.
-- name: css_add
+- name: cssAdd
   code: >-
-    {{ css_add("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
+    {{ cssAdd("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
   desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
@@ -38,9 +38,9 @@
       default: "-1"
   return:
     - void
-- name: js_add
+- name: jsAdd
   code: >-
-    {{ js_add("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
+    {{ jsAdd("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
   desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
@@ -65,9 +65,9 @@
       default: "-1"
   return:
     - void
-- name: css_classes
+- name: cssClasses
   code: >-
-    {{ css_classes() }}
+    {{ cssClasses() }}
   desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the html or body tag.
     This allows to address any page, theme, layout or language via CSS selector.
     Such a string looks like: "page-blog theme-default layout-blog language-en"'
@@ -125,9 +125,9 @@
   return:
     - string
     - The image markup
-- name: menu_ascii_tree
+- name: menuAsciiTree
   code: >-
-    {{ menu_ascii_tree("doc", 2, true) }}
+    {{ menuAsciiTree("doc", 2, true) }}
   desc: Creates a text based (=ascii) tree of all pages.
     All parameters are optional and passed as named parameters.
   params:
@@ -150,9 +150,9 @@
   return:
     - string
     - The tree rendered as ascii text
-- name: menu_breadcrumb
+- name: menuBreadcrumb
   code: >-
-    {{ menu_breadcrumb(" / ", ["", "Homepage"], true) }}
+    {{ menuBreadcrumb(" / ", ["", "Homepage"], true) }}
   desc: Returns a breadcrumb path for the given page.
     All parameters are passed as an associative array.
   params:
@@ -171,9 +171,9 @@
   return:
     - string
     - The breadcrumb path as HTML.
-- name: menu_list
+- name: menuList
   code: >-
-    {{ menu_list(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+    {{ menuList(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
   desc: Returns a paginated list of page items with links to the previous and next page.
     For the paging the GET parameter "page" is used.
   params:
@@ -204,7 +204,7 @@
   return:
     - string
     - The rendered markup
-- name: menu_pager
+- name: menuPager
   code: >-
     {{ pager("doc/contents/", "Previous", "Next", "&lt;", "&gt;", "nav-pager", "<div class=\"{class}\">{prev}{next}</div>") }}
   desc: Creates a pagination with links to the previous an next page within the current page branch.
@@ -244,9 +244,9 @@
   return:
     - string
     - The generated markup
-- name: menu_sitemap
+- name: menuSitemap
   code: >-
-    {{ menu_sitemap("doc", 1, false, "nav-sitemap") }}
+    {{ menuSitemap("doc", 1, false, "nav-sitemap") }}
   desc: Creates a simple sitemap for all pages of the website based on an unordered list.
     All parameters are optional and passed as named parameters.
   params:
@@ -269,9 +269,9 @@
   return:
     - string
     - The generated markup
-- name: menu_tree
+- name: menuTree
   code: >-
-    {{ menu_tree("doc", 1, false, "nav-menu") }}
+    {{ menuTree("doc", 1, false, "nav-menu") }}
   desc: Returns an HTML menu as unordered list.
     All parameters are optional and passed as named parameters.
   params:
@@ -294,9 +294,9 @@
   return:
     - string
     - The menu as unordered list
-- name: css_out
+- name: cssOut
   code: >-
-    {{ css_out("default") }}
+    {{ cssOut("default") }}
   desc: Outputs the CSS assets for a given group.
   params:
     - name: group
@@ -310,9 +310,9 @@
   return:
     - void
     - The CSS assets
-- name: js_out
+- name: jsOut
   code: >-
-    {{ js_out("default") }}
+    {{ jsOut("default") }}
   desc: Outputs the JavaScript assets for a given group.
   params:
     - name: group
@@ -326,9 +326,9 @@
   return:
     - string
     - The JavaScript assets
-- name: link_file
+- name: linkFile
   code: >-
-    {{ link_file("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
+    {{ linkFile("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
   desc: Returns a HTML link with a file from site/media folder.
   params:
     - name: path
@@ -350,9 +350,9 @@
   return:
     - string
     - The link to a file
-- name: link_mail
+- name: linkMailto
   code: >-
-    {{ link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
+    {{ linkMailto("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
   desc: Returns a HTML mailto link.
   params:
     - name: email
@@ -374,9 +374,9 @@
   return:
     - string
     - The mailto link  
-- name: link_page
+- name: linkPage
   code: >-
-    {{ link_page("doc/contents/variables", "Content variables", {class: "link-page"}) }}
+    {{ linkPage("doc/contents/variables", "Content variables", {class: "link-page"}) }}
   desc: Returns a HTML link with label and attributes for a given route or an URL.
   params:
     - name: route
@@ -394,9 +394,9 @@
   return:
     - string
     - The link to a route
-- name: page_title
+- name: pageTitle
   code: >-
-    {{ page_title(" / ", "My Blog", "Welcome to My Blog", true) }}
+    {{ pageTitle(" / ", "My Blog", "Welcome to My Blog", true) }}
   desc: Returns the SEO optimized page title of the website. 
     All parameters are optional and passed as named parameters.
   params:
@@ -460,9 +460,9 @@
   return:
     - string
     - The translated message
-- name: url_rel
+- name: urlRel
   code: >-
-    {{ url_rel("doc/contents") }}
+    {{ urlRel("doc/contents") }}
   desc: Returns the relative URL to a given route.
   params:
     - name: route

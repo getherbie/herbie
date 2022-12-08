@@ -1,7 +1,7 @@
 ---
-- name: format_size
+- name: formatSize
   code: >-
-    {{ 12345678|format_size }}
+    {{ 12345678|formatSize }}
   desc: Returns file size in a human readable format (B, KB, MB, GB, TB, PB).
   return:
     - string
@@ -43,9 +43,9 @@
   return:
     - string
     - The slugified string
-- name: format_date
+- name: formatDate
   code: >-
-    {{ "2022-09-13"|format_date("%Y-%m-%d") }}
+    {{ "2022-09-13"|formatDate("%Y-%m-%d") }}
   desc: Formats a local time/date according to locale settings. 
     This is a wrapper for the same-named PHP function.
   params:

@@ -21,7 +21,7 @@ final class AddCssFunctionTest extends \Codeception\Test\Unit
 
     public function testPowerOn(): void
     {
-        $this->twig()->renderString('{{ css_add("@site/assets/styles.css") }}');
+        $this->twig()->renderString('{{ cssAdd("@site/assets/styles.css") }}');
     }
 
     // TODO write more tests

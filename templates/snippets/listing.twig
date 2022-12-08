@@ -3,10 +3,10 @@
         <section>
             {% for menuitem in pagination %}
                 <article>
-                    <h2>{{ link_page(menuitem.route, menuitem.getMenuTitle()) }}</h2>
+                    <h2>{{ linkPage(menuitem.route, menuitem.getMenuTitle()) }}</h2>
                     {% if menuitem.image %}
                         <div class="page-image">
-                            <a href="{{ url_rel(menuitem.route) }}"><img class="pure-img" src="{{ menuitem.image }}" alt=""/></a>
+                            <a href="{{ urlRel(menuitem.route) }}"><img class="pure-img" src="{{ menuitem.image }}" alt=""/></a>
                         </div>
                     {% endif %}
                     <p>{{ menuitem.excerpt }}</p>
@@ -17,10 +17,10 @@
         </section>
         <nav class="pagination">
             {% if pagination.hasPrevPage() %}
-                <a class="pure-button" href="{{ url_rel(route) }}?page={{ pagination.getPrevPage() }}">&lt; Vorherige Seite</a>
+                <a class="pure-button" href="{{ urlRel(route) }}?page={{ pagination.getPrevPage() }}">&lt; Vorherige Seite</a>
             {% endif %}
             {% if pagination.hasNextPage() %}
-                <a class="pure-button" href="{{ url_rel(route) }}?page={{ pagination.getNextPage() }}">Nächste Seite &gt;</a>
+                <a class="pure-button" href="{{ urlRel(route) }}?page={{ pagination.getNextPage() }}">Nächste Seite &gt;</a>
             {% endif %}
         </nav>
     </div>

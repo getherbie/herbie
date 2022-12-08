@@ -1,15 +1,15 @@
 ---
-- name: file_readable
+- name: fileReadable
   code: >-
-    {% if "@site/data" is file_readable %}
+    {% if "@site/data" is fileReadable %}
       Path or file is readable
     {% endif %}
   desc: Tests if the given alias or path exists and is readable.
   return:
     - bool
-- name: file_writable
+- name: fileWritable
   code: >-
-    {% if "@site/data" is file_writable %}
+    {% if "@site/data" is fileWritable %}
       Path or file is writable
     {% endif %}  
   desc: Tests if the given alias or path exists and is writable.

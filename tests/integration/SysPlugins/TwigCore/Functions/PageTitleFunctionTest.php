@@ -22,7 +22,7 @@ final class PageTitleFunctionTest extends \Codeception\Test\Unit
     public function testPageTitleFunction(): void
     {
         $expected = 'Index';
-        $actual = $this->twig()->renderString('{{ page_title() }}');
+        $actual = $this->twig()->renderString('{{ pageTitle() }}');
         $this->assertEquals($expected, $actual);
     }
 

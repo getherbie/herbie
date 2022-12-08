@@ -1,14 +1,14 @@
 ---
 layout: ""
-content_type: text/xml
-keep_extension: true
+contentType: text/xml
+keepExtension: true
 ---
 {% apply spaceless %}
 <?xml version="1.0" encoding="UTF-8" ?>        
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for item in site.pageList %}
 <url>
-    <loc>{{ url_abs(item.route) }}</loc>
+    <loc>{{ urlAbs(item.route) }}</loc>
     {% if(item.date) %}
         <lastmod>{{ item.date|date("c") }}</lastmod>
     {% endif %}

@@ -5,13 +5,13 @@
 - name: page.cached
   desc: If set the page is cached (depending if caching is active)
   type: bool
-- name: page.cache_id
+- name: page.cacheId
   desc: The cache ID used for identifying when caching (read-only)
   type: string  
 - name: page.categories
   desc: One or more categories, that belongs to the page
   type: string[]
-- name: page.content_type
+- name: page.contentType
   desc: The Content-Type of the page for the HTTP response, automatically set by Herbie.
   default: text/html
   type: string
@@ -36,7 +36,7 @@
 - name: page.id
   desc: The aliased ID of the page like `@page/2-company/3-about-us.md`.
   type: string
-- name: page.keep_extension
+- name: page.keepExtension
   desc: If true the file extension is used for urls. 
     Useful for xml pages like sitemap for search engines.
   default: false
@@ -45,7 +45,7 @@
   desc: The layout as basename (without file extension). 
     Layout files are located in folder `site/themes/`.
   type: string
-- name: page.menu_title
+- name: page.menuTitle
   desc: The title for menu elements like sitemap or breadcrumb. 
     If empty the page title will be shown.
   type: string
@@ -53,10 +53,10 @@
   desc: The modification time of the page as ISO 8601 formatted string.
     This value is set automatically.
   type: string  
-- name: page.parent_id
+- name: page.parentId
   desc: The aliased parent ID of the page like `@page/2-company/1-index.md`
   type: string
-- name: page.parent_route
+- name: page.parentRoute
   desc: The parent route of the page like `company`.
   type: string
 - name: page.path
