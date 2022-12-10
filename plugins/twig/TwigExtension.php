@@ -17,6 +17,7 @@ use herbie\PageTreeHtmlRenderer;
 use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
+use herbie\Query;
 use herbie\Selector;
 use herbie\Site;
 use herbie\Translator;
@@ -104,6 +105,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('menu_sitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
             new TwigFunction('menu_tree', [$this, 'menuTree'], ['is_safe' => ['html']]),
             new TwigFunction('page_title', [$this, 'pageTitle'], ['needs_context' => true]),
+            new TwigFunction('query', [$this, 'query']),
             new TwigFunction('snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
             new TwigFunction('translate', [$this, 'translate']),
             new TwigFunction('url_rel', [$this, 'urlRelative']),
@@ -617,6 +619,11 @@ final class TwigExtension extends AbstractExtension
         }
 
         return implode($delim, $titles);
+    }
+
+    public function query(iterable $data): Query
+    {
+        return (new Query())->from($data);
     }
 
     public function translate(string $category = '', string $message = '', array $params = []): string
