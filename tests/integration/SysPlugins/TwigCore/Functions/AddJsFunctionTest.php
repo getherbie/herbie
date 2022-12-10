@@ -21,7 +21,7 @@ final class AddJsFunctionTest extends \Codeception\Test\Unit
 
     public function testPowerOn(): void
     {
-        $this->twig()->renderString('{{ js_add("@site/assets/script.js") }}');
+        $this->twig()->renderString('{{ h_js_add("@site/assets/script.js") }}');
     }
 
     // TODO write more tests

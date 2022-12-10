@@ -48,11 +48,11 @@ In addition, depending on the above configuration, both a Twig filter and a Twig
 
 The Twig `rest` filter can be applied as follows:
 
-    {{ "My reStructured text formated content"|rest }}
+    {{ "My reStructured text formated content"|h_rest }}
 
 And the Twig `rest` function like this:
 
-    {{ rest("My reStructured text formated content") }}
+    {{ h_rest("My reStructured text formated content") }}
 
 ## More Information
 

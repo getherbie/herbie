@@ -42,7 +42,7 @@ final class CorePlugin extends Plugin
     public function twigFunctions(): array
     {
         return [
-            ['herbie_debug', [$this, 'herbieDebug']],
+            ['h_debug', [$this, 'herbieDebug']],
         ];
     }
 

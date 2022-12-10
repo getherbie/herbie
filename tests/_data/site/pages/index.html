@@ -4,45 +4,45 @@ title: Index
 
 <h1>Herbie Tests</h1>
 
-{{ 100000|format_size }}
+{{ 100000|h_size }}
 
-{{ menu_sitemap() }}
+{{ h_menu_sitemap() }}
 
 <h2>Downloads</h2>
 
-{{ link_file('favicon.ico', 'File', true) }}
+{{ h_link_file('favicon.ico', 'File', true) }}
 
-<a href="{{ url_rel('/download/dummy.pdf') }}">Download</a>
+<a href="{{ h_url_rel('/download/dummy.pdf') }}">Download</a>
 
 <ul>
-    <li>{{ link_file('dummy.pdf') }}</li>
-    <li>{{ link_file('dummy.pdf', 'Dummy', false) }}</li>
-    <li>{{ link_file('dummy.pdf', 'Dummy', true) }}</li>
-    <li>{{ link_file('dummy.pdf', 'Dummy', true, { target:"_blank"}) }}</li>
+    <li>{{ h_link_file('dummy.pdf') }}</li>
+    <li>{{ h_link_file('dummy.pdf', 'Dummy', false) }}</li>
+    <li>{{ h_link_file('dummy.pdf', 'Dummy', true) }}</li>
+    <li>{{ h_link_file('dummy.pdf', 'Dummy', true, { target:"_blank"}) }}</li>
 </ul>
 
 <h2>Imagine</h2>
 
 <p>
     As function:<br>
-    {{ imagine('subfolder/not-found.jpg') }}<br>
-    {{ imagine('subfolder/p6044089.jpg', 'dummy') }}<br>
+    {{ h_imagine('subfolder/not-found.jpg') }}<br>
+    {{ h_imagine('subfolder/p6044089.jpg', 'dummy') }}<br>
     <br>
     As filter:<br>
-    {{ 'subfolder/p6044089.jpg'|imagine('dummy') }}<br>
-    {{ 'subfolder/p6044089.jpg'|imagine('f200x300') }}<br>
+    {{ 'subfolder/p6044089.jpg'|h_imagine('dummy') }}<br>
+    {{ 'subfolder/p6044089.jpg'|h_imagine('f200x300') }}<br>
 </p>
 
 <h2>Links</h2>
 
 <ul>
-    <li>{{ link_page('adfsafsdf', 'About') }}</li>
-    <li>{{ link_page('about', 'About') }}</li>
-    <li>{{ link_page('https://example.com/', 'About') }}</li>
+    <li>{{ h_link_page('adfsafsdf', 'About') }}</li>
+    <li>{{ h_link_page('about', 'About') }}</li>
+    <li>{{ h_link_page('https://example.com/', 'About') }}</li>
 </ul>
 
 <h2>Mailto-Links</h2>
 
 <ul>
-    <li>{{ link_mail('me@example.com', 'John Doe') }}</li>
+    <li>{{ h_link_mail('me@example.com', 'John Doe') }}</li>
 </ul>

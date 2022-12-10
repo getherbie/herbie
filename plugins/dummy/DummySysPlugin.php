@@ -82,7 +82,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFilter']]
+            ['h_dummy', [$this, 'twigDummyFilter']]
         ];
     }
 
@@ -97,7 +97,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFunction']]
+            ['h_dummy', [$this, 'twigDummyFunction']]
         ];
     }
 
@@ -105,7 +105,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyTest']]
+            ['h_dummy', [$this, 'twigDummyTest']]
         ];
     }
 
@@ -171,7 +171,7 @@ final class DummySysPlugin implements PluginInterface
     public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $event->getEnvironment()->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
+        $event->getEnvironment()->addFilter(new TwigFilter('h_dummy_dynamic', function (string $content): string {
             return $content . 'Dummy Filter Dynamic';
         }));
     }

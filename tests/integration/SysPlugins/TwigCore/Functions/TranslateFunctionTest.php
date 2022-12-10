@@ -21,26 +21,26 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
 
     public function testTranslateWithWrongParams(): void
     {
-        $this->assertSame('', $this->twig()->renderString('{{ translate() }}'));
-        $this->assertSame('', $this->twig()->renderString('{{ translate("", "", params={a:1,b:2}) }}'));
-        $this->assertSame('', $this->twig()->renderString('{{ translate("app") }}'));
-        $this->assertSame('test', $this->twig()->renderString('{{ translate("", "test") }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ h_translate() }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ h_translate("", "", params={a:1,b:2}) }}'));
+        $this->assertSame('', $this->twig()->renderString('{{ h_translate("app") }}'));
+        $this->assertSame('test', $this->twig()->renderString('{{ h_translate("", "test") }}'));
     }
 
     public function testTranslateFromApp(): void
     {
-        $this->assertSame('Herbie CMS', $this->twig()->renderString('{{ translate("app", "Herbie CMS") }}'));
+        $this->assertSame('Herbie CMS', $this->twig()->renderString('{{ h_translate("app", "Herbie CMS") }}'));
     }
 
     public function testTranslateFromPlugin(): void
     {
-        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "Example translation") }}'));
+        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ h_translate("dummy", "Example translation") }}'));
     }
 
     public function testTranslateFromPluginWithParams(): void
     {
         $actual = $this->twig()->renderString(
-            '{{ translate("dummy", "Example translation with param {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
+            '{{ h_translate("dummy", "Example translation with param {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
         );
         $this->assertSame('Beispiel-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);
     }

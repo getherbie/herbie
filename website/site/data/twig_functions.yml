@@ -1,7 +1,7 @@
 ---
-- name: url_abs
+- name: h_url_abs
   code: >-
-    {{ url_abs("doc/contents/variables") }}
+    {{ h_url_abs("doc/contents/variables") }}
   desc: Returns the absolute URL for a given route.
   params:
     - name: route
@@ -11,9 +11,9 @@
   return:
     - string
     - The absolute URL.
-- name: css_add
+- name: h_css_add
   code: >-
-    {{ css_add("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
+    {{ h_css_add("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
   desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
@@ -38,9 +38,9 @@
       default: "-1"
   return:
     - void
-- name: js_add
+- name: h_js_add
   code: >-
-    {{ js_add("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
+    {{ h_js_add("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
   desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
@@ -65,18 +65,18 @@
       default: "-1"
   return:
     - void
-- name: css_classes
+- name: h_css_classes
   code: >-
-    {{ css_classes() }}
+    {{ h_css_classes() }}
   desc: 'Returns a string with CSS classes, to be used within an HTML attribute, for example the html or body tag.
     This allows to address any page, theme, layout or language via CSS selector.
     Such a string looks like: "page-blog theme-default layout-blog language-en"'
   return:
     - string
     - The string with CSS classes.
-- name: file
+- name: h_file
   code: >-
-    {{ file("media/download.pdf", "Download", true, {class:"download"}) }}
+    {{ h_file("media/download.pdf", "Download", true, {class:"download"}) }}
   desc: Returns a link to a file with additional info like file type and size.
   params:
     - name: path
@@ -96,9 +96,9 @@
       desc: One or more HTML attributes.
       default: "[ ]"
   return: []
-- name: image
+- name: h_image
   code: >-
-   {{ image("media/portrait.jpg", 100, 200, "Portrait", "photo") }}
+   {{ h_image("media/portrait.jpg", 100, 200, "Portrait", "photo") }}
   desc: Returns an image markup tag. 
     No image processing is performed.
   params:
@@ -125,9 +125,9 @@
   return:
     - string
     - The image markup
-- name: menu_ascii_tree
+- name: h_menu_ascii_tree
   code: >-
-    {{ menu_ascii_tree("doc", 2, true) }}
+    {{ h_menu_ascii_tree("doc", 2, true) }}
   desc: Creates a text based (=ascii) tree of all pages.
     All parameters are optional and passed as named parameters.
   params:
@@ -150,9 +150,9 @@
   return:
     - string
     - The tree rendered as ascii text
-- name: menu_breadcrumb
+- name: h_menu_breadcrumb
   code: >-
-    {{ menu_breadcrumb(" / ", ["", "Homepage"], true) }}
+    {{ h_menu_breadcrumb(" / ", ["", "Homepage"], true) }}
   desc: Returns a breadcrumb path for the given page.
     All parameters are passed as an associative array.
   params:
@@ -171,9 +171,9 @@
   return:
     - string
     - The breadcrumb path as HTML.
-- name: menu_list
+- name: h_menu_list
   code: >-
-    {{ menu_list(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+    {{ h_menu_list(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
   desc: Returns a paginated list of page items with links to the previous and next page.
     For the paging the GET parameter "page" is used.
   params:
@@ -204,7 +204,7 @@
   return:
     - string
     - The rendered markup
-- name: menu_pager
+- name: h_menu_pager
   code: >-
     {{ pager("doc/contents/", "Previous", "Next", "&lt;", "&gt;", "nav-pager", "<div class=\"{class}\">{prev}{next}</div>") }}
   desc: Creates a pagination with links to the previous an next page within the current page branch.
@@ -244,9 +244,9 @@
   return:
     - string
     - The generated markup
-- name: menu_sitemap
+- name: h_menu_sitemap
   code: >-
-    {{ menu_sitemap("doc", 1, false, "nav-sitemap") }}
+    {{ h_menu_sitemap("doc", 1, false, "nav-sitemap") }}
   desc: Creates a simple sitemap for all pages of the website based on an unordered list.
     All parameters are optional and passed as named parameters.
   params:
@@ -269,9 +269,9 @@
   return:
     - string
     - The generated markup
-- name: menu_tree
+- name: h_menu_tree
   code: >-
-    {{ menu_tree("doc", 1, false, "nav-menu") }}
+    {{ h_menu_tree("doc", 1, false, "nav-menu") }}
   desc: Returns an HTML menu as unordered list.
     All parameters are optional and passed as named parameters.
   params:
@@ -294,9 +294,9 @@
   return:
     - string
     - The menu as unordered list
-- name: css_out
+- name: h_css_out
   code: >-
-    {{ css_out("default") }}
+    {{ h_css_out("default") }}
   desc: Outputs the CSS assets for a given group.
   params:
     - name: group
@@ -310,9 +310,9 @@
   return:
     - void
     - The CSS assets
-- name: js_out
+- name: h_js_out
   code: >-
-    {{ js_out("default") }}
+    {{ h_js_out("default") }}
   desc: Outputs the JavaScript assets for a given group.
   params:
     - name: group
@@ -326,9 +326,9 @@
   return:
     - string
     - The JavaScript assets
-- name: link_file
+- name: h_link_file
   code: >-
-    {{ link_file("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
+    {{ h_link_file("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
   desc: Returns a HTML link with a file from site/media folder.
   params:
     - name: path
@@ -350,9 +350,9 @@
   return:
     - string
     - The link to a file
-- name: link_mail
+- name: h_link_mail
   code: >-
-    {{ link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
+    {{ h_link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
   desc: Returns a HTML mailto link.
   params:
     - name: email
@@ -374,9 +374,9 @@
   return:
     - string
     - The mailto link  
-- name: link_page
+- name: h_link_page
   code: >-
-    {{ link_page("doc/contents/variables", "Content variables", {class: "link-page"}) }}
+    {{ h_link_page("doc/contents/variables", "Content variables", {class: "link-page"}) }}
   desc: Returns a HTML link with label and attributes for a given route or an URL.
   params:
     - name: route
@@ -394,9 +394,9 @@
   return:
     - string
     - The link to a route
-- name: page_title
+- name: h_page_title
   code: >-
-    {{ page_title(" / ", "My Blog", "Welcome to My Blog", true) }}
+    {{ h_page_title(" / ", "My Blog", "Welcome to My Blog", true) }}
   desc: Returns the SEO optimized page title of the website. 
     All parameters are optional and passed as named parameters.
   params:
@@ -421,9 +421,9 @@
   return:
     - string
     - The page title of the website
-- name: snippet
+- name: h_snippet
   code: >-
-    {{ snippet("@site/custom-snippet.twig", {foo: "bar"}) }}
+    {{ h_snippet("@site/custom-snippet.twig", {foo: "bar"}) }}
   desc: Includes a snippet and outputs the rendered content of that file.
     Automatic escaping is disabled for all escaping strategies.
   see: []
@@ -439,9 +439,9 @@
   return:
     - string
     - The included snippet
-- name: translate
+- name: h_translate
   code: >
-    {{ translate("app", "Plugin {plugin} enabled but not found!", {plugin: "dummy"}) }}
+    {{ h_translate("app", "Plugin {plugin} enabled but not found!", {plugin: "dummy"}) }}
   desc: >
     Translates a string according to the configuration and locale settings.
   params:
@@ -460,9 +460,9 @@
   return:
     - string
     - The translated message
-- name: url_rel
+- name: h_url_rel
   code: >-
-    {{ url_rel("doc/contents") }}
+    {{ h_url_rel("doc/contents") }}
   desc: Returns the relative URL to a given route.
   params:
     - name: route

@@ -121,7 +121,7 @@ With the activation of the system plugin, one Twig filter and one Twig function 
 
 Example:
 
-    <img class="resize" src="{{ 'portrait.jpg'|imagine('resize') }}" alt="Portrait">
+    <img class="resize" src="{{ 'portrait.jpg'|h_imagine('resize') }}" alt="Portrait">
 
 ### Imagine Twig Function
 
@@ -159,7 +159,7 @@ Example:
 
 Example:
 
-    {{ imagine("portrait.jpg", "crop", {class: "crop", alt: "Portrait"}) }}
+    {{ h_imagine("portrait.jpg", "crop", {class: "crop", alt: "Portrait"}) }}
 
 ## More Information
 

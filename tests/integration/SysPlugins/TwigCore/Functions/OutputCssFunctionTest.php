@@ -21,8 +21,8 @@ final class OutputCssFunctionTest extends \Codeception\Test\Unit
 
     public function testPowerOn(): void
     {
-        $twig = '{{ css_add("@site/assets/styles.css") }}'
-            . '{{ css_out() }}';
+        $twig = '{{ h_css_add("@site/assets/styles.css") }}'
+            . '{{ h_css_out() }}';
         $this->assertEquals(
             '<link href="/assets/assets/styles.css" type="text/css" rel="stylesheet">',
             $this->twig()->renderString($twig)

@@ -37,7 +37,7 @@ final class SystemInfoPlugin extends Plugin
     public function twigFunctions(): array
     {
         return [
-            ['herbie_info', [$this, 'herbieInfo'], ['is_safe' => ['html'], 'needs_context' => true]],
+            ['h_info', [$this, 'herbieInfo'], ['is_safe' => ['html'], 'needs_context' => true]],
         ];
     }
 

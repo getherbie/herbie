@@ -28,10 +28,10 @@ final class SlugifyFilterTest extends \Codeception\Test\Unit
     // that's enough, we don't want to test 3rd-party libraries
     public function testSlugify(): void
     {
-        $actual = $this->twigRenderer->renderString('{{ "AEOU-ÄÈÖÜ_äèöü"|slugify }}');
+        $actual = $this->twigRenderer->renderString('{{ "AEOU-ÄÈÖÜ_äèöü"|h_slugify }}');
         $this->assertSame('aeou-aeeoeue-aeeoeue', $actual);
 
-        $actual = $this->twigRenderer->renderString('{{ ""|slugify }}');
+        $actual = $this->twigRenderer->renderString('{{ ""|h_slugify }}');
         $this->assertSame('', $actual);
     }
 }

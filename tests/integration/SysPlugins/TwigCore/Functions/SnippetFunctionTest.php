@@ -22,7 +22,7 @@ final class SnippetFunctionTest extends \Codeception\Test\Unit
     public function testSnippetFunction(): void
     {
         $expected = 'Hi there';
-        $actual = $this->twig()->renderString('{{ snippet("@site/snippets/test.twig") }}');
+        $actual = $this->twig()->renderString('{{ h_snippet("@site/snippets/test.twig") }}');
         $this->assertEquals($expected, $actual);
     }
 

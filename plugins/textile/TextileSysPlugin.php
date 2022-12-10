@@ -38,7 +38,7 @@ final class TextileSysPlugin extends Plugin
             return [];
         }
         return [
-            ['textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
+            ['h_textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
         ];
     }
 
@@ -48,7 +48,7 @@ final class TextileSysPlugin extends Plugin
             return [];
         }
         return [
-            ['textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
+            ['h_textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
         ];
     }
 

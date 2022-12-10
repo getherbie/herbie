@@ -37,7 +37,7 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
     {
         $this->assertSame(
             '<h1>This is textile</h1>',
-            $this->twigRenderer->renderString('{{ "h1. This is textile"|textile }}')
+            $this->twigRenderer->renderString('{{ "h1. This is textile"|h_textile }}')
         );
     }
 
@@ -48,14 +48,14 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__) . '/Fixtures/textile'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
-        $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
+        $twigRenderer->renderString('{{ "h2. This is textile"|h_textile }}');
     }
 
     public function testTextileFunction(): void
     {
         $this->assertSame(
             '<h1>This is textile</h1>',
-            $this->twigRenderer->renderString('{{ textile("h1. This is textile") }}')
+            $this->twigRenderer->renderString('{{ h_textile("h1. This is textile") }}')
         );
     }
 
@@ -66,6 +66,6 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__) . '/Fixtures/textile'
         );
         $this->expectException(\Twig\Error\SyntaxError::class);
-        $twigRenderer->renderString('{{ textile("# This is textile") }}');
+        $twigRenderer->renderString('{{ h_textile("# This is textile") }}');
     }
 }

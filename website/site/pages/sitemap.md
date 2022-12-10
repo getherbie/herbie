@@ -4,4 +4,4 @@ title: Sitemap
 
 # Sitemap
 
-{{ menu_sitemap() }}
+{{ h_menu_sitemap() }}

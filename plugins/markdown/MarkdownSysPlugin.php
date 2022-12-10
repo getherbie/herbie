@@ -49,7 +49,7 @@ final class MarkdownSysPlugin extends Plugin
             return [];
         }
         return [
-            ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
+            ['h_markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
         ];
     }
 
@@ -59,7 +59,7 @@ final class MarkdownSysPlugin extends Plugin
             return [];
         }
         return [
-            ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
+            ['h_markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
         ];
     }
 

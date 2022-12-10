@@ -1,14 +1,14 @@
 ---
-- name: format_size
+- name: h_size
   code: >-
-    {{ 12345678|format_size }}
+    {{ 12345678|h_size }}
   desc: Returns file size in a human readable format (B, KB, MB, GB, TB, PB).
   return:
     - string
     - The file size in human readable format
-- name: find
+- name: h_find
   code: >-
-    {{ site.pageList|find("title^=this", "title~=is", "title$=great") }}
+    {{ site.pageList|h_find("title^=this", "title~=is", "title$=great") }}
   desc: >-
     Find items of a traversable list by one or more selectors.      
     Selectors are simple strings of text that specify fields and values. 
@@ -36,29 +36,16 @@
   return:
     - iterable
     - The items matching the given selectors
-- name: slugify
+- name: h_slugify
   code: >-
-    {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
+    {{ "A string with spaces, Umlauts or special characters (?!&#)."|h_slugify }}
   desc: Returns a string slug for using as an URL segment.
   return:
     - string
     - The slugified string
-- name: format_date
+- name: h_visible
   code: >-
-    {{ "2022-09-13"|format_date("%Y-%m-%d") }}
-  desc: Formats a local time/date according to locale settings. 
-    This is a wrapper for the same-named PHP function.
-  params:
-    - name: format
-      type: string
-      desc: The format, see http://php.net/strftime
-      default: "%x"
-  return:
-    - string
-    - The formatted time or date
-- name: visible
-  code: >-
-    {{ site.pageTree|visible }}
+    {{ site.pageTree|h_visible }}
   desc: Filters the page tree by visible and active page items.
   return:
     - pageTree

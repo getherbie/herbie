@@ -21,8 +21,8 @@ final class OutputJsFunctionTest extends \Codeception\Test\Unit
 
     public function testPowerOn(): void
     {
-        $twig = '{{ js_add("@site/assets/script.js") }}'
-            . '{{ js_out() }}';
+        $twig = '{{ h_js_add("@site/assets/script.js") }}'
+            . '{{ h_js_out() }}';
         $this->assertEquals(
             '<script src="/assets/assets/script.js"></script>',
             $this->twig()->renderString($twig)

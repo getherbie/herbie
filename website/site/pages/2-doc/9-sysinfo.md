@@ -9,4 +9,4 @@ Herbie provides a useful system information function that is helpful during deve
 It outputs a large amount of information about the current state and environment of the system. 
 For example, the current setup displays the following information.
 
-{{ herbie_info()|replace({'<h1 class="herbie-info-h1">Herbie Info</h1>': ''})|raw }}
+{{ h_info()|replace({'<h1 class="herbie-info-h1">Herbie Info</h1>': ''})|raw }}

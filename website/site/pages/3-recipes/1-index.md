@@ -22,8 +22,8 @@ layout: recipe
 {% endapply %}
 
 {% for item in site.pageList.filterItems('recipe', 'recipes', routeParams) %}
-<p class="post-title"><b>{{ link_page(item.route, item.title) }}</b><br>
-    {{ item.date|format_date("%e. %B %Y") }}
+<p class="post-title"><b>{{ h_link_page(item.route, item.title) }}</b><br>
+    {{ item.date|date("%e. %B %Y") }}
 </p>
 {% else %}
 <p>There are no entries available.</p>

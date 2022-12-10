@@ -48,11 +48,11 @@ In addition, depending on the above configuration, both a Twig filter and a Twig
 
 The Twig `textile` filter can be applied as follows:
 
-    {{ "My Textile formated content"|textile }}
+    {{ "My Textile formated content"|h_textile }}
 
 And the Twig `textile` function like this:
 
-    {{ textile("My Textile formated content") }}
+    {{ h_textile("My Textile formated content") }}
 
 ## More Information
 

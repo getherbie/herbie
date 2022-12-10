@@ -37,7 +37,7 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
     {
         $this->assertSame(
             '<h1>This is markdown</h1>',
-            $this->app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}')
+            $this->app->getTwigRenderer()->renderString('{{ "# This is markdown"|h_markdown }}')
         );
     }
 
@@ -52,14 +52,14 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
         } else {
             $this->expectException(\Twig\Error\SyntaxError::class);
         }
-        $app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}');
+        $app->getTwigRenderer()->renderString('{{ "# This is markdown"|h_markdown }}');
     }
 
     public function testMarkdownFunction(): void
     {
         $this->assertSame(
             '<h1>This is markdown</h1>',
-            $this->app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}')
+            $this->app->getTwigRenderer()->renderString('{{ h_markdown("# This is markdown") }}')
         );
     }
 
@@ -75,6 +75,6 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
         } else {
             $this->expectException(\Twig\Error\SyntaxError::class);
         }
-        $app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}');
+        $app->getTwigRenderer()->renderString('{{ h_markdown("# This is markdown") }}');
     }
 }

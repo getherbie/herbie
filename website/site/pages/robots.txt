@@ -4,4 +4,4 @@ layout: ""
 content_type: text/plain
 keep_extension: true
 ---
-Sitemap: {{ url_abs('sitemap.xml') }}
+Sitemap: {{ h_url_abs('sitemap.xml') }}

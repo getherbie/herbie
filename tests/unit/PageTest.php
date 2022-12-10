@@ -459,7 +459,7 @@ final class PageTest extends \Codeception\Test\Unit
             'eee' => 23.375
         ];
         $page = new Page($data);
-        $data['segments']['default'] = "\n{{ herbie_info() }}\n";
+        $data['segments']['default'] = "\n{{ h_info() }}\n";
         $this->assertEquals($data, $page->toArray());
     }
 

@@ -6,7 +6,7 @@
             <div class="pure-g">
                 <div class="pure-u-1 pure-u-md-3-4">
                     <nav class="breadcrumb">
-                        {{ menu_breadcrumb(' / ', ['', icon('house-fill')]) }}
+                        {{ h_menu_breadcrumb(' / ', ['', icon('house-fill')]) }}
                     </nav>
                     <div class="content">
                         {{ content.default|raw }}
@@ -16,7 +16,7 @@
                     <div class="sidebar">
                         {{ include('includes/simplesearch.twig') }}
                         <h4>Documentation</h4>
-                        {{ menu_tree(route='doc', class='menu') }}
+                        {{ h_menu_tree(route='doc', class='menu') }}
                     </div>
                 </div>
             </div>

@@ -41,28 +41,28 @@ Output content segments in layout files:
 
 **Event Listeners**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
 
 **Twig Filters**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}
 
 **Twig Globals**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"vars_global"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"vars_global"}) }}
 
 **Twig Functions**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_functions"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"twig_functions"}) }}
 
 **Twig Tests**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
 
 **Console Commands**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
 
 **Plugins**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}
+{{ h_snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}

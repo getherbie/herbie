@@ -8,7 +8,7 @@ keep_extension: true
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for item in site.pageList %}
 <url>
-    <loc>{{ url_abs(item.route) }}</loc>
+    <loc>{{ h_url_abs(item.route) }}</loc>
     {% if(item.date) %}
         <lastmod>{{ item.date|date("c") }}</lastmod>
     {% endif %}

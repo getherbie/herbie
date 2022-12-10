@@ -53,11 +53,11 @@ In addition, both a Twig filter and a Twig "Markdown" function are available.
 
 The Twig filter can be applied as follows:
 
-    {{ "# Title"|markdown }}
+    {{ "# Title"|h_markdown }}
 
 And the Twig function like this:
 
-    {{ markdown("# Title") }}
+    {{ h_markdown("# Title") }}
 
 ## More Information
 

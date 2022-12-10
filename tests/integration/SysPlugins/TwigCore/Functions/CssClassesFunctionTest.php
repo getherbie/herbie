@@ -22,7 +22,7 @@ final class CssClassesFunctionTest extends \Codeception\Test\Unit
     public function testCssClassesFunction(): void
     {
         $expected = 'page-error theme-default layout-default language-de';
-        $actual = $this->twig()->renderString('{{ css_classes() }}');
+        $actual = $this->twig()->renderString('{{ h_css_classes() }}');
         $this->assertEquals($expected, $actual);
     }
 

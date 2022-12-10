@@ -31,10 +31,8 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-use function herbie\date_format;
 use function herbie\file_size;
 use function herbie\str_trailing_slash;
-use function herbie\time_format;
 
 final class TwigExtension extends AbstractExtension
 {
@@ -73,11 +71,10 @@ final class TwigExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('find', [$this, 'filterFind'], ['is_variadic' => true]),
-            new TwigFilter('format_date', [$this, 'filterStrftime']),
-            new TwigFilter('format_size', [$this, 'filterFilesize']),
-            new TwigFilter('slugify', [$this, 'filterSlugify']),
-            new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
+            new TwigFilter('h_find', [$this, 'filterFind'], ['is_variadic' => true]),
+            new TwigFilter('h_size', [$this, 'filterFilesize']),
+            new TwigFilter('h_slugify', [$this, 'filterSlugify']),
+            new TwigFilter('h_visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
         ];
     }
 
@@ -87,27 +84,27 @@ final class TwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('css_add', [$this, 'cssAdd']),
-            new TwigFunction('css_classes', [$this, 'cssClasses'], ['needs_context' => true]),
-            new TwigFunction('css_out', [$this, 'cssOut'], ['is_safe' => ['html']]),
-            new TwigFunction('file', [$this, 'file'], ['is_safe' => ['html']]),
-            new TwigFunction('image', [$this, 'image'], ['is_safe' => ['html']]),
-            new TwigFunction('js_add', [$this, 'jsAdd']),
-            new TwigFunction('js_out', [$this, 'jsOut'], ['is_safe' => ['html']]),
-            new TwigFunction('link_file', [$this, 'linkFile'], ['is_safe' => ['html'], 'needs_context' => true]),
-            new TwigFunction('link_mail', [$this, 'linkMail'], ['is_safe' => ['html']]),
-            new TwigFunction('link_page', [$this, 'linkPage'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_ascii_tree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_breadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_list', [$this, 'menuList'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_pager', [$this, 'menuPager'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_sitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_tree', [$this, 'menuTree'], ['is_safe' => ['html']]),
-            new TwigFunction('page_title', [$this, 'pageTitle'], ['needs_context' => true]),
-            new TwigFunction('snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
-            new TwigFunction('translate', [$this, 'translate']),
-            new TwigFunction('url_rel', [$this, 'urlRelative']),
-            new TwigFunction('url_abs', [$this, 'urlAbsolute']),
+            new TwigFunction('h_css_add', [$this, 'cssAdd']),
+            new TwigFunction('h_css_classes', [$this, 'cssClasses'], ['needs_context' => true]),
+            new TwigFunction('h_css_out', [$this, 'cssOut'], ['is_safe' => ['html']]),
+            new TwigFunction('h_file', [$this, 'file'], ['is_safe' => ['html']]),
+            new TwigFunction('h_image', [$this, 'image'], ['is_safe' => ['html']]),
+            new TwigFunction('h_js_add', [$this, 'jsAdd']),
+            new TwigFunction('h_js_out', [$this, 'jsOut'], ['is_safe' => ['html']]),
+            new TwigFunction('h_link_file', [$this, 'linkFile'], ['is_safe' => ['html'], 'needs_context' => true]),
+            new TwigFunction('h_link_mail', [$this, 'linkMail'], ['is_safe' => ['html']]),
+            new TwigFunction('h_link_page', [$this, 'linkPage'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_ascii_tree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_breadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_list', [$this, 'menuList'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_pager', [$this, 'menuPager'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_sitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
+            new TwigFunction('h_menu_tree', [$this, 'menuTree'], ['is_safe' => ['html']]),
+            new TwigFunction('h_page_title', [$this, 'pageTitle'], ['needs_context' => true]),
+            new TwigFunction('h_snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
+            new TwigFunction('h_translate', [$this, 'translate']),
+            new TwigFunction('h_url_rel', [$this, 'urlRelative']),
+            new TwigFunction('h_url_abs', [$this, 'urlAbsolute']),
         ];
     }
 
@@ -117,8 +114,8 @@ final class TwigExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('file_readable', [$this, 'testIsReadable']),
-            new TwigTest('file_writable', [$this, 'testIsWritable'])
+            new TwigTest('h_readable', [$this, 'testIsReadable']),
+            new TwigTest('h_writable', [$this, 'testIsWritable'])
         ];
     }
 
@@ -171,23 +168,6 @@ final class TwigExtension extends AbstractExtension
     public function filterSlugify(string $url): string
     {
         return $this->slugGenerator->generate($url);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function filterStrftime(string $date, string $format = '%x'): string
-    {
-        // timestamp?
-        if (is_numeric($date)) {
-            $date = date_format('Y-m-d H:i:s', (int)$date);
-        }
-        try {
-            $dateTime = new \DateTime($date);
-        } catch (\Exception $e) {
-            return $date;
-        }
-        return time_format($format, $dateTime->getTimestamp());
     }
 
     public function filterVisible(PageTree $tree): PageTreeFilterIterator

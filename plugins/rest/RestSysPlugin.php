@@ -35,7 +35,7 @@ final class RestSysPlugin extends Plugin
             return [];
         }
         return [
-            ['rest', [$this, 'parseRest'], ['is_safe' => ['html']]],
+            ['h_rest', [$this, 'parseRest'], ['is_safe' => ['html']]],
         ];
     }
 
@@ -45,7 +45,7 @@ final class RestSysPlugin extends Plugin
             return [];
         }
         return [
-            ['rest', [$this, 'parseRest'], ['is_safe' => ['html']]],
+            ['h_rest', [$this, 'parseRest'], ['is_safe' => ['html']]],
         ];
     }
 

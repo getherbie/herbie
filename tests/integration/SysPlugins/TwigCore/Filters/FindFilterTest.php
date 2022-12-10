@@ -28,7 +28,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithoutSelectors()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find() -%}
+            {%- for item in site.pageList|h_find() -%}
                 *{{- item.route -}}
             {%- endfor -%}
         TWIG;
@@ -40,7 +40,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithOneSelector()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find("route=alpha") -%}
+            {%- for item in site.pageList|h_find("route=alpha") -%}
                 *{{- item.route -}}
             {%- endfor -%}
         TWIG;
@@ -52,7 +52,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithSelectorsSortAndLimit()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find("type=page", "sort=-title", "limit=3") -%}
+            {%- for item in site.pageList|h_find("type=page", "sort=-title", "limit=3") -%}
                 *{{- item.title -}}
             {%- endfor -%}
         TWIG;
@@ -65,7 +65,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     {
         $twig = <<<TWIG
             {%- set arr = [{'key': 'abc'}, {'key': 'def'}, {'key': 'ghi'}] -%}
-            {%- for item in arr|find("key=def") -%}
+            {%- for item in arr|h_find("key=def") -%}
                 *{{- item.key -}}
             {%- endfor -%}
         TWIG;
@@ -83,7 +83,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchEqual
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key=mnop")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key=mnop")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop', $actual);
@@ -91,7 +91,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchNotEqual
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key!=efgh")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key!=efgh")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('abcd,ijkl,mnop,qrst,uvwx', $actual);
@@ -99,7 +99,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchGreaterThan
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key>mnop")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key>mnop")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('qrst,uvwx', $actual);
@@ -107,7 +107,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchGreaterThanEqual
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key>=mnop")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key>=mnop")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop,qrst,uvwx', $actual);
@@ -115,7 +115,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchLessThan
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key<mnop")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key<mnop")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('abcd,efgh,ijkl', $actual);
@@ -123,7 +123,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchLessThanEqual
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key<=mnop")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key<=mnop")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('abcd,efgh,ijkl,mnop', $actual);
@@ -131,7 +131,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchContains
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key*=no")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key*=no")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop', $actual);
@@ -139,7 +139,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchStarts
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key^=m")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key^=m")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop', $actual);
@@ -147,7 +147,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchEnds
         $twig = <<<TWIG
             $twigArray
-            {{- array|find("key$=p")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key$=p")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('mnop', $actual);
@@ -159,7 +159,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchContainsWords
         $twig = <<<TWIG
             $words
-            {{- array|find("key~=is")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key~=is")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('this is great,this is yours', $actual);
@@ -167,7 +167,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
         // matchBitwiseAnd
         $twig = <<<TWIG
             {%- set array = [{key: 1}, {key: 2}, {key: 3}, {key: 4}, {key: 5}, {key: 6}, {key: 7}, {key: 8}] -%}
-            {{- array|find("key&2")|map(a => "#{a.key}")|join(',') -}}
+            {{- array|h_find("key&2")|map(a => "#{a.key}")|join(',') -}}
         TWIG;
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame('2,3,6,7', $actual);

@@ -23,12 +23,12 @@ The details of these variables are listed below.
 
 ## Global variables
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+{{ h_snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
 ## Site variables
 
-{{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
+{{ h_snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
 
 ## Page variables
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
+{{ h_snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}

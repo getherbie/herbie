@@ -23,7 +23,7 @@ final class ImageFunctionTest extends \Codeception\Test\Unit
     {
         $this->assertEquals(
             '<img src="/media/dummy-200x100.gif" alt="">',
-            $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}')
+            $this->twig()->renderString('{{ h_image("media/dummy-200x100.gif") }}')
         );
     }
 }

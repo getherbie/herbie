@@ -22,14 +22,14 @@ final class UrlFunctionTest extends \Codeception\Test\Unit
 
     public function testUrlWithoutRoute(): void
     {
-        $twig = '{{ url_rel() }}';
+        $twig = '{{ h_url_rel() }}';
         $this->assertSame('/', $this->twig()->renderString($twig));
     }
 
     public function testUrlWithValidRoutes(): void
     {
-        $this->assertSame('/one', $this->twig()->renderString('{{ url_rel("one") }}'));
-        $this->assertSame('/one/two', $this->twig()->renderString('{{ url_rel("one/two") }}'));
-        $this->assertSame('/one/two/three', $this->twig()->renderString('{{ url_rel("one/two/three") }}'));
+        $this->assertSame('/one', $this->twig()->renderString('{{ h_url_rel("one") }}'));
+        $this->assertSame('/one/two', $this->twig()->renderString('{{ h_url_rel("one/two") }}'));
+        $this->assertSame('/one/two/three', $this->twig()->renderString('{{ h_url_rel("one/two/three") }}'));
     }
 }

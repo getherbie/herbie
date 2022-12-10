@@ -15,7 +15,7 @@ Plugin settings can also be customized there as desired.
 
 ## Available plugins
 
-{{ snippet("@site/snippets/plugins.twig", {linkto:"doc/plugins"}) }}
+{{ h_snippet("@site/snippets/plugins.twig", {linkto:"doc/plugins"}) }}
 
 If you have a useful plugin for Herbie, [let us know](/development).
 Thanks in advance for your support!

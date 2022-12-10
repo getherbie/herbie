@@ -30,7 +30,7 @@ Here is an example:
 There are some predefined and reserved variables that are used by the system.
 These can be assigned a value in the page properties block of a page.
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
+{{ h_snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
 
 ## Custom variables
 

@@ -23,7 +23,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
     public function testLinkWithoutParams(): void
     {
         $this->expectException(ArgumentCountError::class);
-        $twig = '{{ link_mail() }}';
+        $twig = '{{ h_link_mail() }}';
         $this->twig()->renderString($twig);
     }
 
@@ -32,7 +32,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
         $expected = $this->getHtml(
             '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">me@example.com</a>'
         );
-        $twig = '{{ link_mail("me@example.com") }}';
+        $twig = '{{ h_link_mail("me@example.com") }}';
         $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
@@ -42,7 +42,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
         $expected = $this->getHtml(
             '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">Example</a>'
         );
-        $twig = '{{ link_mail("me@example.com", "Example") }}';
+        $twig = '{{ h_link_mail("me@example.com", "Example") }}';
         $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
@@ -52,7 +52,7 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
         $expected = $this->getHtml(
             '<a class="link-class" href="mailto&#x3A;me&#x40;example.com" id="link-id">Example</a>'
         );
-        $twig = '{{ link_mail("me@example.com", "Example", {class:"link-class", id:"link-id"}) }}';
+        $twig = '{{ h_link_mail("me@example.com", "Example", {class:"link-class", id:"link-id"}) }}';
         $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
@@ -60,14 +60,14 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
     public function testLinkWithCustomTemplate(): void
     {
         $expected = 'me@example.com';
-        $twig = '{{ link_mail("me@example.com", template="{{label}}") }}';
+        $twig = '{{ h_link_mail("me@example.com", template="{{label}}") }}';
         $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
     }
 
     public function testLinkWithNotExistingCustomTemplate(): void
     {
-        $twig = '{{ link_mail("me@example.com", template="@not/existing/template.twig") }}';
+        $twig = '{{ h_link_mail("me@example.com", template="@not/existing/template.twig") }}';
         $this->assertEquals('me@example.com', $this->twig()->renderString($twig));
     }
 

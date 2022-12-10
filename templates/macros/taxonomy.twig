@@ -17,8 +17,8 @@
                 <ul>
                     {% for item in months %}
                         {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
-                        {% set label = item.date|format_date('%B %Y') %}
-                        <li>{{ link_page(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
+                        {% set label = item.date|date('%B %Y') %}
+                        <li>{{ h_link_page(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -46,8 +46,8 @@
                 <h4>{{ title }}</h4>
                 <ul>
                     {% for author, count in authors %}
-                        {% set route = pageRoute ~ '/author/' ~ author|slugify %}
-                        <li>{{ link_page(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                        {% set route = pageRoute ~ '/author/' ~ author|h_slugify %}
+                        <li>{{ h_link_page(route, author) }}{% if showCount %} ({{ count }}){% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -75,8 +75,8 @@
                 <h4>{{ title }}</h4>
                 <ul>
                     {% for category, count in categories %}
-                        {% set route = pageRoute ~ '/category/' ~ category|slugify %}
-                        <li>{{ link_page(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                        {% set route = pageRoute ~ '/category/' ~ category|h_slugify %}
+                        <li>{{ h_link_page(route, category) }}{% if showCount %} ({{ count }}){% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -104,8 +104,8 @@
                 <h4>{{ title }}</h4>
                 <ul>
                     {% for tag, count in tags %}
-                        {% set route = pageRoute ~ '/tag/' ~ tag|slugify %}
-                        <li>{{ link_page(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
+                        {% set route = pageRoute ~ '/tag/' ~ tag|h_slugify %}
+                        <li>{{ h_link_page(route, tag) }}{% if showCount %} ({{ count }}){% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>

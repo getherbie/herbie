@@ -39,14 +39,14 @@ final class ImagineSysPlugin extends Plugin
     public function twigFilters(): array
     {
         return [
-            ['imagine', [$this, 'imagineFilter']]
+            ['h_imagine', [$this, 'imagineFilter']]
         ];
     }
 
     public function twigFunctions(): array
     {
         return [
-            ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]]
+            ['h_imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]]
         ];
     }
 
