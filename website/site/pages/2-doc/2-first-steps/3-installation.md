@@ -11,7 +11,7 @@ There are only a few host system requirements that must be met.
 These are:
 
 - Operating system: Windows, Linux or Mac
-- PHP: >=7.4
+- PHP: >=8.0
 - Composer: >=2.x
 
 ## Composer support

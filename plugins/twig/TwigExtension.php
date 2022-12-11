@@ -17,7 +17,7 @@ use herbie\PageTreeHtmlRenderer;
 use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
-use herbie\Query;
+use herbie\QueryBuilder;
 use herbie\Selector;
 use herbie\Site;
 use herbie\Translator;
@@ -621,9 +621,9 @@ final class TwigExtension extends AbstractExtension
         return implode($delim, $titles);
     }
 
-    public function query(iterable $data): Query
+    public function query(iterable $data): QueryBuilder
     {
-        return (new Query())->from($data);
+        return (new QueryBuilder())->from($data);
     }
 
     public function translate(string $category = '', string $message = '', array $params = []): string

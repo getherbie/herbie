@@ -55,7 +55,7 @@ TBD
 The easiest way to install Herbie is through Composer.
 Run the following commands in your terminal to create a new project and install all dependent libraries.
 
-For the upcoming 2.x version (PHP 7.4, 8.0, 8.1, 8.2):
+For the upcoming 2.x version (PHP 8.x):
 
     composer create-project getherbie/start-website:dev-master mywebsite
 
