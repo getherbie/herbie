@@ -12,6 +12,7 @@
                 <div class="pure-u-1 pure-u-md-1-4">
                     <div class="sidebar">
                         {{ include('includes/simplesearch.twig') }}
+                        {# Show recent pages #}
                         {% set recentPages = site.page_list.getRecent(3, 'recipe') %}
                         {% if recentPages|length > 0 %}
                             <div class="widget widget-pages-recent">
@@ -21,6 +22,19 @@
                                         <li class="widget-pages-recent-item">
                                             {{ link_page(pageItem.route, pageItem.title, {class: "widget-pages-recent-item-link"}) }}
                                         </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {# Show categories #}
+                        {% set categories = site.page_list.getCategories('recipe') %}
+                        {% if categories|length > 0 %}
+                            <div class="widget-blog widget-blog-categories">
+                                <h4>Categories</h4>
+                                <ul>
+                                    {% for category, count in categories %}
+                                        {% set route = '/recipes/category/' ~ category|slugify %}
+                                        <li>{{ link_page(route, category) }} ({{ count }})</li>
                                     {% endfor %}
                                 </ul>
                             </div>
