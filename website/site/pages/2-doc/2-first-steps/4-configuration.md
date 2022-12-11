@@ -54,13 +54,13 @@ All configuration values can be accessed via a function with support for dot not
 The following function calls:
 
 {% verbatim %}
-    {{ config.getAsString('charset') }}
-    {{ config.getAsString('fileExtensions.pages') }}
-    {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    {{ site.config.as_string('charset') }}
+    {{ site.config.as_string('fileExtensions.pages') }}
+    {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
 {% endverbatim %}
 
 Return the following values:
 
-    Charset = {{ config.getAsString('charset') }}
-    Page extensions = {{ config.getAsString('fileExtensions.pages') }}
-    Enable twig = {{ config.getAsBool('components.virtualCorePlugin.enableTwigInLayoutFilter') }}
+    Charset = {{ site.config.as_string('charset') }}
+    Page extensions = {{ site.config.as_string('fileExtensions.pages') }}
+    Enable twig = {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}

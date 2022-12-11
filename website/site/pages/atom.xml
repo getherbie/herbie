@@ -12,7 +12,7 @@ hidden: true
     <link href="{{ url_abs('/') }}" />
     <id>{{ url_abs('/') }}</id>
     <updated>{{ "now"|date('r') }}</updated>
-    {% for item in site.pageList %}
+    {% for item in site.page_list %}
         {% if item.title != '' %}
         <entry>
             <title>{{ item.title }} / Herbie CMS</title>

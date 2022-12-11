@@ -6,22 +6,22 @@ layout: recipe
 # Recipes
 
 {% apply spaceless %}
-    {% if routeParams.author %}
-        <p>Filtered by Author "{{ routeParams.author }}"</p>
-    {% elseif routeParams.category %}
-        <p>Filtered by Category "{{ routeParams.category }}"</p>
-    {% elseif routeParams.tag %}
-        <p>Filtered by Tag "{{ routeParams.tag }}"</p>
-    {% elseif routeParams.year and routeParams.month and routeParams.day %}
-        <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
-    {% elseif routeParams.year and routeParams.month %}
-        <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
-    {% elseif routeParams.year %}
-        <p>Filtered by Year "{{ routeParams.year }}"</p>
+    {% if site.route_params.author %}
+        <p>Filtered by Author "{{ site.route_params.author }}"</p>
+    {% elseif site.route_params.category %}
+        <p>Filtered by Category "{{ site.route_params.category }}"</p>
+    {% elseif site.route_params.tag %}
+        <p>Filtered by Tag "{{ site.route_params.tag }}"</p>
+    {% elseif site.route_params.year and site.route_params.month and site.route_params.day %}
+        <p>Filtered by Year/Month/Day "{{ site.route_params.year }}-{{ site.route_params.month }}-{{ site.route_params.day }}"</p>
+    {% elseif site.route_params.year and site.route_params.month %}
+        <p>Filtered by Year/Month "{{ site.route_params.year }}-{{ site.route_params.month }}"</p>
+    {% elseif site.route_params.year %}
+        <p>Filtered by Year "{{ site.route_params.year }}"</p>
     {% endif %}
 {% endapply %}
 
-{% for item in site.pageList.filterItems('recipe', 'recipes', routeParams) %}
+{% for item in site.page_list.filterItems('recipe', 'recipes', site.route_params) %}
 <p class="post-title"><b>{{ link_page(item.route, item.title) }}</b><br>
     {{ item.date|format_date("%e. %B %Y") }}
 </p>

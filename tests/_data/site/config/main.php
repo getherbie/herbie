@@ -22,7 +22,7 @@ return [
     'plugins' => [
         'imagine' => [
             'test' => true,
-            'filterSets' => [
+            'collections' => [
                 'bsp1' => [
                     'filters' => [
                         'thumbnail' => [

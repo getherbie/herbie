@@ -25,8 +25,6 @@ final class TwigRenderer
     private TwigEnvironment $twig;
     private LoggerInterface $logger;
     private Site $site;
-    private UrlManager $urlManager;
-    private string $baseUrl;
 
     /**
      * TwigRenderer constructor.
@@ -35,17 +33,13 @@ final class TwigRenderer
         Config $config,
         EventManager $eventManager,
         LoggerInterface $logger,
-        Site $site,
-        UrlManager $urlManager,
-        string $baseUrl
+        Site $site
     ) {
         $this->initialized = false;
         $this->config = $config;
         $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->site = $site;
-        $this->urlManager = $urlManager;
-        $this->baseUrl = $baseUrl;
     }
 
     /**
@@ -84,9 +78,8 @@ final class TwigRenderer
             $this->twig->addExtension(new DebugExtension());
         }
 
-        foreach ($this->getContext() as $key => $value) {
-            $this->twig->addGlobal($key, $value);
-        }
+        $this->twig->addGlobal('page', null); // will be set by page renderer middleware
+        $this->twig->addGlobal('site', $this->site);
 
         $this->initialized = true;
 
@@ -118,31 +111,6 @@ final class TwigRenderer
     public function renderTemplate(string $name, array $context = []): string
     {
         return $this->twig->render($name, $context);
-    }
-
-    /**
-     * @return array{
-     *     route: string,
-     *     routeParams: array<string, string>,
-     *     baseUrl: string,
-     *     theme: string,
-     *     site: Site,
-     *     page: Page|null,
-     *     config: Config
-     * }
-     */
-    private function getContext(): array
-    {
-        [$route, $routeParams] = $this->urlManager->parseRequest();
-        return [
-            'route' => $route,
-            'routeParams' => $routeParams,
-            'baseUrl' => $this->baseUrl,
-            'theme' => $this->config->getAsString('theme'),
-            'site' => $this->site,
-            'page' => null, // will be set by page renderer middleware
-            'config' => $this->config
-        ];
     }
 
     public function addFunction(TwigFunction $function): void

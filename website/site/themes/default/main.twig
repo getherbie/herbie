@@ -12,9 +12,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ page_title(delim=' / ', siteTitle='Herbie CMS', rootTitle='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
-    <base href="{{ baseUrl == '' ? '/' : baseUrl }}">
-    {{ css_out(addTimestamp=true) }}
+    <title>{{ page_title(delim=' / ', site_title='Herbie CMS', root_title='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
+    <base href="{{ site.base_url }}">
+    {{ css_out(timestamp=true) }}
 </head>
 <body class="{{ css_classes() }}">
 <div class="header">
@@ -108,7 +108,7 @@
         </div>
     </div>
 </div>
-{{ js_out(addTimestamp=true) }}
+{{ js_out(timestamp=true) }}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre code[class*=language-]').forEach((el) => {

@@ -60,8 +60,6 @@ final class CorePlugin extends Plugin
     {
         $twig = $this->twigRenderer->getTwigEnvironment();
         $twig->addGlobal('page', $event->getPage());
-        $twig->addGlobal('route', $event->getRoute());
-        $twig->addGlobal('routeParams', $event->getRouteParams());
     }
 
     /**

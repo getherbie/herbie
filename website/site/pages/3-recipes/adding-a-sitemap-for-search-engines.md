@@ -54,7 +54,7 @@ Instead we retrieve a page list and iterate over all pages and output their URL 
 ~~~xml
 <?xml version="1.0" encoding="UTF-8" ?>        
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{% for page in site.pageList %}
+{% for page in site.page_list %}
 <url>
     <loc>{{ url_abs(page.route) }}</loc>
     {% if(item.date) %}

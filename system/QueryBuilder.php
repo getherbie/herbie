@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace herbie;
+
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * @see https://stackoverflow.com/a/17414042/6161354
  * @see https://daylerees.com/code-happy-fluent-query-builder/
  */
-final class Query
+final class QueryBuilder implements IteratorAggregate
 {
-    private const DEBUG = false;
     private const WHERE_CLAUSE_OPERATORS = ['AND', 'OR'];
     private const OPERATORS = [
         "!=" => 'matchNotEqual',
@@ -23,16 +29,15 @@ final class Query
         "<" => 'matchLessThan',
         "=" => 'matchEqual',
     ];
-    private array $select;
     private array $where;
     private int $limit;
-    private string $order;
-    private iterable $data;
+    /** @var callable|string $order */
+    private $order;
+    private array $data;
     private array $processed;
 
     public function __construct()
     {
-        $this->select = [];
         $this->where = [];
         $this->limit = 0;
         $this->order = '';
@@ -40,18 +45,19 @@ final class Query
         $this->processed = [];
     }
 
-    public function from(iterable $data): self
+    public function from(iterable $iterator): self
     {
-        $this->data = iterator_to_array($data);
+        if ($iterator instanceof Traversable) {
+            $this->data = iterator_to_array($iterator);
+        } else {
+            $this->data = (array)$iterator;
+        }
         return $this;
     }
 
-    public function select(array $select): self
-    {
-        $this->select = $select;
-        return $this;
-    }
-
+    /**
+     * @param array|string ...$conditions
+     */
     public function where(...$conditions): self
     {
         if (empty($conditions)) {
@@ -123,7 +129,7 @@ final class Query
         return $this;
     }
 
-    public function order(string $order): self
+    public function order(callable|string $order): self
     {
         $this->order = $order;
         return $this;
@@ -135,22 +141,49 @@ final class Query
         return $this->processed;
     }
 
+    /**
+     * @return null|mixed
+     */
+    public function one()
+    {
+        $this->processData();
+        $item = reset($this->data);
+        if ($item === false) {
+            return null;
+        }
+        return $item;
+    }
+
+    public function getIterator(): Traversable
+    {
+        $this->processData();
+        return new ArrayIterator($this->processed);
+    }
+
     private function processData(): void
     {
-        $where = array_merge(['AND'], $this->where); // the outer where clause condition
+        $i = 0;
+        $this->sort();
         foreach ($this->data as $item) {
-            $status = $this->processItem($item, $where);
+            $status = $this->processItem($item, array_merge(['AND'], $this->where));
             if ($status === true) {
                 $this->processed[] = $item;
+                $i++;
+                if (($this->limit > 0) && ($i >= $this->limit)) {
+                    break;
+                }
             }
         }
     }
 
-    private function processItem($item, array $conditions): bool
+    private function processItem(ArrayAccess|array $item, array $conditions): bool
     {
         $whereClauseOperator = array_shift($conditions);
 
-        $debug = [];
+        if (empty($conditions)) {
+            return true;
+        }
+
         $status = [];
         foreach ($conditions as $condition) {
             if (isset($condition[0]) && in_array(strtoupper($condition[0]), self::WHERE_CLAUSE_OPERATORS)) {
@@ -162,43 +195,54 @@ final class Query
                 } else {
                     /** @var callable $callable */
                     $callable = [$this, $operator];
-                    $status[] = $s = call_user_func_array($callable, [$item[$field], $value]);
-                    $debug[] = $operator . ': ' . $item[$field] . ' - ' . $value . ' => ' . (int)$s;
+                    $status[] = call_user_func_array($callable, [$item[$field], $value]);
                 }
             }
         }
 
-        if (self::DEBUG) {
-            echo $whereClauseOperator . '<br>';
-            foreach ($debug as $d) {
-                echo $d . '<br>';
-            }
-        }
-
         if ($whereClauseOperator === 'OR') {
-            if (self::DEBUG) {
-                echo (int)in_array(true, $status, true) . '<br>';
-                echo '---<br>';
-            }
             return in_array(true, $status, true);
         }
 
         $uniqueStatus = array_unique($status);
         $uniqueStatusCount = count($uniqueStatus);
-        if (self::DEBUG) {
-            echo (int)($uniqueStatusCount === 1 && in_array(true, $uniqueStatus, true)) . '<br>';
-            echo '---<br>';
-        }
         return $uniqueStatusCount === 1 && in_array(true, $uniqueStatus, true);
     }
 
-    /**
-     * @return mixed
-     */
-    public function one()
+    private function sort(): bool
     {
-        $this->processData();
-        return reset($this->data);
+        if (is_callable($this->order)) {
+            return uasort($this->data, $this->order);
+        }
+
+        if (trim($this->order, '-+') === '') {
+            return false;
+        }
+
+        $field = '';
+        if (!empty($this->order)) {
+            $field = trim($this->order, '+');
+        }
+
+        $direction = 'asc';
+        if (str_starts_with($field, '-')) {
+            $field = substr($field, 1);
+            $direction = 'desc';
+        }
+
+        return uasort($this->data, function ($value1, $value2) use ($field, $direction) {
+            if (!isset($value1[$field]) || !isset($value2[$field])) {
+                return 0;
+            }
+            if ($value1[$field] === $value2[$field]) {
+                return 0;
+            }
+            if ($direction === 'asc') {
+                return ($value1[$field] < $value2[$field]) ? -1 : 1;
+            } else {
+                return ($value2[$field] < $value1[$field]) ? -1 : 1;
+            }
+        });
     }
 
     protected function matchString(string $value1, string $value2): bool

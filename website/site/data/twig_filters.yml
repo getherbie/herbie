@@ -8,7 +8,7 @@
     - The file size in human readable format
 - name: find
   code: >-
-    {{ site.pageList|find("title^=this", "title~=is", "title$=great") }}
+    {{ site.page_list|find("title^=this", "title~=is", "title$=great") }}
   desc: >-
     Find items of a traversable list by one or more selectors.      
     Selectors are simple strings of text that specify fields and values. 
@@ -58,7 +58,7 @@
     - The formatted time or date
 - name: visible
   code: >-
-    {{ site.pageTree|visible }}
+    {{ site.page_tree|visible }}
   desc: Filters the page tree by visible and active page items.
   return:
     - pageTree

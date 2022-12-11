@@ -50,13 +50,13 @@ final class ImagineSysPlugin extends Plugin
         ];
     }
 
-    public function imagineFunction(string $path, string $filterSet = 'default', array $attribs = []): string
+    public function imagineFunction(string $path, string $collection = 'default', array $attribs = []): string
     {
-        $abspath = $this->alias->get('@media/' . $path);
+        $absolutePath = $this->alias->get('@media/' . $path);
 
         $attribs['class'] = $attribs['class'] ?? 'imagine';
 
-        if (!is_file($abspath)) {
+        if (!is_file($absolutePath)) {
             $attribs['class'] = trim($attribs['class'] . ' imagine--file-not-found');
             return sprintf(
                 '<img src="%s"%s>',
@@ -65,7 +65,7 @@ final class ImagineSysPlugin extends Plugin
             );
         }
 
-        $sanitizedFilter = $this->sanitizeFilterName($filterSet);
+        $sanitizedFilter = $this->sanitizeFilterName($collection);
 
         $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanitizedFilter);
 
@@ -98,16 +98,16 @@ final class ImagineSysPlugin extends Plugin
     /**
      * Gets the browser path for the image and filter to apply.
      */
-    public function imagineFilter(string $path, string $filterSet = 'default'): Markup
+    public function imagineFilter(string $path, string $collection = 'default'): Markup
     {
-        $abspath = $this->alias->get('@media/' . $path);
+        $absolutePath = $this->alias->get('@media/' . $path);
 
-        if (!is_file($abspath)) {
+        if (!is_file($absolutePath)) {
             $dataSrc = $this->getTransparentOnePixelSrc();
             return new Markup($dataSrc, 'utf8');
         }
 
-        $sanitizedFilterSet = $this->sanitizeFilterName($filterSet);
+        $sanitizedFilterSet = $this->sanitizeFilterName($collection);
 
         return new Markup(
             $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
@@ -118,7 +118,7 @@ final class ImagineSysPlugin extends Plugin
     private function sanitizeFilterName(string $filterSet): string
     {
         if ($filterSet !== 'default') {
-            if ($this->config->check("plugins.imagine.filterSets.{$filterSet}") === false) {
+            if ($this->config->check("plugins.imagine.collections.{$filterSet}") === false) {
                 $filterSet = 'default';
             }
         }
@@ -141,7 +141,7 @@ final class ImagineSysPlugin extends Plugin
     {
         $path = $this->alias->get('@media/' . $relpath);
 
-        $filterConfig = $this->config->getAsArray("plugins.imagine.filterSets.{$filterSet}");
+        $filterConfig = $this->config->getAsArray("plugins.imagine.collections.{$filterSet}");
         $cachePath = $this->resolveCachePath($relpath, $filterSet);
 
         if (!empty($filterConfig['test'])) {

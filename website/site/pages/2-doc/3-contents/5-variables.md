@@ -12,7 +12,7 @@ All variables can then be accessed in the layout and content files as normal Twi
 Here are some examples:
 
 {% verbatim %}
-    {{ route }}
+    {{ site.route }}
     {{ site.language }}
     {{ site.data.persons }}
     {{ page.layout }}
@@ -25,10 +25,10 @@ The details of these variables are listed below.
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
 
-## Site variables
-
-{{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
-
 ## Page variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
+
+## Site variables
+
+{{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}

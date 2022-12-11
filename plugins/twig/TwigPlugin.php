@@ -7,6 +7,7 @@ namespace herbie\sysplugin\twig;
 use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
+use herbie\Config;
 use herbie\event\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
@@ -17,6 +18,7 @@ final class TwigPlugin extends Plugin
 {
     private Alias $alias;
     private Assets $assets;
+    private Config $config;
     private PageRepositoryInterface $pageRepository;
     private SlugGenerator $slugGenerator;
     private Translator $translator;
@@ -25,6 +27,7 @@ final class TwigPlugin extends Plugin
     public function __construct(
         Alias $alias,
         Assets $assets,
+        Config $config,
         PageRepositoryInterface $pageRepository,
         SlugGenerator $slugGenerator,
         Translator $translator,
@@ -32,6 +35,7 @@ final class TwigPlugin extends Plugin
     ) {
         $this->alias = $alias;
         $this->assets = $assets;
+        $this->config = $config;
         $this->pageRepository = $pageRepository;
         $this->slugGenerator = $slugGenerator;
         $this->translator = $translator;
@@ -50,6 +54,7 @@ final class TwigPlugin extends Plugin
         $event->getEnvironment()->addExtension(new TwigExtension(
             $this->alias,
             $this->assets,
+            $this->config,
             $event->getEnvironment(),
             $this->pageRepository,
             $this->slugGenerator,
