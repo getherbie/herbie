@@ -469,3 +469,9 @@ function is_natural($value, bool $includingZero = false): bool
     }
     return false;
 }
+
+function array_is_assoc(array $array): bool
+{
+    $keys = array_keys($array);
+    return array_keys($keys) !== $keys;
+}

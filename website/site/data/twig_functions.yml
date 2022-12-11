@@ -135,11 +135,11 @@
       type: string
       desc: The tree from the given route.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the tree (-1 = unlimited).
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -160,7 +160,7 @@
       type: string
       desc: The delim.
       default: '""'
-    - name: homeLink
+    - name: home
       type: array|string
       desc: The link to the homepage. An array must be like [route, label].
       default: '""'
@@ -173,11 +173,11 @@
     - The breadcrumb path as HTML.
 - name: menu_list
   code: >-
-    {{ menu_list(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+    {{ menu_list(site.page_list, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
   desc: Returns a paginated list of page items with links to the previous and next page.
     For the paging the GET parameter "page" is used.
   params:
-    - name: pageList
+    - name: page_list
       type: PageList
       desc: The page list.
       default: 'null'
@@ -214,25 +214,25 @@
       type: string
       desc: Limits the pagination to a certain branch of the page tree.
       default: ''
-    - name: prevPageLabel
+    - name: prev_label
       type: string
       desc: The label for the "previous" link.
         If empty the page title will be shown.
       default: ''
-    - name: nextPageLabel
+    - name: next_label
       type: string
       desc: The label for the "next" link.
         If empty the page title will be shown.
       default: ''
-    - name: prevPageIcon
+    - name: prev_icon
       type: string
       desc: The icon for the "previous" link.
       default: ''
-    - name: nextPageIcon
+    - name: next_icon
       type: string
       desc: The icon for the "next" link.
       default: ''
-    - name: linkClass
+    - name: class
       type: string
       desc: The CSS class name for the element.
         Various other class names are assembled from this class name.
@@ -254,11 +254,11 @@
       type: string
       desc: Limits the sitemap to a certain branch of the page tree.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the sitemap.
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -279,11 +279,11 @@
       type: string
       desc: The menu from the given route.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the tree.
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -303,7 +303,7 @@
       type: string
       desc: The grouped CSS.
       default: 'null'
-    - name: addTimestamp
+    - name: timestamp
       type: bool
       desc: If true, a GET param with the modification timestamp of the file is added.
       default: false      
@@ -319,7 +319,7 @@
       type: string
       desc: The grouped JavaScript.
       default: 'null'
-    - name: addTimestamp
+    - name: timestamp
       type: bool
       desc: If true, a GET param with the modification timestamp of the file is added.
       default: false
@@ -404,12 +404,12 @@
       type: string
       desc: The delim.
       default: '" / "'
-    - name: siteTitle
+    - name: site_title
       type: string
       desc: The title of the website.
         If set this title is appended on every page.
       default: 'null'
-    - name: rootTitle
+    - name: root_title
       type: string
       desc: The title of the root page of the website.
         If set this title is displayed on root page only.

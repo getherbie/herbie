@@ -1,22 +1,11 @@
 ---
-- name: baseUrl
-  desc: The base url.
-  type: string
-- name: config
-  desc: The configurations as Config object.
-  type: herbie\Config
-- name: page
-  desc: Page wide variables.
-  type: herbie\Page
-- name: route
-  desc: The requested route to a page, i.e. `documentation/variables`.
-  type: string
-- name: routeParams
-  desc: The requested route params.
+- name: content
+  desc: The rendered content with one or more content segments.
+    Only available in layout files.
   type: array
+- name: page
+  desc: The page object with its properties and methods.
+  type: herbie\Page
 - name: site
-  desc: Project-wide variables.
+  desc: The site object with its properties and methods.
   type: herbie\Site
-- name: theme
-  desc: The configured theme.
-  type: string

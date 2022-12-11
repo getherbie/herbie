@@ -49,7 +49,7 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
     public function testMenuTreeFunction(): void
     {
         $expected = '<div class="menu"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_tree(maxDepth=0) }}');
+        $actual = $this->twig()->renderString('{{ menu_tree(depth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 
@@ -65,7 +65,7 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
     public function testMenuSitemapFunction(): void
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_sitemap(maxDepth=0) }}');
+        $actual = $this->twig()->renderString('{{ menu_sitemap(depth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 }

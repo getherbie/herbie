@@ -1,30 +1,30 @@
-{% macro filters(routeParams) %}
+{% macro filters(route_params) %}
 
-    {% if routeParams %}
+    {% if route_params %}
 
-        {% if routeParams.author %}
+        {% if route_params.author %}
 
-            <p>Filtered by Author "{{ routeParams.author }}"</p>
+            <p>Filtered by Author "{{ route_params.author }}"</p>
 
-        {% elseif routeParams.category %}
+        {% elseif route_params.category %}
 
-            <p>Filtered by Category "{{ routeParams.category }}"</p>
+            <p>Filtered by Category "{{ route_params.category }}"</p>
 
-        {% elseif routeParams.tag %}
+        {% elseif route_params.tag %}
 
-            <p>Filtered by Tag "{{ routeParams.tag }}"</p>
+            <p>Filtered by Tag "{{ route_params.tag }}"</p>
 
-        {% elseif routeParams.year and routeParams.month and routeParams.day %}
+        {% elseif route_params.year and route_params.month and route_params.day %}
 
-            <p>Filtered by Year/Month/Day "{{ routeParams.year }}-{{ routeParams.month }}-{{ routeParams.day }}"</p>
+            <p>Filtered by Year/Month/Day "{{ route_params.year }}-{{ route_params.month }}-{{ route_params.day }}"</p>
 
-        {% elseif routeParams.year and routeParams.month %}
+        {% elseif route_params.year and route_params.month %}
 
-            <p>Filtered by Year/Month "{{ routeParams.year }}-{{ routeParams.month }}"</p>
+            <p>Filtered by Year/Month "{{ route_params.year }}-{{ route_params.month }}"</p>
 
-        {% elseif routeParams.year %}
+        {% elseif route_params.year %}
 
-            <p>Filtered by Year "{{ routeParams.year }}"</p>
+            <p>Filtered by Year "{{ route_params.year }}"</p>
 
         {% endif %}
 

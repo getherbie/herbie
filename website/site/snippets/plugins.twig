@@ -1,5 +1,5 @@
 <div class="plugins">
-    {% set plugins = site.data.plugins|find("enabled=1")|sort((a, b) => a.id <=> b.id) %}
+    {% set plugins = query(site.data.plugins).where("enabled=1").order('id') %}
     <p>There are currently <b>{{ plugins|length }}</b> plugins available.</p>
     {% for item in plugins %}
         {% if item.enabled == true %}

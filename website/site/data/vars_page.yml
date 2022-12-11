@@ -84,6 +84,6 @@
 - name: page.type
   desc: 'The page type (default: page).'
   type: string
-- name: page.<NAME>
+- name: page.<name>
   desc: Any numbers of custom variables.
   type: mixed

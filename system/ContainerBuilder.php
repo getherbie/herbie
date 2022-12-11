@@ -271,8 +271,6 @@ final class ContainerBuilder
                 $c->get(EventManager::class),
                 $c->get(LoggerInterface::class),
                 $c->get(Site::class),
-                $c->get(UrlManager::class),
-                $this->app->getBaseUrl()
             );
         });
 

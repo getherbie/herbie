@@ -28,7 +28,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithoutSelectors()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find() -%}
+            {%- for item in site.page_list|find() -%}
                 *{{- item.route -}}
             {%- endfor -%}
         TWIG;
@@ -40,7 +40,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithOneSelector()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find("route=alpha") -%}
+            {%- for item in site.page_list|find("route=alpha") -%}
                 *{{- item.route -}}
             {%- endfor -%}
         TWIG;
@@ -52,7 +52,7 @@ final class FindFilterTest extends \Codeception\Test\Unit
     public function testFilterPageListWithSelectorsSortAndLimit()
     {
         $twig = <<<TWIG
-            {%- for item in site.pageList|find("type=page", "sort=-title", "limit=3") -%}
+            {%- for item in site.page_list|find("type=page", "sort=-title", "limit=3") -%}
                 *{{- item.title -}}
             {%- endfor -%}
         TWIG;

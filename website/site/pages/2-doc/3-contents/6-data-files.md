@@ -14,7 +14,7 @@ At the same time, one has access to data without changing the central configurat
 ## The data folder
 
 In the data folder you create one or more JSON or YAML files that can contain any structured data.
-You can access this data in the template via `site.data.<FILENAME>`.
+You can access this data in the template via `site.data.<filename>`.
 
 ### Example: A list of people
 
