@@ -31,6 +31,7 @@ final class QueryBuilder implements IteratorAggregate
     ];
     private array $where;
     private int $limit;
+    private int $offset;
     /** @var callable|string $order */
     private $order;
     private array $data;
@@ -40,6 +41,7 @@ final class QueryBuilder implements IteratorAggregate
     {
         $this->where = [];
         $this->limit = 0;
+        $this->offset = 0;
         $this->order = '';
         $this->data = [];
         $this->processed = [];
@@ -129,6 +131,12 @@ final class QueryBuilder implements IteratorAggregate
         return $this;
     }
 
+    public function offset(int $offset): self
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
     public function order(callable|string $order): self
     {
         $this->order = $order;
@@ -163,8 +171,13 @@ final class QueryBuilder implements IteratorAggregate
     private function processData(): void
     {
         $i = 0;
+        $j = 0;
         $this->sort();
         foreach ($this->data as $item) {
+            if (($this->offset > 0) && ($j < ($this->offset))) {
+                $j++;
+                continue;
+            }
             $status = $this->processItem($item, array_merge(['AND'], $this->where));
             if ($status === true) {
                 $this->processed[] = $item;
