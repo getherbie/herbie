@@ -439,6 +439,18 @@
   return:
     - string
     - The included snippet
+- name: query
+  code: >
+    {{ query(data).where("type=page", "title*=news").limit(3).order("-date").all() }}
+  desc: >
+    Find entries with the help of the built-in fluent query builder.
+    The query builder can be applied to any type of iterable data structure.
+    The queried data can be narrowed down, filtered, sorted and limited.
+  params:
+    - name: iterator
+      type: iterable
+      desc: The data to be queried.
+      default: iterable
 - name: translate
   code: >
     {{ translate("app", "Plugin {plugin} enabled but not found!", {plugin: "dummy"}) }}
