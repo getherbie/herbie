@@ -6,36 +6,6 @@
   return:
     - string
     - The file size in human readable format
-- name: find
-  code: >-
-    {{ site.page_list|find("title^=this", "title~=is", "title$=great") }}
-  desc: >-
-    Find items of a traversable list by one or more selectors.      
-    Selectors are simple strings of text that specify fields and values. 
-    They are logical AND-connected and given as variadic arguments.
-    Selectors in Herbie are loosely based around the idea and syntax of CSS attribute selectors. 
-    A selector can be one of the following:
-    <table class="pure-table pure-table-horizontal">
-    <tr><td style='width:5%'>=</td><td>Equal to</td></tr>    
-    <tr><td>!=</td><td>Not equal to</td></tr>
-    <tr><td>&lt;</td><td>Less than</td></tr>    
-    <tr><td>&gt;</td><td>Greater than</td></tr>
-    <tr><td>&lt;=</td><td>Less than or equal to</td></tr>
-    <tr><td>&gt;=</td><td>Greater than or equal to</td></tr>
-    <tr><td>*=</td><td>Contains phrase/text</td></tr>
-    <tr><td>~=</td><td>Contains all words</td></tr>
-    <tr><td>^=</td><td>Starts with phrase/text</td></tr>
-    <tr><td>$=</td><td>Ends with phrase/text</td></tr>
-    <tr><td>&</td><td>Bitwise AND</td></tr>
-    </table>
-  params:
-    - name: selectors
-      type: string
-      desc: One or more selectors (optional, variadic)
-      default:
-  return:
-    - iterable
-    - The items matching the given selectors
 - name: slugify
   code: >-
     {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
@@ -43,19 +13,6 @@
   return:
     - string
     - The slugified string
-- name: format_date
-  code: >-
-    {{ "2022-09-13"|format_date("%Y-%m-%d") }}
-  desc: Formats a local time/date according to locale settings. 
-    This is a wrapper for the same-named PHP function.
-  params:
-    - name: format
-      type: string
-      desc: The format, see http://php.net/strftime
-      default: "%x"
-  return:
-    - string
-    - The formatted time or date
 - name: visible
   code: >-
     {{ site.page_tree|visible }}

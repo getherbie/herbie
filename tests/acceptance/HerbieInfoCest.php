@@ -375,8 +375,6 @@ final class HerbieInfoCest
             'escape',
             'e',
             'raw',
-            'find',
-            'format_date',
             'format_size',
             'slugify',
             'visible',

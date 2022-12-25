@@ -17,7 +17,7 @@
                 <ul>
                     {% for item in months %}
                         {% set route = pageRoute ~ '/' ~ item.year ~ '/' ~ item.month %}
-                        {% set label = item.date|format_date('%B %Y') %}
+                        {% set label = item.date|date('%B %Y') %}
                         <li>{{ link_page(route, label) }}{% if showCount %} ({{ item.count }}){% endif %}</li>
                     {% endfor %}
                 </ul>

@@ -78,8 +78,6 @@ final class TwigExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('find', [$this, 'filterFind'], ['is_variadic' => true, 'deprecated' => true]),
-            new TwigFilter('format_date', [$this, 'filterStrftime']),
             new TwigFilter('format_size', [$this, 'filterFilesize']),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
             new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
@@ -157,43 +155,11 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
-     * @param string[] $selectors
-     * @throws \Exception
-     */
-    public function filterFind(iterable $iterator, array $selectors = []): iterable
-    {
-        if ($iterator instanceof Traversable) {
-            $data = iterator_to_array($iterator);
-        } else {
-            $data = (array)$iterator;
-        }
-        $selector = new Selector();
-        return $selector->find($selectors, $data);
-    }
-
-    /**
      * Creates a web friendly URL (slug) from a string.
      */
     public function filterSlugify(string $url): string
     {
         return $this->slugGenerator->generate($url);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function filterStrftime(string $date, string $format = '%x'): string
-    {
-        // timestamp?
-        if (is_numeric($date)) {
-            $date = date_format('Y-m-d H:i:s', (int)$date);
-        }
-        try {
-            $dateTime = new \DateTime($date);
-        } catch (\Exception $e) {
-            return $date;
-        }
-        return time_format($format, $dateTime->getTimestamp());
     }
 
     public function filterVisible(PageTree $tree): PageTreeFilterIterator

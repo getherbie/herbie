@@ -23,7 +23,7 @@ layout: recipe
 
 {% for item in site.page_list.filterItems('recipe', 'recipes', site.route_params) %}
 <p class="post-title"><b>{{ link_page(item.route, item.title) }}</b><br>
-    {{ item.date|format_date("%e. %B %Y") }}
+    {{ item.date|date("d. F Y") }}
 </p>
 {% else %}
 <p>There are no entries available.</p>
