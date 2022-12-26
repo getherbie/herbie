@@ -16,6 +16,7 @@ use Traversable;
 final class QueryBuilder implements IteratorAggregate
 {
     private const WHERE_CLAUSE_OPERATORS = ['AND', 'OR'];
+    // ordered by key string length
     private const OPERATORS = [
         "!=" => 'matchNotEqual',
         ">=" => 'matchGreaterThanEqual',
@@ -24,10 +25,10 @@ final class QueryBuilder implements IteratorAggregate
         "^=" => 'matchStarts',
         "~=" => 'matchContainsWords',
         "$=" => 'matchEnds',
-        "&" => 'matchBitwiseAnd',
+        "=" => 'matchEqual',
         ">" => 'matchGreaterThan',
         "<" => 'matchLessThan',
-        "=" => 'matchEqual',
+        "&" => 'matchBitwiseAnd',
     ];
     private array $where;
     private int $limit;
@@ -91,10 +92,43 @@ final class QueryBuilder implements IteratorAggregate
             $position = stripos($condition, $syntax);
             if ($position !== false) {
                 $syntaxLength = strlen($syntax);
-                return [$name, substr($condition, 0, $position), substr($condition, $position + $syntaxLength)];
+                $value1 = substr($condition, 0, $position);
+                $value2 = substr($condition, $position + $syntaxLength);
+                if (str_contains($value1, '|')) {
+                    $values1 = str_explode_filtered($value1, '|');
+                    $conditions = ['OR'];
+                    foreach ($values1 as $value1) {
+                        $conditions[] = [$name, $value1, $value2];
+                    }
+                    return $conditions;
+                }
+                if (str_contains($value2, '|')) {
+                    $values2 = str_explode_filtered($value2, '|');
+                    $conditions = ['OR'];
+                    foreach ($values2 as $value2) {
+                        $conditions[] = [$name, $value1, $value2];
+                    }
+                    return $conditions;
+                }
+                return [$name, $value1, $value2];
             }
         }
         throw new \InvalidArgumentException('Unsupported operator');
+    }
+
+    private function convertType(mixed $value1, mixed $value2): mixed
+    {
+        if (is_bool($value1) && is_string($value2)) {
+            $lowered = strtolower($value2);
+            if ($lowered === 'true') {
+                return true;
+            }
+            if ($lowered === 'false') {
+                return false;
+            }
+            return $value2;
+        }
+        return $value2;
     }
 
     private function parseConditionsInOperatorFormat(array $conditions): array
@@ -119,7 +153,8 @@ final class QueryBuilder implements IteratorAggregate
         $items = [];
         foreach ($conditions as $key => $value) {
             if (is_scalar($value)) {
-                $items[] = ['match' . ucfirst(gettype($value)), $key, $value];
+                $type = \herbie\gettype($value);
+                $items[] = ['match' . ucfirst($type), $key, $value];
             }
         }
         return array_merge(['AND'], $items);
@@ -149,13 +184,11 @@ final class QueryBuilder implements IteratorAggregate
         return $this->processed;
     }
 
-    /**
-     * @return null|mixed
-     */
-    public function one()
+    public function one(): array|object|null
     {
+        $this->limit = 1;
         $this->processData();
-        $item = reset($this->data);
+        $item = reset($this->processed);
         if ($item === false) {
             return null;
         }
@@ -202,13 +235,24 @@ final class QueryBuilder implements IteratorAggregate
             if (isset($condition[0]) && in_array(strtoupper($condition[0]), self::WHERE_CLAUSE_OPERATORS)) {
                 $status[] = $this->processItem($item, $condition);
             } else {
-                [$operator, $field, $value] = $condition;
+                [$operator, $field, $value2] = $condition;
                 if (!isset($item[$field])) {
                     $status[] = false;
                 } else {
                     /** @var callable $callable */
                     $callable = [$this, $operator];
-                    $status[] = call_user_func_array($callable, [$item[$field], $value]);
+                    $value1 = $item[$field];
+                    if (is_array($value1)) {
+                        $arrStatus = [];
+                        foreach ($value1 as $arrValue1) {
+                            $value2 = $this->convertType($arrValue1, $value2);
+                            $arrStatus[] = call_user_func_array($callable, [$arrValue1, $value2]);
+                        }
+                        $status[] = in_array(true, $arrStatus);
+                    } else {
+                        $value2 = $this->convertType($value1, $value2);
+                        $status[] = call_user_func_array($callable, [$value1, $value2]);
+                    }
                 }
             }
         }
@@ -260,7 +304,7 @@ final class QueryBuilder implements IteratorAggregate
 
     protected function matchString(string $value1, string $value2): bool
     {
-        return $this->matchEqual($value1, $value2);
+        return $value1 === $value2;
     }
 
     protected function matchBoolean(bool $value1, bool $value2): bool
@@ -278,39 +322,39 @@ final class QueryBuilder implements IteratorAggregate
         return $value1 === $value2;
     }
 
-    protected function matchEqual(string $value1, string $value2): bool
+    protected function matchEqual(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 === $value2;
     }
 
-    protected function matchNotEqual(string $value1, string $value2): bool
+    protected function matchNotEqual(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 !== $value2;
     }
 
-    protected function matchGreaterThan(string $value1, string $value2): bool
+    protected function matchGreaterThan(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 > $value2;
     }
 
-    protected function matchLessThan(string $value1, string $value2): bool
+    protected function matchLessThan(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 < $value2;
     }
 
-    protected function matchGreaterThanEqual(string $value1, string $value2): bool
+    protected function matchGreaterThanEqual(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 >= $value2;
     }
 
-    protected function matchLessThanEqual(string $value1, string $value2): bool
+    protected function matchLessThanEqual(string|float|int|bool $value1, string|float|int|bool $value2): bool
     {
         return $value1 <= $value2;
     }
 
-    protected function matchBitwiseAnd(string $value1, string $value2): bool
+    protected function matchBitwiseAnd(int $value1, int $value2): bool
     {
-        return ((int)$value1 & (int)$value2) > 0;
+        return ($value1 & $value2) > 0;
     }
 
     protected function matchContains(string $value1, string $value2): bool

@@ -97,7 +97,7 @@ final class SystemInfoPlugin extends Plugin
         foreach ($this->config->flatten() as $key => $value) {
             $configs[] = [
                 $key,
-                gettype($value),
+                \herbie\gettype($value),
                 $this->filterValue($value)
             ];
         }
@@ -187,13 +187,13 @@ final class SystemInfoPlugin extends Plugin
         foreach ($context as $string => $mixed) {
             if (is_scalar($mixed)) {
                 $value = $mixed;
-                $type = gettype($mixed);
+                $type = \herbie\gettype($mixed);
             } elseif (is_object($mixed)) {
                 $value = get_class($mixed);
                 $type = 'class';
             } else {
                 $value = json_encode($mixed);
-                $type = gettype($mixed);
+                $type = \herbie\gettype($mixed);
             }
             $globals[] = [$string, $value, $type];
         }

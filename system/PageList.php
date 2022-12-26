@@ -76,6 +76,11 @@ final class PageList implements IteratorAggregate, Countable
         return null;
     }
 
+    public function query(): QueryBuilder
+    {
+        return (new QueryBuilder())->from($this);
+    }
+
     /**
      * Run a filter over each of the items.
      *

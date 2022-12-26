@@ -18,7 +18,6 @@ use herbie\PageTreeIterator;
 use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
 use herbie\QueryBuilder;
-use herbie\Selector;
 use herbie\Site;
 use herbie\Translator;
 use herbie\UrlManager;
