@@ -31,7 +31,7 @@ interface PluginInterface
     public function routeMiddlewares(): array;
 
     /**
-     * @return array<int, TwigFilter|\Twig\TwigFilter|array{0: string, 1: callable, 2?: array<string, mixed>}>
+     * @return array<int, \Twig\TwigFilter|array{0: string, 1: callable, 2?: array<string, mixed>}>
      */
     public function twigFilters(): array;
 
@@ -41,12 +41,12 @@ interface PluginInterface
     public function twigGlobals(): array;
 
     /**
-     * @return array<int, TwigFunction|\Twig\TwigFunction|array{0: string, 1: callable, 2?: array<string, mixed>}>
+     * @return array<int, \Twig\TwigFunction|array{0: string, 1: callable, 2?: array<string, mixed>}>
      */
     public function twigFunctions(): array;
 
     /**
-     * @return array<int, TwigTest|\Twig\TwigTest|array{0: string, 1: callable, 2?: array<string, mixed>}>
+     * @return array<int, \Twig\TwigTest|array{0: string, 1: callable, 2?: array<string, mixed>}>
      */
     public function twigTests(): array;
 }

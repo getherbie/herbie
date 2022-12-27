@@ -175,8 +175,6 @@ final class PluginManager
         foreach ($plugin->twigFilters() as $twigFilter) {
             if ($twigFilter instanceof \Twig\TwigFilter) {
                 $this->addTwigFilter($twigFilter);
-            } elseif ($twigFilter instanceof \herbie\TwigFilter) {
-                $this->addTwigFilter($twigFilter->createTwigFilter());
             } else {
                 $this->addTwigFilter(new \Twig\TwigFilter(...$twigFilter));
             }
@@ -189,8 +187,6 @@ final class PluginManager
         foreach ($plugin->twigFunctions() as $twigFunction) {
             if ($twigFunction instanceof \Twig\TwigFunction) {
                 $this->addTwigFunction($twigFunction);
-            } elseif ($twigFunction instanceof \herbie\TwigFunction) {
-                $this->addTwigFunction($twigFunction->createTwigFunction());
             } else {
                 $this->addTwigFunction(new \Twig\TwigFunction(...$twigFunction));
             }
@@ -199,8 +195,6 @@ final class PluginManager
         foreach ($plugin->twigTests() as $twigTest) {
             if ($twigTest instanceof \Twig\TwigTest) {
                 $this->addTwigTest($twigTest);
-            } elseif ($twigTest instanceof \herbie\TwigTest) {
-                $this->addTwigTest($twigTest->createTwigTest());
             } else {
                 $this->addTwigTest(new \Twig\TwigTest(...$twigTest));
             }
