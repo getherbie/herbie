@@ -74,9 +74,9 @@
   return:
     - string
     - The string with CSS classes.
-- name: file
+- name: link_file
   code: >-
-    {{ file("media/download.pdf", "Download", true, {class:"download"}) }}
+    {{ link_file("media/download.pdf", "Download", true, {class:"download"}) }}
   desc: Returns a link to a file with additional info like file type and size.
   params:
     - name: path
@@ -326,9 +326,9 @@
   return:
     - string
     - The JavaScript assets
-- name: link_file
+- name: link_media
   code: >-
-    {{ link_file("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
+    {{ link_media("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
   desc: Returns a HTML link with a file from site/media folder.
   params:
     - name: path

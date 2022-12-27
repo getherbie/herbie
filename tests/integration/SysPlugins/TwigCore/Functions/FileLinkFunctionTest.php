@@ -22,8 +22,8 @@ final class FileLinkFunctionTest extends \Codeception\Test\Unit
     public function testPowerOn(): void
     {
         $this->assertEquals(
-            '<span class="link link--download"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ link_file("dummy.pdf") }}')
+            '<span class="link link--media"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ link_media("dummy.pdf") }}')
         );
     }
 

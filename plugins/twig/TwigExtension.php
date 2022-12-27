@@ -92,12 +92,12 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('css_add', [$this, 'cssAdd']),
             new TwigFunction('css_classes', [$this, 'cssClasses'], ['needs_context' => true]),
             new TwigFunction('css_out', [$this, 'cssOut'], ['is_safe' => ['html']]),
-            new TwigFunction('file', [$this, 'file'], ['is_safe' => ['html']]),
             new TwigFunction('image', [$this, 'image'], ['is_safe' => ['html']]),
             new TwigFunction('js_add', [$this, 'jsAdd']),
             new TwigFunction('js_out', [$this, 'jsOut'], ['is_safe' => ['html']]),
             new TwigFunction('link_file', [$this, 'linkFile'], ['is_safe' => ['html']]),
             new TwigFunction('link_mail', [$this, 'linkMail'], ['is_safe' => ['html']]),
+            new TwigFunction('link_media', [$this, 'linkMedia'], ['is_safe' => ['html']]),
             new TwigFunction('link_page', [$this, 'linkPage'], ['is_safe' => ['html']]),
             new TwigFunction('menu_ascii_tree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
             new TwigFunction('menu_breadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
@@ -218,7 +218,7 @@ final class TwigExtension extends AbstractExtension
         return str_replace(['/', '.'], '-', $class);
     }
 
-    public function linkFile(
+    public function linkMedia(
         string $path,
         string $label = '',
         bool $info = false,
@@ -244,7 +244,7 @@ final class TwigExtension extends AbstractExtension
             '{label}' => empty($label) ? basename($path) : $label,
             '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
         ];
-        return strtr('<span class="link link--download"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+        return strtr('<span class="link link--media"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
     public function linkMail(
@@ -527,7 +527,7 @@ final class TwigExtension extends AbstractExtension
     {
         $scheme = parse_url($route, PHP_URL_SCHEME);
         if ($scheme === null) {
-            $class = 'link--internal';
+            $class = 'link--page';
             $href = $this->urlManager->createUrl($route);
         } else {
             $class = 'link--external';
@@ -606,7 +606,7 @@ final class TwigExtension extends AbstractExtension
         return $this->urlManager->createAbsoluteUrl($route);
     }
 
-    public function file(string $path, string $label = '', bool $info = false, array $attribs = []): string
+    public function linkFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
         $attribs['class'] = $attribs['class'] ?? 'link__label';
 

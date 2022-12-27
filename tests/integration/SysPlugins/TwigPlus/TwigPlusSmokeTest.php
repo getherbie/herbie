@@ -41,7 +41,7 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
 
     public function testMenuListFunction(): void
     {
-        $expected = '<div class="listing"><section><article><h2><span class="link link--internal"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
+        $expected = '<div class="listing"><section><article><h2><span class="link link--page"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
         $actual = $this->twig()->renderString('{{ menu_list(filter="route|alpha") }}');
         $this->assertEquals($expected, $actual);
     }
