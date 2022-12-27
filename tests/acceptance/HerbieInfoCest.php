@@ -29,6 +29,7 @@ final class HerbieInfoCest
             'herbie\file_size',
             'herbie\get_callable_name',
             'herbie\get_constructor_params_to_inject',
+            'herbie\get_type',
             'herbie\handle_internal_webserver_assets',
             'herbie\is_digit',
             'herbie\is_natural',

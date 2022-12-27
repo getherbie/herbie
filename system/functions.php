@@ -476,7 +476,7 @@ function array_is_assoc(array $array): bool
     return array_keys($keys) !== $keys;
 }
 
-function gettype(mixed $value): string
+function get_type(mixed $value): string
 {
     $type = \gettype($value);
     // for historical reasons "double" is returned in case of a float, and not simply "float"

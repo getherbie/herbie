@@ -25,6 +25,7 @@ final class QueryBuilder implements IteratorAggregate
         "^=" => 'matchStarts',
         "~=" => 'matchContainsWords',
         "$=" => 'matchEnds',
+        "?=" => 'matchRegex',
         "=" => 'matchEqual',
         ">" => 'matchGreaterThan',
         "<" => 'matchLessThan',
@@ -153,7 +154,7 @@ final class QueryBuilder implements IteratorAggregate
         $items = [];
         foreach ($conditions as $key => $value) {
             if (is_scalar($value)) {
-                $type = \herbie\gettype($value);
+                $type = \herbie\get_type($value);
                 $items[] = ['match' . ucfirst($type), $key, $value];
             }
         }
@@ -176,6 +177,21 @@ final class QueryBuilder implements IteratorAggregate
     {
         $this->order = $order;
         return $this;
+    }
+
+    public function count(): int
+    {
+        return count($this->processed);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function paginate(int $size): Pagination
+    {
+        $this->limit = $size;
+        $this->processData();
+        return new Pagination($this->processed, $this->limit);
     }
 
     public function all(): iterable
@@ -222,7 +238,7 @@ final class QueryBuilder implements IteratorAggregate
         }
     }
 
-    private function processItem(ArrayAccess|array $item, array $conditions): bool
+    private function processItem(ArrayAccess|array|int|float|string|bool $item, array $conditions): bool
     {
         $whereClauseOperator = array_shift($conditions);
 
@@ -234,26 +250,35 @@ final class QueryBuilder implements IteratorAggregate
         foreach ($conditions as $condition) {
             if (isset($condition[0]) && in_array(strtoupper($condition[0]), self::WHERE_CLAUSE_OPERATORS)) {
                 $status[] = $this->processItem($item, $condition);
-            } else {
-                [$operator, $field, $value2] = $condition;
-                if (!isset($item[$field])) {
-                    $status[] = false;
-                } else {
-                    /** @var callable $callable */
-                    $callable = [$this, $operator];
-                    $value1 = $item[$field];
-                    if (is_array($value1)) {
-                        $arrStatus = [];
-                        foreach ($value1 as $arrValue1) {
-                            $value2 = $this->convertType($arrValue1, $value2);
-                            $arrStatus[] = call_user_func_array($callable, [$arrValue1, $value2]);
-                        }
-                        $status[] = in_array(true, $arrStatus);
-                    } else {
-                        $value2 = $this->convertType($value1, $value2);
-                        $status[] = call_user_func_array($callable, [$value1, $value2]);
-                    }
+                continue;
+            }
+
+            $itemIsScalar = is_scalar($item);
+            $itemIsArrayable = ($item instanceof ArrayAccess) || is_array($item);
+
+            [$operator, $field, $value2] = $condition;
+
+            if (!$itemIsScalar && !isset($item[$field])) {
+                $status[] = false;
+                continue;
+            }
+
+            /** @var callable $callable */
+            $callable = [$this, $operator];
+            if ($itemIsScalar && ($field === 'value')) {
+                $value2 = $this->convertType($item, $value2);
+                $status[] = call_user_func_array($callable, [$item, $value2]);
+            } elseif ($itemIsArrayable && isset($item[$field]) && is_array($item[$field])) {
+                $arrStatus = [];
+                foreach ($item[$field] as $value1) {
+                    $value2 = $this->convertType($value1, $value2);
+                    $arrStatus[] = call_user_func_array($callable, [$value1, $value2]);
                 }
+                $status[] = in_array(true, $arrStatus, true);
+            } elseif ($itemIsArrayable && isset($item[$field])) {
+                $value1 = $item[$field];
+                $value2 = $this->convertType($value1, $value2);
+                $status[] = call_user_func_array($callable, [$value1, $value2]);
             }
         }
 
@@ -386,5 +411,13 @@ final class QueryBuilder implements IteratorAggregate
         $value2 = trim($value2);
         $value1 = substr($value1, -1 * strlen($value2));
         return strcasecmp($value1, $value2) === 0;
+    }
+
+    protected function matchRegex(string $value1, string $value2): bool
+    {
+        if (preg_match($value2, $value1, $matches)) {
+            return count($matches) > 0;
+        }
+        return false;
     }
 }

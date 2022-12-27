@@ -96,7 +96,7 @@ final class Translator
         if (is_string($path)) {
             $path = [$path];
         } elseif (!is_array($path)) {
-            $message = sprintf('Argument $path has to be an array or a string, %s given.', \herbie\gettype($path));
+            $message = sprintf('Argument $path has to be an array or a string, %s given.', \herbie\get_type($path));
             throw new \InvalidArgumentException($message);
         }
         $this->paths[$category] = array_merge($this->paths[$category], $path);
