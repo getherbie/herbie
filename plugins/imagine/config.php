@@ -8,7 +8,7 @@ return [
     'pluginClass' => ImagineSysPlugin::class,
     'pluginPath' => __DIR__,
     'cachePath' => 'cache/imagine',
-    'filterSets' => [
+    'collections' => [
         'default' => [
             'test' => true,
             'filters' => [

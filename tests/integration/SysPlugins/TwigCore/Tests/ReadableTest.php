@@ -42,7 +42,7 @@ final class ReadableTest extends \Codeception\Test\Unit
     public function testReadableWithEmptyParam(): void
     {
         $twig = <<<TWIG
-            {%- if '' is readable -%}readable{% else %}not readable{%- endif -%}
+            {%- if '' is file_readable -%}readable{% else %}not readable{%- endif -%}
         TWIG;
         $this->assertSame('not readable', $this->twig()->renderString($twig));
     }
@@ -50,7 +50,7 @@ final class ReadableTest extends \Codeception\Test\Unit
     public function testReadableWithExistingAlias(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
+            {%- if '@media/dummy.pdf' is file_readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
         $this->assertSame('is readable', $this->twig()->renderString($twig));
     }
@@ -58,7 +58,7 @@ final class ReadableTest extends \Codeception\Test\Unit
     public function testReadableWithExistingAliasWithoutPermissions(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy-no-rights.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
+            {%- if '@media/dummy-no-rights.pdf' is file_readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
         $this->assertSame('not readable', $this->twig()->renderString($twig));
     }
@@ -66,7 +66,7 @@ final class ReadableTest extends \Codeception\Test\Unit
     public function testReadableWithNotExistingAlias(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy-xyz.pdf' is readable -%}is readable{% else %}not readable{%- endif -%}
+            {%- if '@media/dummy-xyz.pdf' is file_readable -%}is readable{% else %}not readable{%- endif -%}
         TWIG;
         $this->assertSame('not readable', $this->twig()->renderString($twig));
     }

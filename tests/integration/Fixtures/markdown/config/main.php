@@ -8,7 +8,7 @@ return [
             'debug' => true,
         ],
     ],
-    'enabledSysPlugins' => 'twig_core,twig_plus,markdown',
+    'enabledSysPlugins' => 'twig,markdown',
     'plugins' => [
         'markdown' => [
             'enableTwigFilter' => false,

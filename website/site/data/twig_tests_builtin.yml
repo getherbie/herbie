@@ -1,0 +1,12 @@
+---
+- name: constant
+- name: defined
+- name: divisible by
+  slug: divisibleby
+- name: empty
+- name: even
+- name: iterable
+- name: 'null'
+- name: odd
+- name: same as
+  slug: sameas  

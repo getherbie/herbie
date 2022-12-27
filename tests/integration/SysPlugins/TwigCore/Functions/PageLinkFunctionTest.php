@@ -23,7 +23,7 @@ final class PageLinkFunctionTest extends \Codeception\Test\Unit
     {
         $this->assertEquals(
             '<span class="link link--internal"><a href="/route" class="link__label">label</a></span>',
-            $this->twig()->renderString('{{ page_link("route", "label") }}')
+            $this->twig()->renderString('{{ link_page("route", "label") }}')
         );
     }
 

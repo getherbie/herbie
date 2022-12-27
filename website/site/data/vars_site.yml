@@ -1,11 +1,17 @@
 ---
+- name: site.base_url
+  desc: The base url.
+  type: string
 - name: site.charset
   desc: 'The charset (default: utf-8)'
   type: string
+- name: site.config
+  desc: The config object with its methods.
+  type: Config  
 - name: site.created
   desc: The time of the last recent created page in ISO-8601 format (2004-02-12T15:19:21+00:00).
   type: string
-- name: site.data.<NAME>
+- name: site.data.<name>
   desc: Project wide data structures, which are located in `site/data`.
   type: mixed
 - name: site.language
@@ -17,15 +23,24 @@
 - name: site.modified
   desc: The time of the last modified page in ISO-8601 format (2004-02-12T15:19:21+00:00).
   type: string
-- name: site.pageList
+- name: site.page_list
   desc: A list of all available pages.
   type: Traversable
-- name: site.pageTrail
+- name: site.page_trail
   desc: A trail from the current page up to the root page.
   type: Traversable
-- name: site.pageTree
+- name: site.page_tree
   desc: A tree of all available pages.
   type: Traversable
+- name: site.route
+  desc: The requested route to, i.e. `documentation/variables`.
+  type: string
+- name: site.route_params
+  desc: The requested route params.
+  type: array
+- name: site.theme
+  desc: The configured theme.
+  type: string
 - name: site.time
   desc: The current time in ISO-8601 format (2004-02-12T15:19:21+00:00).
-  type: string
+  type: string  

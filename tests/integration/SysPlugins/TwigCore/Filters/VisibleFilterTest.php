@@ -28,7 +28,7 @@ final class VisibleFilterTest extends \Codeception\Test\Unit
     public function testUnfilteredTree()
     {
         $twig = <<<TWIG
-            {%- for item1 in site.pageTree -%}
+            {%- for item1 in site.page_tree -%}
                 *{{- item1 -}}
                 {%- for item2 in item1.getChildren() -%}
                     **{{- item2 -}}
@@ -47,7 +47,7 @@ final class VisibleFilterTest extends \Codeception\Test\Unit
     public function testFilteredTree()
     {
         $twig = <<<TWIG
-            {%- for item1 in site.pageTree|visible -%}
+            {%- for item1 in site.page_tree|visible -%}
                 *{{- item1 -}}
                 {%- for item2 in item1.getChildren() -%}
                     **{{- item2 -}}

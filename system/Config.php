@@ -133,4 +133,17 @@ final class Config
         ksort($flatten);
         return $flatten;
     }
+
+    /**
+     * This is for snake_case in twig only.
+     * @return null|mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        $getter = 'get' . str_replace('_', '', $name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter(...$arguments);
+        }
+        return null;
+    }
 }

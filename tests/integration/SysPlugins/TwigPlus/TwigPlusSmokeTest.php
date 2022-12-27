@@ -49,14 +49,7 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
     public function testMenuTreeFunction(): void
     {
         $expected = '<div class="menu"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_tree(maxDepth=0) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testPageTaxonomiesFunction(): void
-    {
-        $expected = '<div class="blog-meta"></div>';
-        $actual = $this->twig()->renderString('{{ page_taxonomies() }}');
+        $actual = $this->twig()->renderString('{{ menu_tree(depth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 
@@ -69,52 +62,10 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPagesFilteredFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ pages_filtered([]) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testPagesRecentFunction(): void
-    {
-        $expected = '<div class="widget-blog widget-blog-recent-posts"><h4>Recent posts</h4><ul><li><span class="link link--internal"><a href="/" class="link__label">Index</a></span></li></ul></div>';
-        $actual = $this->twig()->renderString('{{ pages_recent(limit=1) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testMenuSitemapFunction(): void
     {
         $expected = '<div class="sitemap"><ul><li class="current"><a href="/">Index</a></li><li><a href="/alpha">Alpha Index</a></ul></div>';
-        $actual = $this->twig()->renderString('{{ menu_sitemap(maxDepth=0) }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyArchiveFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_archive() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyAuthorsFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_authors() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyCategoriesFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_categories() }}');
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testTaxonomyTagsFunction(): void
-    {
-        $expected = '';
-        $actual = $this->twig()->renderString('{{ taxonomy_tags() }}');
+        $actual = $this->twig()->renderString('{{ menu_sitemap(depth=0) }}');
         $this->assertEquals($expected, $actual);
     }
 }

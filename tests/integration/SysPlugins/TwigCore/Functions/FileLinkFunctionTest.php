@@ -23,7 +23,7 @@ final class FileLinkFunctionTest extends \Codeception\Test\Unit
     {
         $this->assertEquals(
             '<span class="link link--download"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ file_link("dummy.pdf") }}')
+            $this->twig()->renderString('{{ link_file("dummy.pdf") }}')
         );
     }
 

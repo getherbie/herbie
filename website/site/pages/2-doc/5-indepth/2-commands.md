@@ -54,7 +54,7 @@ The output looks like this:
     help         Display help for a command
     list         List commands
 
-The call to clear the caches then looks like this, for example.
+The command to clear temporary files then looks like this, for example.
 
     php vendor/bin/herbie clear-files
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Psr\Http\Message\ServerRequestInterface;
-
 /**
  * Stores the site.
  */
@@ -90,5 +88,48 @@ final class Site
     public function getCharset(): string
     {
         return $this->config->getAsString('charset');
+    }
+
+    public function getBaseUrl(): string
+    {
+        return $this->urlManager->createUrl('/');
+    }
+
+    public function getRoute(): string
+    {
+        return $this->urlManager->parseRequest()[0];
+    }
+
+    public function getRouteParams(): array
+    {
+        return $this->urlManager->parseRequest()[1];
+    }
+
+    public function getTheme(): string
+    {
+        return $this->config->getAsString('theme');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        $getter = 'get' . str_replace('_', '', $name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        } else {
+            throw new \InvalidArgumentException("Field {$name} does not exist.");
+        }
+    }
+
+    public function __isset(string $name): bool
+    {
+        $getter = 'get' . str_replace('_', '', $name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter() !== null;
+        } else {
+            return false;
+        }
     }
 }

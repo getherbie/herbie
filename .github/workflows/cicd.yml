@@ -8,8 +8,8 @@ jobs:
       matrix:
         # operating-systems: ubuntu-latest, windows-latest, macos-latest
         operating-system: [ubuntu-latest]
-        # php-versions: 7.4, 8.0, 8.1
-        php-versions: ['7.4', '8.0', '8.1']
+        # php-versions: 8.0, 8.1, 8.2
+        php-versions: ['8.0', '8.1', '8.2']
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
@@ -61,7 +61,7 @@ jobs:
       - name: Setup PHP and Composer
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
           tools: composer:v2
 
       - name: Install PHP dependencies

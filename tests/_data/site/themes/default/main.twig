@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ page_title(delim=' / ', siteTitle='Herbie Tests') }}</title>
+    <title>{{ page_title(delim=' / ', site_title='Herbie Tests') }}</title>
     <base href="{{ baseUrl }}">
     <style>
         body { margin: 1rem; }
@@ -17,9 +17,9 @@
 
 <div class="page-trail">
 <a href="/">Herbie Tests</a>
-{%- for menu in site.pageTrail -%}
+{%- for menu in site.page_trail -%}
     {{- ' / ' -}}
-    <a href="{{ url(menu.route) }}">{{ menu.title }}</a>
+    <a href="{{ url_rel(menu.route) }}">{{ menu.title }}</a>
 {%- endfor -%}
 </div>
 

@@ -25,8 +25,8 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
     public function testUrlWithoutRoute(): void
     {
         $tests = [
-            ['http:/', '{{ abs_url() }}'],
-            ['http:/', '{{ abs_url("") }}'],
+            ['http:/', '{{ url_abs() }}'],
+            ['http:/', '{{ url_abs("") }}'],
         ];
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));
@@ -36,9 +36,9 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
     public function testUrlWithValidRoutes(): void
     {
         $tests = [
-            ['http:/one', '{{ abs_url("one") }}'],
-            ['http:/one/two', '{{ abs_url("one/two") }}'],
-            ['http:/one/two/three', '{{ abs_url("one/two/three") }}']
+            ['http:/one', '{{ url_abs("one") }}'],
+            ['http:/one/two', '{{ url_abs("one/two") }}'],
+            ['http:/one/two/three', '{{ url_abs("one/two/three") }}']
         ];
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));

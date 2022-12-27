@@ -1,7 +1,7 @@
 ---
-- name: abs_url
+- name: url_abs
   code: >-
-    {{ abs_url("doc/contents/variables") }}
+    {{ url_abs("doc/contents/variables") }}
   desc: Returns the absolute URL for a given route.
   params:
     - name: route
@@ -11,9 +11,9 @@
   return:
     - string
     - The absolute URL.
-- name: add_css
+- name: css_add
   code: >-
-    {{ add_css("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
+    {{ css_add("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
   desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
@@ -38,9 +38,9 @@
       default: "-1"
   return:
     - void
-- name: add_js
+- name: js_add
   code: >-
-    {{ add_js("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
+    {{ js_add("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
   desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
@@ -135,11 +135,11 @@
       type: string
       desc: The tree from the given route.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the tree (-1 = unlimited).
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -160,7 +160,7 @@
       type: string
       desc: The delim.
       default: '""'
-    - name: homeLink
+    - name: home
       type: array|string
       desc: The link to the homepage. An array must be like [route, label].
       default: '""'
@@ -173,11 +173,11 @@
     - The breadcrumb path as HTML.
 - name: menu_list
   code: >-
-    {{ menu_list(site.pageList, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
+    {{ menu_list(site.page_list, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
   desc: Returns a paginated list of page items with links to the previous and next page.
     For the paging the GET parameter "page" is used.
   params:
-    - name: pageList
+    - name: page_list
       type: PageList
       desc: The page list.
       default: 'null'
@@ -214,25 +214,25 @@
       type: string
       desc: Limits the pagination to a certain branch of the page tree.
       default: ''
-    - name: prevPageLabel
+    - name: prev_label
       type: string
       desc: The label for the "previous" link.
         If empty the page title will be shown.
       default: ''
-    - name: nextPageLabel
+    - name: next_label
       type: string
       desc: The label for the "next" link.
         If empty the page title will be shown.
       default: ''
-    - name: prevPageIcon
+    - name: prev_icon
       type: string
       desc: The icon for the "previous" link.
       default: ''
-    - name: nextPageIcon
+    - name: next_icon
       type: string
       desc: The icon for the "next" link.
       default: ''
-    - name: linkClass
+    - name: class
       type: string
       desc: The CSS class name for the element.
         Various other class names are assembled from this class name.
@@ -254,11 +254,11 @@
       type: string
       desc: Limits the sitemap to a certain branch of the page tree.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the sitemap.
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -279,11 +279,11 @@
       type: string
       desc: The menu from the given route.
       default: '""'
-    - name: maxDepth
+    - name: depth
       type: int
       desc: The maximum depth level of the tree.
       default: "-1"
-    - name: showHidden
+    - name: hidden
       type: bool
       desc: Show hidden pages.
       default: 'false'
@@ -294,41 +294,89 @@
   return:
     - string
     - The menu as unordered list
-- name: output_css
+- name: css_out
   code: >-
-    {{ output_css("default") }}
+    {{ css_out("default") }}
   desc: Outputs the CSS assets for a given group.
   params:
     - name: group
       type: string
       desc: The grouped CSS.
       default: 'null'
-    - name: addTimestamp
+    - name: timestamp
       type: bool
       desc: If true, a GET param with the modification timestamp of the file is added.
       default: false      
   return:
     - void
     - The CSS assets
-- name: output_js
+- name: js_out
   code: >-
-    {{ output_js("default") }}
+    {{ js_out("default") }}
   desc: Outputs the JavaScript assets for a given group.
   params:
     - name: group
       type: string
       desc: The grouped JavaScript.
       default: 'null'
-    - name: addTimestamp
+    - name: timestamp
       type: bool
       desc: If true, a GET param with the modification timestamp of the file is added.
       default: false
   return:
     - string
     - The JavaScript assets
-- name: page_link
+- name: link_file
   code: >-
-    {{ page_link("doc/contents/variables", "Content variables", {class: "page-link"}) }}
+    {{ link_file("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
+  desc: Returns a HTML link with a file from site/media folder.
+  params:
+    - name: path
+      type: string
+      desc: The path to the file in site/media folder.
+      default: ''
+    - name: label
+      type: string
+      desc: The label.
+      default: ''
+    - name: info
+      type: bool
+      desc: Adds info with file size und file extension.
+      default: false
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: ''
+  return:
+    - string
+    - The link to a file
+- name: link_mail
+  code: >-
+    {{ link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
+  desc: Returns a HTML mailto link.
+  params:
+    - name: email
+      type: string
+      desc: The email.
+      default: ''
+    - name: label
+      type: string
+      desc: The label.
+      default: ''
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: ''
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: ''      
+  return:
+    - string
+    - The mailto link  
+- name: link_page
+  code: >-
+    {{ link_page("doc/contents/variables", "Content variables", {class: "link-page"}) }}
   desc: Returns a HTML link with label and attributes for a given route or an URL.
   params:
     - name: route
@@ -356,12 +404,12 @@
       type: string
       desc: The delim.
       default: '" / "'
-    - name: siteTitle
+    - name: site_title
       type: string
       desc: The title of the website.
         If set this title is appended on every page.
       default: 'null'
-    - name: rootTitle
+    - name: root_title
       type: string
       desc: The title of the root page of the website.
         If set this title is displayed on root page only.
@@ -391,10 +439,23 @@
   return:
     - string
     - The included snippet
+- name: query
+  code: >
+    {{ query(data).where("type=page", "title*=news").limit(3).order("-date").all() }}
+  desc: >
+    Find entries with the help of the built-in fluent query builder.
+    The query builder can be applied to any type of iterable data structure.
+    The queried data can be narrowed down, filtered, sorted and limited.
+  params:
+    - name: iterator
+      type: iterable
+      desc: The data to be queried.
+      default: iterable
 - name: translate
-  code: >-
-    {{ translate("app", "Plugin \"{plugin}\" enabled but not found!", {plugin: "dummy"}) }}
-  desc: Translates a string according to the configuration and locale settings.
+  code: >
+    {{ translate("app", "Plugin {plugin} enabled but not found!", {plugin: "dummy"}) }}
+  desc: >
+    Translates a string according to the configuration and locale settings.
   params:
     - name: category
       type: string
@@ -411,9 +472,9 @@
   return:
     - string
     - The translated message
-- name: url
+- name: url_rel
   code: >-
-    {{ url("doc/contents") }}
+    {{ url_rel("doc/contents") }}
   desc: Returns the relative URL to a given route.
   params:
     - name: route

@@ -265,27 +265,16 @@
   status: stable
   enabled: false
 -
-  id: twig_core
-  name: Twig Core
-  desc: This system plugin provides basic Twig filters, functions and tests that are useful for creating a web project with Herbie.
+  id: twig
+  name: Twig
+  desc: This system plugin provides several Twig filters, functions and tests that are useful for creating a web project with Herbie.
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/plugins/twig_core
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/twig
   packagist:
   status: stable
   enabled: true
--
-  id: twig_plus
-  name: Twig Plus
-  desc: This system plugin provides extended Twig functions that are useful for creating a web project with Herbie.
-  author: Herbie-Team
-  version: 2.0.0
-  composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/plugins/twig_plus
-  packagist:
-  status: stable
-  enabled: true  
 -
   id: video
   name: Video

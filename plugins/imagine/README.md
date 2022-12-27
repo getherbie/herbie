@@ -27,7 +27,7 @@ return [
     'plugins' => [
         'imagine' => [
             'cachePath' => 'cache/imagine',
-            'filterSets' => []
+            'collections' => []
         ]
     ]
 ];
@@ -35,14 +35,14 @@ return [
 
 ## Filter sets
 
-To use Imagine in Herbie, Filter sets must be defined, each containing one or more filters.
+To use Imagine in Herbie, one or more filter collections must be defined, each containing one or more filters.
 
-The following default filter set is always enabled.
+The following default collection is always enabled.
 
 ~~~php
 return [
     // ...
-    'filterSets' => [
+    'collections' => [
         'default' => [
             'test' => true,
             'filters' => [
@@ -57,11 +57,11 @@ return [
 ];
 ~~~
 
-In the following configuration example, we see two simple filter sets for scaling and cropping an image.
+In the following configuration example, we see two simple collections for scaling and cropping an image.
 
 ~~~php
 'imagine'
-    'filterSets' => [
+    'collections' => [
         'resize' => [
             'filters' => [
                 'thumbnail' => [
@@ -82,10 +82,10 @@ In the following configuration example, we see two simple filter sets for scalin
 ],
 ~~~
 
-With the above configuration you set two Imagine filters `resize` and `crop` that can be applied to images in your project.
+With the above configuration you set two Imagine collections `resize` and `crop` that can be applied to images in your project.
 
-- A resize filterSet to resize an image to a size of 280 x 280 pixels
-- A crop filterSet to crop an image to a size of 560 x 560 pixels
+- A resize collection to resize an image to a size of 280 x 280 pixels
+- A crop collection to crop an image to a size of 560 x 560 pixels
 
 ## Usage
 
@@ -107,9 +107,9 @@ With the activation of the system plugin, one Twig filter and one Twig function 
         <td></td>
     </tr>
     <tr class="param">
-        <td>filterSet</td>
+        <td>collection</td>
         <td>string</td>
-        <td>The filter set to be applied.</td>
+        <td>The filter collection to be applied.</td>
         <td>default</td>
     </tr>
     <tr class="return">
