@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace herbie\sysplugin\dummy;
 
-use herbie\event\ContentRenderedEvent;
-use herbie\event\LayoutRenderedEvent;
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
-use herbie\event\ResponseEmittedEvent;
-use herbie\event\ResponseGeneratedEvent;
-use herbie\event\TranslatorInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\ContentRenderedEvent;
+use herbie\events\LayoutRenderedEvent;
+use herbie\events\PluginsInitializedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
+use herbie\events\ResponseEmittedEvent;
+use herbie\events\ResponseGeneratedEvent;
+use herbie\events\TranslatorInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

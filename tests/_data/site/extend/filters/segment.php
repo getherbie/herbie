@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\filters;
 
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 
 return [RenderSegmentEvent::class, function (RenderSegmentEvent $event): void {
     $segment = $event->getSegment()

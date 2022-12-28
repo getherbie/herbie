@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\ResponseEmittedEvent;
-use herbie\event\ResponseGeneratedEvent;
-use herbie\event\TranslatorInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\PluginsInitializedEvent;
+use herbie\events\ResponseEmittedEvent;
+use herbie\events\ResponseGeneratedEvent;
+use herbie\events\TranslatorInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

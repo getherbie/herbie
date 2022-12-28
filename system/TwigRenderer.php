@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\TwigInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;

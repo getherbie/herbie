@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\events;
 
-use herbie\event\TwigInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Twig\TwigFilter;
 
 return [TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {

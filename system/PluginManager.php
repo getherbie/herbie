@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\PluginsInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;

@@ -14,9 +14,9 @@ include dirname(__DIR__, 3) . '/c3.php';
 
 use herbie\Application;
 use herbie\ApplicationPaths;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
 use tests\_data\src\CustomCommand;

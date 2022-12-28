@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\filters;
 
-use herbie\event\RenderLayoutEvent;
+use herbie\events\RenderLayoutEvent;
 
 return [RenderLayoutEvent::class, function (RenderLayoutEvent $event): void {
     $content = str_replace(

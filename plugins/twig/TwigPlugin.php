@@ -8,7 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\Translator;

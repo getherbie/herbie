@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace tests\_data\site\extend\plugins\dummy2;
 
-use herbie\event\ContentRenderedEvent;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\ContentRenderedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

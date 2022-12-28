@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugin\rest;
 
 use herbie\Config;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 use herbie\Plugin;
 
 final class RestSysPlugin extends Plugin

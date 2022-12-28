@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugin\markdown;
 
 use herbie\Config;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 use herbie\Plugin;
 use Parsedown;
 use ParsedownExtra;

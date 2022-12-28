@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderPageEvent;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderPageEvent;
+use herbie\events\RenderSegmentEvent;
 
 final class CorePlugin extends Plugin
 {
