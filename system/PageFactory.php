@@ -21,13 +21,6 @@ final class PageFactory
         return new PageList($items);
     }
 
-    private function isIndexPage(string $path): bool
-    {
-        $filename = pathinfo($path, PATHINFO_FILENAME);
-        $filenameWithoutPrefix = preg_replace('/^([0-9])+-/', '', $filename);
-        return $filenameWithoutPrefix === 'index';
-    }
-
     public function newPageTree(PageList $pageList): PageTree
     {
         $tree = new PageTree();
@@ -57,6 +50,13 @@ final class PageFactory
         }
 
         return $tree;
+    }
+
+    private function isIndexPage(string $path): bool
+    {
+        $filename = pathinfo($path, PATHINFO_FILENAME);
+        $filenameWithoutPrefix = preg_replace('/^([0-9])+-/', '', $filename);
+        return $filenameWithoutPrefix === 'index';
     }
 
     public function newPageTrail(array $pages): PageTrail

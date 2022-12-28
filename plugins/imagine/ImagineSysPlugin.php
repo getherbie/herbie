@@ -7,13 +7,14 @@ namespace herbie\sysplugins\imagine;
 use herbie\Alias;
 use herbie\Config;
 use herbie\Plugin;
-use Imagine\Gd\Imagine;
-use Imagine\Image\ImageInterface;
-use Imagine\Image\Box;
-use Imagine\Image\Color;
-use Imagine\Image\Point;
 use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\Color;
+use Imagine\Image\ImageInterface;
+use Imagine\Image\Point;
+use InvalidArgumentException;
 use Twig\Markup;
 
 use function herbie\str_trailing_slash;
@@ -92,27 +93,16 @@ final class ImagineSysPlugin extends Plugin
     {
         // see http://png-pixel.com
         return 'data:image/png;'
-        . 'base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+            . 'base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
     }
 
-    /**
-     * Gets the browser path for the image and filter to apply.
-     */
-    public function imagineFilter(string $path, string $collection = 'default'): Markup
+    protected function buildHtmlAttributes(array $htmlOptions = []): string
     {
-        $absolutePath = $this->alias->get('@media/' . $path);
-
-        if (!is_file($absolutePath)) {
-            $dataSrc = $this->getTransparentOnePixelSrc();
-            return new Markup($dataSrc, 'utf8');
+        $attributes = '';
+        foreach ($htmlOptions as $key => $value) {
+            $attributes .= ' ' . $key . '="' . $value . '"';
         }
-
-        $sanitizedFilterSet = $this->sanitizeFilterName($collection);
-
-        return new Markup(
-            $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
-            'utf8'
-        );
+        return rtrim($attributes);
     }
 
     private function sanitizeFilterName(string $filterSet): string
@@ -123,18 +113,6 @@ final class ImagineSysPlugin extends Plugin
             }
         }
         return $filterSet;
-    }
-
-    private function getImageSize(string $cachePath): array
-    {
-        if (!is_file($cachePath)) {
-            return [];
-        }
-        $size = getimagesize($cachePath);
-        if ($size === false) {
-            return [0, 0];
-        }
-        return [$size[0], $size[1]];
     }
 
     protected function applyFilterSet(string $relpath, string $filterSet): string
@@ -199,6 +177,38 @@ final class ImagineSysPlugin extends Plugin
             $filter,
             $dot,
             $extension
+        );
+    }
+
+    private function getImageSize(string $cachePath): array
+    {
+        if (!is_file($cachePath)) {
+            return [];
+        }
+        $size = getimagesize($cachePath);
+        if ($size === false) {
+            return [0, 0];
+        }
+        return [$size[0], $size[1]];
+    }
+
+    /**
+     * Gets the browser path for the image and filter to apply.
+     */
+    public function imagineFilter(string $path, string $collection = 'default'): Markup
+    {
+        $absolutePath = $this->alias->get('@media/' . $path);
+
+        if (!is_file($absolutePath)) {
+            $dataSrc = $this->getTransparentOnePixelSrc();
+            return new Markup($dataSrc, 'utf8');
+        }
+
+        $sanitizedFilterSet = $this->sanitizeFilterName($collection);
+
+        return new Markup(
+            $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
+            'utf8'
         );
     }
 
@@ -302,7 +312,7 @@ final class ImagineSysPlugin extends Plugin
     protected function applyRotateFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (isset($options['angle'])) {
-            $angle = (int) $options['angle'];
+            $angle = (int)$options['angle'];
             $image->rotate($angle);
         }
         return $image;
@@ -326,7 +336,7 @@ final class ImagineSysPlugin extends Plugin
     protected function applyUpscaleFilter(ImageInterface $image, array $options): ImageInterface
     {
         if (!isset($options['min'])) {
-            throw new \InvalidArgumentException('Missing min option.');
+            throw new InvalidArgumentException('Missing min option.');
         }
 
         [$width, $height] = $options['min'];
@@ -355,14 +365,5 @@ final class ImagineSysPlugin extends Plugin
         $parameter = $options['parameter'];
         $filter = new RelativeResize($method, $parameter);
         return $filter->apply($image);
-    }
-
-    protected function buildHtmlAttributes(array $htmlOptions = []): string
-    {
-        $attributes = '';
-        foreach ($htmlOptions as $key => $value) {
-            $attributes .= ' ' . $key . '="' . $value . '"';
-        }
-        return rtrim($attributes);
     }
 }

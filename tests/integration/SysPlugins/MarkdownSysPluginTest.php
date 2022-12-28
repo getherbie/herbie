@@ -4,34 +4,15 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\SysPlugins;
 
+use Codeception\Test\Unit;
+use Error;
 use herbie\Application;
 use herbie\ApplicationPaths;
+use Twig\Error\SyntaxError;
 
-final class MarkdownSysPluginTest extends \Codeception\Test\Unit
+final class MarkdownSysPluginTest extends Unit
 {
     protected Application $app;
-
-    protected function initApplication(string $appPath, string $sitePath): Application
-    {
-        $paths = new ApplicationPaths(
-            $appPath,
-            $sitePath,
-            dirname(__DIR__, 4) . '/vendor',
-            dirname(__DIR__, 2) . '/_data/web'
-        );
-        $app = new Application($paths);
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        return $app;
-    }
-
-    protected function _setUp(): void
-    {
-        $this->app = $this->initApplication(
-            dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/site'
-        );
-    }
 
     public function testMarkdownFilter(): void
     {
@@ -48,9 +29,9 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__) . '/Fixtures/markdown'
         );
         if ($app->getConfig()->getAsBool('components.twigRenderer.debug') === true) {
-            $this->expectException(\Error::class);
+            $this->expectException(Error::class);
         } else {
-            $this->expectException(\Twig\Error\SyntaxError::class);
+            $this->expectException(SyntaxError::class);
         }
         $app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}');
     }
@@ -71,10 +52,32 @@ final class MarkdownSysPluginTest extends \Codeception\Test\Unit
         );
         $isDebug = $app->getConfig()->getAsBool('components.twigRenderer.debug');
         if ($isDebug === true) {
-            $this->expectException(\Error::class);
+            $this->expectException(Error::class);
         } else {
-            $this->expectException(\Twig\Error\SyntaxError::class);
+            $this->expectException(SyntaxError::class);
         }
         $app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}');
+    }
+
+    protected function _setUp(): void
+    {
+        $this->app = $this->initApplication(
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/site'
+        );
+    }
+
+    protected function initApplication(string $appPath, string $sitePath): Application
+    {
+        $paths = new ApplicationPaths(
+            $appPath,
+            $sitePath,
+            dirname(__DIR__, 4) . '/vendor',
+            dirname(__DIR__, 2) . '/_data/web'
+        );
+        $app = new Application($paths);
+        $app->getPluginManager()->init();
+        $app->getTwigRenderer()->init();
+        return $app;
     }
 }

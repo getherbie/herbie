@@ -1,7 +1,9 @@
 <?php
 
+use Codeception\Actor;
 use herbie\Application;
 use herbie\ApplicationPaths;
+use herbie\TwigRenderer;
 
 /**
  * Inherited Methods
@@ -17,10 +19,15 @@ use herbie\ApplicationPaths;
  * @method void pause()
  *
  * @SuppressWarnings(PHPMD)
-*/
-class UnitTester extends \Codeception\Actor
+ */
+class UnitTester extends Actor
 {
     use _generated\UnitTesterActions;
+
+    public function initTwigRenderer(string $appDir, string $siteDir, ?string $vendorDir = null): TwigRenderer
+    {
+        return $this->initApplication($appDir, $siteDir, $vendorDir)->getTwigRenderer();
+    }
 
     /**
      * Define custom actions here
@@ -37,10 +44,5 @@ class UnitTester extends \Codeception\Actor
         $app->getTwigRenderer()->init();
         $app->getTranslator()->init();
         return $app;
-    }
-
-    public function initTwigRenderer(string $appDir, string $siteDir, ?string $vendorDir = null): \herbie\TwigRenderer
-    {
-        return $this->initApplication($appDir, $siteDir, $vendorDir)->getTwigRenderer();
     }
 }

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Exception;
 use Psr\SimpleCache\CacheInterface;
+use RecursiveIteratorIterator;
+use UnexpectedValueException;
 
 /**
  * Loads the whole page.
@@ -37,36 +40,9 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     {
         try {
             return $this->readFile($id);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
-    }
-
-    public function findAll(): array
-    {
-        $items = [];
-
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $cached = $this->cache->get(__METHOD__);
-            if (is_array($cached)) {
-                return $cached;
-            }
-        }
-
-        foreach ($this->flatFileIterator as $fileInfo) {
-            try {
-                /** @var FileInfo $fileInfo */
-                $aliasedPath = '@page/' . $fileInfo->getRelativePathname();
-                $items[] = $this->readFile($aliasedPath);
-            } catch (\Exception $e) {
-            }
-        }
-
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $this->cache->set(__METHOD__, $items, $this->cacheTTL);
-        }
-
-        return $items;
     }
 
     /**
@@ -130,66 +106,6 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         ];
     }
 
-    private function determineParentId(string $alias): string
-    {
-        $parents = $this->findParents($this->alias->get('@page'), '@page');
-        $filename = $this->getFilenameWithoutPrefix($alias);
-
-        if ($filename === 'index') {
-            $segment = dirname(dirname($alias));
-        } else {
-            $segment = dirname($alias);
-        }
-
-        if ($segment === '.') {
-            return '';
-        }
-
-        $segmentDepth = substr_count($segment, '/');
-
-        foreach ($parents as $parent) {
-            if (strpos($parent, $segment) !== 0) {
-                continue;
-            }
-            $parentDepth = substr_count($parent, '/');
-            if ($parentDepth > ($segmentDepth + 1)) {
-                continue;
-            }
-            $basename = basename($parent);
-            if (preg_match('/^([0-9]+[-]+)?index\.[A-Za-z0-9]+$/', $basename) === 1) {
-                return $parent;
-            }
-        }
-
-        return '';
-    }
-
-    private function findParents(string $folder, string $alias): array
-    {
-        static $parents;
-        if (!isset($parents)) {
-            $parents = [];
-            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
-            foreach ($iterator as $file) {
-                if (!$file->isDir()) {
-                    $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-                    $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
-                    if ($filename === 'index') {
-                        $parents[] = str_replace($folder, $alias, $file->getPathname());
-                    }
-                }
-            }
-            sort($parents);
-        }
-        return $parents;
-    }
-
-    private function getFilenameWithoutPrefix(string $filepath): string
-    {
-        $filename = pathinfo($filepath, PATHINFO_FILENAME);
-        return (string)preg_replace('/^([0-9]+[-]+)(.+)$/', '\\2', $filename);
-    }
-
     public static function parseFileContent(string $content): array
     {
         if (!defined('UTF8_BOM')) {
@@ -206,12 +122,12 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
             $splitContent = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
             if ($splitContent === false) {
-                throw new \UnexpectedValueException('Error at reading file content');
+                throw new UnexpectedValueException('Error at reading file content');
             }
 
             $count = count($splitContent);
             if ($count % 2 === 0) {
-                throw new \UnexpectedValueException('Error at reading file content');
+                throw new UnexpectedValueException('Error at reading file content');
             }
 
             $segments['default'] = array_shift($splitContent);
@@ -276,5 +192,92 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
         // handle index route
         return ($route === null || $route === 'index') ? '' : $route;
+    }
+
+    private function determineParentId(string $alias): string
+    {
+        $parents = $this->findParents($this->alias->get('@page'), '@page');
+        $filename = $this->getFilenameWithoutPrefix($alias);
+
+        if ($filename === 'index') {
+            $segment = dirname(dirname($alias));
+        } else {
+            $segment = dirname($alias);
+        }
+
+        if ($segment === '.') {
+            return '';
+        }
+
+        $segmentDepth = substr_count($segment, '/');
+
+        foreach ($parents as $parent) {
+            if (strpos($parent, $segment) !== 0) {
+                continue;
+            }
+            $parentDepth = substr_count($parent, '/');
+            if ($parentDepth > ($segmentDepth + 1)) {
+                continue;
+            }
+            $basename = basename($parent);
+            if (preg_match('/^([0-9]+[-]+)?index\.[A-Za-z0-9]+$/', $basename) === 1) {
+                return $parent;
+            }
+        }
+
+        return '';
+    }
+
+    private function findParents(string $folder, string $alias): array
+    {
+        static $parents;
+        if (!isset($parents)) {
+            $parents = [];
+            $iterator = new RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
+            foreach ($iterator as $file) {
+                if (!$file->isDir()) {
+                    $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+                    $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
+                    if ($filename === 'index') {
+                        $parents[] = str_replace($folder, $alias, $file->getPathname());
+                    }
+                }
+            }
+            sort($parents);
+        }
+        return $parents;
+    }
+
+    private function getFilenameWithoutPrefix(string $filepath): string
+    {
+        $filename = pathinfo($filepath, PATHINFO_FILENAME);
+        return (string)preg_replace('/^([0-9]+[-]+)(.+)$/', '\\2', $filename);
+    }
+
+    public function findAll(): array
+    {
+        $items = [];
+
+        if ($this->cacheEnable && $this->cacheTTL > 0) {
+            $cached = $this->cache->get(__METHOD__);
+            if (is_array($cached)) {
+                return $cached;
+            }
+        }
+
+        foreach ($this->flatFileIterator as $fileInfo) {
+            try {
+                /** @var FileInfo $fileInfo */
+                $aliasedPath = '@page/' . $fileInfo->getRelativePathname();
+                $items[] = $this->readFile($aliasedPath);
+            } catch (Exception $e) {
+            }
+        }
+
+        if ($this->cacheEnable && $this->cacheTTL > 0) {
+            $this->cache->set(__METHOD__, $items, $this->cacheTTL);
+        }
+
+        return $items;
     }
 }

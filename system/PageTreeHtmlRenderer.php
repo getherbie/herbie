@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use RecursiveIterator;
 use RecursiveIteratorIterator;
 
 /**
@@ -29,7 +30,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
     private $itemCallback;
 
     public function __construct(
-        \RecursiveIterator $iterator,
+        RecursiveIterator $iterator,
         int $mode = RecursiveIteratorIterator::SELF_FIRST,
         int $flags = 0
     ) {
@@ -63,6 +64,15 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
         $this->output .= $this->getTemplate('beginIteration');
     }
 
+    private function getTemplate(string $key): string
+    {
+        $replacements = [
+            '{class}' => $this->class,
+            '{level}' => $this->getDepth() + 1
+        ];
+        return strtr($this->template[$key], $replacements);
+    }
+
     public function endIteration(): void
     {
         $this->output .= $this->getTemplate('endIteration');
@@ -93,15 +103,6 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
             }
         }
         return $this->output;
-    }
-
-    private function getTemplate(string $key): string
-    {
-        $replacements = [
-            '{class}' => $this->class,
-            '{level}' => $this->getDepth() + 1
-        ];
-        return strtr($this->template[$key], $replacements);
     }
 
     private function addCssClasses(string $beginCurrent, string $route): string

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use RecursiveIterator;
 use RecursiveTreeIterator;
 
 final class PageTreeTextRenderer extends RecursiveTreeIterator
 {
     public string $emptyTitle = '[]';
 
-    public function __construct(\RecursiveIterator $iterator)
+    public function __construct(RecursiveIterator $iterator)
     {
         parent::__construct($iterator);
         $this->setPrefixPart(self::PREFIX_LEFT, '');

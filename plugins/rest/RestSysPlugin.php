@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\sysplugins\rest;
 
+use Doctrine\RST\Parser;
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;
 use herbie\Plugin;
@@ -61,7 +62,7 @@ final class RestSysPlugin extends Plugin
         if (!$this->parserClassExists) {
             return $string;
         }
-        $parser = new \Doctrine\RST\Parser();
+        $parser = new Parser();
         $document = $parser->parse($string);
         return $document->render();
     }

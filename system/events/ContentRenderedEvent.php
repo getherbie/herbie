@@ -28,7 +28,7 @@ final class ContentRenderedEvent extends AbstractEvent
     }
 
     /**
-     * @param array<string, string>  $segments
+     * @param array<string, string> $segments
      */
     public function setSegments(array $segments): void
     {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use InvalidArgumentException;
+
 final class Translator
 {
     private string $language;
@@ -35,6 +37,19 @@ final class Translator
     {
         $this->loadMessages();
         return $this;
+    }
+
+    private function loadMessages(): void
+    {
+        foreach ($this->paths as $category => $paths) {
+            foreach ($paths as $path) {
+                $messagePath = sprintf('%s/%s.php', $path, $this->language);
+                if (file_exists($messagePath)) {
+                    // NOTE this must be "require" here, not only "require_once"
+                    $this->messages[$this->language][$category] = require $messagePath;
+                }
+            }
+        }
     }
 
     /**
@@ -72,19 +87,6 @@ final class Translator
         return strtr($message, $paramsWithBrackets);
     }
 
-    private function loadMessages(): void
-    {
-        foreach ($this->paths as $category => $paths) {
-            foreach ($paths as $path) {
-                $messagePath = sprintf('%s/%s.php', $path, $this->language);
-                if (file_exists($messagePath)) {
-                    // NOTE this must be "require" here, not only "require_once"
-                    $this->messages[$this->language][$category] = require $messagePath;
-                }
-            }
-        }
-    }
-
     /**
      * @param string[]|string $path
      */
@@ -96,8 +98,8 @@ final class Translator
         if (is_string($path)) {
             $path = [$path];
         } elseif (!is_array($path)) {
-            $message = sprintf('Argument $path has to be an array or a string, %s given.', \herbie\get_type($path));
-            throw new \InvalidArgumentException($message);
+            $message = sprintf('Argument $path has to be an array or a string, %s given.', get_type($path));
+            throw new InvalidArgumentException($message);
         }
         $this->paths[$category] = array_merge($this->paths[$category], $path);
     }

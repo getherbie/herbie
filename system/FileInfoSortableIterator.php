@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayIterator;
+use InvalidArgumentException;
 use IteratorAggregate;
+use Traversable;
 
 final class FileInfoSortableIterator implements IteratorAggregate
 {
@@ -14,7 +17,7 @@ final class FileInfoSortableIterator implements IteratorAggregate
     public const SORT_BY_CHANGED_TIME = 4;
     public const SORT_BY_MODIFIED_TIME = 5;
 
-    private \Traversable $iterator;
+    private Traversable $iterator;
 
     /**
      * @var callable
@@ -24,7 +27,7 @@ final class FileInfoSortableIterator implements IteratorAggregate
     /**
      * @param int|callable $sort
      */
-    public function __construct(\Traversable $iterator, $sort)
+    public function __construct(Traversable $iterator, $sort)
     {
         $this->iterator = $iterator;
 
@@ -57,15 +60,15 @@ final class FileInfoSortableIterator implements IteratorAggregate
             $this->sort = $sort;
         } else {
             $message = 'The SortableIterator takes a PHP callable or a valid built-in sort algorithm as an argument.';
-            throw new \InvalidArgumentException($message);
+            throw new InvalidArgumentException($message);
         }
     }
 
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
         $array = iterator_to_array($this->iterator, true);
         uasort($array, $this->sort);
 
-        return new \ArrayIterator($array);
+        return new ArrayIterator($array);
     }
 }

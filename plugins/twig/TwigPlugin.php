@@ -51,15 +51,17 @@ final class TwigPlugin extends Plugin
 
     public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        $event->getEnvironment()->addExtension(new TwigExtension(
-            $this->alias,
-            $this->assets,
-            $this->config,
-            $event->getEnvironment(),
-            $this->pageRepository,
-            $this->slugGenerator,
-            $this->translator,
-            $this->urlManager
-        ));
+        $event->getEnvironment()->addExtension(
+            new TwigExtension(
+                $this->alias,
+                $this->assets,
+                $this->config,
+                $event->getEnvironment(),
+                $this->pageRepository,
+                $this->slugGenerator,
+                $this->translator,
+                $this->urlManager
+            )
+        );
     }
 }

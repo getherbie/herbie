@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\SysPlugins\TwigPlus;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
+use UnitTester;
 
-final class TwigPlusSmokeTest extends \Codeception\Test\Unit
+final class TwigPlusSmokeTest extends Unit
 {
     /**
-     * @var \UnitTester
+     * @var UnitTester
      */
     protected $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 4),
-            dirname(__DIR__, 2) . '/Fixtures/site'
-        );
-    }
 
     public function testMenuAsciiTreeFunction(): void
     {
@@ -30,6 +24,14 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         STRING;
         $actual = $this->twig()->renderString('{{ menu_ascii_tree() }}');
         $this->assertEquals($expected, $actual);
+    }
+
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 4),
+            dirname(__DIR__, 2) . '/Fixtures/site'
+        );
     }
 
     public function testMenuBreadcrumbFunction(): void

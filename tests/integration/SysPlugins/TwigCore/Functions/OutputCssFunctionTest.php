@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class OutputCssFunctionTest extends \Codeception\Test\Unit
+final class OutputCssFunctionTest extends Unit
 {
     protected UnitTester $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
-        );
-    }
 
     public function testPowerOn(): void
     {
@@ -26,6 +19,14 @@ final class OutputCssFunctionTest extends \Codeception\Test\Unit
         $this->assertEquals(
             '<link href="/assets/assets/styles.css" type="text/css" rel="stylesheet">',
             $this->twig()->renderString($twig)
+        );
+    }
+
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
         );
     }
 

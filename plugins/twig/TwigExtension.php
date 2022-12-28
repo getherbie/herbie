@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugins\twig;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Exception;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
@@ -32,10 +33,8 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-use function herbie\date_format;
 use function herbie\file_size;
 use function herbie\str_trailing_slash;
-use function herbie\time_format;
 
 final class TwigExtension extends AbstractExtension
 {
@@ -123,34 +122,6 @@ final class TwigExtension extends AbstractExtension
             new TwigTest('file_readable', [$this, 'testIsReadable']),
             new TwigTest('file_writable', [$this, 'testIsWritable'])
         ];
-    }
-
-    /**
-     * @param array<string, string> $attribs
-     */
-    private function buildHtmlAttributes(array $attribs = []): string
-    {
-        $attribsAsString = '';
-        foreach ($attribs as $key => $value) {
-            $attribsAsString .= $key . '="' . $value . '" ';
-        }
-        return trim($attribsAsString);
-    }
-
-    public function filterFilesize(int $size): string
-    {
-        if ($size <= 0) {
-            return '0';
-        }
-        if ($size === 1) {
-            return '1 Byte';
-        }
-        $mod = 1024;
-        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-        for ($i = 0; $size > $mod && $i < count($units) - 1; ++$i) {
-            $size /= $mod;
-        }
-        return str_replace(',', '.', (string)round($size, 1)) . ' ' . $units[$i];
     }
 
     /**
@@ -247,6 +218,46 @@ final class TwigExtension extends AbstractExtension
         return strtr('<span class="link link--media"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
+    private function getFileInfo(string $path): string
+    {
+        if (!is_readable($path)) {
+            return '';
+        }
+        $replace = [
+            '{size}' => $this->filterFilesize(file_size($path)),
+            '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
+        ];
+        return strtr(' ({extension}, {size})', $replace);
+    }
+
+    public function filterFilesize(int $size): string
+    {
+        if ($size <= 0) {
+            return '0';
+        }
+        if ($size === 1) {
+            return '1 Byte';
+        }
+        $mod = 1024;
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        for ($i = 0; $size > $mod && $i < count($units) - 1; ++$i) {
+            $size /= $mod;
+        }
+        return str_replace(',', '.', (string)round($size, 1)) . ' ' . $units[$i];
+    }
+
+    /**
+     * @param array<string, string> $attribs
+     */
+    private function buildHtmlAttributes(array $attribs = []): string
+    {
+        $attribsAsString = '';
+        foreach ($attribs as $key => $value) {
+            $attribsAsString .= $key . '="' . $value . '" ';
+        }
+        return trim($attribsAsString);
+    }
+
     public function linkMail(
         string $email,
         ?string $label = null,
@@ -335,6 +346,16 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @param array<string, string> $attribs
+     */
+    protected function createLink(string $route, string $label, array $attribs = []): string
+    {
+        $url = $this->urlManager->createUrl($route);
+        $attribsAsString = $this->buildHtmlAttributes($attribs);
+        return sprintf('<a href="%s"%s>%s</a>', $url, $attribsAsString, $label);
+    }
+
+    /**
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -376,36 +397,8 @@ final class TwigExtension extends AbstractExtension
         return $this->environment->render($template, ['pagination' => $pagination]);
     }
 
-    public function menuTree(
-        string $route = '',
-        int $depth = -1,
-        bool $hidden = false,
-        string $class = 'menu'
-    ): string {
-        // NOTE duplicated code, see function sitemap
-        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
-        if ($branch === null) {
-            return '';
-        }
-
-        $treeIterator = new PageTreeIterator($branch);
-        $filterIterator = new PageTreeFilterIterator($treeIterator, !$hidden);
-
-        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
-        $htmlTree->setMaxDepth($depth);
-        $htmlTree->setClass($class);
-        $htmlTree->setItemCallback(function (PageTree $node) {
-            $menuItem = $node->getMenuItem();
-            $href = $this->urlManager->createUrl($menuItem->getRoute());
-            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
-        });
-
-        [$currenRoute] = $this->urlManager->parseRequest();
-        return $htmlTree->render($currenRoute);
-    }
-
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function menuPager(
         string $limit = '',
@@ -478,6 +471,34 @@ final class TwigExtension extends AbstractExtension
         string $class = 'sitemap'
     ): string {
         return $this->menuTree($route, $depth, $hidden, $class);
+    }
+
+    public function menuTree(
+        string $route = '',
+        int $depth = -1,
+        bool $hidden = false,
+        string $class = 'menu'
+    ): string {
+        // NOTE duplicated code, see function sitemap
+        $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
+        if ($branch === null) {
+            return '';
+        }
+
+        $treeIterator = new PageTreeIterator($branch);
+        $filterIterator = new PageTreeFilterIterator($treeIterator, !$hidden);
+
+        $htmlTree = new PageTreeHtmlRenderer($filterIterator);
+        $htmlTree->setMaxDepth($depth);
+        $htmlTree->setClass($class);
+        $htmlTree->setItemCallback(function (PageTree $node) {
+            $menuItem = $node->getMenuItem();
+            $href = $this->urlManager->createUrl($menuItem->getRoute());
+            return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());
+        });
+
+        [$currenRoute] = $this->urlManager->parseRequest();
+        return $htmlTree->render($currenRoute);
     }
 
     public function cssOut(?string $group = null, bool $timestamp = false): string
@@ -623,18 +644,6 @@ final class TwigExtension extends AbstractExtension
         return strtr('<span class="link link--file"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
 
-    private function getFileInfo(string $path): string
-    {
-        if (!is_readable($path)) {
-            return '';
-        }
-        $replace = [
-            '{size}' => $this->filterFilesize(file_size($path)),
-            '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
-        ];
-        return strtr(' ({extension}, {size})', $replace);
-    }
-
     public function testIsReadable(string $alias): bool
     {
         if ($alias === '') {
@@ -651,15 +660,5 @@ final class TwigExtension extends AbstractExtension
         }
         $filename = $this->alias->get($alias);
         return is_writable($filename);
-    }
-
-    /**
-     * @param array<string, string> $attribs
-     */
-    protected function createLink(string $route, string $label, array $attribs = []): string
-    {
-        $url = $this->urlManager->createUrl($route);
-        $attribsAsString = $this->buildHtmlAttributes($attribs);
-        return sprintf('<a href="%s"%s>%s</a>', $url, $attribsAsString, $label);
     }
 }

@@ -16,8 +16,7 @@ final class DummyCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command allows you to create a user...')
-        ;
+            ->setHelp('This command allows you to create a user...');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

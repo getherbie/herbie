@@ -11,16 +11,16 @@ use Symfony\Component\Yaml\Yaml as sfYaml;
  */
 final class Yaml
 {
-    public static function parse(string $input): array
-    {
-        $parsed = sfYaml::parse($input);
-        return (array)$parsed;
-    }
-
     public static function parseFile(string $file): array
     {
         $input = file_read($file);
         return self::parse($input);
+    }
+
+    public static function parse(string $input): array
+    {
+        $parsed = sfYaml::parse($input);
+        return (array)$parsed;
     }
 
     public static function dump(array $array): string

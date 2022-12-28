@@ -4,27 +4,15 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\SysPlugins;
 
+use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\ApplicationPaths;
 
 use function herbie\file_read;
 
-final class DummySysPluginTest extends \Codeception\Test\Unit
+final class DummySysPluginTest extends Unit
 {
     protected Application $app;
-
-    protected function initApplication(string $appPath, string $sitePath, string $logPath): Application
-    {
-        if (is_file($logPath)) {
-            unlink($logPath); // delete log file if exists
-        }
-        return new Application(new ApplicationPaths(
-            $appPath,
-            $sitePath,
-            dirname(__DIR__, 4) . '/vendor',
-            dirname(__DIR__, 2) . '/_data/web'
-        ));
-    }
 
     public function testTextileFilter(): void
     {
@@ -47,5 +35,20 @@ final class DummySysPluginTest extends \Codeception\Test\Unit
         $this->assertStringContainsString('Event herbie\events\ResponseGeneratedEvent was triggered', $logContent);
         $this->assertStringContainsString('Event herbie\events\TranslatorInitializedEvent was triggered', $logContent);
         $this->assertStringContainsString('Event herbie\events\TwigInitializedEvent was triggered', $logContent);
+    }
+
+    protected function initApplication(string $appPath, string $sitePath, string $logPath): Application
+    {
+        if (is_file($logPath)) {
+            unlink($logPath); // delete log file if exists
+        }
+        return new Application(
+            new ApplicationPaths(
+                $appPath,
+                $sitePath,
+                dirname(__DIR__, 4) . '/vendor',
+                dirname(__DIR__, 2) . '/_data/web'
+            )
+        );
     }
 }

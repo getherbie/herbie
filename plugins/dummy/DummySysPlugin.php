@@ -109,11 +109,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    private function wrapHtmlBlock(string $class, string $content): string
-    {
-        return "<div class='$class' style='display:none'>" . $content . "</div>";
-    }
-
     public function onRenderLayout(RenderLayoutEvent $event): void
     {
         $this->logger->debug(__METHOD__);
@@ -123,6 +118,11 @@ final class DummySysPlugin implements PluginInterface
             $event->getContent(),
         );
         $event->setContent($content);
+    }
+
+    private function wrapHtmlBlock(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
     public function onRenderSegment(RenderSegmentEvent $event): void
@@ -171,9 +171,11 @@ final class DummySysPlugin implements PluginInterface
     public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $event->getEnvironment()->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
-            return $content . 'Dummy Filter Dynamic';
-        }));
+        $event->getEnvironment()->addFilter(
+            new TwigFilter('dummy_dynamic', function (string $content): string {
+                return $content . 'Dummy Filter Dynamic';
+            })
+        );
     }
 
     public function appMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface

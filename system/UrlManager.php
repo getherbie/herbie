@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use Psr\Http\Message\ServerRequestInterface;
+use UnexpectedValueException;
 
 final class UrlManager
 {
@@ -26,6 +27,13 @@ final class UrlManager
         $this->parsedRequest = null;
     }
 
+    public function createAbsoluteUrl(string $route): string
+    {
+        $path = $this->createUrl($route);
+        $absUrl = $this->serverRequest->getUri()->withPath($path);
+        return (string)$absUrl;
+    }
+
     public function createUrl(string $route): string
     {
         // TODO add support for following routes
@@ -40,13 +48,6 @@ final class UrlManager
             $url = $this->scriptUrl . '/' . $route;
         }
         return $this->filterUrl($url);
-    }
-
-    public function createAbsoluteUrl(string $route): string
-    {
-        $path = $this->createUrl($route);
-        $absUrl = $this->serverRequest->getUri()->withPath($path);
-        return (string)$absUrl;
     }
 
     /**
@@ -78,7 +79,7 @@ final class UrlManager
         $route = $this->cleanPath($path);
         foreach ($this->rules as $rule) {
             if (count($rule) < 2) {
-                throw new \UnexpectedValueException(sprintf('Invalid rule %s', $rule[0]));
+                throw new UnexpectedValueException(sprintf('Invalid rule %s', $rule[0]));
             }
             $constraints = $rule[2] ?? [];
             $regex = $this->getRegex($rule[0], $constraints);

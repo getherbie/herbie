@@ -5,12 +5,20 @@ declare(strict_types=1);
 namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
 use ArgumentCountError;
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class MailLinkFunctionTest extends \Codeception\Test\Unit
+final class MailLinkFunctionTest extends Unit
 {
     protected UnitTester $tester;
+
+    public function testLinkWithoutParams(): void
+    {
+        $this->expectException(ArgumentCountError::class);
+        $twig = '{{ link_mail() }}';
+        $this->twig()->renderString($twig);
+    }
 
     private function twig(): TwigRenderer
     {
@@ -18,13 +26,6 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
             dirname(__DIR__, 5),
             dirname(__DIR__, 3) . '/Fixtures/site'
         );
-    }
-
-    public function testLinkWithoutParams(): void
-    {
-        $this->expectException(ArgumentCountError::class);
-        $twig = '{{ link_mail() }}';
-        $this->twig()->renderString($twig);
     }
 
     public function testLinkWithEmail(): void
@@ -35,6 +36,15 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
         $twig = '{{ link_mail("me@example.com") }}';
         $actual = $this->twig()->renderString($twig);
         $this->assertSame($expected, $actual);
+    }
+
+    private function getHtml(string $link): string
+    {
+        return <<<STRING
+        <span class="link link--mailto">
+            {$link}
+        </span>
+        STRING;
     }
 
     public function testLinkWithEmailAndLabel(): void
@@ -69,14 +79,5 @@ final class MailLinkFunctionTest extends \Codeception\Test\Unit
     {
         $twig = '{{ link_mail("me@example.com", template="@not/existing/template.twig") }}';
         $this->assertEquals('me@example.com', $this->twig()->renderString($twig));
-    }
-
-    private function getHtml(string $link): string
-    {
-        return <<<STRING
-        <span class="link link--mailto">
-            {$link}
-        </span>
-        STRING;
     }
 }

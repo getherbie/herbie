@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ErrorException;
+
 final class FatalErrorHandler
 {
     public function __invoke(): void
@@ -13,7 +15,7 @@ final class FatalErrorHandler
             if (!headers_sent()) {
                 header("HTTP/1.1 500");
             }
-            $exception = new \ErrorException(
+            $exception = new ErrorException(
                 $error['message'],
                 500,
                 $error['type'],

@@ -87,17 +87,17 @@ final class Dummy2Plugin implements PluginInterface
         ];
     }
 
-    private function wrapHtmlBlock(string $class, string $content): string
-    {
-        return "<div class='$class' style='display:none'>" . $content . "</div>";
-    }
-
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
         $this->logger->debug(__METHOD__);
         $segment = $event->getSegment()
             . $this->wrapHtmlBlock('dummy2-plugin-render-segment', __METHOD__);
         $event->setSegment($segment);
+    }
+
+    private function wrapHtmlBlock(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
     public function onRenderLayout(RenderLayoutEvent $event): void

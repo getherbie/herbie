@@ -4,6 +4,7 @@ namespace herbie\tests\unit;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
+use Codeception\Test\Unit;
 use herbie\Alias;
 use herbie\FlatFileIterator;
 use herbie\FlatFilePagePersistence;
@@ -16,36 +17,10 @@ use LogicException;
 
 use function herbie\date_format;
 
-final class PageTest extends \Codeception\Test\Unit
+final class PageTest extends Unit
 {
     protected FlatFilePageRepository $repository;
 
-    protected function _before()
-    {
-        $this->repository = new FlatFilePageRepository(
-            new PageFactory(),
-            new FlatFilePagePersistence(
-                new Alias([
-                    '@page' => __DIR__ . '/Fixtures/site/pages'
-                ]),
-                new NullCache(),
-                new FlatFileIterator(
-                    dirname(__DIR__) . '/integration/Fixtures/site/pages',
-                    ['md']
-                )
-            )
-        );
-    }
-
-    private function initPage()
-    {
-        Page::setSlugGenerator(new SlugGenerator(['locale' => 'en', 'delimiter' => '-']));
-    }
-
-    // ---------------------------------------------------------
-    // Tests for...
-    // ---------------------------------------------------------
-    // string[] $authors
     public function testAuthors()
     {
         Page::setSlugGenerator(new SlugGenerator());
@@ -68,7 +43,6 @@ final class PageTest extends \Codeception\Test\Unit
         Page::unsetSlugGenerator();
     }
 
-    // bool $cached
     public function testCached()
     {
         // default value
@@ -84,6 +58,11 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertTrue(isset($page->cached));
     }
 
+    // ---------------------------------------------------------
+    // Tests for...
+    // ---------------------------------------------------------
+    // string[] $authors
+
     public function testCacheId()
     {
         // default value
@@ -96,7 +75,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('page-path-to-page', $page->cacheId); // still same value as before
     }
 
-    // string[] $categories
+    // bool $cached
+
     public function testCategories()
     {
         Page::setSlugGenerator(new SlugGenerator());
@@ -119,7 +99,6 @@ final class PageTest extends \Codeception\Test\Unit
         Page::unsetSlugGenerator();
     }
 
-    // string $content_type
     public function testContentType()
     {
         // default value
@@ -133,7 +112,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('application/xml', $page->content_type);
     }
 
-    // string $created
+    // string[] $categories
+
     public function testCreated()
     {
         // default value
@@ -148,8 +128,8 @@ final class PageTest extends \Codeception\Test\Unit
         // rest is tested in dateTest
     }
 
-    // array<int|string, mixed> $customData
-    // string $date
+    // string $content_type
+
     public function testDate()
     {
         // default value
@@ -172,7 +152,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('2022-11-01T19:22:30+00:00', $page->date);
     }
 
-    // string $excerpt
+    // string $created
+
     public function testExcert()
     {
         // default value
@@ -186,7 +167,9 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('This is another excerpt.', $page->excerpt);
     }
 
-    // string $format
+    // array<int|string, mixed> $customData
+    // string $date
+
     public function testFormat()
     {
         // default value
@@ -208,7 +191,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('raw', $page->format);
     }
 
-    // bool $hidden
+    // string $excerpt
+
     public function testHidden()
     {
         // default value
@@ -224,7 +208,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertFalse(!isset($page->hidden));
     }
 
-    // bool $keep_extension
+    // string $format
+
     public function testKeepExtension()
     {
         // default value
@@ -240,7 +225,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertFalse(!isset($page->keep_extension));
     }
 
-    // string $layout
+    // bool $hidden
+
     public function testLayout()
     {
         // default value
@@ -254,7 +240,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('default', $page->layout);
     }
 
-    // string $menu_title
+    // bool $keep_extension
+
     public function testMenuTitle()
     {
         // default value
@@ -271,7 +258,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('New Title', $page->menu_title);
     }
 
-    // string $modified
+    // string $layout
+
     public function testModified()
     {
         // default value
@@ -286,7 +274,8 @@ final class PageTest extends \Codeception\Test\Unit
         // rest is tested in dateTest
     }
 
-    // string $path
+    // string $menu_title
+
     public function testPath()
     {
         // default value
@@ -300,7 +289,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('path/to/that', $page->path);
     }
 
-    // array<void>|array{status: int, url: string} $redirect
+    // string $modified
+
     public function testRedirect()
     {
         // default value
@@ -335,7 +325,8 @@ final class PageTest extends \Codeception\Test\Unit
         }
     }
 
-    // string $route
+    // string $path
+
     public function testRoute()
     {
         // default value
@@ -349,7 +340,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('route/to/that', $page->route);
     }
 
-    // string[] $tags
+    // array<void>|array{status: int, url: string} $redirect
+
     public function testTags()
     {
         Page::setSlugGenerator(new SlugGenerator());
@@ -372,7 +364,8 @@ final class PageTest extends \Codeception\Test\Unit
         Page::unsetSlugGenerator();
     }
 
-    // string $title
+    // string $route
+
     public function testTitle()
     {
         // default value
@@ -386,7 +379,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('New Title', $page->title);
     }
 
-    // bool $twig
+    // string[] $tags
+
     public function testTwig()
     {
         // default value
@@ -402,7 +396,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertTrue(isset($page->twig));
     }
 
-    // string $type
+    // string $title
+
     public function testType()
     {
         // default value
@@ -416,6 +411,8 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertEquals('blog', $page->type);
     }
 
+    // bool $twig
+
     public function testToString()
     {
         $page = new Page();
@@ -423,6 +420,8 @@ final class PageTest extends \Codeception\Test\Unit
         $page->title = 'Title';
         $this->assertEquals('Title', (string)$page);
     }
+
+    // string $type
 
     public function testToArray()
     {
@@ -511,8 +510,6 @@ final class PageTest extends \Codeception\Test\Unit
         unset($page['title']);
     }
 
-    // ---------------------------------------------------------
-
     public function testConstructor()
     {
         $page = new Page();
@@ -526,6 +523,8 @@ final class PageTest extends \Codeception\Test\Unit
         $page = new Page();
         $this->assertSame('default', $page->getLayout());
     }
+
+    // ---------------------------------------------------------
 
     public function testGetSegment()
     {
@@ -565,7 +564,10 @@ final class PageTest extends \Codeception\Test\Unit
         $this->assertSame('Segment 2', trim($page->getSegment(2)));
         $this->assertSame('Segment 3', trim($page->getSegment('three')));
         $this->assertSame('Invalid Segment', trim($page->getSegment(-1)));
-        $this->assertSame('Last Segment', trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789')));
+        $this->assertSame(
+            'Last Segment',
+            trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789'))
+        );
     }
 
     public function testSetData()
@@ -702,5 +704,27 @@ final class PageTest extends \Codeception\Test\Unit
     public function testToString2(Page $page)
     {
         $this->assertSame('Page Data', (string)$page);
+    }
+
+    protected function _before()
+    {
+        $this->repository = new FlatFilePageRepository(
+            new PageFactory(),
+            new FlatFilePagePersistence(
+                new Alias([
+                    '@page' => __DIR__ . '/Fixtures/site/pages'
+                ]),
+                new NullCache(),
+                new FlatFileIterator(
+                    dirname(__DIR__) . '/integration/Fixtures/site/pages',
+                    ['md']
+                )
+            )
+        );
+    }
+
+    private function initPage()
+    {
+        Page::setSlugGenerator(new SlugGenerator(['locale' => 'en', 'delimiter' => '-']));
     }
 }

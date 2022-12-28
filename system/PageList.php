@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
@@ -43,19 +44,9 @@ final class PageList implements IteratorAggregate, Countable
         return $this->items;
     }
 
-    public function getItem(string $route): ?Page
+    public function getIterator(): ArrayIterator
     {
-        return isset($this->items[$route]) ? $this->items[$route] : null;
-    }
-
-    public function getIterator(): \ArrayIterator
-    {
-        return new \ArrayIterator($this->items);
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
+        return new ArrayIterator($this->items);
     }
 
     public function getRandom(): Page
@@ -64,6 +55,11 @@ final class PageList implements IteratorAggregate, Countable
         $index = mt_rand(0, $this->count() - 1);
         $route = $routes[$index];
         return $this->items[$route];
+    }
+
+    public function count(): int
+    {
+        return count($this->items);
     }
 
     public function find(string $value, string $key): ?Page
@@ -93,12 +89,14 @@ final class PageList implements IteratorAggregate, Countable
             return new self(array_filter($this->items, $key));
         }
         if (is_string($key) && is_scalar($value)) {
-            return new self(array_filter($this->items, function ($val) use ($key, $value) {
-                if ($val->{$key} === $value) {
-                    return true;
-                }
-                return false;
-            }));
+            return new self(
+                array_filter($this->items, function ($val) use ($key, $value) {
+                    if ($val->{$key} === $value) {
+                        return true;
+                    }
+                    return false;
+                })
+            );
         }
         return new self(array_filter($this->items));
     }
@@ -152,6 +150,33 @@ final class PageList implements IteratorAggregate, Countable
         $authors = $authorsPerType[$type] ?? [];
         ksort($authors);
         return $authors;
+    }
+
+    private function createTaxonomyFor(string $dataType): array
+    {
+        $items = ['__all__' => []];
+        foreach ($this->items as $page) {
+            $pageType = $page->getType();
+            foreach ($page->{$dataType} as $item) {
+                // for all
+                if (isset($items['__all__'][$item])) {
+                    $items['__all__'][$item]++;
+                } else {
+                    $items['__all__'][$item] = 1;
+                }
+
+                if (!isset($items[$pageType])) {
+                    $items[$pageType] = [];
+                }
+                // per type
+                if (isset($items[$pageType][$item])) {
+                    $items[$pageType][$item]++;
+                } else {
+                    $items[$pageType][$item] = 1;
+                }
+            }
+        }
+        return $items;
     }
 
     public function getCategories(?string $type = null): array
@@ -300,33 +325,6 @@ final class PageList implements IteratorAggregate, Countable
         return new self($items);
     }
 
-    private function createTaxonomyFor(string $dataType): array
-    {
-        $items = ['__all__' => []];
-        foreach ($this->items as $page) {
-            $pageType = $page->getType();
-            foreach ($page->{$dataType} as $item) {
-                // for all
-                if (isset($items['__all__'][$item])) {
-                    $items['__all__'][$item]++;
-                } else {
-                    $items['__all__'][$item] = 1;
-                }
-
-                if (!isset($items[$pageType])) {
-                    $items[$pageType] = [];
-                }
-                // per type
-                if (isset($items[$pageType][$item])) {
-                    $items[$pageType][$item]++;
-                } else {
-                    $items[$pageType][$item] = 1;
-                }
-            }
-        }
-        return $items;
-    }
-
     public function getPageTree(): PageTree
     {
         if ($this->pageTree === null) {
@@ -359,5 +357,10 @@ final class PageList implements IteratorAggregate, Countable
         }
 
         return $this->pageTrail = (new PageFactory())->newPageTrail($items);
+    }
+
+    public function getItem(string $route): ?Page
+    {
+        return isset($this->items[$route]) ? $this->items[$route] : null;
     }
 }

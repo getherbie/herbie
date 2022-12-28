@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use DateTimeImmutable;
+use DomainException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use RuntimeException;
+use Throwable;
+
+use const JSON_UNESCAPED_SLASHES;
+use const PHP_EOL;
 
 final class FileLogger implements LoggerInterface
 {
@@ -36,7 +43,7 @@ final class FileLogger implements LoggerInterface
         if (!array_key_exists($level, self::LEVELS)) {
             $message = "Log level $level is not a valid log level.";
             $message .= " Must be one of (" . implode(', ', array_keys(self::LEVELS)) . ')';
-            throw new \DomainException($message);
+            throw new DomainException($message);
         }
 
         $this->level = self::LEVELS[$level];
@@ -47,6 +54,81 @@ final class FileLogger implements LoggerInterface
         if ($this->logAtThisLevel(LogLevel::DEBUG)) {
             $this->log(LogLevel::DEBUG, $message, $context);
         }
+    }
+
+    private function logAtThisLevel(string $level): bool
+    {
+        return self::LEVELS[$level] >= $this->level;
+    }
+
+    public function log($level, $message, array $context = [])
+    {
+        // Build log line
+        $pid = (int)getmypid();
+        [$exception, $data] = $this->handleException($context);
+        $data = $data ? json_encode($data, JSON_UNESCAPED_SLASHES) : '{}';
+        $data = $data ?: '{}'; // Fail-safe in case json_encode fails.
+        $line = $this->formatLine($level, $pid, $message, $data, $exception);
+
+        // Log to file
+        try {
+            $fh = fopen($this->file, 'a');
+            if (!$fh) {
+                throw new RuntimeException('File open failed.');
+            }
+            fwrite($fh, $line);
+            fclose($fh);
+        } catch (Throwable $e) {
+            $message = "Could not open log file {$this->file} for writing to channel {$this->channel}!";
+            throw new RuntimeException($message, 0, $e);
+        }
+    }
+
+    private function handleException(array $data = []): array
+    {
+        if (isset($data['exception']) && $data['exception'] instanceof Throwable) {
+            $exception = $data['exception'];
+            $exceptionData = $this->buildExceptionData($exception);
+            unset($data['exception']);
+        } else {
+            $exceptionData = '{}';
+        }
+
+        return [$exceptionData, $data];
+    }
+
+    private function buildExceptionData(Throwable $e): string
+    {
+        $exceptionData = json_encode(
+            [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace()
+            ],
+            JSON_UNESCAPED_SLASHES
+        );
+
+        // Fail-safe in case json_encode failed
+        return $exceptionData ?: '{"message":"' . $e->getMessage() . '"}';
+    }
+
+    private function formatLine(string $level, int $pid, string $message, string $data, string $exception_data): string
+    {
+        return
+            $this->getTime() . self::TAB .
+            "[$level]" . self::TAB .
+            "[{$this->channel}]" . self::TAB .
+            "[pid:$pid]" . self::TAB .
+            str_replace(PHP_EOL, '   ', trim($message)) . self::TAB .
+            str_replace(PHP_EOL, '   ', $data) . self::TAB .
+            str_replace(PHP_EOL, '   ', $exception_data) . PHP_EOL;
+    }
+
+    private function getTime(): string
+    {
+        return (new DateTimeImmutable('now'))->format('Y-m-d H:i:s.u');
     }
 
     public function info($message, array $context = [])
@@ -96,80 +178,5 @@ final class FileLogger implements LoggerInterface
         if ($this->logAtThisLevel(LogLevel::EMERGENCY)) {
             $this->log(LogLevel::EMERGENCY, $message, $context);
         }
-    }
-
-    public function log($level, $message, array $context = [])
-    {
-        // Build log line
-        $pid = (int)getmypid();
-        [$exception, $data] = $this->handleException($context);
-        $data = $data ? json_encode($data, \JSON_UNESCAPED_SLASHES) : '{}';
-        $data = $data ?: '{}'; // Fail-safe in case json_encode fails.
-        $line = $this->formatLine($level, $pid, $message, $data, $exception);
-
-        // Log to file
-        try {
-            $fh = fopen($this->file, 'a');
-            if (!$fh) {
-                throw new \RuntimeException('File open failed.');
-            }
-            fwrite($fh, $line);
-            fclose($fh);
-        } catch (\Throwable $e) {
-            $message = "Could not open log file {$this->file} for writing to channel {$this->channel}!";
-            throw new \RuntimeException($message, 0, $e);
-        }
-    }
-
-    private function logAtThisLevel(string $level): bool
-    {
-        return self::LEVELS[$level] >= $this->level;
-    }
-
-    private function handleException(array $data = []): array
-    {
-        if (isset($data['exception']) && $data['exception'] instanceof \Throwable) {
-            $exception = $data['exception'];
-            $exceptionData = $this->buildExceptionData($exception);
-            unset($data['exception']);
-        } else {
-            $exceptionData = '{}';
-        }
-
-        return [$exceptionData, $data];
-    }
-
-    private function buildExceptionData(\Throwable $e): string
-    {
-        $exceptionData = json_encode(
-            [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTrace()
-            ],
-            \JSON_UNESCAPED_SLASHES
-        );
-
-        // Fail-safe in case json_encode failed
-        return $exceptionData ?: '{"message":"' . $e->getMessage() . '"}';
-    }
-
-    private function formatLine(string $level, int $pid, string $message, string $data, string $exception_data): string
-    {
-        return
-            $this->getTime() . self::TAB .
-            "[$level]" . self::TAB .
-            "[{$this->channel}]" . self::TAB .
-            "[pid:$pid]" . self::TAB .
-            str_replace(\PHP_EOL, '   ', trim($message)) . self::TAB .
-            str_replace(\PHP_EOL, '   ', $data) . self::TAB .
-            str_replace(\PHP_EOL, '   ', $exception_data) . \PHP_EOL;
-    }
-
-    private function getTime(): string
-    {
-        return (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s.u');
     }
 }

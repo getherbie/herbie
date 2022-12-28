@@ -6,9 +6,18 @@ namespace herbie;
 
 use Closure;
 use Composer\InstalledVersions;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
+use RuntimeException;
+use Throwable;
+use UnexpectedValueException;
+
+use function gettype;
 
 /**
  * @throws SystemException
@@ -64,9 +73,9 @@ function str_untrailing_slash(string $string): string
 }
 
 /**
- * @param \Throwable $exception
+ * @param Throwable $exception
  */
-function render_exception(\Throwable $exception): string
+function render_exception(Throwable $exception): string
 {
     if (Application::isDebug()) {
         $format = "%s [%s] in %s on line %s\n\n%s\n\nStack trace:\n%s";
@@ -134,13 +143,13 @@ function load_plugin_config(string $path, string $pluginLocation, ?callable $pro
         load_php_config($path, $processor)
     );
     if (!isset($config['apiVersion'])) {
-        throw new \UnexpectedValueException(sprintf('Required config "apiVersion" is missing in %s', $path));
+        throw new UnexpectedValueException(sprintf('Required config "apiVersion" is missing in %s', $path));
     }
     if (!isset($config['pluginName'])) {
-        throw new \UnexpectedValueException(sprintf('Required config "pluginName" is missing in %s', $path));
+        throw new UnexpectedValueException(sprintf('Required config "pluginName" is missing in %s', $path));
     }
     if (!isset($config['pluginPath'])) {
-        throw new \UnexpectedValueException(sprintf('Required config "pluginPath" is missing in %s', $path));
+        throw new UnexpectedValueException(sprintf('Required config "pluginPath" is missing in %s', $path));
     }
     return $config;
 }
@@ -321,9 +330,9 @@ function get_callable_name($callable): array
         case is_string($callable):
             return ['function', $callable];
         case is_array($callable) && is_object($callable[0]):
-            return ['method', get_class($callable[0])  . '->' . $callable[1]];
+            return ['method', get_class($callable[0]) . '->' . $callable[1]];
         case is_array($callable):
-            return ['static', $callable[0]  . '::' . $callable[1]];
+            return ['static', $callable[0] . '::' . $callable[1]];
         case $callable instanceof Closure:
             try {
                 $reflectionClosure = new ReflectionFunction($callable);
@@ -331,7 +340,7 @@ function get_callable_name($callable): array
                 $class = $reflectionClosure->getClosureScopeClass();
                 $className = $class ? $class->getName() : null;
                 return ['closure', $className ? $className . '--' . $closureName : $closureName];
-            } catch (\ReflectionException $e) {
+            } catch (ReflectionException $e) {
                 return ['unknown', ''];
             }
         case is_object($callable):
@@ -347,13 +356,13 @@ function get_callable_name($callable): array
 /**
  * @param class-string<PluginInterface> $pluginClassName
  * @return array<int, object>
- * @throws \Psr\Container\ContainerExceptionInterface
- * @throws \Psr\Container\NotFoundExceptionInterface
- * @throws \ReflectionException
+ * @throws ContainerExceptionInterface
+ * @throws NotFoundExceptionInterface
+ * @throws ReflectionException
  */
 function get_constructor_params_to_inject(string $pluginClassName, ContainerInterface $container): array
 {
-    $reflectedClass = new \ReflectionClass($pluginClassName);
+    $reflectedClass = new ReflectionClass($pluginClassName);
     $constructor = $reflectedClass->getConstructor();
     if (!$constructor) {
         return [];
@@ -401,7 +410,7 @@ function file_read(string $path): string
     }
 
     if (false === $content) {
-        throw new \RuntimeException($error);
+        throw new RuntimeException($error);
     }
 
     return $content;
@@ -478,7 +487,7 @@ function array_is_assoc(array $array): bool
 
 function get_type(mixed $value): string
 {
-    $type = \gettype($value);
+    $type = gettype($value);
     // for historical reasons "double" is returned in case of a float, and not simply "float"
     // see https://www.php.net/manual/en/function.gettype
     if ($type === 'double') {

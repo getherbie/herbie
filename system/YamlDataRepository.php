@@ -37,15 +37,6 @@ final class YamlDataRepository implements DataRepositoryInterface
         return $this->parseDataFile($dataFiles[$name]);
     }
 
-    public function loadAll(): array
-    {
-        $data = [];
-        foreach ($this->scanDataDir() as $name => $dataFile) {
-            $data[$name] = $this->parseDataFile($dataFile);
-        }
-        return $data;
-    }
-
     private function scanDataDir(): array
     {
         $dataFiles = [];
@@ -76,5 +67,14 @@ final class YamlDataRepository implements DataRepositoryInterface
     {
         $yaml = file_read($filepath);
         return Yaml::parse($yaml);
+    }
+
+    public function loadAll(): array
+    {
+        $data = [];
+        foreach ($this->scanDataDir() as $name => $dataFile) {
+            $data[$name] = $this->parseDataFile($dataFile);
+        }
+        return $data;
     }
 }

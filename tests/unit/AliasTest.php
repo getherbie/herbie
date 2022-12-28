@@ -2,23 +2,17 @@
 
 namespace herbie\tests\unit;
 
+use Codeception\Test\Unit;
+use Exception;
 use herbie\Alias;
+use InvalidArgumentException;
 
-final class AliasTest extends \Codeception\Test\Unit
+final class AliasTest extends Unit
 {
     /**
      * @var Alias
      */
     private $alias;
-
-    protected function _before()
-    {
-        $this->alias = new Alias([
-            '@foo' => 'foo',
-            '@bar' => 'bar',
-            '@baz' => 'baz'
-        ]);
-    }
 
     public function testGetAll()
     {
@@ -39,25 +33,25 @@ final class AliasTest extends \Codeception\Test\Unit
 
     public function testSetAliasWithoutAtSign()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->alias->set('my', 'value');
     }
 
     public function testSetEmpytAlias()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->alias->set('@', 'value');
     }
 
     public function testSetAliasWithMultipleAtChars()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->alias->set('@one@two', 'value');
     }
 
     public function testSetExistingAlias()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->alias->set('@foo', 'foo');
     }
 
@@ -82,7 +76,16 @@ final class AliasTest extends \Codeception\Test\Unit
 
     public function testUpdateWithNonExistingAlias()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->alias->update('@missing', 'test');
+    }
+
+    protected function _before()
+    {
+        $this->alias = new Alias([
+            '@foo' => 'foo',
+            '@bar' => 'bar',
+            '@baz' => 'baz'
+        ]);
     }
 }

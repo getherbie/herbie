@@ -2,9 +2,11 @@
 
 namespace herbie\tests\unit;
 
+use Codeception\Test\Unit;
 use herbie\Config;
+use UnexpectedValueException;
 
-final class ConfigTest extends \Codeception\Test\Unit
+final class ConfigTest extends Unit
 {
     /**
      * @var Config
@@ -36,15 +38,10 @@ final class ConfigTest extends \Codeception\Test\Unit
         ]
     ];
 
-    protected function _before()
-    {
-        $this->config = new Config($this->testValues);
-    }
-
     public function testGetAsBool()
     {
         $this->assertIsBool($this->config->getAsBool('bool'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Value for "string" is not a bool');
         $this->assertIsNotBool($this->config->getAsBool('string'));
     }
@@ -52,7 +49,7 @@ final class ConfigTest extends \Codeception\Test\Unit
     public function testGetAsInt()
     {
         $this->assertIsInt($this->config->getAsInt('int'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Value for "bool" is not an int');
         $this->assertIsNotInt($this->config->getAsInt('bool'));
     }
@@ -60,7 +57,7 @@ final class ConfigTest extends \Codeception\Test\Unit
     public function testGetAsFloat()
     {
         $this->assertIsFloat($this->config->getAsFloat('float'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Value for "int" is not a float');
         $this->assertIsNotFloat($this->config->getAsFloat('int'));
     }
@@ -68,7 +65,7 @@ final class ConfigTest extends \Codeception\Test\Unit
     public function testGetAsString()
     {
         $this->assertIsString($this->config->getAsString('string'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Value for "float" is not a string');
         $this->assertIsNotString($this->config->getAsString('float'));
     }
@@ -76,7 +73,7 @@ final class ConfigTest extends \Codeception\Test\Unit
     public function testGetAsArray()
     {
         $this->assertIsArray($this->config->getAsArray('array'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Value for "string" is not an array');
         $this->assertIsNotArray($this->config->getAsArray('string'));
     }
@@ -84,14 +81,14 @@ final class ConfigTest extends \Codeception\Test\Unit
     public function testGetAsConfig()
     {
         $this->assertIsObject($this->config->getAsConfig('array'));
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Config for "bool" is not an array');
         $this->assertIsNotObject($this->config->getAsConfig('bool'));
     }
 
     public function testGetAsConfigWithNull()
     {
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Config for "not-existing-key" not found');
         $this->assertIsNotObject($this->config->getAsConfig('not-existing-key'));
     }
@@ -154,5 +151,10 @@ final class ConfigTest extends \Codeception\Test\Unit
             'one.two.three.four.five.string' => 'no',
         ];
         $this->assertEquals($expected, $flatten);
+    }
+
+    protected function _before()
+    {
+        $this->config = new Config($this->testValues);
     }
 }

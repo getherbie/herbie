@@ -16,8 +16,7 @@ class CustomCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command does nothing.')
-        ;
+            ->setHelp('This command does nothing.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

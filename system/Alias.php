@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use InvalidArgumentException;
+
 final class Alias
 {
     private array $aliases;
@@ -22,9 +24,24 @@ final class Alias
     public function set(string $alias, string $path): void
     {
         if (array_key_exists($alias, $this->aliases)) {
-            throw new \InvalidArgumentException("Alias {$alias} already set, use update instead.");
+            throw new InvalidArgumentException("Alias {$alias} already set, use update instead.");
         }
         $this->setInternal($alias, $path);
+    }
+
+    private function setInternal(string $alias, string $path): void
+    {
+        $alias = trim($alias);
+        if (strncmp($alias, '@', 1) <> 0) {
+            throw new InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
+        }
+        if (substr($alias, 1) === '') {
+            throw new InvalidArgumentException("Alias {$alias} is empty.");
+        }
+        if (strpos($alias, '@', 1) !== false) {
+            throw new InvalidArgumentException("Invalid alias {$alias}, @ char only allowed once.");
+        }
+        $this->aliases[$alias] = str_untrailing_slash($path);
     }
 
     public function getAll(): array
@@ -40,23 +57,8 @@ final class Alias
     public function update(string $alias, string $path): void
     {
         if (!array_key_exists($alias, $this->aliases)) {
-            throw new \InvalidArgumentException("Alias {$alias} not exists, use set instead.");
+            throw new InvalidArgumentException("Alias {$alias} not exists, use set instead.");
         }
         $this->setInternal($alias, $path);
-    }
-
-    private function setInternal(string $alias, string $path): void
-    {
-        $alias = trim($alias);
-        if (strncmp($alias, '@', 1) <> 0) {
-            throw new \InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
-        }
-        if (substr($alias, 1) === '') {
-            throw new \InvalidArgumentException("Alias {$alias} is empty.");
-        }
-        if (strpos($alias, '@', 1) !== false) {
-            throw new \InvalidArgumentException("Invalid alias {$alias}, @ char only allowed once.");
-        }
-        $this->aliases[$alias] = str_untrailing_slash($path);
     }
 }

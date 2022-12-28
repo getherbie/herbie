@@ -80,9 +80,11 @@ $app->addEventListener(RenderLayoutEvent::class, function (RenderLayoutEvent $ev
 $app->addEventListener(RenderSegmentEvent::class, new TestFilter());
 
 $app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {
-    $event->getEnvironment()->addFilter(new TwigFilter('my_filter', function (string $content): string {
-        return $content . ' My Filter';
-    }));
+    $event->getEnvironment()->addFilter(
+        new TwigFilter('my_filter', function (string $content): string {
+            return $content . ' My Filter';
+        })
+    );
 });
 
 $app->run();
