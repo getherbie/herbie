@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Tests;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Tests;
 
 use herbie\Application;
 use herbie\TwigRenderer;

@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit;
+namespace herbie\tests\unit;
 
 use function herbie\is_digit;
 use function herbie\is_natural;

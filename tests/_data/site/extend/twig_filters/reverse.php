@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\twig_filters;
+namespace herbie\tests\_data\site\extend\twig_filters;
 
 use Twig\TwigFilter;
 

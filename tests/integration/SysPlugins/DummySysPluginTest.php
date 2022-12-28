@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins;
+namespace herbie\tests\integration\SysPlugins;
 
 use herbie\Application;
 use herbie\ApplicationPaths;

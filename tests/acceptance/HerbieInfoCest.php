@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\acceptance;
+namespace herbie\tests\acceptance;
 
 use AcceptanceTester;
 use Codeception\Util\HttpCode;
@@ -111,6 +111,9 @@ final class HerbieInfoCest
             'herbie\sysplugins\textile\TextileSysPlugin',
             'herbie\sysplugins\twig\TwigExtension',
             'herbie\sysplugins\twig\TwigPlugin',
+            'herbie\tests\_data\site\extend\commands\CustomCommand',
+            'herbie\tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\TestFilter',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('PHP Classes (' . count($classes) . ')', 'h2');
@@ -123,16 +126,16 @@ final class HerbieInfoCest
             'herbie\ErrorHandlerMiddleware',
             'herbie\PageResolverMiddleware',
             'herbie\sysplugins\dummy\DummySysPlugin->appMiddleware',
-            'tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
             'herbie\ResponseTimeMiddleware',
-            'tests\_data\src\CustomHeader',
-            'tests\_data\src\CustomHeader',
-            'tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
             'herbie\sysplugins\dummy\DummySysPlugin->routeMiddleware',
             'herbie\sysplugins\dummy\DummySysPlugin->routeMiddleware',
-            'tests\_data\src\CustomHeader',
-            'tests\_data\src\CustomHeader',
-            'tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
+            'herbie\tests\_data\src\CustomHeader',
             'herbie\HttpBasicAuthMiddleware',
             'herbie\DownloadMiddleware',
             'herbie\PageRendererMiddleware',
@@ -545,9 +548,9 @@ final class HerbieInfoCest
         $commands = [
             'herbie\ClearFilesCommand',
             'herbie\sysplugins\dummy\DummyCommand',
-            'tests\_data\site\extend\commands\CustomCommand',
-            'tests\_data\src\CustomCommand',
-            'tests\_data\src\CustomCommand'
+            'herbie\tests\_data\site\extend\commands\CustomCommand',
+            'herbie\tests\_data\src\CustomCommand',
+            'herbie\tests\_data\src\CustomCommand'
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Commands (' . count($commands) . ')', 'h2');

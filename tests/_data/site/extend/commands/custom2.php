@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\commands;
+namespace herbie\tests\_data\site\extend\commands;
 
-use tests\_data\src\CustomCommand;
+use herbie\tests\_data\src\CustomCommand;
 
 return CustomCommand::class;

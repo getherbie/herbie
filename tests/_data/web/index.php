@@ -19,9 +19,9 @@ use herbie\events\RenderSegmentEvent;
 use herbie\events\TwigInitializedEvent;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
-use tests\_data\src\CustomCommand;
-use tests\_data\src\CustomHeader;
-use tests\_data\src\TestFilter;
+use herbie\tests\_data\src\CustomCommand;
+use herbie\tests\_data\src\CustomHeader;
+use herbie\tests\_data\src\TestFilter;
 use Twig\TwigFilter;
 
 if (php_sapi_name() === 'cli-server') {

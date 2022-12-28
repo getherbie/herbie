@@ -47,7 +47,7 @@
     "autoload-dev": {
         "psr-4": {
             "website\\site\\": "website/site",
-            "tests\\": "tests"
+            "herbie\\tests\\": "tests"
         }
     },
     "require-dev": {

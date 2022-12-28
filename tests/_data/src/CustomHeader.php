@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\src;
+namespace herbie\tests\_data\src;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

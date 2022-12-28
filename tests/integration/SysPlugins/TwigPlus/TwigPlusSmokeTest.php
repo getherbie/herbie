@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigPlus;
+namespace herbie\tests\integration\SysPlugins\TwigPlus;
 
 use herbie\TwigRenderer;
 

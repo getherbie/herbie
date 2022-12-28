@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\filters;
+namespace herbie\tests\_data\site\extend\filters;
 
 use herbie\events\RenderLayoutEvent;
 

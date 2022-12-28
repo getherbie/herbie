@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\events;
+namespace herbie\tests\_data\site\extend\events;
 
 use herbie\events\TwigInitializedEvent;
 use Twig\TwigFilter;

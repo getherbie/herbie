@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Filters;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Filters;
 
 use herbie\Application;
 use herbie\ApplicationPaths;

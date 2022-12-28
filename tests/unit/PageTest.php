@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit;
+namespace herbie\tests\unit;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;

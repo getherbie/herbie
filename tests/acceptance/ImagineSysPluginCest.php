@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\acceptance;
+namespace herbie\tests\acceptance;
 
 use AcceptanceTester;
 use Codeception\Util\HttpCode;
