@@ -21,7 +21,7 @@ layout: recipe
     {% endif %}
 {% endapply %}
 
-{% for item in site.page_list.filterItems('recipe', 'recipes', site.route_params) %}
+{% for item in site.page_list.query().where('layout=recipe', 'title!=Recipes') %}
 <p class="post-title"><b>{{ link_page(item.route, item.title) }}</b><br>
     {{ item.date|date("d. F Y") }}
 </p>

@@ -1,5 +1,5 @@
 <div class="plugins">
-    {% set plugins = query(site.data.plugins).where("enabled=1").order('id') %}
+    {% set plugins = query(site.data.plugins).where("enabled=true").order('id').all() %}
     <p>There are currently <b>{{ plugins|length }}</b> plugins available.</p>
     {% for item in plugins %}
         {% if item.enabled == true %}
@@ -31,6 +31,7 @@
                 {% if item.packagist %}
                     <a class="pure-button button-small" target="_blank" href="{{ item.packagist }}">
                         {{ icon('archive-fill', fill='white') }} Packagist
+                    </a>
                 {% endif %}
             </p>
         </div>
