@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Ausi\SlugGenerator\SlugGenerator;
 use Closure;
 use Composer\InstalledVersions;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 use RuntimeException;
+use Tebe\HttpFactory\HttpFactory;
 use Throwable;
 use UnexpectedValueException;
 
@@ -355,13 +360,17 @@ function get_callable_name($callable): array
 
 /**
  * @param class-string<PluginInterface> $pluginClassName
+ * @param string[] $whitelist
  * @return array<int, object>
  * @throws ContainerExceptionInterface
  * @throws NotFoundExceptionInterface
  * @throws ReflectionException
  */
-function get_constructor_params_to_inject(string $pluginClassName, ContainerInterface $container): array
-{
+function di_constructor_params_from_container(
+    string $pluginClassName,
+    ContainerInterface $container,
+    array $whitelist = []
+): array {
     $reflectedClass = new ReflectionClass($pluginClassName);
     $constructor = $reflectedClass->getConstructor();
     if (!$constructor) {
@@ -379,9 +388,37 @@ function get_constructor_params_to_inject(string $pluginClassName, ContainerInte
         if (in_array($classNameToInject, ['string'])) {
             continue;
         }
-        $constructorParams[] = $container->get($classNameToInject);
+        if (empty($whitelist) || in_array($classNameToInject, $whitelist)) {
+            $constructorParams[] = $container->get($classNameToInject);
+        } else {
+            $constructorParams[] = null;
+        }
     }
     return $constructorParams;
+}
+
+function di_class_whitelist(): array
+{
+    return [
+        Application::class,
+        Alias::class,
+        Assets::class,
+        CacheInterface::class,
+        Config::class,
+        DataRepositoryInterface::class,
+        EventManager::class,
+        HttpFactory::class,
+        LoggerInterface::class,
+        MiddlewareDispatcher::class,
+        PageRepositoryInterface::class,
+        PluginManager::class,
+        ServerRequestInterface::class,
+        Site::class,
+        SlugGenerator::class,
+        Translator::class,
+        TwigRenderer::class,
+        UrlManager::class
+    ];
 }
 
 function file_mtime(string $path): int

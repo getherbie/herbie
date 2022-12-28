@@ -134,7 +134,7 @@ final class Application
 
         /** @var class-string<PluginInterface> $command */
         foreach ($this->getPluginManager()->getConsoleCommands() as $command) {
-            $params = get_constructor_params_to_inject($command, $this->container);
+            $params = di_constructor_params_from_container($command, $this->container, di_class_whitelist());
             /** @var Command $commandInstance */
             $commandInstance = new $command(...$params);
             $application->add($commandInstance);
