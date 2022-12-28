@@ -1,6 +1,6 @@
 <?php
 
-use herbie\sysplugin\twig\TwigPlugin;
+use herbie\sysplugins\twig\TwigPlugin;
 
 return [
     'apiVersion' => 2,

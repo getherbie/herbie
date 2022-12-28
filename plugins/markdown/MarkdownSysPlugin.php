@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\markdown;
+namespace herbie\sysplugins\markdown;
 
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use herbie\sysplugin\dummy\DummySysPlugin;
+use herbie\sysplugins\dummy\DummySysPlugin;
 
 return [
     'apiVersion' => 2,

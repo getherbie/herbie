@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\rest;
+namespace herbie\sysplugins\rest;
 
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;

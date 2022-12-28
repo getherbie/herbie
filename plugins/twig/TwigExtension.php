@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\twig;
+namespace herbie\sysplugins\twig;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;

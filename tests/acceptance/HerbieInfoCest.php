@@ -104,13 +104,13 @@ final class HerbieInfoCest
             'herbie\events\RenderSegmentEvent',
             'herbie\events\TranslatorInitializedEvent',
             'herbie\events\TwigInitializedEvent',
-            'herbie\sysplugin\dummy\DummySysPlugin',
-            'herbie\sysplugin\imagine\ImagineSysPlugin',
-            'herbie\sysplugin\markdown\MarkdownSysPlugin',
-            'herbie\sysplugin\rest\RestSysPlugin',
-            'herbie\sysplugin\textile\TextileSysPlugin',
-            'herbie\sysplugin\twig\TwigExtension',
-            'herbie\sysplugin\twig\TwigPlugin',
+            'herbie\sysplugins\dummy\DummySysPlugin',
+            'herbie\sysplugins\imagine\ImagineSysPlugin',
+            'herbie\sysplugins\markdown\MarkdownSysPlugin',
+            'herbie\sysplugins\rest\RestSysPlugin',
+            'herbie\sysplugins\textile\TextileSysPlugin',
+            'herbie\sysplugins\twig\TwigExtension',
+            'herbie\sysplugins\twig\TwigPlugin',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('PHP Classes (' . count($classes) . ')', 'h2');
@@ -122,14 +122,14 @@ final class HerbieInfoCest
         $middlewares = [
             'herbie\ErrorHandlerMiddleware',
             'herbie\PageResolverMiddleware',
-            'herbie\sysplugin\dummy\DummySysPlugin->appMiddleware',
+            'herbie\sysplugins\dummy\DummySysPlugin->appMiddleware',
             'tests\_data\src\CustomHeader',
             'herbie\ResponseTimeMiddleware',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
-            'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
-            'herbie\sysplugin\dummy\DummySysPlugin->routeMiddleware',
+            'herbie\sysplugins\dummy\DummySysPlugin->routeMiddleware',
+            'herbie\sysplugins\dummy\DummySysPlugin->routeMiddleware',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
             'tests\_data\src\CustomHeader',
@@ -544,7 +544,7 @@ final class HerbieInfoCest
     {
         $commands = [
             'herbie\ClearFilesCommand',
-            'herbie\sysplugin\dummy\DummyCommand',
+            'herbie\sysplugins\dummy\DummyCommand',
             'tests\_data\site\extend\commands\CustomCommand',
             'tests\_data\src\CustomCommand',
             'tests\_data\src\CustomCommand'

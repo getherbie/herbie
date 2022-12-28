@@ -1,6 +1,6 @@
 <?php
 
-use herbie\sysplugin\markdown\MarkdownSysPlugin;
+use herbie\sysplugins\markdown\MarkdownSysPlugin;
 
 return [
     'apiVersion' => 2,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\textile;
+namespace herbie\sysplugins\textile;
 
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;

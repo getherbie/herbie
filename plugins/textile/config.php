@@ -1,6 +1,6 @@
 <?php
 
-use herbie\sysplugin\textile\TextileSysPlugin;
+use herbie\sysplugins\textile\TextileSysPlugin;
 
 return [
     'apiVersion' => 2,
