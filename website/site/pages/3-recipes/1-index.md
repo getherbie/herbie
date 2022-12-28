@@ -1,6 +1,7 @@
 ---
 title: Recipes
 layout: recipe
+cached: false
 ---
 
 # Recipes
