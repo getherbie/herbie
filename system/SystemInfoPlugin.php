@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
 final class SystemInfoPlugin extends Plugin
 {
     private Alias $alias;
@@ -43,9 +47,9 @@ final class SystemInfoPlugin extends Plugin
 
     /**
      * @param array<string, mixed> $context
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function herbieInfo(array $context, string $template = '@snippet/herbie_info.twig'): string
     {
@@ -77,6 +81,38 @@ final class SystemInfoPlugin extends Plugin
     }
 
     /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private function filterValue($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        $replaceIfEquals = [$this->appPath => '/'];
+        foreach ($replaceIfEquals as $k => $v) {
+            if ($k === $value) {
+                $value = $v;
+            }
+        }
+
+        $stripFromBeginning = [$this->appPath];
+        foreach ($stripFromBeginning as $v) {
+            if (strpos($value, $v) === 0) {
+                $value = substr($value, strlen($v));
+            }
+        }
+
+        // filter emails
+        if (strpos($value, '@') > 0) {
+            $value = '~filtered~';
+        }
+
+        return $value;
+    }
+
+    /**
      * @return string[]
      */
     private function getConsoleCommands(): array
@@ -97,7 +133,7 @@ final class SystemInfoPlugin extends Plugin
         foreach ($this->config->flatten() as $key => $value) {
             $configs[] = [
                 $key,
-                \herbie\get_type($value),
+                get_type($value),
                 $this->filterValue($value)
             ];
         }
@@ -187,13 +223,13 @@ final class SystemInfoPlugin extends Plugin
         foreach ($context as $string => $mixed) {
             if (is_scalar($mixed)) {
                 $value = $mixed;
-                $type = \herbie\get_type($mixed);
+                $type = get_type($mixed);
             } elseif (is_object($mixed)) {
                 $value = get_class($mixed);
                 $type = 'class';
             } else {
                 $value = json_encode($mixed);
-                $type = \herbie\get_type($mixed);
+                $type = get_type($mixed);
             }
             $globals[] = [$string, $value, $type];
         }
@@ -246,37 +282,5 @@ final class SystemInfoPlugin extends Plugin
             ];
         }
         return $items;
-    }
-
-    /**
-     * @param mixed $value
-     * @return mixed
-     */
-    private function filterValue($value)
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        $replaceIfEquals = [$this->appPath => '/'];
-        foreach ($replaceIfEquals as $k => $v) {
-            if ($k === $value) {
-                $value = $v;
-            }
-        }
-
-        $stripFromBeginning = [$this->appPath];
-        foreach ($stripFromBeginning as $v) {
-            if (strpos($value, $v) === 0) {
-                $value = substr($value, strlen($v));
-            }
-        }
-
-        // filter emails
-        if (strpos($value, '@') > 0) {
-            $value = '~filtered~';
-        }
-
-        return $value;
     }
 }

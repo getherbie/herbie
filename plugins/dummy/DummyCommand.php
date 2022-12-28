@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\dummy;
+namespace herbie\sysplugins\dummy;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,8 +16,7 @@ final class DummyCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command allows you to create a user...')
-        ;
+            ->setHelp('This command allows you to create a user...');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

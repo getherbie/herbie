@@ -1,6 +1,6 @@
 <?php
 
-use herbie\sysplugin\imagine\ImagineSysPlugin;
+use herbie\sysplugins\imagine\ImagineSysPlugin;
 
 return [
     'apiVersion' => 2,

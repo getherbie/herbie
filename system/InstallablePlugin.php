@@ -45,9 +45,10 @@ final class InstallablePlugin
 
     public function createPluginInstance(ContainerInterface $container): PluginInterface
     {
-        $constructorParams = get_constructor_params_to_inject(
+        $constructorParams = di_constructor_params_from_container(
             $this->className,
-            $container
+            $container,
+            di_class_whitelist()
         );
 
         /** @var PluginInterface */

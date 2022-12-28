@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayIterator;
 use Countable;
+use Exception;
+use InvalidArgumentException;
 use IteratorAggregate;
+use LogicException;
 
 final class Pagination implements IteratorAggregate, Countable
 {
@@ -18,8 +22,8 @@ final class Pagination implements IteratorAggregate, Countable
 
     /**
      * @param array<int, mixed> $items
-     * @throws \Exception
-     * @throws \LogicException
+     * @throws Exception
+     * @throws LogicException
      */
     public function __construct(iterable $items, int $limit = 10, string $name = 'page')
     {
@@ -30,10 +34,17 @@ final class Pagination implements IteratorAggregate, Countable
             $this->items = (array)$items->getIterator();
         } else {
             $message = 'The param $items must be an array or an object implementing IteratorAggregate.';
-            throw new \InvalidArgumentException($message, 500);
+            throw new InvalidArgumentException($message, 500);
         }
         $this->setLimit($limit);
         $this->name = $name;
+    }
+
+    public function getIterator(): ArrayIterator
+    {
+        $offset = ($this->getPage() - 1) * $this->limit;
+        $items = array_slice($this->items, $offset, $this->limit);
+        return new ArrayIterator($items);
     }
 
     public function getPage(): int
@@ -46,6 +57,11 @@ final class Pagination implements IteratorAggregate, Countable
         return (int)$page;
     }
 
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
     public function getLimit(): int
     {
         return $this->limit;
@@ -55,18 +71,6 @@ final class Pagination implements IteratorAggregate, Countable
     {
         $limit = (0 === $limit) ? 1000 : $limit;
         $this->limit = $limit;
-    }
-
-    public function getIterator(): \ArrayIterator
-    {
-        $offset = ($this->getPage() - 1) * $this->limit;
-        $items = array_slice($this->items, $offset, $this->limit);
-        return new \ArrayIterator($items);
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
     }
 
     public function hasNextPage(): bool

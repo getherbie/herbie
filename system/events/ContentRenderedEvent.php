@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\event;
+namespace herbie\events;
 
 use herbie\AbstractEvent;
 
@@ -28,7 +28,7 @@ final class ContentRenderedEvent extends AbstractEvent
     }
 
     /**
-     * @param array<string, string>  $segments
+     * @param array<string, string> $segments
      */
     public function setSegments(array $segments): void
     {

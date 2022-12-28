@@ -1,11 +1,13 @@
 <?php
 
-namespace tests\unit;
+namespace herbie\tests\unit;
+
+use Codeception\Test\Unit;
 
 use function herbie\is_digit;
 use function herbie\is_natural;
 
-class FunctionsTest extends \Codeception\Test\Unit
+class FunctionsTest extends Unit
 {
     public function testIsDigit()
     {

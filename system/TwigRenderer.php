@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\TwigInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Psr\Log\LoggerInterface;
+use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -15,7 +16,6 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
-use Twig\Environment as TwigEnvironment;
 
 final class TwigRenderer
 {
@@ -65,10 +65,10 @@ final class TwigRenderer
 
         // see \Twig\Environment default options
         $twigOptions = [
-            'autoescape'       => $this->config->getAsString('components.twigRenderer.autoescape', 'html'),
-            'cache'            => $cache,
-            'charset'          => $this->config->getAsString('components.twigRenderer.charset', 'UTF-8'),
-            'debug'            => $this->config->getAsBool('components.twigRenderer.debug'),
+            'autoescape' => $this->config->getAsString('components.twigRenderer.autoescape', 'html'),
+            'cache' => $cache,
+            'charset' => $this->config->getAsString('components.twigRenderer.charset', 'UTF-8'),
+            'debug' => $this->config->getAsBool('components.twigRenderer.debug'),
             'strict_variables' => $this->config->getAsBool('components.twigRenderer.strictVariables'),
         ];
 
@@ -86,54 +86,9 @@ final class TwigRenderer
         $this->eventManager->dispatch(new TwigInitializedEvent($this->twig));
     }
 
-    public function getTwigEnvironment(): TwigEnvironment
+    public function isInitialized(): bool
     {
-        return $this->twig;
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function renderString(string $string, array $context = []): string
-    {
-        return $this->twig->render($string, $context);
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function renderTemplate(string $name, array $context = []): string
-    {
-        return $this->twig->render($name, $context);
-    }
-
-    public function addFunction(TwigFunction $function): void
-    {
-        $this->twig->addFunction($function);
-    }
-
-    public function addFilter(TwigFilter $filter): void
-    {
-        $this->twig->addFilter($filter);
-    }
-
-    /**
-     * @param mixed $mixed
-     */
-    public function addGlobal(string $name, $mixed): void
-    {
-        $this->twig->addGlobal($name, $mixed);
-    }
-
-    public function addTest(TwigTest $test): void
-    {
-        $this->twig->addTest($test);
+        return $this->initialized;
     }
 
     /**
@@ -188,8 +143,53 @@ final class TwigRenderer
         return array_values($paths);
     }
 
-    public function isInitialized(): bool
+    /**
+     * @param mixed $mixed
+     */
+    public function addGlobal(string $name, $mixed): void
     {
-        return $this->initialized;
+        $this->twig->addGlobal($name, $mixed);
+    }
+
+    public function getTwigEnvironment(): TwigEnvironment
+    {
+        return $this->twig;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderString(string $string, array $context = []): string
+    {
+        return $this->twig->render($string, $context);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderTemplate(string $name, array $context = []): string
+    {
+        return $this->twig->render($name, $context);
+    }
+
+    public function addFunction(TwigFunction $function): void
+    {
+        $this->twig->addFunction($function);
+    }
+
+    public function addFilter(TwigFilter $filter): void
+    {
+        $this->twig->addFilter($filter);
+    }
+
+    public function addTest(TwigTest $test): void
+    {
+        $this->twig->addTest($test);
     }
 }

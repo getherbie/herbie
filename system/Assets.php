@@ -12,7 +12,9 @@ final class Assets
 {
     private const TYPE_CSS = 0;
     private const TYPE_JS = 1;
-
+    private static int $counter = 0;
+    private static bool $sorted = false;
+    private static array $published = [];
     private Alias $alias;
     private array $assets = [];
     private string $assetsDir = '/assets';
@@ -20,9 +22,6 @@ final class Assets
     private string $assetsPath;
     private int $refresh = 86400;
     private int $permissions = 0755;
-    private static int $counter = 0;
-    private static bool $sorted = false;
-    private static array $published = [];
 
     public function __construct(Alias $alias, string $baseUrl)
     {
@@ -40,6 +39,42 @@ final class Assets
         foreach ($paths as $path) {
             $this->addAsset(self::TYPE_CSS, $path, $attr, $group, $raw, $pos);
         }
+    }
+
+    private function addAsset(
+        int $type,
+        string $path,
+        array $attr,
+        ?string $group = null,
+        bool $raw = false,
+        int $pos = 1
+    ): void {
+        if ($this->search($path)) {
+            return;
+        }
+        $this->assets[] = [
+            'type' => $type,
+            'path' => $path,
+            'group' => $group,
+            'attr' => $attr,
+            'raw' => $raw,
+            'pos' => $pos,
+            'counter' => ++self::$counter,
+            'timestamp' => 0,
+        ];
+    }
+
+    /**
+     * @return bool|int
+     */
+    private function search(string $path)
+    {
+        foreach ($this->assets as $index => $asset) {
+            if ($asset['path'] === $path) {
+                return $index;
+            }
+        }
+        return false;
     }
 
     /**
@@ -77,53 +112,6 @@ final class Assets
         return $return;
     }
 
-    public function outputJs(?string $group = null, bool $addTimestamp = false): string
-    {
-        $this->sort();
-        $this->publish();
-        $return = '';
-        foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
-            if (empty($asset['raw'])) {
-                $timestamp = $addTimestamp ? '?t=' . $asset['timestamp'] : '';
-                $return .= sprintf(
-                    '<script src="%s"%s></script>',
-                    $this->buildUrl($asset['path']) . $timestamp,
-                    $this->buildAttribs($asset['attr'])
-                );
-            } else {
-                $return .= sprintf(
-                    '<script%s>%s</script>',
-                    $this->buildAttribs($asset['attr']),
-                    $asset['path']
-                );
-            }
-        }
-        return $return;
-    }
-
-    private function addAsset(
-        int $type,
-        string $path,
-        array $attr,
-        ?string $group = null,
-        bool $raw = false,
-        int $pos = 1
-    ): void {
-        if ($this->search($path)) {
-            return;
-        }
-        $this->assets[] = [
-            'type' => $type,
-            'path' => $path,
-            'group' => $group,
-            'attr' => $attr,
-            'raw' => $raw,
-            'pos' => $pos,
-            'counter' => ++self::$counter,
-            'timestamp' => 0,
-        ];
-    }
-
     private function sort(): void
     {
         if (!self::$sorted) {
@@ -140,30 +128,6 @@ final class Assets
             });
             self::$sorted = true;
         }
-    }
-
-    private function collect(int $type, ?string $group = null): array
-    {
-        $assets = [];
-        foreach ($this->assets as $asset) {
-            if (($asset['type'] === $type) && ($asset['group'] === $group)) {
-                $assets[] = $asset;
-            }
-        }
-        return $assets;
-    }
-
-    /**
-     * @return bool|int
-     */
-    private function search(string $path)
-    {
-        foreach ($this->assets as $index => $asset) {
-            if ($asset['path'] === $path) {
-                return $index;
-            }
-        }
-        return false;
     }
 
     private function publish(): void
@@ -200,6 +164,24 @@ final class Assets
         }
     }
 
+    private function removeAlias(string $file): string
+    {
+        $parts = explode('/', $file);
+        array_shift($parts);
+        return implode('/', $parts);
+    }
+
+    private function collect(int $type, ?string $group = null): array
+    {
+        $assets = [];
+        foreach ($this->assets as $asset) {
+            if (($asset['type'] === $type) && ($asset['group'] === $group)) {
+                $assets[] = $asset;
+            }
+        }
+        return $assets;
+    }
+
     private function buildUrl(string $file): string
     {
         $url = $file;
@@ -210,13 +192,6 @@ final class Assets
         return $url;
     }
 
-    private function removeAlias(string $file): string
-    {
-        $parts = explode('/', $file);
-        array_shift($parts);
-        return implode('/', $parts);
-    }
-
     private function buildAttribs(array $attribs = []): string
     {
         $html = '';
@@ -224,5 +199,29 @@ final class Assets
             $html .= ' ' . $key . '="' . $value . '" ';
         }
         return trim($html);
+    }
+
+    public function outputJs(?string $group = null, bool $addTimestamp = false): string
+    {
+        $this->sort();
+        $this->publish();
+        $return = '';
+        foreach ($this->collect(self::TYPE_JS, $group) as $asset) {
+            if (empty($asset['raw'])) {
+                $timestamp = $addTimestamp ? '?t=' . $asset['timestamp'] : '';
+                $return .= sprintf(
+                    '<script src="%s"%s></script>',
+                    $this->buildUrl($asset['path']) . $timestamp,
+                    $this->buildAttribs($asset['attr'])
+                );
+            } else {
+                $return .= sprintf(
+                    '<script%s>%s</script>',
+                    $this->buildAttribs($asset['attr']),
+                    $asset['path']
+                );
+            }
+        }
+        return $return;
     }
 }

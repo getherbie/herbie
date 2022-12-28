@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\dummy;
+namespace herbie\sysplugins\dummy;
 
-use herbie\event\ContentRenderedEvent;
-use herbie\event\LayoutRenderedEvent;
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
-use herbie\event\ResponseEmittedEvent;
-use herbie\event\ResponseGeneratedEvent;
-use herbie\event\TranslatorInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\ContentRenderedEvent;
+use herbie\events\LayoutRenderedEvent;
+use herbie\events\PluginsInitializedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
+use herbie\events\ResponseEmittedEvent;
+use herbie\events\ResponseGeneratedEvent;
+use herbie\events\TranslatorInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -109,11 +109,6 @@ final class DummySysPlugin implements PluginInterface
         ];
     }
 
-    private function wrapHtmlBlock(string $class, string $content): string
-    {
-        return "<div class='$class' style='display:none'>" . $content . "</div>";
-    }
-
     public function onRenderLayout(RenderLayoutEvent $event): void
     {
         $this->logger->debug(__METHOD__);
@@ -123,6 +118,11 @@ final class DummySysPlugin implements PluginInterface
             $event->getContent(),
         );
         $event->setContent($content);
+    }
+
+    private function wrapHtmlBlock(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
     public function onRenderSegment(RenderSegmentEvent $event): void
@@ -171,9 +171,11 @@ final class DummySysPlugin implements PluginInterface
     public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
-        $event->getEnvironment()->addFilter(new TwigFilter('dummy_dynamic', function (string $content): string {
-            return $content . 'Dummy Filter Dynamic';
-        }));
+        $event->getEnvironment()->addFilter(
+            new TwigFilter('dummy_dynamic', function (string $content): string {
+                return $content . 'Dummy Filter Dynamic';
+            })
+        );
     }
 
     public function appMiddleware(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface

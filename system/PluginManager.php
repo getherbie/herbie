@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\PluginsInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 final class PluginManager
 {
@@ -66,12 +69,14 @@ final class PluginManager
             return;
         }
 
-        $this->loadInstallablePlugin(new InstallablePlugin(
-            'CORE',
-            __DIR__,
-            CorePlugin::class,
-            'virtual',
-        ));
+        $this->loadInstallablePlugin(
+            new InstallablePlugin(
+                'CORE',
+                __DIR__,
+                CorePlugin::class,
+                'virtual',
+            )
+        );
 
         $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
         $enabledComposerOrLocalPlugins = str_explode_filtered($this->config->getAsString('enabledPlugins'), ',');
@@ -91,26 +96,32 @@ final class PluginManager
             $this->loadInstallablePlugin($plugin);
         }
 
-        $this->loadInstallablePlugin(new InstallablePlugin(
-            'LOCAL_EXT',
-            __DIR__,
-            LocalExtensionsPlugin::class,
-            'virtual',
-        ));
+        $this->loadInstallablePlugin(
+            new InstallablePlugin(
+                'LOCAL_EXT',
+                __DIR__,
+                LocalExtensionsPlugin::class,
+                'virtual',
+            )
+        );
 
-        $this->loadInstallablePlugin(new InstallablePlugin(
-            'APP_EXT',
-            __DIR__,
-            ApplicationExtensionsPlugin::class,
-            'virtual',
-        ));
+        $this->loadInstallablePlugin(
+            new InstallablePlugin(
+                'APP_EXT',
+                __DIR__,
+                ApplicationExtensionsPlugin::class,
+                'virtual',
+            )
+        );
 
-        $this->loadInstallablePlugin(new InstallablePlugin(
-            'SYS_INFO',
-            __DIR__,
-            SystemInfoPlugin::class,
-            'virtual',
-        ));
+        $this->loadInstallablePlugin(
+            new InstallablePlugin(
+                'SYS_INFO',
+                __DIR__,
+                SystemInfoPlugin::class,
+                'virtual',
+            )
+        );
 
         $this->eventManager->dispatch(new PluginsInitializedEvent($this->loadedPlugins, $this->pluginPaths));
 
@@ -120,6 +131,136 @@ final class PluginManager
     public function isInitialized(): bool
     {
         return $this->initialized;
+    }
+
+    private function loadInstallablePlugin(InstallablePlugin $installablePlugin): void
+    {
+        $plugin = $installablePlugin->createPluginInstance($this->container);
+
+        if ($plugin->apiVersion() < Application::VERSION_API) {
+            return; // TODO log info
+        }
+
+        foreach ($plugin->consoleCommands() as $command) {
+            $this->addConsoleCommand($command);
+        }
+
+        foreach ($plugin->applicationMiddlewares() as $appMiddleware) {
+            $this->addApplicationMiddleware($appMiddleware);
+        }
+
+        foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
+            $this->addRouteMiddleware($routeMiddleware);
+        }
+
+        foreach ($plugin->twigFilters() as $twigFilter) {
+            if ($twigFilter instanceof TwigFilter) {
+                $this->addTwigFilter($twigFilter);
+            } else {
+                $this->addTwigFilter(new TwigFilter(...$twigFilter));
+            }
+        }
+
+        foreach ($plugin->twigGlobals() as $twigGlobal) {
+            $this->addTwigGlobal(...$twigGlobal);
+        }
+
+        foreach ($plugin->twigFunctions() as $twigFunction) {
+            if ($twigFunction instanceof TwigFunction) {
+                $this->addTwigFunction($twigFunction);
+            } else {
+                $this->addTwigFunction(new TwigFunction(...$twigFunction));
+            }
+        }
+
+        foreach ($plugin->twigTests() as $twigTest) {
+            if ($twigTest instanceof TwigTest) {
+                $this->addTwigTest($twigTest);
+            } else {
+                $this->addTwigTest(new TwigTest(...$twigTest));
+            }
+        }
+
+        foreach ($plugin->eventListeners() as $event) {
+            $this->addEventListener(...$event);
+        }
+
+        $key = $installablePlugin->getKey();
+
+        $this->translator->addPath($key, $installablePlugin->getPath() . '/messages');
+
+        $this->loadedPlugins[$key] = $installablePlugin;
+        $this->pluginPaths[$key] = $installablePlugin->getPath();
+
+        $message = sprintf(
+            'Plugin %s with type %s installed successfully',
+            $installablePlugin->getKey(),
+            $installablePlugin->getType(),
+        );
+        $this->logger->debug($message);
+    }
+
+    private function addConsoleCommand(string $command): void
+    {
+        $this->consoleCommands[] = $command;
+    }
+
+    /**
+     * @param MiddlewareInterface|callable|string $middleware
+     * @return void
+     */
+    private function addApplicationMiddleware($middleware): void
+    {
+        $this->applicationMiddlewares[] = $middleware;
+    }
+
+    /**
+     * @param array{string, MiddlewareInterface|callable|string} $routeWithMiddleware
+     * @return void
+     */
+    private function addRouteMiddleware(array $routeWithMiddleware): void
+    {
+        $this->routeMiddlewares[] = $routeWithMiddleware;
+    }
+
+    private function addTwigFilter(TwigFilter $filter): void
+    {
+        $closure = function (TwigInitializedEvent $event) use ($filter) {
+            $event->getEnvironment()->addFilter($filter);
+        };
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
+    }
+
+    /**
+     * @param mixed $mixed
+     */
+    private function addTwigGlobal(string $name, $mixed): void
+    {
+        $closure = function (TwigInitializedEvent $event) use ($name, $mixed) {
+            $event->getEnvironment()->addGlobal($name, $mixed);
+        };
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
+    }
+
+    private function addTwigFunction(TwigFunction $function): void
+    {
+        $closure = function (TwigInitializedEvent $event) use ($function) {
+            $event->getEnvironment()->addFunction($function);
+        };
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
+    }
+
+    private function addTwigTest(TwigTest $test): void
+    {
+        $closure = function (TwigInitializedEvent $event) use ($test) {
+            $event->getEnvironment()->addTest($test);
+        };
+        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
+    }
+
+    private function addEventListener(string $name, callable $callable, int $priority = 1): void
+    {
+        $this->eventManager->addListener($name, $callable, $priority);
     }
 
     /**
@@ -150,79 +291,6 @@ final class PluginManager
         }
 
         return $plugins;
-    }
-
-    private function loadInstallablePlugin(InstallablePlugin $installablePlugin): void
-    {
-        $plugin = $installablePlugin->createPluginInstance($this->container);
-
-        if ($plugin->apiVersion() < Application::VERSION_API) {
-            return; // TODO log info
-        }
-
-        foreach ($plugin->consoleCommands() as $command) {
-            $this->addConsoleCommand($command);
-        }
-
-        foreach ($plugin->applicationMiddlewares() as $appMiddleware) {
-            $this->addApplicationMiddleware($appMiddleware);
-        }
-
-        foreach ($plugin->routeMiddlewares() as $routeMiddleware) {
-            $this->addRouteMiddleware($routeMiddleware);
-        }
-
-        foreach ($plugin->twigFilters() as $twigFilter) {
-            if ($twigFilter instanceof \Twig\TwigFilter) {
-                $this->addTwigFilter($twigFilter);
-            } elseif ($twigFilter instanceof \herbie\TwigFilter) {
-                $this->addTwigFilter($twigFilter->createTwigFilter());
-            } else {
-                $this->addTwigFilter(new \Twig\TwigFilter(...$twigFilter));
-            }
-        }
-
-        foreach ($plugin->twigGlobals() as $twigGlobal) {
-            $this->addTwigGlobal(...$twigGlobal);
-        }
-
-        foreach ($plugin->twigFunctions() as $twigFunction) {
-            if ($twigFunction instanceof \Twig\TwigFunction) {
-                $this->addTwigFunction($twigFunction);
-            } elseif ($twigFunction instanceof \herbie\TwigFunction) {
-                $this->addTwigFunction($twigFunction->createTwigFunction());
-            } else {
-                $this->addTwigFunction(new \Twig\TwigFunction(...$twigFunction));
-            }
-        }
-
-        foreach ($plugin->twigTests() as $twigTest) {
-            if ($twigTest instanceof \Twig\TwigTest) {
-                $this->addTwigTest($twigTest);
-            } elseif ($twigTest instanceof \herbie\TwigTest) {
-                $this->addTwigTest($twigTest->createTwigTest());
-            } else {
-                $this->addTwigTest(new \Twig\TwigTest(...$twigTest));
-            }
-        }
-
-        foreach ($plugin->eventListeners() as $event) {
-            $this->addEventListener(...$event);
-        }
-
-        $key = $installablePlugin->getKey();
-
-        $this->translator->addPath($key, $installablePlugin->getPath() . '/messages');
-
-        $this->loadedPlugins[$key] = $installablePlugin;
-        $this->pluginPaths[$key] = $installablePlugin->getPath();
-
-        $message = sprintf(
-            'Plugin %s with type %s installed successfully',
-            $installablePlugin->getKey(),
-            $installablePlugin->getType(),
-        );
-        $this->logger->debug($message);
     }
 
     /**
@@ -263,68 +331,5 @@ final class PluginManager
     public function getPluginPaths(): array
     {
         return $this->pluginPaths;
-    }
-
-    private function addConsoleCommand(string $command): void
-    {
-        $this->consoleCommands[] = $command;
-    }
-
-    /**
-     * @param MiddlewareInterface|callable|string $middleware
-     * @return void
-     */
-    private function addApplicationMiddleware($middleware): void
-    {
-        $this->applicationMiddlewares[] = $middleware;
-    }
-
-    /**
-     * @param array{string, MiddlewareInterface|callable|string} $routeWithMiddleware
-     * @return void
-     */
-    private function addRouteMiddleware(array $routeWithMiddleware): void
-    {
-        $this->routeMiddlewares[] = $routeWithMiddleware;
-    }
-
-    private function addEventListener(string $name, callable $callable, int $priority = 1): void
-    {
-        $this->eventManager->addListener($name, $callable, $priority);
-    }
-
-    private function addTwigFilter(\Twig\TwigFilter $filter): void
-    {
-        $closure = function (TwigInitializedEvent $event) use ($filter) {
-            $event->getEnvironment()->addFilter($filter);
-        };
-        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
-    }
-
-    /**
-     * @param mixed $mixed
-     */
-    private function addTwigGlobal(string $name, $mixed): void
-    {
-        $closure = function (TwigInitializedEvent $event) use ($name, $mixed) {
-            $event->getEnvironment()->addGlobal($name, $mixed);
-        };
-        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
-    }
-
-    private function addTwigFunction(\Twig\TwigFunction $function): void
-    {
-        $closure = function (TwigInitializedEvent $event) use ($function) {
-            $event->getEnvironment()->addFunction($function);
-        };
-        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
-    }
-
-    private function addTwigTest(\Twig\TwigTest $test): void
-    {
-        $closure = function (TwigInitializedEvent $event) use ($test) {
-            $event->getEnvironment()->addTest($test);
-        };
-        $this->eventManager->addListener(TwigInitializedEvent::class, $closure);
     }
 }

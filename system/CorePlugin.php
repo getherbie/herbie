@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderPageEvent;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderPageEvent;
+use herbie\events\RenderSegmentEvent;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 final class CorePlugin extends Plugin
 {
@@ -63,9 +66,9 @@ final class CorePlugin extends Plugin
     }
 
     /**
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\LoaderError
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
@@ -78,9 +81,9 @@ final class CorePlugin extends Plugin
     }
 
     /**
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\LoaderError
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function onRenderLayout(RenderLayoutEvent $event): void
     {

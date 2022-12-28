@@ -2,25 +2,16 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
-use herbie\Application;
-use herbie\ApplicationPaths;
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class AbsUrlFunctionTest extends \Codeception\Test\Unit
+final class AbsUrlFunctionTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
     protected UnitTester $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
-        );
-    }
 
     public function testUrlWithoutRoute(): void
     {
@@ -31,6 +22,14 @@ final class AbsUrlFunctionTest extends \Codeception\Test\Unit
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));
         }
+    }
+
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testUrlWithValidRoutes(): void

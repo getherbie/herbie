@@ -2,24 +2,18 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigPlus;
+namespace herbie\tests\integration\SysPlugins\TwigPlus;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
+use UnitTester;
 
-final class TwigPlusSmokeTest extends \Codeception\Test\Unit
+final class TwigPlusSmokeTest extends Unit
 {
     /**
-     * @var \UnitTester
+     * @var UnitTester
      */
     protected $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 4),
-            dirname(__DIR__, 2) . '/Fixtures/site'
-        );
-    }
 
     public function testMenuAsciiTreeFunction(): void
     {
@@ -32,6 +26,14 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $actual);
     }
 
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 4),
+            dirname(__DIR__, 2) . '/Fixtures/site'
+        );
+    }
+
     public function testMenuBreadcrumbFunction(): void
     {
         $expected = '<ul class="breadcrumb"><li><a href="/">Index</a></li></ul>';
@@ -41,7 +43,7 @@ final class TwigPlusSmokeTest extends \Codeception\Test\Unit
 
     public function testMenuListFunction(): void
     {
-        $expected = '<div class="listing"><section><article><h2><span class="link link--internal"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
+        $expected = '<div class="listing"><section><article><h2><span class="link link--page"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
         $actual = $this->twig()->renderString('{{ menu_list(filter="route|alpha") }}');
         $this->assertEquals($expected, $actual);
     }

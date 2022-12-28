@@ -2,36 +2,17 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins;
+namespace herbie\tests\integration\SysPlugins;
 
+use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
+use Twig\Error\SyntaxError;
 
-final class TextileSysPluginTest extends \Codeception\Test\Unit
+final class TextileSysPluginTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
-
-    protected function initApplication(string $appPath, string $sitePath): TwigRenderer
-    {
-        $app = new Application(new ApplicationPaths(
-            $appPath,
-            $sitePath,
-            dirname(__DIR__, 5) . '/vendor',
-            dirname(__DIR__, 2) . '/_data/web'
-        ));
-        $app->getPluginManager()->init();
-        ($twigRenderer = $app->getTwigRenderer())->init();
-        return $twigRenderer;
-    }
-
-    protected function _setUp(): void
-    {
-        $this->twigRenderer = $this->initApplication(
-            dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/site'
-        );
-    }
 
     public function testTextileFilter(): void
     {
@@ -47,7 +28,7 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/textile'
         );
-        $this->expectException(\Twig\Error\SyntaxError::class);
+        $this->expectException(SyntaxError::class);
         $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
     }
 
@@ -65,7 +46,30 @@ final class TextileSysPluginTest extends \Codeception\Test\Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/textile'
         );
-        $this->expectException(\Twig\Error\SyntaxError::class);
+        $this->expectException(SyntaxError::class);
         $twigRenderer->renderString('{{ textile("# This is textile") }}');
+    }
+
+    protected function _setUp(): void
+    {
+        $this->twigRenderer = $this->initApplication(
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/site'
+        );
+    }
+
+    protected function initApplication(string $appPath, string $sitePath): TwigRenderer
+    {
+        $app = new Application(
+            new ApplicationPaths(
+                $appPath,
+                $sitePath,
+                dirname(__DIR__, 5) . '/vendor',
+                dirname(__DIR__, 2) . '/_data/web'
+            )
+        );
+        $app->getPluginManager()->init();
+        ($twigRenderer = $app->getTwigRenderer())->init();
+        return $twigRenderer;
     }
 }

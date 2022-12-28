@@ -31,6 +31,31 @@ final class LocalExtensionsPlugin extends Plugin
         return $commands;
     }
 
+    /**
+     * @return string[]
+     */
+    private function findPhpFilesInDir(string $dir): array
+    {
+        $dir = str_untrailing_slash($dir);
+        if (empty($dir) || !is_readable($dir)) {
+            return [];
+        }
+        $pattern = $dir . '/*.php';
+        $files = glob($pattern);
+        if ($files === false) {
+            return [];
+        }
+        return $files;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function includePhpFile(string $file)
+    {
+        return include $file;
+    }
+
     public function eventListeners(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathEventListeners');
@@ -57,6 +82,14 @@ final class LocalExtensionsPlugin extends Plugin
         return $middlewares;
     }
 
+    /**
+     * @return MiddlewareInterface|callable|string
+     */
+    private function includeAppMiddleware(string $file)
+    {
+        return $this->includePhpFile($file);
+    }
+
     public function routeMiddlewares(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathRouteMiddlewares');
@@ -70,6 +103,14 @@ final class LocalExtensionsPlugin extends Plugin
         return $middlewares;
     }
 
+    /**
+     * @return array{string, MiddlewareInterface|callable|string}
+     */
+    private function includeRouteMiddleware(string $file): array
+    {
+        return $this->includePhpFile($file);
+    }
+
     public function twigFilters(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigFilters');
@@ -81,6 +122,14 @@ final class LocalExtensionsPlugin extends Plugin
         }
 
         return $filters;
+    }
+
+    /**
+     * @return array{string, callable}|TwigFilter
+     */
+    private function includeTwigFilter(string $file)
+    {
+        return $this->includePhpFile($file);
     }
 
     public function twigGlobals(): array
@@ -109,6 +158,14 @@ final class LocalExtensionsPlugin extends Plugin
         return $functions;
     }
 
+    /**
+     * @return array{string, callable}|TwigFunction
+     */
+    private function includeTwigFunction(string $file)
+    {
+        return $this->includePhpFile($file);
+    }
+
     public function twigTests(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigTests');
@@ -123,67 +180,10 @@ final class LocalExtensionsPlugin extends Plugin
     }
 
     /**
-     * @return MiddlewareInterface|callable|string
-     */
-    private function includeAppMiddleware(string $file)
-    {
-        return $this->includePhpFile($file);
-    }
-
-    /**
-     * @return array{string, MiddlewareInterface|callable|string}
-     */
-    private function includeRouteMiddleware(string $file): array
-    {
-        return $this->includePhpFile($file);
-    }
-
-    /**
-     * @return array{string, callable}|TwigFilter
-     */
-    private function includeTwigFilter(string $file)
-    {
-        return $this->includePhpFile($file);
-    }
-
-    /**
-     * @return array{string, callable}|TwigFunction
-     */
-    private function includeTwigFunction(string $file)
-    {
-        return $this->includePhpFile($file);
-    }
-
-    /**
      * @return array{string, callable}|TwigTest
      */
     private function includeTwigTests(string $file)
     {
         return $this->includePhpFile($file);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function includePhpFile(string $file)
-    {
-        return include $file;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function findPhpFilesInDir(string $dir): array
-    {
-        $dir = str_untrailing_slash($dir);
-        if (empty($dir) || !is_readable($dir)) {
-            return [];
-        }
-        $pattern = $dir . '/*.php';
-        $files = glob($pattern);
-        if ($files === false) {
-            return [];
-        }
-        return $files;
     }
 }

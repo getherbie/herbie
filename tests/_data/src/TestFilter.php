@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\src;
+namespace herbie\tests\_data\src;
 
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 
 class TestFilter
 {

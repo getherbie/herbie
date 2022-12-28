@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\twig_tests;
+namespace herbie\tests\_data\site\extend\twig_tests;
 
 use Twig\TwigTest;
 

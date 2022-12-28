@@ -30,15 +30,6 @@ final class JsonDataRepository implements DataRepositoryInterface
         return $this->parseDataFile($dataFiles[$name]);
     }
 
-    public function loadAll(): array
-    {
-        $data = [];
-        foreach ($this->scanDataDir() as $name => $dataFile) {
-            $data[$name] = $this->parseDataFile($dataFile);
-        }
-        return $data;
-    }
-
     /**
      * @throws SystemException
      */
@@ -87,5 +78,14 @@ final class JsonDataRepository implements DataRepositoryInterface
     {
         $contents = file_read($filepath);
         return json_decode($contents, true);
+    }
+
+    public function loadAll(): array
+    {
+        $data = [];
+        foreach ($this->scanDataDir() as $name => $dataFile) {
+            $data[$name] = $this->parseDataFile($dataFile);
+        }
+        return $data;
     }
 }

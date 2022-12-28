@@ -2,14 +2,20 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class AddJsFunctionTest extends \Codeception\Test\Unit
+final class AddJsFunctionTest extends Unit
 {
     protected UnitTester $tester;
+
+    public function testPowerOn(): void
+    {
+        $this->twig()->renderString('{{ js_add("@site/assets/script.js") }}');
+    }
 
     private function twig(): TwigRenderer
     {
@@ -17,11 +23,6 @@ final class AddJsFunctionTest extends \Codeception\Test\Unit
             dirname(__DIR__, 5),
             dirname(__DIR__, 3) . '/Fixtures/site'
         );
-    }
-
-    public function testPowerOn(): void
-    {
-        $this->twig()->renderString('{{ js_add("@site/assets/script.js") }}');
     }
 
     // TODO write more tests

@@ -21,25 +21,6 @@ final class Container implements ContainerInterface
         return $this->offsetGet($id);
     }
 
-    public function has(string $id): bool
-    {
-        return $this->offsetExists($id);
-    }
-
-    /**
-     * @param mixed $service
-     */
-    public function set(string $id, $service): void
-    {
-        $this->offsetUnset($id);
-        $this->offsetSet($id, $service);
-    }
-
-    private function offsetExists(string $offset): bool
-    {
-        return isset($this->frozen[$offset]) || isset($this->values[$offset]);
-    }
-
     /**
      * @return mixed
      */
@@ -64,17 +45,36 @@ final class Container implements ContainerInterface
         return $this->frozen[$offset];
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function offsetSet(string $offset, $value): void
+    private function offsetExists(string $offset): bool
     {
-        $this->values[$offset] = $value;
+        return isset($this->frozen[$offset]) || isset($this->values[$offset]);
+    }
+
+    public function has(string $id): bool
+    {
+        return $this->offsetExists($id);
+    }
+
+    /**
+     * @param mixed $service
+     */
+    public function set(string $id, $service): void
+    {
+        $this->offsetUnset($id);
+        $this->offsetSet($id, $service);
     }
 
     private function offsetUnset(string $offset): void
     {
         unset($this->frozen[$offset]);
         unset($this->values[$offset]);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    private function offsetSet(string $offset, $value): void
+    {
+        $this->values[$offset] = $value;
     }
 }

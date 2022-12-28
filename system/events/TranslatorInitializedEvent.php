@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\event;
+namespace herbie\events;
 
 use herbie\AbstractEvent;
 use herbie\Translator;

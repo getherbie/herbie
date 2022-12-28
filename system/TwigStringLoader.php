@@ -21,6 +21,19 @@ final class TwigStringLoader implements LoaderInterface
         return new Source($name, $name);
     }
 
+    public function isLayoutTemplate(string $name): bool
+    {
+        $pos = strrpos($name, '.');
+        if ($pos !== false) {
+            $length = strlen($name) - $pos - 1;
+            $extension = substr($name, -$length);
+            if (in_array($extension, ['twig', 'html'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function exists(string $name): bool
     {
         $bool = $this->isLayoutTemplate($name);
@@ -35,18 +48,5 @@ final class TwigStringLoader implements LoaderInterface
     public function isFresh(string $name, int $time): bool
     {
         return true;
-    }
-
-    public function isLayoutTemplate(string $name): bool
-    {
-        $pos = strrpos($name, '.');
-        if ($pos !== false) {
-            $length = strlen($name) - $pos - 1;
-            $extension = substr($name, -$length);
-            if (in_array($extension, ['twig', 'html'])) {
-                return true;
-            }
-        }
-        return false;
     }
 }

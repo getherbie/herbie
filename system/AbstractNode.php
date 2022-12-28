@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayIterator;
 use IteratorAggregate;
 
 abstract class AbstractNode implements IteratorAggregate
@@ -30,17 +31,9 @@ abstract class AbstractNode implements IteratorAggregate
         $this->children = [];
     }
 
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->children);
-    }
-
-    /**
-     * @param mixed $value
-     */
-    public function setValue($value): void
-    {
-        $this->value = $value;
+        return new ArrayIterator($this->children);
     }
 
     /**
@@ -51,19 +44,27 @@ abstract class AbstractNode implements IteratorAggregate
         return $this->value;
     }
 
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value): void
+    {
+        $this->value = $value;
+    }
+
     public function isRoot(): bool
     {
         return null === $this->parent;
     }
 
-    public function setParent(AbstractNode $parent): void
-    {
-        $this->parent = $parent;
-    }
-
     public function getParent(): ?AbstractNode
     {
         return $this->parent;
+    }
+
+    public function setParent(AbstractNode $parent): void
+    {
+        $this->parent = $parent;
     }
 
     public function hasParent(): bool

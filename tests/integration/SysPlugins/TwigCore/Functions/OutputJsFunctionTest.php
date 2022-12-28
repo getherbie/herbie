@@ -2,22 +2,15 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class OutputJsFunctionTest extends \Codeception\Test\Unit
+final class OutputJsFunctionTest extends Unit
 {
     protected UnitTester $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
-        );
-    }
 
     public function testPowerOn(): void
     {
@@ -26,6 +19,14 @@ final class OutputJsFunctionTest extends \Codeception\Test\Unit
         $this->assertEquals(
             '<script src="/assets/assets/script.js"></script>',
             $this->twig()->renderString($twig)
+        );
+    }
+
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
         );
     }
 

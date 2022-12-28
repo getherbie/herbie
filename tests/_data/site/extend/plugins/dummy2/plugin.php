@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\plugins\dummy2;
+namespace herbie\tests\_data\site\extend\plugins\dummy2;
 
-use herbie\event\ContentRenderedEvent;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\ContentRenderedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
 use herbie\PluginInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -87,17 +87,17 @@ final class Dummy2Plugin implements PluginInterface
         ];
     }
 
-    private function wrapHtmlBlock(string $class, string $content): string
-    {
-        return "<div class='$class' style='display:none'>" . $content . "</div>";
-    }
-
     public function onRenderSegment(RenderSegmentEvent $event): void
     {
         $this->logger->debug(__METHOD__);
         $segment = $event->getSegment()
             . $this->wrapHtmlBlock('dummy2-plugin-render-segment', __METHOD__);
         $event->setSegment($segment);
+    }
+
+    private function wrapHtmlBlock(string $class, string $content): string
+    {
+        return "<div class='$class' style='display:none'>" . $content . "</div>";
     }
 
     public function onRenderLayout(RenderLayoutEvent $event): void

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use InvalidArgumentException;
+
 /**
  * Stores the site.
  */
@@ -42,14 +44,14 @@ final class Site
         return $this->dataRepository->loadAll();
     }
 
-    public function getPageList(): PageList
-    {
-        return $this->pageRepository->findAll();
-    }
-
     public function getPageTree(): PageTree
     {
         return $this->getPageList()->getPageTree();
+    }
+
+    public function getPageList(): PageList
+    {
+        return $this->pageRepository->findAll();
     }
 
     public function getPageTrail(): PageTrail
@@ -119,7 +121,7 @@ final class Site
         if (method_exists($this, $getter)) {
             return $this->$getter();
         } else {
-            throw new \InvalidArgumentException("Field {$name} does not exist.");
+            throw new InvalidArgumentException("Field {$name} does not exist.");
         }
     }
 

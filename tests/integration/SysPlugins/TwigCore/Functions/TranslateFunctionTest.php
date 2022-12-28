@@ -2,22 +2,15 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class TranslateFunctionTest extends \Codeception\Test\Unit
+final class TranslateFunctionTest extends Unit
 {
     protected UnitTester $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
-        );
-    }
 
     public function testTranslateWithWrongParams(): void
     {
@@ -27,6 +20,14 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
         $this->assertSame('test', $this->twig()->renderString('{{ translate("", "test") }}'));
     }
 
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
+    }
+
     public function testTranslateFromApp(): void
     {
         $this->assertSame('Herbie CMS', $this->twig()->renderString('{{ translate("app", "Herbie CMS") }}'));
@@ -34,7 +35,10 @@ final class TranslateFunctionTest extends \Codeception\Test\Unit
 
     public function testTranslateFromPlugin(): void
     {
-        $this->assertSame('Beispiel-Übersetzung', $this->twig()->renderString('{{ translate("dummy", "Example translation") }}'));
+        $this->assertSame(
+            'Beispiel-Übersetzung',
+            $this->twig()->renderString('{{ translate("dummy", "Example translation") }}')
+        );
     }
 
     public function testTranslateFromPluginWithParams(): void

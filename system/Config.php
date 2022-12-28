@@ -6,12 +6,12 @@ namespace herbie;
 
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
+use UnexpectedValueException;
 
 final class Config
 {
-    private array $data;
-
     private const DELIM = '.';
+    private array $data;
 
     public function __construct(array $data)
     {
@@ -19,12 +19,24 @@ final class Config
     }
 
     /**
+     * @return array<int|string, mixed>
+     */
+    public function getAsArray(string $path, array $default = []): array
+    {
+        $arrayValue = $this->get($path, $default);
+        if (!is_array($arrayValue)) {
+            throw new UnexpectedValueException("Value for \"$path\" is not an array");
+        }
+        return $arrayValue;
+    }
+
+    /**
      * Get value by using dot notation for nested arrays.
-     *
-     * @example $value = $config->get('example.node.value');
      *
      * @param callable|mixed $default
      * @return mixed
+     * @example $value = $config->get('example.node.value');
+     *
      */
     public function get(string $name, $default = null)
     {
@@ -48,23 +60,11 @@ final class Config
         return $current;
     }
 
-    /**
-     * @return array<int|string, mixed>
-     */
-    public function getAsArray(string $path, array $default = []): array
-    {
-        $arrayValue = $this->get($path, $default);
-        if (!is_array($arrayValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" is not an array");
-        }
-        return $arrayValue;
-    }
-
     public function getAsBool(string $path, bool $default = false): bool
     {
         $boolValue = $this->get($path, $default);
         if (!is_bool($boolValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" is not a bool");
+            throw new UnexpectedValueException("Value for \"$path\" is not a bool");
         }
         return $boolValue;
     }
@@ -73,7 +73,7 @@ final class Config
     {
         $floatValue = $this->get($path, $default);
         if (!is_float($floatValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" is not a float");
+            throw new UnexpectedValueException("Value for \"$path\" is not a float");
         }
         return $floatValue;
     }
@@ -82,7 +82,7 @@ final class Config
     {
         $intValue = $this->get($path, $default);
         if (!is_int($intValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" is not an int");
+            throw new UnexpectedValueException("Value for \"$path\" is not an int");
         }
         return $intValue;
     }
@@ -91,7 +91,7 @@ final class Config
     {
         $strValue = $this->get($path, $default);
         if (!is_string($strValue)) {
-            throw new \UnexpectedValueException("Value for \"$path\" is not a string");
+            throw new UnexpectedValueException("Value for \"$path\" is not a string");
         }
         return $strValue;
     }
@@ -100,10 +100,10 @@ final class Config
     {
         $data = $this->get($path);
         if ($data === null) {
-            throw new \UnexpectedValueException("Config for \"$path\" not found");
+            throw new UnexpectedValueException("Config for \"$path\" not found");
         }
         if (!is_array($data)) {
-            throw new \UnexpectedValueException("Config for \"$path\" is not an array");
+            throw new UnexpectedValueException("Config for \"$path\" is not an array");
         }
         return new self($data);
     }

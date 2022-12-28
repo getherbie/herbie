@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\textile;
+namespace herbie\sysplugins\textile;
 
 use herbie\Config;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 use herbie\Plugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class TextileSysPlugin extends Plugin
 {
@@ -67,7 +68,7 @@ final class TextileSysPlugin extends Plugin
         try {
             $parser = new Parser();
             return $parser->parse($value);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             return $value;
         }
     }

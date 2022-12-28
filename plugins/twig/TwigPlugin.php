@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugin\twig;
+namespace herbie\sysplugins\twig;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\Translator;
@@ -51,15 +51,17 @@ final class TwigPlugin extends Plugin
 
     public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        $event->getEnvironment()->addExtension(new TwigExtension(
-            $this->alias,
-            $this->assets,
-            $this->config,
-            $event->getEnvironment(),
-            $this->pageRepository,
-            $this->slugGenerator,
-            $this->translator,
-            $this->urlManager
-        ));
+        $event->getEnvironment()->addExtension(
+            new TwigExtension(
+                $this->alias,
+                $this->assets,
+                $this->config,
+                $event->getEnvironment(),
+                $this->pageRepository,
+                $this->slugGenerator,
+                $this->translator,
+                $this->urlManager
+            )
+        );
     }
 }

@@ -2,24 +2,18 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Tests;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Tests;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
+use Twig\Error\RuntimeError;
 use UnitTester;
 
-final class WritableTest extends \Codeception\Test\Unit
+final class WritableTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
 
     protected UnitTester $tester;
-
-    private function twig(): TwigRenderer
-    {
-        return $this->tester->initTwigRenderer(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
-        );
-    }
 
     public function testWritableWithoutCondition(): void
     {
@@ -31,10 +25,18 @@ final class WritableTest extends \Codeception\Test\Unit
         $this->assertSame('', $twigInstance->renderString($twig));
 
         // enabled strict variables
-        $this->expectException(\Twig\Error\RuntimeError::class);
+        $this->expectException(RuntimeError::class);
         $twigInstance = $this->twig();
         $twigInstance->getTwigEnvironment()->enableStrictVariables();
         $twigInstance->renderString($twig);
+    }
+
+    private function twig(): TwigRenderer
+    {
+        return $this->tester->initTwigRenderer(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/site'
+        );
     }
 
     public function testWritableWithEmptyParam(): void

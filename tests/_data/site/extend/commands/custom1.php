@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\_data\site\extend\commands;
+namespace herbie\tests\_data\site\extend\commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,8 +16,7 @@ class CustomCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command does nothing.')
-        ;
+            ->setHelp('This command does nothing.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use herbie\event\PluginsInitializedEvent;
-use herbie\event\ResponseEmittedEvent;
-use herbie\event\ResponseGeneratedEvent;
-use herbie\event\TranslatorInitializedEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\ResponseEmittedEvent;
+use herbie\events\ResponseGeneratedEvent;
+use herbie\events\TranslatorInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Twig\Error\LoaderError;
 
 final class Application
 {
@@ -98,9 +97,65 @@ final class Application
         Page::setSlugGenerator($this->container->get(SlugGenerator::class));
     }
 
+    public static function isDebug(): bool
+    {
+        static $debug;
+        if ($debug === null) {
+            $debug = (bool)getenv('HERBIE_DEBUG');
+        }
+        return $debug;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->container->get(LoggerInterface::class);
+    }
+
+    public function getConfig(): Config
+    {
+        return $this->container->get(Config::class);
+    }
+
+    public static function getHerbiePath(string $append): string
+    {
+        static $herbiePath;
+        if ($herbiePath === null) {
+            $herbiePath = dirname(__DIR__);
+        }
+        return $herbiePath . $append;
+    }
+
+    public function runCli(): void
+    {
+        $this->getPluginManager()->init();
+
+        $application = new \Symfony\Component\Console\Application();
+        $application->setName("-------------------\nHERBIE CLI-Tool\n-------------------");
+
+        /** @var class-string<PluginInterface> $command */
+        foreach ($this->getPluginManager()->getConsoleCommands() as $command) {
+            $params = di_constructor_params_from_container($command, $this->container, di_class_whitelist());
+            /** @var Command $commandInstance */
+            $commandInstance = new $command(...$params);
+            $application->add($commandInstance);
+        }
+
+        $application->run();
+    }
+
+    public function getPluginManager(): PluginManager
+    {
+        return $this->container->get(PluginManager::class);
+    }
+
+    public function getConsoleCommands(): array
+    {
+        return $this->consoleCommands;
+    }
+
     /**
      * @throws SystemException
-     * @throws \Twig\Error\LoaderError
+     * @throws LoaderError
      */
     public function run(): void
     {
@@ -127,22 +182,29 @@ final class Application
         $this->getEventManager()->dispatch(new ResponseEmittedEvent($this));
     }
 
-    public function runCli(): void
+    public function getEventManager(): EventManager
     {
-        $this->getPluginManager()->init();
+        return $this->container->get(EventManager::class);
+    }
 
-        $application = new \Symfony\Component\Console\Application();
-        $application->setName("-------------------\nHERBIE CLI-Tool\n-------------------");
+    public function getTwigRenderer(): TwigRenderer
+    {
+        return $this->container->get(TwigRenderer::class);
+    }
 
-        /** @var class-string<PluginInterface> $command */
-        foreach ($this->getPluginManager()->getConsoleCommands() as $command) {
-            $params = get_constructor_params_to_inject($command, $this->container);
-            /** @var Command $commandInstance */
-            $commandInstance = new $command(...$params);
-            $application->add($commandInstance);
-        }
+    public function getTranslator(): Translator
+    {
+        return $this->container->get(Translator::class);
+    }
 
-        $application->run();
+    public function getMiddlewareDispatcher(): MiddlewareDispatcher
+    {
+        return $this->container->get(MiddlewareDispatcher::class);
+    }
+
+    public function getServerRequest(): ServerRequestInterface
+    {
+        return $this->container->get(ServerRequestInterface::class);
     }
 
     private function emitResponse(ResponseInterface $response): void
@@ -158,35 +220,18 @@ final class Application
         echo $response->getBody();
     }
 
-    public static function isDebug(): bool
+    public function getBaseUrl(): string
     {
-        static $debug;
-        if ($debug === null) {
-            $debug = (bool)getenv('HERBIE_DEBUG');
+        if ($this->baseUrl === null) {
+            $this->baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
         }
-        return $debug;
+
+        return $this->baseUrl;
     }
 
-    public static function getHerbiePath(string $append): string
+    public function setBaseUrl(string $baseUrl): void
     {
-        static $herbiePath;
-        if ($herbiePath === null) {
-            $herbiePath = dirname(__DIR__);
-        }
-        return $herbiePath . $append;
-    }
-
-    public function getScriptFile(): string
-    {
-        if (isset($this->scriptFile)) {
-            return $this->scriptFile;
-        }
-
-        if (isset($_SERVER['SCRIPT_FILENAME'])) {
-            return $_SERVER['SCRIPT_FILENAME'];
-        }
-
-        throw new RuntimeException('Unable to determine the entry script file path.');
+        $this->baseUrl = $baseUrl;
     }
 
     public function getScriptUrl(): string
@@ -213,28 +258,27 @@ final class Application
         return $this->scriptUrl;
     }
 
-    public function getBaseUrl(): string
+    public function setScriptUrl(string $scriptUrl): void
     {
-        if ($this->baseUrl === null) {
-            $this->baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
-        }
-
-        return $this->baseUrl;
+        $this->scriptUrl = $scriptUrl;
     }
 
-    public function setBaseUrl(string $baseUrl): void
+    public function getScriptFile(): string
     {
-        $this->baseUrl = $baseUrl;
+        if (isset($this->scriptFile)) {
+            return $this->scriptFile;
+        }
+
+        if (isset($_SERVER['SCRIPT_FILENAME'])) {
+            return $_SERVER['SCRIPT_FILENAME'];
+        }
+
+        throw new RuntimeException('Unable to determine the entry script file path.');
     }
 
     public function setScriptFile(string $scriptFile): void
     {
         $this->scriptFile = $scriptFile;
-    }
-
-    public function setScriptUrl(string $scriptUrl): void
-    {
-        $this->scriptUrl = $scriptUrl;
     }
 
     public function getApplicationPath(): string
@@ -271,11 +315,6 @@ final class Application
     {
         $this->consoleCommands[] = $command;
         return $this;
-    }
-
-    public function getConsoleCommands(): array
-    {
-        return $this->consoleCommands;
     }
 
     /**
@@ -363,48 +402,8 @@ final class Application
         return $this->eventListeners;
     }
 
-    public function getConfig(): Config
-    {
-        return $this->container->get(Config::class);
-    }
-
     public function getCache(): CacheInterface
     {
         return $this->container->get(CacheInterface::class);
-    }
-
-    public function getLogger(): LoggerInterface
-    {
-        return $this->container->get(LoggerInterface::class);
-    }
-
-    public function getPluginManager(): PluginManager
-    {
-        return $this->container->get(PluginManager::class);
-    }
-
-    public function getTranslator(): Translator
-    {
-        return $this->container->get(Translator::class);
-    }
-
-    public function getTwigRenderer(): TwigRenderer
-    {
-        return $this->container->get(TwigRenderer::class);
-    }
-
-    public function getMiddlewareDispatcher(): MiddlewareDispatcher
-    {
-        return $this->container->get(MiddlewareDispatcher::class);
-    }
-
-    public function getServerRequest(): ServerRequestInterface
-    {
-        return $this->container->get(ServerRequestInterface::class);
-    }
-
-    public function getEventManager(): EventManager
-    {
-        return $this->container->get(EventManager::class);
     }
 }

@@ -2,29 +2,17 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Filters;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Filters;
 
+use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 use TypeError;
 
-final class FilesizeFilterTest extends \Codeception\Test\Unit
+final class FilesizeFilterTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
-
-    protected function _setUp(): void
-    {
-        $app = new Application(new ApplicationPaths(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site',
-            dirname(__DIR__, 5) . '/vendor',
-            dirname(__DIR__, 4) . '/_data/web'
-        ));
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
-    }
 
     public function testFilesizeWithWrongType(): void
     {
@@ -54,8 +42,29 @@ final class FilesizeFilterTest extends \Codeception\Test\Unit
         $this->assertSame('1024 MB', $this->twigRenderer->renderString('{{ "1073741824"|format_size }}'));
         $this->assertSame('1 GB', $this->twigRenderer->renderString('{{ "1073741825"|format_size }}')); // GB (* 1024)
         $this->assertSame('1024 GB', $this->twigRenderer->renderString('{{ "1099511627776"|format_size }}'));
-        $this->assertSame('1 TB', $this->twigRenderer->renderString('{{ "1099511627777"|format_size }}')); // TB (* 1024)
+        $this->assertSame(
+            '1 TB',
+            $this->twigRenderer->renderString('{{ "1099511627777"|format_size }}')
+        ); // TB (* 1024)
         $this->assertSame('1024 TB', $this->twigRenderer->renderString('{{ "1125899906842624"|format_size }}'));
-        $this->assertSame('1 PB', $this->twigRenderer->renderString('{{ "1125899906842625"|format_size }}')); // TB (* 1024)
+        $this->assertSame(
+            '1 PB',
+            $this->twigRenderer->renderString('{{ "1125899906842625"|format_size }}')
+        ); // TB (* 1024)
+    }
+
+    protected function _setUp(): void
+    {
+        $app = new Application(
+            new ApplicationPaths(
+                dirname(__DIR__, 5),
+                dirname(__DIR__, 3) . '/Fixtures/site',
+                dirname(__DIR__, 5) . '/vendor',
+                dirname(__DIR__, 4) . '/_data/web'
+            )
+        );
+        $app->getPluginManager()->init();
+        $app->getTwigRenderer()->init();
+        $this->twigRenderer = $app->getTwigRenderer();
     }
 }

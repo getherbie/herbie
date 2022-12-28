@@ -14,14 +14,14 @@ include dirname(__DIR__, 3) . '/c3.php';
 
 use herbie\Application;
 use herbie\ApplicationPaths;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderSegmentEvent;
-use herbie\event\TwigInitializedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderSegmentEvent;
+use herbie\events\TwigInitializedEvent;
 use herbie\HttpBasicAuthMiddleware;
 use herbie\ResponseTimeMiddleware;
-use tests\_data\src\CustomCommand;
-use tests\_data\src\CustomHeader;
-use tests\_data\src\TestFilter;
+use herbie\tests\_data\src\CustomCommand;
+use herbie\tests\_data\src\CustomHeader;
+use herbie\tests\_data\src\TestFilter;
 use Twig\TwigFilter;
 
 if (php_sapi_name() === 'cli-server') {
@@ -80,9 +80,11 @@ $app->addEventListener(RenderLayoutEvent::class, function (RenderLayoutEvent $ev
 $app->addEventListener(RenderSegmentEvent::class, new TestFilter());
 
 $app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {
-    $event->getEnvironment()->addFilter(new TwigFilter('my_filter', function (string $content): string {
-        return $content . ' My Filter';
-    }));
+    $event->getEnvironment()->addFilter(
+        new TwigFilter('my_filter', function (string $content): string {
+            return $content . ' My Filter';
+        })
+    );
 });
 
 $app->run();

@@ -1,6 +1,6 @@
 <?php
 
-use herbie\event\RenderSegmentEvent;
+use herbie\events\RenderSegmentEvent;
 
 $renderSegmentEvent = function (RenderSegmentEvent $event) {
     $page = $event->getPage();

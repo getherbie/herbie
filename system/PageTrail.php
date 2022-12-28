@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
@@ -25,9 +26,9 @@ final class PageTrail implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->items);
+        return new ArrayIterator($this->items);
     }
 
     public function count(): int

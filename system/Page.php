@@ -7,6 +7,8 @@ namespace herbie;
 use ArrayAccess;
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
+use InvalidArgumentException;
+use ReturnTypeWillChange;
 
 /**
  * @property string[] $authors
@@ -38,6 +40,7 @@ use BadMethodCallException;
  */
 final class Page implements ArrayAccess
 {
+    private static ?SlugGenerator $slugGenerator = null;
     /** @var string[] */
     private array $authors;
     private bool $cached;
@@ -68,8 +71,6 @@ final class Page implements ArrayAccess
     private string $title;
     private bool $twig;
     private string $type;
-
-    private static ?SlugGenerator $slugGenerator = null;
 
     public function __construct(array $data = [], ?array $segments = null)
     {
@@ -106,13 +107,30 @@ final class Page implements ArrayAccess
         }
     }
 
-    public function getSegments(): array
+    /**
+     * Overwrites PageItemTrait::setData()
+     */
+    public function setData(array $data): void
     {
-        if ($this->segments === null) {
-            $content = file_read($this->getPath());
-            [, $this->segments] = FlatFilePagePersistence::parseFileContent($content);
+        if (array_key_exists('data', $data)) {
+            throw new InvalidArgumentException("Field data is not allowed.");
         }
-        return $this->segments;
+        if (array_key_exists('segments', $data)) {
+            throw new InvalidArgumentException("Field segments is not allowed.");
+        }
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
+    }
+
+    public static function setSlugGenerator(SlugGenerator $slugGenerator): void
+    {
+        self::$slugGenerator = $slugGenerator;
+    }
+
+    public static function unsetSlugGenerator(): void
+    {
+        self::$slugGenerator = null;
     }
 
     public function getSegment(string $id): string
@@ -124,6 +142,15 @@ final class Page implements ArrayAccess
         return '';
     }
 
+    public function getSegments(): array
+    {
+        if ($this->segments === null) {
+            $content = file_read($this->getPath());
+            [, $this->segments] = FlatFilePagePersistence::parseFileContent($content);
+        }
+        return $this->segments;
+    }
+
     /**
      * @param string[] $segments
      */
@@ -132,20 +159,14 @@ final class Page implements ArrayAccess
         $this->segments = $segments;
     }
 
-    /**
-     * Overwrites PageItemTrait::setData()
-     */
-    public function setData(array $data): void
+    public function getPath(): string
     {
-        if (array_key_exists('data', $data)) {
-            throw new \InvalidArgumentException("Field data is not allowed.");
-        }
-        if (array_key_exists('segments', $data)) {
-            throw new \InvalidArgumentException("Field segments is not allowed.");
-        }
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
-        }
+        return $this->path;
+    }
+
+    public function setPath(string $path): void
+    {
+        $this->path = trim($path);
     }
 
     public function getTitle(): string
@@ -207,51 +228,36 @@ final class Page implements ArrayAccess
     public function setRedirect($redirect): void
     {
         if (!is_array($redirect) && !is_string($redirect)) {
-            throw new \InvalidArgumentException('Redirect must be a string or an array{string,int}.');
+            throw new InvalidArgumentException('Redirect must be a string or an array{string,int}.');
         }
         if (is_string($redirect)) {
             $redirect = trim($redirect);
             if ($redirect === '') {
-                throw new \InvalidArgumentException('Redirect must be a non-empty string.');
+                throw new InvalidArgumentException('Redirect must be a non-empty string.');
             }
             $redirect = [$redirect, 302];
         }
         $count = count($redirect);
         if ($count === 0) {
-            throw new \InvalidArgumentException('Redirect must be a non-empty array.');
+            throw new InvalidArgumentException('Redirect must be a non-empty array.');
         }
         if ($count <> 2) {
-            throw new \InvalidArgumentException('Redirect array must be an array{string,int}.');
+            throw new InvalidArgumentException('Redirect array must be an array{string,int}.');
         }
         if (!is_string($redirect[0])) {
-            throw new \InvalidArgumentException('Redirect array[0] must be a string.');
+            throw new InvalidArgumentException('Redirect array[0] must be a string.');
         }
         $redirect[0] = trim($redirect[0]);
         if ($redirect[0] === '') {
-            throw new \InvalidArgumentException('Redirect array[0] must be a non-empty string.');
+            throw new InvalidArgumentException('Redirect array[0] must be a non-empty string.');
         }
         if (!is_natural($redirect[1])) {
-            throw new \InvalidArgumentException('Redirect array[1] must be a integer.');
+            throw new InvalidArgumentException('Redirect array[1] must be a integer.');
         }
         if ($redirect[1] < 300 || $redirect[1] > 308) {
-            throw new \InvalidArgumentException('Redirect array[1] must be a status code between 300 and 308.');
+            throw new InvalidArgumentException('Redirect array[1] must be a status code between 300 and 308.');
         }
         $this->redirect = $redirect;
-    }
-
-    public function getRoute(): string
-    {
-        return trim($this->route);
-    }
-
-    public function setRoute(string $route): void
-    {
-        $this->route = trim($route);
-    }
-
-    public function setId(string $id): void
-    {
-        $this->id = trim($id);
     }
 
     public function getId(): string
@@ -259,9 +265,9 @@ final class Page implements ArrayAccess
         return $this->id;
     }
 
-    public function setParentId(string $parentId): void
+    public function setId(string $id): void
     {
-        $this->parent_id = trim($parentId);
+        $this->id = trim($id);
     }
 
     public function getParentId(): string
@@ -269,9 +275,9 @@ final class Page implements ArrayAccess
         return $this->parent_id;
     }
 
-    public function setParentRoute(string $parentRoute): void
+    public function setParentId(string $parentId): void
     {
-        $this->parent_route = trim($parentRoute);
+        $this->parent_id = trim($parentId);
     }
 
     public function getParentRoute(): string
@@ -279,14 +285,9 @@ final class Page implements ArrayAccess
         return $this->parent_route;
     }
 
-    public function getPath(): string
+    public function setParentRoute(string $parentRoute): void
     {
-        return $this->path;
-    }
-
-    public function setPath(string $path): void
-    {
-        $this->path = trim($path);
+        $this->parent_route = trim($parentRoute);
     }
 
     public function getFormat(): string
@@ -326,6 +327,25 @@ final class Page implements ArrayAccess
         $this->created = $this->formatDate($date);
     }
 
+    /**
+     * @param int|string $date
+     */
+    private function formatDate($date): string
+    {
+        if (is_string($date)) {
+            $date = trim($date);
+        }
+        if (is_natural($date, true)) {
+            return date_format('c', (int)$date);
+        } elseif (is_string($date)) {
+            $time = time_from_string($date);
+            if ($time > 0) {
+                return date_format('c', $time);
+            }
+        }
+        return '';
+    }
+
     public function getDate(): string
     {
         return $this->date;
@@ -350,9 +370,12 @@ final class Page implements ArrayAccess
         return '';
     }
 
-    public function getAuthors(): array
+    private function slugify(string $slug): string
     {
-        return $this->authors;
+        if (self::$slugGenerator === null) {
+            throw new BadMethodCallException('SlugGenerator not set.');
+        }
+        return self::$slugGenerator->generate($slug);
     }
 
     public function getCategory(string $category): string
@@ -366,16 +389,6 @@ final class Page implements ArrayAccess
         return '';
     }
 
-    public function getCategories(): array
-    {
-        return $this->categories;
-    }
-
-    public function getTags(): array
-    {
-        return $this->tags;
-    }
-
     public function getTag(string $tag): string
     {
         $tag = $this->slugify($tag);
@@ -387,22 +400,9 @@ final class Page implements ArrayAccess
         return '';
     }
 
-    /**
-     * @param string[] $categories
-     */
-    public function setCategories(array $categories): void
+    public function getTags(): array
     {
-        foreach ($categories as $category) {
-            $this->setCategory($category);
-        }
-    }
-
-    public function setCategory(string $category): void
-    {
-        $category = trim($category);
-        if (!in_array($category, $this->categories)) {
-            $this->categories[] = $category;
-        }
+        return $this->tags;
     }
 
     /**
@@ -423,6 +423,22 @@ final class Page implements ArrayAccess
         }
     }
 
+    public function hasAuthor(string $author): bool
+    {
+        $author = $this->slugify($author);
+        foreach ($this->getAuthors() as $c) {
+            if ($this->slugify($c) === $author) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getAuthors(): array
+    {
+        return $this->authors;
+    }
+
     /**
      * @param string[] $authors
      */
@@ -441,17 +457,6 @@ final class Page implements ArrayAccess
         }
     }
 
-    public function hasAuthor(string $author): bool
-    {
-        $author = $this->slugify($author);
-        foreach ($this->getAuthors() as $c) {
-            if ($this->slugify($c) === $author) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function hasCategory(string $category): bool
     {
         $category = $this->slugify($category);
@@ -461,6 +466,29 @@ final class Page implements ArrayAccess
             }
         }
         return false;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param string[] $categories
+     */
+    public function setCategories(array $categories): void
+    {
+        foreach ($categories as $category) {
+            $this->setCategory($category);
+        }
+    }
+
+    public function setCategory(string $category): void
+    {
+        $category = trim($category);
+        if (!in_array($category, $this->categories)) {
+            $this->categories[] = $category;
+        }
     }
 
     public function hasTag(string $tag): bool
@@ -474,17 +502,17 @@ final class Page implements ArrayAccess
         return false;
     }
 
+    public function getModified(): string
+    {
+        return $this->modified;
+    }
+
     /**
      * @param int|string $modified
      */
     public function setModified($modified): void
     {
         $this->modified = $this->formatDate($modified);
-    }
-
-    public function getModified(): string
-    {
-        return $this->modified;
     }
 
     public function getTwig(): bool
@@ -552,6 +580,16 @@ final class Page implements ArrayAccess
         return $this->getRoute() === '';
     }
 
+    public function getRoute(): string
+    {
+        return trim($this->route);
+    }
+
+    public function setRoute(string $route): void
+    {
+        $this->route = trim($route);
+    }
+
     public function routeEquals(string $route): bool
     {
         return $this->getRoute() === $route;
@@ -571,46 +609,6 @@ final class Page implements ArrayAccess
         return 0 === strpos($this->getPath(), '@page');
     }
 
-    /**
-     * @return mixed
-     */
-    public function __get(string $name)
-    {
-        $getter = 'get' . str_replace('_', '', $name);
-        if (method_exists($this, $getter)) {
-            return $this->$getter();
-        } elseif (array_key_exists($name, $this->customData)) {
-            return $this->customData[$name];
-        } else {
-            throw new \InvalidArgumentException("Field {$name} does not exist.");
-        }
-    }
-
-    public function __isset(string $name): bool
-    {
-        $getter = 'get' . str_replace('_', '', $name);
-        if (method_exists($this, $getter)) {
-            return $this->$getter() !== null;
-        } elseif (array_key_exists($name, $this->customData)) {
-            return $this->customData[$name] !== null;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param mixed $value
-     */
-    public function __set(string $name, $value): void
-    {
-        $setter = 'set' . str_replace('_', '', $name);
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
-        } else {
-            $this->customData[$name] = $value;
-        }
-    }
-
     public function __toString(): string
     {
         return $this->title;
@@ -628,42 +626,6 @@ final class Page implements ArrayAccess
         return array_merge($array, $this->customData);
     }
 
-    private function slugify(string $slug): string
-    {
-        if (self::$slugGenerator === null) {
-            throw new BadMethodCallException('SlugGenerator not set.');
-        }
-        return self::$slugGenerator->generate($slug);
-    }
-
-    public static function setSlugGenerator(SlugGenerator $slugGenerator): void
-    {
-        self::$slugGenerator = $slugGenerator;
-    }
-
-    public static function unsetSlugGenerator(): void
-    {
-        self::$slugGenerator = null;
-    }
-
-    /**
-     * @param int|string $date
-     */
-    private function formatDate($date): string
-    {
-        if (is_string($date)) {
-            $date = trim($date);
-        }
-        if (is_natural($date, true)) {
-            return date_format('c', (int)$date);
-        } elseif (is_string($date)) {
-            $time = time_from_string($date);
-            if ($time > 0) {
-                return date_format('c', $time);
-            }
-        }
-        return '';
-    }
     /**
      * @param mixed $offset
      */
@@ -672,14 +634,54 @@ final class Page implements ArrayAccess
         return $this->__isset($offset);
     }
 
+    public function __isset(string $name): bool
+    {
+        $getter = 'get' . str_replace('_', '', $name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter() !== null;
+        } elseif (array_key_exists($name, $this->customData)) {
+            return $this->customData[$name] !== null;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @param mixed $offset
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        $getter = 'get' . str_replace('_', '', $name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        } elseif (array_key_exists($name, $this->customData)) {
+            return $this->customData[$name];
+        } else {
+            throw new InvalidArgumentException("Field {$name} does not exist.");
+        }
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function __set(string $name, $value): void
+    {
+        $setter = 'set' . str_replace('_', '', $name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        } else {
+            $this->customData[$name] = $value;
+        }
     }
 
     /**

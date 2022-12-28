@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use ErrorException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -70,12 +71,12 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     private function createErrorHandler(): callable
     {
         return function (int $errno, string $errstr, string $errfile, int $errline): void {
-            if (! (error_reporting() & $errno)) {
+            if (!(error_reporting() & $errno)) {
                 // error_reporting does not include this error
                 return;
             }
 
-            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         };
     }
 }

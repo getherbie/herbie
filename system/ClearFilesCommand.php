@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,9 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class ClearFilesCommand extends Command
 {
-    private Config $config;
     protected static $defaultName = 'clear-files';
     protected static $defaultDescription = 'Clears asset, cache and log files';
+    private Config $config;
 
     public function __construct(Config $config)
     {
@@ -25,8 +26,7 @@ final class ClearFilesCommand extends Command
     {
         $this
             ->setHelp('The clear-files deletes asset, cache and log files from several directories.')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Type of files to delete', 'all')
-        ;
+            ->addArgument('type', InputArgument::OPTIONAL, 'Type of files to delete', 'all');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -78,7 +78,7 @@ final class ClearFilesCommand extends Command
     private function clearPath(string $path, array $filesToIgnore): void
     {
         $it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($files as $file) {
             if ($file->isDir()) {
                 rmdir($file->getRealPath());

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use herbie\event\ContentRenderedEvent;
-use herbie\event\LayoutRenderedEvent;
-use herbie\event\RenderLayoutEvent;
-use herbie\event\RenderPageEvent;
-use herbie\event\RenderSegmentEvent;
+use herbie\events\ContentRenderedEvent;
+use herbie\events\LayoutRenderedEvent;
+use herbie\events\RenderLayoutEvent;
+use herbie\events\RenderPageEvent;
+use herbie\events\RenderSegmentEvent;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

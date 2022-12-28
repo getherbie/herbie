@@ -2,28 +2,16 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Filters;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Filters;
 
+use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
-final class VisibleFilterTest extends \Codeception\Test\Unit
+final class VisibleFilterTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
-
-    protected function _setUp(): void
-    {
-        $app = new Application(new ApplicationPaths(
-            dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site',
-            dirname(__DIR__, 5) . '/vendor',
-            dirname(__DIR__, 4) . '/_data/web'
-        ));
-        $app->getPluginManager()->init();
-        $app->getTwigRenderer()->init();
-        $this->twigRenderer = $app->getTwigRenderer();
-    }
 
     public function testUnfilteredTree()
     {
@@ -60,5 +48,20 @@ final class VisibleFilterTest extends \Codeception\Test\Unit
         $expected = '*Index*Alpha Index**Alpha Delta**Alpha Sigma';
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame($expected, $actual); // TODO fix this test, the expected result is simply wrong
+    }
+
+    protected function _setUp(): void
+    {
+        $app = new Application(
+            new ApplicationPaths(
+                dirname(__DIR__, 5),
+                dirname(__DIR__, 3) . '/Fixtures/site',
+                dirname(__DIR__, 5) . '/vendor',
+                dirname(__DIR__, 4) . '/_data/web'
+            )
+        );
+        $app->getPluginManager()->init();
+        $app->getTwigRenderer()->init();
+        $this->twigRenderer = $app->getTwigRenderer();
     }
 }

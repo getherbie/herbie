@@ -2,14 +2,22 @@
 
 declare(strict_types=1);
 
-namespace tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
+use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class CssClassesFunctionTest extends \Codeception\Test\Unit
+final class CssClassesFunctionTest extends Unit
 {
     protected UnitTester $tester;
+
+    public function testCssClassesFunction(): void
+    {
+        $expected = 'page-error theme-default layout-default language-de';
+        $actual = $this->twig()->renderString('{{ css_classes() }}');
+        $this->assertEquals($expected, $actual);
+    }
 
     private function twig(): TwigRenderer
     {
@@ -17,13 +25,6 @@ final class CssClassesFunctionTest extends \Codeception\Test\Unit
             dirname(__DIR__, 5),
             dirname(__DIR__, 3) . '/Fixtures/site'
         );
-    }
-
-    public function testCssClassesFunction(): void
-    {
-        $expected = 'page-error theme-default layout-default language-de';
-        $actual = $this->twig()->renderString('{{ css_classes() }}');
-        $this->assertEquals($expected, $actual);
     }
 
     // TODO write more tests

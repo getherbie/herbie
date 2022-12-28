@@ -6,6 +6,8 @@ namespace herbie;
 
 use ArrayAccess;
 use ArrayIterator;
+use Exception;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
 
@@ -65,7 +67,7 @@ final class QueryBuilder implements IteratorAggregate
     public function where(...$conditions): self
     {
         if (empty($conditions)) {
-            throw new \InvalidArgumentException('Empty where conditions');
+            throw new InvalidArgumentException('Empty where conditions');
         }
         foreach ($conditions as $condition) {
             if (is_string($condition)) {
@@ -82,7 +84,7 @@ final class QueryBuilder implements IteratorAggregate
                     continue;
                 }
             }
-            throw new \InvalidArgumentException('Unsupported where conditions');
+            throw new InvalidArgumentException('Unsupported where conditions');
         }
         return $this;
     }
@@ -114,28 +116,13 @@ final class QueryBuilder implements IteratorAggregate
                 return [$name, $value1, $value2];
             }
         }
-        throw new \InvalidArgumentException('Unsupported operator');
-    }
-
-    private function convertType(mixed $value1, mixed $value2): mixed
-    {
-        if (is_bool($value1) && is_string($value2)) {
-            $lowered = strtolower($value2);
-            if ($lowered === 'true') {
-                return true;
-            }
-            if ($lowered === 'false') {
-                return false;
-            }
-            return $value2;
-        }
-        return $value2;
+        throw new InvalidArgumentException('Unsupported operator');
     }
 
     private function parseConditionsInOperatorFormat(array $conditions): array
     {
         if (!isset($conditions[0]) || !in_array(strtoupper($conditions[0]), self::WHERE_CLAUSE_OPERATORS)) {
-            throw new \InvalidArgumentException('Missing where clause operator');
+            throw new InvalidArgumentException('Missing where clause operator');
         }
         $whereClauseOperator = [strtoupper(array_shift($conditions))];
         $items = [];
@@ -154,7 +141,7 @@ final class QueryBuilder implements IteratorAggregate
         $items = [];
         foreach ($conditions as $key => $value) {
             if (is_scalar($value)) {
-                $type = \herbie\get_type($value);
+                $type = get_type($value);
                 $items[] = ['match' . ucfirst($type), $key, $value];
             }
         }
@@ -185,36 +172,13 @@ final class QueryBuilder implements IteratorAggregate
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function paginate(int $size): Pagination
     {
         $this->limit = $size;
         $this->processData();
         return new Pagination($this->processed, $this->limit);
-    }
-
-    public function all(): iterable
-    {
-        $this->processData();
-        return $this->processed;
-    }
-
-    public function one(): array|object|null
-    {
-        $this->limit = 1;
-        $this->processData();
-        $item = reset($this->processed);
-        if ($item === false) {
-            return null;
-        }
-        return $item;
-    }
-
-    public function getIterator(): Traversable
-    {
-        $this->processData();
-        return new ArrayIterator($this->processed);
     }
 
     private function processData(): void
@@ -236,6 +200,42 @@ final class QueryBuilder implements IteratorAggregate
                 }
             }
         }
+    }
+
+    private function sort(): bool
+    {
+        if (is_callable($this->order)) {
+            return uasort($this->data, $this->order);
+        }
+
+        if (trim($this->order, '-+') === '') {
+            return false;
+        }
+
+        $field = '';
+        if (!empty($this->order)) {
+            $field = trim($this->order, '+');
+        }
+
+        $direction = 'asc';
+        if (str_starts_with($field, '-')) {
+            $field = substr($field, 1);
+            $direction = 'desc';
+        }
+
+        return uasort($this->data, function ($value1, $value2) use ($field, $direction) {
+            if (!isset($value1[$field]) || !isset($value2[$field])) {
+                return 0;
+            }
+            if ($value1[$field] === $value2[$field]) {
+                return 0;
+            }
+            if ($direction === 'asc') {
+                return ($value1[$field] < $value2[$field]) ? -1 : 1;
+            } else {
+                return ($value2[$field] < $value1[$field]) ? -1 : 1;
+            }
+        });
     }
 
     private function processItem(ArrayAccess|array|int|float|string|bool $item, array $conditions): bool
@@ -291,40 +291,42 @@ final class QueryBuilder implements IteratorAggregate
         return $uniqueStatusCount === 1 && in_array(true, $uniqueStatus, true);
     }
 
-    private function sort(): bool
+    private function convertType(mixed $value1, mixed $value2): mixed
     {
-        if (is_callable($this->order)) {
-            return uasort($this->data, $this->order);
-        }
-
-        if (trim($this->order, '-+') === '') {
-            return false;
-        }
-
-        $field = '';
-        if (!empty($this->order)) {
-            $field = trim($this->order, '+');
-        }
-
-        $direction = 'asc';
-        if (str_starts_with($field, '-')) {
-            $field = substr($field, 1);
-            $direction = 'desc';
-        }
-
-        return uasort($this->data, function ($value1, $value2) use ($field, $direction) {
-            if (!isset($value1[$field]) || !isset($value2[$field])) {
-                return 0;
+        if (is_bool($value1) && is_string($value2)) {
+            $lowered = strtolower($value2);
+            if ($lowered === 'true') {
+                return true;
             }
-            if ($value1[$field] === $value2[$field]) {
-                return 0;
+            if ($lowered === 'false') {
+                return false;
             }
-            if ($direction === 'asc') {
-                return ($value1[$field] < $value2[$field]) ? -1 : 1;
-            } else {
-                return ($value2[$field] < $value1[$field]) ? -1 : 1;
-            }
-        });
+            return $value2;
+        }
+        return $value2;
+    }
+
+    public function all(): iterable
+    {
+        $this->processData();
+        return $this->processed;
+    }
+
+    public function one(): array|object|null
+    {
+        $this->limit = 1;
+        $this->processData();
+        $item = reset($this->processed);
+        if ($item === false) {
+            return null;
+        }
+        return $item;
+    }
+
+    public function getIterator(): Traversable
+    {
+        $this->processData();
+        return new ArrayIterator($this->processed);
     }
 
     protected function matchString(string $value1, string $value2): bool

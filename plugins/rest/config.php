@@ -1,6 +1,6 @@
 <?php
 
-use herbie\sysplugin\rest\RestSysPlugin;
+use herbie\sysplugins\rest\RestSysPlugin;
 
 return [
     'apiVersion' => 2,

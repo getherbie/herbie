@@ -29,6 +29,14 @@ final class FlatFilePageRepository implements PageRepositoryInterface
         return $data ? $this->createPage($data) : null;
     }
 
+    private function createPage(array $data): Page
+    {
+        return $this->pageFactory->newPage(
+            $data['data'],
+            $data['segments']
+        );
+    }
+
     public function findAll(): PageList
     {
         if ($this->pageList === null) {
@@ -51,13 +59,5 @@ final class FlatFilePageRepository implements PageRepositoryInterface
     {
         // TODO: Implement remove() method.
         return false;
-    }
-
-    private function createPage(array $data): Page
-    {
-        return $this->pageFactory->newPage(
-            $data['data'],
-            $data['segments']
-        );
     }
 }

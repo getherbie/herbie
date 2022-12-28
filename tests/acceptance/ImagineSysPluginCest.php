@@ -1,15 +1,16 @@
 <?php
 
-namespace tests\acceptance;
+namespace herbie\tests\acceptance;
 
 use AcceptanceTester;
+use Codeception\Lib\Interfaces\Web;
 use Codeception\Util\HttpCode;
 
 final class ImagineSysPluginCest
 {
     public function testImagineSysPlugin(AcceptanceTester $I)
     {
-        /** @var \Codeception\Lib\Interfaces\Web $I */
+        /** @var Web $I */
         $I->amOnPage('/plugins/imagine');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeInTitle('Imagine Plugin');
