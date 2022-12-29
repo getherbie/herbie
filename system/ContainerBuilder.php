@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use herbie\middlewares\DownloadMiddleware;
+use herbie\middlewares\ErrorHandlerMiddleware;
+use herbie\middlewares\PageRendererMiddleware;
+use herbie\middlewares\PageResolverMiddleware;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;

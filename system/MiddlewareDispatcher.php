@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\middlewares\CallableMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

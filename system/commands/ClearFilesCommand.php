@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\commands;
 
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;

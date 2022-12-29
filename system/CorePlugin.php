@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use herbie\commands\ClearFilesCommand;
 use herbie\events\RenderLayoutEvent;
 use herbie\events\RenderPageEvent;
 use herbie\events\RenderSegmentEvent;
