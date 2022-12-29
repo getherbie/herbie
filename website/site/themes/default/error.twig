@@ -5,47 +5,49 @@
         <div class="container">
             <div class="pure-g">
                 <div class="pure-u-1 pure-u-md-3-4">
-                    {# render error according error code #}
-                    {% if error.code == 404 %}
-
-                        <h1>Page not found</h1>
-                        <p>Oops, something got wrong! The page or resource could not be found.</p>
-
-                    {% else %}
-
-                        <h1>Server Error</h1>
-                        <p>An error occurred.</p>
-
-                    {% endif %}
-
-                    {# render error details in debug mode only #}
-
-                    {% if herbie_debug() %}
-
-                        <table class="pure-table pure-table-horizontal" style="table-layout: fixed;">
-                            <tr>
-                                <td style="width:10%">Code</td>
-                                <td style="width:90%">{{ error.code }}</td>
-                            </tr>
-                            <tr>
-                                <td>Message</td>
-                                <td>{{ error.message }}</td>
-                            </tr>
-                            <tr>
-                                <td>File</td>
-                                <td>{{ error.file }}</td>
-                            </tr>
-                            <tr>
-                                <td>Line</td>
-                                <td>{{ error.line }}</td>
-                            </tr>
-                            <tr>
-                                <td>Trace</td>
-                                <td><div style="white-space: pre;overflow:auto">{{ error.traceAsString }}</div></td>
-                            </tr>
-                        </table>
-
-                    {% endif %}
+                    <div class="content">
+                        {# render error according error code #}
+                        {% if error.code == 404 %}
+    
+                            <h1>Page not found</h1>
+                            <p>Oops, something got wrong! The page or resource could not be found.</p>
+    
+                        {% else %}
+    
+                            <h1>Server Error</h1>
+                            <p>An error occurred.</p>
+    
+                        {% endif %}
+    
+                        {# render error details in debug mode only #}
+    
+                        {% if herbie_debug() %}
+    
+                            <table class="pure-table pure-table-horizontal" style="table-layout: fixed;">
+                                <tr>
+                                    <td style="width:10%">Code</td>
+                                    <td style="width:90%">{{ error.code }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Message</td>
+                                    <td>{{ error.message }}</td>
+                                </tr>
+                                <tr>
+                                    <td>File</td>
+                                    <td>{{ error.file }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Line</td>
+                                    <td>{{ error.line }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Trace</td>
+                                    <td><div style="white-space: pre;overflow:auto">{{ error.traceAsString }}</div></td>
+                                </tr>
+                            </table>
+    
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="pure-u-1 pure-u-md-1-4">
                     <div class="sidebar">
