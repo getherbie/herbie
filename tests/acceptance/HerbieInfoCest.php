@@ -547,7 +547,7 @@ final class HerbieInfoCest
     public function testNumberAndSortingOfCommands(AcceptanceTester $I)
     {
         $commands = [
-            'herbie\ClearFilesCommand',
+            'herbie\commands\ClearFilesCommand',
             'herbie\sysplugins\dummy\DummyCommand',
             'herbie\tests\_data\site\extend\commands\CustomCommand',
             'herbie\tests\_data\src\CustomCommand',
