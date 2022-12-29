@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\commands;
 
+use herbie\Config;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
