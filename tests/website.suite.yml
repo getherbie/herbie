@@ -8,7 +8,8 @@ actor: AcceptanceTester
 extensions:
     enabled:
         - Codeception\Extension\RunProcess:
-              0: cd website/web; php -S 127.0.0.1:9371 index.php
+              0: HERBIE_ENV=dev php herbie clear-files
+              1: cd website/web; HERBIE_DEBUG=1 php -S 127.0.0.1:9371 index.php
               sleep: 1
 modules:
     enabled:
