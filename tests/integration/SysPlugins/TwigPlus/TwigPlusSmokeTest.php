@@ -43,8 +43,8 @@ final class TwigPlusSmokeTest extends Unit
 
     public function testMenuListFunction(): void
     {
-        $expected = '<div class="listing"><section><article><h2><span class="link link--page"><a href="/alpha" class="link__label">Alpha Index</a></span></h2><p></p></article></section><nav class="pagination"></nav></div>';
-        $actual = $this->twig()->renderString('{{ menu_list(filter="route|alpha") }}');
+        $expected = '<div class="menu-list"><ul class="menu-list-items"><li class="menu-list-item"><span class="link link--page"><a href="/alpha" class="link__label">Alpha Index</a></span></li></ul><nav class="menu-list-pager"><span class="menu-list-pager-text">Page 1 of 1</span></nav></div>';
+        $actual = $this->twig()->renderString('{{ menu_list(where="route=alpha") }}');
         $this->assertEquals($expected, $actual);
     }
 

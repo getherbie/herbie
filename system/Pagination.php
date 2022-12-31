@@ -22,7 +22,6 @@ final class Pagination implements IteratorAggregate, Countable
     private int $totalItems;
 
     /**
-     * @param array<int, mixed> $items
      * @throws Exception
      */
     public function __construct(iterable $items, int $limit = 10, int $page = 1)
@@ -36,7 +35,7 @@ final class Pagination implements IteratorAggregate, Countable
             $message = 'The param $items must be an array or an object implementing IteratorAggregate.';
             throw new InvalidArgumentException($message, 500);
         }
-        $this->totalItems = count($items);
+        $this->totalItems = count($this->items);
         $this->setLimit($limit);
         $this->setCurrentPage($page);
     }
