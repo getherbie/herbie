@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\middlewares;
 
+use herbie\Alias;
+use herbie\HttpException;
+use herbie\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tebe\HttpFactory\HttpFactory;
+
+use function herbie\str_trailing_slash;
 
 final class DownloadMiddleware implements MiddlewareInterface
 {

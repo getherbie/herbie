@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\middlewares;
 
+use herbie\EventManager;
 use herbie\events\ContentRenderedEvent;
 use herbie\events\LayoutRenderedEvent;
 use herbie\events\RenderLayoutEvent;
 use herbie\events\RenderPageEvent;
 use herbie\events\RenderSegmentEvent;
+use herbie\HttpException;
+use herbie\Page;
+use herbie\UrlManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

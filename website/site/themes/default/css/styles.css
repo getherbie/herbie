@@ -312,16 +312,21 @@ div.highlight pre {
     font-size: 125%;
 }
 
-/* Pagination */
-.pagination {
+/* Menu List */
+.menu-list {
+    margin-bottom: 2rem;
+}
+.menu-list-items {
+    margin-bottom: 2rem;
+}
+.menu-list-pager {
     text-align:center;
-    margin:80px 0 0 0;
     clear:both;
 }
-.pagination a {
-    font-size:1.1em;
-    padding-left:1em;
-    padding-right:1em;
+.menu-list-pager-link {
+    font-size:1rem;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
 }
 
 span.e {

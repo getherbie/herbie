@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

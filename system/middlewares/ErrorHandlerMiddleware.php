@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\middlewares;
 
 use ErrorException;
+use herbie\TwigRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

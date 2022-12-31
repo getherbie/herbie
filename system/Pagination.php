@@ -9,23 +9,22 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use IteratorAggregate;
-use LogicException;
 
+/**
+ * @see https://docs.phalcon.io/4.0/en/pagination
+ */
 final class Pagination implements IteratorAggregate, Countable
 {
     /** @var array<int, mixed> */
     private array $items;
-
     private int $limit;
-
-    private string $name;
+    private int $page;
+    private int $totalItems;
 
     /**
-     * @param array<int, mixed> $items
      * @throws Exception
-     * @throws LogicException
      */
-    public function __construct(iterable $items, int $limit = 10, string $name = 'page')
+    public function __construct(iterable $items, int $limit = 10, int $page = 1)
     {
         $this->items = [];
         if (is_array($items)) {
@@ -36,60 +35,110 @@ final class Pagination implements IteratorAggregate, Countable
             $message = 'The param $items must be an array or an object implementing IteratorAggregate.';
             throw new InvalidArgumentException($message, 500);
         }
+        $this->totalItems = count($this->items);
         $this->setLimit($limit);
-        $this->name = $name;
+        $this->setCurrentPage($page);
     }
 
+    /**
+     * Gets the items on the current page
+     */
     public function getIterator(): ArrayIterator
     {
-        $offset = ($this->getPage() - 1) * $this->limit;
-        $items = array_slice($this->items, $offset, $this->limit);
-        return new ArrayIterator($items);
+        return new ArrayIterator($this->getItems());
     }
 
-    public function getPage(): int
+    /**
+     * Gets number of the current page
+     */
+    public function getCurrentPage(): int
     {
-        $page = isset($_GET[$this->name]) ? (int)$_GET[$this->name] : 1;
-        $calculated = ceil($this->count() / $this->limit);
-        if ($page > $calculated) {
-            $page = $calculated;
-        }
-        return (int)$page;
+        return $this->page;
     }
 
+    /**
+     * Get the number of items on the current page
+     */
     public function count(): int
     {
-        return count($this->items);
+        return count($this->getItems());
     }
 
+    /**
+     * Gets the items on the current page
+     */
+    public function getItems(): array
+    {
+        return array_slice($this->items, $this->getOffset(), $this->getLimit());
+    }
+
+    /**
+     * Gets the total number of items
+     */
+    public function getTotalItems(): int
+    {
+        return $this->totalItems;
+    }
+
+    /**
+     * Gets current rows limit
+     */
     public function getLimit(): int
     {
         return $this->limit;
     }
 
-    public function setLimit(int $limit): void
+    /**
+     * Gets current rows offset
+     */
+    public function getOffset(): int
     {
-        $limit = (0 === $limit) ? 1000 : $limit;
-        $this->limit = $limit;
+        return ($this->getCurrentPage() - 1) * $this->getLimit();
     }
 
-    public function hasNextPage(): bool
+    private function setLimit(int $limit): void
     {
-        return ($this->limit * $this->getPage()) < $this->count();
+        $this->limit = min(max($limit, 1), $this->totalItems);
     }
 
+    /**
+     * Set the current page number
+     */
+    public function setCurrentPage(int $page): void
+    {
+        $this->page = min(max($page, $this->getFirstPage()), $this->getLastPage());
+    }
+
+    /**
+     * Gets number of the first page
+     */
+    public function getFirstPage(): int
+    {
+        return 1;
+    }
+
+    /**
+     * Gets number of the last page
+     */
+    public function getLastPage(): int
+    {
+        $ceil = ceil($this->totalItems / $this->limit);
+        return (int)$ceil;
+    }
+
+    /**
+     * Gets number of the next page
+     */
     public function getNextPage(): int
     {
-        return max(2, $this->getPage() + 1);
+        return min($this->getCurrentPage() + 1, $this->getLastPage());
     }
 
-    public function hasPrevPage(): bool
+    /**
+     * Gets number of the previous page
+     */
+    public function getPreviousPage(): int
     {
-        return 1 < $this->getPage();
-    }
-
-    public function getPrevPage(): int
-    {
-        return max(1, $this->getPage() - 1);
+        return max($this->getCurrentPage() - 1, $this->getFirstPage());
     }
 }
