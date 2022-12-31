@@ -1,0 +1,52 @@
+{# Uncomment to see debug output
+<table class="menu-list-pagination-debug">
+    <tr><th colspan="2">Pagination Debug</th></tr>
+    <tr><td>First page</td><td>{{ pagination.firstPage }}</td></tr>
+    <tr><td>Previous page</td><td>{{ pagination.previousPage }}</td></tr>
+    <tr><td>Current page</td><td>{{ pagination.currentPage }}</td></tr>
+    <tr><td>Next page</td><td>{{ pagination.nextPage }}</td></tr>
+    <tr><td>Last page</td><td>{{ pagination.lastPage }}</td></tr>
+    <tr><td>Item offset</td><td>{{ pagination.offset }}</td></tr>
+    <tr><td>Item limit</td><td>{{ pagination.limit }}</td></tr>
+    <tr><td>Item Count on page</td><td>{{ pagination.count }}</td></tr>
+    <tr><td>Total item Count</td><td>{{ pagination.totalItems }}</td></tr>
+</table>
+<style>
+    .list-pagination-debug {
+        border-collapse: collapse;
+    }
+    .list-pagination-debug td, .list-pagination-debug th {
+        border: 1px solid #999;
+        padding: 0.25rem 0.5rem;
+        text-align: left;
+    }
+</style>
+#}
+<div class="menu-list">
+    {% if pagination.count > 0 %}
+        <ul class="menu-list-items">
+            {% for menuitem in pagination %}
+                <li class="menu-list-item">
+                    {{ link_page(menuitem.getRoute(), menuitem.getMenuTitle() ?: menuitem.getRoute()) }}
+                </li>
+            {% endfor %}
+        </ul>
+        <nav class="menu-list-pager">
+            {% set cssFirstButton = pagination.currentPage > pagination.firstPage ? '' : 'is-disabled' %}
+            {% set cssPrevButton = pagination.currentPage > pagination.firstPage ? '' : 'is-disabled' %}
+            {% set cssNextButton = pagination.currentPage < pagination.lastPage ? '' : 'is-disabled' %}
+            {% set cssLastButton = pagination.currentPage < pagination.lastPage ? '' : 'is-disabled' %}
+            {% if pagination.lastPage > 1 %}
+                <a class="menu-list-pager-link menu-list-pager-link--first {{ cssFirstButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.firstPage }}" title="{{ translate('app', 'First page') }}">&#10094;&#10094;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--previous {{ cssPrevButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.previousPage }}" title="{{ translate('app', 'Previous page') }}">&#10094;</a>
+            {% endif %}
+            <span class="menu-list-pager-text">{{ translate('app', 'Page {current} of {total}', {current: pagination.currentPage, total: pagination.lastPage}) }}</span>
+            {% if pagination.lastPage > 1 %}
+                <a class="menu-list-pager-link menu-list-pager-link--next {{ cssNextButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.nextPage }}" title="{{ translate('app', 'Next page') }}">&#10095;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--last {{ cssLastButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.lastPage }}" title="{{ translate('app', 'Last page') }}">&#10095;&#10095;</a>
+            {% endif %}
+        </nav>
+    {% else %}
+        <div class="menu-list-empty">{{ translate('app', 'There are no entries available.') }}</div>
+    {% endif %}
+</div>
