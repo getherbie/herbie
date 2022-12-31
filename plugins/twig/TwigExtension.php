@@ -361,38 +361,40 @@ final class TwigExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function menuList(
-        ?PageList $page_list = null,
-        string $filter = '',
-        string $sort = '',
+        array|string $where = '',
+        callable|string $order = '',
         bool $shuffle = false,
         int $limit = 10,
-        string $template = '@snippet/listing.twig'
+        string $template = '@snippet/menu_list.twig'
     ): string {
-        if ($page_list === null) {
-            $page_list = $this->pageRepository->findAll();
-        }
-
-        if (!empty($filter)) {
-            [$field, $value] = explode('|', $filter);
-            $page_list = $page_list->filter($field, $value);
-        }
-
-        if (!empty($sort)) {
-            [$field, $direction] = explode('|', $sort);
-            $page_list = $page_list->sort($field, $direction);
-        }
+        $pageList = $this->pageRepository->findAll();
 
         if ($shuffle) {
-            $page_list = $page_list->shuffle();
+            $pageList = $pageList->shuffle();
         }
 
-        // filter pages with empty title
-        $page_list = $page_list->filter(function (Page $page) {
-            return !empty($page->getTitle());
-        });
+        $queryBuilder = $pageList->query();
 
-        $pagination = new Pagination($page_list);
-        $pagination->setLimit($limit);
+        if (!empty($where)) {
+            $queryBuilder = $queryBuilder->where($where);
+        }
+
+        if (!empty($order)) {
+            $queryBuilder = $queryBuilder->order($order);
+        }
+
+        $items = $queryBuilder->all();
+        $totalItems = $queryBuilder->count();
+
+        // sanitize limit
+        $limit = $limit < 1 ? $totalItems : $limit;
+        $limit = min(max($limit, 1), $totalItems);
+
+        // get sanitized page
+        $page = (int)filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
+
+        $pagination = new Pagination($items, $limit);
+        $pagination->setCurrentPage($page);
 
         return $this->environment->render($template, ['pagination' => $pagination]);
     }

@@ -173,34 +173,30 @@
     - The breadcrumb path as HTML.
 - name: menu_list
   code: >-
-    {{ menu_list(site.page_list, "parentRoute|doc", "title|asc", false, 3, "@snippet/listing.twig") }}
-  desc: Returns a paginated list of page items with links to the previous and next page.
-    For the paging the GET parameter "page" is used.
+    {{ menu_list("type=blog", "-title", false, 10, "@snippet/menu_list.twig") }}
+  desc: Returns a paginated list of page items with links to the first, previous, next, and last page.
+    For the paging the GET query parameter "page" is used.
   params:
-    - name: page_list
-      type: PageList
-      desc: The page list.
-      default: 'null'
-    - name: filter
-      type: string
-      desc: One or more filters.
+    - name: where
+      type: array|string
+      desc: The where clauses to be applied internally in query builder.
       default: '""'
-    - name: sort
-      type: string
-      desc: The sort field.
+    - name: order
+      type: callable|string
+      desc: The order field to be applied internally in query builder.
       default: '""'
     - name: shuffle
       type: bool
-      desc: If set the list is shuffled.
+      desc: If true the menu list is shuffled first.
       default: 'false'
     - name: limit
       type: int
-      desc: The limit
+      desc: The pagination limit
       default: '10'
     - name: template
       type: string
       desc: The path to the twig template.
-      default: "@snippet/listing.twig"
+      default: "@snippet/menu_list.twig"
   return:
     - string
     - The rendered markup

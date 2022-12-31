@@ -9,7 +9,6 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use IteratorAggregate;
-use LogicException;
 
 /**
  * @see https://docs.phalcon.io/4.0/en/pagination
@@ -25,7 +24,6 @@ final class Pagination implements IteratorAggregate, Countable
     /**
      * @param array<int, mixed> $items
      * @throws Exception
-     * @throws LogicException
      */
     public function __construct(iterable $items, int $limit = 10, int $page = 1)
     {
