@@ -98,6 +98,7 @@ final class Pagination implements IteratorAggregate, Countable
 
     private function setLimit(int $limit): void
     {
+        $limit = $limit < 1 ? $this->totalItems : $limit;
         $this->limit = min(max($limit, 1), $this->totalItems);
     }
 

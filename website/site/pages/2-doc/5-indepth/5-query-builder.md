@@ -214,8 +214,6 @@ The query builder also provides a count method for retrieving the number of reco
 
 ## Paginate
 
-(To be done)
-
 If you want to get paginated results on a query, you may use the `paginate` method and specify the desired number of results per page.
 
 ~~~twig
