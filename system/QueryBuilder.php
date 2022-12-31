@@ -176,9 +176,9 @@ final class QueryBuilder implements IteratorAggregate
      */
     public function paginate(int $size): Pagination
     {
-        $this->limit = $size;
+        $this->limit = 0; // query without limit
         $this->processData();
-        return new Pagination($this->processed, $this->limit);
+        return new Pagination($this->processed, $size);
     }
 
     private function processData(): void
