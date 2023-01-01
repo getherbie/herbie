@@ -1,7 +1,7 @@
 ---
 - name: content
   desc: The rendered content with one or more content segments.
-    Only available in layout files.
+    Available only in layout files.
   type: array
 - name: page
   desc: The page object with its properties and methods.
