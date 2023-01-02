@@ -1,0 +1,8 @@
+---
+- name: content.default
+  desc: The default content segment to be displayed.
+    This is always available.
+  type: string
+- name: content.<name>
+  desc: Other named content segments depending on the segments used in your layout files.
+  type: string

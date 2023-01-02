@@ -39,7 +39,7 @@ In a template you then output the list of persons as follows:
 
 {% verbatim %}
     {% for person in site.data.persons %}
-      <p>Name: {{person.name}}<br>
-         Instrument: {{person.name}}</p>
+      <p>Name: {{ person.name }}<br>
+         Instrument: {{ person.instrument }}</p>
     {% endfor %}
 {% endverbatim %}

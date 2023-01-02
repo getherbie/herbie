@@ -5,25 +5,31 @@ layout: doc
 
 # Variables
 
-Herbie traverses certain directories of the website and processes text files with a page properties block.
-For each of these files, Herbie generates different data and makes it available through the Twig template engine.
+Herbie crawls certain directories of the website and processes text files that contain a page properties block. 
+For each of these files, different data is generated and made available in the templating system.
 
-All variables can then be accessed in the layout and content files as normal Twig variables.
+To avoid polluting the global namespace, this data is wrapped in three objects. 
+These objects can be accessed in the layout and content files using normal Twig variables.
+
 Here are some examples:
 
 {% verbatim %}
-    {{ site.route }}
-    {{ site.language }}
-    {{ site.data.persons }}
+    {{ content.default }}
+    {{ page.title }}
     {{ page.layout }}
-    {{ page.tags }}
+    {{ site.language }}
+    {{ site.route }}
 {% endverbatim %}
 
-The details of these variables are listed below.
+More details on these variables are provided below.
 
 ## Global variables
 
 {{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+
+## Content variables
+
+{{ snippet("@site/snippets/variables.twig", {type:"vars_content"}) }}
 
 ## Page variables
 

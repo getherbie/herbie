@@ -129,10 +129,10 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Variables', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 3);
+        $I->seeNumberOfElements('.content>h2', 4);
+        $I->seeNumberOfElements('.content>p', 4);
         $I->seeNumberOfElements('.content>pre', 1);
-        $I->seeNumberOfElements('.content>table', 3);
+        $I->seeNumberOfElements('.content>table', 4);
     }
 
     public function testDocContentsDataFiles(AcceptanceTester $I)
