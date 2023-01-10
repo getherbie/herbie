@@ -45,6 +45,21 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         }
     }
 
+    public function add(string $id, array $data): void
+    {
+        $filepath = $this->alias->get($id);
+        if (is_file($filepath)) {
+            throw new Exception('File already exists');
+        }
+        $path = dirname($filepath);
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0755, true)) {
+                throw new Exception('Could not create folder');
+            }
+        }
+        $test = 1;
+    }
+
     /**
      * @return array<string, mixed>
      */

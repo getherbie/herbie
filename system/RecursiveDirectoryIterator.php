@@ -8,6 +8,11 @@ use RecursiveDirectoryIterator as RecursiveDirectoryIteratorAlias;
 
 final class RecursiveDirectoryIterator extends RecursiveDirectoryIteratorAlias
 {
+    public function __construct(string $path, int $flags)
+    {
+        parent::__construct($path, $flags);
+    }
+
     /**
      * Return an instance of FileInfo with support for relative paths
      */

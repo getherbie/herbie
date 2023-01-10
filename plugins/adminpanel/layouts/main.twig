@@ -1,0 +1,86 @@
+{{- css_add('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') -}}
+{{- css_add('@sysplugin/adminpanel/assets/purecss@3.0.0-pure.min.css') -}}
+{{- css_add('@sysplugin/adminpanel/assets/purecss@3.0.0-grids-responsive.min.css') -}}
+{{- css_add('@sysplugin/adminpanel/assets/unpoly.min.css') -}}
+{{- css_add('@sysplugin/adminpanel/layouts/main.css') -}}
+{{- js_add('@sysplugin/adminpanel/assets/unpoly.min.js', group='head') -}}
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbie Backend</title>
+    {{ css_out() }}
+    {{ js_out('head') }}
+    <script>
+        //up.history.config.enabled = true;
+        up.network.config.cacheSize = 0;
+    </script>
+</head>
+<body>
+<div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+    <div id="menu">
+        <div class="pure-menu pure-menu-open">
+            <a class="pure-menu-heading" href="{{ url_rel('/admin') }}?action=page/index">HERBIE</a>
+            <ul class="pure-menu-list">
+                <!-- li class="menu-item-divided pure-menu-selected"><a href="?action=index">Home</a></li-->
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=page/index">Seiten</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=post/index">Blogposts</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=data/index">Daten</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=media/index">Dateiablage</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=tools/index">Werkzeuge</a></li>
+                <li class="pure-menu-item menu-item-divided"><a class="pure-menu-link" href="{{ url_rel('') }}">Frontend</a></li>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=default/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="main" class="content" up-main>
+        {% block alert %}
+            <div class="alert alert-success hidden"></div>
+            <div class="alert alert-error hidden"></div>
+        {% endblock %}
+        <div class="content-header">
+            <h1>{% block title %}{% endblock %}</h1>
+            <h2>{% block subtitle %}{% endblock %}</h2>
+        </div>
+        <div class="content-body">
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{#
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{{ js_add('@sysplugin/adminpanel/assets/jquery.autosize.min.js') }}
+{% block jquery %}{% endblock %}
+<script>
+    $(document).ready(function () {
+        function alertSlideUp() {
+            if ($('div.alert').is(":visible")) {
+                $('div.alert').slideUp(50);
+            }
+        };
+        $("textarea").autosize();
+        $(document).on("click", "html", function () {
+            if ($('a.delete-confirmed').is(":visible")) {
+                $('a.delete-confirmed').removeClass('delete-confirmed');
+            }
+            alertSlideUp();
+        });
+        $(window).scroll(function() {
+            alertSlideUp();
+        });
+    });
+</script>
+#}
+{{ js_out('body') }}
+</body>
+</html>

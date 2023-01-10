@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Adminpanel</title>
+    <style>
+        {{ file_contents('@sysplugin/adminpanel/assets/purecss@3.0.0-pure.min.css') }}
+        {{ file_contents('@sysplugin/adminpanel/assets/purecss@3.0.0-grids-responsive.min.css') }}
+        {{ file_contents('@sysplugin/adminpanel/layouts/main.css') }}
+    </style>
+</head>
+<body>
+<div style="max-width:800px;margin:5em auto">
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <p><strong>Login Adminpanel</strong></p>
+            <form action="?action=login" method="post" class="pure-form">
+                <input type="password" class="pure-input-1-4" name="password" autofocus="autofocus">
+                <button class="pure-button pure-button-primary" type="submit">Anmelden</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

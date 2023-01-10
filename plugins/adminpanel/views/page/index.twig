@@ -1,0 +1,81 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+{% import "@sysplugin/adminpanel/views/macro.grid.twig" as grid %}
+
+{% block title %}Seiten{% endblock %}
+{% block subtitle %}Pfad: /{{ breadcrumb }}{% endblock %}
+
+{% block content %}
+    
+    <ul>
+    {% for file in files %}
+        <li>{{ file.filename }}</li>
+    {% endfor %}
+    </ul>
+    
+    {% if dir is file_readable %}
+        <a up-layer="new" class="pure-button pure-button-primary button-small" href="?action=page/add&parent={{ parent }}">{{ i('plus-circle-fill', 16, 16) }}{{ translate('adminpanel', 'Seite hinzufügen') }}</a>
+        <table class="pure-table pure-table-horizontal pages">
+            <thead>
+            <tr>
+                <th class="pages-th-icon" width="1%"></th>
+                <th class="pages-th-title">Titel</th>
+                <th class="pages-th-title">Name</th>
+                <th class="text-right"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if tree.hasParent() %}
+                <tr>
+                    <td class="icon">{{ i('arrow-up', 22, 22) }}</td>
+                    <td class="title" colspan="3">
+                        <a up-target="content" href="?action=page/index&route={{ tree.parent.menuItem.route }}">Nach oben</a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% for item in tree %}
+                
+                {% set menuItem = item.menuItem %}
+                {% if item.hasChildren %}
+                    <tr>
+                        <td class="icon">{{ i('folder', 22, 22) }}</td>
+                        <td class="title">
+                            <a up-target="content" href="?action=page/index&route={{ menuItem.route }}">{% if menuItem.title is empty %}[Kein Titel] {% else %}{{ menuItem.title }}{% endif %}</a>
+                        </td>
+                        <td class="title">{{ menuItem.id|replace({'@page/':''}) }}</td>
+                        <td class="links nowrap">
+                            <a class="pure-button button-small" href="?action=page/data&path={{ menuItem.path }}&cancel={{ cancel }}">Eigenschaften</a>
+                            <a class="pure-button button-small" href="?action=page/content&path={{ menuItem.path }}&cancel={{ cancel }}">Inhalte</a>
+                            {{ grid.delete_link(menuItem.path, "Löschen") }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="icon">{{ i('filetype-' ~ menuItem.id|path_extension, 22, 22) }}</td>
+                        <td class="title">{% if menuItem.title is empty %}[Kein Titel] {% else %}{{ menuItem.title }}{% endif %}</td>
+                        <td class="title">{{ menuItem.id|replace({'@page/':''}) }}</td>
+                        <td class="links nowrap">
+                            <a class="pure-button button-small" href="?action=page/data&path={{ menuItem.path }}&cancel={{ cancel }}">Eigenschaften</a>
+                            <a class="pure-button button-small" href="?action=page/content&path={{ menuItem.path }}&cancel={{ cancel }}">Inhalte</a>
+                            {{ grid.delete_link(menuItem.path, "Löschen") }}
+                        </td>
+                    </tr>
+                    {# <tr>
+                        <td class="icon"><i class="fa fa-file-o fa-lg"></i></td>
+                        <td class="title nowrap" colspan="2">{% if menuItem.title %}{{ menuItem.title }} {% endif %}{% if menuItem.plugin %}[{{ menuItem.plugin }}]{% endif %}</td>
+                    </tr> #}
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+        {{ grid.addblock("Seite hinzufügen", parent) }}
+    {% else %}
+        <p>Das Verzeichnis <b>{{ dir }}</b> existiert nicht oder ist nicht lesbar.</p>
+    {% endif %}
+{% endblock %}
+
+{% block jquery %}
+
+    {{ grid.delete_js("?action=page/delete") }}
+    {{ grid.addblock_js("?action=page/add") }}
+
+{% endblock %}

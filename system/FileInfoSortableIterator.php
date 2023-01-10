@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace herbie;
 
 use ArrayIterator;
+use Closure;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
 
 final class FileInfoSortableIterator implements IteratorAggregate
 {
+    public const SORT_BY_NONE = 0;
     public const SORT_BY_NAME = 1;
     public const SORT_BY_TYPE = 2;
     public const SORT_BY_ACCESSED_TIME = 3;
@@ -18,16 +20,9 @@ final class FileInfoSortableIterator implements IteratorAggregate
     public const SORT_BY_MODIFIED_TIME = 5;
 
     private Traversable $iterator;
+    private Closure|int $sort;
 
-    /**
-     * @var callable
-     */
-    private $sort;
-
-    /**
-     * @param int|callable $sort
-     */
-    public function __construct(Traversable $iterator, $sort)
+    public function __construct(Traversable $iterator, int|callable $sort)
     {
         $this->iterator = $iterator;
 
@@ -56,6 +51,8 @@ final class FileInfoSortableIterator implements IteratorAggregate
             $this->sort = function (FileInfo $a, FileInfo $b) {
                 return ($a->getMTime() - $b->getMTime());
             };
+        } elseif (self::SORT_BY_NONE === $sort) {
+            $this->sort = $sort;
         } elseif (is_callable($sort)) {
             $this->sort = $sort;
         } else {
@@ -66,6 +63,10 @@ final class FileInfoSortableIterator implements IteratorAggregate
 
     public function getIterator(): ArrayIterator
     {
+        if (self::SORT_BY_NONE === $this->sort) {
+            return $this->iterator;
+        }
+
         $array = iterator_to_array($this->iterator, true);
         uasort($array, $this->sort);
 

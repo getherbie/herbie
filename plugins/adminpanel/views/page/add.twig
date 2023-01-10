@@ -1,0 +1,21 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
+{% import "@sysplugin/adminpanel/macros/forms.twig" as forms %}
+
+{% block title %}{{ translate('adminpanel', 'Add page') }}{% endblock %}
+{% block subtitle %}Pfad: /{{ values.parent }}{% endblock %}
+
+{% block content %}
+    <form up-layer="root" up-submit class="pure-form pure-form-stacked" action="?action=page/add&parent={{ values.parent }}" method="post">
+        <fieldset>
+            {% if errors.alert != '' %}<div class="pure-form-error"><b>Fehler</b>: {{ errors.common }}</div>{% endif %}
+            {{ forms.input_hidden('parent', values.parent, 'Parent', {readonly: true}, errors.parent) }}
+            {{ forms.input_text('title', values.title, 'Seitentitel', {placeholder: 'Der Seitentitel', autofocus: errors|length == 0}, errors.title) }}
+            {{ forms.input_text('name', values.name, 'Dateiname', {placholder: 'Der Dateiname der Seite'}, errors.name) }}
+            {{ forms.dropdown_list('Dateityp', 'type', values.type, types, {}, errors.type) }}
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

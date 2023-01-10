@@ -1,0 +1,68 @@
+{% macro input_hidden(name, value, label, options, error) %}
+    <input
+        id="field-{{ name }}"
+        type="hidden"
+        name="{{ name ?? '' }}"
+        value="{{ value ?? '' }}"
+    />
+{% endmacro %}
+
+{% macro input_text(name, value, label, options, error) %}
+    {{ _self.input('text', name, value, label, options, error) }}
+{% endmacro %}
+
+{% macro dropdown_list(label, name, selection, items, options, error) %}
+    <div class="pure-control-group {{ error ? 'pure-control-group-error' : '' }}">
+        <label for="field-{{ name }}">{{ label }}</label>
+        <select
+                up-validate
+                id="field-{{ name }}"
+                class=""
+                name="{{ name ?? '' }}"
+                {{ _self.attr_bool('disabled', options.disabled) }}
+                {{ _self.attr_bool('readonly', options.readonly) }}
+                {{ _self.attr_bool('required', options.required) }}
+        >
+            {% for key, val in items %}
+                {% set selected = (key == selection) ? 'selected' : '' %}
+                <option value="{{ key }}" {{ selected }}>{{ val }}</option>
+            {% endfor %}
+        </select>
+        <span class="pure-form-message">{{ options.message }}</span>
+        <span class="pure-form-message-error">{{ error }}</span>
+    </div>
+{% endmacro %}
+
+{% macro input(type, name, value, label, options, error) %}
+    <div class="pure-control-group {{ error ? 'pure-control-group-error' : '' }}">
+        <label for="field-{{ name }}">{{ label }}</label>
+        <input
+            up-validate
+            id="field-{{ name }}"
+            type="{{ type ?? '' }}"
+            name="{{ name ?? '' }}"
+            value="{{ value ?? '' }}"
+            {{ _self.attr_text('class', options.class) }}
+            {{ _self.attr_text('minlength', options.minlength) }}
+            {{ _self.attr_text('maxlength', options.maxlength) }}
+            {{ _self.attr_text('placeholder', options.placeholder) }}
+            {{ _self.attr_text('size', options.size) }}
+            {{ _self.attr_bool('autofocus', options.autofocus) }}
+            {{ _self.attr_bool('disabled', options.disabled) }}
+            {{ _self.attr_bool('readonly', options.readonly) }}
+            {{ _self.attr_bool('required', options.required) }}
+        />
+        <span class="pure-form-message">{{ options.message }}</span>
+        <span class="pure-form-message-error">{{ error }}</span>
+    </div>
+{% endmacro %}
+
+{% macro attr_text(name, value) %}
+    {% if value != '' %}
+        {{ name }}="{{ value|e('html_attr') }}"
+    {% endif %}
+{% endmacro %}
+
+{% macro attr_bool(name, value) %}
+    {{ value ? name : ''  }}
+{% endmacro %}

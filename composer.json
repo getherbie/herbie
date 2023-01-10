@@ -30,7 +30,9 @@
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
+        "rakit/validation": "^1.4",
         "symfony/console": "^5.0",
+        "symfony/finder": "^5.0",
         "symfony/yaml": "^5.4",
         "tebe/http-factory": "^2.0",
         "twig/twig": "^3.4"

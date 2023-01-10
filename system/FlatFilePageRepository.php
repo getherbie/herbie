@@ -51,6 +51,9 @@ final class FlatFilePageRepository implements PageRepositoryInterface
 
     public function save(Page $page): bool
     {
+        $values = $page->toArray();
+        $defaults = $page->defaults();
+        $diff = array_diff_assoc_recursive($values, $defaults);
         // TODO: Implement save() method.
         return false;
     }

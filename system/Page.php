@@ -107,6 +107,37 @@ final class Page implements ArrayAccess
         }
     }
 
+    public function defaults(): array
+    {
+        return [
+            'authors' => [],
+            'cached' => true,
+            'categories' => [],
+            'content_type' => 'text/html',
+            'created' => '',
+            'customData' => [],
+            'date' => '',
+            'excerpt' => '',
+            'format' => 'raw',
+            'hidden' => false,
+            'id' => '',
+            'keep_extension' => false,
+            'layout' => 'default',
+            'menu_title' => '',
+            'modified' => '',
+            'parent_id' => '',
+            'parent_route' => '',
+            'path' => '',
+            'redirect' => [],
+            'route' => '',
+            'segments' => [],
+            'tags' => [],
+            'title' => '',
+            'twig' => true,
+            'type' => 'page',
+        ];
+    }
+
     /**
      * Overwrites PageItemTrait::setData()
      */
@@ -145,8 +176,13 @@ final class Page implements ArrayAccess
     public function getSegments(): array
     {
         if ($this->segments === null) {
-            $content = file_read($this->getPath());
-            [, $this->segments] = FlatFilePagePersistence::parseFileContent($content);
+            $path = $this->getPath();
+            if (!is_file($path)) {
+                $this->segments = [];
+            } else {
+                $content = file_read($path);
+                [, $this->segments] = FlatFilePagePersistence::parseFileContent($content);
+            }
         }
         return $this->segments;
     }

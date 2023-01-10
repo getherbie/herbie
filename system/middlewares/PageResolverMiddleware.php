@@ -42,6 +42,7 @@ final class PageResolverMiddleware implements MiddlewareInterface
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE, $route)
             ->withAttribute(self::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS, $routeParams);
 
-        return $handler->handle($request);
+        $response = $handler->handle($request);
+        return $response;
     }
 }

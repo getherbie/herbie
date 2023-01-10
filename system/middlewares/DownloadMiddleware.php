@@ -43,7 +43,8 @@ final class DownloadMiddleware implements MiddlewareInterface
 
         // no download request? go to next middleware
         if (!$this->isDownloadRequest($route)) {
-            return $handler->handle($request);
+            $response = $handler->handle($request);
+            return $response;
         }
 
         $filepath = $this->getFilePath($route);
