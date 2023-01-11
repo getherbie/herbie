@@ -536,3 +536,12 @@ function get_type(mixed $value): string
     }
     return $type;
 }
+
+function composer_package_installed(string $name): bool
+{
+    static $packages;
+    if ($packages === null) {
+        $packages = InstalledVersions::getInstalledPackages();
+    }
+    return in_array($name, $packages);
+}

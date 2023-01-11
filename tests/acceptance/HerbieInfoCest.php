@@ -20,6 +20,7 @@ final class HerbieInfoCest
     {
         $functions = [
             'herbie\array_is_assoc',
+            'herbie\composer_package_installed',
             'herbie\date_format',
             'herbie\defined_classes',
             'herbie\defined_constants',
