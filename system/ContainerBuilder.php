@@ -5,19 +5,28 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use Exception;
 use herbie\middlewares\DownloadMiddleware;
 use herbie\middlewares\ErrorHandlerMiddleware;
 use herbie\middlewares\PageRendererMiddleware;
 use herbie\middlewares\PageResolverMiddleware;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
-use Tebe\HttpFactory\HttpFactory;
 
 final class ContainerBuilder
 {
+    private const PACKAGE_GUZZLE_HTTP_PSR7 = 'guzzlehttp/psr7';
+    private const PACKAGE_LAMINAS_DIACTOROS = 'laminas/laminas-diactoros';
+    private const PACKAGE_NYHOLM_PSR7 = 'nyholm/psr7';
+    private const PACKAGE_NYHOLM_PSR7_SERVER = 'nyholm/psr7-server';
+    private const PACKAGE_SLIM_PSR7 = 'slim/psr7';
+
     private Application $app;
     private ?CacheInterface $cache;
     private ?LoggerInterface $logger;
@@ -135,12 +144,15 @@ final class ContainerBuilder
         $c->set(DownloadMiddleware::class, function (ContainerInterface $c) {
             return new DownloadMiddleware(
                 $c->get(Alias::class),
+                $c->get(StreamFactoryInterface::class),
+                $c->get(ResponseFactoryInterface::class),
                 $c->get(Config::class)->getAsArray('components.downloadMiddleware'),
             );
         });
 
         $c->set(ErrorHandlerMiddleware::class, function (ContainerInterface $c) {
             return new ErrorHandlerMiddleware(
+                $c->get(ResponseFactoryInterface::class),
                 $c->get(TwigRenderer::class)
             );
         });
@@ -155,10 +167,6 @@ final class ContainerBuilder
                 $config->getAsString('paths.pages'),
                 str_explode_filtered($config->getAsString('fileExtensions.pages'), ',')
             );
-        });
-
-        $c->set(HttpFactory::class, function () {
-            return new HttpFactory();
         });
 
         if ($this->logger) {
@@ -212,7 +220,7 @@ final class ContainerBuilder
             return new PageRendererMiddleware(
                 $c->get(CacheInterface::class),
                 $c->get(EventManager::class),
-                $c->get(HttpFactory::class),
+                $c->get(ResponseFactoryInterface::class),
                 $c->get(UrlManager::class),
                 $options
             );
@@ -242,8 +250,81 @@ final class ContainerBuilder
             );
         });
 
+        $c->set(ResponseFactoryInterface::class, function () {
+            if (composer_package_installed(self::PACKAGE_LAMINAS_DIACTOROS)) {
+                return new \Laminas\Diactoros\ResponseFactory();
+            }
+            if (composer_package_installed(self::PACKAGE_GUZZLE_HTTP_PSR7)) {
+                return new \GuzzleHttp\Psr7\HttpFactory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_NYHOLM_PSR7)) {
+                return new \Nyholm\Psr7\Factory\Psr17Factory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_SLIM_PSR7)) {
+                return new \Slim\Psr7\Factory\ResponseFactory();
+            }
+            $this->throwPsr17Exception();
+        });
+
+        $c->set(ServerRequestFactoryInterface::class, function () {
+            if (composer_package_installed(self::PACKAGE_LAMINAS_DIACTOROS)) {
+                return new \Laminas\Diactoros\ServerRequestFactory();
+            }
+            if (composer_package_installed(self::PACKAGE_GUZZLE_HTTP_PSR7)) {
+                return new \GuzzleHttp\Psr7\HttpFactory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_NYHOLM_PSR7)) {
+                return new \Nyholm\Psr7\Factory\Psr17Factory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_SLIM_PSR7)) {
+                return new \Slim\Psr7\Factory\ServerRequestFactory();
+            }
+            $this->throwPsr17Exception();
+        });
+
         $c->set(ServerRequestInterface::class, function (ContainerInterface $c) {
-            return $c->get(HttpFactory::class)->createServerRequestFromGlobals();
+            if (composer_package_installed(self::PACKAGE_LAMINAS_DIACTOROS)) {
+                return \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
+            }
+            if (composer_package_installed(self::PACKAGE_GUZZLE_HTTP_PSR7)) {
+                return \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+            }
+            if (composer_package_installed(self::PACKAGE_NYHOLM_PSR7)) {
+                if (composer_package_installed(self::PACKAGE_NYHOLM_PSR7_SERVER)) {
+                    /** @var \Nyholm\Psr7\Factory\Psr17Factory $serverRequestFactory */
+                    $serverRequestFactory = $c->get(ServerRequestFactoryInterface::class);
+                    return (new \Nyholm\Psr7Server\ServerRequestCreator(
+                        $serverRequestFactory,
+                        $serverRequestFactory,
+                        $serverRequestFactory,
+                        $serverRequestFactory
+                    ))->fromGlobals();
+                }
+                $message = 'To enable full PSR-17 support, install %s.';
+                throw new Exception(sprintf($message, self::PACKAGE_NYHOLM_PSR7_SERVER));
+            }
+            if (composer_package_installed(self::PACKAGE_SLIM_PSR7)) {
+                /** @var \Slim\Psr7\Factory\ServerRequestFactory $serverRequestFactory */
+                $serverRequestFactory = $c->get(ServerRequestFactoryInterface::class);
+                return $serverRequestFactory->createFromGlobals();
+            }
+            $this->throwPsr17Exception();
+        });
+
+        $c->set(StreamFactoryInterface::class, function () {
+            if (composer_package_installed(self::PACKAGE_LAMINAS_DIACTOROS)) {
+                return new \Laminas\Diactoros\StreamFactory();
+            }
+            if (composer_package_installed(self::PACKAGE_GUZZLE_HTTP_PSR7)) {
+                return new \GuzzleHttp\Psr7\HttpFactory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_NYHOLM_PSR7)) {
+                return new \Nyholm\Psr7\Factory\Psr17Factory(); // factory for all psr interfaces
+            }
+            if (composer_package_installed(self::PACKAGE_SLIM_PSR7)) {
+                return new \Slim\Psr7\Factory\StreamFactory();
+            }
+            $this->throwPsr17Exception();
         });
 
         $c->set(Site::class, function (ContainerInterface $c) {
@@ -289,5 +370,22 @@ final class ContainerBuilder
         });
 
         return $c;
+    }
+
+    private function throwPsr17Exception(): void
+    {
+        $packages = [
+            [self::PACKAGE_LAMINAS_DIACTOROS],
+            [self::PACKAGE_GUZZLE_HTTP_PSR7],
+            [self::PACKAGE_NYHOLM_PSR7, self::PACKAGE_NYHOLM_PSR7_SERVER],
+            [self::PACKAGE_SLIM_PSR7],
+        ];
+
+        $packages = array_map(function (array $items): string {
+            return join(' with ', $items);
+        }, $packages);
+
+        $message = 'To enable PSR-17 support, install one of the following Composer packages: %s.';
+        throw new Exception(sprintf($message, join(', ', $packages)), 500);
     }
 }

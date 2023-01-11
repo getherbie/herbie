@@ -10,7 +10,10 @@ use Composer\InstalledVersions;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
@@ -18,7 +21,6 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 use RuntimeException;
-use Tebe\HttpFactory\HttpFactory;
 use Throwable;
 use UnexpectedValueException;
 
@@ -407,14 +409,16 @@ function di_class_whitelist(): array
         Config::class,
         DataRepositoryInterface::class,
         EventManager::class,
-        HttpFactory::class,
         LoggerInterface::class,
         MiddlewareDispatcher::class,
         PageRepositoryInterface::class,
         PluginManager::class,
+        ResponseFactoryInterface::class,
+        ServerRequestFactoryInterface::class,
         ServerRequestInterface::class,
         Site::class,
         SlugGenerator::class,
+        StreamFactoryInterface::class,
         Translator::class,
         TwigRenderer::class,
         UrlManager::class
@@ -531,4 +535,13 @@ function get_type(mixed $value): string
         $type = 'float';
     }
     return $type;
+}
+
+function composer_package_installed(string $name): bool
+{
+    static $packages;
+    if ($packages === null) {
+        $packages = InstalledVersions::getInstalledPackages();
+    }
+    return in_array($name, $packages);
 }
