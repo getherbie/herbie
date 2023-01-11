@@ -9,6 +9,7 @@ use herbie\events\ResponseEmittedEvent;
 use herbie\events\ResponseGeneratedEvent;
 use herbie\events\TranslatorInitializedEvent;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -185,6 +186,11 @@ final class Application
     public function getEventManager(): EventManager
     {
         return $this->container->get(EventManager::class);
+    }
+
+    public function getResponseFactory(): ResponseFactoryInterface
+    {
+        return $this->container->get(ResponseFactoryInterface::class);
     }
 
     public function getTwigRenderer(): TwigRenderer
