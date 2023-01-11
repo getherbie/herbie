@@ -163,10 +163,6 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(HttpFactory::class, function () {
-            return new HttpFactory();
-        });
-
         if ($this->logger) {
             $c->set(LoggerInterface::class, $this->logger);
         } else {
@@ -378,7 +374,7 @@ final class ContainerBuilder
             ['slim/psr7'],
         ];
 
-        $packages = array_map(function (array $items): array {
+        $packages = array_map(function (array $items): string {
             return join(' with ', $items);
         }, $packages);
 
@@ -386,5 +382,4 @@ final class ContainerBuilder
         $message .= join(', ', $packages);
         throw new Exception($message);
     }
-
 }

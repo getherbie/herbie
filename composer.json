@@ -62,7 +62,9 @@
         "getherbie/plugin-simplesearch": "dev-master",
         "laminas/laminas-diactoros": "^2.24",
         "netcarver/textile": "^3.7",
+        "nyholm/psr7": "^1.5",
         "phpstan/phpstan": "^1.8",
+        "slim/psr7": "^1.6",
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/process": "^5.4"
     },
