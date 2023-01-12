@@ -13,18 +13,18 @@ use herbie\events\RenderSegmentEvent;
 use herbie\HttpException;
 use herbie\Page;
 use herbie\UrlManager;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
-use Tebe\HttpFactory\HttpFactory;
 
 final class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
     private EventManager $eventManager;
-    private HttpFactory $httpFactory;
+    private ResponseFactoryInterface $responseFactory;
     private UrlManager $urlManager;
     private bool $cacheEnable;
     private int $cacheTTL;
@@ -35,13 +35,13 @@ final class PageRendererMiddleware implements MiddlewareInterface
     public function __construct(
         CacheInterface $cache,
         EventManager $eventManager,
-        HttpFactory $httpFactory,
+        ResponseFactoryInterface $responseFactory,
         UrlManager $urlManager,
         array $options = []
     ) {
         $this->cache = $cache;
-        $this->httpFactory = $httpFactory;
         $this->eventManager = $eventManager;
+        $this->responseFactory = $responseFactory;
         $this->urlManager = $urlManager;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
@@ -116,7 +116,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
             }
         }
 
-        $response = $this->httpFactory->createResponse();
+        $response = $this->responseFactory->createResponse();
         $response->getBody()->write($content);
         return $response->withHeader('Content-Type', $page->getContentType());
     }
@@ -128,7 +128,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         } else {
             $location = $this->urlManager->createUrl($url); // An internal route? Generate URL.
         }
-        return $this->httpFactory
+        return $this->responseFactory
             ->createResponse($status)
             ->withHeader('Location', $location);
     }

@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace herbie\middlewares;
 
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Tebe\HttpFactory\HttpFactory;
 
 final class HttpBasicAuthMiddleware implements MiddlewareInterface
 {
+    private ResponseFactoryInterface $responseFactory;
     private array $users;
 
     /**
      * HttpBasicAuthMiddleware constructor.
      */
-    public function __construct(array $users)
+    public function __construct(array $users, ResponseFactoryInterface $responseFactory)
     {
+        $this->responseFactory = $responseFactory;
         $this->users = $users;
     }
 
@@ -27,7 +29,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
         $login = $this->login($request);
 
         if ($login === false) {
-            return HttpFactory::instance()
+            return $this->responseFactory
                 ->createResponse(401, 'Unauthorized')
                 ->withHeader('WWW-Authenticate', 'Basic realm="Test"');
         }

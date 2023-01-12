@@ -55,7 +55,7 @@ $app->addRouteMiddleware('blog/2015-07-30', new CustomHeader('blog'));
 
 $app->addRouteMiddleware('features', new CustomHeader('features'));
 
-$app->addRouteMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass']));
+$app->addRouteMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass'], $app->getResponseFactory()));
 
 $app->addTwigFunction('myfunction', function () {
     return 'My Function';
