@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Symfony\Component\Finder\Finder;
+
 final class YamlDataRepository implements DataRepositoryInterface
 {
     private string $path;
@@ -39,42 +41,41 @@ final class YamlDataRepository implements DataRepositoryInterface
 
     private function scanDataDir(): array
     {
-        $dataFiles = [];
-
-        $files = scandir($this->path);
-        if ($files === false) {
-            return $dataFiles;
-        }
-
-        foreach ($files as $file) {
-            if (substr($file, 0, 1) === '.') {
-                continue;
-            }
-            $info = pathinfo($file);
-            if (!isset($info['extension']) || !in_array($info['extension'], $this->extensions)) {
-                continue;
-            }
-            $name = strtolower($info['filename']);
-            if (!isset($dataFiles[$name])) {
-                $dataFiles[$name] = $this->path . '/' . $file;
+        static $data;
+        if ($data === null) {
+            $data = [];
+            foreach ($this->getFinder() as $file) {
+                $basename = $file->getBasename('.' . $file->getExtension()); // kind of weird
+                $data[$basename] = $file->getContents();
             }
         }
-
-        return $dataFiles;
+        return $data;
     }
 
-    private function parseDataFile(string $filepath): array
+    private function parseDataFile(string $contents): array
     {
-        $yaml = file_read($filepath);
-        return Yaml::parse($yaml);
+        return Yaml::parse($contents);
     }
 
     public function loadAll(): array
     {
         $data = [];
-        foreach ($this->scanDataDir() as $name => $dataFile) {
-            $data[$name] = $this->parseDataFile($dataFile);
+        foreach ($this->scanDataDir() as $basename => $contents) {
+            $data[$basename] = $this->parseDataFile($contents);
         }
         return $data;
+    }
+
+    private function getFinder(): Finder
+    {
+        $patterns = $this->getPatterns();
+        return (new Finder())->files()->name($patterns)->in($this->path);
+    }
+
+    private function getPatterns(): array
+    {
+        return array_map(function (string $extension) {
+            return '*.' . $extension;
+        }, $this->extensions);
     }
 }
