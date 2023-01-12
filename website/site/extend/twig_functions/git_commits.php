@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace website\site\extend\twig_functions;
+namespace herbie\website\site\extend\twig_functions;
 
 use Exception;
 
