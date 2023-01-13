@@ -94,6 +94,7 @@ final class HerbieInfoCest
             'herbie\UncaughtExceptionHandler',
             'herbie\UrlManager',
             'herbie\Yaml',
+            'herbie\YamlDataRepository',
             'herbie\events\PluginsInitializedEvent',
             'herbie\events\RenderPageEvent',
             'herbie\events\RenderSegmentEvent',
