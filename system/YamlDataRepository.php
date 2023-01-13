@@ -6,12 +6,12 @@ namespace herbie;
 
 use Symfony\Component\Finder\Finder;
 
-final class YamlDataRepository implements DataRepositoryInterface
+class YamlDataRepository implements DataRepositoryInterface
 {
-    private string $path;
+    protected string $path;
 
     /** @var string[] */
-    private array $extensions;
+    protected array $extensions;
 
     /**
      * YamlDataRepository constructor.
@@ -31,15 +31,15 @@ final class YamlDataRepository implements DataRepositoryInterface
 
     public function load(string $name): array
     {
-        $dataFiles = $this->scanDataDir();
+        $files = $this->scanDir();
         $name = strtolower($name);
-        if (!isset($dataFiles[$name])) {
+        if (!isset($files[$name])) {
             return [];
         }
-        return $this->parseDataFile($dataFiles[$name]);
+        return $this->parseData($files[$name]);
     }
 
-    private function scanDataDir(): array
+    protected function scanDir(): array
     {
         static $data;
         if ($data === null) {
@@ -52,7 +52,7 @@ final class YamlDataRepository implements DataRepositoryInterface
         return $data;
     }
 
-    private function parseDataFile(string $contents): array
+    protected function parseData(string $contents): array
     {
         return Yaml::parse($contents);
     }
@@ -60,19 +60,19 @@ final class YamlDataRepository implements DataRepositoryInterface
     public function loadAll(): array
     {
         $data = [];
-        foreach ($this->scanDataDir() as $basename => $contents) {
-            $data[$basename] = $this->parseDataFile($contents);
+        foreach ($this->scanDir() as $basename => $contents) {
+            $data[$basename] = $this->parseData($contents);
         }
         return $data;
     }
 
-    private function getFinder(): Finder
+    protected function getFinder(): Finder
     {
         $patterns = $this->getPatterns();
         return (new Finder())->files()->name($patterns)->in($this->path);
     }
 
-    private function getPatterns(): array
+    protected function getPatterns(): array
     {
         return array_map(function (string $extension) {
             return '*.' . $extension;
