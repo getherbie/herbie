@@ -4,21 +4,19 @@ namespace herbie\sysplugins\adminpanel;
 
 use herbie\Alias;
 use herbie\Config;
-use Herbie\DI;
-use Herbie\Hook;
-use Herbie\Loader\FrontMatterLoader;
-use Herbie\Menu;
+use herbie\DataRepositoryInterface;
+use herbie\Finder;
 use herbie\PagePersistenceInterface;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use Tebe\HttpFactory\HttpFactory;
 use Twig_SimpleFunction;
 
 class AdminpanelPlugin extends Plugin
@@ -28,10 +26,12 @@ class AdminpanelPlugin extends Plugin
     protected $request;
     private Alias $alias;
     private Config $config;
-    private HttpFactory $httpFactory;
+    private DataRepositoryInterface $dataRepository;
+    private Finder $finder;
     private LoggerInterface $logger;
     private PagePersistenceInterface $pagePersistence;
     private PageRepositoryInterface $pageRepository;
+    private ResponseFactoryInterface $responseFactory;
     private Translator $translator;
     private TwigRenderer $twigRenderer;
     private UrlManager $urlManager;
@@ -42,20 +42,24 @@ class AdminpanelPlugin extends Plugin
     public function __construct(
         Alias $alias,
         Config $config,
-        HttpFactory $httpFactory,
+        DataRepositoryInterface $dataRepository,
+        Finder $finder,
         LoggerInterface $logger,
         PagePersistenceInterface $pagePersistence,
         PageRepositoryInterface $pageRepository,
+        ResponseFactoryInterface $responseFactory,
         Translator $translator,
         TwigRenderer $twigRenderer,
         UrlManager $urlManager
     ) {
         $this->alias = $alias;
         $this->config = $config;
-        $this->httpFactory = $httpFactory;
+        $this->dataRepository = $dataRepository;
+        $this->finder = $finder;
         $this->logger = $logger;
         $this->pagePersistence = $pagePersistence;
         $this->pageRepository = $pageRepository;
+        $this->responseFactory = $responseFactory;
         $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
@@ -172,8 +176,11 @@ class AdminpanelPlugin extends Plugin
         $constructorParams = [
             $this->alias,
             $this->config,
+            $this->dataRepository,
+            $this->finder,
             $this->pagePersistence,
             $this->pageRepository,
+            $this->responseFactory,
             $request,
             $this->translator,
             $this->twigRenderer,
@@ -196,7 +203,7 @@ class AdminpanelPlugin extends Plugin
             return $responseOrContent->withStatus($statusCode);
         }
 
-        $response = $this->httpFactory->createResponse();
+        $response = $this->responseFactory->createResponse();
         $response->getBody()->write($responseOrContent);
         return $response->withHeader('Content-Type', 'text/html')->withStatus($statusCode);
     }

@@ -1,10 +1,10 @@
 {% extends "@sysplugin/adminpanel/layouts/main.twig" %}
-{% import "@plugin/adminpanel/views/macro.grid.twig" as grid %}
+{% import "@sysplugin/adminpanel/views/macro.grid.twig" as grid %}
 
 {% block title %}{{ translate('adminpanel', 'Data') }}{% endblock %}
 
 {% block content %}
-    {% if dir is readable %}
+    {% if dir is file_readable %}
     <table class="pure-table pure-table-horizontal data-table">
         <thead>
         <tr>
@@ -20,8 +20,8 @@
             <tr class="file-{{ item }}">
                 <td class="icon"><i class="fa fa-database fa-lg"></i></td>
                 <td class="title">{{ item }}</td>
-                <td>{{ entry.size|filesize }}</td>
-                <td>{{ entry.modified|strftime }}</td>
+                <td>{{ entry.size|format_size }}</td>
+                <td>{{ entry.modified|date }}</td>
                 <td class="links">
                     <a class="pure-button button-small" href="?action=data/edit&path=@site/data/{{ item }}.yml">{{ translate('adminpanel', 'Edit') }}</a>
                     {{ grid.delete_link(item, translate('adminpanel', 'Delete')) }}

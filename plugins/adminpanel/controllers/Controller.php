@@ -4,21 +4,26 @@ namespace herbie\sysplugins\adminpanel\controllers;
 
 use herbie\Alias;
 use herbie\Config;
+use herbie\DataRepositoryInterface;
+use herbie\Finder;
 use herbie\PagePersistenceInterface;
 use herbie\PageRepositoryInterface;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tebe\HttpFactory\HttpFactory;
 
 abstract class Controller
 {
     protected Alias $alias;
     protected Config $config;
+    protected DataRepositoryInterface $dataRepository;
+    protected Finder $finder;
     protected PagePersistenceInterface $pagePersistence;
     protected PageRepositoryInterface $pageRepository;
+    private ResponseFactoryInterface $responseFactory;
     protected ServerRequestInterface $request;
     protected Translator $translator;
     protected TwigRenderer $twig;
@@ -30,8 +35,11 @@ abstract class Controller
     public function __construct(
         Alias $alias,
         Config $config,
+        DataRepositoryInterface $dataRepository,
+        Finder $finder,
         PagePersistenceInterface $pagePersistence,
         PageRepositoryInterface $pageRepository,
+        ResponseFactoryInterface $responseFactory,
         ServerRequestInterface $request,
         Translator $translator,
         TwigRenderer $twig,
@@ -39,8 +47,11 @@ abstract class Controller
     ) {
         $this->alias = $alias;
         $this->config = $config;
+        $this->dataRepository = $dataRepository;
+        $this->finder = $finder;
         $this->pagePersistence = $pagePersistence;
         $this->pageRepository = $pageRepository;
+        $this->responseFactory = $responseFactory;
         $this->request = $request;
         $this->translator = $translator;
         $this->twig = $twig;
@@ -77,14 +88,14 @@ abstract class Controller
 
     protected function redirect(string $action, int $code = 301): ResponseInterface
     {
-        return HttpFactory::instance()
+        return $this->responseFactory
             ->createResponse($code)
             ->withHeader('Location', $this->url($action));
     }
 
     protected function error(string $message, int $code): ResponseInterface
     {
-        $response = HttpFactory::instance()->createResponse($code);
+        $response = $this->responseFactory->createResponse($code);
         $body = $response->getBody();
         $body->rewind();
         $body->write($message);

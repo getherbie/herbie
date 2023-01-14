@@ -2,10 +2,7 @@
 
 namespace herbie\sysplugins\adminpanel\controllers;
 
-#use Herbie\Helper\FilesystemHelper;
-#use Herbie\Menu\Page;
 use Exception;
-use herbie\Page;
 use herbie\sysplugins\adminpanel\components\Filesystem;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -122,16 +119,6 @@ class PageController extends Controller
         $route = $request->getQueryParams()['route'] ?? '';
         $dir = '@page/' . ($request->getQueryParams()['dir'] ?? '');
 
-        $files = Filesystem::getFiles($this->alias->get($dir));
-
-        #$files = scandir($this->alias->get($dir), SCANDIR_SORT_DESCENDING);
-
-        $test = $this->pageRepository
-            ->findAll()
-            ->query()
-            ->where('parent_route=' . $route)
-            ->all();
-
         $tree = $this->getPageTree()->findByRoute($route);
         $params = [
             'tree' => $tree,
@@ -139,7 +126,7 @@ class PageController extends Controller
             'breadcrumb' => $route,
             'dir' => $this->config->get('paths.pages'),
             'parent' => $route, // for macro.grid.addblock_js()
-            'files' => $files
+            'files' => []
         ];
         return $this->render('page/index.twig', $params);
     }

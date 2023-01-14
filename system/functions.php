@@ -407,6 +407,7 @@ function di_class_whitelist(): array
         Assets::class,
         CacheInterface::class,
         Config::class,
+        Finder::class,
         DataRepositoryInterface::class,
         EventManager::class,
         LoggerInterface::class,

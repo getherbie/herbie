@@ -32,6 +32,7 @@
         "psr/simple-cache": "^1.0",
         "rakit/validation": "^1.4",
         "symfony/console": "^5.0",
+        "symfony/filesystem": "^6.0",
         "symfony/finder": "5.4",
         "symfony/yaml": "^5.4",
         "twig/twig": "^3.4"

@@ -69,7 +69,7 @@ class YamlDataRepository implements DataRepositoryInterface
     protected function getFinder(): Finder
     {
         $patterns = $this->getPatterns();
-        return (new Finder())->files()->name($patterns)->in($this->path);
+        return (new Finder())->files()->name($patterns)->in($this->path)->sortByName();
     }
 
     protected function getPatterns(): array

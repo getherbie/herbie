@@ -31,10 +31,10 @@ class DataController extends Controller
         return $this->indexAction($request);
     }
 
-    public function indexAction()
+    public function indexAction(ServerRequestInterface $request)
     {
         $dir = $this->alias->get('@site/data/');
-        $data = $this->getService('DataArray');
+        $data = $this->dataRepository->loadAll();
         foreach ($data as $key => $unused) {
             $path = $dir . $key . '.yml';
             $data[$key] = [
