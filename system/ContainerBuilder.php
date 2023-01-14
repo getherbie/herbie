@@ -161,12 +161,12 @@ final class ContainerBuilder
             return new EventManager();
         });
 
-        $c->set(FlatFileIterator::class, function (ContainerInterface $c) {
+        $c->set(Finder::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
-            return new FlatFileIterator(
-                $config->getAsString('paths.pages'),
-                str_explode_filtered($config->getAsString('fileExtensions.pages'), ',')
-            );
+            return new Finder([
+                'extensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
+                'path' => $config->getAsString('paths.pages')
+            ]);
         });
 
         if ($this->logger) {
@@ -210,7 +210,7 @@ final class ContainerBuilder
             return new FlatFilePagePersistence(
                 $c->get(Alias::class),
                 $c->get(CacheInterface::class),
-                $c->get(FlatFileIterator::class),
+                $c->get(Finder::class),
                 $options
             );
         });

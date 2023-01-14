@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\sysplugins\twig;
 
+use herbie\Page;
+use herbie\PageTree;
 use RecursiveIterator;
 
 final class PageTreeIterator implements RecursiveIterator
