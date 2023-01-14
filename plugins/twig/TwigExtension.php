@@ -358,7 +358,7 @@ final class TwigExtension extends AbstractExtension
      */
     public function menuList(
         array|string $where = '',
-        callable|string $order = '',
+        string $order = '',
         bool $shuffle = false,
         int $limit = 10,
         string $template = '@snippet/menu_list.twig'
