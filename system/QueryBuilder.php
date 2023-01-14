@@ -36,8 +36,7 @@ final class QueryBuilder implements IteratorAggregate
     private array $where;
     private int $limit;
     private int $offset;
-    /** @var callable|string $order */
-    private $order;
+    private string $order;
     private array $data;
     private array $processed;
 
@@ -160,7 +159,7 @@ final class QueryBuilder implements IteratorAggregate
         return $this;
     }
 
-    public function order(callable|string $order): self
+    public function order(string $order): self
     {
         $this->order = $order;
         return $this;
@@ -204,10 +203,6 @@ final class QueryBuilder implements IteratorAggregate
 
     private function sort(): bool
     {
-        if (is_callable($this->order)) {
-            return uasort($this->data, $this->order);
-        }
-
         if (trim($this->order, '-+') === '') {
             return false;
         }

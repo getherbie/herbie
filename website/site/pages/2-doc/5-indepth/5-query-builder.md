@@ -165,9 +165,9 @@ The AND/OR where clause operators can be nested:
 ## Order
 
 The results can be ordered using the `order` method.
-The argument can be a callback or a field name preceded by a plus or minus sign, where plus means ascending and minus means descending.
+The argument can be a field name preceded by a plus or minus sign, where plus means ascending and minus means descending.
 If the plus or minus sign is omitted, the order is ascending by default.
-Here are examples of it's usage.
+Here are examples of its usage.
 
 Ordered by title descending:
 
@@ -180,12 +180,6 @@ Ordered by title ascending:
 ~~~twig
 {{ '{{' }} query(data).order("title") {{ '}}' }} 
 {{ '{{' }} query(data).order("+title") {{ '}}' }} 
-~~~
-
-Ordered by title using a callback:
-
-~~~twig
-{{ '{{' }} query(data).order((a, b) => a.title <=> b.title) {{ '}}' }} 
 ~~~
 
 ## Limit
