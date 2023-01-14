@@ -715,10 +715,10 @@ final class PageTest extends Unit
                     '@page' => __DIR__ . '/Fixtures/site/pages'
                 ]),
                 new NullCache(),
-                new Finder(
-                    dirname(__DIR__) . '/integration/Fixtures/site/pages',
-                    ['md']
-                )
+                new Finder([
+                    'extensions' => ['md'],
+                    'path' => dirname(__DIR__) . '/integration/Fixtures/site/pages',
+                ])
             )
         );
     }
