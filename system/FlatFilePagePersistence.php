@@ -238,16 +238,13 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     private function findParents(string $folder, string $alias): array
     {
         static $parents;
-        if (!isset($parents)) {
+        if ($parents === null) {
             $parents = [];
-            $iterator = new RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
-            foreach ($iterator as $file) {
-                if (!$file->isDir()) {
-                    $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-                    $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
-                    if ($filename === 'index') {
-                        $parents[] = str_replace($folder, $alias, $file->getPathname());
-                    }
+            foreach ($this->finder->pageFiles() as $file) {
+                $filename = $file->getFilenameWithoutExtension();
+                $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
+                if ($filename === 'index') {
+                    $parents[] = str_replace($folder, $alias, $file->getPathname());
                 }
             }
             sort($parents);
