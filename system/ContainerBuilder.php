@@ -163,10 +163,10 @@ final class ContainerBuilder
 
         $c->set(Finder::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
-            return new Finder(
-                $config->getAsString('paths.pages'),
-                str_explode_filtered($config->getAsString('fileExtensions.pages'), ',')
-            );
+            return new Finder([
+                'extensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
+                'path' => $config->getAsString('paths.pages')
+            ]);
         });
 
         if ($this->logger) {
