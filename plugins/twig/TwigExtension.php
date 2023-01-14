@@ -13,10 +13,6 @@ use herbie\Page;
 use herbie\PageList;
 use herbie\PageRepositoryInterface;
 use herbie\PageTree;
-use herbie\PageTreeFilterIterator;
-use herbie\PageTreeHtmlRenderer;
-use herbie\PageTreeIterator;
-use herbie\PageTreeTextRenderer;
 use herbie\Pagination;
 use herbie\QueryBuilder;
 use herbie\Site;
@@ -362,7 +358,7 @@ final class TwigExtension extends AbstractExtension
      */
     public function menuList(
         array|string $where = '',
-        callable|string $order = '',
+        string $order = '',
         bool $shuffle = false,
         int $limit = 10,
         string $template = '@snippet/menu_list.twig'

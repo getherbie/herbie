@@ -1,81 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace herbie;
 
-use Countable;
-use Exception;
-use herbie\finder\CustomFilterIterator;
-use herbie\finder\DepthRangeFilterIterator;
-use herbie\finder\FileTypeFilterIterator;
-use IteratorAggregate;
-use RecursiveIteratorIterator;
-
-final class Finder implements IteratorAggregate, Countable
+final class Finder
 {
-    private int $mode = 0;
-    private array $dirs = [];
+    /** @var array|string[]  */
+    private array $extensions;
+    private string $path;
 
-    private function __construct()
+    public function __construct(array $options = [])
     {
+        $this->setExtensions($options['extensions'] ?? []);
+        $this->setPath($options['path'] ?? '');
     }
 
-    public function directories(): static
+    private function setExtensions(array $extensions): void
     {
-        $this->mode = FileTypeFilterIterator::ONLY_DIRECTORIES;
-
-        return $this;
+        $this->extensions = $extensions;
     }
 
-    public function files(): static
+    private function setPath(string $path): void
     {
-        $this->mode = FileTypeFilterIterator::ONLY_FILES;
-
-        return $this;
+        $this->path = $path;
     }
 
-    public function in(string|array $dirs): static
+    public function pageFiles(): \Symfony\Component\Finder\Finder
     {
-        $resolvedDirs = [];
-
-        foreach ((array) $dirs as $dir) {
-            if (is_dir($dir)) {
-                $resolvedDirs[] = [$this->normalizeDir($dir)];
-            } else {
-                throw new Exception(sprintf('The "%s" directory does not exist.', $dir));
-            }
-        }
-
-        $this->dirs = array_merge($this->dirs, ...$resolvedDirs);
-
-        return $this;
+        $patterns = $this->getPatterns($this->extensions);
+        return (new \Symfony\Component\Finder\Finder())
+            ->files()
+            ->in($this->path)
+            ->notPath('#(^|/)_.+(/|$)#') // ignore underscore files and folders
+            ->name($patterns)
+            ->sortByName();
     }
 
-    public function getIterator(): \Iterator
+    protected function getPatterns(array $extensions): array
     {
-        
-    }
-
-    private function searchIterators()
-    {
-        // create iterator
-        $dir = dirname(__DIR__) . '/site/pages';
-        $flags = RecursiveDirectoryIterator::SKIP_DOTS;
-
-        $iterator = new RecursiveDirectoryIterator($dir, $flags);
-        $iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
-
-// filtering
-        $iterator = new DepthRangeFilterIterator($iterator, 0, 3);
-        $iterator = new FileTypeFilterIterator($iterator, 0);
-        $iterator = new CustomFilterIterator($iterator, [function (FileInfo $file) {
-            if (strlen($file->getFilename()) > 12) {
-                return false;
-            }
-        }]);
-    }
-    
-    public function count(): int
-    {
-        return iterator_count($this->getIterator());
+        return array_map(function (string $extension) {
+            return '*.' . $extension;
+        }, $extensions);
     }
 }

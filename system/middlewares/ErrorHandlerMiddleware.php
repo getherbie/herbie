@@ -6,11 +6,11 @@ namespace herbie\middlewares;
 
 use ErrorException;
 use herbie\TwigRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Tebe\HttpFactory\HttpFactory;
 use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -18,13 +18,15 @@ use Twig\Error\SyntaxError;
 
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    private ResponseFactoryInterface $responseFactory;
     private TwigRenderer $twigRenderer;
 
     /**
      * ErrorHandlerMiddleware constructor.
      */
-    public function __construct(TwigRenderer $twigRenderer)
+    public function __construct(ResponseFactoryInterface $responseFactory, TwigRenderer $twigRenderer)
     {
+        $this->responseFactory = $responseFactory;
         $this->twigRenderer = $twigRenderer;
     }
 
@@ -53,7 +55,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
                 $code = 500;
             }
 
-            $response = HttpFactory::instance()->createResponse($code);
+            $response = $this->responseFactory->createResponse($code);
             $response->getBody()->write($content);
 
             error_log($e->getMessage());

@@ -202,8 +202,8 @@ final class WebsiteCest
         $I->see('Query Builder', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 7);
-        $I->seeNumberOfElements('.content>p', 31);
-        $I->seeNumberOfElements('.content>pre', 21);
+        $I->seeNumberOfElements('.content>p', 30);
+        $I->seeNumberOfElements('.content>pre', 20);
         $I->seeNumberOfElements('.content>table', 1);
     }
 

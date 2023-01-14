@@ -7,17 +7,20 @@ namespace herbie\middlewares;
 use herbie\Alias;
 use herbie\HttpException;
 use herbie\SystemException;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Tebe\HttpFactory\HttpFactory;
 
 use function herbie\str_trailing_slash;
 
 final class DownloadMiddleware implements MiddlewareInterface
 {
     private Alias $alias;
+    private StreamFactoryInterface $streamFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     private string $route;
 
@@ -26,9 +29,15 @@ final class DownloadMiddleware implements MiddlewareInterface
     /**
      * DownloadMiddleware constructor.
      */
-    public function __construct(Alias $alias, array $config)
-    {
+    public function __construct(
+        Alias $alias,
+        StreamFactoryInterface $streamFactory,
+        ResponseFactoryInterface $responseFactory,
+        array $config
+    ) {
         $this->alias = $alias;
+        $this->streamFactory = $streamFactory;
+        $this->responseFactory = $responseFactory;
         $this->route = str_trailing_slash((string)($config['route'] ?? ''));
         $this->storagePath = str_trailing_slash((string)($config['storagePath'] ?? ''));
     }
@@ -55,10 +64,9 @@ final class DownloadMiddleware implements MiddlewareInterface
         }
 
         // everything ok, create response
-        $httpFactory = HttpFactory::instance();
-        $stream = $httpFactory->createStreamFromFile($filepath);
+        $stream = $this->streamFactory->createStreamFromFile($filepath);
         $contentType = $this->determineContentType($filepath);
-        return $httpFactory->createResponse()
+        return $this->responseFactory->createResponse()
             ->withHeader('Content-type', $contentType)
             ->withBody($stream);
     }
