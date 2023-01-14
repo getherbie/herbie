@@ -7,6 +7,7 @@ namespace herbie;
 use Exception;
 use Psr\SimpleCache\CacheInterface;
 use RecursiveIteratorIterator;
+use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
 
 /**
@@ -16,19 +17,19 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
     private CacheInterface $cache;
-    private FlatFileIterator $flatFileIterator;
+    private Finder $finder;
     private bool $cacheEnable;
     private int $cacheTTL;
 
     public function __construct(
         Alias $alias,
         CacheInterface $cache,
-        FlatFileIterator $flatFileIterator,
+        Finder $finder,
         array $options = []
     ) {
         $this->alias = $alias;
         $this->cache = $cache;
-        $this->flatFileIterator = $flatFileIterator;
+        $this->finder = $finder;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
@@ -39,7 +40,11 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     public function findById(string $id): ?array
     {
         try {
-            return $this->readFile($id);
+            $root = $this->alias->get('@page');
+            $relativePathName = str_replace($root, '', $id);
+            $relativePath = dirname($relativePathName);
+            $fileInfo = new SplFileInfo($id, ltrim($relativePath, '/'), ltrim($relativePathName, '/'));
+            return $this->readFile($fileInfo);
         } catch (Exception $e) {
             return null;
         }
@@ -48,12 +53,14 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     /**
      * @return array<string, mixed>
      */
-    private function readFile(string $alias): array
+    private function readFile(SplFileInfo $fileInfo): array
     {
-        $path = $this->alias->get($alias);
-        $basename = basename($path);
+        $basename = basename($fileInfo->getBasename('.' . $fileInfo->getExtension()));
+        $path = $fileInfo->getPathname();
+        $relativePath = $fileInfo->getRelativePathname();
+        $alias = '@page/' . $relativePath;
 
-        $content = file_read($path);
+        $content = $fileInfo->getContents();
 
         [$yaml, $segments] = self::parseFileContent($content);
 
@@ -265,13 +272,8 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             }
         }
 
-        foreach ($this->flatFileIterator as $fileInfo) {
-            try {
-                /** @var FileInfo $fileInfo */
-                $aliasedPath = '@page/' . $fileInfo->getRelativePathname();
-                $items[] = $this->readFile($aliasedPath);
-            } catch (Exception $e) {
-            }
+        foreach ($this->finder->pageFiles() as $page) {
+            $items[] = $this->readFile($page);
         }
 
         if ($this->cacheEnable && $this->cacheTTL > 0) {

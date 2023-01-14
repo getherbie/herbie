@@ -6,7 +6,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
 use Codeception\Test\Unit;
 use herbie\Alias;
-use herbie\FlatFileIterator;
+use herbie\Finder;
 use herbie\FlatFilePagePersistence;
 use herbie\FlatFilePageRepository;
 use herbie\NullCache;
@@ -715,7 +715,7 @@ final class PageTest extends Unit
                     '@page' => __DIR__ . '/Fixtures/site/pages'
                 ]),
                 new NullCache(),
-                new FlatFileIterator(
+                new Finder(
                     dirname(__DIR__) . '/integration/Fixtures/site/pages',
                     ['md']
                 )

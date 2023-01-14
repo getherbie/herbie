@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie;
+namespace herbie\sysplugins\twig;
 
 use RecursiveIterator;
 use RecursiveTreeIterator;
