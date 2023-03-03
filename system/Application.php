@@ -223,7 +223,8 @@ final class Application
             }
         }
         header_remove('X-Powered-By'); // don't expose php
-        echo $response->getBody();
+        $response = (string)$response->getBody();
+        echo $response;
     }
 
     public function getBaseUrl(): string

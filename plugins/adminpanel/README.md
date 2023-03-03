@@ -34,3 +34,9 @@ Das Passwort für das Adminpanel muss md5-kodiert werden. Nun kannst du die Eins
 oder bei Bedarf erweitern.
 
 Das Adminpanel rufst du auf, indem du in der Adresszeile "/adminpanel" eingibst.
+
+# Inspiration
+
+Forms:
+
+- <https://vueformulate.com>

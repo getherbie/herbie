@@ -1,5 +1,7 @@
 <?php
 
+use herbie\Yaml;
+
 $isProduction = isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] !== 'localhost');
 
 return [
@@ -50,6 +52,7 @@ return [
         ]
     ],
     'plugins' => [
+        'adminpanel' => Yaml::parseFile(__DIR__ . '/adminpanel.yml'),
         'simplecontact' => [
             'config' => [
                 'recipient' => 'me+herbie@tebe.ch'

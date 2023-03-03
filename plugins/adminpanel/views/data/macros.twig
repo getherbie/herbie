@@ -70,18 +70,17 @@
                 </div>
             </div>
         {% endfor %}
-        <a class="add" href="#"><i class="fa fa-plus-circle"></i> {{ translate('adminpanel', 'Add') }}</a> &nbsp; <a class="delete" href="#"><i class="fa fa-minus-circle"></i> {{ translate('adminpanel', 'Delete') }}</a>
+        <a class="add" href="#">{{ i('plus-circle-fill', 12, 12) }} {{ translate('adminpanel', 'Add') }}</a> &nbsp; <a class="delete" href="#">{{ i('dash-circle-fill', 12, 12) }} {{ translate('adminpanel', 'Delete') }}</a>
     </div>
 {% endmacro %}
-
 
 {% macro multitext_input(index, key, value, add) %}
     <div class="multitext-input">
         <input name="data[{{ index }}][{{ key }}][]" class="" type="text" value="{{ value }}">
         {% if add == 0 %}
-            <a href="#" class="add-multitext"><i class="fa fa-plus-circle"></i></a>
+            <a href="#" class="add-multitext">{{ i('plus-circle-fill', 12, 12) }}</a>
         {% else %}
-            <a href="#" class="remove-multitext"><i class="fa fa-minus-circle"></i></a>
+            <a href="#" class="remove-multitext">{{ i('dash-circle-fill', 12, 12) }}</a>
         {% endif %}
     </div>
 {% endmacro %}
@@ -107,11 +106,11 @@
                     <input name="data[{{ dataindex }}][{{ datatype }}][{{ index }}][{{ mkey }}]" class="" type="text" value="{{ attribute(value, mkey) }}" placeholder="{{ mconfig.placeholder }}">
                 {% endif %}
             {% endfor %}
-            <a href="#" class="remove-matrix remove-matrix-{{ index }}"><i class="fa fa-minus-circle"></i></a>
+            <a href="#" class="remove-matrix remove-matrix-{{ index }}">{{ i('dash-circle-fill', 12, 12) }}</a>
         </div>
     {% endfor %}
     </div>
-    <a href="#" class="add-matrix"><i class="fa fa-plus-circle"></i></a>
+    <a href="#" class="add-matrix">{{ i('plus-circle-fill', 12, 12) }}</a>
 
 {% endmacro %}
 

@@ -1,42 +1,44 @@
 {% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
 {% import "@sysplugin/adminpanel/views/macro.grid.twig" as grid %}
 
-{% block title %}{{ translate('adminpanel', 'Data') }}{% endblock %}
+{% block title %}
+    {{ translate('adminpanel', 'Data') }}
+    <a up-layer="new" href="?action=data/add">{{ i('plus-circle-fill', 32, 32) }}</a>
+{% endblock %}
 
 {% block content %}
     {% if dir is file_readable %}
-    <table class="pure-table pure-table-horizontal data-table">
-        <thead>
-        <tr>
-            <th class="icon" width="1%"></th>
-            <th class="title">{{ translate('adminpanel', 'Name') }}</th>
-            <th>{{ translate('adminpanel', 'Size') }}</th>
-            <th>{{ translate('adminpanel', 'Modified') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item,entry in data %}
-            <tr class="file-{{ item }}">
-                <td class="icon"><i class="fa fa-database fa-lg"></i></td>
-                <td class="title">{{ item }}</td>
-                <td>{{ entry.size|format_size }}</td>
-                <td>{{ entry.modified|date }}</td>
-                <td class="links">
-                    <a class="pure-button button-small" href="?action=data/edit&path=@site/data/{{ item }}.yml">{{ translate('adminpanel', 'Edit') }}</a>
-                    {{ grid.delete_link(item, translate('adminpanel', 'Delete')) }}
-                </td>
+        <table class="pure-table pure-table-horizontal data-table">
+            <thead>
+            <tr>
+                <th class="icon" width="1%"></th>
+                <th class="title">{{ translate('adminpanel', 'Name') }}</th>
+                <th>{{ translate('adminpanel', 'Size') }}</th>
+                <th>{{ translate('adminpanel', 'Modified') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {{ grid.addblock(translate('adminpanel', 'Add data')) }}
+            </thead>
+            <tbody>
+            {% for item,entry in data %}
+                <tr class="file-{{ item }}">
+                    <td class="icon">{{ i('database', 22, 22) }}</td>
+                    <td class="title">{{ item }}</td>
+                    <td>{{ entry.size|format_size }}</td>
+                    <td>{{ entry.modified|date }}</td>
+                    <td class="links">
+                        <a up-target="content" class="pure-button button-small" href="?action=data/edit&path=@site/data/{{ item }}.yml">{{ translate('adminpanel', 'Edit') }}</a>
+                        <a up-layer="new" class="pure-button button-small" href="?action=data/delete&path=@site/data/{{ item }}.yml">{{ translate('adminpanel', 'Delete') }}</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ translate('adminpanel', 'No entries') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-        <p>{{ translate('adminpanel', 'Directory {dir} does not exist or is not readable.', {'{dir}': dir}) }}</p>
+        <p>{{ translate('adminpanel', 'Directory {dir} does not exist or is not readable.', {'dir': dir}) }}</p>
     {% endif %}
-{% endblock %}
-
-{% block jquery %}
-    {{ grid.delete_js("?action=data/delete") }}
-    {{ grid.addblock_js("?action=data/add") }}
 {% endblock %}

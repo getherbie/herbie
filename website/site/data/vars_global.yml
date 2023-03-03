@@ -1,11 +1,9 @@
----
-- name: content
-  desc: The rendered content with one or more content segments.
-    Available only in layout files.
-  type: array
-- name: page
-  desc: The page object with its properties and methods.
-  type: herbie\Page
-- name: site
-  desc: The site object with its properties and methods.
-  type: herbie\Site
+-
+    name: content
+    desc: 'The rendered content with one or more content segments. Available only in layout files.'
+-
+    name: page
+    desc: 'The page object with its properties and methods.'
+-
+    name: site
+    desc: 'The site object with its properties and methods.'

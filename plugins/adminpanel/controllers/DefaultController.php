@@ -11,12 +11,11 @@ class DefaultController extends Controller
         return $this->render('default/index.twig');
     }
 
-    public function errorAction(ServerRequestInterface $request)
+    public function errorAction(ServerRequestInterface $request, \Exception $exception)
     {
-        #if ($this->request->isXmlHttpRequest()) {
-        #    $this->sendErrorHeader($this->t('Invalid action parameter.'));
-        #}
-        return $this->render('default/error.twig', []);
+        return $this->render('default/error.twig', [
+            'exception' => $exception
+        ]);
     }
 
     public function loginAction(ServerRequestInterface $request)

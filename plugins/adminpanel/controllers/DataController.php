@@ -2,40 +2,44 @@
 
 namespace herbie\sysplugins\adminpanel\controllers;
 
+use herbie\sysplugins\adminpanel\validators\FileNotExistsRule;
 use Herbie\Yaml;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Rakit\Validation\Validator;
+use Symfony\Component\Filesystem\Exception\ExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DataController extends Controller
 {
-
-    public function addAction(ServerRequestInterface $request)
+    private Filesystem $fs;
+    
+    protected function init(): void
     {
-        $name = strtolower(trim($request->getPost('name')));
-        $path = $this->alias->get("@site/data/{$name}.yml");
-        $dir = dirname($path);
-        if (empty($name)) {
-            $this->sendErrorHeader($this->t('Name cannot be empty.'));
+        $this->fs = new Filesystem();
+        $dir = $this->alias->get('@site/data');
+        try {
+            if (!$this->fs->exists($dir)) {
+                throw new \Exception(sprintf('Dir "%s" not exist', $dir));
+            }
+            if (!is_writable($dir)) {
+                throw new \Exception(sprintf('Dir "%s" not writable', $dir));
+            }            
+        } catch (ExceptionInterface $e) {
+            throw new \Exception($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
-        if (is_file($path)) {
-            $this->sendErrorHeader($this->t('A file with the same name already exists.'));
-        }
-        if (!is_dir($dir)) {
-            $this->sendErrorHeader($this->t('Directory {dir} does not exist.', ['{dir}' => $dir]));
-        }
-        if (!is_writable($dir)) {
-            $this->sendErrorHeader($this->t('Directory {dir} is not writable.', ['{dir}' => $dir]));
-        }
-        if (!fclose(fopen($path, "x"))) {
-            $this->sendErrorHeader($this->t('File {name} can not be created.', ['{name}' => $name]));
-        }
-        return $this->indexAction($request);
     }
 
-    public function indexAction(ServerRequestInterface $request)
+    public function testAction(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->redirect('data/index');
+    }
+
+    public function indexAction(ServerRequestInterface $request): ResponseInterface
     {
         $dir = $this->alias->get('@site/data/');
         $data = $this->dataRepository->loadAll();
-        foreach ($data as $key => $unused) {
+        foreach ($data as $key => $_) {
             $path = $dir . $key . '.yml';
             $data[$key] = [
                 'name' => $key,
@@ -43,47 +47,97 @@ class DataController extends Controller
                 'created' => filectime($path),
                 'modified' => filemtime($path)
             ];
-        };
+        }
         return $this->render('data/index.twig', [
             'data' => $data,
             'dir' => $dir
         ]);
     }
 
-    public function deleteAction(ServerRequestInterface $request)
+    public function addAction(ServerRequestInterface $request): ResponseInterface
     {
-        $file = $request->getPost('file');
-        $absPath = $this->alias->get('@site/data/' . $file . '.yml');
+        $errors = [];
+        $values = $request->getParsedBody();
+        
+        $validator = new Validator();
+        $validator->addValidator('file_not_exists', new FileNotExistsRule($this->alias));
 
-        if (!is_file($absPath)) {
-            $this->sendErrorHeader($this->t('File {file} does not exist.', ['{file}' => $file]));
-        }
-        if (!@unlink($absPath)) {
-            $this->sendErrorHeader($this->t('File {file} can not be deleted.', ['{file}' => $file]));
+        $aliasedPathWithPlaceholder = $this->alias->get('@site/data/{value}.yml');
+        $validation = $validator->make($values, [
+            'name' => 'required|lowercase|alpha_dash|file_not_exists:' . $aliasedPathWithPlaceholder,
+        ]);
+        
+        if ($request->getMethod() === 'POST') {
+            $validation->validate();
+            if ($validation->fails() || !empty($request->getHeader('X-Up-Validate'))) {
+                $errors = $validation->errors()->firstOfAll();
+            } else {
+                $file = str_replace('{value}', $values['name'], $this->alias->get($aliasedPathWithPlaceholder));
+                try {
+                    $this->fs->touch($file);
+                    return $this->redirect('data/index');
+                } catch (ExceptionInterface $e) {
+                    $errors['name'] = $this->t('File "{name}" can not be created.', ['name' => $values['name']]);
+                }
+            }
         }
 
-        header('Content-Type: application/json');
-        echo json_encode(true);
-        exit;
+        $status = empty($errors) ? 200 : 400;
+        
+        return $this->render('data/add.twig', [
+            'errors' => $errors,
+            'values' => $values,
+        ], $status);
     }
 
-    public function editAction(ServerRequestInterface $request)
+    public function deleteAction(ServerRequestInterface $request): ResponseInterface
     {
-        $path = $request->getQuery('path', null);
+        $path = $request->getQueryParams()['path'] ?? '';
+        $absPath = $this->alias->get($path);
+
+        $errors = [];
+
+        if ($request->getMethod() === 'POST') {
+            if (!is_file($absPath)) {
+                $errors['name'] = $this->t('File {file} does not exist.', ['file' => $path]);
+            }
+            if (!@unlink($absPath)) {
+                $errors['name'] = $this->t('File {file} can not be deleted.', ['file' => $path]);
+            }
+            if (empty($errors)) {
+                return $this->redirect('data/index');
+            }
+        }
+
+        $status = empty($errors) ? 200 : 400;
+        
+        return $this->render('data/delete.twig', [
+            'errors' => $errors,
+            'path' => $path,
+        ], $status);
+    }
+
+    public function editAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $path = $request->getQueryParams()['path'] ?? '';
         $absPath = $this->alias->get($path);
 
         // Config
         $name = pathinfo($absPath, PATHINFO_FILENAME);
-        $config = $this->config->get('plugins.config.adminpanel.data.' . $name . '.config');
-        if (is_null($config)) {
+        $configKey = 'plugins.adminpanel.data.' . $name . '.config';
+        $config = $this->config->getAsArray($configKey);
+        if (empty($config)) {
             return $this->editAsString($request);
         }
 
         $saved = false;
         if ($this->request->getMethod() == 'POST') {
-            $data = $request->getPost('data', []);
+            $data = $request->getParsedBody()['data'] ?? '';
             $content = Yaml::dump(array_values($data));
             $saved = file_put_contents($absPath, $content);
+            if ($request->getParsedBody()['button'] === 'saveAndClose') {
+                return $this->redirect('data/index');
+            }
         }
 
         return $this->render('data/edit.twig', [
@@ -93,15 +147,18 @@ class DataController extends Controller
         ]);
     }
 
-    protected function editAsString(ServerRequestInterface $request)
+    protected function editAsString(ServerRequestInterface $request): ResponseInterface
     {
-        $path = $request->getQuery('path', null);
+        $path = $request->getQueryParams()['path'] ?? '';
         $absPath = $this->alias->get($path);
 
         $saved = false;
         if ($this->request->getMethod() == 'POST') {
-            $content = $request->getPost('content', null);
+            $content = $request->getParsedBody()['content'] ?? '';
             $saved = file_put_contents($absPath, $content);
+            if ($request->getParsedBody()['button'] === 'saveAndClose') {
+                return $this->redirect('data/index');
+            }            
         }
 
         return $this->render('data/editstring.twig', [

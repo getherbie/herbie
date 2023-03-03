@@ -1,3 +1,3 @@
----
-- name: clear-files
-  desc: The clear-files command deletes asset, cache and log files from several directories.
+-
+    name: clear-files
+    desc: 'The clear-files command deletes asset, cache and log files from several directories.'

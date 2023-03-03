@@ -164,8 +164,10 @@ final class ContainerBuilder
         $c->set(Finder::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
             return new Finder([
-                'extensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
-                'path' => $config->getAsString('paths.pages')
+                'mediaExtensions' => ['doc', 'docx', 'gif', 'jpeg', 'jpg', 'pdf', 'png', 'svg'],
+                'mediaPath' => $config->getAsString('paths.media'),
+                'pageExtensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
+                'pagePath' => $config->getAsString('paths.pages'),
             ]);
         });
 

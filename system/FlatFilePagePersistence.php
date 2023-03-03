@@ -50,7 +50,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         }
     }
 
-    public function add(string $id, array $data): void
+    public function add(string $id, array $data): ?array
     {
         $filepath = $this->alias->get($id);
         if (is_file($filepath)) {
@@ -62,7 +62,21 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
                 throw new Exception('Could not create folder');
             }
         }
-        $test = 1;
+        
+        $content = <<<CONTENT
+        ---
+        title: {$data['title']}
+        disabled: true
+        hidden: true
+        ---
+        {$data['title']}
+        CONTENT;
+
+        if (!file_put_contents($filepath, $content)) {
+            return null;
+        }
+
+        return $this->findById($id);
     }
 
     /**

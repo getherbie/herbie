@@ -5,6 +5,8 @@
 
 {% block content %}
 
-    <p>Ungültiger Action-Parameter!</p>
+    <h2>Fehler</h2>
+    <p>{{ exception.message }}</p>
+    <pre>{{ exception.traceAsString }}</pre>
 
 {% endblock %}

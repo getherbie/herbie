@@ -2,42 +2,85 @@
 
 namespace herbie\sysplugins\adminpanel\controllers;
 
+use Exception;
 use Herbie;
+use herbie\sysplugins\adminpanel\validators\FileNotExistsRule;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Rakit\Validation\Validator;
+use Symfony\Component\Filesystem\Exception\ExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+
+use function herbie\human2byte;
 
 class MediaController extends Controller
 {
+    private Filesystem $fs;
 
-    public function addFolderAction(ServerRequestInterface $request)
+    protected function init(): void
     {
-        $dir = strtolower(trim($request->getPost('dir')));
-        $name = strtolower(trim($request->getPost('name')));
-        $path = $this->alias->get('@media/' . $dir . '/' . $name);
-        if (empty($name)) {
-            $this->sendErrorHeader($this->t('Name cannot be empty.'));
+        $this->fs = new Filesystem();
+        $dir = $this->alias->get('@site/media');
+        if (!$this->fs->exists($dir)) {
+            throw new \Exception(sprintf('Dir "%s" not exist', $dir));
         }
-        if (is_dir($path)) {
-            $this->sendErrorHeader($this->t('A folder with the same name already exists.'));
+        if (!is_writable($dir)) {
+            throw new \Exception(sprintf('Dir "%s" not writable', $dir));
         }
-        if (!@mkdir($path)) {
-            $this->sendErrorHeader($this->t('Folder {name} can not be created.', ['{name}' => $name]));
+    }
+
+    public function addAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $dir = $request->getQueryParams()['dir'] ?? '';
+
+        $errors = [];
+        $values = $request->getParsedBody();
+
+        $validator = new Validator();
+        $validator->addValidator('file_not_exists', new FileNotExistsRule($this->alias));
+
+        $currentDir = ['@site/media'];
+        if ($dir <> '') {
+            $currentDir[] = $dir;
         }
-        $request->setQuery('dir', $dir);
-        return $this->indexAction($request);
+        $currentDir[] = '{value}';
+        
+        $aliasedPathWithPlaceholder = $this->alias->get(join('/', $currentDir));
+        $validation = $validator->make($values, [
+            'name' => 'required|lowercase|alpha_dash|file_not_exists:' . $aliasedPathWithPlaceholder,
+        ]);
+
+        if ($request->getMethod() === 'POST') {
+            $validation->validate();
+            if ($validation->fails() || !empty($request->getHeader('X-Up-Validate'))) {
+                $errors = $validation->errors()->firstOfAll();
+            } else {
+                $dirToCreate = str_replace('{value}', $values['name'], $this->alias->get($aliasedPathWithPlaceholder));
+                try {
+                    $this->fs->mkdir($dirToCreate);
+                    return $this->redirect('media/index&dir=' . $dir);
+                } catch (ExceptionInterface $e) {
+                    $errors['name'] = $this->t('Folder "{name}" can not be created.', ['name' => $values['name']]);
+                }
+            }
+        }
+
+        $status = empty($errors) ? 200 : 400;
+
+        return $this->render('media/add.twig', [
+            'errors' => $errors,
+            'values' => $values,
+            'dir' => $dir,
+        ], $status);
     }
 
     public function indexAction(ServerRequestInterface $request)
     {
-        $dir = $request->getQuery('dir', '');
-        $dir = str_replace(['../', '..', './', '.'], '', trim($dir, '/'));
-        $path = $this->alias->get('@media/' . $dir);
+        $dir = $request->getQueryParams()['dir'] ?? '';
         $root = $this->alias->get('@media');
-
-        $iterator = null;
-        if (is_readable($path)) {
-            $directoryIterator = new Herbie\Iterator\DirectoryIterator($path, $root);
-            $iterator = new Herbie\Iterator\DirectoryDotFilter($directoryIterator);
-        }
+        
+        $iterator = $this->finder->mediaFiles($dir);
 
         return $this->render('media/index.twig', [
             'iterator' => $iterator,
@@ -47,52 +90,131 @@ class MediaController extends Controller
         ]);
     }
 
-    public function deleteAction(ServerRequestInterface $request)
+    public function deleteFileAction(ServerRequestInterface $request)
     {
-        $path = $request->getPost('file');
-        $path = str_replace(['../', '..', './'], '', trim($path, '/'));
-        $absPath = $this->alias->get('@media/' . $path);
-        $name = basename($absPath);
+        $path = $request->getQueryParams()['path'] ?? '';
+        $dir = ltrim(dirname(str_replace('@media', '', $path)), '/');
+        $absPath = $this->alias->get($path);
 
-        if (is_file($absPath) && !@unlink($absPath)) {
-            $this->sendErrorHeader($this->t('File {file} can not be deleted.', ['{file}' => $name]));
-        } elseif (is_dir($absPath) && !@rmdir($absPath)) {
-            if (count(scandir($absPath)) >= 2) {
-                $this->sendErrorHeader($this->t('Folder {name} is not empty and can not be deleted.', ['{name}' => $name]));
+        $errors = [];
+
+        if ($request->getMethod() === 'POST') {
+            if (!is_file($absPath)) {
+                $errors['name'] = $this->t('File {name} does not exist.', ['name' => $path]);
             }
-            $this->sendErrorHeader($this->t('Folder {name} can not be deleted.', ['{name}' => $name]));
+            if (!@unlink($absPath)) {
+                $errors['name'] = $this->t('File {name} can not be deleted.', ['name' => $path]);
+            }
+            if (empty($errors)) {
+                return $this->redirect('media/index&dir=' . $dir);
+            }
         }
-        header('Content-Type: application/json');
-        echo json_encode(true);
-        exit;
+        
+        $status = empty($errors) ? 200 : 400;
+
+        return $this->render('media/delete-file.twig', [
+            'errors' => $errors,
+            'path' => $path,
+        ], $status);
+    }
+
+    public function deleteFolderAction(ServerRequestInterface $request)
+    {
+        $path = $request->getQueryParams()['path'] ?? '';
+        $dir = ltrim(dirname(str_replace('@media', '', $path)), '/');
+        $absPath = $this->alias->get($path);
+        
+        $files = scandir($absPath);
+        $hasContent = count($files) > 2;
+        
+        $errors = [];
+
+        if ($request->getMethod() === 'POST') {
+            if (!is_dir($absPath)) {
+                $errors['name'] = $this->t('Folder {name} does not exist.', ['name' => $path]);
+            }
+            if (!@rmdir($absPath)) {
+                $errors['name'] = $this->t('Folder {name} can not be deleted.', ['name' => $path]);
+            }
+            if (empty($errors)) {
+                return $this->redirect('media/index&dir=' . $dir);
+            }
+        }
+
+        $status = empty($errors) ? 200 : 400;
+        
+        return $this->render('media/delete-folder.twig', [
+            'errors' => $errors,
+            'path' => $path,
+            'hasContent' => $hasContent
+        ], $status);
     }
 
     public function uploadAction(ServerRequestInterface $request)
     {
-        $data = [];
-        $dir = strtolower(trim($request->getPost('dir')));
+        /**
+         * @var UploadedFileInterface[] $files 
+         */
+        $dir = strtolower(trim($request->getQueryParams()['dir'] ?? ''));
 
-        if (!empty($_FILES)) {
-            $files = [];
+        $errors = [];
+        $files = $request->getUploadedFiles()['upload'] ?? [];
 
-            $uploaddir = $this->alias->get("@media/{$dir}/");
-            foreach ($_FILES as $file) {
-                if (move_uploaded_file($file['tmp_name'], $uploaddir . basename($file['name']))) {
-                    $files[] = $uploaddir . $file['name'];
-                } else {
-                    $this->sendErrorHeader($this->t('An error occured at upload.'));
+        if ($request->getMethod() === 'POST') {
+
+            $contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+
+            if ($contentLength > 0) {
+                $postMaxSize = ini_get('post_max_size');
+                $postMaxSizeAsInt = human2byte($postMaxSize);                
+                if ($contentLength > $postMaxSizeAsInt) {
+                    $message = 'The uploaded files are too large.';
+                    $message .= ' According to your php.ini the setting for "post_max_size" is "%s".';
+                    $message .= ' Please increase the php.ini setting and try again.';
+                    throw new Exception(sprintf($message, $postMaxSize));
                 }
             }
-            $data = ['files' => $files];
-        } else {
-            $this->sendErrorHeader($this->t('Please choose at least one file.'));
+
+            if (!empty($files)) {
+                $uploadDir = $this->alias->get("@media/{$dir}/");
+                foreach ($files as $file) {
+                    if ($file->getError() > 0) {
+                        $error = match ($file->getError()) {
+                            #0 => 'There is no error, the file uploaded with success',
+                            1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+                            2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+                            3 => 'The uploaded file was only partially uploaded',
+                            4 => 'No file was uploaded',
+                            6 => 'Missing a temporary folder',
+                            7 => 'Failed to write file to disk.',
+                            8 => 'A PHP extension stopped the file upload.',
+                        };
+                        $errors[] = $error;
+                        continue;
+                    }
+                    $targetPath = $uploadDir . $file->getClientFilename();
+                    try {
+                        $file->moveTo($targetPath);
+                    } catch (\Exception $e) {
+                        $errors[] = $e->getMessage();
+                    }
+                }
+            } else {
+                $errors[] = $this->t('Please choose at least one file.');
+            }
         }
 
-        $request->setQuery('dir', $dir);
-        $data['html'] = $this->indexAction($request);
+        if ($request->getMethod() === 'POST') {
+            if (empty($errors) && empty($request->getHeader('X-Up-Validate'))) {
+                return $this->redirect('media/index&dir=' . $dir);
+            }
+        }
 
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
+        $status = empty($errors) ? 200 : 400;
+
+        return $this->render('media/upload.twig', [
+            'dir' => $dir,
+            'errors' => $errors
+        ], $status);
     }
 }

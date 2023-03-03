@@ -240,7 +240,7 @@ function handle_internal_webserver_assets(string $file): void
     if (php_sapi_name() !== 'cli-server') {
         return;
     }
-
+    
     $requestUri = $_SERVER['REQUEST_URI'] ?? '';
     if (($pos = strpos($requestUri, '?')) !== false) {
         $requestUri = substr($requestUri, 0, $pos);
@@ -564,4 +564,36 @@ function composer_package_installed(string $name): bool
         $packages = InstalledVersions::getInstalledPackages();
     }
     return in_array($name, $packages);
+}
+
+/**
+ * Converts a human readable file size value to a number of bytes that it
+ * represents. Supports the following modifiers: K, M, G and T.
+ * Invalid input is returned unchanged.
+ *
+ * Example:
+ * <code>
+ * $config->human2byte(10);          // 10
+ * $config->human2byte('10b');       // 10
+ * $config->human2byte('10k');       // 10240
+ * $config->human2byte('10K');       // 10240
+ * $config->human2byte('10kb');      // 10240
+ * $config->human2byte('10Kb');      // 10240
+ * // and even
+ * $config->human2byte('   10 KB '); // 10240
+ * </code>
+ *
+ * @param number|string $value
+ * @return number
+ */
+function human2byte($value) {
+    return preg_replace_callback('/^\s*(\d+)\s*(?:([kmgt]?)b?)?\s*$/i', function ($m) {
+        switch (strtolower($m[2])) {
+            case 't': $m[1] *= 1024;
+            case 'g': $m[1] *= 1024;
+            case 'm': $m[1] *= 1024;
+            case 'k': $m[1] *= 1024;
+        }
+        return $m[1];
+    }, $value);
 }

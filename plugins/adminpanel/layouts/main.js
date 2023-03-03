@@ -1,35 +1,19 @@
-(function (window, document) {
+window.addEventListener('load', (event) => {
 
-    var layout = document.getElementById('layout'),
-        menu = document.getElementById('menu'),
-        menuLink = document.getElementById('menuLink');
+    //up.history.config.enabled = true;
+    up.network.config.cacheSize = 0;
 
-    function toggleClass(element, className) {
-        var classes = element.className.split(/\s+/),
-            length = classes.length,
-            i = 0;
+    /*up.compiler('input[type=text]', function(element) {
+        element.addEventListener('focusout', function() {
+            up.validate(element);
+        });
+    });*/
 
-        for (; i < length; i++) {
-            if (classes[i] === className) {
-                classes.splice(i, 1);
-                break;
-            }
-        }
-        // The className is not found
-        if (length === classes.length) {
-            classes.push(className);
-        }
-
-        element.className = classes.join(' ');
-    }
-
-    menuLink.onclick = function (e) {
-        var active = 'active';
-
-        e.preventDefault();
-        toggleClass(layout, active);
-        toggleClass(menu, active);
-        toggleClass(menuLink, active);
-    };
-
-}(this, this.document));
+    // Don't highlight the fragment insertion from the initial compile on DOMContentLoaded.
+    // Show the yellow flash when a new fragment was inserted.
+    up.on('up:fragment:inserted', (event, fragment) => {
+        fragment.classList.add('new-fragment', 'inserted')
+        up.util.timer(100, () => fragment.classList.remove('inserted'))
+        up.util.timer(1000, () => fragment.classList.remove('new-fragment'))
+    })
+})

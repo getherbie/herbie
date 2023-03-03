@@ -60,22 +60,14 @@
                         </td>
                     </tr>
                     {# <tr>
-                        <td class="icon"><i class="fa fa-file-o fa-lg"></i></td>
+                        <td class="icon"></td>
                         <td class="title nowrap" colspan="2">{% if menuItem.title %}{{ menuItem.title }} {% endif %}{% if menuItem.plugin %}[{{ menuItem.plugin }}]{% endif %}</td>
                     </tr> #}
                 {% endif %}
             {% endfor %}
             </tbody>
         </table>
-        {{ grid.addblock("Seite hinzufügen", parent) }}
     {% else %}
         <p>Das Verzeichnis <b>{{ dir }}</b> existiert nicht oder ist nicht lesbar.</p>
     {% endif %}
-{% endblock %}
-
-{% block jquery %}
-
-    {{ grid.delete_js("?action=page/delete") }}
-    {{ grid.addblock_js("?action=page/add") }}
-
 {% endblock %}

@@ -83,6 +83,7 @@ class AdminpanelPlugin extends Plugin
         return [
             ['file_contents', [$this, 'fileContents']],
             ['i', [$this, 'icon'], ['is_safe' => ['html']]],
+            ['rawdata', [$this, 'rawData']],
         ];
     }
 
@@ -121,7 +122,14 @@ class AdminpanelPlugin extends Plugin
             return '';
         }
         $content = file_get_contents($path);
-        return str_replace(['{width}', '{height}'], [$width, $height], $content);
+        $search = ['width="16"', 'height="16"'];
+        $replace = ['width="' . $width . '"', 'height="' . $height . '"'];
+        return str_replace($search, $replace, $content);
+    }
+
+    public function rawData(string $string)
+    {
+        return addcslashes($string, "\0..\37!@\177");
     }
 
     public function applicationMiddlewares(): array
@@ -171,7 +179,7 @@ class AdminpanelPlugin extends Plugin
         }
 
         $controllerClass = '\\herbie\\sysplugins\\adminpanel\\controllers\\' . ucfirst($controller) . 'Controller';
-        $method = $action . 'Action';
+        $method = str_replace('-', '', $action) . 'Action';
 
         $constructorParams = [
             $this->alias,
@@ -187,113 +195,20 @@ class AdminpanelPlugin extends Plugin
             $this->urlManager
         ];
 
-        $controllerObject = new $controllerClass(...$constructorParams);
-        if (!method_exists($controllerObject, $method)) {
-            $controllerObject = new controllers\DefaultController(...$constructorParams);
-            $method = 'errorAction';
-        }
-        $controllerObject->controller = $controller;
-        $controllerObject->action = $action;
-
-        $params = ['request' => $request];
-        $responseOrContent = call_user_func_array([$controllerObject, $method], $params);
-        $statusCode = http_response_code();
-
-        if ($responseOrContent instanceof ResponseInterface) {
-            return $responseOrContent->withStatus($statusCode);
-        }
-
-        $response = $this->responseFactory->createResponse();
-        $response->getBody()->write($responseOrContent);
-        return $response->withHeader('Content-Type', 'text/html')->withStatus($statusCode);
-    }
-
-    public function install()
-    {
-        #Hook::attach('pluginsInitialized', [$this, 'pluginsInitialized']);
-        #Hook::attach('twigInitialized', [$this, 'addTwigFunction']);
-        #Hook::attach('outputGenerated', [$this, 'outputGenerated']);
-    }
-
-    public function addTwigFunction($twig)
-    {
-        $function = new Twig_SimpleFunction('rawdata', function ($string) {
-            return addcslashes($string, "\0..\37!@\177");
-        });
-        $twig->addFunction($function);
-    }
-
-    public function pluginsInitialized()
-    {
-        if ($this->config->isEmpty('plugins.config.adminpanel.no_page')) {
-            $this->config->push('pages.extra_paths', '@sysplugin/adminpanel/pages');
-        }
-    }
-
-    public function outputGenerated($response)
-    {
-        // return if response is not successful
-        if (!$response->isSuccessful()) {
-            return;
-        }
-
-        if (!$this->isAdmin()) {
-            if ($this->isAuthenticated()) {
-                // prepend adminpanel to html body
-                $controller = (0 === strpos(DI::get('Page')->path, '@post')) ? 'post' : 'page';
-                $panel = DI::get('Twig')->render('@sysplugin/adminpanel/views/panel.twig', [
-                    'controller' => $controller
-                ]);
-                $regex = '/<body(.*)>/';
-                $replace = '<body$1>' . $panel;
-                $content = preg_replace($regex, $replace, $response->getContent());
-                $response->setContent($content);
-            }
-        } else {
-            $action = $this->isAuthenticated() ? $this->request->getQuery('action', 'page/index') : 'login';
-            $pos = strpos($action, '/');
-            if ($pos === false) {
-                $controller = 'default';
-            } else {
-                $controller = substr($action, 0, $pos);
-                $action = substr($action, ++$pos);
-            }
-
-            $controllerClass = '\\herbie\\plugin\\adminpanel\\controllers\\' . ucfirst($controller) . 'Controller';
-            $method = $action . 'Action';
-
-            $controllerObject = new $controllerClass();
-            if (!method_exists($controllerObject, $method)) {
-                $controllerObject = new controllers\DefaultController();
-                $method = 'errorAction';
-            }
+        try {
+            $controllerObject = new $controllerClass(...$constructorParams);
             $controllerObject->controller = $controller;
             $controllerObject->action = $action;
-
-            $params = ['request' => $this->request];
-            $content = call_user_func_array([$controllerObject, $method], $params);
-            $response->setContent($content);
+            $response = call_user_func_array([$controllerObject, $method], ['request' => $request]);
+        } catch (\Exception $e) {
+            $controllerObject = new controllers\DefaultController(...$constructorParams);
+            $response = $controllerObject->errorAction($request, $e);
         }
-    }
-
-    protected function isAdmin()
-    {
-        return !empty(DI::get('Page')->adminpanel);
+        return $response;
     }
 
     protected function isAuthenticated()
     {
         return !empty($_SESSION['LOGGED_IN']);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getPathAlias()
-    {
-        return $this->config->get(
-            'plugins.config.adminpanel.page.adminpanel',
-            '@sysplugin/adminpanel/pages/adminpanel.html'
-        );
     }
 }

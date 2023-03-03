@@ -103,6 +103,11 @@ Hint: For this to work, Xdebug must of course be installed.
 
     XDEBUG_MODE=debug php -S localhost:9999 index.php
 
+### File system watcher
+
+    cd /path/to/herbie
+    fswatch -o config messages plugins system templates | xargs -n 1 bash -c 'HERBIE_ENV=dev php herbie clear-files'
+
 ## Tests
 
 Run unit tests

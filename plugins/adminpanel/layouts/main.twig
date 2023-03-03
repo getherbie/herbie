@@ -1,9 +1,11 @@
-{{- css_add('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') -}}
 {{- css_add('@sysplugin/adminpanel/assets/purecss@3.0.0-pure.min.css') -}}
 {{- css_add('@sysplugin/adminpanel/assets/purecss@3.0.0-grids-responsive.min.css') -}}
 {{- css_add('@sysplugin/adminpanel/assets/unpoly.min.css') -}}
 {{- css_add('@sysplugin/adminpanel/layouts/main.css') -}}
 {{- js_add('@sysplugin/adminpanel/assets/unpoly.min.js', group='head') -}}
+{{- js_add('@sysplugin/adminpanel/layouts/main.js', group='head') -}}
+{{- js_add('@sysplugin/adminpanel/assets/jquery@3.6.3.min.js', group='body') -}}
+{{- js_add('@sysplugin/adminpanel/views/data/edit.js', group='body') -}}
 <!doctype html>
 <html lang="de">
 <head>
@@ -12,10 +14,6 @@
     <title>Herbie Backend</title>
     {{ css_out() }}
     {{ js_out('head') }}
-    <script>
-        //up.history.config.enabled = true;
-        up.network.config.cacheSize = 0;
-    </script>
 </head>
 <body>
 <div id="layout">
@@ -28,12 +26,10 @@
         <div class="pure-menu pure-menu-open">
             <a class="pure-menu-heading" href="{{ url_rel('/admin') }}?action=page/index">HERBIE</a>
             <ul class="pure-menu-list">
-                <!-- li class="menu-item-divided pure-menu-selected"><a href="?action=index">Home</a></li-->
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=page/index">Seiten</a></li>
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=post/index">Blogposts</a></li>
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=data/index">Daten</a></li>
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=media/index">Dateiablage</a></li>
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=tools/index">Werkzeuge</a></li>
+                <li class="pure-menu-item"><a up-follow="content" class="pure-menu-link" href="{{ url_rel('/admin') }}?action=page/index">Seiten</a></li>
+                <li class="pure-menu-item"><a up-follow="content" class="pure-menu-link" href="{{ url_rel('/admin') }}?action=data/index">Daten</a></li>
+                <li class="pure-menu-item"><a up-follow="content" class="pure-menu-link" href="{{ url_rel('/admin') }}?action=media/index">Dateiablage</a></li>
+                <li class="pure-menu-item"><a up-follow="content" class="pure-menu-link" href="{{ url_rel('/admin') }}?action=tools/index">Werkzeuge</a></li>
                 <li class="pure-menu-item menu-item-divided"><a class="pure-menu-link" href="{{ url_rel('') }}">Frontend</a></li>
                 <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel('/admin') }}?action=default/logout">Logout</a></li>
             </ul>
