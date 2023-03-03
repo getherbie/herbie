@@ -1,0 +1,33 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+{% import "@sysplugin/adminpanel/macros/forms.twig" as forms %}
+
+{% block title %}{{ translate('adminpanel', 'Add data') }}{% endblock %}
+{% block subtitle %}{{ path }}{% endblock %}
+
+{% block content %}
+    <style>
+        .pure-form-stacked input {
+            width: 100%;
+            max-width: 32rem;
+        }
+    </style>
+    <form up-layer="root" up-submit action="?action=test/form" method="post" class="pure-form pure-form-stacked">
+        <fieldset>
+            {{ forms.input_text('first_name', values.name, 'First name', {placeholder: 'Your first name', autofocus: errors|length == 0}, errors.first_name) }}
+            {{ forms.input_text('last_name', values.name, 'Last name', {placeholder: 'Your last name'}, errors.last_name) }}
+            {{ forms.input_text('email', values.name, 'Email', {placeholder: 'Your email address'}, errors.email) }}
+            {{ forms.input_text('phone', values.name, 'Name', {placeholder: 'Der Name der Datei'}, errors.phone) }}
+            {# {% if errors %}
+                <div class="pure-form-error"><b>Fehler</b>:
+                    {% for error in errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                </div>
+            {% endif %} #}
+        </fieldset>
+        <div class="pure-controls">
+            <button name="save" class="pure-button pure-button-primary">Save</button>
+            <a up-target="content" up-dismiss href="?action=data/index">{{ translate('adminpanel', 'Cancel') }}</a>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}{{ translate('adminpanel', 'Delete folder') }}{% endblock %}
+{% block subtitle %}Pfad: {{ path }}{% endblock %}
+
+{% block content %}
+    {% if hasContent %}
+        <p>{{ translate('adminpanel', 'Folder {name} is not empty and can not be deleted.', {name: path }) }}</p>
+    {% else %}
+    <p style="margin-top:0">{{ translate('adminpanel', 'Do you really want to delete the folder?') }}</p>
+    <form up-layer="root" up-submit action="?action=media/delete-folder&path={{ path }}" method="post" class="pure-form">
+        <button class="pure-button pure-button-primary" name="button1" type="submit">{{ translate('adminpanel', 'Yes') }}</button>
+        <a up-follow="content" up-dismiss href="?action=media/index" class="pure-button">{{ translate('adminpanel', 'No') }}</a>
+        {% if errors is not empty %}
+            <ul class="validate validate-error">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}        
+    </form>
+    {% endif %}
+{% endblock %}

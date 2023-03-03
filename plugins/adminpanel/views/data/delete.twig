@@ -1,0 +1,19 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+
+{% block title %}{{ translate('adminpanel', 'Delete data') }}{% endblock %}
+{% block subtitle %}{{ path }}{% endblock %}
+
+{% block content %}
+    <p style="margin-top:0">{{ translate('adminpanel', 'Do you really want to delete the file?') }}</p>
+    <form up-layer="root" up-submit action="?action=data/delete&path={{ path }}" method="post" class="pure-form">
+        <button class="pure-button pure-button-primary" name="button1" type="submit">{{ translate('adminpanel', 'Yes') }}</button>
+        <a up-follow="content" up-dismiss href="?action=data/index" class="pure-button">{{ translate('adminpanel', 'No') }}</a>
+        {% if errors is not empty %}
+            <ul class="validate validate-error">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}        
+    </form>
+{% endblock %}

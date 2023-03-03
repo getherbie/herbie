@@ -1,0 +1,17 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+{% import "@sysplugin/adminpanel/macros/forms.twig" as forms %}
+
+{% block title %}{{ translate('adminpanel', 'Add data') }}{% endblock %}
+{% block subtitle %}{{ path }}{% endblock %}
+
+{% block content %}
+    <form up-layer="root" up-submit action="?action=data/add" method="post" class="pure-form pure-form-stacked">
+        <fieldset>
+            {{ forms.input_text('name', values.name, 'Name', {placeholder: 'Der Name der Datei', autofocus: errors|length == 0}, errors.name) }}
+        </fieldset>
+        <div class="pure-controls">
+            <button name="save" class="pure-button pure-button-primary">Create File</button>
+            <a up-target="content" up-dismiss href="?action=data/index" class="cancel">{{ translate('adminpanel', 'Cancel') }}</a>
+        </div>
+    </form>
+{% endblock %}

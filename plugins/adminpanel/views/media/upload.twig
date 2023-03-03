@@ -1,0 +1,24 @@
+{% extends "@sysplugin/adminpanel/layouts/main.twig" %}
+{% import "@sysplugin/adminpanel/macros/forms.twig" as forms %}
+
+{% block title %}{{ translate('adminpanel', 'Upload files') }}{% endblock %}
+{% block subtitle %}Pfad: @media{% if dir %}/{{ dir }}{% endif %}{% endblock %}
+
+{% block content %}
+    <form up-layer="root" up-submit action="?action=media/upload&dir={{ dir }}" method="post" enctype="multipart/form-data" class="pure-form pure-form-stacked">
+        <fieldset>
+            {{ forms.input_file('upload[]', values.upload, 'File', {'up-validate': false, multiple: true}, errors.upload) }}
+        </fieldset>
+        <div class="pure-controls">
+            <button name="save" class="pure-button pure-button-primary">Upload files</button>
+            <a up-target="content" up-dismiss href="?action=media/index" class="cancel">{{ translate('adminpanel', 'Cancel') }}</a>
+        </div>
+        {% if errors|length > 0 %}
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+{% endblock %}
