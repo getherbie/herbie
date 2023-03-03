@@ -62,7 +62,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
                 throw new Exception('Could not create folder');
             }
         }
-        
+
         $content = <<<CONTENT
         ---
         title: {$data['title']}

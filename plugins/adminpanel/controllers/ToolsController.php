@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ToolsController extends Controller
 {
-
     public function indexAction(ServerRequestInterface $request)
     {
         return $this->render('tools/index.twig', [

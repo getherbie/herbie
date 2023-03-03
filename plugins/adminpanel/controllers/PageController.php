@@ -320,5 +320,5 @@ class PageController extends Controller
             'action' => $this->action,
             'cancel' => $request->getQuery('cancel')
         ]);
-    }    
+    }
 }

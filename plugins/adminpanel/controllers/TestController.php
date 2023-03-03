@@ -10,7 +10,7 @@ class TestController extends Controller
     public function formAction(ServerRequestInterface $request): ResponseInterface
     {
         $errors = [];
-        
+
         if ($request->getMethod() === 'POST') {
             $errors = [
                 'first_name' => 'This is wrong',
@@ -22,7 +22,7 @@ class TestController extends Controller
         $response = $this->render('test/form.twig', [
             'errors' => $errors,
         ]);
-        
+
         $status = empty($errors) ? 200 : 400;
 
         return $response->withStatus($status);

@@ -240,7 +240,7 @@ function handle_internal_webserver_assets(string $file): void
     if (php_sapi_name() !== 'cli-server') {
         return;
     }
-    
+
     $requestUri = $_SERVER['REQUEST_URI'] ?? '';
     if (($pos = strpos($requestUri, '?')) !== false) {
         $requestUri = substr($requestUri, 0, $pos);
@@ -539,18 +539,20 @@ function get_type(mixed $value): string
     return $type;
 }
 
-function array_diff_assoc_recursive($array1, $array2) {
-    $difference=array();
-    foreach($array1 as $key => $value) {
-        if( is_array($value) ) {
-            if( !isset($array2[$key]) || !is_array($array2[$key]) ) {
+function array_diff_assoc_recursive($array1, $array2)
+{
+    $difference = [];
+    foreach ($array1 as $key => $value) {
+        if (is_array($value)) {
+            if (!isset($array2[$key]) || !is_array($array2[$key])) {
                 $difference[$key] = $value;
             } else {
                 $new_diff = array_diff_assoc_recursive($value, $array2[$key]);
-                if( !empty($new_diff) )
+                if (!empty($new_diff)) {
                     $difference[$key] = $new_diff;
+                }
             }
-        } else if( !array_key_exists($key,$array2) || $array2[$key] !== $value ) {
+        } elseif (!array_key_exists($key, $array2) || $array2[$key] !== $value) {
             $difference[$key] = $value;
         }
     }
@@ -586,13 +588,22 @@ function composer_package_installed(string $name): bool
  * @param number|string $value
  * @return number
  */
-function human2byte($value) {
+function human2byte($value)
+{
     return preg_replace_callback('/^\s*(\d+)\s*(?:([kmgt]?)b?)?\s*$/i', function ($m) {
         switch (strtolower($m[2])) {
-            case 't': $m[1] *= 1024;
-            case 'g': $m[1] *= 1024;
-            case 'm': $m[1] *= 1024;
-            case 'k': $m[1] *= 1024;
+            case 't':
+                $m[1] *= 1024;
+                // no break
+            case 'g':
+                $m[1] *= 1024;
+                // no break
+            case 'm':
+                $m[1] *= 1024;
+                // no break
+            case 'k':
+                $m[1] *= 1024;
+                // no break
         }
         return $m[1];
     }, $value);

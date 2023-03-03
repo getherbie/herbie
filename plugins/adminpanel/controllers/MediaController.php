@@ -45,7 +45,7 @@ class MediaController extends Controller
             $currentDir[] = $dir;
         }
         $currentDir[] = '{value}';
-        
+
         $aliasedPathWithPlaceholder = $this->alias->get(join('/', $currentDir));
         $validation = $validator->make($values, [
             'name' => 'required|lowercase|alpha_dash|file_not_exists:' . $aliasedPathWithPlaceholder,
@@ -79,7 +79,7 @@ class MediaController extends Controller
     {
         $dir = $request->getQueryParams()['dir'] ?? '';
         $root = $this->alias->get('@media');
-        
+
         $iterator = $this->finder->mediaFiles($dir);
 
         return $this->render('media/index.twig', [
@@ -109,7 +109,7 @@ class MediaController extends Controller
                 return $this->redirect('media/index&dir=' . $dir);
             }
         }
-        
+
         $status = empty($errors) ? 200 : 400;
 
         return $this->render('media/delete-file.twig', [
@@ -123,10 +123,10 @@ class MediaController extends Controller
         $path = $request->getQueryParams()['path'] ?? '';
         $dir = ltrim(dirname(str_replace('@media', '', $path)), '/');
         $absPath = $this->alias->get($path);
-        
+
         $files = scandir($absPath);
         $hasContent = count($files) > 2;
-        
+
         $errors = [];
 
         if ($request->getMethod() === 'POST') {
@@ -142,7 +142,7 @@ class MediaController extends Controller
         }
 
         $status = empty($errors) ? 200 : 400;
-        
+
         return $this->render('media/delete-folder.twig', [
             'errors' => $errors,
             'path' => $path,
@@ -153,7 +153,7 @@ class MediaController extends Controller
     public function uploadAction(ServerRequestInterface $request)
     {
         /**
-         * @var UploadedFileInterface[] $files 
+         * @var UploadedFileInterface[] $files
          */
         $dir = strtolower(trim($request->getQueryParams()['dir'] ?? ''));
 
@@ -161,12 +161,11 @@ class MediaController extends Controller
         $files = $request->getUploadedFiles()['upload'] ?? [];
 
         if ($request->getMethod() === 'POST') {
-
             $contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
 
             if ($contentLength > 0) {
                 $postMaxSize = ini_get('post_max_size');
-                $postMaxSizeAsInt = human2byte($postMaxSize);                
+                $postMaxSizeAsInt = human2byte($postMaxSize);
                 if ($contentLength > $postMaxSizeAsInt) {
                     $message = 'The uploaded files are too large.';
                     $message .= ' According to your php.ini the setting for "post_max_size" is "%s".';

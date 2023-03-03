@@ -65,10 +65,12 @@ class TinyHtmlMinifier
     }
 
     // Run minifier
-    public function minify(string $html) : string
+    public function minify(string $html): string
     {
-        if (!isset($this->options['disable_comments']) ||
-            !$this->options['disable_comments']) {
+        if (
+            !isset($this->options['disable_comments']) ||
+            !$this->options['disable_comments']
+        ) {
             $html = $this->removeComments($html);
         }
 
@@ -213,8 +215,10 @@ class TinyHtmlMinifier
 
         if (in_array($name, $this->elements['skip'])) {
             return $content;
-        } elseif (in_array($name, $this->elements['hard']) ||
-            $this->head) {
+        } elseif (
+            in_array($name, $this->elements['hard']) ||
+            $this->head
+        ) {
             return $this->minifyHard($content);
         } else {
             return $this->minifyKeepSpaces($content);
@@ -225,15 +229,12 @@ class TinyHtmlMinifier
     private function buildHtml()
     {
         foreach ($this->build as $build) {
-
             if (!empty($this->options['collapse_whitespace'])) {
-
-                if (strlen(trim($build['content'])) == 0)
+                if (strlen(trim($build['content'])) == 0) {
                     continue;
-
-                elseif ($build['type'] != 'content' && !in_array($build['name'], $this->elements['inline']))
+                } elseif ($build['type'] != 'content' && !in_array($build['name'], $this->elements['inline'])) {
                     trim($build['content']);
-
+                }
             }
 
             $this->output .= $build['content'];

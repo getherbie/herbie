@@ -61,8 +61,9 @@ abstract class Controller
     }
 
     protected function init(): void
-    {}
-    
+    {
+    }
+
     protected function render($template, array $params = [], int $status = 200): ResponseInterface|string
     {
         $content = $this->twig->renderTemplate(
@@ -76,8 +77,9 @@ abstract class Controller
         return $this->createHtmlResponse($content, $status);
     }
 
-    private function minify($code) {
-        $search = array(
+    private function minify($code)
+    {
+        $search = [
 
             // Remove whitespaces after tags
             '/\>[^\S ]+/s',
@@ -90,8 +92,8 @@ abstract class Controller
 
             // Removes comments
             '/<!--(.|\s)*?-->/'
-        );
-        $replace = array('>', '<', '\\1');
+        ];
+        $replace = ['>', '<', '\\1'];
         $code = preg_replace($search, $replace, $code);
         return $code;
     }
@@ -134,7 +136,7 @@ abstract class Controller
     {
         return '/index.php/admin?action=' . $action;
     }
-    
+
     private function createHtmlResponse(string $content, int $status = 200): ResponseInterface
     {
         $reasonPhrase = $this->getReasonPhrase($status);
@@ -144,9 +146,9 @@ abstract class Controller
         $body->write($content);
         return $response
             ->withHeader('Content-type', 'text/html; charset=utf-8')
-            ->withBody($body);        
+            ->withBody($body);
     }
-    
+
     private function getReasonPhrase(int $status): string
     {
         return match ($status) {

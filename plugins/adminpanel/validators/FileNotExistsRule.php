@@ -21,7 +21,7 @@ class FileNotExistsRule extends Rule
     public function check($value): bool
     {
         $this->requireParameters($this->fillableParams);
-        
+
         $this->attribute->setRequired(true);
 
         $aliasedPathWithPlaceholder = $this->parameter('alias');

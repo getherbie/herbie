@@ -13,7 +13,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class DataController extends Controller
 {
     private Filesystem $fs;
-    
+
     protected function init(): void
     {
         $this->fs = new Filesystem();
@@ -24,7 +24,7 @@ class DataController extends Controller
             }
             if (!is_writable($dir)) {
                 throw new \Exception(sprintf('Dir "%s" not writable', $dir));
-            }            
+            }
         } catch (ExceptionInterface $e) {
             throw new \Exception($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
@@ -58,7 +58,7 @@ class DataController extends Controller
     {
         $errors = [];
         $values = $request->getParsedBody();
-        
+
         $validator = new Validator();
         $validator->addValidator('file_not_exists', new FileNotExistsRule($this->alias));
 
@@ -66,7 +66,7 @@ class DataController extends Controller
         $validation = $validator->make($values, [
             'name' => 'required|lowercase|alpha_dash|file_not_exists:' . $aliasedPathWithPlaceholder,
         ]);
-        
+
         if ($request->getMethod() === 'POST') {
             $validation->validate();
             if ($validation->fails() || !empty($request->getHeader('X-Up-Validate'))) {
@@ -83,7 +83,7 @@ class DataController extends Controller
         }
 
         $status = empty($errors) ? 200 : 400;
-        
+
         return $this->render('data/add.twig', [
             'errors' => $errors,
             'values' => $values,
@@ -110,7 +110,7 @@ class DataController extends Controller
         }
 
         $status = empty($errors) ? 200 : 400;
-        
+
         return $this->render('data/delete.twig', [
             'errors' => $errors,
             'path' => $path,
@@ -158,7 +158,7 @@ class DataController extends Controller
             $saved = file_put_contents($absPath, $content);
             if ($request->getParsedBody()['button'] === 'saveAndClose') {
                 return $this->redirect('data/index');
-            }            
+            }
         }
 
         return $this->render('data/editstring.twig', [

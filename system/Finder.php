@@ -10,7 +10,7 @@ final class Finder
 {
     /** @var array|string[]  */
     private array $mediaExtensions;
-    private string $mediaPath;    
+    private string $mediaPath;
     /** @var array|string[]  */
     private array $pageExtensions;
     private string $pagePath;
@@ -18,7 +18,7 @@ final class Finder
     public function __construct(array $options = [])
     {
         $this->setMediaExtensions($options['mediaExtensions'] ?? []);
-        $this->setMediaPath($options['mediaPath'] ?? '');        
+        $this->setMediaPath($options['mediaPath'] ?? '');
         $this->setPageExtensions($options['pageExtensions'] ?? []);
         $this->setPagePath($options['pagePath'] ?? '');
     }
@@ -42,7 +42,7 @@ final class Finder
     {
         $this->pagePath = $path;
     }
-    
+
     public function mediaFiles(string $relDir = ''): \Symfony\Component\Finder\Finder
     {
         $depth = count(str_explode_filtered($relDir, '/'));
@@ -53,10 +53,10 @@ final class Finder
             ->path($relDir)
             ->notPath('#(^|/)_.+(/|$)#') // ignore underscore files and folders
             ->depth($depth)
-            ->filter(static function (SplFileInfo $file) use ($patterns)  {
+            ->filter(static function (SplFileInfo $file) use ($patterns) {
                 return $file->isDir() || \preg_match('/\.(' . $patterns . ')$/', $file->getPathname());
-            })                
-            ->sortByType();        
+            })
+            ->sortByType();
     }
 
     public function pageFiles(): \Symfony\Component\Finder\Finder
