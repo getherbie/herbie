@@ -6,7 +6,6 @@
 /website/vendor
 
 # composer lock files
-/composer.lock
 /website/composer.lock
 
 # site folder
