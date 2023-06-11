@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96b9af262d8242b0c10f99be5ebac092",
+    "content-hash": "189b44a72c363849f1b2946ff37c35bb",
     "packages": [
         {
             "name": "ausi/slug-generator",
@@ -3539,16 +3539,16 @@
         },
         {
             "name": "netcarver/textile",
-            "version": "v3.8.0",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/textile/php-textile.git",
-                "reference": "02ed0cbe6832c2100342dabb6d01d7ba558cb8e7"
+                "reference": "79b7d5102816ff017a940d8695a35d7f8db1e60a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/textile/php-textile/zipball/02ed0cbe6832c2100342dabb6d01d7ba558cb8e7",
-                "reference": "02ed0cbe6832c2100342dabb6d01d7ba558cb8e7",
+                "url": "https://api.github.com/repos/textile/php-textile/zipball/79b7d5102816ff017a940d8695a35d7f8db1e60a",
+                "reference": "79b7d5102816ff017a940d8695a35d7f8db1e60a",
                 "shasum": ""
             },
             "require": {
@@ -3564,7 +3564,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.8-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -3594,7 +3594,7 @@
                 "source": "https://github.com/textile/php-textile",
                 "wiki": "https://github.com/textile/php-textile/wiki"
             },
-            "time": "2022-12-03T18:19:42+00:00"
+            "time": "2022-12-03T18:45:20+00:00"
         },
         {
             "name": "nikic/php-parser",
