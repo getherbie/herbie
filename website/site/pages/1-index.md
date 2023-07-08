@@ -9,7 +9,7 @@ title: Homepage
 
 # Herbie
 
-> Create <u>small</u> but fully functional websites or blogs in no time and with little effort. 👌
+> Create fully functional websites or blogs in no time and with little effort, using only text files. 👌
 
 Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
