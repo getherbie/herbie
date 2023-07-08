@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class YamlDataRepository implements DataRepositoryInterface
+use Symfony\Component\Finder\Finder;
+
+class YamlDataRepository implements DataRepositoryInterface
 {
-    private string $path;
+    protected string $path;
 
     /** @var string[] */
-    private array $extensions;
+    protected array $extensions;
 
     /**
      * YamlDataRepository constructor.
@@ -29,52 +31,51 @@ final class YamlDataRepository implements DataRepositoryInterface
 
     public function load(string $name): array
     {
-        $dataFiles = $this->scanDataDir();
+        $files = $this->scanDir();
         $name = strtolower($name);
-        if (!isset($dataFiles[$name])) {
+        if (!isset($files[$name])) {
             return [];
         }
-        return $this->parseDataFile($dataFiles[$name]);
+        return $this->parseData($files[$name]);
     }
 
-    private function scanDataDir(): array
+    protected function scanDir(): array
     {
-        $dataFiles = [];
-
-        $files = scandir($this->path);
-        if ($files === false) {
-            return $dataFiles;
-        }
-
-        foreach ($files as $file) {
-            if (substr($file, 0, 1) === '.') {
-                continue;
-            }
-            $info = pathinfo($file);
-            if (!isset($info['extension']) || !in_array($info['extension'], $this->extensions)) {
-                continue;
-            }
-            $name = strtolower($info['filename']);
-            if (!isset($dataFiles[$name])) {
-                $dataFiles[$name] = $this->path . '/' . $file;
+        static $data;
+        if ($data === null) {
+            $data = [];
+            foreach ($this->getFinder() as $file) {
+                $basename = $file->getBasename('.' . $file->getExtension()); // kind of weird
+                $data[$basename] = $file->getContents();
             }
         }
-
-        return $dataFiles;
+        return $data;
     }
 
-    private function parseDataFile(string $filepath): array
+    protected function parseData(string $contents): array
     {
-        $yaml = file_read($filepath);
-        return Yaml::parse($yaml);
+        return Yaml::parse($contents);
     }
 
     public function loadAll(): array
     {
         $data = [];
-        foreach ($this->scanDataDir() as $name => $dataFile) {
-            $data[$name] = $this->parseDataFile($dataFile);
+        foreach ($this->scanDir() as $basename => $contents) {
+            $data[$basename] = $this->parseData($contents);
         }
         return $data;
+    }
+
+    protected function getFinder(): Finder
+    {
+        $patterns = $this->getPatterns();
+        return (new Finder())->files()->name($patterns)->in($this->path)->sortByName();
+    }
+
+    protected function getPatterns(): array
+    {
+        return array_map(function (string $extension) {
+            return '*.' . $extension;
+        }, $this->extensions);
     }
 }
