@@ -13,10 +13,7 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "codeception/c3": true
-        }
+        "sort-packages": true
     },
     "require": {
         "php": ">=8.0",
@@ -51,10 +48,9 @@
         }
     },
     "require-dev": {
-        "codeception/c3": "^2.7",
-        "codeception/codeception": "^4.2",
-        "codeception/module-asserts": "^1.0.0",
-        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/codeception": "^5.1",
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-phpbrowser": "^3.0",
         "doctrine/rst-parser": "^0.5.2",
         "erusev/parsedown": "^1.7",
         "erusev/parsedown-extra": "^0.8.1",
