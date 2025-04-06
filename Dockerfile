@@ -1,6 +1,8 @@
+ARG PHP_VERSION=8.2
+
 FROM composer:lts AS composer
 
-FROM php:8.2-cli
+FROM php:$PHP_VERSION-cli
 
 WORKDIR /app
 VOLUME /app

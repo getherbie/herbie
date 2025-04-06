@@ -2,18 +2,22 @@ services:
   website:
     build:
       context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}
     profiles: [website]
     working_dir: "/app/website" 
     command: ["php", "-S", "0.0.0.0:80", "-t", "/app/website/web"]
     volumes:
       - .:/app
     ports:
-      - "8888:80"
+      - "9999:80"
     depends_on:
       - install
   install:
     build:
       context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
     profiles: [website]
     working_dir: "/app" 
     command: ["composer", "install"]
@@ -22,6 +26,8 @@ services:
   test:
     build:
       context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
     profiles: [website]
     working_dir: "/app" 
     command: ["php", "vendor/bin/codecept", "run"]
@@ -30,16 +36,20 @@ services:
   test-website:
     build:
       context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
     profiles: [website]
     working_dir: "/app/tests/_data"
     command: ["php", "-S", "0.0.0.0:80", "-t", "/app/tests/_data/web"]
     volumes:
       - .:/app
     ports:
-      - "8888:80"
+      - "9999:80"
   bash:
     build:
       context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
     profiles: [website]
     working_dir: "/app"
     command: ["bash"]

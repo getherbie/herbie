@@ -9,6 +9,13 @@
 
 Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
+## Supported PHP Versions
+
+- 8.1
+- 8.2
+- 8.3
+- 8.4
+
 ## Featuring
 
 Herbie is powered by proven libraries:
@@ -42,11 +49,7 @@ Herbie is well tested:
 
 - Unit, Integration and Acceptance Tests with [Codeception](https://codeception.com)
 - Static Code Analysis with [PHPStan](https://phpstan.org)
-- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) 
-
-## Use Cases
-
-TBD
+- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
 ## Installation
 
@@ -80,6 +83,8 @@ Change to the `herbie` directory.
 
     cd herbie
 
+### With PHP on your machine
+
 Install Composer dependencies.
 
     composer install
@@ -102,6 +107,35 @@ If you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
     XDEBUG_MODE=debug php -S localhost:9999 index.php
+
+### With Docker and Docker Compose on your machine
+
+Start PHP's built-in web server and serve website.
+
+    c
+
+Now, open `localhost:9999` with your favorite web browser.
+
+More docker compose commands are:
+
+    # install Composer dependencies
+    docker compose up install
+
+    # run test suite
+    docker compose up test
+
+    # start test suite website
+    docker compose up test-website
+
+    # run bash terminal
+    docker compose run bash
+
+You can also use different PHP versions:
+
+    PHP_VERSION=8.1 docker compose up website
+    PHP_VERSION=8.2 docker compose up website
+    PHP_VERSION=8.3 docker compose up website
+    PHP_VERSION=8.4 docker compose up website
 
 ## Tests
 
