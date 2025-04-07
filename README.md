@@ -9,6 +9,12 @@
 
 Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
+## Supported PHP Versions
+
+- 8.0
+- 8.1
+- 8.2
+
 ## Featuring
 
 Herbie is powered by proven libraries:
@@ -42,11 +48,7 @@ Herbie is well tested:
 
 - Unit, Integration and Acceptance Tests with [Codeception](https://codeception.com)
 - Static Code Analysis with [PHPStan](https://phpstan.org)
-- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) 
-
-## Use Cases
-
-TBD
+- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
 ## Installation
 
@@ -71,6 +73,8 @@ You should see your first Herbie website.
 ## Development Environment
 
 If you need a development environment, you can follow these steps.
+
+### With PHP on your machine
 
 Clone the GitHub repository.
 
@@ -103,27 +107,83 @@ Hint: For this to work, Xdebug must of course be installed.
 
     XDEBUG_MODE=debug php -S localhost:9999 index.php
 
+### With Docker and Docker Compose on your machine
+
+Clone the GitHub repository.
+
+    git clone https://github.com/getherbie/herbie.git
+
+Change to the `herbie` directory.
+
+    cd herbie
+
+Start PHP's built-in web server and serve website.
+
+    docker compose up website
+
+Now, open `localhost:9999` with your favorite web browser.
+
+More docker compose commands are:
+
+    # install Composer dependencies
+    docker compose run install
+
+    # run test suite
+    docker compose run test
+
+    # start test suite website
+    docker compose up test-website
+
+    # run bash terminal
+    docker compose run bash
+
+You can also use different PHP versions:
+
+    PHP_VERSION=8.0 docker compose up website
+    PHP_VERSION=8.1 docker compose up website
+    PHP_VERSION=8.2 docker compose up website
+
 ## Tests
 
-Run unit tests
+### With PHP on your machine
 
-    php vendor/bin/codecept run unit
-
-Run integration tests
-
-    php vendor/bin/codecept run integration
-
-Run acceptance tests
-
-    php vendor/bin/codecept run acceptance
-
-Run all tests
-
+    # run tests
     php vendor/bin/codecept run
 
-Run tests with Code Coverage
+    # run unit tests
+    php vendor/bin/codecept run unit
 
-    XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+    # run integration tests
+    php vendor/bin/codecept run integration
+
+    # run acceptance tests
+    php vendor/bin/codecept run acceptance
+
+    # run tests with Code Coverage
+    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+
+### With Docker Compose on your machine
+
+Open the container shell
+
+    docker compose run bash
+
+Run tests within the container
+
+    # run tests
+    php vendor/bin/codecept run
+
+    # run unit tests
+    php vendor/bin/codecept run unit
+
+    # run integration tests
+    php vendor/bin/codecept run integration
+    
+    # run acceptance tests
+    php vendor/bin/codecept run acceptance
+
+    # run tests with Code Coverage
+    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
 
 ## More Information
 

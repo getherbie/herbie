@@ -1,0 +1,60 @@
+services:
+  website:
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}
+    profiles: [website]
+    environment:
+      - XDEBUG_MODE=debug
+      - XDEBUG_CONFIG="client_host=host.docker.internal"
+    working_dir: "/app/website" 
+    command: ["php", "-S", "0.0.0.0:80", "-t", "/app/website/web"]
+    volumes:
+      - .:/app
+    ports:
+      - "9999:80"
+    depends_on:
+      - install
+  install:
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
+    profiles: [website]
+    working_dir: "/app" 
+    command: ["composer", "install"]
+    volumes:
+      - .:/app
+  test:
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
+    profiles: [website]
+    working_dir: "/app" 
+    command: ["php", "vendor/bin/codecept", "run"]
+    volumes:
+      - .:/app
+  test-website:
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
+    profiles: [website]
+    working_dir: "/app/tests/_data"
+    command: ["php", "-S", "0.0.0.0:80", "-t", "/app/tests/_data/web"]
+    volumes:
+      - .:/app
+    ports:
+      - "9999:80"
+  bash:
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}      
+    profiles: [website]
+    working_dir: "/app"
+    command: ["bash"]
+    volumes:
+      - .:/app
