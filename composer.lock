@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5f83afaaf64b8aaf2f5a1e1cf5bb2d7e",
+    "content-hash": "4c1ffe7b8c9c28302f927f13e118bb56",
     "packages": [
         {
             "name": "ausi/slug-generator",

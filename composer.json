@@ -62,7 +62,7 @@
         "getherbie/plugin-simplecontact": "dev-master",
         "getherbie/plugin-simplesearch": "dev-master",
         "guzzlehttp/psr7": "^2.4",
-        "laminas/laminas-diactoros": "^3.5",
+        "laminas/laminas-diactoros": "^3.2",
         "netcarver/textile": "^4.0",
         "nyholm/psr7": "^1.5",
         "nyholm/psr7-server": "^1.0",
