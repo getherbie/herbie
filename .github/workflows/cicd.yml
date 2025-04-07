@@ -8,8 +8,7 @@ jobs:
       matrix:
         # operating-systems: ubuntu-latest, windows-latest, macos-latest
         operating-system: [ubuntu-latest]
-        # php-versions: 8.0, 8.1, 8.2
-        php-versions: ['8.0', '8.1', '8.2']
+        php-versions: ['8.0', '8.1', '8.2', '8.3']
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
