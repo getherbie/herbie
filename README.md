@@ -74,6 +74,8 @@ You should see your first Herbie website.
 
 If you need a development environment, you can follow these steps.
 
+### With PHP on your machine
+
 Clone the GitHub repository.
 
     git clone https://github.com/getherbie/herbie.git
@@ -81,8 +83,6 @@ Clone the GitHub repository.
 Change to the `herbie` directory.
 
     cd herbie
-
-### With PHP on your machine
 
 Install Composer dependencies.
 
@@ -108,6 +108,14 @@ Hint: For this to work, Xdebug must of course be installed.
     XDEBUG_MODE=debug php -S localhost:9999 index.php
 
 ### With Docker and Docker Compose on your machine
+
+Clone the GitHub repository.
+
+    git clone https://github.com/getherbie/herbie.git
+
+Change to the `herbie` directory.
+
+    cd herbie
 
 Start PHP's built-in web server and serve website.
 
@@ -137,40 +145,45 @@ You can also use different PHP versions:
 
 ## Tests
 
-Run tests
+### With PHP on your machine
 
+    # run tests
     php vendor/bin/codecept run
 
-Run unit tests
-
+    # run unit tests
     php vendor/bin/codecept run unit
 
-Run integration tests
-
+    # run integration tests
     php vendor/bin/codecept run integration
 
-Run acceptance tests
-
+    # run acceptance tests
     php vendor/bin/codecept run acceptance
 
-Run tests with Code Coverage
-
-    XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+    # run tests with Code Coverage
+    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
 
 ### With Docker Compose on your machine
-
-You can run the above tests in the container shell.
 
 Open the container shell
 
     docker compose run bash
 
-Now, execute the same commands as above within the container
+Run tests within the container
 
+    # run tests
     php vendor/bin/codecept run
+
+    # run unit tests
     php vendor/bin/codecept run unit
+
+    # run integration tests
     php vendor/bin/codecept run integration
+    
+    # run acceptance tests
     php vendor/bin/codecept run acceptance
+
+    # run tests with Code Coverage
+    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
 
 ## More Information
 
