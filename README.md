@@ -11,10 +11,9 @@ Herbie is a simple, modern, fast and highly customizable flat-file Content Manag
 
 ## Supported PHP Versions
 
+- 8.0
 - 8.1
 - 8.2
-- 8.3
-- 8.4
 
 ## Featuring
 
@@ -112,17 +111,17 @@ Hint: For this to work, Xdebug must of course be installed.
 
 Start PHP's built-in web server and serve website.
 
-    c
+    docker compose up website
 
 Now, open `localhost:9999` with your favorite web browser.
 
 More docker compose commands are:
 
     # install Composer dependencies
-    docker compose up install
+    docker compose run install
 
     # run test suite
-    docker compose up test
+    docker compose run test
 
     # start test suite website
     docker compose up test-website
@@ -132,12 +131,15 @@ More docker compose commands are:
 
 You can also use different PHP versions:
 
+    PHP_VERSION=8.0 docker compose up website
     PHP_VERSION=8.1 docker compose up website
     PHP_VERSION=8.2 docker compose up website
-    PHP_VERSION=8.3 docker compose up website
-    PHP_VERSION=8.4 docker compose up website
 
 ## Tests
+
+Run tests
+
+    php vendor/bin/codecept run
 
 Run unit tests
 
@@ -151,13 +153,24 @@ Run acceptance tests
 
     php vendor/bin/codecept run acceptance
 
-Run all tests
-
-    php vendor/bin/codecept run
-
 Run tests with Code Coverage
 
     XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+
+### With Docker Compose on your machine
+
+You can run the above tests in the container shell.
+
+Open the container shell
+
+    docker compose run bash
+
+Now, execute the same commands as above within the container
+
+    php vendor/bin/codecept run
+    php vendor/bin/codecept run unit
+    php vendor/bin/codecept run integration
+    php vendor/bin/codecept run acceptance
 
 ## More Information
 
