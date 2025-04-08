@@ -14,6 +14,7 @@ Herbie is a simple, modern, fast and highly customizable flat-file Content Manag
 - 8.0
 - 8.1
 - 8.2
+- 8.3
 
 ## Featuring
 
@@ -142,6 +143,7 @@ You can also use different PHP versions:
     PHP_VERSION=8.0 docker compose up website
     PHP_VERSION=8.1 docker compose up website
     PHP_VERSION=8.2 docker compose up website
+    PHP_VERSION=8.3 docker compose up website
 
 ## Tests
 
