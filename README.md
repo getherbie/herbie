@@ -95,18 +95,18 @@ Change to the `website/web` directory.
 
 Start PHP's internal web server.
 
-    php -S localhost:9999 index.php
+    php -S localhost:8888 index.php
 
-Now, open `localhost:9999` with your favorite web browser.
+Now, open `localhost:8888` with your favorite web browser.
 
 If you want to have additional console output or logging information, set the debug environment variable.
 
-    HERBIE_DEBUG=1 php -S localhost:9999 index.php
+    HERBIE_DEBUG=1 php -S localhost:8888 index.php
 
 If you want to use Xdebug (3.x), start the internal web server as follows.
 Hint: For this to work, Xdebug must of course be installed.
 
-    XDEBUG_MODE=debug php -S localhost:9999 index.php
+    XDEBUG_MODE=debug php -S localhost:8888 index.php
 
 ### With Docker and Docker Compose on your machine
 
@@ -122,7 +122,7 @@ Start PHP's built-in web server and serve website.
 
     docker compose up website
 
-Now, open `localhost:9999` with your favorite web browser.
+Now, open `localhost:8888` with your favorite web browser.
 
 More docker compose commands are:
 
