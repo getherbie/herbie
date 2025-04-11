@@ -13,6 +13,13 @@ title: Homepage
 
 Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
+## Supported PHP Versions
+
+- 8.0
+- 8.1
+- 8.2
+- 8.3
+
 ## Featuring
 
 Herbie is powered by proven libraries:
