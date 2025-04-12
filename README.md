@@ -9,13 +9,6 @@
 
 Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
 
-## Supported PHP Versions
-
-- 8.0
-- 8.1
-- 8.2
-- 8.3
-
 ## Featuring
 
 Herbie is powered by proven libraries:
@@ -51,9 +44,16 @@ Herbie is well tested:
 - Static Code Analysis with [PHPStan](https://phpstan.org)
 - Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
+## Supported PHP Versions
+
+- 8.0
+- 8.1
+- 8.2
+- 8.3
+
 ## Installation
 
-### Composer 
+### With PHP on your machine 
 
 The easiest way to install Herbie is through Composer.
 Run the following commands in your terminal to create a new project and install all dependent libraries.
@@ -70,6 +70,19 @@ Start the internal webserver:
 
 Now open <http://localhost:8888> with your browser.
 You should see your first Herbie website. 
+
+### With Docker and Docker Compose on your machine
+
+Create website
+
+    docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
+
+Change to the `mywebsite` directory and start website:
+
+    cd mywebsite
+    docker compose up website
+
+Open <http://localhost:8888> with your browser.
 
 ## Development Environment
 
