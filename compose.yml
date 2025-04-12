@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "9999:80"
+      - "8888:80"
     depends_on:
       - install
   install:
@@ -47,7 +47,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "9999:80"
+      - "8888:80"
   bash:
     build:
       context: .
