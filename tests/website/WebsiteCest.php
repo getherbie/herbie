@@ -41,8 +41,8 @@ final class WebsiteCest
         // if we see this, redirect was successful
         $I->see('Quickstart', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 6);
-        $I->seeNumberOfElements('.content>pre', 1);
+        $I->seeNumberOfElements('.content>p', 8);
+        $I->seeNumberOfElements('.content>pre', 2);
     }
 
     public function testDocFirstStepsInstallation(AcceptanceTester $I)
@@ -52,9 +52,9 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Installation', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 6);
-        $I->seeNumberOfElements('.content>pre', 3);
+        $I->seeNumberOfElements('.content>h2', 3);
+        $I->seeNumberOfElements('.content>p', 9);
+        $I->seeNumberOfElements('.content>pre', 5);
     }
 
     public function testDocFirstStepsConfiguration(AcceptanceTester $I)
