@@ -46,38 +46,35 @@ Herbie is well tested:
 
 ## Supported PHP Versions
 
-- 8.0
-- 8.1
-- 8.2
-- 8.3
+8.0 / 8.1 / 8.2 / 8.3
 
 ## Installation
 
-### With PHP on your machine 
+### With PHP and Composer on your machine 
 
 The easiest way to install Herbie is through Composer.
 Run the following commands in your terminal to create a new project and install all dependent libraries.
 
     composer create-project getherbie/start-website mywebsite
 
-Change to the `mywebsite/web` directory:
+Change to the `mywebsite/web` directory.
 
     cd mywebsite/web
 
-Start the internal webserver:
+Start the built-in webserver.
     
     php -S localhost:8888 index.php
 
-Now open <http://localhost:8888> with your browser.
+Open <http://localhost:8888> with your browser.
 You should see your first Herbie website. 
 
 ### With Docker and Docker Compose on your machine
 
-Create website
+Create website and install dependencies.
 
     docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
 
-Change to the `mywebsite` directory and start website:
+Change to the `mywebsite` directory and start website.
 
     cd mywebsite
     docker compose up website
@@ -88,7 +85,7 @@ Open <http://localhost:8888> with your browser.
 
 If you need a development environment, you can follow these steps.
 
-### With PHP on your machine
+### With PHP and Composer on your machine
 
 Clone the GitHub repository.
 
@@ -110,7 +107,7 @@ Start PHP's internal web server.
 
     php -S localhost:8888 index.php
 
-Now, open `localhost:8888` with your favorite web browser.
+Open `localhost:8888` with your favorite web browser.
 
 If you want to have additional console output or logging information, set the debug environment variable.
 
@@ -131,13 +128,13 @@ Change to the `herbie` directory.
 
     cd herbie
 
-Start PHP's built-in web server and serve website.
+Start PHP's built-in web server and launch website.
 
     docker compose up website
 
-Now, open `localhost:8888` with your favorite web browser.
+Open `localhost:8888` with your favorite web browser.
 
-More docker compose commands are:
+Other Docker Compose commands are
 
     # install Composer dependencies
     docker compose run install
@@ -151,7 +148,7 @@ More docker compose commands are:
     # run bash terminal
     docker compose run bash
 
-You can also use different PHP versions:
+You can use different PHP versions.
 
     PHP_VERSION=8.0 docker compose up website
     PHP_VERSION=8.1 docker compose up website
