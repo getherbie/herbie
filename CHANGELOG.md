@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.0] - 2025-04-13
+
+### Added
+- Support for PHP 8.3
+- Support for Docker and Docker Compose
+
+### Fixed
+- Failed WebsiteCest
+
+## [2.0.0] - 2023-01-02
+
+See https://github.com/getherbie/herbie/issues/82.
+
 ## [1.1.0] - 2018-10-27
 - Remove Composer minimum-stability
 - Bump php version requirement to 5.6
@@ -31,6 +44,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/getherbie/herbie/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/getherbie/herbie/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/getherbie/herbie/compare/v2.0.0...v2.1.0
+[2.0.0]: https://github.com/getherbie/herbie/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/getherbie/herbie/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/getherbie/herbie/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/getherbie/herbie/compare/v0.5.0...v1.0.0
