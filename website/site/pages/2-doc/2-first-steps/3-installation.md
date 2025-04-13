@@ -14,7 +14,7 @@ These are:
 - PHP: >=8.0
 - Composer: >=2.x
 
-## Composer support
+## With PHP and Composer
 
 The easiest way to install Herbie is with Composer.
 To do this, run the following command in the terminal:
@@ -34,3 +34,16 @@ Then change to the `web` directory of the created project and start the internal
     php -S localhost:8888 index.php
 
 The website can now be opened in the browser at <http://localhost:8888>.
+
+## With Docker and Docker Compose
+
+Create project and install dependencies.
+
+    docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
+
+Go to the `mywebsite` directory and start website.
+
+    cd mywebsite
+    docker compose up website
+
+Open http://localhost:8888 with your browser.
