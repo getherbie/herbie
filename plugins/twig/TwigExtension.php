@@ -74,7 +74,7 @@ final class TwigExtension extends AbstractExtension
         return [
             new TwigFilter('format_size', [$this, 'filterFilesize']),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
-            new TwigFilter('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),            
+            new TwigFilter('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),
             new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
         ];
     }
@@ -105,7 +105,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('query', [$this, 'query']),
             new TwigFunction('snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
             new TwigFunction('translate', [$this, 'translate']),
-            new TwigFunction('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),            
+            new TwigFunction('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),
             new TwigFunction('url_rel', [$this, 'urlRelative']),
             new TwigFunction('url_abs', [$this, 'urlAbsolute']),
         ];
