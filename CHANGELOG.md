@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.2.0] - 2025-05-23
+
+### Added
+- New `twigify` Twig filter to render a string with Twig
+- New `twigify` Twig function to render a string with Twig
+
 ## [2.1.0] - 2025-04-13
 
 ### Added
@@ -44,7 +50,8 @@ See https://github.com/getherbie/herbie/issues/82.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/getherbie/herbie/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/getherbie/herbie/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/getherbie/herbie/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/getherbie/herbie/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/getherbie/herbie/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/getherbie/herbie/compare/v1.0.1...v1.1.0
