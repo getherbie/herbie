@@ -41,6 +41,7 @@ use ReturnTypeWillChange;
 final class Page implements ArrayAccess
 {
     private static ?SlugGenerator $slugGenerator = null;
+    private ?SlugGenerator $instanceSlugGenerator;
     /** @var string[] */
     private array $authors;
     private bool $cached;
@@ -72,8 +73,9 @@ final class Page implements ArrayAccess
     private bool $twig;
     private string $type;
 
-    public function __construct(array $data = [], ?array $segments = null)
+    public function __construct(array $data = [], ?array $segments = null, ?SlugGenerator $slugGenerator = null)
     {
+        $this->instanceSlugGenerator = $slugGenerator;
         // set defaults
         $this->authors = [];
         $this->cached = true;
@@ -123,11 +125,17 @@ final class Page implements ArrayAccess
         }
     }
 
+    /**
+     * @deprecated Use constructor injection via PageFactory instead.
+     */
     public static function setSlugGenerator(SlugGenerator $slugGenerator): void
     {
         self::$slugGenerator = $slugGenerator;
     }
 
+    /**
+     * @deprecated Use constructor injection via PageFactory instead.
+     */
     public static function unsetSlugGenerator(): void
     {
         self::$slugGenerator = null;
@@ -372,10 +380,11 @@ final class Page implements ArrayAccess
 
     private function slugify(string $slug): string
     {
-        if (self::$slugGenerator === null) {
+        $generator = $this->instanceSlugGenerator ?? self::$slugGenerator;
+        if ($generator === null) {
             throw new BadMethodCallException('SlugGenerator not set.');
         }
-        return self::$slugGenerator->generate($slug);
+        return $generator->generate($slug);
     }
 
     public function getCategory(string $category): string

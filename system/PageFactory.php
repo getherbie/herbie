@@ -4,16 +4,25 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Ausi\SlugGenerator\SlugGenerator;
+
 final class PageFactory
 {
+    private ?SlugGenerator $slugGenerator;
+
+    public function __construct(?SlugGenerator $slugGenerator = null)
+    {
+        $this->slugGenerator = $slugGenerator;
+    }
+
     public function newPage(array $data, array $segments): Page
     {
-        return new Page($data, $segments);
+        return new Page($data, $segments, $this->slugGenerator);
     }
 
     public function newPageItem(array $data = []): Page
     {
-        return new Page($data);
+        return new Page($data, null, $this->slugGenerator);
     }
 
     public function newPageList(array $items = []): PageList

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use Ausi\SlugGenerator\SlugGenerator;
 use herbie\events\ResponseEmittedEvent;
 use herbie\events\ResponseGeneratedEvent;
 use herbie\events\TranslatorInitializedEvent;
@@ -94,8 +93,7 @@ final class Application
 
         setlocale(LC_ALL, $config->getAsString('locale'));
 
-        // Set slug generator to page
-        Page::setSlugGenerator($this->container->get(SlugGenerator::class));
+        // SlugGenerator is now injected via PageFactory.
     }
 
     public static function isDebug(): bool

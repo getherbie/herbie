@@ -201,8 +201,8 @@ final class ContainerBuilder
             );
         });
 
-        $c->set(PageFactory::class, function () {
-            return new PageFactory();
+        $c->set(PageFactory::class, function (ContainerInterface $c) {
+            return new PageFactory($c->get(SlugGenerator::class));
         });
 
         $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
