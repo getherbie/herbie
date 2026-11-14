@@ -1,8 +1,9 @@
 parameters:
-	checkMissingIterableValueType: false
-	checkGenericClassInNonGenericObjectType: false
 	treatPhpDocTypesAsCertain: false
 	level: 8
+	ignoreErrors:
+		-
+			identifier: missingType.iterableValue
 	paths:
 		- config
 		- messages
