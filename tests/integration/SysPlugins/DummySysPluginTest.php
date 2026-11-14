@@ -14,9 +14,6 @@ final class DummySysPluginTest extends Unit
 {
     protected Application $app;
 
-    /**
-     * @group external-plugins
-     */
     public function testTextileFilter(): void
     {
         $logFile = dirname(__DIR__) . '/Fixtures/site/runtime/log/logger.log';

@@ -7,8 +7,8 @@ namespace herbie\sysplugins\markdown;
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;
 use herbie\Plugin;
+use herbie\sysplugins\markdown\HerbieParsedownExtra;
 use Parsedown;
-use ParsedownExtra;
 use Psr\Log\LoggerInterface;
 
 final class MarkdownSysPlugin extends Plugin
@@ -77,7 +77,12 @@ final class MarkdownSysPlugin extends Plugin
             return $string;
         }
         $parser->setUrlsLinked(false);
-        return $parser->text($string);
+        try {
+            return $parser->text($string);
+        } catch (\ValueError $e) {
+            // ParsedownExtra can throw ValueError on empty DOMDocument input (PHP 8.3+)
+            return $string;
+        }
     }
 
     /**
@@ -86,7 +91,7 @@ final class MarkdownSysPlugin extends Plugin
     private function createParser()
     {
         if ($this->mode === self::MODE_PARSEDOWN_EXTRA) {
-            return new ParsedownExtra();
+            return new HerbieParsedownExtra();
         }
         if ($this->mode === self::MODE_PARSEDOWN) {
             return new Parsedown();
