@@ -24,6 +24,8 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     private Finder $finder;
     private bool $cacheEnable;
     private int $cacheTTL;
+    /** @var array<int, string>|null */
+    private ?array $parentsCache = null;
 
     public function __construct(
         Alias $alias,
@@ -246,19 +248,24 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
     private function findParents(string $folder, string $alias): array
     {
-        static $parents;
-        if ($parents === null) {
-            $parents = [];
-            foreach ($this->finder->pageFiles() as $file) {
-                $filename = $file->getFilenameWithoutExtension();
-                $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
-                if ($filename === 'index') {
-                    $parents[] = str_replace($folder, $alias, $file->getPathname());
-                }
-            }
-            sort($parents);
+        if ($this->parentsCache !== null) {
+            return $this->parentsCache;
         }
-        return $parents;
+        $parents = [];
+        foreach ($this->finder->pageFiles() as $file) {
+            $filename = $file->getFilenameWithoutExtension();
+            $filename = preg_replace('/^([0-9]+[-]+)?(.+)$/', '\\2', $filename);
+            if ($filename === 'index') {
+                $parents[] = str_replace($folder, $alias, $file->getPathname());
+            }
+        }
+        sort($parents);
+        return $this->parentsCache = $parents;
+    }
+
+    public function clearParentsCache(): void
+    {
+        $this->parentsCache = null;
     }
 
     private function getFilenameWithoutPrefix(string $filepath): string
