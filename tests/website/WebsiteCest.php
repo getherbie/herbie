@@ -324,6 +324,9 @@ final class WebsiteCest
         $I->seeNumberOfElements('.content>table', 7);
     }
 
+    /**
+     * @group external-plugins
+     */
     public function testRecipes(AcceptanceTester $I)
     {
         /** @var Web $I */
@@ -335,6 +338,9 @@ final class WebsiteCest
         $this->testLayoutRecipe($I);
     }
 
+    /**
+     * @group external-plugins
+     */
     public function testRecipesOne(AcceptanceTester $I)
     {
         /** @var Web $I */
@@ -369,6 +375,9 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
+    /**
+     * @group external-plugins
+     */
     public function testSearch(AcceptanceTester $I)
     {
         /** @var Web $I */
@@ -379,6 +388,9 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
+    /**
+     * @group external-plugins
+     */
     public function testContact(AcceptanceTester $I)
     {
         /** @var Web $I */
