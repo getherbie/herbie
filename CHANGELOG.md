@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- `time_format()` now uses PHP's `date()` format syntax instead of the deprecated `strftime()` (strftime removed in PHP 9.0). **Breaking:** format strings must be migrated from strftime to date() syntax.
+- PSR-17 factory selection in `ContainerBuilder` deduplicated via `preferredPsr17Package()`.
+- `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
+
+### Fixed
+- `UrlManager::parseRequest()` now caches the parsed request when a route rule matches.
+- Cache directory is created with mode 0755 instead of 0644.
+
+### Security
+- `FileCache` restricts deserialization to scalar/array values (`allowed_classes => false`).
+- `handle_internal_webserver_assets()` prevents path traversal outside the base directory.
+- `FlatFilePagePersistence::findById()` restricts access to the page root.
+
 ## [2.2.0] - 2025-05-23
 
 ### Added
