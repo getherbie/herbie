@@ -484,14 +484,17 @@ function time_from_string(string $datetime): int
     return $timestamp;
 }
 
+/**
+ * Format a timestamp using PHP's date() format syntax.
+ *
+ * Note: prior to this change this function used strftime() (deprecated in
+ * PHP 8.1, removed in PHP 9.0). The format string must now follow PHP's
+ * date() format syntax (same as date_format()).
+ */
 function time_format(string $format, ?int $timestamp = null): string
 {
     $timestamp = $timestamp ?? time();
-    $formatted = strftime($format, $timestamp);
-    if ($formatted === false) {
-        return '';
-    }
-    return $formatted;
+    return date($format, $timestamp);
 }
 
 function date_format(string $format, ?int $timestamp = null): string
