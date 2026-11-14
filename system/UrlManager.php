@@ -91,7 +91,7 @@ final class UrlManager
                     $matches,
                     array_flip(array_filter(array_keys($matches), 'is_string'))
                 );
-                return [$rule[1], $params];
+                return $this->parsedRequest = [$rule[1], $params];
             }
         }
         return $this->parsedRequest = [$route, []];
