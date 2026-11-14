@@ -100,11 +100,8 @@ final class Application
 
     public static function isDebug(): bool
     {
-        static $debug;
-        if ($debug === null) {
-            $debug = (bool)getenv('HERBIE_DEBUG');
-        }
-        return $debug;
+        // Read on every call to avoid stale values in tests/workers.
+        return (bool)getenv('HERBIE_DEBUG');
     }
 
     public function getLogger(): LoggerInterface
@@ -119,11 +116,8 @@ final class Application
 
     public static function getHerbiePath(string $append): string
     {
-        static $herbiePath;
-        if ($herbiePath === null) {
-            $herbiePath = dirname(__DIR__);
-        }
-        return $herbiePath . $append;
+        // No static cache to avoid stale values in tests/workers.
+        return dirname(__DIR__) . $append;
     }
 
     public function runCli(): void
