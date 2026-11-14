@@ -111,6 +111,11 @@ final class FileCache implements CacheInterface
      */
     protected function unserialize(string $data, array $options = [])
     {
+        // Restrict deserialization to scalar/array values only to mitigate
+        // object injection via tampered cache files (security hardening).
+        if (!array_key_exists('allowed_classes', $options)) {
+            $options['allowed_classes'] = false;
+        }
         return unserialize($data, $options);
     }
 
