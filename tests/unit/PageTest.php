@@ -23,9 +23,7 @@ final class PageTest extends Unit
 
     public function testAuthors()
     {
-        Page::setSlugGenerator(new SlugGenerator());
-
-        $page = new Page();
+        $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasAuthor('None Existing'));
         $this->assertEquals('', $page->getAuthor('None Existing'));
 
@@ -40,7 +38,6 @@ final class PageTest extends Unit
         $this->assertTrue($page->hasAuthor('Carol Kaye'));
         $this->assertTrue($page->hasAuthor('Mark King'));
 
-        Page::unsetSlugGenerator();
     }
 
     public function testCached()
@@ -79,9 +76,7 @@ final class PageTest extends Unit
 
     public function testCategories()
     {
-        Page::setSlugGenerator(new SlugGenerator());
-
-        $page = new Page();
+        $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasCategory('None Existing Category'));
         $this->assertEquals('', $page->getCategory('None Existing Category'));
 
@@ -96,7 +91,6 @@ final class PageTest extends Unit
         $this->assertTrue($page->hasCategory('New-Orleans-Jazz'));
         $this->assertTrue($page->hasCategory('Soul-Jazz'));
 
-        Page::unsetSlugGenerator();
     }
 
     public function testContentType()
@@ -344,9 +338,7 @@ final class PageTest extends Unit
 
     public function testTags()
     {
-        Page::setSlugGenerator(new SlugGenerator());
-
-        $page = new Page();
+        $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasTag('None Existing Tag'));
         $this->assertEquals('', $page->getTag('None Existing Tag'));
 
@@ -361,7 +353,6 @@ final class PageTest extends Unit
         $this->assertTrue($page->hasTag('Merengue'));
         $this->assertTrue($page->hasTag('Salsa'));
 
-        Page::unsetSlugGenerator();
     }
 
     // string $route
@@ -479,17 +470,14 @@ final class PageTest extends Unit
     {
         $page = new Page(['author' => 'Niels-Henning Ørsted Pedersen']);
         try {
-        } catch (BadMethodCallException $e) {
-            $this->assertEquals('SlugGenerator not set.', $e->getMessage());
-        }
-        $this->assertNull(Page::setSlugGenerator(new SlugGenerator()));
-        $this->assertEquals('Niels-Henning Ørsted Pedersen', $page->getAuthor('Niels-Henning Ørsted Pedersen'));
-        $this->assertNull(Page::unsetSlugGenerator());
-        try {
             $page->getAuthor('Niels-Henning Ørsted Pedersen');
+            $this->fail('Expected BadMethodCallException');
         } catch (BadMethodCallException $e) {
             $this->assertEquals('SlugGenerator not set.', $e->getMessage());
         }
+
+        $pageWithGenerator = new Page(['author' => 'Niels-Henning Ørsted Pedersen'], null, new SlugGenerator());
+        $this->assertEquals('Niels-Henning Ørsted Pedersen', $pageWithGenerator->getAuthor('Niels-Henning Ørsted Pedersen'));
     }
 
     public function testSetDataWithDataKey()
@@ -723,8 +711,4 @@ final class PageTest extends Unit
         );
     }
 
-    private function initPage()
-    {
-        Page::setSlugGenerator(new SlugGenerator(['locale' => 'en', 'delimiter' => '-']));
-    }
 }
