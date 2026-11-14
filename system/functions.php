@@ -346,9 +346,21 @@ function get_callable_name($callable): array
         case is_string($callable):
             return ['function', $callable];
         case is_array($callable) && is_object($callable[0]):
-            return ['method', get_class($callable[0]) . '->' . (is_string($callable[1]) ? $callable[1] : (string) $callable[1])]; /** @phpstan-ignore-line */
+            if (is_string($callable[1])) {
+                $method = $callable[1];
+            } else {
+                /** @phpstan-ignore-next-line */
+                $method = (string) $callable[1];
+            }
+            return ['method', get_class($callable[0]) . '->' . $method];
         case is_array($callable):
-            return ['static', $callable[0] . '::' . (is_string($callable[1]) ? $callable[1] : (string) $callable[1])]; /** @phpstan-ignore-line */
+            if (is_string($callable[1])) {
+                $method = $callable[1];
+            } else {
+                /** @phpstan-ignore-next-line */
+                $method = (string) $callable[1];
+            }
+            return ['static', $callable[0] . '::' . $method];
         case $callable instanceof Closure:
             try {
                 $reflectionClosure = new ReflectionFunction($callable);
