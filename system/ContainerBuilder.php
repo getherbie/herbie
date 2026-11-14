@@ -21,11 +21,11 @@ use Psr\SimpleCache\CacheInterface;
 
 final class ContainerBuilder
 {
-    private const PACKAGE_GUZZLE_HTTP_PSR7 = 'guzzlehttp/psr7';
-    private const PACKAGE_LAMINAS_DIACTOROS = 'laminas/laminas-diactoros';
-    private const PACKAGE_NYHOLM_PSR7 = 'nyholm/psr7';
-    private const PACKAGE_NYHOLM_PSR7_SERVER = 'nyholm/psr7-server';
-    private const PACKAGE_SLIM_PSR7 = 'slim/psr7';
+    private const string PACKAGE_GUZZLE_HTTP_PSR7 = 'guzzlehttp/psr7';
+    private const string PACKAGE_LAMINAS_DIACTOROS = 'laminas/laminas-diactoros';
+    private const string PACKAGE_NYHOLM_PSR7 = 'nyholm/psr7';
+    private const string PACKAGE_NYHOLM_PSR7_SERVER = 'nyholm/psr7-server';
+    private const string PACKAGE_SLIM_PSR7 = 'slim/psr7';
 
     private Application $app;
     private ?CacheInterface $cache;

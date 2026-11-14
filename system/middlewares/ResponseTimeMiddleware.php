@@ -11,11 +11,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ResponseTimeMiddleware implements MiddlewareInterface
 {
-    private const HEADER = 'X-Response-Time';
+    private const string HEADER = 'X-Response-Time';
 
     /**
      * Process a server request and return a response.
      */
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $server = $request->getServerParams();

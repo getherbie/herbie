@@ -16,8 +16,8 @@ use const PHP_EOL;
 
 final class FileLogger implements LoggerInterface
 {
-    private const TAB = "\t";
-    private const LEVELS = [
+    private const string TAB = "\t";
+    private const array LEVELS = [
         LogLevel::DEBUG => 0,
         LogLevel::INFO => 1,
         LogLevel::NOTICE => 2,

@@ -10,8 +10,8 @@ namespace herbie;
  */
 final class Assets
 {
-    private const TYPE_CSS = 0;
-    private const TYPE_JS = 1;
+    private const int TYPE_CSS = 0;
+    private const int TYPE_JS = 1;
     private static int $counter = 0;
     private static bool $sorted = false;
     private static array $published = [];

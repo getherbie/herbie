@@ -13,9 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class PageResolverMiddleware implements MiddlewareInterface
 {
-    public const HERBIE_REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
-    public const HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
-    public const HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
+    public const string HERBIE_REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
+    public const string HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
+    public const string HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
 
     private PageRepositoryInterface $pageRepository;
     private UrlManager $urlManager;
@@ -31,6 +31,7 @@ final class PageResolverMiddleware implements MiddlewareInterface
         $this->urlManager = $urlManager;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();

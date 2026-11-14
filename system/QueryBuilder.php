@@ -17,9 +17,9 @@ use Traversable;
  */
 final class QueryBuilder implements IteratorAggregate
 {
-    private const WHERE_CLAUSE_OPERATORS = ['AND', 'OR'];
+    private const array WHERE_CLAUSE_OPERATORS = ['AND', 'OR'];
     // ordered by key string length
-    private const OPERATORS = [
+    private const array OPERATORS = [
         "!=" => 'matchNotEqual',
         ">=" => 'matchGreaterThanEqual',
         "<=" => 'matchLessThanEqual',

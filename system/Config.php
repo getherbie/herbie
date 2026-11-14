@@ -10,7 +10,7 @@ use UnexpectedValueException;
 
 final class Config
 {
-    private const DELIM = '.';
+    private const string DELIM = '.';
     private array $data;
 
     public function __construct(array $data)
