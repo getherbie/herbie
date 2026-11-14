@@ -19,7 +19,7 @@
         }
     },
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.3",
         "ext-json": "*",
         "composer-runtime-api": "^2.0",
         "ausi/slug-generator": "^1.1",
