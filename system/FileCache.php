@@ -84,7 +84,13 @@ final class FileCache implements CacheInterface
             return $default;
         }
 
-        $file = json_decode((string)file_get_contents($cacheFile), true);
+        $contents = (string)file_get_contents($cacheFile);
+
+        if (!json_validate($contents)) {
+            return $default;
+        }
+
+        $file = json_decode($contents, true);
 
         if (!is_array($file) || $file['key'] !== $key) {
             return $default;
