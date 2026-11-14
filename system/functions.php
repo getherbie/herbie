@@ -261,7 +261,14 @@ function handle_internal_webserver_assets(string $file): void
     $regex = '/\.(?:' . $extensions . ')$/';
 
     if (preg_match($regex, $requestUri)) {
-        $requestedAbsoluteFile = dirname($file) . $requestUri;
+        $baseDir = realpath(dirname($file));
+        $requestedAbsoluteFile = $baseDir !== false ? realpath($baseDir . $requestUri) : false;
+        // Prevent directory traversal outside of the base directory.
+        if ($requestedAbsoluteFile === false || $baseDir === false
+            || strpos($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR) !== 0) {
+            http_response_code(404);
+            exit;
+        }
         $extension = pathinfo($requestedAbsoluteFile, PATHINFO_EXTENSION);
         header('Content-Type: ' . ($mimeTypes[$extension] ?? 'text/plain'));
         if (!is_readable($requestedAbsoluteFile)) {
