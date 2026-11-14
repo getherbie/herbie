@@ -41,6 +41,13 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     {
         try {
             $root = $this->alias->get('@page');
+            $rootReal = realpath($root);
+            $idReal = realpath($id);
+            // Prevent path traversal outside of the page root.
+            if ($rootReal === false || $idReal === false
+                || strpos($idReal, $rootReal . DIRECTORY_SEPARATOR) !== 0) {
+                return null;
+            }
             $relativePathName = str_replace($root, '', $id);
             $relativePath = dirname($relativePathName);
             $fileInfo = new SplFileInfo($id, ltrim($relativePath, '/'), ltrim($relativePathName, '/'));
