@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
 
-use ArgumentCountError;
+use Twig\Error\SyntaxError;
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
@@ -15,7 +15,7 @@ final class MailLinkFunctionTest extends Unit
 
     public function testLinkWithoutParams(): void
     {
-        $this->expectException(ArgumentCountError::class);
+        $this->expectException(SyntaxError::class);
         $twig = '{{ link_mail() }}';
         $this->twig()->renderString($twig);
     }

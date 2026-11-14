@@ -8,6 +8,7 @@ use Codeception\Test\Unit;
 use Error;
 use herbie\Application;
 use herbie\ApplicationPaths;
+use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 final class MarkdownSysPluginTest extends Unit
@@ -28,11 +29,7 @@ final class MarkdownSysPluginTest extends Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/markdown'
         );
-        if ($app->getConfig()->getAsBool('components.twigRenderer.debug') === true) {
-            $this->expectException(Error::class);
-        } else {
-            $this->expectException(SyntaxError::class);
-        }
+        $this->expectException(RuntimeError::class);
         $app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}');
     }
 
@@ -50,12 +47,7 @@ final class MarkdownSysPluginTest extends Unit
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/markdown'
         );
-        $isDebug = $app->getConfig()->getAsBool('components.twigRenderer.debug');
-        if ($isDebug === true) {
-            $this->expectException(Error::class);
-        } else {
-            $this->expectException(SyntaxError::class);
-        }
+        $this->expectException(RuntimeError::class);
         $app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}');
     }
 

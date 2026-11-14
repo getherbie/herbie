@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
-use TypeError;
+use Twig\Error\RuntimeError;
 
 final class FilesizeFilterTest extends Unit
 {
@@ -16,7 +16,7 @@ final class FilesizeFilterTest extends Unit
 
     public function testFilesizeWithWrongType(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(RuntimeError::class);
         $twig = '{{ "string"|format_size }}'; // string
         $this->twigRenderer->renderString($twig);
         $twig = '{{ {a:1}|format_size }}'; // object

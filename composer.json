@@ -33,7 +33,7 @@
         "symfony/console": "^5.0",
         "symfony/finder": "5.4",
         "symfony/yaml": "^5.4",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.30"
     },
     "autoload": {
         "psr-4": {
