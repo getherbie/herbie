@@ -135,8 +135,15 @@ final class Config
     }
 
     /**
-     * This is for snake_case in twig only.
-     * @return null|mixed
+     * Magic getter to support snake_case access in Twig templates.
+     *
+     * Allows calling e.g. `$config->get_as_string('path')` or `$config->get_as_bool('flag')`
+     * which is translated to `getAsBool('flag')` etc. Used by Twig to invoke typed
+     * getters with snake_case names (e.g. `config.get_as_string('key')`).
+     *
+     * @param string $name      The snake_case method name (e.g. "get_as_string").
+     * @param array  $arguments Arguments forwarded to the resolved getter.
+     * @return mixed|null The result of the resolved getter, or null if no matching getter exists.
      */
     public function __call(string $name, array $arguments)
     {
