@@ -10,13 +10,13 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
 
-/**
- * Loads the whole page.
- */
 if (!defined('UTF8_BOM')) {
     define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
 }
 
+/**
+ * Loads the whole page.
+ */
 final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
@@ -48,8 +48,10 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             $rootReal = realpath($root);
             $idReal = realpath($id);
             // Prevent path traversal outside of the page root.
-            if ($rootReal === false || $idReal === false
-                || strpos($idReal, $rootReal . DIRECTORY_SEPARATOR) !== 0) {
+            if (
+                $rootReal === false || $idReal === false
+                || strpos($idReal, $rootReal . DIRECTORY_SEPARATOR) !== 0
+            ) {
                 return null;
             }
             $relativePathName = str_replace($root, '', $id);

@@ -264,8 +264,10 @@ function handle_internal_webserver_assets(string $file): void
         $baseDir = realpath(dirname($file));
         $requestedAbsoluteFile = $baseDir !== false ? realpath($baseDir . $requestUri) : false;
         // Prevent directory traversal outside of the base directory.
-        if ($requestedAbsoluteFile === false || $baseDir === false
-            || strpos($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR) !== 0) {
+        if (
+            $requestedAbsoluteFile === false || $baseDir === false
+            || strpos($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR) !== 0
+        ) {
             http_response_code(404);
             exit;
         }
