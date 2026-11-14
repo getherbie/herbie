@@ -28,6 +28,7 @@ final class CallableMiddleware implements MiddlewareInterface
     /**
      * Return the response produced by the callable.
      */
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         return ($this->callable)($request, $handler);

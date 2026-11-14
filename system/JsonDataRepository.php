@@ -9,6 +9,7 @@ final class JsonDataRepository extends YamlDataRepository implements DataReposit
     /**
      * YamlDataRepository constructor.
      */
+    #[\Override]
     public function __construct(string $path)
     {
         $this->extensions = ['json'];

@@ -46,6 +46,7 @@ final class DownloadMiddleware implements MiddlewareInterface
      * @throws HttpException
      * @throws SystemException
      */
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE);

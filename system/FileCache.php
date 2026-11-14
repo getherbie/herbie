@@ -30,6 +30,7 @@ final class FileCache implements CacheInterface
         $this->path = $path; // here we have a valid and existing path
     }
 
+    #[\Override]
     public function clear(): bool
     {
         $filenames = glob($this->path . '/*.cache');
@@ -45,6 +46,7 @@ final class FileCache implements CacheInterface
         return true;
     }
 
+    #[\Override]
     public function has($key)
     {
         if (empty($key)) {
@@ -59,6 +61,7 @@ final class FileCache implements CacheInterface
         return $this->path . DIRECTORY_SEPARATOR . md5($key) . '.cache';
     }
 
+    #[\Override]
     public function getMultiple($keys, $default = null)
     {
         $multiple = [];
@@ -68,6 +71,7 @@ final class FileCache implements CacheInterface
         return $multiple;
     }
 
+    #[\Override]
     public function get($key, $default = null)
     {
         if (empty($key)) {
@@ -95,6 +99,7 @@ final class FileCache implements CacheInterface
         return $this->unserialize($file['value']) ?? $default;
     }
 
+    #[\Override]
     public function delete($key)
     {
         $filename = $this->getFilename($key);
@@ -119,6 +124,7 @@ final class FileCache implements CacheInterface
         return unserialize($data, $options);
     }
 
+    #[\Override]
     public function setMultiple($values, $ttl = null)
     {
         foreach ($values as $key => $value) {
@@ -128,6 +134,7 @@ final class FileCache implements CacheInterface
         return true;
     }
 
+    #[\Override]
     public function set($key, $value, $ttl = null)
     {
         if (empty($key)) {
@@ -152,6 +159,7 @@ final class FileCache implements CacheInterface
         return serialize($data);
     }
 
+    #[\Override]
     public function deleteMultiple($keys)
     {
         foreach ((array)$keys as $key) {

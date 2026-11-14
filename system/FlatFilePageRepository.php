@@ -23,6 +23,7 @@ final class FlatFilePageRepository implements PageRepositoryInterface
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
      */
+    #[\Override]
     public function find(string $id): ?Page
     {
         $data = $this->pagePersistence->findById($id);
@@ -37,6 +38,7 @@ final class FlatFilePageRepository implements PageRepositoryInterface
         );
     }
 
+    #[\Override]
     public function findAll(): PageList
     {
         if ($this->pageList === null) {
@@ -49,12 +51,14 @@ final class FlatFilePageRepository implements PageRepositoryInterface
         return $this->pageList;
     }
 
+    #[\Override]
     public function save(Page $page): bool
     {
         // TODO: Implement save() method.
         return false;
     }
 
+    #[\Override]
     public function delete(Page $page): bool
     {
         // TODO: Implement remove() method.

@@ -19,6 +19,7 @@ final class DummyCommand extends Command
             ->setHelp('This command allows you to create a user...');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // outputs multiple lines to the console (adding "\n" at the end of each line)

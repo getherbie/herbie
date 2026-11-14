@@ -24,6 +24,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
         $this->users = $users;
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $login = $this->login($request);

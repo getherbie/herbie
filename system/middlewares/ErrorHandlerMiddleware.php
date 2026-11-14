@@ -36,6 +36,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @throws SyntaxError
      * @throws Throwable
      */
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         set_error_handler($this->createErrorHandler());

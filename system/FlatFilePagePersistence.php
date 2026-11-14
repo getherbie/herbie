@@ -43,6 +43,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/1-about/2-company.md)
      */
+    #[\Override]
     public function findById(string $id): ?array
     {
         try {
@@ -274,6 +275,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         return (string)preg_replace('/^([0-9]+[-]+)(.+)$/', '\\2', $filename);
     }
 
+    #[\Override]
     public function findAll(): array
     {
         $items = [];

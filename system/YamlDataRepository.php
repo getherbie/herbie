@@ -29,6 +29,7 @@ class YamlDataRepository implements DataRepositoryInterface
         $this->extensions = ['yml', 'yaml'];
     }
 
+    #[\Override]
     public function load(string $name): array
     {
         $files = $this->scanDir();
@@ -57,6 +58,7 @@ class YamlDataRepository implements DataRepositoryInterface
         return Yaml::parse($contents);
     }
 
+    #[\Override]
     public function loadAll(): array
     {
         $data = [];

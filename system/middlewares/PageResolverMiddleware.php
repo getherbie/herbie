@@ -31,7 +31,7 @@ final class PageResolverMiddleware implements MiddlewareInterface
         $this->urlManager = $urlManager;
     }
 
-    #[Override]
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         [$route, $routeParams] = $this->urlManager->parseRequest();

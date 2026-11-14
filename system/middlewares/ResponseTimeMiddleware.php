@@ -16,7 +16,7 @@ final class ResponseTimeMiddleware implements MiddlewareInterface
     /**
      * Process a server request and return a response.
      */
-    #[Override]
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $server = $request->getServerParams();

@@ -47,6 +47,7 @@ final class PageRendererMiddleware implements MiddlewareInterface
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var string $route */

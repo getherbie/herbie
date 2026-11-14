@@ -30,6 +30,7 @@ final class ClearFilesCommand extends Command
             ->addArgument('type', InputArgument::OPTIONAL, 'Type of files to delete', 'all');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $type = $input->getArgument('type');

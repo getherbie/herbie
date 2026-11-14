@@ -13,6 +13,7 @@ final class NullCache implements CacheInterface
      * @param null $default
      * @return mixed
      */
+    #[\Override]
     public function get($key, $default = null)
     {
         return $default;
@@ -23,6 +24,7 @@ final class NullCache implements CacheInterface
      * @param mixed $value
      * @param null $ttl
      */
+    #[\Override]
     public function set($key, $value, $ttl = null): bool
     {
         return false;
@@ -31,11 +33,13 @@ final class NullCache implements CacheInterface
     /**
      * @param string $key
      */
+    #[\Override]
     public function delete($key): bool
     {
         return true;
     }
 
+    #[\Override]
     public function clear(): bool
     {
         return true;
@@ -46,6 +50,7 @@ final class NullCache implements CacheInterface
      * @param null $default
      * @return iterable
      */
+    #[\Override]
     public function getMultiple($keys, $default = null)
     {
         foreach ($keys as $key) {
@@ -57,6 +62,7 @@ final class NullCache implements CacheInterface
      * @param iterable $values
      * @param null $ttl
      */
+    #[\Override]
     public function setMultiple($values, $ttl = null): bool
     {
         return false;
@@ -65,6 +71,7 @@ final class NullCache implements CacheInterface
     /**
      * @param iterable $keys
      */
+    #[\Override]
     public function deleteMultiple($keys): bool
     {
         return true;
@@ -73,6 +80,7 @@ final class NullCache implements CacheInterface
     /**
      * @param string $key
      */
+    #[\Override]
     public function has($key): bool
     {
         return false;
