@@ -86,7 +86,7 @@ final class MarkdownSysPlugin extends Plugin
     }
 
     /**
-     * @return Parsedown|ParsedownExtra|null
+     * @return Parsedown|HerbieParsedownExtra|null
      */
     private function createParser()
     {

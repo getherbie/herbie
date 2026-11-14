@@ -17,12 +17,18 @@ use ParsedownExtra;
  */
 class HerbieParsedownExtra extends ParsedownExtra
 {
-    protected function processTag($tag, $attr = '', $close = false)
+    /**
+     * @param mixed $tag
+     * @param mixed $attr
+     * @param mixed $close
+     * @return string
+     */
+    protected function processTag($tag, $attr = '', $close = false): string
     {
         if ($tag === '') {
             return '';
         }
 
-        return parent::processTag($tag, $attr, $close);
+        return parent::processTag($tag, $attr, $close); /** @phpstan-ignore-line */
     }
 }
