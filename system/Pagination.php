@@ -13,6 +13,7 @@ use IteratorAggregate;
 /**
  * @see https://docs.phalcon.io/4.0/en/pagination
  */
+/** @implements \IteratorAggregate<int, mixed> */
 final class Pagination implements IteratorAggregate, Countable
 {
     /** @var array<int, mixed> */
@@ -43,6 +44,7 @@ final class Pagination implements IteratorAggregate, Countable
     /**
      * Gets the items on the current page
      */
+    /** @return \ArrayIterator<int, mixed> */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->getItems());

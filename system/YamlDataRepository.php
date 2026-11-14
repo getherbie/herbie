@@ -30,6 +30,7 @@ class YamlDataRepository implements DataRepositoryInterface
     }
 
     #[\Override]
+    /** @return array<string, mixed> */
     public function load(string $name): array
     {
         $files = $this->scanDir();
@@ -40,6 +41,7 @@ class YamlDataRepository implements DataRepositoryInterface
         return $this->parseData($files[$name]);
     }
 
+    /** @return array<string, string> */
     protected function scanDir(): array
     {
         static $data;
@@ -53,12 +55,14 @@ class YamlDataRepository implements DataRepositoryInterface
         return $data;
     }
 
+    /** @return array<mixed, mixed> */
     protected function parseData(string $contents): array
     {
         return Yaml::parse($contents);
     }
 
     #[\Override]
+    /** @return array<string, mixed> */
     public function loadAll(): array
     {
         $data = [];
@@ -74,6 +78,7 @@ class YamlDataRepository implements DataRepositoryInterface
         return (new Finder())->files()->name($patterns)->in($this->path)->sortByName();
     }
 
+    /** @return string[] */
     protected function getPatterns(): array
     {
         return array_map(function (string $extension) {

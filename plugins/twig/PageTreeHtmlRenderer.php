@@ -11,6 +11,7 @@ use RecursiveIteratorIterator;
 /**
  * @method Page getMenuItem()
  */
+/** @extends \RecursiveIteratorIterator<\IteratorAggregate|\RecursiveIterator> */
 final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
 {
     private string $class;
@@ -30,6 +31,11 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
     /** @var callable|null */
     private $itemCallback;
 
+    /**
+     * @param \RecursiveIterator<mixed, mixed> $iterator
+     * @param 0|1|2 $mode
+     * @param 0|16 $flags
+     */
     public function __construct(
         RecursiveIterator $iterator,
         int $mode = RecursiveIteratorIterator::SELF_FIRST,
@@ -108,6 +114,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
 
     private function addCssClasses(string $beginCurrent, string $route): string
     {
+        /** @phpstan-ignore-next-line */
         $menuItemRoute = $this->getMenuItem()->getRoute();
         $cssClasses = [];
         if ($route === $menuItemRoute) {

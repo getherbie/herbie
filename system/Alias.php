@@ -8,11 +8,13 @@ use InvalidArgumentException;
 
 final class Alias
 {
+    /** @var array<string, string> */
     private array $aliases;
 
     /**
      * Alias constructor.
      */
+    /** @param array<string, string> $aliases */
     public function __construct(array $aliases = [])
     {
         $this->aliases = [];
@@ -44,6 +46,7 @@ final class Alias
         $this->aliases[$alias] = str_untrailing_slash($path);
     }
 
+    /** @return array<string, string> */
     public function getAll(): array
     {
         return $this->aliases;

@@ -22,19 +22,26 @@ final class Application
 {
     public const string VERSION_SEMVER = '3.0.0';
     public const int VERSION_API = 2;
+    /** @var array<int, mixed> */
     private array $applicationMiddlewares;
     private ApplicationPaths $applicationPaths;
     private ?string $baseUrl;
     /** @var string[] */
     private array $consoleCommands;
     private ContainerInterface $container;
+    /** @var array<int, array{string, callable, int}> */
     private array $eventListeners;
+    /** @var array<int, array{string, mixed}> */
     private array $routeMiddlewares;
     private ?string $scriptFile;
     private ?string $scriptUrl;
+    /** @var array<int, array{string, mixed, array<string, mixed>}> */
     private array $twigFilters;
+    /** @var array<int, array{string, mixed}> */
     private array $twigGlobals;
+    /** @var array<int, array{string, mixed, array<string, mixed>}> */
     private array $twigFunctions;
+    /** @var array<int, array{string, mixed, array<string, mixed>}> */
     private array $twigTests;
 
     /**
@@ -141,6 +148,7 @@ final class Application
         return $this->container->get(PluginManager::class);
     }
 
+    /** @return string[] */
     public function getConsoleCommands(): array
     {
         return $this->consoleCommands;
@@ -299,11 +307,13 @@ final class Application
         return $this->applicationPaths->getWeb();
     }
 
+    /** @return array<int, mixed> */
     public function getApplicationMiddlewares(): array
     {
         return $this->applicationMiddlewares;
     }
 
+    /** @return array<int, array{string, mixed}> */
     public function getRouteMiddlewares(): array
     {
         return $this->routeMiddlewares;
@@ -336,12 +346,14 @@ final class Application
     /**
      * @param callable $callable
      */
-    public function addTwigFilter(string $name, $callable = null, array $options = []): Application
+    /** @param array<string, mixed> $options */
+    public function addTwigFilter(string $name, mixed $callable = null, array $options = []): Application
     {
         $this->twigFilters[] = [$name, $callable, $options];
         return $this;
     }
 
+    /** @return array<int, array{string, mixed, array<string, mixed>}> */
     public function getTwigFilters(): array
     {
         return $this->twigFilters;
@@ -356,6 +368,7 @@ final class Application
         return $this;
     }
 
+    /** @return array<int, array{string, mixed}> */
     public function getTwigGlobals(): array
     {
         return $this->twigGlobals;
@@ -364,12 +377,14 @@ final class Application
     /**
      * @param callable $callable
      */
-    public function addTwigFunction(string $name, $callable = null, array $options = []): Application
+    /** @param array<string, mixed> $options */
+    public function addTwigFunction(string $name, mixed $callable = null, array $options = []): Application
     {
         $this->twigFunctions[] = [$name, $callable, $options];
         return $this;
     }
 
+    /** @return array<int, array{string, mixed, array<string, mixed>}> */
     public function getTwigFunctions(): array
     {
         return $this->twigFunctions;
@@ -378,12 +393,14 @@ final class Application
     /**
      * @param callable $callable
      */
-    public function addTwigTest(string $name, $callable = null, array $options = []): Application
+    /** @param array<string, mixed> $options */
+    public function addTwigTest(string $name, mixed $callable = null, array $options = []): Application
     {
         $this->twigTests[] = [$name, $callable, $options];
         return $this;
     }
 
+    /** @return array<int, array{string, mixed, array<string, mixed>}> */
     public function getTwigTests(): array
     {
         return $this->twigTests;
@@ -395,6 +412,7 @@ final class Application
         return $this;
     }
 
+    /** @return array<int, array{string, callable, int}> */
     public function getEventListeners(): array
     {
         return $this->eventListeners;

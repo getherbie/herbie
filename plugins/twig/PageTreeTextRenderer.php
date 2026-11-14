@@ -11,6 +11,9 @@ final class PageTreeTextRenderer extends RecursiveTreeIterator
 {
     public string $emptyTitle = '[]';
 
+    /**
+     * @param \RecursiveIterator<mixed, mixed> $iterator
+     */
     public function __construct(RecursiveIterator $iterator)
     {
         parent::__construct($iterator);

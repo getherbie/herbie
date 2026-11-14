@@ -15,6 +15,7 @@ use Traversable;
  * @see https://stackoverflow.com/a/17414042/6161354
  * @see https://daylerees.com/code-happy-fluent-query-builder/
  */
+/** @implements \IteratorAggregate<int, mixed> */
 final class QueryBuilder implements IteratorAggregate
 {
     private const array WHERE_CLAUSE_OPERATORS = ['AND', 'OR'];
@@ -233,6 +234,9 @@ final class QueryBuilder implements IteratorAggregate
         });
     }
 
+    /**
+     * @param \ArrayAccess<mixed, mixed>|array<mixed, mixed>|int|float|string|bool $item
+     */
     private function processItem(ArrayAccess|array|int|float|string|bool $item, array $conditions): bool
     {
         $whereClauseOperator = array_shift($conditions);
@@ -391,7 +395,7 @@ final class QueryBuilder implements IteratorAggregate
             return false;
         }
         foreach ($words as $word) {
-            if (!preg_match('/\b' . preg_quote($word) . '\b/i', $value1)) {
+            if (!preg_match('/\b' . preg_quote($word, '/') . '\b/i', $value1)) {
                 return false;
             }
         }

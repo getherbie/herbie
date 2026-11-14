@@ -7,6 +7,7 @@ namespace herbie;
 use ArrayIterator;
 use IteratorAggregate;
 
+/** @implements \IteratorAggregate<int, AbstractNode> */
 abstract class AbstractNode implements IteratorAggregate
 {
     /**
@@ -31,6 +32,7 @@ abstract class AbstractNode implements IteratorAggregate
         $this->children = [];
     }
 
+    /** @return \ArrayIterator<int, AbstractNode> */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->children);
@@ -83,6 +85,7 @@ abstract class AbstractNode implements IteratorAggregate
         return !empty($this->children);
     }
 
+    /** @return AbstractNode[] */
     public function getChildren(): array
     {
         return $this->children;

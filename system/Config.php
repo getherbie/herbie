@@ -11,8 +11,10 @@ use UnexpectedValueException;
 final class Config
 {
     private const string DELIM = '.';
+    /** @var array<string, mixed> */
     private array $data;
 
+    /** @param array<string, mixed> $data */
     public function __construct(array $data)
     {
         $this->data = $data;
@@ -21,6 +23,7 @@ final class Config
     /**
      * @return array<int|string, mixed>
      */
+    /** @param array<mixed, mixed> $default */
     public function getAsArray(string $path, array $default = []): array
     {
         $arrayValue = $this->get($path, $default);
@@ -145,7 +148,8 @@ final class Config
      * @param array  $arguments Arguments forwarded to the resolved getter.
      * @return mixed|null The result of the resolved getter, or null if no matching getter exists.
      */
-    public function __call(string $name, array $arguments)
+    /** @param array<mixed> $arguments */
+    public function __call(string $name, array $arguments): mixed
     {
         $getter = 'get' . str_replace('_', '', $name);
         if (method_exists($this, $getter)) {

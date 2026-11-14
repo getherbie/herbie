@@ -26,6 +26,7 @@ final class PageTrail implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
+    /** @return \ArrayIterator<int, Page> */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);

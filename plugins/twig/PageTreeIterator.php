@@ -8,6 +8,7 @@ use herbie\Page;
 use herbie\PageTree;
 use RecursiveIterator;
 
+/** @implements \RecursiveIterator<mixed, mixed> */
 final class PageTreeIterator implements RecursiveIterator
 {
     private array $children = [];

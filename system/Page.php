@@ -38,6 +38,7 @@ use ReturnTypeWillChange;
  * @property bool $twig
  * @property string $type
  */
+/** @implements \ArrayAccess<string, mixed> */
 final class Page implements ArrayAccess
 {
     private ?SlugGenerator $slugGenerator;
@@ -139,7 +140,7 @@ final class Page implements ArrayAccess
             $content = file_read($this->getPath());
             [, $this->segments] = FlatFilePagePersistence::parseFileContent($content);
         }
-        return $this->segments;
+        return $this->segments ?? [];
     }
 
     /**

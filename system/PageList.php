@@ -39,6 +39,7 @@ final class PageList implements IteratorAggregate, Countable
         $this->items[$route] = $item;
     }
 
+    /** @return \ArrayIterator<int, Page> */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);

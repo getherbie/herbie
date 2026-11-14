@@ -23,17 +23,20 @@ final class PageTree extends AbstractNode
     public function findByRoute(string $route): ?PageTree
     {
         if (empty($route)) {
-            /** @var PageTree|null */
-            return $this->root();
+            $root = $this->root();
+            assert($root instanceof PageTree);
+            return $root;
         }
         $menuItem = $this->getMenuItem();
         if (isset($menuItem) && ($menuItem->getRoute() === $route)) {
             return $this;
         }
         foreach ($this->getChildren() as $child) {
-            $node = $child->findByRoute($route);
-            if ($node) {
-                return $node;
+            if ($child instanceof PageTree) {
+                $node = $child->findByRoute($route);
+                if ($node) {
+                    return $node;
+                }
             }
         }
         return null;
