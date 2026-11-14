@@ -13,6 +13,10 @@ use UnexpectedValueException;
 /**
  * Loads the whole page.
  */
+if (!defined('UTF8_BOM')) {
+    define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
+}
+
 final class FlatFilePagePersistence implements PagePersistenceInterface
 {
     private Alias $alias;
@@ -122,10 +126,6 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
     public static function parseFileContent(string $content): array
     {
-        if (!defined('UTF8_BOM')) {
-            define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
-        }
-
         $yaml = '';
         $segments = [];
 
