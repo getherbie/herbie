@@ -12,10 +12,26 @@ use ParsedownExtra;
  *
  * ParsedownExtra's processTag() calls DOMDocument::loadHTML() with markup
  * that can be empty or whitespace-only, which throws a ValueError on PHP 8.3+.
- * This subclass overrides processTag() entirely to guard against that case.
+ * This subclass guards against that case.
  */
 class HerbieParsedownExtra extends ParsedownExtra
 {
+    /**
+     * @param mixed $Block
+     * @return mixed
+     */
+    protected function blockMarkupComplete($Block)
+    {
+        if (!isset($Block['void'])) {
+            try {
+                $Block['markup'] = $this->processTag($Block['markup']);
+            } catch (\Throwable $e) {
+                // Keep original markup on failure
+            }
+        }
+        return $Block;
+    }
+
     /**
      * @param mixed $elementMarkup
      * @return string
