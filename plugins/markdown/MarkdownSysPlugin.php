@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace herbie\sysplugins\markdown;
 
 use herbie\Config;
-use herbie\events\RenderSegmentEvent;
-use herbie\Plugin;
+use herbie\sysplugins\ParserSysPlugin;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
-final class MarkdownSysPlugin extends Plugin
+final class MarkdownSysPlugin extends ParserSysPlugin
 {
     /**
      * Available markdown flavours
@@ -39,63 +37,35 @@ final class MarkdownSysPlugin extends Plugin
 
     private ?MarkdownConverter $converter = null;
 
-    /**
-     * MarkdownPlugin constructor.
-     */
-    public function __construct(
-        private Config $config,
-        LoggerInterface $logger
-    ) {
-        $this->config = $config->getAsConfig('plugins.markdown');
+    public function __construct(Config $config, LoggerInterface $logger)
+    {
+        parent::__construct($config, $logger, 'plugins.markdown');
         if (!class_exists(Environment::class)) {
             $logger->error('Please install "league/commonmark" via composer');
         }
     }
 
-    public function eventListeners(): array
+    protected function getFormats(): array
     {
-        return [
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
-        ];
+        return ['markdown', 'md'];
     }
 
-    public function twigFilters(): array
+    protected function getTwigName(): string
     {
-        if (!$this->config->getAsBool('enableTwigFilter')) {
-            return [];
-        }
-        return [
-            ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
-        ];
+        return 'markdown';
     }
 
-    public function twigFunctions(): array
+    public function parse(string $value): string
     {
-        if (!$this->config->getAsBool('enableTwigFunction')) {
-            return [];
-        }
-        return [
-            ['markdown', [$this, 'parseMarkdown'], ['is_safe' => ['html']]],
-        ];
-    }
-
-    public function onRenderSegment(RenderSegmentEvent $event): void
-    {
-        if (in_array($event->getPage()->getFormat(), ['markdown', 'md'], true)) {
-            $event->setSegment($this->parseMarkdown($event->getSegment()));
-        }
-    }
-
-    public function parseMarkdown(string $string): string
-    {
-        try {
-            $protector = new RawHtmlProtector();
-            $markdown = $protector->protect($string);
-            $html = $this->getConverter()->convert($markdown)->getContent();
-            return trim($protector->restore($html));
-        } catch (Throwable $e) {
-            return $string;
-        }
+        return $this->parseSafely(
+            $value,
+            function (string $text): string {
+                $protector = new RawHtmlProtector();
+                $markdown = $protector->protect($text);
+                $html = $this->getConverter()->convert($markdown)->getContent();
+                return trim($protector->restore($html));
+            }
+        );
     }
 
     private function getConverter(): MarkdownConverter
@@ -118,7 +88,7 @@ final class MarkdownSysPlugin extends Plugin
     /**
      * Returns the extension classes of the configured flavour
      *
-     * @return string[] Extension class names implementing ExtensionInterface
+     * @return string[]
      */
     private function getExtensionClasses(): array
     {

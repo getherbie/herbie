@@ -5,71 +5,38 @@ declare(strict_types=1);
 namespace herbie\sysplugins\textile;
 
 use herbie\Config;
-use herbie\events\RenderSegmentEvent;
-use herbie\Plugin;
+use herbie\sysplugins\ParserSysPlugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
-final class TextileSysPlugin extends Plugin
+final class TextileSysPlugin extends ParserSysPlugin
 {
-    private Config $config;
+    private bool $parserClassExists;
 
-    /**
-     * TextilePlugin constructor.
-     */
     public function __construct(Config $config, LoggerInterface $logger)
     {
-        $this->config = $config->getAsConfig('plugins.textile');
-        if (!class_exists('Netcarver\Textile\Parser')) {
+        parent::__construct($config, $logger, 'plugins.textile');
+        $this->parserClassExists = class_exists('Netcarver\Textile\Parser');
+        if (!$this->parserClassExists) {
             $logger->error('Please install "netcarver/textile" via composer');
         }
     }
 
-    public function eventListeners(): array
+    protected function getFormats(): array
     {
-        return [
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
-        ];
+        return ['textile'];
     }
 
-    public function twigFilters(): array
+    protected function getTwigName(): string
     {
-        if (!$this->config->getAsBool('enableTwigFilter')) {
-            return [];
-        }
-        return [
-            ['textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
-        ];
+        return 'textile';
     }
 
-    public function twigFunctions(): array
+    public function parse(string $value): string
     {
-        if (!$this->config->getAsBool('enableTwigFunction')) {
-            return [];
-        }
-        return [
-            ['textile', [$this, 'parseTextile'], ['is_safe' => ['html']]],
-        ];
-    }
-
-    public function onRenderSegment(RenderSegmentEvent $event): void
-    {
-        if ($event->getPage()->getFormat() === 'textile') {
-            $event->setSegment($this->parseTextile($event->getSegment()));
-        }
-    }
-
-    public function parseTextile(string $value): string
-    {
-        if (!class_exists('Netcarver\Textile\Parser')) {
+        if (!$this->parserClassExists) {
             return $value;
         }
-        try {
-            $parser = new Parser();
-            return $parser->parse($value);
-        } catch (Throwable $t) {
-            return $value;
-        }
+        return $this->parseSafely($value, static fn(string $text): string => (new Parser())->parse($text));
     }
 }

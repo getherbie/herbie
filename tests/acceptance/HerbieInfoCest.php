@@ -103,6 +103,7 @@ final class HerbieInfoCest
             'herbie\middlewares\PageRendererMiddleware',
             'herbie\middlewares\PageResolverMiddleware',
             'herbie\middlewares\ResponseTimeMiddleware',
+            'herbie\sysplugins\ParserSysPlugin',
             'herbie\sysplugins\dummy\DummySysPlugin',
             'herbie\sysplugins\imagine\ImagineSysPlugin',
             'herbie\sysplugins\markdown\MarkdownSysPlugin',

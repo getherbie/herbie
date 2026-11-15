@@ -13,14 +13,14 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin();
 
-        $this->assertSame('<h1>Title</h1>', $plugin->parseMarkdown('# Title'));
+        $this->assertSame('<h1>Title</h1>', $plugin->parse('# Title'));
     }
 
     public function testCommonMarkFlavorDoesNotParseTables(): void
     {
         $plugin = $this->createPlugin('commonmark');
 
-        $html = $plugin->parseMarkdown("| a | b |\n|---|---|\n| 1 | 2 |");
+        $html = $plugin->parse("| a | b |\n|---|---|\n| 1 | 2 |");
 
         $this->assertStringNotContainsString('<table>', $html);
         $this->assertStringContainsString('| a | b |', $html);
@@ -30,7 +30,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin('gfm');
 
-        $html = $plugin->parseMarkdown("| a | b |\n|---|---|\n| 1 | 2 |");
+        $html = $plugin->parse("| a | b |\n|---|---|\n| 1 | 2 |");
 
         $this->assertStringContainsString('<table>', $html);
         $this->assertStringContainsString('<th>a</th>', $html);
@@ -40,7 +40,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin('gfm');
 
-        $html = $plugin->parseMarkdown('~~gone~~ and www.example.com');
+        $html = $plugin->parse('~~gone~~ and www.example.com');
 
         $this->assertStringContainsString('<del>gone</del>', $html);
         $this->assertStringContainsString('<a href="http://www.example.com">', $html);
@@ -50,7 +50,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin('markdown-extra');
 
-        $html = $plugin->parseMarkdown('# Title {#custom-id}');
+        $html = $plugin->parse('# Title {#custom-id}');
 
         $this->assertStringContainsString('id="custom-id"', $html);
     }
@@ -59,7 +59,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin('markdown-extra');
 
-        $html = $plugin->parseMarkdown("Text[^1]\n\n[^1]: The note.");
+        $html = $plugin->parse("Text[^1]\n\n[^1]: The note.");
 
         $this->assertStringContainsString('footnote', $html);
         $this->assertStringContainsString('The note.', $html);
@@ -69,7 +69,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin('not-existing-flavor');
 
-        $html = $plugin->parseMarkdown("| a | b |\n|---|---|\n| 1 | 2 |");
+        $html = $plugin->parse("| a | b |\n|---|---|\n| 1 | 2 |");
 
         $this->assertStringNotContainsString('<table>', $html);
     }
@@ -78,7 +78,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $plugin = $this->createPlugin();
 
-        $html = $plugin->parseMarkdown("<div class=\"box\">\n\n<p>Text</p>\n\n</div>");
+        $html = $plugin->parse("<div class=\"box\">\n\n<p>Text</p>\n\n</div>");
 
         $this->assertStringContainsString('<div class="box">', $html);
         $this->assertStringContainsString('<p>Text</p>', $html);
