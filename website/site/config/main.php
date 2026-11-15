@@ -1,6 +1,6 @@
 <?php
 
-$isProduction = isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] !== 'localhost');
+$isProduction = isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] === 'herbie.tebe.ch');
 
 return [
     'language' => 'en',
