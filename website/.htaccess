@@ -1,1 +1,1 @@
-AddHandler application/x-httpd-php80 .php
+AddHandler application/x-httpd-php85 .php
