@@ -5,54 +5,74 @@ namespace herbie\tests\unit;
 use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
 use Codeception\Test\Unit;
+use herbie\Alias;
+use herbie\Finder;
+use herbie\FlatFilePagePersistence;
+use herbie\FlatFilePageRepository;
+use herbie\NullCache;
 use herbie\Page;
 use herbie\PageFactory;
 use InvalidArgumentException;
+use LogicException;
 
 use function herbie\date_format;
 
 final class PageTest extends Unit
 {
+    protected FlatFilePageRepository $repository;
+
     public function testAuthors()
     {
         $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasAuthor('None Existing'));
         $this->assertEquals('', $page->getAuthor('None Existing'));
 
-        $page = new Page(['authors' => ['Jaco Pastorius', 'James Jamerson']], null, new SlugGenerator());
+        $page->setAuthor(' Jaco Pastorius ');
+        $page->setAuthor("\n\nJames Jamerson\t\n\r");
         $this->assertTrue($page->hasAuthor('Jaco Pastorius'));
         $this->assertTrue($page->hasAuthor('James Jamerson'));
         $this->assertEquals('Jaco Pastorius', $page->getAuthor('Jaco Pastorius'));
         $this->assertEquals('James Jamerson', $page->getAuthor('James Jamerson'));
-        $this->assertSame(['Jaco Pastorius', 'James Jamerson'], $page->authors);
 
-        $page = new Page(['authors' => ['Carol Kaye', 'Mark King']], null, new SlugGenerator());
+        $page->setAuthors(['Carol Kaye', 'Mark King']);
         $this->assertTrue($page->hasAuthor('Carol Kaye'));
         $this->assertTrue($page->hasAuthor('Mark King'));
+
     }
 
     public function testCached()
     {
         // default value
         $page = new Page();
-        $this->assertTrue($page->getCached());
-        $this->assertTrue(isset($page->cached));
-        // set via page properties
-        $page = new Page(['cached' => false]);
+        $this->assertEquals(true, $page->getCached());
+        // setter/getter
+        $page->setCached(false);
         $this->assertFalse($page->getCached());
-        $this->assertFalse($page->cached);
+        $this->assertFalse(!isset($page->cached));
+        // magic setter/getter
+        $page->cached = true;
+        $this->assertTrue($page->cached);
+        $this->assertTrue(isset($page->cached));
     }
+
+    // ---------------------------------------------------------
+    // Tests for...
+    // ---------------------------------------------------------
+    // string[] $authors
 
     public function testCacheId()
     {
         // default value
         $page = new Page();
-        $this->assertEquals('page-', $page->getCacheId());
-        // derives from the id
-        $page = new Page(['id' => 'path-to-page']);
-        $this->assertEquals('page-path-to-page', $page->getCacheId());
+        $this->assertTrue(isset($page->cacheId));
+        $this->assertEquals('page-', $page->cacheId);
+        $page['id'] = 'path-to-page';
         $this->assertEquals('page-path-to-page', $page->cacheId);
+        $page['cacheId'] = 'some-value'; // read-only
+        $this->assertEquals('page-path-to-page', $page->cacheId); // still same value as before
     }
+
+    // bool $cached
 
     public function testCategories()
     {
@@ -60,15 +80,17 @@ final class PageTest extends Unit
         $this->assertFalse($page->hasCategory('None Existing Category'));
         $this->assertEquals('', $page->getCategory('None Existing Category'));
 
-        $page = new Page(['categories' => ['Cool Jazz', 'Modern Jazz']], null, new SlugGenerator());
+        $page->setCategory('Cool Jazz');
+        $page->setCategory('Modern Jazz');
         $this->assertTrue($page->hasCategory('Cool Jazz'));
         $this->assertTrue($page->hasCategory('Modern Jazz'));
         $this->assertEquals('Cool Jazz', $page->getCategory('Cool Jazz'));
         $this->assertEquals('Modern Jazz', $page->getCategory('Modern Jazz'));
 
-        $page = new Page(['categories' => ['New-Orleans-Jazz', 'Soul-Jazz']], null, new SlugGenerator());
+        $page->setCategories(['New-Orleans-Jazz', 'Soul-Jazz']);
         $this->assertTrue($page->hasCategory('New-Orleans-Jazz'));
         $this->assertTrue($page->hasCategory('Soul-Jazz'));
+
     }
 
     public function testContentType()
@@ -76,23 +98,31 @@ final class PageTest extends Unit
         // default value
         $page = new Page();
         $this->assertEquals('text/html', $page->getContentType());
-        // set via page properties
-        $page = new Page(['content_type' => 'application/json']);
+        // setter/getter
+        $page->setContentType(" application/json \t"); // with whitespace
         $this->assertEquals('application/json', $page->getContentType());
-        $this->assertEquals('application/json', $page->content_type);
+        // magic setter/getter
+        $page->content_type = "\n application/xml "; // with whitespace
+        $this->assertEquals('application/xml', $page->content_type);
     }
+
+    // string[] $categories
 
     public function testCreated()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getCreated());
-        // parsed from page properties
-        $page = new Page(['created' => '2022-11-22']);
+        // setter/getter
+        $page->setCreated("2022-11-22"); // with whitespace
         $this->assertEquals('2022-11-22T00:00:00+00:00', $page->getCreated());
-        $this->assertEquals('2022-11-22T00:00:00+00:00', $page->created);
-        // rest is tested in testDate
+        // magic setter/getter
+        $page->created = "2022-10-20"; // with whitespace
+        $this->assertEquals('2022-10-20T00:00:00+00:00', $page->created);
+        // rest is tested in dateTest
     }
+
+    // string $content_type
 
     public function testDate()
     {
@@ -100,162 +130,188 @@ final class PageTest extends Unit
         $page = new Page();
         $this->assertEquals('', $page->getDate());
         // invalid date
-        $this->assertEquals('', (new Page(['date' => 'invalid date']))->getDate());
-        $this->assertEquals('', (new Page(['date' => true]))->getDate());
-        $this->assertEquals('', (new Page(['date' => 42.273424]))->getDate());
-        // parsed from page properties
-        $this->assertEquals(
-            '2022-11-22T00:00:00+00:00',
-            (new Page(['date' => '2022-11-22']))->getDate()
-        );
-        // as string timestamp
-        $this->assertEquals(
-            '2022-11-05T09:29:10+00:00',
-            (new Page(['date' => '1667640550']))->getDate()
-        );
-        // as integer timestamp
-        $this->assertEquals(
-            '2022-11-01T19:22:30+00:00',
-            (new Page(['date' => 1667330550]))->getDate()
-        );
+        $page->setDate('invalid date');
+        $this->assertEquals('', $page->getDate());
+        $page->setDate(true);
+        $this->assertEquals('', $page->getDate());
+        $page->setDate(42.273424);
+        $this->assertEquals('', $page->getDate());
+        // setter/getter
+        $page->setDate(" 2022-11-22 \t"); // with whitespace
+        $this->assertEquals('2022-11-22T00:00:00+00:00', $page->getDate());
+        // magic setter/getter
+        $page->date = "\n 1667640550 "; // with whitespace
+        $this->assertEquals('2022-11-05T09:29:10+00:00', $page->date);
+        $page->date = 1667330550; // as integer
+        $this->assertEquals('2022-11-01T19:22:30+00:00', $page->date);
     }
 
-    public function testSetDate()
-    {
-        $timezone = date_default_timezone_get();
-        date_default_timezone_set('Europe/Zurich');
+    // string $created
 
-        try {
-            $this->assertSame('', (new Page(['date' => '']))->getDate());
-            $this->assertSame('1970-01-01T01:00:00+01:00', (new Page(['date' => 0]))->getDate());
-            $this->assertSame(date_format('c'), (new Page(['date' => time()]))->getDate());
-            $this->assertSame('2013-12-24T00:00:00+01:00', (new Page(['date' => '2013-12-24']))->getDate());
-        } finally {
-            date_default_timezone_set($timezone);
-        }
-    }
-
-    public function testExcerpt()
+    public function testExcert()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getExcerpt());
-        // set via page properties
-        $page = new Page(['excerpt' => 'This is an excerpt.']);
+        // setter/getter
+        $page->setExcerpt(" This is an excerpt. \t"); // with whitespace
         $this->assertEquals('This is an excerpt.', $page->getExcerpt());
-        $this->assertEquals('This is an excerpt.', $page->excerpt);
+        // magic setter/getter
+        $page->excerpt = "\n This is another excerpt. "; // with whitespace
+        $this->assertEquals('This is another excerpt.', $page->excerpt);
     }
+
+    // array<int|string, mixed> $customData
+    // string $date
 
     public function testFormat()
     {
         // default value
         $page = new Page();
         $this->assertEquals('raw', $page->getFormat());
-        // mapped to the internal name
-        $this->assertEquals('markdown', (new Page(['format' => 'md']))->format);
-        $this->assertEquals('markdown', (new Page(['format' => 'markdown']))->format);
-        $this->assertEquals('textile', (new Page(['format' => 'textile']))->format);
-        $this->assertEquals('rest', (new Page(['format' => 'rst']))->format);
-        $this->assertEquals('raw', (new Page(['format' => 'raw']))->format);
-        $this->assertEquals('raw', (new Page(['format' => 'not-existin-format']))->format);
+        // setter/getter
+        $page->setFormat(" md \t"); // with whitespace
+        $this->assertEquals('markdown', $page->getFormat());
+        $page->setFormat("\n markdown "); // with whitespace
+        $this->assertEquals('markdown', $page->getFormat());
+        // magic setter/getter
+        $page->format = 'textile';
+        $this->assertEquals('textile', $page->format);
+        $page->format = 'rst';
+        $this->assertEquals('rest', $page->format);
+        $page->format = 'raw';
+        $this->assertEquals('raw', $page->format);
+        $page->format = 'not-existin-format';
+        $this->assertEquals('raw', $page->format);
     }
+
+    // string $excerpt
 
     public function testHidden()
     {
         // default value
         $page = new Page();
         $this->assertFalse($page->getHidden());
-        // set via page properties
-        $page = new Page(['hidden' => true]);
+        // setter/getter
+        $page->setHidden(true);
         $this->assertTrue($page->getHidden());
         $this->assertTrue(isset($page->hidden));
+        // magic setter/getter
+        $page->hidden = false;
+        $this->assertFalse($page->hidden);
+        $this->assertFalse(!isset($page->hidden));
     }
+
+    // string $format
 
     public function testKeepExtension()
     {
         // default value
         $page = new Page();
         $this->assertFalse($page->getKeepExtension());
-        // set via page properties
-        $page = new Page(['keep_extension' => true]);
+        // setter/getter
+        $page->setKeepExtension(true);
         $this->assertTrue($page->getKeepExtension());
         $this->assertTrue(isset($page->keep_extension));
+        // magic setter/getter
+        $page->keep_extension = false;
+        $this->assertFalse($page->keep_extension);
+        $this->assertFalse(!isset($page->keep_extension));
     }
+
+    // bool $hidden
 
     public function testLayout()
     {
         // default value
         $page = new Page();
         $this->assertEquals('default', $page->getLayout());
-        // set via page properties
-        $page = new Page(['layout' => 'main']);
+        // setter/getter
+        $page->setLayout(" main \t"); // with whitespace
         $this->assertEquals('main', $page->getLayout());
-        $this->assertEquals('main', $page->layout);
+        // magic setter/getter
+        $page->layout = "\n default  "; // with whitespace
+        $this->assertEquals('default', $page->layout);
     }
+
+    // bool $keep_extension
 
     public function testMenuTitle()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getMenuTitle());
-        // if title set but menu title not, the title is used
-        $page = new Page(['title' => 'My title']);
+        // if title set but menuTitle not
+        $page->setTitle('My title');
         $this->assertEquals('My title', $page->getMenuTitle());
-        // set via page properties
-        $page = new Page(['title' => 'My title', 'menu_title' => 'My menu title']);
-        $this->assertEquals('My menu title', $page->getMenuTitle());
-        $this->assertEquals('My menu title', $page->menu_title);
+        // setter/getter
+        $page->setMenuTitle(" Title \t"); // with whitespace
+        $this->assertEquals('Title', $page->getMenuTitle());
+        // magic setter/getter
+        $page->menu_title = "\n New Title "; // with whitespace
+        $this->assertEquals('New Title', $page->menu_title);
     }
+
+    // string $layout
 
     public function testModified()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getModified());
-        // parsed from page properties
-        $page = new Page(['modified' => '2022-11-22']);
+        // setter/getter
+        $page->setModified("2022-11-22"); // with whitespace
         $this->assertEquals('2022-11-22T00:00:00+00:00', $page->getModified());
-        $this->assertEquals('2022-11-22T00:00:00+00:00', $page->modified);
+        // magic setter/getter
+        $page->modified = "2022-10-20"; // with whitespace
+        $this->assertEquals('2022-10-20T00:00:00+00:00', $page->modified);
+        // rest is tested in dateTest
     }
+
+    // string $menu_title
 
     public function testPath()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getPath());
-        // set via page properties
-        $page = new Page(['path' => 'path/to/this']);
+        // setter/getter
+        $page->setPath(" path/to/this \t"); // with whitespace
         $this->assertEquals('path/to/this', $page->getPath());
-        $this->assertEquals('path/to/this', $page->path);
+        // magic setter/getter
+        $page->path = "\n path/to/that "; // with whitespace
+        $this->assertEquals('path/to/that', $page->path);
     }
+
+    // string $modified
 
     public function testRedirect()
     {
         // default value
         $page = new Page();
         $this->assertEquals([], $page->getRedirect());
-        // a string becomes an array with status code 302
-        $page = new Page(['redirect' => 'redirect/to/page']);
+        // setter/getter
+        $page->setRedirect(" redirect/to/page \t"); // with whitespace
         $this->assertEquals(['redirect/to/page', 302], $page->getRedirect());
-        // an array is kept
-        $page = new Page(['redirect' => ['redirect/to/another/page', 308]]);
+        // magic setter/getter
+        $page->redirect = ['redirect/to/another/page', 308];
         $this->assertEquals(['redirect/to/another/page', 308], $page->redirect);
         // invalid values with exceptions
         $invalidValues = [
             [42, 'Redirect must be a string or an array{string,int}.'],
             [true, 'Redirect must be a string or an array{string,int}.'],
             ['', 'Redirect must be a non-empty string.'],
-            [[], 'Redirect array must be an array{string,int}.'],
+            [[], 'Redirect must be a non-empty array.'],
             [['one-entry'], 'Redirect array must be an array{string,int}.'],
             [['/foo', 'no-integer'], 'Redirect array[1] must be a integer.'],
-            [[false, 301], 'Redirect array[0] must be a non-empty string.'],
+            [[false, 301], 'Redirect array[0] must be a string.'],
             [['', 300], 'Redirect array[0] must be a non-empty string.'],
             [['/foo', 299], 'Redirect array[1] must be a status code between 300 and 308.'],
             [['/bar', 309], 'Redirect array[1] must be a status code between 300 and 308.'],
         ];
         foreach ($invalidValues as $value) {
             try {
-                new Page(['redirect' => $value[0]]);
+                $page->setRedirect($value[0]);
             } catch (InvalidArgumentException $e) {
                 $message = 'Testing ' . json_encode($value[0]);
                 $this->assertEquals($value[1], $e->getMessage(), $message);
@@ -263,21 +319,22 @@ final class PageTest extends Unit
         }
     }
 
+    // string $path
+
     public function testRoute()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getRoute());
-        $this->assertTrue($page->isStartPage());
-        // set via page properties
-        $page = new Page(['route' => 'route/to/this']);
+        // setter/getter
+        $page->setRoute(" route/to/this \t"); // with whitespace
         $this->assertEquals('route/to/this', $page->getRoute());
-        $this->assertEquals('route/to/this', $page->route);
-        $this->assertFalse($page->isStartPage());
-        $this->assertTrue($page->routeEquals('route/to/this'));
-        $this->assertTrue($page->routeInPageTrail('route/to/this/subpage'));
-        $this->assertFalse($page->routeInPageTrail('other/route'));
+        // magic setter/getter
+        $page->route = "\n route/to/that "; // with whitespace
+        $this->assertEquals('route/to/that', $page->route);
     }
+
+    // array<void>|array{status: int, url: string} $redirect
 
     public function testTags()
     {
@@ -285,99 +342,192 @@ final class PageTest extends Unit
         $this->assertFalse($page->hasTag('None Existing Tag'));
         $this->assertEquals('', $page->getTag('None Existing Tag'));
 
-        $page = new Page(['tags' => ['Calypso', 'Son Cubano']], null, new SlugGenerator());
+        $page->setTag('Calypso');
+        $page->setTag('Son Cubano');
         $this->assertTrue($page->hasTag('Calypso'));
         $this->assertTrue($page->hasTag('Son Cubano'));
         $this->assertEquals('Calypso', $page->getTag('Calypso'));
         $this->assertEquals('Son Cubano', $page->getTag('Son Cubano'));
 
-        $page = new Page(['tags' => ['Merengue', 'Salsa']], null, new SlugGenerator());
+        $page->setTags(['Merengue', 'Salsa']);
         $this->assertTrue($page->hasTag('Merengue'));
         $this->assertTrue($page->hasTag('Salsa'));
+
     }
+
+    // string $route
 
     public function testTitle()
     {
         // default value
         $page = new Page();
         $this->assertEquals('', $page->getTitle());
-        // set via page properties
-        $page = new Page(['title' => 'Title']);
+        // setter/getter
+        $page->setTitle(" Title \t"); // with whitespace
         $this->assertEquals('Title', $page->getTitle());
-        $this->assertEquals('Title', $page->title);
-        // the title is used for the string representation
-        $this->assertEquals('Title', (string)$page);
+        // magic setter/getter
+        $page->title = "\n New Title "; // with whitespace
+        $this->assertEquals('New Title', $page->title);
     }
 
-    public function testToString()
-    {
-        $page = new Page();
-        $this->assertEquals('', (string)$page);
-        $page = new Page(['title' => 'Title']);
-        $this->assertEquals('Title', (string)$page);
-    }
+    // string[] $tags
 
     public function testTwig()
     {
         // default value
         $page = new Page();
         $this->assertTrue($page->getTwig());
-        // set via page properties
-        $page = new Page(['twig' => false]);
+        // setter/getter
+        $page->setTwig(false);
         $this->assertFalse($page->getTwig());
-        $this->assertFalse($page->twig);
+        $this->assertFalse(!isset($page->twig));
+        // magic setter/getter
+        $page->twig = true;
+        $this->assertTrue($page->twig);
         $this->assertTrue(isset($page->twig));
     }
+
+    // string $title
 
     public function testType()
     {
         // default value
         $page = new Page();
         $this->assertEquals('page', $page->getType());
-        // set via page properties
-        $page = new Page(['type' => 'news']);
+        // setter/getter
+        $page->setType(" news \t"); // with whitespace
         $this->assertEquals('news', $page->getType());
-        $this->assertEquals('news', $page->type);
+        // magic setter/getter
+        $page->type = "\n blog "; // with whitespace
+        $this->assertEquals('blog', $page->type);
     }
 
-    public function testCustomData()
-    {
-        $page = new Page(['unknown' => 'value', 'other' => 42]);
-        $this->assertEquals('value', $page->unknown);
-        $this->assertEquals(42, $page->other);
-        $this->assertEquals(['unknown' => 'value', 'other' => 42], $page->getData());
-        $this->assertTrue(isset($page->unknown));
-        $this->assertFalse(isset($page->notExisting));
-        $array = $page->toArray();
-        $this->assertEquals('value', $array['unknown']);
-        $this->assertEquals(42, $array['other']);
-    }
+    // bool $twig
 
-    public function testUnknownPropertyThrows()
+    public function testToString()
     {
         $page = new Page();
-        $this->expectException(InvalidArgumentException::class);
-        $page->notExisting;
+        $this->assertEquals('', (string)$page);
+        $page->title = 'Title';
+        $this->assertEquals('Title', (string)$page);
     }
 
-    public function testDataFieldIsNotAllowed(): void
+    // string $type
+
+    public function testToArray()
     {
-        $this->expectException(InvalidArgumentException::class);
-        new Page(['data' => []]);
+        $data = [
+            // member data
+            'authors' => [],
+            'cached' => true,
+            'categories' => [],
+            'content_type' => 'text/html',
+            'created' => '',
+            'date' => '',
+            'excerpt' => '',
+            'format' => 'raw',
+            'hidden' => false,
+            'id' => '@page/index.md',
+            'keep_extension' => false,
+            'layout' => 'default',
+            'menu_title' => '',
+            'modified' => '',
+            'parent_id' => '',
+            'parent_route' => '',
+            'path' => dirname(__DIR__) . '/_data/site/pages/herbie-info.html',
+            'redirect' => ['test', 302],
+            'route' => '',
+            'tags' => [],
+            'title' => '',
+            'twig' => true,
+            'type' => 'page',
+            // custom data
+            'aaa' => 'a',
+            'bbb' => [],
+            'ccc' => true,
+            'ddd' => 42,
+            'eee' => 23.375
+        ];
+        $page = new Page($data);
+        $data['segments']['default'] = "\n{{ herbie_info() }}\n";
+        $this->assertEquals($data, $page->toArray());
     }
 
-    public function testSegmentsFieldIsNotAllowed(): void
+    public function testMagicMethods()
     {
-        $this->expectException(InvalidArgumentException::class);
-        new Page(['segments' => []]);
+        $page = new Page(['title' => 'My Title']);
+        $this->assertTrue(isset($page->title));
+        $this->assertEquals('My Title', $page->title);
+        $page->customTitle = 'Custom Title';
+        $this->assertTrue(isset($page->customTitle));
+        $this->assertEquals('Custom Title', $page->customTitle);
+        $this->assertFalse(isset($page->nonExistingVariable));
+        $this->expectExceptionMessage('Field nonExistingVariable does not exist.');
+        (string)$page->nonExistingVariable;
     }
 
-    public function testSegments()
+    public function testWithSlugGenerator()
     {
-        $page = new Page([], ['default' => "--- default ---\nfoo", 'sidebar' => 'bar']);
-        $this->assertEquals('bar', $page->getSegment('sidebar'));
-        $this->assertEquals('', $page->getSegment('not-existing'));
-        $this->assertSame(['default' => "--- default ---\nfoo", 'sidebar' => 'bar'], $page->getSegments());
+        $page = new Page(['author' => 'Niels-Henning Ørsted Pedersen']);
+        try {
+            $page->getAuthor('Niels-Henning Ørsted Pedersen');
+            $this->fail('Expected BadMethodCallException');
+        } catch (BadMethodCallException $e) {
+            $this->assertEquals('SlugGenerator not set.', $e->getMessage());
+        }
+
+        $pageWithGenerator = new Page(['author' => 'Niels-Henning Ørsted Pedersen'], null, new SlugGenerator());
+        $this->assertEquals('Niels-Henning Ørsted Pedersen', $pageWithGenerator->getAuthor('Niels-Henning Ørsted Pedersen'));
+    }
+
+    public function testSetDataWithDataKey()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Field data is not allowed.');
+        new Page(['data' => 'foo/bar']);
+    }
+
+    public function testArrayAccessMethods()
+    {
+        $page = new Page();
+        $page['title'] = 'Title';
+        $this->assertEquals('Title', $page['title']);
+        $this->assertTrue(isset($page['title']));
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Unset is not supported.');
+        unset($page['title']);
+    }
+
+    public function testConstructor()
+    {
+        $page = new Page();
+        $layout = $page->getLayout();
+        $this->assertSame('default', $layout);
+        return $page;
+    }
+
+    public function testGetLayout()
+    {
+        $page = new Page();
+        $this->assertSame('default', $page->getLayout());
+    }
+
+    // ---------------------------------------------------------
+
+    public function testGetSegment()
+    {
+        $page = new Page();
+        $page->setSegments([
+            0 => 'Default Segment',
+            1 => 'Segment 1',
+            2 => 'Segment 2',
+            'three' => 'Segment 3'
+        ]);
+        $this->assertSame('Default Segment', $page->getSegment(0));
+        $this->assertSame('Segment 1', $page->getSegment(1));
+        $this->assertSame('Segment 2', $page->getSegment(2));
+        $this->assertSame('Segment 3', $page->getSegment('three'));
+        $this->assertSame('', $page->getSegment('notExistingKey'));
     }
 
     public function testLoad()
@@ -398,10 +548,10 @@ final class PageTest extends Unit
         $this->assertSame('Segments', $page->getTitle());
         $this->assertSame('default', $page->getLayout());
         $this->assertSame('Default Segment', trim($page->getSegment('default')));
-        $this->assertSame('Segment 1', trim($page->getSegment('1')));
-        $this->assertSame('Segment 2', trim($page->getSegment('2')));
+        $this->assertSame('Segment 1', trim($page->getSegment(1)));
+        $this->assertSame('Segment 2', trim($page->getSegment(2)));
         $this->assertSame('Segment 3', trim($page->getSegment('three')));
-        $this->assertSame('Invalid Segment', trim($page->getSegment('-1')));
+        $this->assertSame('Invalid Segment', trim($page->getSegment(-1)));
         $this->assertSame(
             'Last Segment',
             trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789'))
@@ -415,63 +565,150 @@ final class PageTest extends Unit
         $this->assertSame('test', $page->getLayout());
     }
 
-    public function testArrayAccess()
+    public function testSetDataException()
     {
-        $page = new Page(['title' => 'Title']);
-        $this->assertTrue(isset($page['title']));
-        $this->assertEquals('Title', $page['title']);
-        $page['title'] = 'New Title';
-        $this->assertEquals('New Title', $page->title);
-        $this->assertFalse(isset($page['notExisting']));
+        $this->expectException(InvalidArgumentException::class);
+        new Page(['data' => []]);
     }
 
-    public function testArrayAccessUnsetIsNotSupported()
+    public function testSetSegmentsException()
     {
+        $this->expectException(InvalidArgumentException::class);
+        new Page(['segments' => []]);
+    }
+
+    public function testSetDate()
+    {
+        date_default_timezone_set('Europe/Zurich');
+
         $page = new Page();
-        $this->expectException(BadMethodCallException::class);
-        unset($page['title']);
+
+        $page->setDate('');
+        $this->assertSame('', $page->getDate());
+
+        $page->setDate(0);
+        $this->assertSame('1970-01-01T01:00:00+01:00', $page->getDate());
+
+        $page->setDate(time());
+        $this->assertSame(date_format('c'), $page->getDate());
+
+        $page->setDate('2013-12-24');
+        $this->assertSame('2013-12-24T00:00:00+01:00', $page->getDate());
     }
 
-    public function testToArray()
+    public function testToArray2()
     {
-        $page = new Page([
-            'title' => 'Title',
-            'layout' => 'main',
-            'format' => 'md',
-            'date' => '2022-11-22',
-            'custom' => 'value',
-        ]);
-        $array = $page->toArray();
-        $this->assertEquals('Title', $array['title']);
-        $this->assertEquals('main', $array['layout']);
-        $this->assertEquals('markdown', $array['format']);
-        $this->assertEquals('2022-11-22T00:00:00+00:00', $array['date']);
-        $this->assertEquals('value', $array['custom']);
-        $this->assertArrayNotHasKey('slugGenerator', $array);
-        $this->assertArrayNotHasKey('customData', $array);
+        $data = [
+            'parent' => '',
+            'authors' => [],
+            'cached' => true,
+            'categories' => [],
+            'content_type' => 'text/html',
+            'created' => '',
+            'date' => '2013-12-24T01:00:00+01:00',
+            'excerpt' => 'This is a short text.',
+            'format' => 'markdown',
+            'hidden' => true,
+            'id' => '@page/pagedata.md',
+            'keep_extension' => false,
+            'layout' => 'layout.html',
+            'menu_title' => '',
+            'modified' => '2022-09-13T04:43:13+02:00',
+            'parent_id' => '@page/index.md',
+            'parent_route' => '',
+            'path' => '@page/pagedata.md',
+            'redirect' => ['test', 301],
+            'route' => 'pagedata',
+            'tags' => [],
+            'title' => 'Page Data',
+            'twig' => true,
+            'type' => 'my_type',
+            'a' => 'A',
+            'b' => 2,
+            'c' => true,
+            'd' => ['one', 'two'],
+            'e' => 5.74
+        ];
+
+        $expected = array_merge($data, ['segments' => []]);
+        $expected['menu_title'] = $expected['title'];
+
+        $page = (new PageFactory())->newPage($data, []);
+        $this->assertEquals($expected, $page->toArray());
+
+        return $page;
     }
 
-    public function testToArrayContainsAllProperties(): void
+    /**
+     * @depends testToArray2
+     */
+    public function testMagicalGetMethod(Page $page)
     {
-        $array = (new Page())->toArray();
-        foreach (['authors', 'cached', 'categories', 'content_type', 'created', 'date', 'excerpt',
-                  'format', 'hidden', 'id', 'keep_extension', 'layout', 'menu_title', 'modified',
-                  'parent_id', 'parent_route', 'path', 'redirect', 'route', 'segments', 'tags',
-                  'title', 'twig', 'type'] as $key) {
-            $this->assertArrayHasKey($key, $array);
-        }
+        // Member var
+        $this->assertSame('layout.html', $page->layout);
+        // User var
+        $this->assertSame('This is a short text.', $page->excerpt);
     }
 
-    public function testWithSlugGenerator(): void
+    /**
+     * @depends testToArray2
+     * @expectedException LogicException
+     */
+    public function testMagicalGetMethodException(Page $page)
     {
-        $page = new Page(['tags' => ['Cool Jazz']], null, new SlugGenerator());
-        $this->assertTrue($page->hasTag('Cool Jazz'));
+        $this->expectExceptionMessage("Field notExistingMember does not exist.");
+        $page->notExistingMember;
     }
 
-    public function testWithoutSlugGeneratorThrows(): void
+    /**
+     * @depends testToArray2
+     */
+    public function testMagicalIssetMethod(Page $page)
     {
-        $page = new Page();
-        $this->expectException(BadMethodCallException::class);
-        $page->hasTag('anything');
+        // Member var
+        $this->assertSame(true, isset($page->layout));
+        // User var
+        $this->assertSame(true, isset($page->excerpt));
+        // Not existing member
+        $this->assertSame(false, isset($page->notExistingMember));
     }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testMagicalSetMethod(Page $page)
+    {
+        // Member var
+        $page->title = 'My Title';
+        // User var
+        $page->uservar = 'My user var';
+        $this->assertSame('My Title', $page->title);
+        $this->assertSame('My user var', $page->uservar);
+    }
+
+    /**
+     * @depends testToArray2
+     */
+    public function testToString2(Page $page)
+    {
+        $this->assertSame('Page Data', (string)$page);
+    }
+
+    protected function _before()
+    {
+        $this->repository = new FlatFilePageRepository(
+            new PageFactory(),
+            new FlatFilePagePersistence(
+                new Alias([
+                    '@page' => __DIR__ . '/Fixtures/site/pages'
+                ]),
+                new NullCache(),
+                new Finder([
+                    'extensions' => ['md'],
+                    'path' => dirname(__DIR__) . '/integration/Fixtures/site/pages',
+                ])
+            )
+        );
+    }
+
 }
