@@ -498,9 +498,12 @@ To enable the plugin, you need to edit the configuration file `site/config/main.
 ~~~php
 <?php 
 return [
-    'enabledPlugins' => 'markdown,myplugin,textile',
+    'enabledPlugins' => 'myplugin',
+    'enabledSysPlugins' => 'markdown,textile',
 ];
 ~~~
+
+System plugins such as `markdown` and `textile` are activated with the `enabledSysPlugins` setting.
 
 Of course, you need to implement the methods according to the requirements.
 So the complete class looks like:

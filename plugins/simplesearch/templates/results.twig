@@ -1,0 +1,20 @@
+{% if submitted %}
+<div class="plugin-simplesearch-results">
+    {% if query == false %}
+        <p>{{ translate('simplesearch', 'pleaseEnterASearchTerm') }}</p>
+    {% elseif results|length == 0 %}
+        <p>{{ translate('simplesearch', 'noResultsFoundForQuery', {'query': query}) }}</p>
+    {% else %}
+        <p>{{ translate('simplesearch', 'countResultsFound', {'count': results|length}) }}</p>
+        {% for result in results %}
+            <div class="result">
+                <div class="title">{{ link_page(result.route, result.title) }}</div>
+                <div class="url">{{ url_rel(result.route) }}</div>
+                {% if result.date %}
+                    <div class="date">{{ result.date|date('d. F Y') }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endif %}

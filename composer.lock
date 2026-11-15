@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b5bb53b4b8eced82e9ab1869f7e360e",
+    "content-hash": "44b4d3dabf8c73b8bc9a5188a4a12b85",
     "packages": [
         {
             "name": "ausi/slug-generator",
@@ -2868,80 +2868,6 @@
                 }
             ],
             "time": "2026-11-09T14:32:19+00:00"
-        },
-        {
-            "name": "getherbie/plugin-simplecontact",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/getherbie-plugin/simplecontact.git",
-                "reference": "89776511c02ada7c8113dd23a608d10314de2820"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/getherbie-plugin/simplecontact/zipball/89776511c02ada7c8113dd23a608d10314de2820",
-                "reference": "89776511c02ada7c8113dd23a608d10314de2820",
-                "shasum": ""
-            },
-            "require-dev": {
-                "getherbie/herbie": "^2.0"
-            },
-            "default-branch": true,
-            "type": "herbie-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "SimpleContact Plugin for Herbie.",
-            "homepage": "https://github.com/getherbie",
-            "keywords": [
-                "contact",
-                "herbie",
-                "mailform",
-                "plugin"
-            ],
-            "support": {
-                "issues": "https://github.com/getherbie-plugin/simplecontact/issues",
-                "source": "https://github.com/getherbie-plugin/simplecontact/tree/v2.0.1"
-            },
-            "time": "2025-04-14T15:57:36+00:00"
-        },
-        {
-            "name": "getherbie/plugin-simplesearch",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/getherbie-plugin/simplesearch.git",
-                "reference": "8c2898c5b19172f2d8999768b8e4b30f92dee066"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/getherbie-plugin/simplesearch/zipball/8c2898c5b19172f2d8999768b8e4b30f92dee066",
-                "reference": "8c2898c5b19172f2d8999768b8e4b30f92dee066",
-                "shasum": ""
-            },
-            "require-dev": {
-                "getherbie/herbie": "^2.0"
-            },
-            "default-branch": true,
-            "type": "herbie-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "SimpleSearch Plugin for Herbie.",
-            "homepage": "https://github.com/getherbie",
-            "keywords": [
-                "herbie",
-                "plugin",
-                "search",
-                "simplesearch"
-            ],
-            "support": {
-                "issues": "https://github.com/getherbie-plugin/simplesearch/issues",
-                "source": "https://github.com/getherbie-plugin/simplesearch/tree/master"
-            },
-            "time": "2025-05-07T15:17:44+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6496,85 +6422,6 @@
             "time": "2025-11-02T17:51:19+00:00"
         },
         {
-            "name": "squizlabs/php_codesniffer",
-            "version": "3.13.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "4c378e1a528ea066890fc2397cbdd2f94eb2fc91"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/4c378e1a528ea066890fc2397cbdd2f94eb2fc91",
-                "reference": "4c378e1a528ea066890fc2397cbdd2f94eb2fc91",
-                "shasum": ""
-            },
-            "require": {
-                "ext-simplexml": "*",
-                "ext-tokenizer": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.3.4"
-            },
-            "bin": [
-                "bin/phpcbf",
-                "bin/phpcs"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Greg Sherwood",
-                    "role": "Former lead"
-                },
-                {
-                    "name": "Juliette Reinders Folmer",
-                    "role": "Current lead"
-                },
-                {
-                    "name": "Contributors",
-                    "homepage": "https://github.com/PHPCSStandards/PHP_CodeSniffer/graphs/contributors"
-                }
-            ],
-            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
-            "homepage": "https://github.com/PHPCSStandards/PHP_CodeSniffer",
-            "keywords": [
-                "phpcs",
-                "standards",
-                "static analysis"
-            ],
-            "support": {
-                "issues": "https://github.com/PHPCSStandards/PHP_CodeSniffer/issues",
-                "security": "https://github.com/PHPCSStandards/PHP_CodeSniffer/security/policy",
-                "source": "https://github.com/PHPCSStandards/PHP_CodeSniffer",
-                "wiki": "https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/PHPCSStandards",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/jrfnl",
-                    "type": "github"
-                },
-                {
-                    "url": "https://opencollective.com/php_codesniffer",
-                    "type": "open_collective"
-                },
-                {
-                    "url": "https://thanks.dev/u/gh/phpcsstandards",
-                    "type": "thanks_dev"
-                }
-            ],
-            "time": "2026-08-06T00:17:32+00:00"
-        },
-        {
             "name": "staabm/side-effects-detector",
             "version": "1.0.5",
             "source": {
@@ -7744,10 +7591,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "getherbie/plugin-simplecontact": 20,
-        "getherbie/plugin-simplesearch": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -207,9 +207,9 @@
   desc: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie.
   author: Herbie-Team
   version: 2.0.0
-  composer: getherbie/plugin-simplecontact
-  github: https://github.com/getherbie/plugin-simplecontact
-  packagist: https://packagist.org/packages/getherbie/plugin-simplecontact
+  composer:
+  github:
+  packagist:
   enabled: true
 -
   id: simplesearch
@@ -217,9 +217,9 @@
   desc: Simplesearch adds a simple but effective search functionality to a website created with Herbie.
   author: Herbie-Team
   version: 2.0.0
-  composer: getherbie/plugin-simplesearch
-  github: https://github.com/getherbie/plugin-simplesearch
-  packagist: https://packagist.org/packages/getherbie/plugin-simplesearch
+  composer:
+  github:
+  packagist:
   enabled: true
 -
   id: smartypants

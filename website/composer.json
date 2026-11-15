@@ -9,8 +9,6 @@
     "require": {
         "league/commonmark": "^2.10",
         "getherbie/herbie": "dev-3.x-develop",
-        "getherbie/plugin-simplecontact": "dev-master",
-        "getherbie/plugin-simplesearch": "dev-master",
         "laminas/laminas-diactoros": "^2.0"
     }
 }
