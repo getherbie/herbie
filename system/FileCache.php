@@ -7,7 +7,7 @@ namespace herbie;
 use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 
-final class FileCache implements CacheInterface
+final readonly class FileCache implements CacheInterface
 {
     private string $path;
 

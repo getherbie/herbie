@@ -8,11 +8,11 @@ use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use UnexpectedValueException;
 
-final class Config
+final readonly class Config
 {
     private const string DELIM = '.';
     /** @var array<string, mixed> */
-    private array $data;
+    private readonly array $data;
 
     /** @param array<string, mixed> $data */
     public function __construct(array $data)

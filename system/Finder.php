@@ -4,26 +4,16 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class Finder
+final readonly class Finder
 {
-    /** @var array|string[]  */
+    /** @var string[]  */
     private array $extensions;
     private string $path;
 
     public function __construct(array $options = [])
     {
-        $this->setExtensions($options['extensions'] ?? []);
-        $this->setPath($options['path'] ?? '');
-    }
-
-    private function setExtensions(array $extensions): void
-    {
-        $this->extensions = $extensions;
-    }
-
-    private function setPath(string $path): void
-    {
-        $this->path = $path;
+        $this->extensions = $options['extensions'] ?? [];
+        $this->path = $options['path'] ?? '';
     }
 
     public function pageFiles(): \Symfony\Component\Finder\Finder

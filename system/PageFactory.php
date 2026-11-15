@@ -6,9 +6,9 @@ namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
 
-final class PageFactory
+final readonly class PageFactory
 {
-    private ?SlugGenerator $slugGenerator;
+    private readonly ?SlugGenerator $slugGenerator;
 
     public function __construct(?SlugGenerator $slugGenerator = null)
     {
