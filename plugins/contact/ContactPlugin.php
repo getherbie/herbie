@@ -10,12 +10,15 @@ use herbie\Plugin;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Throwable;
 use Twig\TwigFunction;
 
-#[Plugin('contact')]
+#[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9'])]
 final class ContactPlugin extends AbstractPlugin
 {
     private Config $config;
@@ -24,6 +27,7 @@ final class ContactPlugin extends AbstractPlugin
     private Translator $translator;
     private TwigRenderer $twigRenderer;
     private UrlManager $urlManager;
+    private LoggerInterface $logger;
 
     public function __construct(
         Config $config,
@@ -32,6 +36,7 @@ final class ContactPlugin extends AbstractPlugin
         Translator $translator,
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
+        LoggerInterface $logger,
     ) {
         $this->config = $config;
         $this->request = $request;
@@ -39,6 +44,7 @@ final class ContactPlugin extends AbstractPlugin
         $this->translator = $translator;
         $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
+        $this->logger = $logger;
     }
 
     public function twigFunctions(): array
@@ -60,7 +66,7 @@ final class ContactPlugin extends AbstractPlugin
             $formData = $this->filterFormData($this->getFormData());
             $formErrors = $this->validateFormData($formData);
             if (empty($formErrors)) {
-                $recipient = $this->config->getAsString('plugins.contact.recipient'); // validate email
+                $recipient = $this->config->getAsString('plugins.contact.recipient');
                 $status = $this->sendEmail($formData, $recipient);
                 if ($status) {
                     $response = $this->createRedirectResponse($route, 'successful');
@@ -125,7 +131,7 @@ final class ContactPlugin extends AbstractPlugin
 
     private function validateFormData(array $data): array
     {
-        extract($data); // name, email, message, antispam
+        extract($data);
 
         $errors = [];
         if (empty($name)) {
@@ -164,36 +170,50 @@ final class ContactPlugin extends AbstractPlugin
         return array_merge($defaults, $filtered);
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(array $data, string $recipient): bool
     {
-        // Antispam
         if (!empty($data['antispam'])) {
             return true;
         }
 
-        // Never allow user-controlled values containing line breaks into mail headers.
         if (!$this->isValidMailAddress($recipient) || !$this->isValidMailAddress($data['email'])) {
             return false;
         }
-
-        $subject = $this->translator->t('contact', 'mailSubject');
 
         $message = "{$data['message']}\n\n";
         $message .= "Name: {$data['name']}\n";
         $message .= "Email: {$data['email']}\n\n";
 
-        // Keep the From address under site-owner control; user input is Reply-To only.
-        $headers = sprintf("From: %s\r\nReply-To: %s", $recipient, $data['email']);
+        try {
+            $mail = new PHPMailer(true);
+            $mail->CharSet = PHPMailer::CHARSET_UTF8;
+            $mail->isSMTP();
+            $mail->Host = $this->config->getAsString('plugins.contact.smtp.host', 'localhost');
+            $mail->Port = $this->config->getAsInt('plugins.contact.smtp.port', 587);
+            $mail->SMTPAuth = $this->config->getAsBool('plugins.contact.smtp.auth', false);
+            $mail->Username = $this->config->getAsString('plugins.contact.smtp.username', '');
+            $mail->Password = $this->config->getAsString('plugins.contact.smtp.password', '');
+            $mail->SMTPSecure = $this->config->getAsString('plugins.contact.smtp.encryption', 'tls');
 
-        return mail($recipient, $subject, $message, $headers); // TODO replace with an smtp mailer
+            $mail->setFrom($recipient);
+            $mail->addAddress($recipient);
+            $mail->addReplyTo($data['email'], $data['name']);
+
+            $mail->Subject = $this->translator->t('contact', 'mailSubject');
+            $mail->Body = $message;
+            $mail->AltBody = $message;
+
+            return $mail->send();
+        } catch (Throwable $exception) {
+            $this->logger->error('Failed to send contact form email.', ['exception' => $exception]);
+            return false;
+        }
     }
 
     private function isValidMailAddress(string $address): bool
     {
-        return strpbrk($address, "\r\n") === false && filter_var($address, FILTER_VALIDATE_EMAIL) !== false;
+        return strpbrk($address, "\r\n") === false
+            && filter_var($address, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     private function createRedirectResponse(string $route, string $status): ResponseInterface
