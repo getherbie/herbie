@@ -152,8 +152,10 @@ final readonly class ContainerBuilder
 
         $c->set(ErrorHandlerMiddleware::class, function (ContainerInterface $c) {
             return new ErrorHandlerMiddleware(
+                $c->get(PageRepositoryInterface::class),
                 $c->get(ResponseFactoryInterface::class),
-                $c->get(TwigRenderer::class)
+                $c->get(TwigRenderer::class),
+                $c->get(UrlManager::class)
             );
         });
 
