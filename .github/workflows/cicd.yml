@@ -48,45 +48,10 @@ jobs:
       - name: Test code with Codeception
         run: vendor/bin/codecept run
 
-  publish-2x:
-    name: CD - Push 2.x to server
+  publish:
+    name: CD - Push to server
     needs: test
-    if: github.ref == 'refs/heads/2.x'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v4
-
-      - name: Setup PHP and Composer
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          tools: composer:v2
-          ini-values: register_argc_argv=On
-
-      - name: Install PHP dependencies
-        run: composer install --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
-
-      - name: Rename index-prod.php
-        run: rm website/web/index.php && mv website/web/index-prod.php website/web/index.php
-
-      - name: Deploy to server via scp
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          source: "website"
-          target: ${{ secrets.SSH_TARGET }}
-          rm: true
-          strip_components: 1
-
-  publish-3x:
-    name: CD - Push 3.x to server
-    needs: test
-    if: github.ref == 'refs/heads/3.x-develop'
+    if: github.ref == 'refs/heads/2.x' || github.ref == 'refs/heads/3.x-develop'
     runs-on: ubuntu-latest
 
     steps:
