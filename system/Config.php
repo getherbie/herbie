@@ -12,7 +12,7 @@ final readonly class Config
 {
     private const string DELIM = '.';
     /** @var array<string, mixed> */
-    private readonly array $data;
+    private array $data;
 
     /** @param array<string, mixed> $data */
     public function __construct(array $data)

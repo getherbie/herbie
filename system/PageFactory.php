@@ -8,7 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 
 final readonly class PageFactory
 {
-    private readonly ?SlugGenerator $slugGenerator;
+    private ?SlugGenerator $slugGenerator;
 
     public function __construct(?SlugGenerator $slugGenerator = null)
     {
