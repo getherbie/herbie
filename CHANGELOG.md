@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Version bumped to 3.0.0 (new major line).
 - **Breaking:** The markdown plugin uses `league/commonmark` instead of `erusev/parsedown` / `erusev/parsedown-extra`. The new option `plugins.markdown.flavor` selects the markdown dialect: `commonmark` (default), `gfm` or `markdown-extra`. An unknown value falls back to `commonmark`. Options for the CommonMark environment are passed with `plugins.markdown.commonmark`.
 - `time_format()` now uses PHP's `date()` format syntax instead of the deprecated `strftime()` (strftime removed in PHP 9.0). **Breaking:** the function is removed, use `date_format()` instead.
+- **Breaking:** `Alias::get()` resolves only a leading alias and only as a whole segment. An unknown alias throws an `InvalidArgumentException` instead of being returned unchanged; previously `strtr()` replaced every occurrence anywhere in the string, so `@siteother/x` resolved to the path of `@site`. Paths without a leading alias are still returned unchanged. The Twig tests `file_readable` and `file_writable` share this method, so they raise an exception for an unknown alias instead of evaluating to `false`.
 - PSR-17 factory selection in `ContainerBuilder` deduplicated via `preferredPsr17Package()`.
 - `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
 
