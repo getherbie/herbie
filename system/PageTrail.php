@@ -11,7 +11,7 @@ use IteratorAggregate;
 /**
  * @implements IteratorAggregate<int, Page>
  */
-final class PageTrail implements IteratorAggregate, Countable
+final readonly class PageTrail implements IteratorAggregate, Countable
 {
     /** @var Page[] */
     private array $items;

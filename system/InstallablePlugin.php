@@ -4,7 +4,7 @@ namespace herbie;
 
 use Psr\Container\ContainerInterface;
 
-final class InstallablePlugin
+final readonly class InstallablePlugin
 {
     private string $key;
     private string $path;

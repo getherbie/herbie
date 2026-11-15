@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  * Stores the site.
  */
-final class Site
+final readonly class Site
 {
     private Config $config;
     private DataRepositoryInterface $dataRepository;
