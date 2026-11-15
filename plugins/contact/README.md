@@ -1,6 +1,6 @@
-# Herbie Simplecontact Plugin
+# Herbie Contact Plugin
 
-Simplecontact is a [Herbie](https://github.com/getherbie) plugin that allows you to add a simple contact form to your website.
+Contact is a [Herbie](https://github.com/getherbie) plugin that allows you to add a simple contact form to your website.
 Such a form consists of the fields name, email and message.
 
 ## Installation
@@ -11,13 +11,13 @@ It is activated in the configuration file.
 ~~~php
 return [
     // a comma-separated list of plugins to be activated
-    'enabledPlugins' => 'simplecontact',
+    'enabledPlugins' => 'contact',
 ];
 ~~~
 
 ## Configuration
 
-Under `plugins.simplecontact` the following options are available.
+Under `plugins.contact` the following options are available.
 
 The email address to which the form will be sent:
 
@@ -41,7 +41,7 @@ Otherwise the page would be loaded from the page cache.
 
 The form is then rendered using the twig function of the same name.
 
-    {{ simplecontact() }}
+    {{ contact() }}
 
 Additional content can be placed before or after the function call. 
 A complete contact page looks like this:
@@ -55,7 +55,7 @@ A complete contact page looks like this:
 
     Please fill in all fields of the contact form:
     
-    {{ simplecontact() }}
+    {{ contact() }}
 
     We can also be reached via email or phone at...    
 

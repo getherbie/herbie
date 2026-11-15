@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\simplecontact;
+namespace herbie\sysplugins\contact;
 
 use herbie\Config;
 use herbie\Plugin;
@@ -15,8 +15,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\TwigFunction;
 
-#[PluginName('simplecontact')]
-final class SimplecontactSysPlugin extends Plugin
+#[PluginName('contact')]
+final class ContactPlugin extends Plugin
 {
     private Config $config;
     private ServerRequestInterface $request;
@@ -44,11 +44,11 @@ final class SimplecontactSysPlugin extends Plugin
     public function twigFunctions(): array
     {
         return [
-            new TwigFunction('simplecontact', [$this, 'simplecontact'], ['is_safe' => ['html']]),
+            new TwigFunction('contact', [$this, 'contact'], ['is_safe' => ['html']]),
         ];
     }
 
-    public function simplecontact(): string
+    public function contact(): string
     {
         $status = $this->getQueryParam('status');
         [$route] = $this->urlManager->parseRequest();
@@ -60,7 +60,7 @@ final class SimplecontactSysPlugin extends Plugin
             $formData = $this->filterFormData($this->getFormData());
             $formErrors = $this->validateFormData($formData);
             if (empty($formErrors)) {
-                $recipient = $this->config->getAsString('plugins.simplecontact.recipient'); // validate email
+                $recipient = $this->config->getAsString('plugins.contact.recipient'); // validate email
                 $status = $this->sendEmail($formData, $recipient);
                 if ($status) {
                     $response = $this->createRedirectResponse($route, 'successful');
@@ -77,7 +77,7 @@ final class SimplecontactSysPlugin extends Plugin
             $formErrors = [];
         }
 
-        $template = $this->config->get('plugins.simplecontact.template', function () {
+        $template = $this->config->get('plugins.contact.template', function () {
             return $this->getTemplatePath('form.twig');
         });
 
@@ -129,15 +129,15 @@ final class SimplecontactSysPlugin extends Plugin
 
         $errors = [];
         if (empty($name)) {
-            $errors['name'] = $this->translator->t('simplecontact', 'errorEmptyField');
+            $errors['name'] = $this->translator->t('contact', 'errorEmptyField');
         }
         if (empty($email)) {
-            $errors['email'] = $this->translator->t('simplecontact', 'errorEmptyField');
+            $errors['email'] = $this->translator->t('contact', 'errorEmptyField');
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = $this->translator->t('simplecontact', 'errorInvalidEmail');
+            $errors['email'] = $this->translator->t('contact', 'errorInvalidEmail');
         }
         if (empty($message)) {
-            $errors['message'] = $this->translator->t('simplecontact', 'errorEmptyField');
+            $errors['message'] = $this->translator->t('contact', 'errorEmptyField');
         }
 
         return $errors;
@@ -174,7 +174,7 @@ final class SimplecontactSysPlugin extends Plugin
             return true;
         }
 
-        $subject    = $this->translator->t('simplecontact', 'mailSubject');
+        $subject    = $this->translator->t('contact', 'mailSubject');
 
         $message = "{$data['message']}\n\n";
         $message .= "Name: {$data['name']}\n";
@@ -208,6 +208,6 @@ final class SimplecontactSysPlugin extends Plugin
 
     private function getTemplatePath(string $name): string
     {
-        return '@sysplugin/simplecontact/templates/' . $name;
+        return '@sysplugin/contact/templates/' . $name;
     }
 }

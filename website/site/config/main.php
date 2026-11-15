@@ -9,7 +9,7 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig',
     ],
-    'enabledPlugins' => 'twig,imagine,markdown,simplesearch,simplecontact',
+    'enabledPlugins' => 'twig,imagine,markdown,search,contact',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml',
@@ -49,10 +49,10 @@ return [
         ],
     ],
     'plugins' => [
-        'simplecontact' => [
+        'contact' => [
             'recipient' => 'me+herbie@tebe.ch',
         ],
-        'simplesearch' => [
+        'search' => [
             'usePageCache' => $isProduction,
         ],
     ],

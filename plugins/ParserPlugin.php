@@ -17,7 +17,7 @@ use Throwable;
  * and how a segment is converted. The event listener, the twig filter and the twig
  * function are set up once for all of them.
  */
-abstract class ParserSysPlugin extends Plugin
+abstract class ParserPlugin extends Plugin
 {
     protected Config $config;
 

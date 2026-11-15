@@ -1,6 +1,6 @@
-# Rest System Plugin
+# Rst System Plugin
 
-`Rest` is a [Herbie](http://github.com/getherbie) system plugin that enables parsing of reStructuredText files.
+`Rst` is a [Herbie](http://github.com/getherbie) system plugin that enables parsing of reStructuredText files.
 
 The plugin itself uses the Composer package `doctrine/rst-parser` under the hood.
 
@@ -8,11 +8,11 @@ The plugin itself uses the Composer package `doctrine/rst-parser` under the hood
 
 The plugin is installed already.
 
-To activate it, add `rest` to the `enabledPlugins` configuration option.
+To activate it, add `rst` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledPlugins' => 'rest'
+    'enabledPlugins' => 'rst'
 ];
 ~~~
 
@@ -26,12 +26,12 @@ To do so, run the following Composer command:
 
 ## Configuration
 
-Under `plugins.rest` the following options are available:
+Under `plugins.rst` the following options are available:
 
 ~~~php
 return [
     'plugins' => [
-        'rest' => [
+        'rst' => [
             'enableTwigFilter' => true,
             'enableTwigFunction' => true
         ]
@@ -42,17 +42,17 @@ return [
 ## Usage
 
 If the plugin is installed and activated properly, content is parsed with the reStructuredText parser.
-The prerequisite for this is that `page.format` is equal to `rest`.
+The prerequisite for this is that `page.format` is equal to `rst`.
 
 In addition, depending on the above configuration, both a Twig filter and a Twig function are available.
 
-The Twig `rest` filter can be applied as follows:
+The Twig `rst` filter can be applied as follows:
 
-    {{ "My reStructured text formated content"|rest }}
+    {{ "My reStructured text formated content"|rst }}
 
-And the Twig `rest` function like this:
+And the Twig `rst` function like this:
 
-    {{ rest("My reStructured text formated content") }}
+    {{ rst("My reStructured text formated content") }}
 
 ## More Information
 

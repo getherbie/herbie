@@ -1,6 +1,6 @@
-# Herbie Simplesearch Plugin
+# Herbie Search Plugin
 
-Simplesearch is a [Herbie](http://github.com/getherbie) plugin that allows you to provide your website with a simple but useful search engine.
+Search is a [Herbie](http://github.com/getherbie) plugin that allows you to provide your website with a simple but useful search engine.
 
 ## Installation
 
@@ -10,7 +10,7 @@ It is activated in the configuration file.
 ~~~php
 return [
     // a comma-separated list of plugins to be activated
-    'enabledPlugins' => 'simplesearch',
+    'enabledPlugins' => 'search',
 ];
 ~~~
 
@@ -21,11 +21,11 @@ The following options are available in the configuration file.
 ~~~php
 return [
     'plugins' => [        
-        'simplesearch' => [
+        'search' => [
             // path to twig form template
-            'formTemplate' => '@sysplugin/simplesearch/templates/form.twig',
+            'formTemplate' => '@sysplugin/search/templates/form.twig',
             // path to twig results template
-            'resultsTemplate' => '@sysplugin/simplesearch/templates/results.twig',
+            'resultsTemplate' => '@sysplugin/search/templates/results.twig',
             // use page cahe if global caching is enabled
             'usePageCache' => false,
         ],
@@ -55,9 +55,9 @@ A complete search page looks like this:
     
     # Search
     
-    {{ simplesearch_form() }}
+    {{ search_form() }}
     
-    {{ simplesearch_results() }}
+    {{ search_results() }}
 
 ## Demo
 

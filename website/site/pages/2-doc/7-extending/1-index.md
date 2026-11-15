@@ -664,4 +664,4 @@ All you need to do is run the following CLI command in your project root directo
 
 After that, the plugin needs to be enabled in the configuration.
 
-Good examples are the plugins [simple contact](https://github.com/getherbie-plugin/simplecontact) and [simple search](https://github.com/getherbie-plugin/simplesearch).
+Good examples are the plugins [simple contact](https://github.com/getherbie-plugin/contact) and [simple search](https://github.com/getherbie-plugin/search).

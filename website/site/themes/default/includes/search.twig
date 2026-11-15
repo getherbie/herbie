@@ -1,22 +1,22 @@
-<div class="sidebar-simplesearch">
+<div class="sidebar-search">
     <form class="pure-form" action="{{ url_abs('search') }}" method="get">
         <input class="pure-input-1" type="text" name="query" value="" placeholder="Search website...">
         <button type="submit">{{ icon('search') }}</button>
     </form>
 </div>
 <style>
-    .sidebar-simplesearch {
+    .sidebar-search {
         position: relative;
         margin-bottom: 2.5em;
         white-space: nowrap;
     }
 
-    .sidebar-simplesearch input[type=text] {
+    .sidebar-search input[type=text] {
         padding: 0.25em 0.3em;
         color: #666;
     }
 
-    .sidebar-simplesearch button {
+    .sidebar-search button {
         padding: 0.25em 0.3em;
         border: none;
         background: none;

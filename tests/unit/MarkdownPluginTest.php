@@ -4,10 +4,10 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\Config;
-use herbie\sysplugins\markdown\MarkdownSysPlugin;
+use herbie\sysplugins\markdown\MarkdownPlugin;
 use Psr\Log\NullLogger;
 
-final class MarkdownSysPluginTest extends Unit
+final class MarkdownPluginTest extends Unit
 {
     public function testCommonMarkFlavorIsDefault(): void
     {
@@ -85,7 +85,7 @@ final class MarkdownSysPluginTest extends Unit
         $this->assertStringNotContainsString('&lt;div', $html);
     }
 
-    private function createPlugin(string $flavor = 'commonmark'): MarkdownSysPlugin
+    private function createPlugin(string $flavor = 'commonmark'): MarkdownPlugin
     {
         $config = new Config([
             'plugins' => [
@@ -103,6 +103,6 @@ final class MarkdownSysPluginTest extends Unit
             ],
         ]);
 
-        return new MarkdownSysPlugin($config, new NullLogger());
+        return new MarkdownPlugin($config, new NullLogger());
     }
 }

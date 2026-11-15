@@ -10,7 +10,7 @@ use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 use Twig\Error\SyntaxError;
 
-final class TextileSysPluginTest extends Unit
+final class TextilePluginTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
 

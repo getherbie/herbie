@@ -17,6 +17,16 @@
   github: https://github.com/Netzweberei/plugin-blanktarget
   enabled: false
 -
+  id: contact
+  name: Contact
+  desc: Contact adds a simple contact form with name, email and message fields to a website created with Herbie.
+  author: Herbie-Team
+  version: 2.0.0
+  composer:
+  github:
+  packagist:
+  enabled: true
+-
   id: disqus
   name: Disqus
   desc: Bindet den Webservice Disqus ein.
@@ -179,16 +189,26 @@
   github: https://github.com/Netzweberei/plugin-ress
   enabled: false
 -
-  id: rest
+  id: rst
   name: reStructuredText
   desc: This system plugin can be used to parse reStructuredText-formatted texts.
     Internally, the plugin is responsible for parsing reStructuredText-formatted page content.
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github: https://github.com/getherbie/herbie/tree/2.x/plugins/rest
+  github: https://github.com/getherbie/herbie/tree/2.x/plugins/rst
   packagist:
   status: stable
+  enabled: true
+-
+  id: search
+  name: Search
+  desc: Search adds a simple but effective search functionality to a website created with Herbie.
+  author: Herbie-Team
+  version: 2.0.0
+  composer:
+  github:
+  packagist:
   enabled: true
 -
   id: shortcode
@@ -201,26 +221,6 @@
   packagist:
   status: stable
   enabled: false
--
-  id: simplecontact
-  name: Simplecontact
-  desc: Simplecontact adds a simple contact form with name, email and message fields to a website created with Herbie.
-  author: Herbie-Team
-  version: 2.0.0
-  composer:
-  github:
-  packagist:
-  enabled: true
--
-  id: simplesearch
-  name: Simplesearch
-  desc: Simplesearch adds a simple but effective search functionality to a website created with Herbie.
-  author: Herbie-Team
-  version: 2.0.0
-  composer:
-  github:
-  packagist:
-  enabled: true
 -
   id: smartypants
   name: Smartypants

@@ -10,7 +10,7 @@ use herbie\ApplicationPaths;
 
 use function herbie\file_read;
 
-final class DummySysPluginTest extends Unit
+final class DummyPluginTest extends Unit
 {
     protected Application $app;
 

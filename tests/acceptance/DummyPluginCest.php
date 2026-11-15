@@ -6,9 +6,9 @@ use AcceptanceTester;
 use Codeception\Lib\Interfaces\Web;
 use Codeception\Util\HttpCode;
 
-final class DummySysPluginCest
+final class DummyPluginCest
 {
-    public function testDummySysPlugin(AcceptanceTester $I)
+    public function testDummyPlugin(AcceptanceTester $I)
     {
         /** @var Web $I */
         $I->amOnPage('/plugins/dummy');

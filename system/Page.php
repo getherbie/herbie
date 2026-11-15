@@ -298,7 +298,7 @@ final class Page implements ArrayAccess
                 $format = 'textile';
                 break;
             case 'rst':
-                $format = 'rest';
+                $format = 'rst';
                 break;
             default:
                 $format = 'raw';

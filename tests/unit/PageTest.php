@@ -178,7 +178,7 @@ final class PageTest extends Unit
         $page->format = 'textile';
         $this->assertEquals('textile', $page->format);
         $page->format = 'rst';
-        $this->assertEquals('rest', $page->format);
+        $this->assertEquals('rst', $page->format);
         $page->format = 'raw';
         $this->assertEquals('raw', $page->format);
         $page->format = 'not-existin-format';

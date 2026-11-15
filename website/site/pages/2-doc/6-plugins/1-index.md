@@ -7,7 +7,7 @@ layout: doc
 
 There are already some plugins available for Herbie.
 
-Some plugins are part of Herbie, for example `markdown`, `textile`, `rest`, `imagine`, `simplecontact` and `simplesearch`.
+Some plugins are part of Herbie, for example `markdown`, `textile`, `rst`, `imagine`, `contact` and `search`.
 These system plugins need no installation.
 
 All other plugins are installed with the help of Composer.
@@ -22,7 +22,7 @@ It does not matter whether a plugin is a system, a Composer or a local plugin.
 ~~~php
 <?php
 return [
-    'enabledPlugins' => 'markdown,simplecontact,simplesearch,disqus',
+    'enabledPlugins' => 'markdown,contact,search,disqus',
 ];
 ~~~
 

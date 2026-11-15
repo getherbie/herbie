@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\simplesearch;
+namespace herbie\sysplugins\search;
 
 use Exception;
 use herbie\Config;
@@ -16,8 +16,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
-#[PluginName('simplesearch')]
-final class SimplesearchSysPlugin extends Plugin
+#[PluginName('search')]
+final class SearchPlugin extends Plugin
 {
     private CacheInterface $cache;
     private Config $config;
@@ -45,8 +45,8 @@ final class SimplesearchSysPlugin extends Plugin
     public function twigFunctions(): array
     {
         return [
-            new TwigFunction('simplesearch_results', [$this, 'results'], ['is_safe' => ['html']]),
-            new TwigFunction('simplesearch_form', [$this, 'form'], ['is_safe' => ['html']]),
+            new TwigFunction('search_results', [$this, 'results'], ['is_safe' => ['html']]),
+            new TwigFunction('search_form', [$this, 'form'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -58,7 +58,7 @@ final class SimplesearchSysPlugin extends Plugin
      */
     public function form(): string
     {
-        $name = $this->config->get('plugins.simplesearch.formTemplate', function () {
+        $name = $this->config->get('plugins.search.formTemplate', function () {
             return $this->getTemplatePath('form.twig');
         });
 
@@ -82,7 +82,7 @@ final class SimplesearchSysPlugin extends Plugin
         $query = $queryParams['query'] ?? '';
         $results = $this->search($query);
 
-        $name = $this->config->get('plugins.simplesearch.resultsTemplate', function () {
+        $name = $this->config->get('plugins.search.resultsTemplate', function () {
             return $this->getTemplatePath('results.twig');
         });
 
@@ -133,7 +133,7 @@ final class SimplesearchSysPlugin extends Plugin
         $max = 100;
         $results = [];
 
-        $usePageCache = $this->config->get('plugins.simplesearch.usePageCache', false);
+        $usePageCache = $this->config->get('plugins.search.usePageCache', false);
 
         foreach ($this->pageRepository->findAll() as $item) {
             if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search)) {
@@ -169,6 +169,6 @@ final class SimplesearchSysPlugin extends Plugin
 
     private function getTemplatePath(string $name): string
     {
-        return '@sysplugin/simplesearch/templates/' . $name;
+        return '@sysplugin/search/templates/' . $name;
     }
 }

@@ -5,4 +5,4 @@ cached: false
 
 # Contact
 
-{{ simplecontact() }}
+{{ contact() }}

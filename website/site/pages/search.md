@@ -6,6 +6,6 @@ hidden: true
 
 # Search
 
-{{ simplesearch_form() }}
+{{ search_form() }}
 
-{{ simplesearch_results() }}
+{{ search_results() }}

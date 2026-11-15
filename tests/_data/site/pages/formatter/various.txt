@@ -11,12 +11,12 @@ hidden: false
 
 {{ markdown('## Markdown Function') }}
 
-{% apply rest %}
+{% apply rst %}
 reStructuredText Filter
 -----------------------
 {% endapply %}
 
-{{ rest('reStructuredText Function\n-----------------------') }}
+{{ rst('reStructuredText Function\n-----------------------') }}
 
 {% apply textile %}
 h2. Textile Filter

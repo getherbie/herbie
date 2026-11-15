@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
 use Twig\TwigFilter;
 
 #[PluginName('dummy')]
-final class DummySysPlugin implements PluginInterface
+final class DummyPlugin implements PluginInterface
 {
     private LoggerInterface $logger;
 

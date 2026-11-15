@@ -375,7 +375,7 @@ final class WebsiteCest
         $I->amOnPage('/search');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Search', 'h1');
-        $I->seeNumberOfElements('.plugin-simplesearch-form', 1);
+        $I->seeNumberOfElements('.plugin-search-form', 1);
         $this->testLayoutDefault($I);
     }
 
@@ -385,12 +385,12 @@ final class WebsiteCest
         $I->amOnPage('/contact');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Contact', 'h1');
-        $I->seeNumberOfElements('.simplecontact', 1);
-        $I->seeElement('.simplecontact-form');
-        $I->seeElement('.simplecontact-input[id=name]');
-        $I->seeElement('.simplecontact-input[id=email]');
-        $I->seeElement('.simplecontact-input[id=message]');
-        $I->seeElement('.simplecontact-button');
+        $I->seeNumberOfElements('.contact', 1);
+        $I->seeElement('.contact-form');
+        $I->seeElement('.contact-input[id=name]');
+        $I->seeElement('.contact-input[id=email]');
+        $I->seeElement('.contact-input[id=message]');
+        $I->seeElement('.contact-button');
         $this->testLayoutDefault($I);
     }
 
@@ -444,19 +444,19 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->see('Page not found', 'h1');
         $I->seeNumberOfElements('.content>p', 1);
-        $I->seeNumberOfElements('.sidebar-simplesearch', 1);
+        $I->seeNumberOfElements('.sidebar-search', 1);
     }
 
     private function testLayoutDefault(AcceptanceTester $I)
     {
-        $I->seeNumberOfElements('.sidebar-simplesearch', 1);
+        $I->seeNumberOfElements('.sidebar-search', 1);
         $I->see('GitHub Activity', 'h4.gc-header');
         $I->seeNumberOfElements('.gc-entry', 10);
     }
 
     private function testLayoutRecipe(AcceptanceTester $I)
     {
-        $I->seeNumberOfElements('.sidebar-simplesearch', 1);
+        $I->seeNumberOfElements('.sidebar-search', 1);
         $I->seeNumberOfElements('.widget-blog-categories', 1);
     }
 }

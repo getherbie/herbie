@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\rest;
+namespace herbie\sysplugins\rst;
 
 use Doctrine\RST\Parser;
 use herbie\Config;
 use herbie\PluginName;
-use herbie\sysplugins\ParserSysPlugin;
+use herbie\sysplugins\ParserPlugin;
 use Psr\Log\LoggerInterface;
 
-#[PluginName('rest')]
-final class RestSysPlugin extends ParserSysPlugin
+#[PluginName('rst')]
+final class RstPlugin extends ParserPlugin
 {
     private bool $parserClassExists;
 
     public function __construct(Config $config, LoggerInterface $logger)
     {
-        parent::__construct($config, $logger, 'plugins.rest');
+        parent::__construct($config, $logger, 'plugins.rst');
         $this->parserClassExists = class_exists('Doctrine\RST\Parser');
         if (!$this->parserClassExists) {
             $logger->error('Please install "doctrine/rst-parser" via composer');
@@ -26,12 +26,12 @@ final class RestSysPlugin extends ParserSysPlugin
 
     protected function getFormats(): array
     {
-        return ['rest'];
+        return ['rst'];
     }
 
     protected function getTwigName(): string
     {
-        return 'rest';
+        return 'rst';
     }
 
     public function parse(string $value): string

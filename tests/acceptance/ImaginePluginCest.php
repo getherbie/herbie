@@ -6,9 +6,9 @@ use AcceptanceTester;
 use Codeception\Lib\Interfaces\Web;
 use Codeception\Util\HttpCode;
 
-final class ImagineSysPluginCest
+final class ImaginePluginCest
 {
-    public function testImagineSysPlugin(AcceptanceTester $I)
+    public function testImaginePlugin(AcceptanceTester $I)
     {
         /** @var Web $I */
         $I->amOnPage('/plugins/imagine');

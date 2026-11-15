@@ -21,7 +21,7 @@ use Twig\Markup;
 use function herbie\str_trailing_slash;
 
 #[PluginName('imagine')]
-final class ImagineSysPlugin extends Plugin
+final class ImaginePlugin extends Plugin
 {
     protected Config $config;
 

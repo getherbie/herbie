@@ -454,23 +454,23 @@ div.highlight pre {
     text-align:center;
 }
 
-/* Plugin Simplesearch */
-.plugin-simplesearch-form {
+/* Plugin Search */
+.plugin-search-form {
     margin-bottom:1.6em;
 }
-.plugin-simplesearch-results p {
+.plugin-search-results p {
     font-size: 0.9em;
     margin-bottom:0.8em;
 }
-.plugin-simplesearch-results .result {
+.plugin-search-results .result {
     margin-bottom: 0.8em;
 }
-.plugin-simplesearch-results .title {
+.plugin-search-results .title {
 }
-.plugin-simplesearch-results .url {
+.plugin-search-results .url {
     font-size: 0.9em;
 }
-.plugin-simplesearch-results .date {
+.plugin-search-results .date {
     font-size: 0.9em;
 }
 

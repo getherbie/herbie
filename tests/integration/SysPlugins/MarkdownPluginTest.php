@@ -11,7 +11,7 @@ use herbie\ApplicationPaths;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final class MarkdownSysPluginTest extends Unit
+final class MarkdownPluginTest extends Unit
 {
     protected Application $app;
 
