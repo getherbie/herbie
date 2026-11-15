@@ -156,14 +156,11 @@ final class PageListTest extends Unit
 
         $shuffled = $list->shuffle();
 
-        // shuffle() renumbers the keys, so the pages are no longer reachable by route
+        // the route is preserved, so the pages are still reachable by their key
         $this->assertSame(3, $shuffled->count());
-        $routes = [];
-        foreach ($shuffled as $page) {
-            $routes[] = $page->getRoute();
-        }
-        sort($routes);
-        $this->assertSame(['a', 'b', 'c'], $routes);
+        $this->assertSame('a', $shuffled->getItem('a')->getRoute());
+        $this->assertSame('b', $shuffled->getItem('b')->getRoute());
+        $this->assertSame('c', $shuffled->getItem('c')->getRoute());
     }
 
     public function testGetTags(): void

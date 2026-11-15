@@ -8,6 +8,7 @@ use ArrayIterator;
 use Countable;
 use Exception;
 use InvalidArgumentException;
+use Iterator;
 use IteratorAggregate;
 
 /**
@@ -27,13 +28,14 @@ final class Pagination implements IteratorAggregate, Countable
      */
     public function __construct(iterable $items, int $limit = 10, int $page = 1)
     {
-        $this->items = [];
         if (is_array($items)) {
             $this->items = $items;
         } elseif ($items instanceof IteratorAggregate) {
-            $this->items = (array)$items->getIterator();
+            $this->items = iterator_to_array($items->getIterator());
+        } elseif ($items instanceof Iterator) {
+            $this->items = iterator_to_array($items);
         } else {
-            $message = 'The param $items must be an array or an object implementing IteratorAggregate.';
+            $message = 'The param $items must be an array or a traversable object.';
             throw new InvalidArgumentException($message, 500);
         }
         $this->totalItems = count($this->items);
@@ -100,6 +102,10 @@ final class Pagination implements IteratorAggregate, Countable
 
     private function setLimit(int $limit): void
     {
+        if ($this->totalItems === 0) {
+            $this->limit = max($limit, 1);
+            return;
+        }
         $limit = $limit < 1 ? $this->totalItems : $limit;
         $this->limit = min(max($limit, 1), $this->totalItems);
     }
@@ -125,8 +131,10 @@ final class Pagination implements IteratorAggregate, Countable
      */
     public function getLastPage(): int
     {
-        $ceil = ceil($this->totalItems / $this->limit);
-        return (int)$ceil;
+        if ($this->totalItems === 0) {
+            return $this->getFirstPage();
+        }
+        return (int)ceil($this->totalItems / $this->limit);
     }
 
     /**

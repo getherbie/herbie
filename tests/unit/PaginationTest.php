@@ -156,37 +156,52 @@ final class PaginationTest extends Unit
         $this->assertSame(2, $pagination->getTotalItems());
     }
 
-    /**
-     * An ArrayIterator implements Iterator, but not IteratorAggregate, so it is
-     * rejected although the parameter is declared as iterable.
-     */
-    public function testArrayIteratorIsRejected(): void
+    public function testAcceptsIterator(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        new Pagination(new ArrayIterator($this->createItems(3)), 10);
+        $pagination = new Pagination(new ArrayIterator($this->createItems(3)), 10);
+
+        $this->assertSame(3, $pagination->getTotalItems());
+        $this->assertCount(3, $pagination->getItems());
     }
 
-    /**
-     * Known bug: an empty list results in a division by zero, because the limit
-     * is clamped to the number of items and the last page is calculated from it.
-     */
-    public function testEmptyListThrowsDivisionByZero(): void
-    {
-        $this->expectException(\DivisionByZeroError::class);
-        new Pagination([], 10);
-    }
-
-    /**
-     * Only arrays and IteratorAggregate are handled, all other iterable values
-     * are rejected, although the parameter is declared as iterable.
-     */
-    public function testGeneratorIsRejected(): void
+    public function testAcceptsGenerator(): void
     {
         $generator = (static function (): \Generator {
             yield 'item1';
+            yield 'item2';
         })();
 
-        $this->expectException(InvalidArgumentException::class);
-        new Pagination($generator);
+        $pagination = new Pagination($generator, 10);
+
+        $this->assertSame(2, $pagination->getTotalItems());
+    }
+
+    public function testEmptyList(): void
+    {
+        $pagination = new Pagination([], 10);
+
+        $this->assertSame(0, $pagination->getTotalItems());
+        $this->assertSame(10, $pagination->getLimit());
+        $this->assertSame(1, $pagination->getCurrentPage());
+        $this->assertSame(1, $pagination->getFirstPage());
+        $this->assertSame(1, $pagination->getLastPage());
+        $this->assertSame(0, $pagination->count());
+        $this->assertSame(0, $pagination->getOffset());
+        $this->assertSame([], $pagination->getItems());
+    }
+
+    public function testEmptyListCanBeNavigated(): void
+    {
+        $pagination = new Pagination([], 10);
+
+        $this->assertSame(1, $pagination->getNextPage());
+        $this->assertSame(1, $pagination->getPreviousPage());
+    }
+
+    public function testNonIterableThrows(): void
+    {
+        $this->expectException(\TypeError::class);
+        /** @phpstan-ignore-next-line */
+        new Pagination('not iterable');
     }
 }

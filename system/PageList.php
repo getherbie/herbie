@@ -72,12 +72,13 @@ final class PageList implements IteratorAggregate, Countable
     }
 
     /**
-     * Shuffle the items in the list.
+     * Shuffle the items in the list. The keys (the routes) are preserved,
+     * so a page can still be found by its route afterwards.
      */
     public function shuffle(): PageList
     {
         $items = $this->items;
-        shuffle($items);
+        uksort($items, static fn(): int => random_int(0, 1) <=> 0);
         return new self($items);
     }
 
