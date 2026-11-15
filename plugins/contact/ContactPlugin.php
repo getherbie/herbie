@@ -174,21 +174,32 @@ final class ContactPlugin extends AbstractPlugin
             return true;
         }
 
-        $subject    = $this->translator->t('contact', 'mailSubject');
+        // Never allow user-controlled values containing line breaks into mail headers.
+        if (!$this->isValidMailAddress($recipient) || !$this->isValidMailAddress($data['email'])) {
+            return false;
+        }
+
+        $subject = $this->translator->t('contact', 'mailSubject');
 
         $message = "{$data['message']}\n\n";
         $message .= "Name: {$data['name']}\n";
         $message .= "Email: {$data['email']}\n\n";
 
-        $headers = "From: {$data['name']} <{$data['email']}>";
+        // Keep the From address under site-owner control; user input is Reply-To only.
+        $headers = sprintf("From: %s\r\nReply-To: %s", $recipient, $data['email']);
 
         return mail($recipient, $subject, $message, $headers); // TODO replace with an smtp mailer
+    }
+
+    private function isValidMailAddress(string $address): bool
+    {
+        return strpbrk($address, "\r\n") === false && filter_var($address, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     private function createRedirectResponse(string $route, string $status): ResponseInterface
     {
         $url = $this->urlManager->createAbsoluteUrl($route) . '?status=' . $status;
-        return $this->responseFactory->createResponse()->withHeader('Location', $url);
+        return $this->responseFactory->createResponse(303)->withHeader('Location', $url);
     }
 
     /**
