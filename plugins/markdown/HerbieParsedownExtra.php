@@ -29,8 +29,12 @@ class HerbieParsedownExtra extends ParsedownExtra
             return $elementMarkup;
         }
 
-        // Suppress mb_convert_encoding deprecation (PHP 8.2+)
-        $previousLevel = error_reporting(error_reporting() & ~E_DEPRECATED);
+        // Suppress mb_convert_encoding deprecation (PHP 8.2+) and user deprecations (PHP 8.4+)
+        $mask = E_DEPRECATED;
+        if (defined('E_USER_DEPRECATION')) {
+            $mask |= E_USER_DEPRECATION;
+        }
+        $previousLevel = error_reporting(error_reporting() & ~$mask);
 
         try {
             return parent::processTag($elementMarkup);
