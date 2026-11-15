@@ -7,10 +7,9 @@ namespace herbie\sysplugins\markdown;
 /**
  * Protects raw HTML blocks from being parsed as markdown.
  *
- * A Markdown Extra parser, like ParsedownExtra used before, kept HTML blocks intact, even
- * if they contained empty lines. A CommonMark parser does not: it ends an HTML block at the
- * first empty line and parses the rest as markdown. Therefore such blocks are replaced by a
- * placeholder before parsing and the original markup is restored afterwards.
+ * A CommonMark parser ends an HTML block at the first empty line and parses the rest as
+ * markdown, which breaks HTML blocks that contain empty lines. Therefore such blocks are
+ * replaced by a placeholder before parsing and the original markup is restored afterwards.
  */
 final class RawHtmlProtector
 {

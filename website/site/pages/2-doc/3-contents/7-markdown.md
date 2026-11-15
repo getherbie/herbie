@@ -10,9 +10,8 @@ plugin. The plugin is based on the library
 [league/commonmark](https://commonmark.thephpleague.com), which implements the
 [CommonMark specification](https://spec.commonmark.org/).
 
-Please note that the plugin used Parsedown in Herbie 2.x. The switch to `league/commonmark` is a
-**breaking change**: some markdown constructs are rendered differently, and a few Parsedown
-extensions are not available any more. See [Differences to Parsedown](#differences-to-parsedown)
+The default flavour `commonmark` implements the specification only. Constructs such as tables,
+task lists and footnotes require a different flavour, see [Markdown flavour](#markdown-flavour)
 below.
 
 ## Configuration
@@ -357,17 +356,14 @@ In addition to page content, the parser is available in Twig templates as filter
 Both are registered by default and can be disabled with `enableTwigFilter` and
 `enableTwigFunction`.
 
-## Differences to Parsedown
+## Supported constructs per flavour
 
-The following constructs behave differently or are no longer supported. The list is not
-exhaustive, it names the cases that are known to differ. The rendering was compared against
-Herbie 2.x for each case.
+The following table shows which markdown constructs are available in each flavour.
 
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
             <th>Construct</th>
-            <th>Herbie 2.x (Parsedown Extra)</th>
             <th><code>commonmark</code></th>
             <th><code>gfm</code></th>
             <th><code>markdown-extra</code></th>
@@ -376,7 +372,6 @@ Herbie 2.x for each case.
     <tbody>
         <tr>
             <td>Pipe tables</td>
-            <td>table</td>
             <td>plain text</td>
             <td>table</td>
             <td>table</td>
@@ -384,20 +379,17 @@ Herbie 2.x for each case.
         <tr>
             <td>Task lists</td>
             <td>plain text</td>
-            <td>plain text</td>
             <td>checkbox</td>
             <td>checkbox</td>
         </tr>
         <tr>
             <td>Strikethrough</td>
-            <td><code>&lt;del&gt;</code></td>
             <td>plain text</td>
             <td><code>&lt;del&gt;</code></td>
             <td><code>&lt;del&gt;</code></td>
         </tr>
         <tr>
             <td>Footnotes</td>
-            <td>footnotes</td>
             <td>link</td>
             <td>link</td>
             <td>footnotes</td>
@@ -406,12 +398,10 @@ Herbie 2.x for each case.
             <td>Definition lists</td>
             <td>plain text</td>
             <td>plain text</td>
-            <td>plain text</td>
             <td><code>&lt;dl&gt;</code></td>
         </tr>
         <tr>
             <td>Attributes <code>{: #id }</code></td>
-            <td>plain text</td>
             <td>plain text</td>
             <td>plain text</td>
             <td>applied</td>
@@ -419,13 +409,11 @@ Herbie 2.x for each case.
         <tr>
             <td>Bare URLs</td>
             <td>plain text</td>
-            <td>plain text</td>
             <td>linked</td>
             <td>plain text</td>
         </tr>
         <tr>
             <td>HTML entities</td>
-            <td>preserved</td>
             <td>decoded</td>
             <td>decoded</td>
             <td>decoded</td>
@@ -435,29 +423,23 @@ Herbie 2.x for each case.
             <td>preserved</td>
             <td>preserved</td>
             <td>preserved</td>
-            <td>preserved</td>
         </tr>
     </tbody>
 </table>
 
 Two details are worth pointing out:
 
-- **HTML entities** such as `&copy;` are decoded by `league/commonmark` and output as the
-  character `©`. Parsedown left the entity untouched. This rarely changes what the visitor
-  sees, but it changes the generated markup.
-- **Footnotes** are written `[^1]` in Parsedown Extra. `league/commonmark` treats the caret as
-  the first character of the link target, so `[^1]` becomes a link to `1` rather than a footnote
-  reference. Footnotes from Herbie 2.x need to be rewritten.
-
-To get closest to the behaviour of Herbie 2.x, set `flavor` to `markdown-extra`. That restores
-tables, footnotes, definition lists, attributes and strikethrough, but it is not identical to
-Parsedown Extra.
+- **HTML entities** such as `&copy;` are decoded and output as the character `©`. This rarely
+  changes what the visitor sees, but it changes the generated markup.
+- **Footnotes** with the `[^1]` syntax are only supported by the flavour `markdown-extra`. With
+  the other flavours the caret is treated as the first character of the link target, so `[^1]`
+  becomes a link to `1`.
 
 ### Raw HTML blocks
 
-Raw HTML blocks end at the first empty line according to the CommonMark specification. To keep
-compatibility with Herbie 2.x, Herbie protects such blocks before parsing, so a block spread
-over several paragraphs still renders as HTML:
+Raw HTML blocks end at the first empty line according to the CommonMark specification. Herbie
+protects such blocks before parsing, so a block spread over several paragraphs still renders as
+HTML:
 
 ~~~html
 <div>
@@ -467,4 +449,4 @@ Absatz 2
 </div>
 ~~~
 
-Indented code samples that contain HTML remain code blocks, as before.
+Indented code samples that contain HTML remain code blocks.
