@@ -12,8 +12,7 @@ use ParsedownExtra;
  *
  * ParsedownExtra's processTag() calls DOMDocument::loadHTML() with markup
  * that can be empty or whitespace-only, which throws a ValueError on PHP 8.3+.
- * This subclass guards against that case and also handles the mb_convert_encoding
- * deprecation in PHP 8.2+.
+ * This subclass overrides processTag() entirely to guard against that case.
  */
 class HerbieParsedownExtra extends ParsedownExtra
 {
@@ -23,11 +22,14 @@ class HerbieParsedownExtra extends ParsedownExtra
      */
     protected function processTag($elementMarkup): string
     {
-        if (!is_string($elementMarkup) || trim($elementMarkup) === '') {
+        if (!is_string($elementMarkup)) {
             return '';
         }
+        if (trim($elementMarkup) === '') {
+            return $elementMarkup;
+        }
 
-        // Suppress mb_convert_encoding deprecation (PHP 8.2+) inside parent
+        // Suppress mb_convert_encoding deprecation (PHP 8.2+)
         $previousLevel = error_reporting(error_reporting() & ~E_DEPRECATED);
 
         try {
