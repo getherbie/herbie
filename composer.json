@@ -60,8 +60,6 @@
         "codeception/module-asserts": "^3.0",
         "codeception/module-phpbrowser": "^3.0",
         "doctrine/rst-parser": "^0.5.2",
-        "erusev/parsedown": "~1.7.4",
-        "erusev/parsedown-extra": "^0.8.1",
         "friendsofphp/php-cs-fixer": "^3.11",
         "getherbie/plugin-simplecontact": "dev-master",
         "getherbie/plugin-simplesearch": "dev-master",
@@ -73,7 +71,8 @@
         "phpstan/phpstan": "^2.0",
         "slim/psr7": "^1.6",
         "squizlabs/php_codesniffer": "^3.7",
-        "symfony/process": "^6.4"
+        "symfony/process": "^6.4",
+        "league/commonmark": "^2.10"
     },
     "scripts": {
         "test": [
@@ -90,5 +89,7 @@
         "debug:test": "cd tests/_data/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
         "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php"
     },
-    "bin":["herbie"]
+    "bin": [
+        "herbie"
+    ]
 }
