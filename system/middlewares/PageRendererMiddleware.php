@@ -20,7 +20,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 
-final class PageRendererMiddleware implements MiddlewareInterface
+final readonly class PageRendererMiddleware implements MiddlewareInterface
 {
     private CacheInterface $cache;
     private EventManager $eventManager;

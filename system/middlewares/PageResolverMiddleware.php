@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class PageResolverMiddleware implements MiddlewareInterface
+final readonly class PageResolverMiddleware implements MiddlewareInterface
 {
     public const string HERBIE_REQUEST_ATTRIBUTE_PAGE = 'HERBIE_PAGE';
     public const string HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';

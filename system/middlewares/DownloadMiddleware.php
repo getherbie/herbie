@@ -16,7 +16,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function herbie\str_trailing_slash;
 
-final class DownloadMiddleware implements MiddlewareInterface
+final readonly class DownloadMiddleware implements MiddlewareInterface
 {
     private Alias $alias;
     private StreamFactoryInterface $streamFactory;

@@ -16,7 +16,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final class ErrorHandlerMiddleware implements MiddlewareInterface
+final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private ResponseFactoryInterface $responseFactory;
     private TwigRenderer $twigRenderer;

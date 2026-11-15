@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 
-final class ContainerBuilder
+final readonly class ContainerBuilder
 {
     private const string PACKAGE_GUZZLE_HTTP_PSR7 = 'guzzlehttp/psr7';
     private const string PACKAGE_LAMINAS_DIACTOROS = 'laminas/laminas-diactoros';
