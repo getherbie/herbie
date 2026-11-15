@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie;
 
 use herbie\middlewares\CallableMiddleware;
+use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -71,6 +72,13 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     private function getMiddleware(): MiddlewareInterface
     {
         $current = current($this->composedMiddlewares);
+
+        if ($current === false) {
+            throw new LogicException(
+                'The middleware chain is exhausted. The last middleware must create the response '
+                . 'and must not call the handler again.'
+            );
+        }
 
         if (is_string($current)) {
             $current = new $current();

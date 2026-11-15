@@ -4,6 +4,7 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\MiddlewareDispatcher;
+use LogicException;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
@@ -102,6 +103,38 @@ final class MiddlewareDispatcherTest extends Unit
         $dispatcher->handle(new ServerRequest());
 
         $this->assertSame(['callable', 'last'], $calls);
+    }
+
+    public function testMissingTerminalThrowsLogicException(): void
+    {
+        $calls = [];
+        $dispatcher = new MiddlewareDispatcher([$this->createMiddleware('first', $calls)], [], [], [], '');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The middleware chain is exhausted.');
+
+        $dispatcher->handle(new ServerRequest());
+    }
+
+    public function testMissingTerminalThrowsBeforeAnyMiddlewareRuns(): void
+    {
+        $calls = [];
+        $dispatcher = new MiddlewareDispatcher([$this->createMiddleware('first', $calls)], [], [], [], '');
+
+        try {
+            $dispatcher->handle(new ServerRequest());
+        } catch (LogicException $e) {
+            // the first middleware has run, because it calls the handler itself
+            $this->assertSame(['first'], $calls);
+        }
+    }
+
+    public function testEmptyChainThrowsLogicException(): void
+    {
+        $dispatcher = new MiddlewareDispatcher([], [], [], [], '');
+
+        $this->expectException(LogicException::class);
+        $dispatcher->handle(new ServerRequest());
     }
 
     /**
