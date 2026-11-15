@@ -48,8 +48,8 @@ jobs:
       - name: Test code with Codeception
         run: vendor/bin/codecept run
 
-  publish:
-    name: CD - Push to server
+  publish-2x:
+    name: CD - Push 2.x to server
     needs: test
     if: github.ref == 'refs/heads/2.x'
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
 
       - name: Install PHP dependencies
         run: composer install --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
-        
+
       - name: Rename index-prod.php
         run: rm website/web/index.php && mv website/web/index-prod.php website/web/index.php
 
@@ -80,5 +80,40 @@ jobs:
           port: 22
           source: "website"
           target: ${{ secrets.SSH_TARGET }}
+          rm: true
+          strip_components: 1
+
+  publish-3x:
+    name: CD - Push 3.x to server
+    needs: test
+    if: github.ref == 'refs/heads/3.x-develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v3
+
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          ini-values: register_argc_argv=On
+
+      - name: Install PHP dependencies
+        run: composer install --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+      - name: Rename index-prod.php
+        run: rm website/web/index.php && mv website/web/index-prod.php website/web/index.php
+
+      - name: Deploy to server via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST_3X }}
+          username: ${{ secrets.SSH_USERNAME_3X }}
+          password: ${{ secrets.SSH_PASSWORD_3X }}
+          port: 22
+          source: "website"
+          target: ${{ secrets.SSH_TARGET_3X }}
           rm: true
           strip_components: 1
