@@ -14,17 +14,17 @@ use Twig\Error\SyntaxError;
 
 final class CorePlugin extends Plugin
 {
-    private TwigRenderer $twigRenderer;
     private string $layoutFileExtension;
     private bool $enableTwigInLayoutFilter;
     private bool $enableTwigInSegmentFilter;
 
-    public function __construct(Config $config, TwigRenderer $twigRenderer)
-    {
+    public function __construct(
+        Config $config,
+        private TwigRenderer $twigRenderer
+    ) {
         $this->enableTwigInLayoutFilter = $config->getAsBool('plugins.CORE.enableTwigInLayoutFilter');
         $this->enableTwigInSegmentFilter = $config->getAsBool('plugins.CORE.enableTwigInSegmentFilter');
         $this->layoutFileExtension = trim($config->getAsString('fileExtensions.layouts'));
-        $this->twigRenderer = $twigRenderer;
     }
 
     public function consoleCommands(): array

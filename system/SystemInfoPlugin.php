@@ -10,31 +10,17 @@ use Twig\Error\SyntaxError;
 
 final class SystemInfoPlugin extends Plugin
 {
-    private Alias $alias;
-    private Config $config;
-    private EventManager $eventManager;
-    private MiddlewareDispatcher $middlewareDispatcher;
-    private PluginManager $pluginManager;
-    private Translator $translator;
-    private TwigRenderer $twigRenderer;
     private string $appPath;
 
     public function __construct(
-        Alias $alias,
-        Config $config,
-        EventManager $eventManager,
-        MiddlewareDispatcher $middlewareDispatcher,
-        PluginManager $pluginManager,
-        Translator $translator,
-        TwigRenderer $twigRenderer
+        private Alias $alias,
+        private Config $config,
+        private EventManager $eventManager,
+        private MiddlewareDispatcher $middlewareDispatcher,
+        private PluginManager $pluginManager,
+        private Translator $translator,
+        private TwigRenderer $twigRenderer
     ) {
-        $this->alias = $alias;
-        $this->config = $config;
-        $this->eventManager = $eventManager;
-        $this->middlewareDispatcher = $middlewareDispatcher;
-        $this->pluginManager = $pluginManager;
-        $this->translator = $translator;
-        $this->twigRenderer = $twigRenderer;
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
 

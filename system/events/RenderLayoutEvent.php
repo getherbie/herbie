@@ -8,7 +8,7 @@ use herbie\AbstractEvent;
 
 final class RenderLayoutEvent extends AbstractEvent
 {
-    private string $content;
+    private string $content = '';
     private array $segments;
     private string $layout;
 

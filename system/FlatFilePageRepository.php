@@ -6,18 +6,15 @@ namespace herbie;
 
 final class FlatFilePageRepository implements PageRepositoryInterface
 {
-    private PageFactory $pageFactory;
-    private ?PageList $pageList;
-    private PagePersistenceInterface $pagePersistence;
+    private ?PageList $pageList = null;
 
     /**
      * FlatfilePageRepository constructor.
      */
-    public function __construct(PageFactory $pageFactory, PagePersistenceInterface $pagePersistence)
-    {
-        $this->pageFactory = $pageFactory;
-        $this->pageList = null;
-        $this->pagePersistence = $pagePersistence;
+    public function __construct(
+        private PageFactory $pageFactory,
+        private PagePersistenceInterface $pagePersistence
+    ) {
     }
 
     /**

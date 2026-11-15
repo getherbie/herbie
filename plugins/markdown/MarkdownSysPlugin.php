@@ -17,14 +17,15 @@ final class MarkdownSysPlugin extends Plugin
     private const MODE_PARSEDOWN = 1;
     private const MODE_PARSEDOWN_EXTRA = 2;
 
-    private Config $config;
     private int $mode;
 
     /**
      * MarkdownPlugin constructor.
      */
-    public function __construct(Config $config, LoggerInterface $logger)
-    {
+    public function __construct(
+        private Config $config,
+        LoggerInterface $logger
+    ) {
         $this->config = $config->getAsConfig('plugins.markdown');
         if (class_exists('ParsedownExtra')) {
             $this->mode = self::MODE_PARSEDOWN_EXTRA;

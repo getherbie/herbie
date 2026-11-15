@@ -19,27 +19,18 @@ use Twig\TwigTest;
 
 final class TwigRenderer
 {
-    private bool $initialized;
-    private Config $config;
-    private EventManager $eventManager;
+    private bool $initialized = false;
     private TwigEnvironment $twig;
-    private LoggerInterface $logger;
-    private Site $site;
 
     /**
      * TwigRenderer constructor.
      */
     public function __construct(
-        Config $config,
-        EventManager $eventManager,
-        LoggerInterface $logger,
-        Site $site
+        private Config $config,
+        private EventManager $eventManager,
+        private LoggerInterface $logger,
+        private Site $site
     ) {
-        $this->initialized = false;
-        $this->config = $config;
-        $this->eventManager = $eventManager;
-        $this->logger = $logger;
-        $this->site = $site;
     }
 
     /**

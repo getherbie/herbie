@@ -13,17 +13,13 @@ use IteratorAggregate;
  */
 final readonly class PageTrail implements IteratorAggregate, Countable
 {
-    /** @var Page[] */
-    private array $items;
-
     /**
      * PageTrail constructor.
      *
      * @param Page[] $items
      */
-    public function __construct(array $items)
+    public function __construct(private array $items)
     {
-        $this->items = $items;
     }
 
     /** @return \ArrayIterator<int, Page> */

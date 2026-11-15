@@ -13,16 +13,9 @@ final class CallableMiddleware implements MiddlewareInterface
 {
     /**
      * The callable to proxy.
-     * @var callable
      */
-    private $callable;
-
-    /**
-     * Set up a callable middleware proxying the given callable.
-     */
-    public function __construct(callable $callable)
+    public function __construct(private mixed $callable)
     {
-        $this->callable = $callable;
     }
 
     /**

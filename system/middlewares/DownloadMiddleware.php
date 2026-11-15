@@ -21,9 +21,7 @@ final readonly class DownloadMiddleware implements MiddlewareInterface
     private Alias $alias;
     private StreamFactoryInterface $streamFactory;
     private ResponseFactoryInterface $responseFactory;
-
     private string $route;
-
     private string $storagePath;
 
     /**

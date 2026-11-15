@@ -8,8 +8,6 @@ use Symfony\Component\Finder\Finder;
 
 class YamlDataRepository implements DataRepositoryInterface
 {
-    protected string $path;
-
     /** @var string[] */
     protected array $extensions;
 
@@ -17,15 +15,14 @@ class YamlDataRepository implements DataRepositoryInterface
      * YamlDataRepository constructor.
      * @throws SystemException
      */
-    public function __construct(string $path)
+    public function __construct(protected string $path)
     {
-        if (!is_dir($path)) {
-            throw SystemException::directoryNotExist($path);
+        if (!is_dir($this->path)) {
+            throw SystemException::directoryNotExist($this->path);
         }
-        if (!is_readable($path)) {
-            throw SystemException::directoryNotReadable($path);
+        if (!is_readable($this->path)) {
+            throw SystemException::directoryNotReadable($this->path);
         }
-        $this->path = $path;
         $this->extensions = ['yml', 'yaml'];
     }
 

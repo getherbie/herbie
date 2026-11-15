@@ -8,11 +8,8 @@ use herbie\AbstractEvent;
 
 final class LayoutRenderedEvent extends AbstractEvent
 {
-    private string $content;
-
-    public function __construct(string $content)
+    public function __construct(private string $content)
     {
-        $this->content = $content;
     }
 
     public function getContent(): string

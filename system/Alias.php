@@ -9,7 +9,7 @@ use InvalidArgumentException;
 final class Alias
 {
     /** @var array<string, string> */
-    private array $aliases;
+    private array $aliases = [];
 
     /**
      * Alias constructor.
@@ -17,7 +17,6 @@ final class Alias
     /** @param array<string, string> $aliases */
     public function __construct(array $aliases = [])
     {
-        $this->aliases = [];
         foreach ($aliases as $alias => $path) {
             $this->set($alias, $path);
         }

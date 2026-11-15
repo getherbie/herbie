@@ -8,15 +8,11 @@ use herbie\AbstractEvent;
 
 final class ContentRenderedEvent extends AbstractEvent
 {
-    /** @var array<string, string> */
-    private array $segments;
-
     /**
      * @param array<string, string> $segments
      */
-    public function __construct(array $segments)
+    public function __construct(private array $segments)
     {
-        $this->segments = $segments;
     }
 
     /**

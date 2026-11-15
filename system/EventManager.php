@@ -10,11 +10,10 @@ use Psr\EventDispatcher\StoppableEventInterface;
 
 final class EventManager implements EventDispatcherInterface, ListenerProviderInterface
 {
-    private array $listeners;
+    private array $listeners = [];
 
     public function __construct()
     {
-        $this->listeners = [];
     }
 
     public function dispatch(object $event): object

@@ -9,11 +9,8 @@ use herbie\Translator;
 
 final class TranslatorInitializedEvent extends AbstractEvent
 {
-    private Translator $translator;
-
-    public function __construct(Translator $translator)
+    public function __construct(private Translator $translator)
     {
-        $this->translator = $translator;
     }
 
     public function getTranslator(): Translator

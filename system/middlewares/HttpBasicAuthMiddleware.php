@@ -12,18 +12,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class HttpBasicAuthMiddleware implements MiddlewareInterface
 {
-    private ResponseFactoryInterface $responseFactory;
-    private array $users;
-
     /**
      * HttpBasicAuthMiddleware constructor.
      */
     public function __construct(
-        #[\SensitiveParameter] array $users,
-        ResponseFactoryInterface $responseFactory
+        #[\SensitiveParameter] private array $users,
+        private ResponseFactoryInterface $responseFactory
     ) {
-        $this->responseFactory = $responseFactory;
-        $this->users = $users;
     }
 
     #[\Override]

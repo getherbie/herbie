@@ -13,24 +13,16 @@ use IteratorAggregate;
  */
 final class PageList implements IteratorAggregate, Countable
 {
-    /**
-     * @var Page[]
-     */
-    private array $items;
+    private ?PageTrail $pageTrail = null;
 
-    private ?PageTrail $pageTrail;
-
-    private ?PageTree $pageTree;
+    private ?PageTree $pageTree = null;
 
     /**
      * MenuList constructor.
      * @param Page[] $items
      */
-    public function __construct(array $items = [])
+    public function __construct(private array $items = [])
     {
-        $this->items = $items;
-        $this->pageTrail = null;
-        $this->pageTree = null;
     }
 
     public function addItem(Page $item): void

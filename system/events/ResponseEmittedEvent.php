@@ -9,11 +9,8 @@ use herbie\Application;
 
 final class ResponseEmittedEvent extends AbstractEvent
 {
-    private Application $application;
-
-    public function __construct(Application $application)
+    public function __construct(private Application $application)
     {
-        $this->application = $application;
     }
 
     public function getApplication(): Application

@@ -18,16 +18,13 @@ use Twig\Error\SyntaxError;
 
 final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private ResponseFactoryInterface $responseFactory;
-    private TwigRenderer $twigRenderer;
-
     /**
      * ErrorHandlerMiddleware constructor.
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, TwigRenderer $twigRenderer)
-    {
-        $this->responseFactory = $responseFactory;
-        $this->twigRenderer = $twigRenderer;
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private TwigRenderer $twigRenderer
+    ) {
     }
 
     /**

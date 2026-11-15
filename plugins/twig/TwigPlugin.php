@@ -16,30 +16,15 @@ use herbie\UrlManager;
 
 final class TwigPlugin extends Plugin
 {
-    private Alias $alias;
-    private Assets $assets;
-    private Config $config;
-    private PageRepositoryInterface $pageRepository;
-    private SlugGenerator $slugGenerator;
-    private Translator $translator;
-    private UrlManager $urlManager;
-
     public function __construct(
-        Alias $alias,
-        Assets $assets,
-        Config $config,
-        PageRepositoryInterface $pageRepository,
-        SlugGenerator $slugGenerator,
-        Translator $translator,
-        UrlManager $urlManager
+        private Alias $alias,
+        private Assets $assets,
+        private Config $config,
+        private PageRepositoryInterface $pageRepository,
+        private SlugGenerator $slugGenerator,
+        private Translator $translator,
+        private UrlManager $urlManager
     ) {
-        $this->alias = $alias;
-        $this->assets = $assets;
-        $this->config = $config;
-        $this->pageRepository = $pageRepository;
-        $this->slugGenerator = $slugGenerator;
-        $this->translator = $translator;
-        $this->urlManager = $urlManager;
     }
 
     public function eventListeners(): array

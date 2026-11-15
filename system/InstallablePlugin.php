@@ -6,21 +6,16 @@ use Psr\Container\ContainerInterface;
 
 final readonly class InstallablePlugin
 {
-    private string $key;
-    private string $path;
-    /** @var class-string<PluginInterface> */
-    private string $className; // as fully-qualified class name
-    private string $type;
-
     /**
      * @param class-string<PluginInterface> $className
      */
-    public function __construct(string $key, string $path, string $className, string $type)
-    {
-        $this->key = $key;
-        $this->path = $path;
-        $this->className = $className;
-        $this->type = $type;
+    public function __construct(
+        private string $key,
+        private string $path,
+        /** @var class-string<PluginInterface> */
+        private string $className,
+        private string $type
+    ) {
     }
 
     public function getKey(): string

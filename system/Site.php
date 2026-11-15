@@ -11,24 +11,15 @@ use InvalidArgumentException;
  */
 final readonly class Site
 {
-    private Config $config;
-    private DataRepositoryInterface $dataRepository;
-    private PageRepositoryInterface $pageRepository;
-    private UrlManager $urlManager;
-
     /**
      * Site constructor.
      */
     public function __construct(
-        Config $config,
-        DataRepositoryInterface $dataRepository,
-        PageRepositoryInterface $pageRepository,
-        UrlManager $urlManager
+        private Config $config,
+        private DataRepositoryInterface $dataRepository,
+        private PageRepositoryInterface $pageRepository,
+        private UrlManager $urlManager
     ) {
-        $this->config = $config;
-        $this->dataRepository = $dataRepository;
-        $this->pageRepository = $pageRepository;
-        $this->urlManager = $urlManager;
     }
 
     public function getTime(): string

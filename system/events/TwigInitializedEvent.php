@@ -9,11 +9,8 @@ use Twig\Environment;
 
 final class TwigInitializedEvent extends AbstractEvent
 {
-    private Environment $environment;
-
-    public function __construct(Environment $environment)
+    public function __construct(private Environment $environment)
     {
-        $this->environment = $environment;
     }
 
     public function getEnvironment(): Environment

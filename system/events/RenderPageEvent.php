@@ -9,15 +9,11 @@ use herbie\Page;
 
 final class RenderPageEvent extends AbstractEvent
 {
-    private Page $page;
-    private string $route;
-    private array $routeParams;
-
-    public function __construct(Page $page, string $route, array $routeParams)
-    {
-        $this->page = $page;
-        $this->route = $route;
-        $this->routeParams = $routeParams;
+    public function __construct(
+        private Page $page,
+        private string $route,
+        private array $routeParams
+    ) {
     }
 
     public function getPage(): Page

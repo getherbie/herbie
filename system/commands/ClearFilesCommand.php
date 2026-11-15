@@ -15,11 +15,8 @@ final class ClearFilesCommand extends Command
 {
     protected static $defaultName = 'clear-files';
     protected static $defaultDescription = 'Clears asset, cache and log files';
-    private Config $config;
-
-    public function __construct(Config $config)
+    public function __construct(private Config $config)
     {
-        $this->config = $config;
         parent::__construct();
     }
 

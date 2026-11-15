@@ -11,11 +11,8 @@ use Twig\TwigTest;
 
 final class LocalExtensionsPlugin extends Plugin
 {
-    protected Config $config;
-
-    public function __construct(Config $config)
+    public function __construct(protected Config $config)
     {
-        $this->config = $config;
     }
 
     public function consoleCommands(): array

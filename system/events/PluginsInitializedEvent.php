@@ -9,10 +9,14 @@ use herbie\InstallablePlugin;
 
 final class PluginsInitializedEvent extends AbstractEvent
 {
-    /** @var array<string, InstallablePlugin> */
+    /**
+     * @var array<string, InstallablePlugin>
+     */
     private array $loadedPlugins;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     private array $pluginPaths;
 
     /**

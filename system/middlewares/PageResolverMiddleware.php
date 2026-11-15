@@ -17,18 +17,13 @@ final readonly class PageResolverMiddleware implements MiddlewareInterface
     public const string HERBIE_REQUEST_ATTRIBUTE_ROUTE = 'HERBIE_ROUTE';
     public const string HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS = 'HERBIE_ROUTE_PARAMS';
 
-    private PageRepositoryInterface $pageRepository;
-    private UrlManager $urlManager;
-
     /**
      * PageResolverMiddleware constructor.
      */
     public function __construct(
-        PageRepositoryInterface $pageRepository,
-        UrlManager $urlManager
+        private PageRepositoryInterface $pageRepository,
+        private UrlManager $urlManager
     ) {
-        $this->pageRepository = $pageRepository;
-        $this->urlManager = $urlManager;
     }
 
     #[\Override]

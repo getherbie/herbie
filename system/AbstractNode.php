@@ -13,14 +13,14 @@ abstract class AbstractNode implements IteratorAggregate
     /**
      * @var mixed
      */
-    private $value;
+    private mixed $value;
 
-    private ?AbstractNode $parent;
+    private ?AbstractNode $parent = null;
 
     /**
      * @var AbstractNode[]
      */
-    private array $children;
+    private array $children = [];
 
     /**
      * @param mixed $value
@@ -28,8 +28,6 @@ abstract class AbstractNode implements IteratorAggregate
     public function __construct($value = null)
     {
         $this->value = $value;
-        $this->parent = null;
-        $this->children = [];
     }
 
     /** @return \ArrayIterator<int, AbstractNode> */
