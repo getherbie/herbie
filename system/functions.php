@@ -78,7 +78,7 @@ function render_exception(Throwable $exception): string
             $exception->getFile(),
             $exception->getLine(),
             $exception->getMessage(),
-            strip_tags($exception->getTraceAsString())
+            strip_tags($exception->getTraceAsString()),
         );
 
         // remove path
@@ -132,7 +132,7 @@ function load_plugin_config(string $path, string $pluginLocation, ?callable $pro
 {
     $config = array_merge(
         ['location' => $pluginLocation],
-        load_php_config($path, $processor)
+        load_php_config($path, $processor),
     );
     if (!isset($config['apiVersion'])) {
         throw new UnexpectedValueException(sprintf('Required config "apiVersion" is missing in %s', $path));
@@ -239,7 +239,7 @@ function handle_internal_webserver_assets(string $file): void
         'jpeg' => 'image/jpeg',
         'js' => 'text/javascript',
         'png' => 'image/png',
-        'svg' => 'image/svg+xml'
+        'svg' => 'image/svg+xml',
     ];
 
     $extensions = implode('|', array_keys($mimeTypes));
@@ -278,7 +278,7 @@ function handle_internal_webserver_assets(string $file): void
 function di_constructor_params_from_container(
     string $pluginClassName,
     ContainerInterface $container,
-    array $whitelist = []
+    array $whitelist = [],
 ): array {
     $reflectedClass = new ReflectionClass($pluginClassName);
     $constructor = $reflectedClass->getConstructor();
@@ -328,7 +328,7 @@ function di_class_whitelist(): array
         StreamFactoryInterface::class,
         Translator::class,
         TwigRenderer::class,
-        UrlManager::class
+        UrlManager::class,
     ];
 }
 

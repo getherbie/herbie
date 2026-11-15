@@ -93,7 +93,7 @@ final class DownloadMiddlewareTest extends Unit
             new Alias(['@storage' => $this->storage]),
             new StreamFactory(),
             new ResponseFactory(),
-            ['route' => 'download', 'storagePath' => '@storage']
+            ['route' => 'download', 'storagePath' => '@storage'],
         );
     }
 
@@ -101,7 +101,7 @@ final class DownloadMiddlewareTest extends Unit
     {
         return (new ServerRequest())->withAttribute(
             PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE,
-            $route
+            $route,
         );
     }
 

@@ -23,9 +23,8 @@ final class TwigPlugin extends Plugin
         private PageRepositoryInterface $pageRepository,
         private SlugGenerator $slugGenerator,
         private Translator $translator,
-        private UrlManager $urlManager
-    ) {
-    }
+        private UrlManager $urlManager,
+    ) {}
 
     public function eventListeners(): array
     {
@@ -45,8 +44,8 @@ final class TwigPlugin extends Plugin
                 $this->pageRepository,
                 $this->slugGenerator,
                 $this->translator,
-                $this->urlManager
-            )
+                $this->urlManager,
+            ),
         );
     }
 }

@@ -8,5 +8,5 @@ return [
     'pluginClass' => RestSysPlugin::class,
     'pluginPath' => __DIR__,
     'enableTwigFilter' => true,
-    'enableTwigFunction' => true
+    'enableTwigFunction' => true,
 ];

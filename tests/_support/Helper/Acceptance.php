@@ -17,7 +17,7 @@ class Acceptance extends Module
         $this->assertStringContainsString(
             $text,
             $this->getModule('PhpBrowser')->_getResponseContent(),
-            'response contains'
+            'response contains',
         );
     }
 }

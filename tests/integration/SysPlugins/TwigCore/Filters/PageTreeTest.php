@@ -39,8 +39,8 @@ final class PageTreeTest extends Unit
                 dirname(__DIR__, 5),
                 dirname(__DIR__, 3) . '/Fixtures/site',
                 dirname(__DIR__, 5) . '/vendor',
-                dirname(__DIR__, 4) . '/_data/web'
-            )
+                dirname(__DIR__, 4) . '/_data/web',
+            ),
         );
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();

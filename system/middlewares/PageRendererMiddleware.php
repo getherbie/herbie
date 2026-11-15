@@ -37,7 +37,7 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
         EventManager $eventManager,
         ResponseFactoryInterface $responseFactory,
         UrlManager $urlManager,
-        array $options = []
+        array $options = [],
     ) {
         $this->cache = $cache;
         $this->eventManager = $eventManager;
@@ -89,7 +89,7 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
             foreach ($page->getSegments() as $segmentId => $segment) {
                 /** @var RenderSegmentEvent $event */
                 $event = $this->eventManager->dispatch(
-                    new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager)
+                    new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager),
                 );
                 $renderedSegment = $event->getSegment();
                 $segments[$segmentId] = $renderedSegment;

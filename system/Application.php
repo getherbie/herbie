@@ -51,7 +51,7 @@ final class Application
     public function __construct(
         ApplicationPaths $paths,
         ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
     ) {
         #register_shutdown_function(new FatalErrorHandler());
         set_exception_handler(new UncaughtExceptionHandler());

@@ -12,9 +12,8 @@ final class RenderPageEvent extends AbstractEvent
     public function __construct(
         private Page $page,
         private string $route,
-        private array $routeParams
-    ) {
-    }
+        private array $routeParams,
+    ) {}
 
     public function getPage(): Page
     {

@@ -30,12 +30,12 @@ final class ConfigTest extends Unit
                     'four' => [
                         'array' => [true, 4, 3.5, ['a', 'b', 'c'], 'true'],
                         'five' => [
-                            'string' => 'no'
-                        ]
-                    ]
-                ]
-            ]
-        ]
+                            'string' => 'no',
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ];
 
     public function testGetAsBool()

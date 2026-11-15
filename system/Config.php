@@ -12,9 +12,7 @@ final readonly class Config
 {
     private const string DELIM = '.';
     /** @param array<string, mixed> $data */
-    public function __construct(private array $data)
-    {
-    }
+    public function __construct(private array $data) {}
 
     /**
      * @return array<int|string, mixed>
@@ -119,7 +117,7 @@ final readonly class Config
     public function flatten(): array
     {
         $recItIt = new RecursiveIteratorIterator(
-            new RecursiveArrayIterator($this->data)
+            new RecursiveArrayIterator($this->data),
         );
         $flatten = [];
         foreach ($recItIt as $leafValue) {

@@ -5,17 +5,17 @@ return [
     'locale' => 'de_DE',
     'theme' => 'default',
     'fileExtensions' => [
-        'layouts' => 'twig'
+        'layouts' => 'twig',
     ],
     'components' => [
         'fileCache' => null,
         'fileLogger' => null,
         'twigRenderer' => [
-            'debug' => true
+            'debug' => true,
         ],
         'urlManager' => [
             'niceUrls' => false,
-        ]
+        ],
     ],
     'enabledPlugins' => '',
     'enabledSysPlugins' => 'twig,markdown,rest,textile,imagine,dummy',

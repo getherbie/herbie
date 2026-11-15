@@ -60,14 +60,14 @@ final readonly class ContainerBuilder
                 '@sysplugin' => Application::getHerbiePath('/plugins'),
                 '@vendor' => $this->app->getVendorPath(),
                 '@web' => $paths['web'],
-                '@snippet' => $paths['app'] . '/templates/snippets'
+                '@snippet' => $paths['app'] . '/templates/snippets',
             ]);
         });
 
         $c->set(Assets::class, function (ContainerInterface $c) {
             return new Assets(
                 $c->get(Alias::class),
-                $this->app->getBaseUrl()
+                $this->app->getBaseUrl(),
             );
         });
 
@@ -78,7 +78,7 @@ final readonly class ContainerBuilder
                 $config = $c->get(Config::class)->getAsArray('components.fileCache');
                 if (isset($config['path'])) {
                     return new FileCache(
-                        $c->get(Alias::class)->get($config['path'])
+                        $c->get(Alias::class)->get($config['path']),
                     );
                 }
                 return new NullCache();
@@ -90,7 +90,7 @@ final readonly class ContainerBuilder
                 'APP_PATH' => str_untrailing_slash($this->app->getApplicationPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
                 'WEB_PATH' => str_untrailing_slash($this->app->getWebPath()),
-                'WEB_URL' => str_untrailing_slash($this->app->getBaseUrl())
+                'WEB_URL' => str_untrailing_slash($this->app->getBaseUrl()),
             ];
 
             $processor = function (array $data) use ($const) {
@@ -124,7 +124,7 @@ final readonly class ContainerBuilder
                 $systemPluginConfigs,
                 $composerPluginConfigs,
                 $localPluginConfigs,
-                $userConfig['plugins'] ?? []
+                $userConfig['plugins'] ?? [],
             );
 
             $allConfig = array_replace_recursive($defaultConfig, $userConfig);
@@ -155,7 +155,7 @@ final readonly class ContainerBuilder
                 $c->get(PageRepositoryInterface::class),
                 $c->get(ResponseFactoryInterface::class),
                 $c->get(TwigRenderer::class),
-                $c->get(UrlManager::class)
+                $c->get(UrlManager::class),
             );
         });
 
@@ -167,7 +167,7 @@ final readonly class ContainerBuilder
             $config = $c->get(Config::class);
             return new Finder([
                 'extensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
-                'path' => $config->getAsString('paths.pages')
+                'path' => $config->getAsString('paths.pages'),
             ]);
         });
 
@@ -180,7 +180,7 @@ final readonly class ContainerBuilder
                     return new FileLogger(
                         $c->get(Alias::class)->get($config['path']),
                         $config['channel'],
-                        $config['level']
+                        $config['level'],
                     );
                 }
                 return new NullLogger();
@@ -199,7 +199,7 @@ final readonly class ContainerBuilder
                     $c->get(DownloadMiddleware::class),
                     $c->get(PageRendererMiddleware::class),
                 ],
-                $c->get(UrlManager::class)->parseRequest()[0]
+                $c->get(UrlManager::class)->parseRequest()[0],
             );
         });
 
@@ -213,7 +213,7 @@ final readonly class ContainerBuilder
                 $c->get(Alias::class),
                 $c->get(CacheInterface::class),
                 $c->get(Finder::class),
-                $options
+                $options,
             );
         });
 
@@ -224,21 +224,21 @@ final readonly class ContainerBuilder
                 $c->get(EventManager::class),
                 $c->get(ResponseFactoryInterface::class),
                 $c->get(UrlManager::class),
-                $options
+                $options,
             );
         });
 
         $c->set(PageRepositoryInterface::class, function (ContainerInterface $c) {
             return new FlatFilePageRepository(
                 $c->get(PageFactory::class),
-                $c->get(PagePersistenceInterface::class)
+                $c->get(PagePersistenceInterface::class),
             );
         });
 
         $c->set(PageResolverMiddleware::class, function (ContainerInterface $c) {
             return new PageResolverMiddleware(
                 $c->get(PageRepositoryInterface::class),
-                $c->get(UrlManager::class)
+                $c->get(UrlManager::class),
             );
         });
 
@@ -248,7 +248,7 @@ final readonly class ContainerBuilder
                 $c->get(EventManager::class),
                 $c->get(Translator::class),
                 $c->get(LoggerInterface::class),
-                $c // needed for DI in plugins
+                $c, // needed for DI in plugins
             );
         });
 
@@ -302,7 +302,7 @@ final readonly class ContainerBuilder
                     $serverRequestFactory,
                     $serverRequestFactory,
                     $serverRequestFactory,
-                    $serverRequestFactory
+                    $serverRequestFactory,
                 ))->fromGlobals();
             }
             /** @var \Slim\Psr7\Factory\ServerRequestFactory $serverRequestFactory */
@@ -336,7 +336,7 @@ final readonly class ContainerBuilder
         $c->set(SlugGenerator::class, function (ContainerInterface $c) {
             $options = [
                 'locale' => $c->get(Config::class)->get('language'),
-                'delimiter' => '-'
+                'delimiter' => '-',
             ];
             return new SlugGenerator($options);
         });
@@ -362,7 +362,7 @@ final readonly class ContainerBuilder
             $config['scriptUrl'] = $this->app->getScriptUrl();
             return new UrlManager(
                 $c->get(ServerRequestInterface::class),
-                $config
+                $config,
             );
         });
 

@@ -16,7 +16,7 @@ final class PageLinkFunctionTest extends Unit
     {
         $this->assertEquals(
             '<span class="link link--page"><a href="/route" class="link__label">label</a></span>',
-            $this->twig()->renderString('{{ link_page("route", "label") }}')
+            $this->twig()->renderString('{{ link_page("route", "label") }}'),
         );
     }
 
@@ -24,7 +24,7 @@ final class PageLinkFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 

@@ -64,7 +64,7 @@ final class MarkdownSysPlugin extends ParserSysPlugin
                 $markdown = $protector->protect($text);
                 $html = $this->getConverter()->convert($markdown)->getContent();
                 return trim($protector->restore($html));
-            }
+            },
         );
     }
 

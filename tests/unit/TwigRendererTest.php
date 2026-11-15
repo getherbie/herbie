@@ -106,7 +106,7 @@ final class TwigRendererTest extends Unit
 
         $this->assertSame(
             '&lt;script&gt;alert(1)&lt;/script&gt;',
-            $renderer->renderString('{{ value }}', ['value' => '<script>alert(1)</script>'])
+            $renderer->renderString('{{ value }}', ['value' => '<script>alert(1)</script>']),
         );
     }
 
@@ -177,9 +177,7 @@ final class TwigRendererTest extends Unit
         ]);
 
         $dataRepository = new class ($sitePath) implements DataRepositoryInterface {
-            public function __construct(string $path)
-            {
-            }
+            public function __construct(string $path) {}
 
             public function load(string $name): array
             {

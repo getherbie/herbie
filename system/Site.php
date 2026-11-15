@@ -18,9 +18,8 @@ final readonly class Site
         private Config $config,
         private DataRepositoryInterface $dataRepository,
         private PageRepositoryInterface $pageRepository,
-        private UrlManager $urlManager
-    ) {
-    }
+        private UrlManager $urlManager,
+    ) {}
 
     public function getTime(): string
     {

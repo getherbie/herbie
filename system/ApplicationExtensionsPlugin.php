@@ -6,9 +6,7 @@ namespace herbie;
 
 final class ApplicationExtensionsPlugin extends Plugin
 {
-    public function __construct(private Application $application)
-    {
-    }
+    public function __construct(private Application $application) {}
 
     public function consoleCommands(): array
     {

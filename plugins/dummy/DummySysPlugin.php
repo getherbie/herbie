@@ -65,7 +65,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'appMiddleware']
+            [$this, 'appMiddleware'],
         ];
     }
 
@@ -74,7 +74,7 @@ final class DummySysPlugin implements PluginInterface
         $this->logger->debug(__METHOD__);
         return [
             ['download/dummy.pdf', [$this, 'routeMiddleware']],
-            ['plugins/dummy', [$this, 'routeMiddleware']]
+            ['plugins/dummy', [$this, 'routeMiddleware']],
         ];
     }
 
@@ -82,14 +82,14 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFilter']]
+            ['dummy', [$this, 'twigDummyFilter']],
         ];
     }
 
     public function twigGlobals(): array
     {
         return [
-            ['dummy', $this]
+            ['dummy', $this],
         ];
     }
 
@@ -97,7 +97,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFunction']]
+            ['dummy', [$this, 'twigDummyFunction']],
         ];
     }
 
@@ -105,7 +105,7 @@ final class DummySysPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyTest']]
+            ['dummy', [$this, 'twigDummyTest']],
         ];
     }
 
@@ -174,7 +174,7 @@ final class DummySysPlugin implements PluginInterface
         $event->getEnvironment()->addFilter(
             new TwigFilter('dummy_dynamic', function (string $content): string {
                 return $content . 'Dummy Filter Dynamic';
-            })
+            }),
         );
     }
 
@@ -191,7 +191,7 @@ final class DummySysPlugin implements PluginInterface
         $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-app-middleware', __METHOD__) . '</body>',
-            (string)$response->getBody()
+            (string)$response->getBody(),
         );
 
         $response->getBody()->rewind();
@@ -212,7 +212,7 @@ final class DummySysPlugin implements PluginInterface
         $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy-plugin-route-middleware', __METHOD__) . '</body>',
-            (string)$response->getBody()
+            (string)$response->getBody(),
         );
 
         $response->getBody()->rewind();

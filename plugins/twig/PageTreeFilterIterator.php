@@ -32,7 +32,7 @@ final class PageTreeFilterIterator extends RecursiveFilterIterator
     {
         return new self(
             $this->getInnerIterator()->getChildren(), // @phpstan-ignore-line
-            $this->enableFilter
+            $this->enableFilter,
         );
     }
 }

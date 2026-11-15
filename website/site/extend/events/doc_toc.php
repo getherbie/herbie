@@ -34,7 +34,7 @@ $renderSegmentEvent = function (RenderSegmentEvent $event) {
         $url = $urlManager->createUrl($page->getRoute());
         $replace[] = [
             $matches[0][$index],
-            '<h' . $matches[1][$index] . ' id="' . $id . '">' . $matches[2][$index] . '</h' . $matches[1][$index] . '>'
+            '<h' . $matches[1][$index] . ' id="' . $id . '">' . $matches[2][$index] . '</h' . $matches[1][$index] . '>',
         ];
         $links[] = sprintf('<li><a href="%s#%s">%s</a></li>', $url, $id, $matches[2][$index]);
     }
@@ -50,7 +50,7 @@ $renderSegmentEvent = function (RenderSegmentEvent $event) {
         . '<div class="toc-title">On this page</div>'
         . '<ul class="toc-links">' . join('', $links) . '</ul>'
         . '</div>',
-        $segment
+        $segment,
     );
 
     $event->setSegment($segment);

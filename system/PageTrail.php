@@ -18,9 +18,7 @@ final readonly class PageTrail implements IteratorAggregate, Countable
      *
      * @param Page[] $items
      */
-    public function __construct(private array $items)
-    {
-    }
+    public function __construct(private array $items) {}
 
     /** @return \ArrayIterator<int, Page> */
     public function getIterator(): ArrayIterator

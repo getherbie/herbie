@@ -7,25 +7,25 @@ return [
     'locale' => 'en_EN',
     'theme' => 'default',
     'fileExtensions' => [
-        'layouts' => 'twig'
+        'layouts' => 'twig',
     ],
     'enabledPlugins' => 'simplesearch,simplecontact',
     'enabledSysPlugins' => 'twig,imagine,markdown',
     'components' => [
         'dataRepository' => [
-            'adapter' => 'yaml'
+            'adapter' => 'yaml',
         ],
         'fileLogger' => [
             'level' => $isProduction ? 'error' : 'debug',
         ],
         'flatFilePagePersistence' => [
-            'cache' => $isProduction
+            'cache' => $isProduction,
         ],
         'pageRendererMiddleware' => [
-            'cache' => $isProduction
+            'cache' => $isProduction,
         ],
         'twigRenderer' => [
-            'debug' => !$isProduction
+            'debug' => !$isProduction,
         ],
         'urlManager' => [
             'niceUrls' => $isProduction,
@@ -46,19 +46,19 @@ return [
                 ['blog/{year}', 'blog', [
                     'year' => '[0-9]{4}'
                 ]]*/
-            ]
-        ]
+            ],
+        ],
     ],
     'plugins' => [
         'simplecontact' => [
             'config' => [
-                'recipient' => 'me+herbie@tebe.ch'
-            ]
+                'recipient' => 'me+herbie@tebe.ch',
+            ],
         ],
         'simplesearch' => [
             'config' => [
-                'usePageCache' => $isProduction
-            ]
+                'usePageCache' => $isProduction,
+            ],
         ],
-    ]
+    ],
 ];

@@ -40,14 +40,14 @@ return [
             $markup .= sprintf(
                 '<div class="gc-entry-title"><a href="%s">%s</a></div>',
                 $entry->link['href'],
-                $entry->title
+                $entry->title,
             );
             $markup .= '<div class="gc-entry-text">';
             $markup .= sprintf(
                 '<span class="gc-entry-date">%s</span> by <a class="gc-entry-author" href="%s">%s</a>',
                 date('d.m.Y', strtotime((string)$entry->updated)),
                 $entry->author->uri,
-                $entry->author->name
+                $entry->author->name,
             );
             $markup .= '</div>';
             $markup .= '</div>';
@@ -58,5 +58,5 @@ return [
         $markup .= '</div>';
         return $markup;
     },
-    ['is_safe' => ['all']]
+    ['is_safe' => ['all']],
 ];

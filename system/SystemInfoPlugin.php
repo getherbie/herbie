@@ -22,7 +22,7 @@ final class SystemInfoPlugin extends Plugin
         private MiddlewareDispatcher $middlewareDispatcher,
         private PluginManager $pluginManager,
         private Translator $translator,
-        private TwigRenderer $twigRenderer
+        private TwigRenderer $twigRenderer,
     ) {
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
@@ -123,7 +123,7 @@ final class SystemInfoPlugin extends Plugin
             $configs[] = [
                 $key,
                 get_type($value),
-                $this->filterValue($value)
+                $this->filterValue($value),
             ];
         }
         return $configs;
@@ -140,7 +140,7 @@ final class SystemInfoPlugin extends Plugin
                 foreach ($events as $event) {
                     $items[] = array_merge(
                         [$eventName, (string)$priority],
-                        $this->getCallableName($event)
+                        $this->getCallableName($event),
                     );
                 }
             }
@@ -181,7 +181,7 @@ final class SystemInfoPlugin extends Plugin
             $plugins[] = [
                 $plugin->getKey(),
                 $plugin->getType(),
-                $plugin->getClassName()
+                $plugin->getClassName(),
             ];
         }
         return $plugins;
@@ -235,7 +235,7 @@ final class SystemInfoPlugin extends Plugin
             $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                ...$this->getCallableName($callable)
+                ...$this->getCallableName($callable),
             ];
         }
         return $items;
@@ -251,7 +251,7 @@ final class SystemInfoPlugin extends Plugin
             $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                ...$this->getCallableName($callable)
+                ...$this->getCallableName($callable),
             ];
         }
         return $items;
@@ -267,7 +267,7 @@ final class SystemInfoPlugin extends Plugin
             $callable = $f->getCallable() ?? $f->getName();
             $items[] = [
                 $f->getName(),
-                ...$this->getCallableName($callable)
+                ...$this->getCallableName($callable),
             ];
         }
         return $items;
@@ -322,7 +322,7 @@ final class SystemInfoPlugin extends Plugin
                     $method = $callable[1];
                 } else {
                     /** @phpstan-ignore-next-line */
-                    $method = (string) $callable[1];
+                    $method = (string)$callable[1];
                 }
                 return ['method', get_class($callable[0]) . '->' . $method];
             case is_array($callable):
@@ -330,7 +330,7 @@ final class SystemInfoPlugin extends Plugin
                     $method = $callable[1];
                 } else {
                     /** @phpstan-ignore-next-line */
-                    $method = (string) $callable[1];
+                    $method = (string)$callable[1];
                 }
                 return ['static', $callable[0] . '::' . $method];
             case $callable instanceof Closure:

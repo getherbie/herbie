@@ -57,7 +57,7 @@ final class TranslatorTest extends Unit
 
         $this->assertSame(
             'Guten Tag, Ada!',
-            $translator->t('fixture', 'Greeting', ['name' => 'Ada'])
+            $translator->t('fixture', 'Greeting', ['name' => 'Ada']),
         );
     }
 
@@ -67,7 +67,7 @@ final class TranslatorTest extends Unit
 
         $this->assertSame(
             'Hello Ada',
-            $translator->t('test', 'Hello {name}', ['name' => 'Ada'])
+            $translator->t('test', 'Hello {name}', ['name' => 'Ada']),
         );
     }
 
@@ -77,7 +77,7 @@ final class TranslatorTest extends Unit
 
         $this->assertSame(
             'Hello {name}',
-            $translator->t('test', 'Hello {name}', ['other' => 'value'])
+            $translator->t('test', 'Hello {name}', ['other' => 'value']),
         );
     }
 

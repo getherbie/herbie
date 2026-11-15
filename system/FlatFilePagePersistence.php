@@ -31,7 +31,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         Alias $alias,
         CacheInterface $cache,
         Finder $finder,
-        array $options = []
+        array $options = [],
     ) {
         $this->alias = $alias;
         $this->cache = $cache;
@@ -125,7 +125,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
         return [
             'data' => $data,
-            'segments' => $segments
+            'segments' => $segments,
         ];
     }
 

@@ -37,8 +37,8 @@ $_ENV['HERBIE_DEBUG'] = '1';
 $app = new Application(
     new ApplicationPaths(
         dirname(__DIR__),
-        dirname(__DIR__) . '/site'
-    )
+        dirname(__DIR__) . '/site',
+    ),
 );
 
 $app->addConsoleCommand(CustomCommand::class);
@@ -83,7 +83,7 @@ $app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEve
     $event->getEnvironment()->addFilter(
         new TwigFilter('my_filter', function (string $content): string {
             return $content . ' My Filter';
-        })
+        }),
     );
 });
 

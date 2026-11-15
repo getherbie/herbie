@@ -43,7 +43,7 @@ final class PluginManagerTest extends Unit
             new EventManager(),
             new Translator('de'),
             new NullLogger(),
-            $this->createContainer()
+            $this->createContainer(),
         );
     }
 

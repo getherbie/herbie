@@ -34,7 +34,7 @@ final class MiddlewareDispatcherTest extends Unit
             [$this->createMiddleware('app', $calls)],
             [],
             [$this->createMiddleware('append', $calls), $this->createTerminal()],
-            ''
+            '',
         );
 
         $dispatcher->handle(new ServerRequest());
@@ -50,7 +50,7 @@ final class MiddlewareDispatcherTest extends Unit
             [$this->createMiddleware('app', $calls)],
             [['^admin', $this->createMiddleware('route-admin', $calls)]],
             [$this->createTerminal()],
-            'admin/settings'
+            'admin/settings',
         );
 
         $dispatcher->handle(new ServerRequest());
@@ -66,7 +66,7 @@ final class MiddlewareDispatcherTest extends Unit
             [$this->createMiddleware('app', $calls)],
             [['^admin', $this->createMiddleware('route-admin', $calls)]],
             [$this->createTerminal()],
-            'blog'
+            'blog',
         );
 
         $dispatcher->handle(new ServerRequest());
@@ -97,7 +97,7 @@ final class MiddlewareDispatcherTest extends Unit
             [],
             [],
             [],
-            ''
+            '',
         );
 
         $dispatcher->handle(new ServerRequest());
@@ -157,9 +157,7 @@ final class MiddlewareDispatcherTest extends Unit
     {
         return new class ($name, $calls) implements MiddlewareInterface {
             /** @param array<int, string> $calls */
-            public function __construct(private string $name, private array &$calls)
-            {
-            }
+            public function __construct(private string $name, private array &$calls) {}
 
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {

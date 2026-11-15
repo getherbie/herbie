@@ -22,9 +22,8 @@ final readonly class PageResolverMiddleware implements MiddlewareInterface
      */
     public function __construct(
         private PageRepositoryInterface $pageRepository,
-        private UrlManager $urlManager
-    ) {
-    }
+        private UrlManager $urlManager,
+    ) {}
 
     #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

@@ -40,14 +40,14 @@ final class ImagineSysPlugin extends Plugin
     public function twigFilters(): array
     {
         return [
-            ['imagine', [$this, 'imagineFilter']]
+            ['imagine', [$this, 'imagineFilter']],
         ];
     }
 
     public function twigFunctions(): array
     {
         return [
-            ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]]
+            ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]],
         ];
     }
 
@@ -62,7 +62,7 @@ final class ImagineSysPlugin extends Plugin
             return sprintf(
                 '<img src="%s"%s>',
                 $this->getTransparentOnePixelSrc(),
-                $this->buildHtmlAttributes($attribs)
+                $this->buildHtmlAttributes($attribs),
             );
         }
 
@@ -85,7 +85,7 @@ final class ImagineSysPlugin extends Plugin
         return sprintf(
             '<img src="%s"%s>',
             $this->basePath . $cachePath,
-            $this->buildHtmlAttributes($attribs)
+            $this->buildHtmlAttributes($attribs),
         );
     }
 
@@ -176,7 +176,7 @@ final class ImagineSysPlugin extends Plugin
             $info['filename'],
             $filter,
             $dot,
-            $extension
+            $extension,
         );
     }
 
@@ -208,7 +208,7 @@ final class ImagineSysPlugin extends Plugin
 
         return new Markup(
             $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
-            'utf8'
+            'utf8',
         );
     }
 

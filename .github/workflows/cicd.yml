@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Check code style with PHP-CS-Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
       - name: Analyse code with PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
 

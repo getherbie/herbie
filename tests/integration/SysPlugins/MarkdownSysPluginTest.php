@@ -19,7 +19,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $this->assertSame(
             '<h1>This is markdown</h1>',
-            $this->app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}')
+            $this->app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}'),
         );
     }
 
@@ -27,7 +27,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $app = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/markdown'
+            dirname(__DIR__) . '/Fixtures/markdown',
         );
         $this->expectException(RuntimeError::class);
         $app->getTwigRenderer()->renderString('{{ "# This is markdown"|markdown }}');
@@ -37,7 +37,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $this->assertSame(
             '<h1>This is markdown</h1>',
-            $this->app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}')
+            $this->app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}'),
         );
     }
 
@@ -45,7 +45,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $app = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/markdown'
+            dirname(__DIR__) . '/Fixtures/markdown',
         );
         $this->expectException(RuntimeError::class);
         $app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}');
@@ -55,7 +55,7 @@ final class MarkdownSysPluginTest extends Unit
     {
         $this->app = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/site'
+            dirname(__DIR__) . '/Fixtures/site',
         );
     }
 
@@ -65,7 +65,7 @@ final class MarkdownSysPluginTest extends Unit
             $appPath,
             $sitePath,
             dirname(__DIR__, 4) . '/vendor',
-            dirname(__DIR__, 2) . '/_data/web'
+            dirname(__DIR__, 2) . '/_data/web',
         );
         $app = new Application($paths);
         $app->getPluginManager()->init();

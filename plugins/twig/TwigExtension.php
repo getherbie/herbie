@@ -54,7 +54,7 @@ final class TwigExtension extends AbstractExtension
         PageRepositoryInterface $pageRepository,
         SlugGenerator $slugGenerator,
         Translator $translator,
-        UrlManager $urlManager
+        UrlManager $urlManager,
     ) {
         $this->alias = $alias;
         $this->assets = $assets;
@@ -117,7 +117,7 @@ final class TwigExtension extends AbstractExtension
     {
         return [
             new TwigTest('file_readable', [$this, 'testIsReadable']),
-            new TwigTest('file_writable', [$this, 'testIsWritable'])
+            new TwigTest('file_writable', [$this, 'testIsWritable']),
         ];
     }
 
@@ -134,7 +134,7 @@ final class TwigExtension extends AbstractExtension
         array $attr = [],
         ?string $group = null,
         bool $raw = false,
-        int $pos = 1
+        int $pos = 1,
     ): void {
         $this->assets->addCss($paths, $attr, $group, $raw, $pos);
     }
@@ -144,7 +144,7 @@ final class TwigExtension extends AbstractExtension
         array $attr = [],
         ?string $group = null,
         bool $raw = false,
-        int $pos = 1
+        int $pos = 1,
     ): void {
         $this->assets->addJs($paths, $attr, $group, $raw, $pos);
     }
@@ -184,7 +184,7 @@ final class TwigExtension extends AbstractExtension
         string $path,
         string $label = '',
         bool $info = false,
-        array $attribs = []
+        array $attribs = [],
     ): string {
         $attribs['alt'] = $attribs['alt'] ?? '';
         $attribs['class'] = $attribs['class'] ?? 'link__label';
@@ -204,7 +204,7 @@ final class TwigExtension extends AbstractExtension
             '{href}' => $href,
             '{attribs}' => $this->buildHtmlAttributes($attribs),
             '{label}' => empty($label) ? basename($path) : $label,
-            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
+            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo),
         ];
         return strtr('<span class="link link--media"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }
@@ -216,7 +216,7 @@ final class TwigExtension extends AbstractExtension
         }
         $replace = [
             '{size}' => $this->filterFilesize(file_size($path)),
-            '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION))
+            '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
         ];
         return strtr(' ({extension}, {size})', $replace);
     }
@@ -253,7 +253,7 @@ final class TwigExtension extends AbstractExtension
         string $email,
         ?string $label = null,
         array $attribs = [],
-        string $template = '@snippet/link_mail.twig'
+        string $template = '@snippet/link_mail.twig',
     ): string {
         $attribs['href'] = 'mailto:' . $email;
         $attribs['class'] = $attribs['class'] ?? 'link__label';
@@ -275,7 +275,7 @@ final class TwigExtension extends AbstractExtension
     public function menuAsciiTree(
         string $route = '',
         int $depth = -1,
-        bool $hidden = false
+        bool $hidden = false,
     ): string {
         // TODO use $class parameter
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
@@ -297,7 +297,7 @@ final class TwigExtension extends AbstractExtension
     public function menuBreadcrumb(
         string $delim = '',
         array|string $home = '',
-        bool $reverse = false
+        bool $reverse = false,
     ): string {
         // TODO use string type for param $homeLink (like "route|label")
 
@@ -356,7 +356,7 @@ final class TwigExtension extends AbstractExtension
         string $order = '',
         bool $shuffle = false,
         int $limit = 10,
-        string $template = '@snippet/menu_list.twig'
+        string $template = '@snippet/menu_list.twig',
     ): string {
         $pageList = $this->pageRepository->findAll();
 
@@ -400,7 +400,7 @@ final class TwigExtension extends AbstractExtension
         string $prev_icon = '',
         string $next_icon = '',
         string $class = 'pager',
-        string $template = '<div class="{class}">{prev}{next}</div>'
+        string $template = '<div class="{class}">{prev}{next}</div>',
     ): string {
         [$route] = $this->urlManager->parseRequest();
         $pageList = $this->pageRepository->findAll();
@@ -431,7 +431,7 @@ final class TwigExtension extends AbstractExtension
         $replacements = [
             '{class}' => $class,
             '{prev}' => '',
-            '{next}' => ''
+            '{next}' => '',
         ];
 
         if (isset($prevPage)) {
@@ -461,7 +461,7 @@ final class TwigExtension extends AbstractExtension
         string $route = '',
         int $depth = -1,
         bool $hidden = false,
-        string $class = 'sitemap'
+        string $class = 'sitemap',
     ): string {
         return $this->menuTree($route, $depth, $hidden, $class);
     }
@@ -470,7 +470,7 @@ final class TwigExtension extends AbstractExtension
         string $route = '',
         int $depth = -1,
         bool $hidden = false,
-        string $class = 'menu'
+        string $class = 'menu',
     ): string {
         // NOTE duplicated code, see function sitemap
         $branch = $this->pageRepository->findAll()->getPageTree()->findByRoute($route);
@@ -520,7 +520,7 @@ final class TwigExtension extends AbstractExtension
         int $width = 0,
         int $height = 0,
         string $alt = '',
-        string $class = ''
+        string $class = '',
     ): string {
         $attribs = [];
         $attribs['src'] = $this->urlManager->createUrl('/') . $src;
@@ -570,7 +570,7 @@ final class TwigExtension extends AbstractExtension
         string $delim = ' / ',
         string $site_title = '',
         string $root_title = '',
-        bool $reverse = false
+        bool $reverse = false,
     ): string {
         $pageTrail = $context['site']->getPageTrail();
         $count = count($pageTrail);
@@ -632,7 +632,7 @@ final class TwigExtension extends AbstractExtension
             '{href}' => $path,
             '{attribs}' => $this->buildHtmlAttributes($attribs),
             '{label}' => empty($label) ? basename($path) : $label,
-            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo)
+            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo),
         ];
         return strtr('<span class="link link--file"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
     }

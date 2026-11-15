@@ -84,13 +84,13 @@ final class RawHtmlProtector
         $pattern = sprintf(
             '#(?:<p>\s*)?%s(\d+)%s(?:\s*</p>)?#',
             self::PLACEHOLDER_START,
-            self::PLACEHOLDER_END
+            self::PLACEHOLDER_END,
         );
 
         return (string)preg_replace_callback(
             $pattern,
             fn(array $matches): string => $this->blocks[(int)$matches[1]] ?? '',
-            $html
+            $html,
         );
     }
 

@@ -19,7 +19,7 @@ final class AliasTest extends Unit
         $data = [
             '@foo' => 'foo',
             '@bar' => 'bar',
-            '@baz' => 'baz'
+            '@baz' => 'baz',
         ];
         $alias = new Alias($data);
         $this->assertEquals($data, $alias->getAll());
@@ -117,7 +117,7 @@ final class AliasTest extends Unit
         $this->alias = new Alias([
             '@foo' => 'foo',
             '@bar' => 'bar',
-            '@baz' => 'baz'
+            '@baz' => 'baz',
         ]);
     }
 }

@@ -117,7 +117,7 @@ final class SiteTest extends Unit
         // compare the instant, the formatted string depends on the default time zone
         $this->assertSame(
             strtotime('2024-02-02T10:00:00+00:00'),
-            strtotime($site->getModified())
+            strtotime($site->getModified()),
         );
     }
 
@@ -152,7 +152,7 @@ final class SiteTest extends Unit
 
         $this->assertMatchesRegularExpression(
             '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/',
-            $site->getTime()
+            $site->getTime(),
         );
     }
 
@@ -170,7 +170,7 @@ final class SiteTest extends Unit
         Config $config,
         array $data = [],
         array $pages = [],
-        string $path = '/'
+        string $path = '/',
     ): Site {
         $dataPath = sys_get_temp_dir() . '/herbie-site-test-' . bin2hex(random_bytes(4));
         $this->dataPath = $dataPath;
@@ -181,9 +181,7 @@ final class SiteTest extends Unit
         $dataRepository = new \herbie\YamlDataRepository($dataPath);
 
         $pageRepository = new class (new PageList($pages)) implements PageRepositoryInterface {
-            public function __construct(private PageList $pageList)
-            {
-            }
+            public function __construct(private PageList $pageList) {}
 
             public function find(string $id): ?Page
             {

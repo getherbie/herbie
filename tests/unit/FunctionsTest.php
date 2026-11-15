@@ -43,7 +43,7 @@ class FunctionsTest extends Unit
             [0, false],
             [1, true],
             [42, true],
-            [PHP_INT_MAX, true]
+            [PHP_INT_MAX, true],
         ];
         foreach ($tests as $test) {
             $message = sprintf('testing "%s"', $test[0]);

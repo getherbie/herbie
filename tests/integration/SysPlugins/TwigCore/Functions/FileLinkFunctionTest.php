@@ -16,7 +16,7 @@ final class FileLinkFunctionTest extends Unit
     {
         $this->assertEquals(
             '<span class="link link--media"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ link_media("dummy.pdf") }}')
+            $this->twig()->renderString('{{ link_media("dummy.pdf") }}'),
         );
     }
 
@@ -24,7 +24,7 @@ final class FileLinkFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 

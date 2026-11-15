@@ -49,7 +49,7 @@ final class PluginManager
         EventManager $eventManager,
         Translator $translator,
         LoggerInterface $logger,
-        ContainerInterface $container // bad but necessary to enable constructor injection of the plugins
+        ContainerInterface $container, // bad but necessary to enable constructor injection of the plugins
     ) {
         $this->config = $config;
         $this->container = $container;
@@ -76,7 +76,7 @@ final class PluginManager
                 __DIR__,
                 CorePlugin::class,
                 'virtual',
-            )
+            ),
         );
 
         $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
@@ -103,7 +103,7 @@ final class PluginManager
                 __DIR__,
                 LocalExtensionsPlugin::class,
                 'virtual',
-            )
+            ),
         );
 
         $this->loadInstallablePlugin(
@@ -112,7 +112,7 @@ final class PluginManager
                 __DIR__,
                 ApplicationExtensionsPlugin::class,
                 'virtual',
-            )
+            ),
         );
 
         $this->loadInstallablePlugin(
@@ -121,7 +121,7 @@ final class PluginManager
                 __DIR__,
                 SystemInfoPlugin::class,
                 'virtual',
-            )
+            ),
         );
 
         $this->eventManager->dispatch(new PluginsInitializedEvent($this->loadedPlugins, $this->pluginPaths));
@@ -143,7 +143,7 @@ final class PluginManager
                 'Plugin %s requires API version %d, but Herbie provides API version %d. The plugin is not loaded.',
                 $installablePlugin->getKey(),
                 $plugin->apiVersion(),
-                Application::VERSION_API
+                Application::VERSION_API,
             ));
             return;
         }
@@ -293,7 +293,7 @@ final class PluginManager
                 $pluginConfig['pluginName'],
                 $pluginConfig['pluginPath'],
                 $pluginConfig['pluginClass'],
-                $type
+                $type,
             );
         }
 

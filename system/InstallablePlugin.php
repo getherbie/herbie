@@ -14,9 +14,8 @@ final readonly class InstallablePlugin
         private string $path,
         /** @var class-string<PluginInterface> */
         private string $className,
-        private string $type
-    ) {
-    }
+        private string $type,
+    ) {}
 
     public function getKey(): string
     {
@@ -43,7 +42,7 @@ final readonly class InstallablePlugin
         $constructorParams = di_constructor_params_from_container(
             $this->className,
             $container,
-            di_class_whitelist()
+            di_class_whitelist(),
         );
 
         /** @var PluginInterface */

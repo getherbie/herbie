@@ -9,9 +9,7 @@ use herbie\Application;
 
 final class ResponseEmittedEvent extends AbstractEvent
 {
-    public function __construct(private Application $application)
-    {
-    }
+    public function __construct(private Application $application) {}
 
     public function getApplication(): Application
     {

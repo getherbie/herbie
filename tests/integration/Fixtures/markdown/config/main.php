@@ -12,7 +12,7 @@ return [
     'plugins' => [
         'markdown' => [
             'enableTwigFilter' => false,
-            'enableTwigFunction' => false
-        ]
-    ]
+            'enableTwigFunction' => false,
+        ],
+    ],
 ];

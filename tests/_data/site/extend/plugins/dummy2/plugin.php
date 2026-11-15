@@ -50,7 +50,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'dummyMiddleware']
+            [$this, 'dummyMiddleware'],
         ];
     }
 
@@ -61,7 +61,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyFilter']]
+            ['dummy2', [$this, 'twigDummyFilter']],
         ];
     }
 
@@ -72,7 +72,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyFunction']]
+            ['dummy2', [$this, 'twigDummyFunction']],
         ];
     }
 
@@ -83,7 +83,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyTest']]
+            ['dummy2', [$this, 'twigDummyTest']],
         ];
     }
 
@@ -106,7 +106,7 @@ final class Dummy2Plugin implements PluginInterface
         $content = str_replace(
             '</body>',
             $this->wrapHtmlBlock('dummy2-plugin-render-layout', __METHOD__) . '</body>',
-            $event->getLayout()
+            $event->getLayout(),
         );
         $event->setContent($content);
     }

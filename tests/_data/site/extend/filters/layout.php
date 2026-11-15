@@ -14,8 +14,8 @@ return [
             '<div style="display:none" class="example-site-extend-filters-layout">'
             . __FUNCTION__
             . '</div></body>',
-            $event->getContent()
+            $event->getContent(),
         );
         $event->setContent($content);
-    }
+    },
 ];

@@ -25,7 +25,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         array $appMiddlewares,
         array $routeMiddlewares,
         array $appendMiddlewares,
-        string $route
+        string $route,
     ) {
         $this->middlewares = array_merge($prependMiddlewares, $appMiddlewares, $routeMiddlewares, $appendMiddlewares);
         $this->composedMiddlewares = $this->composeMiddlewares(
@@ -33,7 +33,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
             $appMiddlewares,
             $routeMiddlewares,
             $appendMiddlewares,
-            $route
+            $route,
         );
     }
 
@@ -42,7 +42,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         array $appMiddlewares,
         array $routeMiddlewares,
         array $appendMiddlewares,
-        string $route
+        string $route,
     ): array {
         if (empty($routeMiddlewares)) {
             return array_merge($prependMiddlewares, $appMiddlewares, $appendMiddlewares);
@@ -76,7 +76,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         if ($current === false) {
             throw new LogicException(
                 'The middleware chain is exhausted. The last middleware must create the response '
-                . 'and must not call the handler again.'
+                . 'and must not call the handler again.',
             );
         }
 

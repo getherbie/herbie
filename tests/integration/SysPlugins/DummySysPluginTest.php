@@ -21,7 +21,7 @@ final class DummySysPluginTest extends Unit
         $this->initApplication(
             dirname(__DIR__, 3),
             dirname(__DIR__) . '/Fixtures/site',
-            $logFile
+            $logFile,
         )->run();
 
         // These tests are bad and really(!) should be made like here:
@@ -47,8 +47,8 @@ final class DummySysPluginTest extends Unit
                 $appPath,
                 $sitePath,
                 dirname(__DIR__, 4) . '/vendor',
-                dirname(__DIR__, 2) . '/_data/web'
-            )
+                dirname(__DIR__, 2) . '/_data/web',
+            ),
         );
     }
 }

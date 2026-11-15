@@ -52,7 +52,7 @@ abstract class ParserSysPlugin extends Plugin
     public function eventListeners(): array
     {
         return [
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
         ];
     }
 
@@ -94,7 +94,7 @@ abstract class ParserSysPlugin extends Plugin
             $this->logger->error(sprintf(
                 'The %s plugin could not convert the segment: %s',
                 $this->getTwigName(),
-                $t->getMessage()
+                $t->getMessage(),
             ));
             return $value;
         }

@@ -20,7 +20,7 @@ final class CorePlugin extends Plugin
 
     public function __construct(
         Config $config,
-        private TwigRenderer $twigRenderer
+        private TwigRenderer $twigRenderer,
     ) {
         $this->enableTwigInLayoutFilter = $config->getAsBool('plugins.CORE.enableTwigInLayoutFilter');
         $this->enableTwigInSegmentFilter = $config->getAsBool('plugins.CORE.enableTwigInSegmentFilter');
@@ -30,7 +30,7 @@ final class CorePlugin extends Plugin
     public function consoleCommands(): array
     {
         return [
-            ClearFilesCommand::class
+            ClearFilesCommand::class,
         ];
     }
 
@@ -39,7 +39,7 @@ final class CorePlugin extends Plugin
         return [
             [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
             [RenderPageEvent::class, [$this, 'onRenderPage']],
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']]
+            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
         ];
     }
 

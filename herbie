@@ -11,7 +11,7 @@ if (getenv('HERBIE_ENV') === 'dev') {
         __DIR__,
         __DIR__ . '/website/site',
         __DIR__ . '/vendor',
-        __DIR__ . '/website/web'
+        __DIR__ . '/website/web',
     );
 } else {
     require dirname(__DIR__, 3) . '/vendor/autoload.php';
@@ -19,7 +19,7 @@ if (getenv('HERBIE_ENV') === 'dev') {
         dirname(__DIR__, 3),
         dirname(__DIR__, 3) . '/site',
         dirname(__DIR__, 3) . '/vendor',
-        dirname(__DIR__, 3) . '/web'
+        dirname(__DIR__, 3) . '/web',
     );
 }
 

@@ -186,14 +186,14 @@ final class PageRendererMiddlewareTest extends Unit
     private function createMiddleware(
         ?Page $page = null,
         ?EventManager $eventManager = null,
-        ?CacheInterface $cache = null
+        ?CacheInterface $cache = null,
     ): PageRendererMiddleware {
         return new PageRendererMiddleware(
             $cache ?? new NullCache(),
             $eventManager ?? new EventManager(),
             new ResponseFactory(),
             $this->createUrlManager(),
-            ['cache' => $cache !== null]
+            ['cache' => $cache !== null],
         );
     }
 

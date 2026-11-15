@@ -91,7 +91,7 @@ final class UrlManager
             if (preg_match($regex, $route, $matches)) {
                 $params = array_intersect_key(
                     $matches,
-                    array_flip(array_filter(array_keys($matches), 'is_string'))
+                    array_flip(array_filter(array_keys($matches), 'is_string')),
                 );
                 return $this->parsedRequest = [$rule[1], $params];
             }

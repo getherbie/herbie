@@ -25,7 +25,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
         'beginChildren' => '<ul>',
         'endChildren' => '</ul></li>',
         'beginCurrent' => '<li>',
-        'endCurrent' => '</li>'
+        'endCurrent' => '</li>',
     ];
 
     /** @var callable|null */
@@ -39,7 +39,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
     public function __construct(
         RecursiveIterator $iterator,
         int $mode = RecursiveIteratorIterator::SELF_FIRST,
-        int $flags = 0
+        int $flags = 0,
     ) {
         parent::__construct($iterator, $mode, $flags);
         $this->class = '';
@@ -75,7 +75,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
     {
         $replacements = [
             '{class}' => $this->class,
-            '{level}' => $this->getDepth() + 1
+            '{level}' => $this->getDepth() + 1,
         ];
         return strtr($this->template[$key], $replacements);
     }

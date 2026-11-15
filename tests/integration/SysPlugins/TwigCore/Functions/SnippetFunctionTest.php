@@ -23,7 +23,7 @@ final class SnippetFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 

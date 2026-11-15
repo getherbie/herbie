@@ -75,9 +75,11 @@
     },
     "scripts": {
         "test": [
+            "@cs",
             "@phpstan",
             "@codecept"
         ],
+        "cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
         "codecept": "./vendor/bin/codecept run",
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
         "start:test": "cd tests/_data/web/; php -S localhost:9999 index.php",

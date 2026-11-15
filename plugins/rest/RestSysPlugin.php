@@ -39,7 +39,7 @@ final class RestSysPlugin extends ParserSysPlugin
         }
         return $this->parseSafely(
             $value,
-            static fn(string $text): string => (new Parser())->parse($text)->render()
+            static fn(string $text): string => (new Parser())->parse($text)->render(),
         );
     }
 }

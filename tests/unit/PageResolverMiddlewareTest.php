@@ -29,13 +29,13 @@ final class PageResolverMiddlewareTest extends Unit
         $response = $middleware->process(new ServerRequest(), $this->capturingHandler());
 
         $this->assertSame($page, $this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE,
         ));
         $this->assertSame('about', $this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE,
         ));
         $this->assertSame([], $this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE_PARAMS,
         ));
         $this->assertSame('handler-response', (string)$response->getBody());
     }
@@ -47,10 +47,10 @@ final class PageResolverMiddlewareTest extends Unit
         $middleware->process(new ServerRequest(), $this->capturingHandler());
 
         $this->assertNull($this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_PAGE,
         ));
         $this->assertSame('missing', $this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE,
         ));
     }
 
@@ -64,7 +64,7 @@ final class PageResolverMiddlewareTest extends Unit
         // attributes are set on a copy, as required by PSR-7
         $this->assertNull($request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE));
         $this->assertSame('about', $this->captured?->getAttribute(
-            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE
+            PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE,
         ));
     }
 
@@ -82,9 +82,7 @@ final class PageResolverMiddlewareTest extends Unit
     {
         $pageList = new PageList($page === null ? [] : [$route => $page]);
         $pageRepository = new class ($pageList) implements PageRepositoryInterface {
-            public function __construct(private PageList $pageList)
-            {
-            }
+            public function __construct(private PageList $pageList) {}
 
             public function find(string $id): ?Page
             {
@@ -108,16 +106,14 @@ final class PageResolverMiddlewareTest extends Unit
     {
         return new UrlManager(
             (new ServerRequest())->withUri(new Uri('http://example.com/' . $route)),
-            ['rules' => [['(.+)', $route]]]
+            ['rules' => [['(.+)', $route]]],
         );
     }
 
     private function capturingHandler(): RequestHandlerInterface
     {
         return new class ($this) implements RequestHandlerInterface {
-            public function __construct(private PageResolverMiddlewareTest $test)
-            {
-            }
+            public function __construct(private PageResolverMiddlewareTest $test) {}
 
             public function handle(ServerRequestInterface $request): ResponseInterface
             {

@@ -18,7 +18,7 @@ final class OutputJsFunctionTest extends Unit
             . '{{ js_out() }}';
         $this->assertEquals(
             '<script src="/assets/assets/script.js"></script>',
-            $this->twig()->renderString($twig)
+            $this->twig()->renderString($twig),
         );
     }
 
@@ -26,7 +26,7 @@ final class OutputJsFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 

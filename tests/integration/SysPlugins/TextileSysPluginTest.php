@@ -18,7 +18,7 @@ final class TextileSysPluginTest extends Unit
     {
         $this->assertSame(
             '<h1>This is textile</h1>',
-            $this->twigRenderer->renderString('{{ "h1. This is textile"|textile }}')
+            $this->twigRenderer->renderString('{{ "h1. This is textile"|textile }}'),
         );
     }
 
@@ -26,7 +26,7 @@ final class TextileSysPluginTest extends Unit
     {
         $twigRenderer = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/textile'
+            dirname(__DIR__) . '/Fixtures/textile',
         );
         $this->expectException(SyntaxError::class);
         $twigRenderer->renderString('{{ "h2. This is textile"|textile }}');
@@ -36,7 +36,7 @@ final class TextileSysPluginTest extends Unit
     {
         $this->assertSame(
             '<h1>This is textile</h1>',
-            $this->twigRenderer->renderString('{{ textile("h1. This is textile") }}')
+            $this->twigRenderer->renderString('{{ textile("h1. This is textile") }}'),
         );
     }
 
@@ -44,7 +44,7 @@ final class TextileSysPluginTest extends Unit
     {
         $twigRenderer = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/textile'
+            dirname(__DIR__) . '/Fixtures/textile',
         );
         $this->expectException(SyntaxError::class);
         $twigRenderer->renderString('{{ textile("# This is textile") }}');
@@ -54,7 +54,7 @@ final class TextileSysPluginTest extends Unit
     {
         $this->twigRenderer = $this->initApplication(
             dirname(__DIR__, 3),
-            dirname(__DIR__) . '/Fixtures/site'
+            dirname(__DIR__) . '/Fixtures/site',
         );
     }
 
@@ -65,8 +65,8 @@ final class TextileSysPluginTest extends Unit
                 $appPath,
                 $sitePath,
                 dirname(__DIR__, 5) . '/vendor',
-                dirname(__DIR__, 2) . '/_data/web'
-            )
+                dirname(__DIR__, 2) . '/_data/web',
+            ),
         );
         $app->getPluginManager()->init();
         ($twigRenderer = $app->getTwigRenderer())->init();

@@ -329,7 +329,7 @@ final class HerbieInfoCest
             'page',
             'site',
             'dummy',
-            'timestamp'
+            'timestamp',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Twig Globals (' . count($globals) . ')', 'h2');
@@ -560,7 +560,7 @@ final class HerbieInfoCest
             'herbie\sysplugins\dummy\DummyCommand',
             'herbie\tests\_data\site\extend\commands\CustomCommand',
             'herbie\tests\_data\src\CustomCommand',
-            'herbie\tests\_data\src\CustomCommand'
+            'herbie\tests\_data\src\CustomCommand',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Commands (' . count($commands) . ')', 'h2');
@@ -579,7 +579,7 @@ final class HerbieInfoCest
             '@sysplugin',
             '@vendor',
             '@web',
-            '@snippet'
+            '@snippet',
         ];
         $I->amOnPage('/herbie-info');
         $I->see('Aliases (' . count($aliases) . ')', 'h2');

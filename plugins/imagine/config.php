@@ -14,9 +14,9 @@ return [
             'filters' => [
                 'thumbnail' => [
                     'size' => [360, 240],
-                    'mode' => 'outbound'
-                ]
-            ]
-        ]
-    ]
+                    'mode' => 'outbound',
+                ],
+            ],
+        ],
+    ],
 ];

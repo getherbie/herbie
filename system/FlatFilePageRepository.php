@@ -13,9 +13,8 @@ final class FlatFilePageRepository implements PageRepositoryInterface
      */
     public function __construct(
         private PageFactory $pageFactory,
-        private PagePersistenceInterface $pagePersistence
-    ) {
-    }
+        private PagePersistenceInterface $pagePersistence,
+    ) {}
 
     /**
      * @param string $id The aliased unique path to the file (i.e. @page/about/company.md)
@@ -31,7 +30,7 @@ final class FlatFilePageRepository implements PageRepositoryInterface
     {
         return $this->pageFactory->newPage(
             $data['data'],
-            $data['segments']
+            $data['segments'],
         );
     }
 

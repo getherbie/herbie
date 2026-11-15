@@ -20,7 +20,7 @@ final class FatalErrorHandler
                 500,
                 $error['type'],
                 $error['file'],
-                $error['line']
+                $error['line'],
             );
             echo render_exception($exception);
             exit(1);

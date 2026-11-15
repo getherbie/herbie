@@ -14,9 +14,8 @@ final class RenderSegmentEvent extends AbstractEvent
         private Page $page,
         private string $segment,
         private string $segmentId,
-        private UrlManager $urlManager
-    ) {
-    }
+        private UrlManager $urlManager,
+    ) {}
 
 
     public function getPage(): Page

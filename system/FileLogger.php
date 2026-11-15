@@ -32,7 +32,7 @@ final class FileLogger implements LoggerInterface
     public function __construct(
         private readonly string $file,
         private readonly string $channel,
-        string $level = LogLevel::DEBUG
+        string $level = LogLevel::DEBUG,
     ) {
         $this->setLevel($level);
     }
@@ -104,9 +104,9 @@ final class FileLogger implements LoggerInterface
                 'code' => $e->getCode(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTrace()
+                'trace' => $e->getTrace(),
             ],
-            JSON_UNESCAPED_SLASHES
+            JSON_UNESCAPED_SLASHES,
         );
 
         // Fail-safe in case json_encode failed
@@ -116,13 +116,13 @@ final class FileLogger implements LoggerInterface
     private function formatLine(string $level, int $pid, string $message, string $data, string $exception_data): string
     {
         return
-            $this->getTime() . self::TAB .
-            "[$level]" . self::TAB .
-            "[{$this->channel}]" . self::TAB .
-            "[pid:$pid]" . self::TAB .
-            str_replace(PHP_EOL, '   ', trim($message)) . self::TAB .
-            str_replace(PHP_EOL, '   ', $data) . self::TAB .
-            str_replace(PHP_EOL, '   ', $exception_data) . PHP_EOL;
+            $this->getTime() . self::TAB
+            . "[$level]" . self::TAB
+            . "[{$this->channel}]" . self::TAB
+            . "[pid:$pid]" . self::TAB
+            . str_replace(PHP_EOL, '   ', trim($message)) . self::TAB
+            . str_replace(PHP_EOL, '   ', $data) . self::TAB
+            . str_replace(PHP_EOL, '   ', $exception_data) . PHP_EOL;
     }
 
     private function getTime(): string

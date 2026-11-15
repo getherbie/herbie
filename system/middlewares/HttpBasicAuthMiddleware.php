@@ -16,10 +16,10 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
      * HttpBasicAuthMiddleware constructor.
      */
     public function __construct(
-        #[\SensitiveParameter] private array $users,
-        private ResponseFactoryInterface $responseFactory
-    ) {
-    }
+        #[\SensitiveParameter]
+        private array $users,
+        private ResponseFactoryInterface $responseFactory,
+    ) {}
 
     #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

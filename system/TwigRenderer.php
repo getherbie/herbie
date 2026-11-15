@@ -29,9 +29,8 @@ final class TwigRenderer
         private Config $config,
         private EventManager $eventManager,
         private LoggerInterface $logger,
-        private Site $site
-    ) {
-    }
+        private Site $site,
+    ) {}
 
     /**
      * @throws LoaderError

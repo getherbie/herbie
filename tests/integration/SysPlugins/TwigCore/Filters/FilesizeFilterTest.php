@@ -44,12 +44,12 @@ final class FilesizeFilterTest extends Unit
         $this->assertSame('1024 GB', $this->twigRenderer->renderString('{{ "1099511627776"|format_size }}'));
         $this->assertSame(
             '1 TB',
-            $this->twigRenderer->renderString('{{ "1099511627777"|format_size }}')
+            $this->twigRenderer->renderString('{{ "1099511627777"|format_size }}'),
         ); // TB (* 1024)
         $this->assertSame('1024 TB', $this->twigRenderer->renderString('{{ "1125899906842624"|format_size }}'));
         $this->assertSame(
             '1 PB',
-            $this->twigRenderer->renderString('{{ "1125899906842625"|format_size }}')
+            $this->twigRenderer->renderString('{{ "1125899906842625"|format_size }}'),
         ); // TB (* 1024)
     }
 
@@ -60,8 +60,8 @@ final class FilesizeFilterTest extends Unit
                 dirname(__DIR__, 5),
                 dirname(__DIR__, 3) . '/Fixtures/site',
                 dirname(__DIR__, 5) . '/vendor',
-                dirname(__DIR__, 4) . '/_data/web'
-            )
+                dirname(__DIR__, 4) . '/_data/web',
+            ),
         );
         $app->getPluginManager()->init();
         $app->getTwigRenderer()->init();

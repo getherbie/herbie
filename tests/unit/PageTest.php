@@ -446,7 +446,7 @@ final class PageTest extends Unit
             'bbb' => [],
             'ccc' => true,
             'ddd' => 42,
-            'eee' => 23.375
+            'eee' => 23.375,
         ];
         $page = new Page($data);
         $data['segments']['default'] = "\n{{ herbie_info() }}\n";
@@ -521,7 +521,7 @@ final class PageTest extends Unit
             0 => 'Default Segment',
             1 => 'Segment 1',
             2 => 'Segment 2',
-            'three' => 'Segment 3'
+            'three' => 'Segment 3',
         ]);
         $this->assertSame('Default Segment', $page->getSegment(0));
         $this->assertSame('Segment 1', $page->getSegment(1));
@@ -534,7 +534,7 @@ final class PageTest extends Unit
     {
         $page = (new PageFactory())->newPage(
             [
-                'title' => 'Segments'
+                'title' => 'Segments',
             ],
             [
                 'default' => 'Default Segment',
@@ -543,7 +543,7 @@ final class PageTest extends Unit
                 'three' => 'Segment 3',
                 '-1' => 'Invalid Segment',
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789' => 'Last Segment',
-            ]
+            ],
         );
         $this->assertSame('Segments', $page->getTitle());
         $this->assertSame('default', $page->getLayout());
@@ -554,7 +554,7 @@ final class PageTest extends Unit
         $this->assertSame('Invalid Segment', trim($page->getSegment(-1)));
         $this->assertSame(
             'Last Segment',
-            trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789'))
+            trim($page->getSegment('ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789')),
         );
     }
 
@@ -627,7 +627,7 @@ final class PageTest extends Unit
             'b' => 2,
             'c' => true,
             'd' => ['one', 'two'],
-            'e' => 5.74
+            'e' => 5.74,
         ];
 
         $expected = array_merge($data, ['segments' => []]);
@@ -700,14 +700,14 @@ final class PageTest extends Unit
             new PageFactory(),
             new FlatFilePagePersistence(
                 new Alias([
-                    '@page' => __DIR__ . '/Fixtures/site/pages'
+                    '@page' => __DIR__ . '/Fixtures/site/pages',
                 ]),
                 new NullCache(),
                 new Finder([
                     'extensions' => ['md'],
                     'path' => dirname(__DIR__) . '/integration/Fixtures/site/pages',
-                ])
-            )
+                ]),
+            ),
         );
     }
 

@@ -8,7 +8,7 @@ return [
     'plugins' => [
         'textile' => [
             'enableTwigFilter' => false,
-            'enableTwigFunction' => false
-        ]
-    ]
+            'enableTwigFunction' => false,
+        ],
+    ],
 ];

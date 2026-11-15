@@ -58,7 +58,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
         $response = $middleware->process(
             new ServerRequest(),
-            $this->failingHandler(new RuntimeException('Something failed'))
+            $this->failingHandler(new RuntimeException('Something failed')),
         );
 
         $content = (string)$response->getBody();
@@ -109,7 +109,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
         $content = (string)$response->getBody();
         $this->assertNotFalse(
             simplexml_load_string($content),
-            'Control characters must not break the error document: ' . $content
+            'Control characters must not break the error document: ' . $content,
         );
     }
 
@@ -119,7 +119,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
         $response = $middleware->process(
             (new ServerRequest())->withHeader('Accept', 'application/xml'),
-            $this->failingHandler(new RuntimeException('Something failed'))
+            $this->failingHandler(new RuntimeException('Something failed')),
         );
 
         $this->assertSame('application/xml', $response->getHeaderLine('Content-Type'));
@@ -131,7 +131,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
         $response = $middleware->process(
             (new ServerRequest())->withHeader('Accept', 'text/html,application/xhtml+xml'),
-            $this->failingHandler(new RuntimeException('Something failed'))
+            $this->failingHandler(new RuntimeException('Something failed')),
         );
 
         $this->assertStringContainsString('text/html', $response->getHeaderLine('Content-Type'));
@@ -146,7 +146,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
             $response = $middleware->process(
                 new ServerRequest(),
-                $this->failingHandler(new RuntimeException('Something failed'))
+                $this->failingHandler(new RuntimeException('Something failed')),
             );
 
             $body = (string)$response->getBody();
@@ -156,7 +156,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
             $this->assertSame(
                 $isHtmlBody,
                 str_contains($declared, 'html'),
-                sprintf('Body and Content-Type "%s" do not match: %s', $declared, $body)
+                sprintf('Body and Content-Type "%s" do not match: %s', $declared, $body),
             );
         }
     }
@@ -167,7 +167,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
         $response = $middleware->process(
             new ServerRequest(),
-            $this->failingHandler(new RuntimeException('Something failed'))
+            $this->failingHandler(new RuntimeException('Something failed')),
         );
 
         // the body is HTML, so the header must say so instead of claiming text/plain
@@ -180,7 +180,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
 
         $response = $middleware->process(
             new ServerRequest(),
-            $this->failingHandler(new RuntimeException('no code'))
+            $this->failingHandler(new RuntimeException('no code')),
         );
 
         $this->assertSame(500, $response->getStatusCode());
@@ -203,9 +203,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
         ]);
         $pageList = new PageList($page === null ? [] : ['' => $page]);
         $pageRepository = new class ($pageList) implements PageRepositoryInterface {
-            public function __construct(private PageList $pageList)
-            {
-            }
+            public function __construct(private PageList $pageList) {}
 
             public function find(string $id): ?Page
             {
@@ -219,9 +217,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
         };
         $urlManager = $this->createUrlManager();
         $dataRepository = new class implements \herbie\DataRepositoryInterface {
-            public function __construct(string $path = '')
-            {
-            }
+            public function __construct(string $path = '') {}
 
             public function load(string $name): array
             {
@@ -241,7 +237,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
             $pageRepository,
             new \Laminas\Diactoros\ResponseFactory(),
             $twigRenderer,
-            $urlManager
+            $urlManager,
         );
     }
 
@@ -253,9 +249,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
     private function failingHandler(\Throwable $exception): RequestHandlerInterface
     {
         return new class ($exception) implements RequestHandlerInterface {
-            public function __construct(private \Throwable $exception)
-            {
-            }
+            public function __construct(private \Throwable $exception) {}
 
             public function handle(ServerRequestInterface $request): ResponseInterface
             {

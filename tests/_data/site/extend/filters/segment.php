@@ -14,5 +14,5 @@ return [
             . __FUNCTION__
             . '</div>';
         $event->setSegment($segment);
-    }
+    },
 ];

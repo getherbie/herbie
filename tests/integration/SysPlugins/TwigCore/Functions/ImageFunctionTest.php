@@ -16,7 +16,7 @@ final class ImageFunctionTest extends Unit
     {
         $this->assertEquals(
             '<img src="/media/dummy-200x100.gif" alt="">',
-            $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}')
+            $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}'),
         );
     }
 
@@ -24,7 +24,7 @@ final class ImageFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 }

@@ -24,7 +24,7 @@ final class TranslateFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 
@@ -37,14 +37,14 @@ final class TranslateFunctionTest extends Unit
     {
         $this->assertSame(
             'Beispiel-Übersetzung',
-            $this->twig()->renderString('{{ translate("dummy", "Example translation") }}')
+            $this->twig()->renderString('{{ translate("dummy", "Example translation") }}'),
         );
     }
 
     public function testTranslateFromPluginWithParams(): void
     {
         $actual = $this->twig()->renderString(
-            '{{ translate("dummy", "Example translation with param {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}'
+            '{{ translate("dummy", "Example translation with param {one} and {two}", {one:"ABC123", two: "ÄÖÜäöü"}) }}',
         );
         $this->assertSame('Beispiel-Übersetzung mit Parameter ABC123 and ÄÖÜäöü', $actual);
     }

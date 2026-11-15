@@ -184,7 +184,7 @@ final class AssetsTest extends Unit
         }
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($published, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+            \RecursiveIteratorIterator::CHILD_FIRST,
         );
         foreach ($iterator as $file) {
             $file->isDir() ? rmdir($file->getPathname()) : unlink($file->getPathname());

@@ -4,5 +4,5 @@ return [
     'apiVersion' => 2,
     'pluginName' => 'dummy2',
     'pluginClass' => __DIR__ . '/plugin.php',
-    'pluginPath' => __DIR__
+    'pluginPath' => __DIR__,
 ];

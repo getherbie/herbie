@@ -11,9 +11,7 @@ final class ContentRenderedEvent extends AbstractEvent
     /**
      * @param array<string, string> $segments
      */
-    public function __construct(private array $segments)
-    {
-    }
+    public function __construct(private array $segments) {}
 
     /**
      * @return array<string, string>

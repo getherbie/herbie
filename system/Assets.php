@@ -47,7 +47,7 @@ final class Assets
         array $attr,
         ?string $group = null,
         bool $raw = false,
-        int $pos = 1
+        int $pos = 1,
     ): void {
         if ($this->search($path)) {
             return;
@@ -99,13 +99,13 @@ final class Assets
                 $return .= sprintf(
                     '<link href="%s" type="text/css" rel="stylesheet"%s>',
                     $this->buildUrl($asset['path']) . $timestamp,
-                    $this->buildAttribs($asset['attr'])
+                    $this->buildAttribs($asset['attr']),
                 );
             } else {
                 $return .= sprintf(
                     '<style%s>%s</style>',
                     $this->buildAttribs($asset['attr']),
-                    $asset['path']
+                    $asset['path'],
                 );
             }
         }
@@ -212,13 +212,13 @@ final class Assets
                 $return .= sprintf(
                     '<script src="%s"%s></script>',
                     $this->buildUrl($asset['path']) . $timestamp,
-                    $this->buildAttribs($asset['attr'])
+                    $this->buildAttribs($asset['attr']),
                 );
             } else {
                 $return .= sprintf(
                     '<script%s>%s</script>',
                     $this->buildAttribs($asset['attr']),
-                    $asset['path']
+                    $asset['path'],
                 );
             }
         }

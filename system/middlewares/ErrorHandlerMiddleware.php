@@ -32,9 +32,8 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
         private PageRepositoryInterface $pageRepository,
         private ResponseFactoryInterface $responseFactory,
         private TwigRenderer $twigRenderer,
-        private UrlManager $urlManager
-    ) {
-    }
+        private UrlManager $urlManager,
+    ) {}
 
     /**
      * @throws LoaderError
@@ -130,7 +129,7 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
         return sprintf(
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<error><code>%d</code><message>%s</message></error>\n",
             $code,
-            htmlspecialchars($message, ENT_XML1)
+            htmlspecialchars($message, ENT_XML1),
         );
     }
 

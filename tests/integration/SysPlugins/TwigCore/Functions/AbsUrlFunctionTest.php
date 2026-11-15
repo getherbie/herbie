@@ -28,7 +28,7 @@ final class AbsUrlFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 
@@ -37,7 +37,7 @@ final class AbsUrlFunctionTest extends Unit
         $tests = [
             ['http:/one', '{{ url_abs("one") }}'],
             ['http:/one/two', '{{ url_abs("one/two") }}'],
-            ['http:/one/two/three', '{{ url_abs("one/two/three") }}']
+            ['http:/one/two/three', '{{ url_abs("one/two/three") }}'],
         ];
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));

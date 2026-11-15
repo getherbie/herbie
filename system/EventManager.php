@@ -12,9 +12,7 @@ final class EventManager implements EventDispatcherInterface, ListenerProviderIn
 {
     private array $listeners = [];
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function dispatch(object $event): object
     {

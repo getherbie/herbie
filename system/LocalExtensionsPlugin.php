@@ -11,9 +11,7 @@ use Twig\TwigTest;
 
 final class LocalExtensionsPlugin extends Plugin
 {
-    public function __construct(protected Config $config)
-    {
-    }
+    public function __construct(protected Config $config) {}
 
     public function consoleCommands(): array
     {

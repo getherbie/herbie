@@ -30,7 +30,7 @@ final class TwigPlusSmokeTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 4),
-            dirname(__DIR__, 2) . '/Fixtures/site'
+            dirname(__DIR__, 2) . '/Fixtures/site',
         );
     }
 

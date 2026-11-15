@@ -9,9 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ResponseGeneratedEvent extends AbstractEvent
 {
-    public function __construct(private ResponseInterface $response)
-    {
-    }
+    public function __construct(private ResponseInterface $response) {}
 
     public function getResponse(): ResponseInterface
     {

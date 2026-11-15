@@ -31,7 +31,7 @@ final readonly class DownloadMiddleware implements MiddlewareInterface
         Alias $alias,
         StreamFactoryInterface $streamFactory,
         ResponseFactoryInterface $responseFactory,
-        array $config
+        array $config,
     ) {
         $this->alias = $alias;
         $this->streamFactory = $streamFactory;

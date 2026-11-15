@@ -21,9 +21,7 @@ final class PageList implements IteratorAggregate, Countable
      * MenuList constructor.
      * @param Page[] $items
      */
-    public function __construct(private array $items = [])
-    {
-    }
+    public function __construct(private array $items = []) {}
 
     public function addItem(Page $item): void
     {
@@ -65,7 +63,7 @@ final class PageList implements IteratorAggregate, Countable
                         return true;
                     }
                     return false;
-                })
+                }),
             );
         }
         return new self(array_filter($this->items));
@@ -195,7 +193,7 @@ final class PageList implements IteratorAggregate, Countable
                 'year' => $year,
                 'month' => $month,
                 'date' => $page->getDate(),
-                'count' => 1
+                'count' => 1,
             ];
 
             // for all

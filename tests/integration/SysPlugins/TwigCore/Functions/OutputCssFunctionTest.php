@@ -18,7 +18,7 @@ final class OutputCssFunctionTest extends Unit
             . '{{ css_out() }}';
         $this->assertEquals(
             '<link href="/assets/assets/styles.css" type="text/css" rel="stylesheet">',
-            $this->twig()->renderString($twig)
+            $this->twig()->renderString($twig),
         );
     }
 
@@ -26,7 +26,7 @@ final class OutputCssFunctionTest extends Unit
     {
         return $this->tester->initTwigRenderer(
             dirname(__DIR__, 5),
-            dirname(__DIR__, 3) . '/Fixtures/site'
+            dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
 

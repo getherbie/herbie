@@ -13,7 +13,7 @@ return [
         $event->getEnvironment()->addFilter(
             new TwigFilter('my_filter2', function (string $content): string {
                 return $content . ' My Filter 2';
-            })
+            }),
         );
-    }
+    },
 ];
