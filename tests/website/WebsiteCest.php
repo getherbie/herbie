@@ -365,7 +365,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Sitemap', 'h1');
         $I->seeNumberOfElements('.sitemap', 1);
-        $I->seeNumberOfElements('.sitemap li', 31);
+        $I->seeNumberOfElements('.sitemap li', 32);
         $this->testLayoutDefault($I);
     }
 
