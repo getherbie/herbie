@@ -59,6 +59,7 @@ final class PluginManager
         $this->logger = $logger;
         $this->applicationMiddlewares = [];
         $this->routeMiddlewares = [];
+        $this->consoleCommands = [];
         $this->pluginPaths = [];
         $this->translator = $translator;
     }
