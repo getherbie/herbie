@@ -10,25 +10,27 @@ use ParsedownExtra;
 /**
  * ParsedownExtra subclass with PHP 8.3 compatibility fix.
  *
- * ParsedownExtra's blockMarkupComplete() calls processTag('') with an empty
- * string when processing certain markup, which causes DOMDocument::loadHTML('')
+ * ParsedownExtra's blockMarkupComplete() calls processTag() with markup
+ * that can be empty or whitespace-only, which causes DOMDocument::loadHTML()
  * to throw a ValueError on PHP 8.3+.
- * This subclass catches that case and returns an empty string instead.
+ * This subclass guards against that case.
  */
 class HerbieParsedownExtra extends ParsedownExtra
 {
     /**
-     * @param mixed $tag
-     * @param mixed $attr
-     * @param mixed $close
+     * @param mixed $elementMarkup
      * @return string
      */
-    protected function processTag($tag, $attr = '', $close = false): string
+    protected function processTag($elementMarkup): string
     {
-        if ($tag === '') {
+        if (!is_string($elementMarkup) || trim($elementMarkup) === '') {
             return '';
         }
 
-        return parent::processTag($tag, $attr, $close); /** @phpstan-ignore-line */
+        try {
+            return parent::processTag($elementMarkup);
+        } catch (\Throwable $e) {
+            return $elementMarkup;
+        }
     }
 }

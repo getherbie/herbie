@@ -80,7 +80,7 @@ final class MarkdownSysPlugin extends Plugin
         $parser->setUrlsLinked(false);
         try {
             return $parser->text($string);
-        } catch (\ValueError $e) {
+        } catch (\Throwable $e) {
             // ParsedownExtra can throw ValueError on empty DOMDocument input (PHP 8.3+)
             return $string;
         }
