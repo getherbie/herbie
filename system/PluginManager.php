@@ -138,7 +138,13 @@ final class PluginManager
         $plugin = $installablePlugin->createPluginInstance($this->container);
 
         if ($plugin->apiVersion() < Application::VERSION_API) {
-            return; // TODO log info
+            $this->logger->warning(sprintf(
+                'Plugin %s requires API version %d, but Herbie provides API version %d. The plugin is not loaded.',
+                $installablePlugin->getKey(),
+                $plugin->apiVersion(),
+                Application::VERSION_API
+            ));
+            return;
         }
 
         foreach ($plugin->consoleCommands() as $command) {

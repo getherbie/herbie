@@ -47,18 +47,4 @@ final class FlatFilePageRepository implements PageRepositoryInterface
         }
         return $this->pageList;
     }
-
-    #[\Override]
-    public function save(Page $page): bool
-    {
-        // TODO: Implement save() method.
-        return false;
-    }
-
-    #[\Override]
-    public function delete(Page $page): bool
-    {
-        // TODO: Implement remove() method.
-        return false;
-    }
 }

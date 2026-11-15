@@ -75,7 +75,6 @@ final class TwigExtension extends AbstractExtension
             new TwigFilter('format_size', [$this, 'filterFilesize']),
             new TwigFilter('slugify', [$this, 'filterSlugify']),
             new TwigFilter('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),
-            new TwigFilter('visible', [$this, 'filterVisible'], ['deprecated' => true]) // doesn't work properly
         ];
     }
 
@@ -128,12 +127,6 @@ final class TwigExtension extends AbstractExtension
     public function filterSlugify(string $url): string
     {
         return $this->slugGenerator->generate($url);
-    }
-
-    public function filterVisible(PageTree $tree): PageTreeFilterIterator
-    {
-        $treeIterator = new PageTreeIterator($tree);
-        return new PageTreeFilterIterator($treeIterator);
     }
 
     public function cssAdd(

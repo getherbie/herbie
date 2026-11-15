@@ -9,7 +9,7 @@ use herbie\Application;
 use herbie\ApplicationPaths;
 use herbie\TwigRenderer;
 
-final class VisibleFilterTest extends Unit
+final class PageTreeTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
 
@@ -30,24 +30,6 @@ final class VisibleFilterTest extends Unit
             . '*Alpha Index**Alpha Delta**Alpha Sigma*Page Data*Segments';
         $actual = $this->twigRenderer->renderString($twig);
         $this->assertSame($expected, $actual);
-    }
-
-    public function testFilteredTree()
-    {
-        $twig = <<<TWIG
-            {%- for item1 in site.page_tree|visible -%}
-                *{{- item1 -}}
-                {%- for item2 in item1.getChildren() -%}
-                    **{{- item2 -}}
-                    {%- for item3 in item2.getChildren() -%}
-                        ***{{- item3 -}}
-                    {%- endfor -%}            
-                {%- endfor -%}
-            {%- endfor -%}
-        TWIG;
-        $expected = '*Index*Alpha Index**Alpha Delta**Alpha Sigma';
-        $actual = $this->twigRenderer->renderString($twig);
-        $this->assertSame($expected, $actual); // TODO fix this test, the expected result is simply wrong
     }
 
     protected function _setUp(): void

@@ -387,7 +387,6 @@ final class HerbieInfoCest
             'format_size',
             'slugify',
             'twigify',
-            'visible',
             'markdown',
             'rest',
             'textile',
