@@ -23,7 +23,6 @@ final class HerbieInfoCest
             'herbie\composer_package_installed',
             'herbie\date_format',
             'herbie\defined_classes',
-            'herbie\defined_constants',
             'herbie\defined_functions',
             'herbie\di_class_whitelist',
             'herbie\di_constructor_params_from_container',
@@ -39,7 +38,6 @@ final class HerbieInfoCest
             'herbie\load_php_config',
             'herbie\load_plugin_config',
             'herbie\load_plugin_configs',
-            'herbie\path_normalize',
             'herbie\recursive_array_replace',
             'herbie\render_exception',
             'herbie\str_explode_filtered',
@@ -47,7 +45,6 @@ final class HerbieInfoCest
             'herbie\str_trailing_slash',
             'herbie\str_unleading_slash',
             'herbie\str_untrailing_slash',
-            'herbie\time_format',
             'herbie\time_from_string',
         ];
         $I->amOnPage('/herbie-info');

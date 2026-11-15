@@ -27,19 +27,6 @@ use UnexpectedValueException;
 use function gettype;
 
 /**
- * @throws SystemException
- */
-function path_normalize(string $path): string
-{
-    $realpath = realpath($path);
-    if ($realpath === false) {
-        $message = sprintf('Could not normalize path "%s"', $path);
-        throw SystemException::serverError($message);
-    }
-    return str_trailing_slash($realpath);
-}
-
-/**
  * Prepends a leading slash.
  *
  * @since 2.0.0
@@ -299,25 +286,6 @@ function defined_classes(string $prefix = ''): array
 }
 
 /**
- * @return array<string, string>
- */
-function defined_constants(string $prefix = ''): array
-{
-    $constants = [];
-    foreach (get_defined_constants() as $key => $value) {
-        if (($prefix !== '') && (stripos($key, $prefix) !== 0)) {
-            continue;
-        }
-        if (is_array($value)) {
-            $value = json_encode($value);
-        }
-        $constants[$key] = $value;
-    }
-    ksort($constants);
-    return $constants;
-}
-
-/**
  * @return array<int, string>
  */
 function defined_functions(string $prefix = ''): array
@@ -498,17 +466,7 @@ function time_from_string(string $datetime): int
 
 /**
  * Format a timestamp using PHP's date() format syntax.
- *
- * Note: prior to this change this function used strftime() (deprecated in
- * PHP 8.1, removed in PHP 9.0). The format string must now follow PHP's
- * date() format syntax (same as date_format()).
  */
-function time_format(string $format, ?int $timestamp = null): string
-{
-    $timestamp = $timestamp ?? time();
-    return date($format, $timestamp);
-}
-
 function date_format(string $format, ?int $timestamp = null): string
 {
     $timestamp = $timestamp ?? time();
