@@ -154,6 +154,12 @@ table {
 .brand-title a {
     color:#29251F;
 }
+.brand-title svg {
+    width:1.7em;
+    height:1.7em;
+    vertical-align:-0.42em;
+    margin-right:0.22em;
+}
 .brand-tagline {
     color:#ffffff;
     font-size:2em;
@@ -327,16 +333,6 @@ div.highlight pre {
     font-size:1rem;
     padding-left:0.5rem;
     padding-right:0.5rem;
-}
-
-span.e {
-    color:#fff;
-    background:#bb4444;
-    padding:0 0.25em;
-    display:inline-block;
-    margin:0;
-    line-height: 1.25;
-    transform: rotate(-180deg);
 }
 
 .text-right {
