@@ -20,7 +20,7 @@
             <td>{{ param.name }}</td>
             <td>{{ param.type }}</td>
             <td>{{ param.desc }}</td>
-            <td>{{ param.default }}</td>
+            <td>{% if param.required %}required{% else %}{{ param.default }}{% endif %}</td>
         </tr>
         {% endfor %}
         <tr class="return">

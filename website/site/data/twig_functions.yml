@@ -6,8 +6,8 @@
   params:
     - name: route
       type: string
-      desc: The route to a page.
-      default: ''
+      desc: The route to a page. Must be given, an empty route is not resolved.
+      required: true
   return:
     - string
     - The absolute URL.
@@ -475,8 +475,8 @@
   params:
     - name: route
       type: string
-      desc: The route to a page.
-      default: ''
+      desc: The route to a page. Must be given, an empty route is not resolved.
+      required: true
   return:
     - string
     - The relative URL.

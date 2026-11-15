@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 - PSR-17 factory selection in `ContainerBuilder` deduplicated via `preferredPsr17Package()`.
 - `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
 
+### Documentation
+- The parameter of the Twig functions `url_abs` and `url_rel` is marked as required. It was documented with an empty default, but `UrlManager::createUrl()` has never resolved an empty route to the current route. The `TODO` in `createUrl()` promised exactly that, so it is replaced by a description of what the method does.
+
 ### Removed
 - `herbie\sysplugins\markdown\HerbieParsedownExtra`, the PHP 8.3 compatibility workaround for ParsedownExtra.
 - **Breaking:** The unused global functions `herbie\path_normalize()`, `herbie\defined_constants()` and `herbie\time_format()`. `time_format()` was an exact duplicate of `date_format()`, use that instead.

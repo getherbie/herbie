@@ -74,4 +74,46 @@ final class UrlManagerTest extends Unit
         $um = new UrlManager($request, ['niceUrls' => false, 'baseUrl' => '', 'scriptUrl' => '/index.php']);
         $this->assertSame('/index.php/foo', $um->createUrl('foo'));
     }
+
+    public function testCreateUrlResolvesARouteRelativeToTheSiteRoot(): void
+    {
+        $request = $this->makeRequest('/doc/contents/images');
+        $um = new UrlManager($request, ['niceUrls' => true, 'baseUrl' => '']);
+
+        // "images" is not resolved relative to the current page
+        $this->assertSame('/images', $um->createUrl('images'));
+    }
+
+    public function testCreateUrlIgnoresALeadingSlash(): void
+    {
+        $request = $this->makeRequest('/');
+        $um = new UrlManager($request, ['niceUrls' => true, 'baseUrl' => '']);
+
+        $this->assertSame($um->createUrl('news/entry-one'), $um->createUrl('/news/entry-one'));
+    }
+
+    public function testEmptyRouteYieldsTheSiteRoot(): void
+    {
+        $request = $this->makeRequest('/doc/contents');
+        $um = new UrlManager($request, ['niceUrls' => true, 'baseUrl' => '']);
+
+        // an empty route is not resolved to the current route
+        $this->assertSame('/', $um->createUrl(''));
+    }
+
+    public function testCreateAbsoluteUrlUsesTheRequestHost(): void
+    {
+        $request = $this->makeRequest('/');
+        $um = new UrlManager($request, ['niceUrls' => true, 'baseUrl' => '']);
+
+        $this->assertSame('http://example.com/news/entry-one', $um->createAbsoluteUrl('/news/entry-one'));
+    }
+
+    public function testCreateAbsoluteUrlForTheEmptyRoute(): void
+    {
+        $request = $this->makeRequest('/');
+        $um = new UrlManager($request, ['niceUrls' => true, 'baseUrl' => '']);
+
+        $this->assertSame('http://example.com/', $um->createAbsoluteUrl(''));
+    }
 }

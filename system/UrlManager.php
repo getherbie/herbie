@@ -34,13 +34,15 @@ final class UrlManager
         return (string)$absUrl;
     }
 
+    /**
+     * Creates a URL for a route.
+     *
+     * The route is always interpreted relative to the site root, a leading slash makes no
+     * difference. An empty route yields "/" and is not resolved to the current route; callers
+     * must pass a route.
+     */
     public function createUrl(string $route): string
     {
-        // TODO add support for following routes
-        // - "" -> currently requested route
-        // - "images" -> relative route (doc/contents/images) if current route is "doc/contents"
-        // - "/news/entry-one" -> absolute route -> /news/entry-one
-
         $route = str_unleading_slash($route);
         if ($this->niceUrls) {
             $url = $this->baseUrl . '/' . $route;
