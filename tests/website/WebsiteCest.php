@@ -292,8 +292,8 @@ final class WebsiteCest
         $I->see('Plugins', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>p', 3);
-        $I->seeNumberOfElements('.content>pre', 1);
+        $I->seeNumberOfElements('.content>p', 8);
+        $I->seeNumberOfElements('.content>pre', 2);
         $I->seeNumberOfElements('.plugins>p', 1);
         $I->seeNumberOfElements('.plugins>.plugin', 8);
     }

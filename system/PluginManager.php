@@ -79,21 +79,7 @@ final class PluginManager
             ),
         );
 
-        $enabledSystemPlugins = str_explode_filtered($this->config->getAsString('enabledSysPlugins'), ',');
-        $enabledComposerOrLocalPlugins = str_explode_filtered($this->config->getAsString('enabledPlugins'), ',');
-
-        // system plugins
-        foreach ($this->getInstallablePlugins($enabledSystemPlugins, 'system') as $plugin) {
-            $this->loadInstallablePlugin($plugin);
-        }
-
-        // composer plugins
-        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'composer') as $plugin) {
-            $this->loadInstallablePlugin($plugin);
-        }
-
-        // local plugins
-        foreach ($this->getInstallablePlugins($enabledComposerOrLocalPlugins, 'local') as $plugin) {
+        foreach ($this->resolveInstallablePlugins() as $plugin) {
             $this->loadInstallablePlugin($plugin);
         }
 
@@ -271,29 +257,33 @@ final class PluginManager
     }
 
     /**
-     * @param string[] $enabledPlugins
+     * Resolves the names in the config option "enabledPlugins" to installable plugins.
+     * It does not matter whether a plugin is a system, composer or local plugin.
+     * The plugins are returned in the order of the list.
+     *
      * @return InstallablePlugin[]
      */
-    private function getInstallablePlugins(array $enabledPlugins, string $type): array
+    public function resolveInstallablePlugins(): array
     {
         $plugins = [];
-        foreach ($enabledPlugins as $pluginKey) {
-            $pluginConfigPath = sprintf('plugins.%s', $pluginKey);
-            $pluginConfig = $this->config->getAsArray($pluginConfigPath);
+        foreach (str_explode_filtered($this->config->getAsString('enabledPlugins'), ',') as $pluginKey) {
+            $pluginConfig = $this->config->getAsArray(sprintf('plugins.%s', $pluginKey));
             if (
-                empty($pluginConfig)
-                || ($pluginConfig['location'] !== $type)
-                || empty($pluginConfig['pluginName'])
+                empty($pluginConfig['pluginName'])
                 || empty($pluginConfig['pluginClass'])
                 || empty($pluginConfig['pluginPath'])
             ) {
+                $this->logger->warning(sprintf(
+                    'Plugin %s is enabled, but it was not found or its config is incomplete. The plugin is not loaded.',
+                    $pluginKey,
+                ));
                 continue;
             }
             $plugins[] = new InstallablePlugin(
                 $pluginConfig['pluginName'],
                 $pluginConfig['pluginPath'],
                 $pluginConfig['pluginClass'],
-                $type,
+                (string)($pluginConfig['location'] ?? ''),
             );
         }
 

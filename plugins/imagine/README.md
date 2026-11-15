@@ -10,11 +10,11 @@ It is based on a well thought design and uses some best practices.
 
 The plugin is installed already.
 
-To activate it, add `imagine` to the `enabledSysPlugins` configuration option.
+To activate it, add `imagine` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledSysPlugins' => 'imagine'
+    'enabledPlugins' => 'imagine'
 ];
 ~~~
 

@@ -6,11 +6,11 @@
 
 The plugin is installed already.
 
-To activate it, add `dummy` to the `enabledSysPlugins` configuration option.
+To activate it, add `dummy` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledSysPlugins' => 'dummy'
+    'enabledPlugins' => 'dummy'
 ];
 ~~~
 

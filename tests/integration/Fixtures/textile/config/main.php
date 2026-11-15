@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'enabledSysPlugins' => 'twig,textile',
+    'enabledPlugins' => 'twig,textile',
     'components' => [
         'fileLogger' => null,
     ],

@@ -8,11 +8,11 @@ The plugin uses the package `league/commonmark`, a PHP parser for the [CommonMar
 
 The plugin is installed already.
 
-To activate it, add `markdown` to the `enabledSysPlugins` configuration option.
+To activate it, add `markdown` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledSysPlugins' => 'markdown'
+    'enabledPlugins' => 'markdown'
 ];
 ~~~
 

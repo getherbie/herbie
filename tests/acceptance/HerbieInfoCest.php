@@ -159,7 +159,6 @@ final class HerbieInfoCest
             'components.twigRenderer.strictVariables',
             'components.urlManager.niceUrls',
             'enabledPlugins',
-            'enabledSysPlugins',
             'fileExtensions.layouts',
             'fileExtensions.pages',
             'language',

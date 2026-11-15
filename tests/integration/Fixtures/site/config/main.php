@@ -9,5 +9,5 @@ return [
             'cache' => false,
         ],
     ],
-    'enabledSysPlugins' => 'twig,dummy,imagine,markdown,textile',
+    'enabledPlugins' => 'twig,dummy,imagine,markdown,textile',
 ];

@@ -136,9 +136,4 @@ $settings['plugins']['LOCAL_EXT']['pathTwigTests'] = 'SITE_PATH/extend/twig_test
  */
 $settings['enabledPlugins'] = '';
 
-/**
- * Enabled System Plugins
- */
-$settings['enabledSysPlugins'] = '';
-
 return $settings;

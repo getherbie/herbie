@@ -6,11 +6,11 @@
 
 The plugin is installed already.
 
-To activate it, add `twig` to the `enabledSysPlugins` configuration option.
+To activate it, add `twig` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledSysPlugins' => 'twig'
+    'enabledPlugins' => 'twig'
 ];
 ~~~
 

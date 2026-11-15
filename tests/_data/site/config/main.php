@@ -17,8 +17,7 @@ return [
             'niceUrls' => false,
         ],
     ],
-    'enabledPlugins' => '',
-    'enabledSysPlugins' => 'twig,markdown,rest,textile,imagine,dummy',
+    'enabledPlugins' => 'twig,markdown,rest,textile,imagine,dummy',
     'plugins' => [
         'imagine' => [
             'test' => true,

@@ -9,7 +9,7 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig',
     ],
-    'enabledSysPlugins' => 'twig,imagine,markdown,simplesearch,simplecontact',
+    'enabledPlugins' => 'twig,imagine,markdown,simplesearch,simplecontact',
     'components' => [
         'dataRepository' => [
             'adapter' => 'yaml',

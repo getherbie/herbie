@@ -10,8 +10,8 @@ It is activated in the configuration file.
 
 ~~~php
 return [
-    // a comma-separated list of system plugins to be activated
-    'enabledSysPlugins' => 'simplecontact',
+    // a comma-separated list of plugins to be activated
+    'enabledPlugins' => 'simplecontact',
 ];
 ~~~
 

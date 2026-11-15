@@ -8,11 +8,11 @@ The plugin itself uses the Composer package `doctrine/rst-parser` under the hood
 
 The plugin is installed already.
 
-To activate it, add `textile` to the `enabledSysPlugins` configuration option.
+To activate it, add `textile` to the `enabledPlugins` configuration option.
 
 ~~~php
 return [
-    'enabledSysPlugins' => 'textile'
+    'enabledPlugins' => 'textile'
 ];
 ~~~
 
