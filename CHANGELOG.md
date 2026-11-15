@@ -6,11 +6,16 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Breaking:** Minimum PHP version raised from 8.0 to 8.3. Supported versions: 8.3, 8.4, 8.5, 8.6.
 - Version bumped to 3.0.0 (new major line).
+- **Breaking:** The markdown plugin uses `league/commonmark` instead of `erusev/parsedown` / `erusev/parsedown-extra`. The new option `plugins.markdown.flavor` selects the markdown dialect: `commonmark` (default), `gfm` or `markdown-extra`. An unknown value falls back to `commonmark`. Options for the CommonMark environment are passed with `plugins.markdown.commonmark`.
 - `time_format()` now uses PHP's `date()` format syntax instead of the deprecated `strftime()` (strftime removed in PHP 9.0). **Breaking:** format strings must be migrated from strftime to date() syntax.
 - PSR-17 factory selection in `ContainerBuilder` deduplicated via `preferredPsr17Package()`.
 - `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
 
+### Removed
+- `herbie\sysplugins\markdown\HerbieParsedownExtra`, the PHP 8.3 compatibility workaround for ParsedownExtra.
+
 ### Fixed
+- Raw HTML blocks in markdown pages are kept intact again. CommonMark ends an HTML block at the first empty line, so such blocks are protected before parsing. Indented code samples that contain HTML stay code blocks, as before.
 - `UrlManager::parseRequest()` now caches the parsed request when a route rule matches.
 - Cache directory is created with mode 0755 instead of 0644.
 
