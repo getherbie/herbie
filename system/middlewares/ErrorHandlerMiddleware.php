@@ -50,15 +50,19 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             $response = $handler->handle($request);
         } catch (Throwable $e) {
-            $contentType = $this->resolveContentType($request);
+            $bodyContentType = $this->resolveContentType($request);
+            if (!$this->isXml($bodyContentType)) {
+                // the only non XML representation available is the HTML error template
+                $bodyContentType = self::DEFAULT_CONTENT_TYPE;
+            }
 
-            if ($this->isXml($contentType)) {
-                $content = $this->renderXmlError($e);
-            } else {
+            if ($bodyContentType === self::DEFAULT_CONTENT_TYPE) {
                 if (!$this->twigRenderer->isInitialized()) {
                     $this->twigRenderer->init();
                 }
                 $content = $this->twigRenderer->renderTemplate('error.twig', ['error' => $e]);
+            } else {
+                $content = $this->renderXmlError($e);
             }
 
             $code = $e->getCode();
@@ -68,7 +72,7 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 
             $response = $this->responseFactory
                 ->createResponse($code)
-                ->withHeader('Content-Type', $contentType);
+                ->withHeader('Content-Type', $bodyContentType);
             $response->getBody()->write($content);
 
             error_log($e->getMessage());
@@ -80,81 +84,53 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Determines the Content-Type of the response the request would have produced.
+     * Returns the Content-Type the response would have had.
      *
-     * The page itself is the most reliable source. It is looked up here instead of reading
-     * the request attribute, because a middleware that ran earlier received a new request
-     * object and the error handler only sees the original one. If no page matches, the
-     * Accept header of the client decides.
+     * The page is looked up here rather than read from the request attribute: a middleware
+     * in front passes an enriched copy of the request down the chain, so the error handler
+     * only ever sees the original object. Without a matching page the Accept header decides.
      */
     private function resolveContentType(ServerRequestInterface $request): string
     {
         try {
             [$route] = $this->urlManager->parseRequest();
             $page = $this->pageRepository->findAll()->getItem($route);
-        } catch (Throwable) {
-            $page = null;
-        }
-
-        if ($page instanceof Page) {
-            $contentType = $page->getContentType();
-            if ($contentType !== '') {
-                return $contentType;
+            if ($page instanceof Page && $page->getContentType() !== '') {
+                return $page->getContentType();
             }
+        } catch (Throwable) {
+            // fall through to the Accept header
         }
 
-        return $this->acceptsXml($request)
-            ? self::XML_CONTENT_TYPE
-            : self::DEFAULT_CONTENT_TYPE;
-    }
-
-    private function acceptsXml(ServerRequestInterface $request): bool
-    {
         $accept = $request->getHeaderLine('Accept');
-        if ($accept === '') {
-            return false;
-        }
-        return (strpos($accept, 'xml') !== false) && (strpos($accept, 'html') === false);
+        $wantsXml = $accept !== '' && str_contains($accept, 'xml') && !str_contains($accept, 'html');
+
+        return $wantsXml ? self::XML_CONTENT_TYPE : self::DEFAULT_CONTENT_TYPE;
     }
 
     private function isXml(string $contentType): bool
     {
         $contentType = strtolower($contentType);
-        return (strpos($contentType, 'xml') !== false) || (strpos($contentType, 'rss') !== false);
+        return str_contains($contentType, 'xml') || str_contains($contentType, 'rss');
     }
 
     /**
      * Renders a minimal XML error document.
      *
-     * The Twig error template produces HTML, which would make the response unparsable for a
-     * client that expects XML.
+     * The Twig template produces HTML, which a client expecting XML cannot parse. Characters
+     * that XML forbids are removed, otherwise a message quoting binary data would break the
+     * document itself.
      */
     private function renderXmlError(Throwable $e): string
     {
-        $code = $e->getCode();
-        if (empty($code)) {
-            $code = 500;
-        }
+        $code = empty($e->getCode()) ? 500 : (int)$e->getCode();
+        $message = preg_replace('/[^\x09\x0A\x0D\x20-\x{10FFFF}]/u', '', $e->getMessage()) ?? '';
 
-        $document = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><error/>');
-        $document->addChild('code', (string)$code);
-        $document->addChild('message', $this->escapeXml($e->getMessage()));
-
-        return $document->asXML() ?: '';
-    }
-
-    /**
-     * Escapes a string for XML and removes characters that are not allowed in XML 1.0.
-     *
-     * An error message can contain arbitrary bytes, for example when it quotes a binary
-     * string. Such characters would make the error document itself unparsable.
-     */
-    private function escapeXml(string $value): string
-    {
-        // Allowed in XML 1.0: tab, line feed, carriage return, and everything from 0x20 on.
-        $value = preg_replace('/[^\x09\x0A\x0D\x20-\x{10FFFF}]/u', '', $value) ?? '';
-
-        return htmlspecialchars($value, ENT_XML1);
+        return sprintf(
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<error><code>%d</code><message>%s</message></error>\n",
+            $code,
+            htmlspecialchars($message, ENT_XML1)
+        );
     }
 
     /**

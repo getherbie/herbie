@@ -137,6 +137,43 @@ final class ErrorHandlerMiddlewareTest extends Unit
         $this->assertStringContainsString('text/html', $response->getHeaderLine('Content-Type'));
     }
 
+    public function testBodyNeverContradictsTheContentType(): void
+    {
+        $contentTypes = ['text/html', 'text/xml', 'text/plain', 'application/json', 'text/csv'];
+
+        foreach ($contentTypes as $contentType) {
+            $middleware = $this->createMiddleware(new Page(['content_type' => $contentType]));
+
+            $response = $middleware->process(
+                new ServerRequest(),
+                $this->failingHandler(new RuntimeException('Something failed'))
+            );
+
+            $body = (string)$response->getBody();
+            $declared = $response->getHeaderLine('Content-Type');
+            $isHtmlBody = str_contains($body, '<html');
+
+            $this->assertSame(
+                $isHtmlBody,
+                str_contains($declared, 'html'),
+                sprintf('Body and Content-Type "%s" do not match: %s', $declared, $body)
+            );
+        }
+    }
+
+    public function testPlainTextPageDoesNotAnnounceXmlOrHtmlMarkup(): void
+    {
+        $middleware = $this->createMiddleware(new Page(['content_type' => 'text/plain']));
+
+        $response = $middleware->process(
+            new ServerRequest(),
+            $this->failingHandler(new RuntimeException('Something failed'))
+        );
+
+        // the body is HTML, so the header must say so instead of claiming text/plain
+        $this->assertStringContainsString('html', $response->getHeaderLine('Content-Type'));
+    }
+
     public function testStatusCodeFallsBackTo500WhenTheExceptionHasNoCode(): void
     {
         $middleware = $this->createMiddleware(new Page(['content_type' => 'text/xml']));
