@@ -51,9 +51,28 @@ final class Alias
         return $this->aliases;
     }
 
+    /**
+     * Resolves an alias at the beginning of the given path, e.g. "@page/about.md".
+     *
+     * Only the leading alias is replaced, and only as a whole segment: "@page"
+     * matches "@page/about.md", but not "@pages/about.md". A path without an
+     * alias is returned unchanged.
+     *
+     * @throws InvalidArgumentException if the path starts with an unknown alias
+     */
     public function get(string $alias): string
     {
-        return strtr($alias, $this->aliases);
+        if (strncmp($alias, '@', 1) !== 0) {
+            return $alias;
+        }
+
+        $name = strtok($alias, '/');
+        if ($name === false || !array_key_exists($name, $this->aliases)) {
+            throw new InvalidArgumentException(sprintf('Alias %s does not exist.', $name));
+        }
+
+        $rest = substr($alias, strlen($name));
+        return $this->aliases[$name] . $rest;
     }
 
     public function update(string $alias, string $path): void

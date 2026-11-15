@@ -68,6 +68,38 @@ final class AliasTest extends Unit
         $this->assertSame('foo/path/subpath', $this->alias->get('@foo/path/subpath'));
     }
 
+    public function testGetReturnsPathWithoutAliasUnchanged()
+    {
+        $this->assertSame('/absolute/path.md', $this->alias->get('/absolute/path.md'));
+        $this->assertSame('relative/path.md', $this->alias->get('relative/path.md'));
+    }
+
+    public function testGetDoesNotReplaceAnAliasInTheMiddle()
+    {
+        // only the leading alias is replaced
+        $this->assertSame('mail@to.de', $this->alias->get('mail@to.de'));
+        $this->assertSame('/path/@2x/image.png', $this->alias->get('/path/@2x/image.png'));
+    }
+
+    public function testGetOnlyMatchesWholeSegments()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->alias->get('@fooother/path');
+    }
+
+    public function testGetWithUnknownAliasThrows()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Alias @missing does not exist.');
+        $this->alias->get('@missing/path');
+    }
+
+    public function testGetOnlyUnknownAliasThrows()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->alias->get('@missing');
+    }
+
     public function testUpdate()
     {
         $this->alias->update('@foo', 'fooooo');

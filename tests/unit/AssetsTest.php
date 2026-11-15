@@ -5,6 +5,7 @@ namespace herbie\tests\unit;
 use Codeception\Test\Unit;
 use herbie\Alias;
 use herbie\Assets;
+use InvalidArgumentException;
 
 final class AssetsTest extends Unit
 {
@@ -129,13 +130,13 @@ final class AssetsTest extends Unit
         $this->assertStringContainsString('https://example.com/styles.css', $html);
     }
 
-    /**
-     * An unknown alias is not replaced, the path is used as it is, so the file is
-     * looked up relative to the current working directory.
-     */
-    public function testUnknownAliasIsNotReplaced(): void
+    public function testUnknownAliasThrows(): void
     {
-        $this->assertSame('@not-existing/styles.css', $this->createAlias()->get('@not-existing/styles.css'));
+        $assets = $this->createAssets();
+        $assets->addCss('@not-existing/styles.css');
+
+        $this->expectException(InvalidArgumentException::class);
+        $assets->outputCss();
     }
 
     private function createAlias(): Alias
