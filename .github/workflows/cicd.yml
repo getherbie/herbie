@@ -109,11 +109,11 @@ jobs:
       - name: Deploy to server via scp
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST_3X }}
-          username: ${{ secrets.SSH_USERNAME_3X }}
-          password: ${{ secrets.SSH_PASSWORD_3X }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "website"
-          target: ${{ secrets.SSH_TARGET_3X }}
+          target: ${{ secrets.SSH_TARGET }}
           rm: true
           strip_components: 1
