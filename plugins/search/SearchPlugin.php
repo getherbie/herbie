@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace herbie\sysplugins\search;
 
 use Exception;
+use herbie\AbstractPlugin;
 use herbie\Config;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
-use herbie\PluginName;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
-#[PluginName('search')]
-final class SearchPlugin extends Plugin
+#[Plugin('search')]
+final class SearchPlugin extends AbstractPlugin
 {
     private CacheInterface $cache;
     private Config $config;

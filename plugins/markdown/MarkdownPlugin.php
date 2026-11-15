@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace herbie\sysplugins\markdown;
 
 use herbie\Config;
-use herbie\PluginName;
-use herbie\sysplugins\ParserPlugin;
+use herbie\Plugin;
+use herbie\sysplugins\AbstractParserPlugin;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\ExtensionInterface;
@@ -14,8 +14,8 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Psr\Log\LoggerInterface;
 
-#[PluginName('markdown')]
-final class MarkdownPlugin extends ParserPlugin
+#[Plugin('markdown', requires: ['league/commonmark' => '^2.10'])]
+final class MarkdownPlugin extends AbstractParserPlugin
 {
     /**
      * Available markdown flavours
@@ -42,9 +42,6 @@ final class MarkdownPlugin extends ParserPlugin
     public function __construct(Config $config, LoggerInterface $logger)
     {
         parent::__construct($config, $logger, 'plugins.markdown');
-        if (!class_exists(Environment::class)) {
-            $logger->error('Please install "league/commonmark" via composer');
-        }
     }
 
     protected function getFormats(): array

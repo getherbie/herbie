@@ -7,14 +7,14 @@ namespace herbie\tests\_data\site\extend\plugins\dummy2;
 use herbie\events\ContentRenderedEvent;
 use herbie\events\RenderLayoutEvent;
 use herbie\events\RenderSegmentEvent;
+use herbie\Plugin;
 use herbie\PluginInterface;
-use herbie\PluginName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-#[PluginName('dummy2')]
+#[Plugin('dummy2')]
 final class Dummy2Plugin implements PluginInterface
 {
     private LoggerInterface $logger;

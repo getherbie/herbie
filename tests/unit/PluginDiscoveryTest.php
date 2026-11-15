@@ -33,9 +33,9 @@ final class PluginDiscoveryTest extends Unit
 
             namespace my\ns;
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName('bar')]
+            #[Plugin('bar')]
             final class FooPlugin {}
             PHP);
 
@@ -57,9 +57,9 @@ final class PluginDiscoveryTest extends Unit
 
             namespace my\ns;
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName]
+            #[Plugin]
             final class FooPlugin {}
             PHP);
 
@@ -71,9 +71,9 @@ final class PluginDiscoveryTest extends Unit
         $this->writePlugin('local', 'foo', 'plugin.php', <<<'PHP'
             <?php
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             class MyPlugin {}
             PHP);
 
@@ -90,7 +90,7 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            #[\herbie\PluginName('a')]
+            #[\herbie\Plugin('a')]
             final class A {}
             PHP);
         $this->writePlugin('system', 'b', 'B.php', <<<'PHP'
@@ -98,7 +98,7 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            use herbie\PluginName as Name;
+            use herbie\Plugin as Name;
 
             #[Name('b')]
             final class B {}
@@ -108,7 +108,7 @@ final class PluginDiscoveryTest extends Unit
 
             namespace herbie;
 
-            #[PluginName('c')]
+            #[Plugin('c')]
             final class C {}
             PHP);
 
@@ -126,14 +126,30 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[Deprecated('some, text'), PluginName('foo')]
+            #[Deprecated('some, text'), Plugin('foo')]
             #[Other(['a' => 1])]
             final class FooPlugin {}
             PHP);
 
         $this->assertArrayHasKey('foo', $this->discover());
+    }
+
+    public function testFindsNameWhenManifestHasRequires(): void
+    {
+        $this->writePlugin('system', 'foo', 'FooPlugin.php', <<<'PHP'
+            <?php
+
+            namespace x;
+
+            use herbie\Plugin;
+
+            #[Plugin('foo', requires: ['vendor/package' => '^1.0', 'other/package'])]
+            final class FooPlugin {}
+            PHP);
+
+        $this->assertSame('x\FooPlugin', $this->discover()['foo']['pluginClass']);
     }
 
     public function testIgnoresOtherAttributesAndClassesWithoutAttribute(): void
@@ -143,9 +159,9 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            use Other\PluginName;
+            use Other\Plugin;
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             final class Plain {}
             PHP);
         $this->writePlugin('system', 'bar', 'Bar.php', <<<'PHP'
@@ -153,7 +169,7 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            // PluginName is only mentioned here
+            // Plugin is only mentioned here
             final class Bar
             {
                 public function name(): string
@@ -173,12 +189,12 @@ final class PluginDiscoveryTest extends Unit
 
             namespace x;
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
             $name = Foo::class;
             $anonymous = new class {};
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             final class FooPlugin {}
             PHP);
 
@@ -190,9 +206,9 @@ final class PluginDiscoveryTest extends Unit
         $this->writePlugin('system', 'foo', 'FooPlugin.php', <<<'PHP'
             <?php
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             final class FooPlugin {}
             PHP);
         file_put_contents($this->root . '/system/foo/config.php', <<<'PHP'
@@ -219,17 +235,17 @@ final class PluginDiscoveryTest extends Unit
         $this->writePlugin('system', 'foo', 'FooPlugin.php', <<<'PHP'
             <?php
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             final class SystemFoo {}
             PHP);
         $this->writePlugin('local', 'foo', 'FooPlugin.php', <<<'PHP'
             <?php
 
-            use herbie\PluginName;
+            use herbie\Plugin;
 
-            #[PluginName('foo')]
+            #[Plugin('foo')]
             final class LocalFoo {}
             PHP);
 
@@ -293,7 +309,7 @@ final class PluginDiscoveryTest extends Unit
 
     private function pluginCode(string $class, string $name = 'foo'): string
     {
-        return "<?php\n\nuse herbie\\PluginName;\n\n#[PluginName('" . $name . "')]\nfinal class " . $class . " {}\n";
+        return "<?php\n\nuse herbie\\Plugin;\n\n#[Plugin('" . $name . "')]\nfinal class " . $class . " {}\n";
     }
 
     private function writePlugin(string $source, string $dir, string $file, string $code): void

@@ -416,12 +416,12 @@ The main differences are:
 
 The latter is achieved through dependency injection.
 
-A plugin is a directory with a PHP class that is marked with the `#[PluginName]` attribute.
+A plugin is a directory with a PHP class that is marked with the `#[Plugin]` attribute.
 
     myplugin
     └── MyPlugin.php
 
-The attribute gives the plugin its name, which is used in the `enabledPlugins` setting and as key `plugins.myplugin` in the configuration.
+The first argument of the attribute is the name of the plugin, which is used in the `enabledPlugins` setting and as key `plugins.myplugin` in the configuration.
 Herbie finds the class by scanning the PHP files in the plugin directory, one level deep, without executing them.
 There is one plugin per directory.
 
@@ -446,14 +446,23 @@ return [
 ];
 ~~~
 
+A plugin can declare the Composer packages it needs with the argument `requires` of the attribute, a list of packages with a version constraint.
+The packages are checked when the plugin is enabled, packages of plugins that are not enabled are not checked.
+If a package is missing or does not match the version constraint, Herbie throws an exception that tells what to install.
+
+~~~php
+#[Plugin('myplugin', requires: ['league/commonmark' => '^2.10'])]
+class MyPlugin implements herbie\PluginInterface
+~~~
+
 The plugin itself is a PHP class with the following methods:
 
 ~~~php 
 <?php
 
-use herbie\PluginName;
+use herbie\Plugin;
 
-#[PluginName('myplugin')]
+#[Plugin('myplugin')]
 class MyPlugin implements herbie\PluginInterface
 {
     public function apiVersion(): int
@@ -520,7 +529,7 @@ So the complete class looks like:
 ~~~php
 <?php
 
-use herbie\PluginName;
+use herbie\Plugin;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -545,7 +554,7 @@ class CustomCommand extends Command
     }
 }
 
-#[PluginName('myplugin')]
+#[Plugin('myplugin')]
 class MyPlugin implements herbie\PluginInterface
 {
     public function apiVersion(): int

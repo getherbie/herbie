@@ -11,7 +11,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final class SystemInfoPlugin extends Plugin
+final class SystemInfoPlugin extends AbstractPlugin
 {
     private string $appPath;
 

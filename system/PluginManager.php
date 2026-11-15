@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use herbie\events\PluginsInitializedEvent;
 use herbie\events\TwigInitializedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -284,6 +287,7 @@ final class PluginManager
             if (is_string($pluginFile) && !class_exists($pluginConfig['pluginClass']) && is_file($pluginFile)) {
                 require_once $pluginFile;
             }
+            $this->assertRequiredPackages($pluginKey, $pluginConfig['pluginClass']);
             $plugins[] = new InstallablePlugin(
                 $pluginConfig['pluginName'],
                 $pluginConfig['pluginPath'],
@@ -293,6 +297,47 @@ final class PluginManager
         }
 
         return $plugins;
+    }
+
+    /**
+     * Checks the packages that a plugin declares with the key "requires" of the attribute Plugin.
+     *
+     * @throws SystemException if a package is missing or does not match the version constraint
+     */
+    private function assertRequiredPackages(string $pluginKey, string $className): void
+    {
+        if (!class_exists($className)) {
+            return;
+        }
+        $attributes = (new ReflectionClass($className))->getAttributes(Plugin::class);
+        if ($attributes === []) {
+            return;
+        }
+        foreach ($attributes[0]->newInstance()->requires as $key => $value) {
+            $package = is_int($key) ? $value : $key;
+            $constraint = is_int($key) ? null : $value;
+
+            if (!InstalledVersions::isInstalled($package)) {
+                throw new SystemException(sprintf(
+                    'Plugin %s requires the package %s. Install it with: composer require %s',
+                    $pluginKey,
+                    $package,
+                    $constraint === null ? $package : sprintf('"%s:%s"', $package, $constraint),
+                ), 500);
+            }
+
+            if ($constraint !== null && !InstalledVersions::satisfies(new VersionParser(), $package, $constraint)) {
+                throw new SystemException(sprintf(
+                    'Plugin %s requires the package %s in version %s, but version %s is installed. Update it with: composer require "%s:%s"',
+                    $pluginKey,
+                    $package,
+                    $constraint,
+                    (string)InstalledVersions::getPrettyVersion($package),
+                    $package,
+                    $constraint,
+                ), 500);
+            }
+        }
     }
 
     /**

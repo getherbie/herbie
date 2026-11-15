@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace herbie\sysplugins\twig;
 
 use Ausi\SlugGenerator\SlugGenerator;
+use herbie\AbstractPlugin;
 use herbie\Alias;
 use herbie\Assets;
 use herbie\Config;
 use herbie\events\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
-use herbie\PluginName;
 use herbie\Translator;
 use herbie\UrlManager;
 
-#[PluginName('twig')]
-final class TwigPlugin extends Plugin
+#[Plugin('twig')]
+final class TwigPlugin extends AbstractPlugin
 {
     public function __construct(
         private Alias $alias,

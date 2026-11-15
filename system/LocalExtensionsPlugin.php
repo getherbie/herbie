@@ -9,7 +9,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-final class LocalExtensionsPlugin extends Plugin
+final class LocalExtensionsPlugin extends AbstractPlugin
 {
     public function __construct(protected Config $config) {}
 

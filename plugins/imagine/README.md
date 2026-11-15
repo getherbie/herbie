@@ -10,6 +10,10 @@ It is based on a well thought design and uses some best practices.
 
 The plugin is installed already.
 
+The plugin needs the following PHP package, Herbie throws an exception on start if it is missing:
+
+    composer require imagine/imagine
+
 To activate it, add `imagine` to the `enabledPlugins` configuration option.
 
 ~~~php

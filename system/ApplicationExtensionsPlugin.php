@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class ApplicationExtensionsPlugin extends Plugin
+final class ApplicationExtensionsPlugin extends AbstractPlugin
 {
     public function __construct(private Application $application) {}
 

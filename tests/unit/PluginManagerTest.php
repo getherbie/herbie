@@ -7,7 +7,9 @@ namespace herbie\tests\unit;
 use Codeception\Test\Unit;
 use herbie\Config;
 use herbie\EventManager;
+use herbie\Plugin;
 use herbie\PluginManager;
+use herbie\SystemException;
 use herbie\Translator;
 use Psr\Container\ContainerInterface;
 use Psr\Log\AbstractLogger;
@@ -110,16 +112,67 @@ final class PluginManagerTest extends Unit
         $this->assertSame([], $manager->resolveInstallablePlugins());
     }
 
+    public function testPluginWithInstalledRequiredPackageIsResolved(): void
+    {
+        $manager = $this->createManager([
+            'enabledPlugins' => 'foo',
+            'plugins' => ['foo' => $this->pluginConfig('foo', 'system', PluginWithInstalledPackage::class)],
+        ]);
+
+        $this->assertCount(1, $manager->resolveInstallablePlugins());
+    }
+
+    public function testPluginWithMissingRequiredPackageThrowsException(): void
+    {
+        $manager = $this->createManager([
+            'enabledPlugins' => 'foo',
+            'plugins' => ['foo' => $this->pluginConfig('foo', 'system', PluginWithMissingPackage::class)],
+        ]);
+
+        $this->expectException(SystemException::class);
+        $this->expectExceptionMessage('composer require does-not/exist');
+
+        $manager->resolveInstallablePlugins();
+    }
+
+    public function testPluginWithWrongVersionOfRequiredPackageThrowsException(): void
+    {
+        $manager = $this->createManager([
+            'enabledPlugins' => 'foo',
+            'plugins' => ['foo' => $this->pluginConfig('foo', 'system', PluginWithWrongPackageVersion::class)],
+        ]);
+
+        $this->expectException(SystemException::class);
+        $this->expectExceptionMessage('psr/log in version ^9.0');
+
+        $manager->resolveInstallablePlugins();
+    }
+
+    public function testRequiredPackagesOfPluginsThatAreNotEnabledAreNotChecked(): void
+    {
+        $manager = $this->createManager([
+            'enabledPlugins' => 'bar',
+            'plugins' => [
+                'foo' => $this->pluginConfig('foo', 'system', PluginWithMissingPackage::class),
+                'bar' => $this->pluginConfig('bar', 'system'),
+            ],
+        ]);
+
+        $keys = array_map(fn($plugin) => $plugin->getKey(), $manager->resolveInstallablePlugins());
+
+        $this->assertSame(['bar'], $keys);
+    }
+
     /**
      * @return array<string, string>
      */
-    private function pluginConfig(string $name, string $location): array
+    private function pluginConfig(string $name, string $location, string $class = 'herbie\tests\unit\FooPlugin'): array
     {
         return [
             'location' => $location,
             'pluginName' => $name,
             'pluginPath' => '/path/to/' . $name,
-            'pluginClass' => 'herbie\tests\unit\FooPlugin',
+            'pluginClass' => $class,
         ];
     }
 
@@ -167,3 +220,12 @@ final class PluginManagerTest extends Unit
         };
     }
 }
+
+#[Plugin('installed', requires: ['psr/log' => '^1.1'])]
+final class PluginWithInstalledPackage {}
+
+#[Plugin('missing', requires: ['does-not/exist'])]
+final class PluginWithMissingPackage {}
+
+#[Plugin('wrong-version', requires: ['psr/log' => '^9.0'])]
+final class PluginWithWrongPackageVersion {}

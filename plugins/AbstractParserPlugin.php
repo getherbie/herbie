@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace herbie\sysplugins;
 
+use herbie\AbstractPlugin;
 use herbie\Config;
 use herbie\events\RenderSegmentEvent;
-use herbie\Plugin;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -17,7 +17,7 @@ use Throwable;
  * and how a segment is converted. The event listener, the twig filter and the twig
  * function are set up once for all of them.
  */
-abstract class ParserPlugin extends Plugin
+abstract class AbstractParserPlugin extends AbstractPlugin
 {
     protected Config $config;
 

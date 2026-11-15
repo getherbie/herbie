@@ -9,7 +9,7 @@ use Composer\InstalledVersions;
 /**
  * Finds the plugins of the three sources "system", "composer" and "local".
  *
- * A plugin is a directory with a class marked with the #[PluginName('name')] attribute.
+ * A plugin is a directory with a class marked with the #[Plugin('name')] attribute.
  * The class is found by scanning the PHP files of the directory with the tokenizer, no code is executed.
  * An optional config.php in the plugin directory returns the default values of the plugin.
  *
@@ -18,7 +18,7 @@ use Composer\InstalledVersions;
  */
 final class PluginDiscovery
 {
-    private const string ATTRIBUTE = PluginName::class;
+    private const string ATTRIBUTE = Plugin::class;
 
     private const string CONFIG_FILE = 'config.php';
 
@@ -167,14 +167,14 @@ final class PluginDiscovery
     }
 
     /**
-     * Searches a PHP file for a class with the #[PluginName] attribute.
+     * Searches a PHP file for a class with the #[Plugin] attribute.
      *
      * @return array{class: string, name: string}|null
      */
     private function findPluginClass(string $file): ?array
     {
         $code = @file_get_contents($file);
-        if ($code === false || !str_contains($code, 'PluginName')) {
+        if ($code === false || !str_contains($code, '#[')) {
             return null;
         }
 
@@ -267,7 +267,7 @@ final class PluginDiscovery
 
     /**
      * Reads the attributes of an attribute group, the position is the one after "#[".
-     * Returns the name argument of the PluginName attribute, if the group contains it with a string as argument.
+     * Returns the name argument of the Plugin attribute, if the group contains it with a string as argument.
      *
      * @param array<int, array{int, string, int}|string> $tokens
      * @param array<string, string> $imports

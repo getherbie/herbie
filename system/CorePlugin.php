@@ -12,7 +12,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final class CorePlugin extends Plugin
+final class CorePlugin extends AbstractPlugin
 {
     private string $layoutFileExtension;
     private bool $enableTwigInLayoutFilter;

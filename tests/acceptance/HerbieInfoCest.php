@@ -50,6 +50,7 @@ final class HerbieInfoCest
     {
         $classes = [
             'herbie\AbstractEvent',
+            'herbie\AbstractPlugin',
             'herbie\Alias',
             'herbie\Application',
             'herbie\ApplicationExtensionsPlugin',
@@ -95,7 +96,7 @@ final class HerbieInfoCest
             'herbie\middlewares\PageRendererMiddleware',
             'herbie\middlewares\PageResolverMiddleware',
             'herbie\middlewares\ResponseTimeMiddleware',
-            'herbie\sysplugins\ParserPlugin',
+            'herbie\sysplugins\AbstractParserPlugin',
             'herbie\sysplugins\dummy\DummyPlugin',
             'herbie\sysplugins\imagine\ImaginePlugin',
             'herbie\sysplugins\markdown\MarkdownPlugin',

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace herbie\sysplugins\contact;
 
+use herbie\AbstractPlugin;
 use herbie\Config;
 use herbie\Plugin;
-use herbie\PluginName;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
@@ -15,8 +15,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\TwigFunction;
 
-#[PluginName('contact')]
-final class ContactPlugin extends Plugin
+#[Plugin('contact')]
+final class ContactPlugin extends AbstractPlugin
 {
     private Config $config;
     private ServerRequestInterface $request;
