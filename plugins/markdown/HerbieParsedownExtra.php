@@ -10,10 +10,10 @@ use ParsedownExtra;
 /**
  * ParsedownExtra subclass with PHP 8.3 compatibility fix.
  *
- * ParsedownExtra's blockMarkupComplete() calls processTag() with markup
- * that can be empty or whitespace-only, which causes DOMDocument::loadHTML()
- * to throw a ValueError on PHP 8.3+.
- * This subclass guards against that case.
+ * ParsedownExtra's processTag() calls DOMDocument::loadHTML() with markup
+ * that can be empty or whitespace-only, which throws a ValueError on PHP 8.3+.
+ * This subclass guards against that case and also handles the mb_convert_encoding
+ * deprecation in PHP 8.2+.
  */
 class HerbieParsedownExtra extends ParsedownExtra
 {
@@ -27,10 +27,15 @@ class HerbieParsedownExtra extends ParsedownExtra
             return '';
         }
 
+        // Suppress mb_convert_encoding deprecation (PHP 8.2+) inside parent
+        $previousLevel = error_reporting(error_reporting() & ~E_DEPRECATED);
+
         try {
             return parent::processTag($elementMarkup);
         } catch (\Throwable $e) {
             return $elementMarkup;
+        } finally {
+            error_reporting($previousLevel);
         }
     }
 }
