@@ -18,13 +18,19 @@ final readonly class Finder
 
     public function pageFiles(): \Symfony\Component\Finder\Finder
     {
-        $patterns = $this->getPatterns($this->extensions);
-        return (new \Symfony\Component\Finder\Finder())
+        $finder = (new \Symfony\Component\Finder\Finder())
             ->files()
             ->in($this->path)
-            ->notPath('#(^|/)_.+(/|$)#') // ignore underscore files and folders
-            ->name($patterns)
-            ->sortByName();
+            ->notPath('#(^|/)_.+(/|$)#'); // ignore underscore files and folders
+
+        $patterns = $this->getPatterns($this->extensions);
+        if ($patterns === []) {
+            // without extensions no file is a page, a name filter with an empty
+            // list would not filter at all
+            return $finder->name('#.^#');
+        }
+
+        return $finder->name($patterns)->sortByName();
     }
 
     protected function getPatterns(array $extensions): array

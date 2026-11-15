@@ -61,18 +61,14 @@ final class FinderTest extends Unit
     }
 
     /**
-     * Without configured extensions the name filter is built from an empty list,
-     * so it does not filter at all and every file is returned.
+     * Without configured extensions no file can be a page. A name filter with an
+     * empty list would not filter at all, so the result has to be empty.
      */
-    public function testPageFilesWithoutExtensionsFindsEveryFile(): void
+    public function testPageFilesWithoutExtensionsFindsNothing(): void
     {
         $finder = new Finder(['path' => $this->fixturePath]);
 
-        $names = $this->getBasenames($finder->pageFiles());
-
-        $this->assertContains('page.md', $names);
-        $this->assertContains('script.php', $names);
-        $this->assertContains('other.txt', $names);
+        $this->assertCount(0, $finder->pageFiles());
     }
 
     /**
