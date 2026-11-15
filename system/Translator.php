@@ -8,8 +8,6 @@ use InvalidArgumentException;
 
 final class Translator
 {
-    private string $language;
-
     /**
      * @var array<string, string[]>
      */
@@ -23,9 +21,8 @@ final class Translator
     /**
      * Translator constructor.
      */
-    public function __construct(string $language)
+    public function __construct(private readonly string $language)
     {
-        $this->language = $language;
         $this->paths = [];
         $this->messages = [];
     }

@@ -27,14 +27,13 @@ final class FileLogger implements LoggerInterface
         LogLevel::ALERT => 6,
         LogLevel::EMERGENCY => 7,
     ];
-    private string $file;
-    private string $channel;
     private int $level;
 
-    public function __construct(string $file, string $channel, string $level = LogLevel::DEBUG)
-    {
-        $this->file = $file;
-        $this->channel = $channel;
+    public function __construct(
+        private readonly string $file,
+        private readonly string $channel,
+        string $level = LogLevel::DEBUG
+    ) {
         $this->setLevel($level);
     }
 

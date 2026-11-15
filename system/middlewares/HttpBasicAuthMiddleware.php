@@ -18,8 +18,10 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
     /**
      * HttpBasicAuthMiddleware constructor.
      */
-    public function __construct(array $users, ResponseFactoryInterface $responseFactory)
-    {
+    public function __construct(
+        #[\SensitiveParameter] array $users,
+        ResponseFactoryInterface $responseFactory
+    ) {
         $this->responseFactory = $responseFactory;
         $this->users = $users;
     }

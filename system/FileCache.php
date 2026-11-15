@@ -27,7 +27,7 @@ final class FileCache implements CacheInterface
             throw new InvalidArgumentException('Provided path is not a writable directory');
         }
 
-        $this->path = $path; // here we have a valid and existing path
+        $this->path = $path;
     }
 
     #[\Override]
