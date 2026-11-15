@@ -14,6 +14,9 @@
     "minimum-stability": "dev",
     "config": {
         "sort-packages": true,
+        "platform": {
+            "php": "8.3.0"
+        },
         "allow-plugins": {
             "codeception/c3": true
         }
