@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie;
 
 use Ausi\SlugGenerator\SlugGenerator;
-use Closure;
 use Composer\InstalledVersions;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -18,7 +17,6 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionFunction;
 use ReflectionNamedType;
 use RuntimeException;
 use Throwable;
@@ -266,86 +264,6 @@ function handle_internal_webserver_assets(string $file): void
         }
         readfile($requestedAbsoluteFile);
         exit;
-    }
-}
-
-/**
- * @return array<int, string>
- */
-function defined_classes(string $prefix = ''): array
-{
-    $classes = [];
-    foreach (get_declared_classes() as $class) {
-        if (($prefix !== '') && (stripos($class, $prefix) !== 0)) {
-            continue;
-        }
-        $classes[] = $class;
-    }
-    sort($classes);
-    return $classes;
-}
-
-/**
- * @return array<int, string>
- */
-function defined_functions(string $prefix = ''): array
-{
-    $functions = [];
-    foreach (get_defined_functions()['user'] as $function) {
-        if (($prefix !== '') && (stripos($function, $prefix) !== 0)) {
-            continue;
-        }
-        $functions[] = $function;
-    }
-    sort($functions);
-    return $functions;
-}
-
-/**
- * @param Closure|string|array<object|string, string>|object|callable $callable
- * @return array{string, string}
- * @see https://stackoverflow.com/a/68113840/6161354
- */
-function get_callable_name($callable): array
-{
-    switch (true) {
-        case is_string($callable) && strpos($callable, '::'):
-            return ['static', $callable];
-        case is_string($callable):
-            return ['function', $callable];
-        case is_array($callable) && is_object($callable[0]):
-            if (is_string($callable[1])) {
-                $method = $callable[1];
-            } else {
-                /** @phpstan-ignore-next-line */
-                $method = (string) $callable[1];
-            }
-            return ['method', get_class($callable[0]) . '->' . $method];
-        case is_array($callable):
-            if (is_string($callable[1])) {
-                $method = $callable[1];
-            } else {
-                /** @phpstan-ignore-next-line */
-                $method = (string) $callable[1];
-            }
-            return ['static', $callable[0] . '::' . $method];
-        case $callable instanceof Closure:
-            try {
-                $reflectionClosure = new ReflectionFunction($callable);
-                $closureName = $reflectionClosure->getName();
-                $class = $reflectionClosure->getClosureScopeClass();
-                $className = $class ? $class->getName() : null;
-                return ['closure', $className ? $className . '--' . $closureName : $closureName];
-            } catch (ReflectionException $e) {
-                return ['unknown', ''];
-            }
-        case is_object($callable):
-            if (is_callable($callable)) {
-                return ['invokable', get_class($callable)];
-            }
-            return ['-', get_class($callable)];
-        default:
-            return ['unknown', ''];
     }
 }
 

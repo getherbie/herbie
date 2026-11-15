@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - `herbie\sysplugins\markdown\HerbieParsedownExtra`, the PHP 8.3 compatibility workaround for ParsedownExtra.
 - **Breaking:** The unused global functions `herbie\path_normalize()`, `herbie\defined_constants()` and `herbie\time_format()`. `time_format()` was an exact duplicate of `date_format()`, use that instead.
+- **Breaking:** The global functions `herbie\defined_classes()`, `herbie\defined_functions()` and `herbie\get_callable_name()`. They were only used by `SystemInfoPlugin` and are now private methods of that class.
 
 ### Fixed
 - Raw HTML blocks in markdown pages are kept intact again. CommonMark ends an HTML block at the first empty line, so such blocks are protected before parsing. Indented code samples that contain HTML stay code blocks, as before.
