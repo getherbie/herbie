@@ -70,18 +70,14 @@
         "nyholm/psr7-server": "^1.0",
         "phpstan/phpstan": "^2.0",
         "slim/psr7": "^1.6",
-        "squizlabs/php_codesniffer": "^3.7",
         "symfony/process": "^6.4",
         "league/commonmark": "^2.10"
     },
     "scripts": {
         "test": [
-            "@phpcs",
             "@phpstan",
             "@codecept"
         ],
-        "phpcbf": "./vendor/bin/phpcbf",
-        "phpcs": "./vendor/bin/phpcs",
         "codecept": "./vendor/bin/codecept run",
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
         "start:test": "cd tests/_data/web/; php -S localhost:9999 index.php",

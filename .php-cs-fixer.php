@@ -11,7 +11,7 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 return $config->setRules([
-    '@PSR12' => true,
+    '@PER-CS3x0' => true,
     //'strict_param' => true,
     'array_syntax' => ['syntax' => 'short'],
 ])->setFinder($finder);

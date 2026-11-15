@@ -39,9 +39,6 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Analyse code with PHP_CodeSniffer
-        run: vendor/bin/phpcs
-
       - name: Analyse code with PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
 

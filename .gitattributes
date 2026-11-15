@@ -8,7 +8,6 @@
 /.php-cs-fixer.php  export-ignore
 /apigen.neon        export-ignore
 /codeception.yml    export-ignore
-/phpcs.xml          export-ignore
 /phpstan.neon       export-ignore
 
 # Configure diff output for .php files.
