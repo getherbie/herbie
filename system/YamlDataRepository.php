@@ -11,6 +11,9 @@ class YamlDataRepository implements DataRepositoryInterface
     /** @var string[] */
     protected array $extensions;
 
+    /** @var null|array<string, string> */
+    private ?array $files = null;
+
     /**
      * YamlDataRepository constructor.
      * @throws SystemException
@@ -41,15 +44,14 @@ class YamlDataRepository implements DataRepositoryInterface
     /** @return array<string, string> */
     protected function scanDir(): array
     {
-        static $data;
-        if ($data === null) {
-            $data = [];
+        if ($this->files === null) {
+            $this->files = [];
             foreach ($this->getFinder() as $file) {
                 $basename = $file->getBasename('.' . $file->getExtension()); // kind of weird
-                $data[$basename] = $file->getContents();
+                $this->files[$basename] = $file->getContents();
             }
         }
-        return $data;
+        return $this->files;
     }
 
     /** @return array<mixed, mixed> */
