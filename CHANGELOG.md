@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Raw HTML blocks in markdown pages are kept intact again. CommonMark ends an HTML block at the first empty line, so such blocks are protected before parsing. Indented code samples that contain HTML stay code blocks, as before.
-- The error handler answered with an HTML error page for every request, including routes that serve XML such as a feed or a sitemap, so the response could not be parsed by the client. Such routes now receive an XML error document. In all other cases the `Content-Type` header now describes the body that is actually sent. **Breaking:** `ErrorHandlerMiddleware` requires a `PageRepositoryInterface` and a `UrlManager` in the constructor.
+- The error handler answered with an HTML error page for every request, including routes that serve XML such as a feed or a sitemap, so the client received a document with the wrong root element. Such routes now receive an XML error document. In all other cases the `Content-Type` header now describes the body that is actually sent. **Breaking:** `ErrorHandlerMiddleware` requires a `PageRepositoryInterface` and a `UrlManager` in the constructor.
 - `UrlManager::parseRequest()` now caches the parsed request when a route rule matches.
 - Cache directory is created with mode 0755 instead of 0644.
 

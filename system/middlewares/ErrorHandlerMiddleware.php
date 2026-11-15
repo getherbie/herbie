@@ -117,9 +117,10 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
     /**
      * Renders a minimal XML error document.
      *
-     * The Twig template produces HTML, which a client expecting XML cannot parse. Characters
-     * that XML forbids are removed, otherwise a message quoting binary data would break the
-     * document itself.
+     * The Twig template produces HTML. A client expecting XML would receive a well formed
+     * document with the wrong root element, so a minimal error document is generated instead.
+     * Characters that XML forbids are removed, otherwise a message quoting binary data would
+     * break the document itself.
      */
     private function renderXmlError(Throwable $e): string
     {

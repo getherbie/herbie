@@ -23,7 +23,7 @@ use RuntimeException;
 
 /**
  * The Twig error template produces HTML. A route that serves XML has to answer with XML
- * instead, otherwise the response cannot be parsed by the client.
+ * instead, otherwise the client receives a well formed document with the wrong root element.
  */
 final class ErrorHandlerMiddlewareTest extends Unit
 {
