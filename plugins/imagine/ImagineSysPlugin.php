@@ -7,6 +7,7 @@ namespace herbie\sysplugins\imagine;
 use herbie\Alias;
 use herbie\Config;
 use herbie\Plugin;
+use herbie\PluginName;
 use Imagine\Filter\Advanced\RelativeResize;
 use Imagine\Filter\Basic\Resize;
 use Imagine\Gd\Imagine;
@@ -19,6 +20,7 @@ use Twig\Markup;
 
 use function herbie\str_trailing_slash;
 
+#[PluginName('imagine')]
 final class ImagineSysPlugin extends Plugin
 {
     protected Config $config;

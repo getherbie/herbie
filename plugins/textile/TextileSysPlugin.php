@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace herbie\sysplugins\textile;
 
 use herbie\Config;
+use herbie\PluginName;
 use herbie\sysplugins\ParserSysPlugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
 
+#[PluginName('textile')]
 final class TextileSysPlugin extends ParserSysPlugin
 {
     private bool $parserClassExists;

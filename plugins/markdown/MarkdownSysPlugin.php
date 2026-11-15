@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie\sysplugins\markdown;
 
 use herbie\Config;
+use herbie\PluginName;
 use herbie\sysplugins\ParserSysPlugin;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -13,6 +14,7 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Psr\Log\LoggerInterface;
 
+#[PluginName('markdown')]
 final class MarkdownSysPlugin extends ParserSysPlugin
 {
     /**

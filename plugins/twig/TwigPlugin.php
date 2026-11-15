@@ -11,9 +11,11 @@ use herbie\Config;
 use herbie\events\TwigInitializedEvent;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
+use herbie\PluginName;
 use herbie\Translator;
 use herbie\UrlManager;
 
+#[PluginName('twig')]
 final class TwigPlugin extends Plugin
 {
     public function __construct(

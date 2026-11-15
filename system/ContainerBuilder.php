@@ -108,22 +108,18 @@ final readonly class ContainerBuilder
                 $userConfig = load_php_config($userConfigPath, $processor);
             }
 
-            // system plugin configs
+            // system, composer and local plugin configs, the discovery is cached outside of debug mode
+            $pluginCacheFile = Application::isDebug()
+                ? null
+                : $this->app->getSitePath() . '/runtime/cache/system/plugins.php';
             $systemPluginPath = Application::getHerbiePath('/plugins');
-            $systemPluginConfigs = load_plugin_configs($systemPluginPath, 'system', $processor);
-
-            // composer plugin configs
-            $composerPluginConfigs = load_composer_plugin_configs();
-
-            // local plugin configs
             $localPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
-            $localPluginConfigs = load_plugin_configs($localPluginPath, 'local', $processor);
+            $pluginConfigs = (new PluginDiscovery($pluginCacheFile))
+                ->discover($systemPluginPath, $localPluginPath, $processor);
 
             // the order is important here
             $userConfig['plugins'] = array_replace_recursive(
-                $systemPluginConfigs,
-                $composerPluginConfigs,
-                $localPluginConfigs,
+                $pluginConfigs,
                 $userConfig['plugins'] ?? [],
             );
 

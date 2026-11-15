@@ -20,7 +20,6 @@ use ReflectionException;
 use ReflectionNamedType;
 use RuntimeException;
 use Throwable;
-use UnexpectedValueException;
 
 use function gettype;
 
@@ -123,76 +122,6 @@ function load_php_config(string $path, ?callable $processor = null): array
         $data = $processor($data);
     }
     return $data;
-}
-
-/**
- * @return array<string, mixed>
- */
-function load_plugin_config(string $path, string $pluginLocation, ?callable $processor = null): array
-{
-    $config = array_merge(
-        ['location' => $pluginLocation],
-        load_php_config($path, $processor),
-    );
-    if (!isset($config['apiVersion'])) {
-        throw new UnexpectedValueException(sprintf('Required config "apiVersion" is missing in %s', $path));
-    }
-    if (!isset($config['pluginName'])) {
-        throw new UnexpectedValueException(sprintf('Required config "pluginName" is missing in %s', $path));
-    }
-    if (!isset($config['pluginPath'])) {
-        throw new UnexpectedValueException(sprintf('Required config "pluginPath" is missing in %s', $path));
-    }
-    return $config;
-}
-
-/**
- * @return array<string, array<string, mixed>>
- */
-function load_plugin_configs(string $pluginDir, string $pluginLocation, ?callable $processor = null): array
-{
-    $globPattern = "{$pluginDir}/*/config.php";
-    $configFiles = glob("{" . $globPattern . "}", GLOB_BRACE);
-
-    if ($configFiles === false) {
-        return [];
-    }
-
-    $pluginConfigs = [];
-    foreach ($configFiles as $configFile) {
-        $config = load_plugin_config($configFile, $pluginLocation, $processor);
-        /** @var string $pluginName */
-        $pluginName = $config['pluginName'];
-        $pluginConfigs[$pluginName] = $config;
-    }
-    return $pluginConfigs;
-}
-
-/**
- * @return array<string, array<string, mixed>>
- */
-function load_composer_plugin_configs(): array
-{
-    $installedPackages = InstalledVersions::getInstalledPackagesByType('herbie-plugin');
-    $pluginConfigs = [];
-    foreach (array_unique($installedPackages) as $pluginKey) {
-        $installPath = InstalledVersions::getInstallPath($pluginKey);
-        if ($installPath === null) {
-            continue;
-        }
-        $path = realpath($installPath);
-        if ($path === false) {
-            continue;
-        }
-        $composerPluginConfigPath = $path . '/config.php';
-        if (is_readable($composerPluginConfigPath)) {
-            $composerPluginConfig = load_plugin_config($composerPluginConfigPath, 'composer');
-            /** @var string $composerPluginName */
-            $composerPluginName = $composerPluginConfig['pluginName'];
-            $pluginConfigs[$composerPluginName] = $composerPluginConfig;
-        }
-    }
-    return $pluginConfigs;
 }
 
 /**

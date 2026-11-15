@@ -9,12 +9,14 @@ use herbie\Config;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
+use herbie\PluginName;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
+#[PluginName('simplesearch')]
 final class SimplesearchSysPlugin extends Plugin
 {
     private CacheInterface $cache;
@@ -56,7 +58,7 @@ final class SimplesearchSysPlugin extends Plugin
      */
     public function form(): string
     {
-        $name = $this->config->get('plugins.simplesearch.config.formTemplate', function () {
+        $name = $this->config->get('plugins.simplesearch.formTemplate', function () {
             return $this->getTemplatePath('form.twig');
         });
 
@@ -80,7 +82,7 @@ final class SimplesearchSysPlugin extends Plugin
         $query = $queryParams['query'] ?? '';
         $results = $this->search($query);
 
-        $name = $this->config->get('plugins.simplesearch.config.resultsTemplate', function () {
+        $name = $this->config->get('plugins.simplesearch.resultsTemplate', function () {
             return $this->getTemplatePath('results.twig');
         });
 
@@ -131,7 +133,7 @@ final class SimplesearchSysPlugin extends Plugin
         $max = 100;
         $results = [];
 
-        $usePageCache = $this->config->get('plugins.simplesearch.config.usePageCache', false);
+        $usePageCache = $this->config->get('plugins.simplesearch.usePageCache', false);
 
         foreach ($this->pageRepository->findAll() as $item) {
             if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search)) {

@@ -6,6 +6,7 @@ namespace herbie\sysplugins\simplecontact;
 
 use herbie\Config;
 use herbie\Plugin;
+use herbie\PluginName;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
@@ -14,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\TwigFunction;
 
+#[PluginName('simplecontact')]
 final class SimplecontactSysPlugin extends Plugin
 {
     private Config $config;
@@ -58,7 +60,7 @@ final class SimplecontactSysPlugin extends Plugin
             $formData = $this->filterFormData($this->getFormData());
             $formErrors = $this->validateFormData($formData);
             if (empty($formErrors)) {
-                $recipient = $this->config->getAsString('plugins.simplecontact.config.recipient'); // validate email
+                $recipient = $this->config->getAsString('plugins.simplecontact.recipient'); // validate email
                 $status = $this->sendEmail($formData, $recipient);
                 if ($status) {
                     $response = $this->createRedirectResponse($route, 'successful');
@@ -75,7 +77,7 @@ final class SimplecontactSysPlugin extends Plugin
             $formErrors = [];
         }
 
-        $template = $this->config->get('plugins.simplecontact.config.template', function () {
+        $template = $this->config->get('plugins.simplecontact.template', function () {
             return $this->getTemplatePath('form.twig');
         });
 

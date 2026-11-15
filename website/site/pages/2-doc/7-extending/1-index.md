@@ -416,7 +416,21 @@ The main differences are:
 
 The latter is achieved through dependency injection.
 
-A plugin needs the following structure.
+A plugin is a directory with a PHP class that is marked with the `#[PluginName]` attribute.
+
+    myplugin
+    └── MyPlugin.php
+
+The attribute gives the plugin its name, which is used in the `enabledPlugins` setting and as key `plugins.myplugin` in the configuration.
+Herbie finds the class by scanning the PHP files in the plugin directory, one level deep, without executing them.
+There is one plugin per directory.
+
+The result of the search is cached in `site/runtime/cache/system/plugins.php`, but not in debug mode (environment variable `HERBIE_DEBUG`).
+The cache is renewed if a plugin directory or a Composer plugin is added, removed or updated.
+If you change an existing plugin file in a production environment, clear the cache with the command `clear-files`.
+
+A plugin can have default values for its settings.
+They are returned by an optional file `config.php` in the plugin directory and can be overridden in the configuration file `site/config/main.php`.
 
     myplugin
     ├── config.php
@@ -427,13 +441,8 @@ The config file must look like this:
 ~~~php
 <?php
 
-require_once 'MyPlugin.php';
-
 return [
-    'apiVersion' => 2,
-    'pluginName' => 'myplugin',
-    'pluginClass' => MyPlugin::class,
-    'pluginPath' => __DIR__,
+    'greeting' => 'Hello',
 ];
 ~~~
 
@@ -442,6 +451,9 @@ The plugin itself is a PHP class with the following methods:
 ~~~php 
 <?php
 
+use herbie\PluginName;
+
+#[PluginName('myplugin')]
 class MyPlugin implements herbie\PluginInterface
 {
     public function apiVersion(): int
@@ -508,6 +520,7 @@ So the complete class looks like:
 ~~~php
 <?php
 
+use herbie\PluginName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -532,6 +545,7 @@ class CustomCommand extends Command
     }
 }
 
+#[PluginName('myplugin')]
 class MyPlugin implements herbie\PluginInterface
 {
     public function apiVersion(): int

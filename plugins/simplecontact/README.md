@@ -17,7 +17,7 @@ return [
 
 ## Configuration
 
-Under `plugins.simplecontact.config` the following options are available.
+Under `plugins.simplecontact` the following options are available.
 
 The email address to which the form will be sent:
 

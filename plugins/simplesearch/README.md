@@ -22,14 +22,12 @@ The following options are available in the configuration file.
 return [
     'plugins' => [        
         'simplesearch' => [
-            'config' => [
-                // path to twig form template
-                'formTemplate' => '@sysplugin/simplesearch/templates/form.twig',
-                // path to twig results template
-                'resultsTemplate' => '@sysplugin/simplesearch/templates/results.twig',
-                // use page cahe if global caching is enabled
-                'usePageCache' => false,
-            ],
+            // path to twig form template
+            'formTemplate' => '@sysplugin/simplesearch/templates/form.twig',
+            // path to twig results template
+            'resultsTemplate' => '@sysplugin/simplesearch/templates/results.twig',
+            // use page cahe if global caching is enabled
+            'usePageCache' => false,
         ],
     ],
 ];

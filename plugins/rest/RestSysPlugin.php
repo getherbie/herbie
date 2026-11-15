@@ -6,9 +6,11 @@ namespace herbie\sysplugins\rest;
 
 use Doctrine\RST\Parser;
 use herbie\Config;
+use herbie\PluginName;
 use herbie\sysplugins\ParserSysPlugin;
 use Psr\Log\LoggerInterface;
 
+#[PluginName('rest')]
 final class RestSysPlugin extends ParserSysPlugin
 {
     private bool $parserClassExists;

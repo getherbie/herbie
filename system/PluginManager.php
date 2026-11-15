@@ -279,6 +279,11 @@ final class PluginManager
                 ));
                 continue;
             }
+            // plugins that are not autoloadable, i.e. local plugins, are loaded from their file
+            $pluginFile = $pluginConfig['pluginFile'] ?? null;
+            if (is_string($pluginFile) && !class_exists($pluginConfig['pluginClass']) && is_file($pluginFile)) {
+                require_once $pluginFile;
+            }
             $plugins[] = new InstallablePlugin(
                 $pluginConfig['pluginName'],
                 $pluginConfig['pluginPath'],

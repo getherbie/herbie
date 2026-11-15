@@ -50,14 +50,10 @@ return [
     ],
     'plugins' => [
         'simplecontact' => [
-            'config' => [
-                'recipient' => 'me+herbie@tebe.ch',
-            ],
+            'recipient' => 'me+herbie@tebe.ch',
         ],
         'simplesearch' => [
-            'config' => [
-                'usePageCache' => $isProduction,
-            ],
+            'usePageCache' => $isProduction,
         ],
     ],
 ];

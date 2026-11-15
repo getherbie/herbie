@@ -306,8 +306,8 @@ final class WebsiteCest
         $I->see('Extending', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 5);
-        $I->seeNumberOfElements('.content>p', 38);
-        $I->seeNumberOfElements('.content>pre', 24);
+        $I->seeNumberOfElements('.content>p', 41);
+        $I->seeNumberOfElements('.content>pre', 25);
         $I->seeNumberOfElements('.content>table', 3);
         $I->seeNumberOfElements('.content>ul', 1);
     }
