@@ -8,7 +8,12 @@ actor: AcceptanceTester
 extensions:
     enabled:
         - Codeception\Extension\RunProcess:
-              0: cd website/web; php -S 127.0.0.1:9371 index.php
+              0: |
+                cd website/web
+                if [ ! -f ../site/config/main.php ]; then
+                  cp ../site/config/main.dist.php ../site/config/main.php
+                fi
+                php -S 127.0.0.1:9371 index.php
               sleep: 1
 modules:
     enabled:
@@ -16,4 +21,3 @@ modules:
             url: http://127.0.0.1:9371
         - \Helper\Acceptance
 step_decorators: ~
-
