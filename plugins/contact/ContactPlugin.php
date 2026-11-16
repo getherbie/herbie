@@ -55,7 +55,7 @@ final class ContactPlugin extends AbstractPlugin
     {
         return [
             new TwigFunction('contact', [$this, 'contact'], ['is_safe' => ['html']]),
-            new TwigFunction('csrf_token', fn (): string => $this->csrfToken()),
+            new TwigFunction('csrf_token', fn(): string => $this->csrfToken()),
         ];
     }
 
