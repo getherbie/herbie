@@ -33,7 +33,7 @@ services:
         - PHP_VERSION=${PHP_VERSION:-8.5}      
     profiles: [website]
     working_dir: "/app" 
-    command: ["php", "vendor/bin/codecept", "run"]
+    command: ["composer", "test"]
     volumes:
       - .:/app
   test-website:
