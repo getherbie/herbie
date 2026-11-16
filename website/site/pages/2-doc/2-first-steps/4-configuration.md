@@ -22,6 +22,8 @@ These constant strings are parsed at runtime.
 All default settings can be overridden in a separate configuration file.
 This file must be located at `site/config/main.php`.
 
+If only `site/config/main.dist.php` is present (the shipped template with placeholders), copy it to `site/config/main.php` and fill in your own values.
+
 If Herbie finds a file with valid values, the default settings will be overwritten with them.
 
 ## Example

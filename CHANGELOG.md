@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Breaking:** Minimum PHP version raised from 8.0 to 8.3. Supported versions: 8.3, 8.4, 8.5, 8.6.
 - Version bumped to 3.0.0 (new major line).
+- Contact plugin now uses PHPMailer for SMTP delivery; SMTP settings are configured under `plugins.contact.smtp`.
 - **Breaking:** System, Composer and local plugins are activated with one list, the config option `enabledPlugins`. The option `enabledSysPlugins` is removed, move its names to `enabledPlugins`. Plugins are resolved by name, no matter where they come from, and loaded in the order of the list. Before, system plugins were always loaded first, then Composer plugins and then local plugins. If two plugins define the same Twig function, filter or test, the plugin listed last wins. A name in `enabledPlugins` that matches no plugin, or a plugin with an incomplete config, is logged as a warning instead of being skipped silently. If a plugin name exists as system, Composer and local plugin, the local plugin takes precedence over the Composer plugin and the Composer plugin over the system plugin. The virtual plugins `CORE` (first) and `LOCAL_EXT`, `APP_EXT` and `SYS_INFO` (last) keep their position.
 - **Breaking:** Plugins are marked with the new attribute `#[herbie\Plugin('name')]` and found by scanning the PHP files in the plugin directory (one level deep, with the tokenizer, nothing is executed). The file `config.php` of a plugin is optional and only returns default values, the settings `apiVersion`, `pluginName`, `pluginClass` and `pluginPath` are removed from it. Plugin classes that are not autoloadable, i.e. local plugins, are loaded by Herbie, a `require_once` in `config.php` is no longer needed. Each plugin entry in the config has the new key `pluginFile`, the key `apiVersion` is gone. Outside of debug mode the discovery is cached in `site/runtime/cache/system/plugins.php`. The cache is renewed if a plugin directory or a Composer plugin is added, removed or updated, otherwise `clear-files` clears it. New classes `herbie\Plugin` (the attribute) and `herbie\PluginDiscovery`.
 - **Breaking:** The packages of the plugins `imagine`, `markdown`, `rst` and `textile` are optional. Install the package of each plugin that you enable: `imagine/imagine`, `league/commonmark`, `doctrine/rst-parser` and `netcarver/textile`. `imagine/imagine` moves from `require` to `suggest`. The argument `requires` of the attribute `#[herbie\Plugin]` declares the packages a plugin needs, e.g. `#[Plugin('markdown', requires: ['league/commonmark' => '^2.10'])]`. They are checked when the plugin is enabled, a missing package or a wrong version throws an exception that says what to install. The plugins `markdown`, `rst` and `textile` no longer log an error and return the text unchanged if their package is missing. `composer/semver` is a new requirement.
@@ -33,11 +34,13 @@ All notable changes to this project will be documented in this file.
 - The error handler answered with an HTML error page for every request, including routes that serve XML such as a feed or a sitemap, so the client received a document with the wrong root element. Such routes now receive an XML error document. In all other cases the `Content-Type` header now describes the body that is actually sent. **Breaking:** `ErrorHandlerMiddleware` requires a `PageRepositoryInterface` and a `UrlManager` in the constructor.
 - `UrlManager::parseRequest()` now caches the parsed request when a route rule matches.
 - Cache directory is created with mode 0755 instead of 0644.
+- Website tests create `site/config/main.php` from `main.dist.php` on startup so they run without a committed config.
 
 ### Security
 - `FileCache` restricts deserialization to scalar/array values (`allowed_classes => false`).
 - `handle_internal_webserver_assets()` prevents path traversal outside the base directory.
 - `FlatFilePagePersistence::findById()` restricts access to the page root.
+- Contact SMTP credentials are kept out of version control: `site/config/main.dist.php` is the tracked template, `main.php` is gitignored and filled via CI secrets.
 
 ## [2.2.0] - 2025-05-23
 

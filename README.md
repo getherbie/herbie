@@ -27,16 +27,15 @@ Thanks to its plugin system Herbie is highly customizable and brings support for
 
 Herbie implements the following PHP standard recommendations:
 
-* [PSR-1](https://www.php-fig.org/psr/psr-1/) Basic Coding Standard
 * [PSR-3](https://www.php-fig.org/psr/psr-3/) Logger Interface
 * [PSR-4](https://www.php-fig.org/psr/psr-4/) Autoloading Standard
 * [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP Message Interface
 * [PSR-11](https://www.php-fig.org/psr/psr-11/) Container Interface
-* [PSR-12](https://www.php-fig.org/psr/psr-12/) Extended Coding Style
 * [PSR-14](https://www.php-fig.org/psr/psr-14/) Event Dispatcher
 * [PSR-15](https://www.php-fig.org/psr/psr-15/) HTTP Handlers
 * [PSR-16](https://www.php-fig.org/psr/psr-16/) Simple Cache
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
+* [PER-CS 3.0](https://www.php-fig.org/per/coding-style/) Coding Style
 
 Herbie is well tested:
 
@@ -150,10 +149,9 @@ Other Docker Compose commands are
 
 You can use different PHP versions.
 
-    PHP_VERSION=8.0 docker compose up website
-    PHP_VERSION=8.1 docker compose up website
-    PHP_VERSION=8.2 docker compose up website
     PHP_VERSION=8.3 docker compose up website
+    PHP_VERSION=8.4 docker compose up website
+    PHP_VERSION=8.5 docker compose up website
 
 ## Tests
 

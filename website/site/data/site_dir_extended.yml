@@ -1,6 +1,7 @@
 ---
 - name: config
-  desc: The configuration directory with files in PHP format (the main file can also be a PHP file).
+  desc: The configuration directory with files in PHP format.
+    The main file is main.php. main.dist.php is the shipped template (tracked, with placeholders); CI and the test startup copy it to main.php.
 - name: data
   desc: The data directory where various data files in JSON or YAML format can be stored.
 - name: extend
@@ -23,6 +24,8 @@
   desc: Directory with customized Twig Globals.
 - name: extend/twig_tests
   desc: Directory with customized Twig Tests.
+- name: snippets
+  desc: Reusable Twig snippet templates, included from pages and layouts.
 - name: pages
   desc: The CMS pages of the website.
     These are saved as text files (Markdown, Textile, Text, HTML).

@@ -2,7 +2,7 @@
 
 `Textile` is a [Herbie](http://github.com/getherbie) system plugin that enables parsing of Textile files.
 
-The plugin itself uses the Composer package `doctrine/rst-parser` under the hood.
+The plugin itself uses the Composer package `netcarver/textile` under the hood.
 
 ## Installation
 

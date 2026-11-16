@@ -65,7 +65,7 @@ final class WebsiteCest
         $I->see('Configuration', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 11);
+        $I->seeNumberOfElements('.content>p', 12);
         $I->seeNumberOfElements('.content>pre', 4);
     }
 

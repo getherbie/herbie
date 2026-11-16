@@ -646,7 +646,7 @@ class MyPlugin implements herbie\PluginInterface
 
 That's all you have to do.
 
-A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/2.x/plugins/dummy), by the way.
+A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/3.x/plugins/dummy), by the way.
 
 ## Extending using a distributed plugin
 
@@ -659,7 +659,7 @@ The file must contain a type with `herbie-plugin`.
     "name": "myvendor/myplugin",
     "type": "herbie-plugin",
     "require-dev": {
-        "getherbie/herbie": "dev-2.x-develop"
+        "getherbie/herbie": "dev-3.x"
     }
 }
 ~~~
@@ -673,4 +673,4 @@ All you need to do is run the following CLI command in your project root directo
 
 After that, the plugin needs to be enabled in the configuration.
 
-Good examples are the plugins [simple contact](https://github.com/getherbie-plugin/contact) and [simple search](https://github.com/getherbie-plugin/search).
+The system plugins `contact` and `search` are good examples and ship with Herbie.

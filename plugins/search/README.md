@@ -26,7 +26,7 @@ return [
             'formTemplate' => '@sysplugin/search/templates/form.twig',
             // path to twig results template
             'resultsTemplate' => '@sysplugin/search/templates/results.twig',
-            // use page cahe if global caching is enabled
+            // use page cache if global caching is enabled
             'usePageCache' => false,
         ],
     ],
