@@ -1003,10 +1003,10 @@ nav.breadcrumb a:hover {
 }
 .gc-entry-text {
     font-size: 0.9em;
-    color: rgba(0, 0, 0, 0.4);
+    color: var(--text-muted);
 }
 .sidebar .gc-entry-author {
-    color: rgba(0, 0, 0, 0.4);
+    color: var(--text-muted);
     text-decoration: underline;
 }
 
