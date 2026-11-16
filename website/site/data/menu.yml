@@ -3,7 +3,5 @@
   label: About
 - route: doc
   label: Docs
-- route: recipes
-  label: Recipes
 - route: development
   label: DEV

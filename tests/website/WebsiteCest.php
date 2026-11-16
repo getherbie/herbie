@@ -319,32 +319,9 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Cheat Sheet', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 14);
-        $I->seeNumberOfElements('.content>pre', 4);
+        $I->seeNumberOfElements('.content>p', 48);
+        $I->seeNumberOfElements('.content>pre', 21);
         $I->seeNumberOfElements('.content>table', 7);
-    }
-
-    public function testRecipes(AcceptanceTester $I)
-    {
-        /** @var Web $I */
-        $I->amOnPage('/recipes');
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Recipes', 'h1');
-        $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.post-title', 1);
-        $this->testLayoutRecipe($I);
-    }
-
-    public function testRecipesOne(AcceptanceTester $I)
-    {
-        /** @var Web $I */
-        $I->amOnPage('/recipes/adding-a-sitemap-for-search-engines');
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Adding a sitemap for web search engines', 'h1');
-        $I->seeNumberOfElements('.content>h2', 4);
-        $I->seeNumberOfElements('.content>p', 16);
-        $I->seeNumberOfElements('.content>pre', 6);
-        $this->testLayoutRecipe($I);
     }
 
     public function testDevelopment(AcceptanceTester $I)
@@ -454,9 +431,4 @@ final class WebsiteCest
         $I->seeNumberOfElements('.gc-entry', 10);
     }
 
-    private function testLayoutRecipe(AcceptanceTester $I)
-    {
-        $I->seeNumberOfElements('.sidebar-search', 1);
-        $I->seeNumberOfElements('.widget-blog-categories', 1);
-    }
 }

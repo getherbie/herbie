@@ -29,7 +29,6 @@ return [
         'urlManager' => [
             'niceUrls' => $isProduction,
             'rules' => [
-                ['recipes/category/{category}', 'recipes'],
                 /*['blog/author/{author}', 'blog'],
                 ['blog/category/{category}', 'blog'],
                 ['blog/tag/{tag}', 'blog'],

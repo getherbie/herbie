@@ -5,13 +5,34 @@ layout: doc
 
 # Cheat Sheet
 
-The cheat sheet is still under construction, but here is a first part.
+A quick reference for the most common Herbie features.
 
 **Page properties**
 
     ---
+    id: "@page/about/team.html"
     title: Page title
     layout: default
+    menu_title: Menu title
+    redirect: /about
+    hidden: false
+    format: markdown
+    type: page
+    tags: [intro]
+    categories: [docs]
+    authors: [John Doe]
+    date: 2024-01-15
+    created: 2024-01-01
+    modified: 2024-06-01
+    cached: false
+    keep_extension: false
+    content_type: text/html
+    excerpt: Short teaser
+    twig: true
+    parent_id: "@page/index.md"
+    parent_route: ""
+    path: /path/to/site/pages/about/team.html
+    route: about/team
     ---
 
 Output page properties in layout and content files:
@@ -66,3 +87,142 @@ Output content segments in layout files:
 **Plugins**
 
 {{ snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}
+
+**Routing**
+
+Routes are generated from page file paths relative to `site/pages/`. Numeric sorting prefixes (`2-doc`) and the file extension are removed; `index` files map to the directory itself.
+
+    site/pages/2-doc/1-introduction/1-index.md   ->  /doc/introduction
+    site/pages/2-doc/3-contents/3-create-pages.md ->  /doc/contents/create-pages
+
+**Special Pages**
+
+Pages such as `sitemap.xml`, `robots.txt` or `atom.xml` must keep their extension in the URL. Set `keep_extension: true` in the frontmatter.
+
+    keep_extension: true
+
+**Aliases**
+
+Aliases map shortcut names to filesystem paths:
+
+    @app       -> project root
+    @site      -> site/
+    @page      -> site/pages/
+    @media     -> site/media/
+    @web       -> web/
+    @asset     -> site/assets/
+    @plugin    -> plugins/
+    @sysplugin -> system/plugins/
+    @vendor    -> vendor/
+    @snippet   -> templates/snippets/
+
+**Configuration**
+
+Global defaults live in `config/defaults.php`; project-specific overrides go in `site/config/main.php`.
+
+    <?php
+    return [
+        'language' => 'en',
+        'theme' => 'default',
+        'enabledPlugins' => 'twig,markdown',
+        'components' => [
+            'urlManager' => ['niceUrls' => true],
+        ],
+    ];
+
+**Layouts / Themes**
+
+Layouts are Twig files in `site/themes/<theme>/<layout>.twig`; select one with `layout:` in the frontmatter.
+
+{% verbatim %}
+    {% extends "main.twig" %}
+
+    {% block content %}
+        {{ content.default }}
+    {% endblock %}
+{% endverbatim %}
+
+**Data Files**
+
+Files in `site/data/` (YAML or JSON) are available as `site.data.<name>`.
+
+    site/data/menu.yml   ->  {% verbatim %}{{ site.data.menu }}{% endverbatim %}
+
+**Middlewares**
+
+Application middlewares run for every request; route middlewares only for matching routes.
+
+    $app->addApplicationMiddleware($middleware);
+    $app->addRouteMiddleware('news/(.+)', $middleware);
+
+**Translations**
+
+Translation files live in `messages/<language>.php` and are used with the `translate` Twig function.
+
+    {% verbatim %}{{ translate('Hello') }}{% endverbatim %}
+
+**Snippets**
+
+Snippets are Twig files in `templates/snippets/` and can be included with `snippet()`.
+
+    {% verbatim %}{{ snippet('@snippet/example.twig') }}{% endverbatim %}
+
+**Media / Assets**
+
+Media lives in `site/media/`, theme assets in `site/assets/`. Use `link_media()`, `image()` and `asset()` helpers.
+
+    {% verbatim %}{{ link_media('image.jpg') }}{% endverbatim %}
+
+**Page Types**
+
+Valid values for `type:` are `page`, `navigation`, `search`, `rss`, `data` and `site`.
+
+    type: navigation
+
+**Variables**
+
+Twig provides the current page, site data and content segments.
+
+    {% verbatim %}
+    {{ page.title }}
+    {{ site.data.menu }}
+    {{ content.default }}
+    {{ site.route_params.category }}
+    {% endverbatim %}
+
+**Menus / Navigation**
+
+Menus are built from page lists or data files with the `menu_*` functions.
+
+    {% verbatim %}{{ menu_list('main') }}{% endverbatim %}
+
+**URLs & Links**
+
+Use the URL and link helpers instead of hard-coded paths.
+
+    {% verbatim %}
+    {{ link_page('about') }}
+    {{ link_media('image.jpg') }}
+    {{ url_abs('sitemap.xml') }}
+    {% endverbatim %}
+
+**PageList / Query Builder**
+
+`site.page_list` filters, sorts and groups pages.
+
+    {% verbatim %}{{ site.page_list.query().where('layout=doc').sortBy('title') }}{% endverbatim %}
+
+**Caching & Debug**
+
+Use `cached: false` for uncached pages and `HERBIE_DEBUG=1` for verbose errors. Clear caches with `./herbie clear-files`.
+
+    cached: false
+
+**Plugin Configuration**
+
+Plugin options are set under `plugins.<name>` in `site/config/main.php`.
+
+    'plugins' => [
+        'markdown' => ['flavor' => 'gfm'],
+        'search' => ['usePageCache' => true],
+    ],
