@@ -5,10 +5,45 @@
     {{ css_add('@site/themes/default/css/styles.css') }}
     {{ js_add('@site/themes/default/js/highlight@11.6.0.min.js') }}
     {{ js_add('@site/themes/default/js/scripts.js') }}
+
+{% macro tree(nodes, currentRoute, level) %}
+    {% import _self as mobile_menu %}
+    {% for node in nodes %}
+        {% set item = node.getMenuItem() %}
+        {% if item is not null and not item.getHidden() %}
+            {% set childCount = 0 %}
+            {% for child in node %}
+                {% if not child.getMenuItem().getHidden() %}
+                    {% set childCount = childCount + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% set nodeRoute = item.getRoute() %}
+            {% set isCurrent = nodeRoute == currentRoute %}
+            {% set isActive = isCurrent or (nodeRoute != '' and (currentRoute starts with nodeRoute ~ '/')) %}
+            <li class="mobile-nav-item{{ isActive ? ' is-active' : '' }}{{ childCount > 0 ? ' has-children' : '' }}" style="--level:{{ level }}">
+                <a class="mobile-nav-link{{ isCurrent ? ' is-current' : '' }}" href="{{ url_rel(nodeRoute) }}">{{ item.getMenuTitle() ?: item.getTitle() }}</a>
+                {% if childCount > 0 %}
+                    <ul class="mobile-nav-children">
+                        {{ mobile_menu.tree(node, currentRoute, level + 1) }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
 {% endapply %}
 <!DOCTYPE html>
 <html lang="{{ site.language }}">
 <head>
+    <script>
+        (function () {
+            var theme = localStorage.getItem('herbie-theme');
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,7 +66,7 @@
             </div>
             <div class="pure-g">
                 <div class="pure-u-3-5 pure-u-md-1-5">
-                    <h1 class="brand-title">{{ link_page('index', icon('herbie') ~ ' Herbie CMS') }}</h1>
+                    <div class="brand-title">{{ link_page('index', icon('herbie') ~ ' Herbie CMS') }}</div>
                 </div>
                 <div class="pure-u-2-5 pure-u-md-4-5 text-right pure-hidden-phone">
                     <div class="topmenu" id="topmenu">
@@ -44,6 +79,17 @@
                                             {{ link_page(item.route, item.label, {class:"pure-menu-link"}) }}
                                         </li>
                                     {% endfor %}
+                                    <li class="pure-menu-item theme-toggle-item">
+                                        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+                                                <circle cx="12" cy="12" r="4"></circle>
+                                                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                                            </svg>
+                                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                            </svg>
+                                        </button>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -54,16 +100,64 @@
     </div>
 </div>
 
-<div id="mobile-menu" class="pure-hidden-phone pure-hidden-tablet pure-hidden-desktop">
-    <div class="pure-menu">
-        <ul class="pure-menu-list">
-            {% for item in site.data.menu %}
-                <li class="pure-menu-item"><a class="pure-menu-link" href="{{ url_rel(item.route) }}">{{ item.label }}</a>
-                </li>
-            {% endfor %}
+<div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+    {% import _self as mobile_menu %}
+    <div class="mobile-nav-head">
+        <span class="mobile-nav-title">Navigation</span>
+        <button type="button" class="mobile-nav-close" aria-label="Close navigation">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <nav class="mobile-nav-body" aria-label="Main navigation">
+        <ul class="mobile-nav-list">
+            {{ mobile_menu.tree(site.page_tree, route, 0) }}
         </ul>
+    </nav>
+    <div class="mobile-nav-foot">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
     </div>
 </div>
+
+{% if page.hero %}
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <p class="hero-eyebrow">{{ page.hero.eyebrow }}</p>
+                    <h1 class="hero-title">{{ page.hero.title }}</h1>
+                    <p class="hero-subtitle">{{ page.hero.subtitle }}</p>
+                    <div class="hero-actions">
+                        <a class="pure-button hero-button" href="{{ url_rel(page.hero.primary_route) }}">{{ page.hero.primary_label }}</a>
+                        <a class="hero-button hero-button-secondary" href="{{ page.hero.secondary_url }}">{{ page.hero.secondary_label }}</a>
+                    </div>
+                    <div class="hero-badges">
+                        {% for badge in page.hero.badges %}
+                            <a href="{{ badge.url }}"><img src="{{ badge.image }}" alt="{{ badge.alt }}"></a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="hero-code" aria-hidden="true">
+                    <div class="hero-code-bar">
+                        <span></span><span></span><span></span>
+                        <em>page.md</em>
+                    </div>
+                    <pre><code>---
+title: Hello
+---
+# Hello world</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
 
 {% if page.slider %}
     <div class="pure-g slider">

@@ -2,6 +2,6 @@
 - route: ''
   label: About
 - route: doc
-  label: Docs
+  label: Documentation
 - route: development
-  label: DEV
+  label: Development

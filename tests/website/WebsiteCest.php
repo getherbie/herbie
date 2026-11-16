@@ -14,7 +14,7 @@ final class WebsiteCest
         $I->amOnPage('/');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeInTitle('Herbie CMS - A simple flat-file content management system');
-        $I->see('Herbie', 'h1');
+        $I->see('Websites made of text files.', 'h1');
         $I->see('Featuring', 'h2');
         $this->testDocLayouts($I);
     }

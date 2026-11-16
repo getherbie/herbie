@@ -1,21 +1,27 @@
 ---
 title: Homepage
+hero:
+  eyebrow: Flat-file CMS
+  title: Websites made of text files.
+  subtitle: Herbie is a simple, modern, fast and highly customizable CMS powered by PHP, Twig, Markdown and YAML. No database required.
+  primary_label: Get started
+  primary_route: doc/first-steps/installation
+  secondary_label: View on GitHub
+  secondary_url: https://github.com/getherbie/herbie
+  badges:
+    - alt: Packagist downloads
+      url: https://packagist.org/packages/getherbie/herbie
+      image: https://img.shields.io/packagist/dt/getherbie/herbie.svg
+    - alt: GitHub release
+      url: https://github.com/getherbie/herbie/releases
+      image: https://img.shields.io/github/release/getherbie/herbie/all.svg
+    - alt: License BSD 3-Clause
+      url: https://github.com/getherbie/herbie/blob/master/LICENCE.md
+      image: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
+    - alt: PHP from Packagist
+      url: https://packagist.org/packages/getherbie/herbie
+      image: https://img.shields.io/packagist/php-v/getherbie/herbie.svg
 ---
-
-[![Packagist](https://img.shields.io/packagist/dt/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
-[![GitHub (pre-)release](https://img.shields.io/github/release/getherbie/herbie/all.svg)](https://github.com/getherbie/herbie/releases)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/master/LICENCE.md)
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
-
-# Herbie
-
-> Create fully functional websites or blogs in no time and with little effort, using only text files. 👌
-
-Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
-
-## Supported PHP Versions
-
-8.3 / 8.4 / 8.5
 
 ## Featuring
 
@@ -54,3 +60,7 @@ Herbie is well tested:
 - Unit Tests, Integration Tests and Acceptance Tests with [Codeception](https://codeception.com)
 - Static Code Analysis with [PHPStan](https://phpstan.org)
 - Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
+
+## Supported PHP Versions
+
+8.3 / 8.4 / 8.5
