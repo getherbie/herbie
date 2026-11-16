@@ -7,6 +7,7 @@ namespace herbie\sysplugins\contact;
 use herbie\AbstractPlugin;
 use herbie\Config;
 use herbie\Plugin;
+use herbie\Session;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
@@ -28,6 +29,7 @@ final class ContactPlugin extends AbstractPlugin
     private TwigRenderer $twigRenderer;
     private UrlManager $urlManager;
     private LoggerInterface $logger;
+    private Session $session;
 
     public function __construct(
         Config $config,
@@ -37,6 +39,7 @@ final class ContactPlugin extends AbstractPlugin
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
         LoggerInterface $logger,
+        Session $session,
     ) {
         $this->config = $config;
         $this->request = $request;
@@ -45,13 +48,33 @@ final class ContactPlugin extends AbstractPlugin
         $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
         $this->logger = $logger;
+        $this->session = $session;
     }
 
     public function twigFunctions(): array
     {
         return [
             new TwigFunction('contact', [$this, 'contact'], ['is_safe' => ['html']]),
+            new TwigFunction('csrf_token', fn (): string => $this->csrfToken()),
         ];
+    }
+
+    /**
+     * The CSRF token for the current session.
+     */
+    public function csrfToken(): string
+    {
+        if (!$this->session->isActive()) {
+            $this->session->start();
+            $this->session->save();
+        }
+        $existing = (string)$this->session->get('csrf_token', '');
+        if ($existing !== '') {
+            return $existing;
+        }
+        $token = $this->session->generateCsrfToken();
+        $this->session->save();
+        return $token;
     }
 
     public function contact(): string
@@ -63,6 +86,14 @@ final class ContactPlugin extends AbstractPlugin
         $formErrors = [];
 
         if ($this->formSubmitted()) {
+            // Verify the CSRF token before processing the form.
+            if (!$this->isValidCsrfToken($this->getFormData())) {
+                $this->logger->warning('Contact form rejected: invalid CSRF token.');
+                $response = $this->createRedirectResponse($route, 'failed');
+                $this->emitResponse($response);
+                exit;
+            }
+
             $formData = $this->filterFormData($this->getFormData());
             $formErrors = $this->validateFormData($formData);
             if (empty($formErrors)) {
@@ -92,7 +123,20 @@ final class ContactPlugin extends AbstractPlugin
             'errors' => $formErrors,
             'status' => $status,
             'route' => $route,
+            'csrf_token' => $this->csrfToken(),
         ]);
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    private function isValidCsrfToken(array $body): bool
+    {
+        $token = $body['csrf_token'] ?? '';
+        if (!is_string($token)) {
+            return false;
+        }
+        return $this->session->validateCsrfToken($token);
     }
 
     private function getFormData(): array

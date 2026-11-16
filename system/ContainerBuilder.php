@@ -329,6 +329,16 @@ final readonly class ContainerBuilder
             );
         });
 
+        $c->set(Session::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class)->getAsArray('components.session');
+            $path = $c->get(Alias::class)->get(
+                $config['path'] ?? '@site/runtime/session',
+            );
+            $name = $config['name'] ?? 'herbie_sid';
+            $ttl = $config['ttl'] ?? 3600;
+            return new Session($path, $name, $ttl);
+        });
+
         $c->set(SlugGenerator::class, function (ContainerInterface $c) {
             $options = [
                 'locale' => $c->get(Config::class)->get('language'),

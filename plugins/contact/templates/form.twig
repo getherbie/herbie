@@ -19,6 +19,7 @@
         {% endif %}
 
         <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="contact-control-group pure-control-group{% if errors.name %} contact-control-group-error{% endif %}">
                 <label for="name">{{ translate('contact', 'labelName') }}</label>
                 <input class="contact-input pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ data.name }}">
