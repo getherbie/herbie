@@ -150,7 +150,7 @@ final class Assets
             $copy = false;
             if (is_file($dstPath)) {
                 $delta = time() - file_mtime($dstPath);
-                if ($delta > $this->refresh) {
+                if ($delta > $this->refresh || file_mtime($srcPath) > file_mtime($dstPath)) {
                     $copy = true;
                 }
             } else {

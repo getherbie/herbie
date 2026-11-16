@@ -71,6 +71,33 @@ final class AssetsTest extends Unit
         $this->assertSame($firstModified, filemtime($marker));
     }
 
+    public function testChangedSourceIsRepublished(): void
+    {
+        $src = $this->fixturePath . '/src/css/styles.css';
+        $dst = $this->fixturePath . '/web/assets/css/styles.css';
+        $original = file_get_contents($src);
+        $originalMtime = filemtime($src);
+
+        try {
+            $assets = $this->createAssets();
+            $assets->addCss('@src/css/styles.css');
+            $assets->outputCss();
+
+            file_put_contents($src, $original . "\n/* changed */\n");
+            touch($src, time() + 5);
+            $this->resetStaticState();
+
+            $assets = $this->createAssets();
+            $assets->addCss('@src/css/styles.css');
+            $assets->outputCss();
+
+            $this->assertStringContainsString('/* changed */', file_get_contents($dst));
+        } finally {
+            file_put_contents($src, $original);
+            touch($src, $originalMtime);
+        }
+    }
+
     public function testOutputCssOnlyReturnsRequestedGroup(): void
     {
         $assets = $this->createAssets();
