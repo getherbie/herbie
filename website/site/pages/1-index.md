@@ -2,8 +2,8 @@
 title: Homepage
 hero:
   eyebrow: Flat-file CMS
-  title: Websites made of text files.
-  subtitle: Herbie is a simple, modern, fast and highly customizable CMS powered by PHP, Twig, Markdown and YAML. No database required.
+  title: Websites built from text files.
+  subtitle: Herbie is a blazing fast, lightweight, and highly customizable CMS running on PHP, Twig, Markdown, and YAML. No database required.
   primary_label: Get started
   primary_route: doc/first-steps/installation
   secondary_label: View on GitHub
@@ -23,27 +23,23 @@ hero:
       image: https://img.shields.io/packagist/php-v/getherbie/herbie.svg
 ---
 
-## Featuring
+## What Herbie Is Built On
 
-Herbie is powered by proven libraries:
+Herbie relies on battle-tested libraries:
 
-* [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](https://twig.symfony.com) template engine for rendering layouts and extending core functionality
-* [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
-* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for dependency and plugin management
+* [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html), and [Textile](https://textile-lang.com) for page content formatting
+* [Twig](https://twig.symfony.com) as the template engine for layouts and core extensibility
+* [YAML](http://www.yaml.org) and [JSON](https://www.json.org) for structured data
+* [Composer](https://getcomposer.org) and [Packagist](https://packagist.org) for dependency and plugin management
 
-Thanks to its plugin system Herbie is highly customizable and brings support for:
+Its plugin system makes Herbie highly extensible, with built-in support for:
 
-* Application Middlewares
-* Route Middlewares
-* Event Listeners
-* Twig Filters
-* Twig Globals
-* Twig Functions
-* Twig Tests
-* Console Commands
+* Application and route middlewares
+* Event listeners
+* Custom Twig filters, functions, tests, and globals
+* Console commands
 
-Herbie implements the following PHP standard recommendations:
+Herbie follows the PHP-FIG standards:
 
 * [PSR-3](https://www.php-fig.org/psr/psr-3/) Logger Interface
 * [PSR-4](https://www.php-fig.org/psr/psr-4/) Autoloading Standard
@@ -55,11 +51,11 @@ Herbie implements the following PHP standard recommendations:
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 * [PER-CS 3.0](https://www.php-fig.org/per/coding-style/) Coding Style
 
-Herbie is well tested:
+Quality is ensured through:
 
-- Unit Tests, Integration Tests and Acceptance Tests with [Codeception](https://codeception.com)
-- Static Code Analysis with [PHPStan](https://phpstan.org)
-- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
+* Unit, integration, and acceptance testing with [Codeception](https://codeception.com)
+* Static analysis with [PHPStan](https://phpstan.org)
+* Automated code style enforcement with [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
 ## Supported PHP Versions
 
