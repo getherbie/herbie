@@ -134,7 +134,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         $yaml = '';
         $segments = [];
 
-        $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*)\r?\n-{3}\R(.*)/ms', $content, $matches);
+        $matched = preg_match('/^[' . UTF8_BOM . ']*-{3}\r?\n(.*?)\r?\n-{3}\R(.*)/s', $content, $matches);
 
         if ($matched === 1 && count($matches) === 3) {
             $yaml = $matches[1];
