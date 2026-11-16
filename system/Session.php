@@ -144,7 +144,7 @@ final class Session
     {
         $this->ensureStarted();
 
-        if ($token === '' || !is_string($token)) {
+        if ($token === '') {
             return false;
         }
 
