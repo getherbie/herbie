@@ -50,7 +50,15 @@ return [
     ],
     'plugins' => [
         'contact' => [
-            'recipient' => 'me+herbie@tebe.ch',
+            'recipient' => '<smtp_recipient>',
+            'smtp' => [
+                'host' => '<smtp_host>',
+                'port' => 587,
+                'auth' => true,
+                'username' => '<smtp_username>',
+                'password' => '<smtp_password>',
+                'encryption' => 'tls',
+            ],
         ],
         'search' => [
             'usePageCache' => $isProduction,

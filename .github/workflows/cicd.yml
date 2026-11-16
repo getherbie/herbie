@@ -71,6 +71,16 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
 
+      - name: Configure SMTP secrets
+        run: |
+          sed -i "s|<smtp_host>|${{ secrets.SMTP_HOST }}|g" website/site/config/main.dist.php
+          sed -i "s|<smtp_username>|${{ secrets.SMTP_USERNAME }}|g" website/site/config/main.dist.php
+          sed -i "s|<smtp_password>|${{ secrets.SMTP_PASSWORD }}|g" website/site/config/main.dist.php
+          sed -i "s|<smtp_recipient>|${{ secrets.SMTP_RECIPIENT }}|g" website/site/config/main.dist.php
+
+      - name: Deploy main.php to site config
+        run: cp website/site/config/main.dist.php website/site/config/main.php
+
       - name: Rename index-prod.php
         run: rm website/web/index.php && mv website/web/index-prod.php website/web/index.php
 

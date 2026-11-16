@@ -15,3 +15,7 @@
 # codeception/c3
 /c3.php
 /c3_error.log
+
+# site config (production secrets)
+/website/site/config/*.php
+!/website/site/config/*.dist.php
