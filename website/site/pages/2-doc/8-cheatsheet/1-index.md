@@ -164,9 +164,11 @@ Layouts are Twig files in `site/themes/<theme>/<layout>.twig`; select one with `
 
 Files in `site/data/` (YAML or JSON) are available as `site.data.<name>`.
 
-~~~text
-site/data/menu.yml   ->  {% verbatim %}{{ site.data.menu }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+site/data/menu.yml   ->  {{ site.data.menu }}
 ~~~
+{% endverbatim %}
 
 **Middlewares**
 
@@ -181,25 +183,31 @@ $app->addRouteMiddleware('news/(.+)', $middleware);
 
 Translation files live in `messages/<language>.php` and are used with the `translate` Twig function.
 
-~~~text
-{% verbatim %}{{ translate('Hello') }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+{{ translate('Hello') }}
 ~~~
+{% endverbatim %}
 
 **Snippets**
 
 Snippets are Twig files in `templates/snippets/` and can be included with `snippet()`.
 
-~~~text
-{% verbatim %}{{ snippet('@snippet/example.twig') }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+{{ snippet('@snippet/example.twig') }}
 ~~~
+{% endverbatim %}
 
 **Media / Assets**
 
 Media lives in `site/media/`, theme assets in `site/assets/`. Use `link_media()`, `image()` and `asset()` helpers.
 
-~~~text
-{% verbatim %}{{ link_media('image.jpg') }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+{{ link_media('image.jpg') }}
 ~~~
+{% endverbatim %}
 
 **Page Types**
 
@@ -226,9 +234,11 @@ Twig provides the current page, site data and content segments.
 
 Menus are built from page lists or data files with the `menu_*` functions.
 
-~~~text
-{% verbatim %}{{ menu_list('main') }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+{{ menu_list('main') }}
 ~~~
+{% endverbatim %}
 
 **URLs & Links**
 
@@ -246,9 +256,11 @@ Use the URL and link helpers instead of hard-coded paths.
 
 `site.page_list` filters, sorts and groups pages.
 
-~~~text
-{% verbatim %}{{ site.page_list.query().where('layout=doc').sortBy('title') }}{% endverbatim %}
+{% verbatim %}
+~~~twig
+{{ site.page_list.query().where('layout=doc').sortBy('title') }}
 ~~~
+{% endverbatim %}
 
 **Caching & Debug**
 
