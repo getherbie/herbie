@@ -8,11 +8,13 @@ layout: doc
 In the previous chapters it was explained that a page corresponds to a text file in the page directory.
 In the simplest case, a text file looks something like this:
 
-    ---
-    title: A simple page
-    ---
+```yaml
+---
+title: A simple page
+---
 
-    The content about the simple page.
+The content about the simple page.
+```
 
 Herbie creates a page title and adds the text to the default content segment below the page properties.
 
@@ -23,24 +25,28 @@ Usually they are based on multi-column layouts that you want to fill independent
 This can be achieved with Herbie by using named content segments.
 A named content segment is defined with three minus signs followed by a string and another three minus signs, for example:
 
-    --- sidebar ---
+```yaml
+--- sidebar ---
+```
 
 The following text is then assigned to the content segment with ID sidebar.
 Let's look at a slightly more complicated example:
 
-    ---
-    title: A page with content segments
-    ---
+```yaml
+---
+title: A page with content segments
+---
 
-    Content is assigned to the default segment.
+Content is assigned to the default segment.
 
-    --- left ---
+--- left ---
 
-    Content is assigned to the left segment.
+Content is assigned to the left segment.
 
-    --- right ---
+--- right ---
 
-    Content is assigned to the right segment.
+Content is assigned to the right segment.
+```
 
 
 With this simple rule you can fill content of a page into several containers and address them within the layout.
@@ -51,24 +57,28 @@ In this way, more complex layouts can be handled even with simple text files.
 In layout files content segments are rendered using a global content object.
 
 {% verbatim %}
-    {{ content.default }}
+```twig
+{{ content.default }}
+```
 {% endverbatim %}
 
 The content object expects the segment ID as the key name.
 If no segment was specified in the page file, the default name must be used.
 
 {% verbatim %}
-    <body>
-        <div class="segment-default">
-            {{ content.default }}
-        </div>
-        <div class="segment-left">
-            {{ content.left }}
-        </div>
-        <div class="segment-right">
-            {{ content.right }}
-        </div>
-    </body>
+```html
+<body>
+    <div class="segment-default">
+        {{ content.default }}
+    </div>
+    <div class="segment-left">
+        {{ content.left }}
+    </div>
+    <div class="segment-right">
+        {{ content.right }}
+    </div>
+</body>
+```
 {% endverbatim %}
 
 An illustrative example can also be found in the website repository at GitHub.

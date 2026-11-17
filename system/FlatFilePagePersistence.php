@@ -139,7 +139,24 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         if ($matched === 1 && count($matches) === 3) {
             $yaml = $matches[1];
 
-            $splitContent = preg_split('/^-{3} (.+) -{3}\R?$/m', $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+            $content = $matches[2];
+
+            // Protect fenced code blocks so that segment separators (--- name ---)
+            // inside them are not interpreted as content segment boundaries.
+            $fencedBlocks = [];
+            $protected = preg_replace_callback(
+                '/(^`{3,}[^\\n]*\\n[\\s\\S]*?^`{3,})|(^~{3,}[^\\n]*\\n[\\s\\S]*?^~{3,})/m',
+                static function (array $match) use (&$fencedBlocks): string {
+                    $fencedBlocks[] = $match[0];
+                    return '@@CODEBLOCK' . (count($fencedBlocks) - 1) . '@@';
+                },
+                $content,
+            );
+            if ($protected === null) {
+                $protected = $content;
+            }
+
+            $splitContent = preg_split('/^-{3} (.+) -{3}\\R?$/m', $protected, -1, PREG_SPLIT_DELIM_CAPTURE);
             if ($splitContent === false) {
                 throw new UnexpectedValueException('Error at reading file content');
             }
@@ -159,6 +176,18 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
                 } else {
                     $segments[$key] = $value;
                 }
+            }
+
+            // Restore protected fenced code blocks in every segment.
+            foreach ($segments as $key => $segment) {
+                $segments[$key] = preg_replace_callback(
+                    '/@@CODEBLOCK(\\d+)@@/',
+                    static function (array $match) use ($fencedBlocks): string {
+                        $index = (int)$match[1];
+                        return $fencedBlocks[$index] ?? $match[0];
+                    },
+                    (string)$segment,
+                );
             }
 
             $i = 0;

@@ -88,6 +88,25 @@ final class RawHtmlProtectorTest extends Unit
         $this->assertStringContainsString('<div class="box">', $html);
     }
 
+    public function testHtmlInsideFencedCodeBlockIsNotProtected(): void
+    {
+        $markdown = "```\n<div class=\"box\">\nContent\n</div>\n```";
+        $protected = $this->protector->protect($markdown);
+
+        // The HTML tags inside the fence must not be replaced by a placeholder.
+        $this->assertStringContainsString('<div class="box">', $protected);
+        $this->assertStringContainsString('```', $protected);
+    }
+
+    public function testHtmlInsideTildeFencedCodeBlockIsNotProtected(): void
+    {
+        $markdown = "~~~\n<div class=\"box\">\nContent\n</div>\n~~~";
+        $protected = $this->protector->protect($markdown);
+
+        $this->assertStringContainsString('<div class="box">', $protected);
+        $this->assertStringContainsString('~~~', $protected);
+    }
+
     private function convert(string $markdown): string
     {
         $environment = new Environment(['html_input' => 'allow']);

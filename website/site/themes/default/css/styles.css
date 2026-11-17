@@ -1238,6 +1238,7 @@ html[data-theme="dark"] .page-index blockquote {
 
 /* Syntax highlighting: readable in both themes */
 html[data-theme="light"] .hljs { color:#24292f; background:var(--code-bg); }
+html[data-theme="light"] .hljs-tag { color:#116329; }
 html[data-theme="light"] .hljs-subst { color:#24292f; }
 html[data-theme="light"] .hljs-comment { color:#6e7781; }
 html[data-theme="light"] .hljs-attr,
@@ -1273,6 +1274,7 @@ html[data-theme="light"] .hljs-deletion { color:#82071e; }
 html[data-theme="light"] .hljs-addition { color:#116329; }
 
 html[data-theme="dark"] .hljs { color:#c9d1d9; background:var(--code-bg); }
+html[data-theme="dark"] .hljs-tag { color:#7ee787; }
 html[data-theme="dark"] .hljs-subst { color:#c9d1d9; }
 html[data-theme="dark"] .hljs-comment { color:#8b949e; }
 html[data-theme="dark"] .hljs-attr,

@@ -80,6 +80,60 @@ MD;
      * @covers ::parseFileContent
      * @group parseFileContent
      */
+    public function testFencedCodeBlockWithSegmentSeparator(): void
+    {
+        $content = <<<'MD'
+---
+title: Test
+---
+
+# Header
+
+```
+--- sidebar ---
+```
+
+Some text
+MD;
+
+        [$yaml, $segments] = FlatFilePagePersistence::parseFileContent($content);
+
+        $this->assertStringContainsString('title: Test', $yaml);
+        $this->assertArrayNotHasKey('sidebar', $segments);
+        $this->assertStringContainsString('--- sidebar ---', $segments['default']);
+    }
+
+    /**
+     * @covers ::parseFileContent
+     * @group parseFileContent
+     */
+    public function testTildeFencedCodeBlockWithSegmentSeparator(): void
+    {
+        $content = <<<'MD'
+---
+title: Test
+---
+
+# Header
+
+~~~
+--- sidebar ---
+~~~
+
+Some text
+MD;
+
+        [$yaml, $segments] = FlatFilePagePersistence::parseFileContent($content);
+
+        $this->assertStringContainsString('title: Test', $yaml);
+        $this->assertArrayNotHasKey('sidebar', $segments);
+        $this->assertStringContainsString('--- sidebar ---', $segments['default']);
+    }
+
+    /**
+     * @covers ::parseFileContent
+     * @group parseFileContent
+     */
     public function testImprintFile(): void
     {
         $content = <<<'MD'

@@ -51,9 +51,23 @@ final class RawHtmlProtector
         $lines = explode("\n", $markdown);
         $count = count($lines);
         $result = [];
+        $inFence = false;
 
         for ($i = 0; $i < $count; $i++) {
             $line = $lines[$i];
+
+            // Fenced code blocks are never protected: their content (including
+            // HTML tags) must reach the Markdown parser unchanged.
+            if (preg_match('/^ {0,3}(`{3,}|~{3,})/', $line) === 1) {
+                $inFence = !$inFence;
+                $result[] = $line;
+                continue;
+            }
+            if ($inFence) {
+                $result[] = $line;
+                continue;
+            }
+
             $tag = $this->getBlockTag($line);
             if ($tag === null) {
                 $result[] = $line;
