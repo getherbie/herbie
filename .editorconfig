@@ -11,3 +11,23 @@ trim_trailing_whitespace = true
 
 [*.md]
 max_line_length = off
+
+[*.php]
+indent_style = space
+indent_size = 4
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[*.css]
+indent_style = space
+indent_size = 4
+
+[*.js]
+indent_style = space
+indent_size = 2
