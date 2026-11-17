@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class PageLinkFunctionTest extends Unit
+final class FileLinkFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
     public function testPowerOn(): void
     {
         $this->assertEquals(
-            '<span class="link link--page"><a href="/route" class="link__label">label</a></span>',
-            $this->twig()->renderString('{{ link_page("route", "label") }}'),
+            '<span class="link link--media"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ link_media("dummy.pdf") }}'),
         );
     }
 

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class SnippetFunctionTest extends Unit
+final class CssClassesFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
-    public function testSnippetFunction(): void
+    public function testCssClassesFunction(): void
     {
-        $expected = 'Hi there';
-        $actual = $this->twig()->renderString('{{ snippet("@site/snippets/test.twig") }}');
+        $expected = 'page-error theme-default layout-default language-de';
+        $actual = $this->twig()->renderString('{{ css_classes() }}');
         $this->assertEquals($expected, $actual);
     }
 

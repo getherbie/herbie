@@ -2,23 +2,21 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class OutputJsFunctionTest extends Unit
+final class ImageFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
     public function testPowerOn(): void
     {
-        $twig = '{{ js_add("@site/assets/script.js") }}'
-            . '{{ js_out() }}';
         $this->assertEquals(
-            '<script src="/assets/assets/script.js"></script>',
-            $this->twig()->renderString($twig),
+            '<img src="/media/dummy-200x100.gif" alt="">',
+            $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}'),
         );
     }
 
@@ -29,6 +27,4 @@ final class OutputJsFunctionTest extends Unit
             dirname(__DIR__, 3) . '/Fixtures/site',
         );
     }
-
-    // TODO write more tests
 }

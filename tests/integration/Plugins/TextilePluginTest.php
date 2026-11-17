@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins;
+namespace herbie\tests\integration\Plugins;
 
 use Codeception\Test\Unit;
 use herbie\Application;
