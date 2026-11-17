@@ -4,7 +4,7 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\Config;
-use herbie\sysplugins\markdown\MarkdownPlugin;
+use herbie\plugins\markdown\MarkdownPlugin;
 use Psr\Log\NullLogger;
 
 final class MarkdownPluginTest extends Unit

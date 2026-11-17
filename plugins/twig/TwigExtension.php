@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\twig;
+namespace herbie\plugins\twig;
 
 use Ausi\SlugGenerator\SlugGenerator;
 use Exception;

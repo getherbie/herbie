@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Filters;
+namespace herbie\tests\integration\Plugins\TwigCore\Filters;
 
 use Codeception\Test\Unit;
 use herbie\Application;

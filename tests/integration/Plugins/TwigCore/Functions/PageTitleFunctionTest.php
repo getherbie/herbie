@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Functions;
+namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class CssClassesFunctionTest extends Unit
+final class PageTitleFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
-    public function testCssClassesFunction(): void
+    public function testPageTitleFunction(): void
     {
-        $expected = 'page-error theme-default layout-default language-de';
-        $actual = $this->twig()->renderString('{{ css_classes() }}');
+        $expected = 'Index';
+        $actual = $this->twig()->renderString('{{ page_title() }}');
         $this->assertEquals($expected, $actual);
     }
 

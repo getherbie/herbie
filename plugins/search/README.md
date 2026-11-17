@@ -23,9 +23,9 @@ return [
     'plugins' => [        
         'search' => [
             // path to twig form template
-            'formTemplate' => '@sysplugin/search/templates/form.twig',
+            'formTemplate' => '@plugin/search/templates/form.twig',
             // path to twig results template
-            'resultsTemplate' => '@sysplugin/search/templates/results.twig',
+            'resultsTemplate' => '@plugin/search/templates/results.twig',
             // use page cache if global caching is enabled
             'usePageCache' => false,
         ],

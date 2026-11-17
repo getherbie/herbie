@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\tests\integration\SysPlugins\TwigCore\Tests;
+namespace herbie\tests\integration\Plugins\TwigCore\Tests;
 
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;

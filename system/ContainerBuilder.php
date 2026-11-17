@@ -55,9 +55,9 @@ final readonly class ContainerBuilder
                 '@asset' => $this->app->getSitePath() . '/assets',
                 '@media' => $paths['media'],
                 '@page' => $paths['pages'],
-                '@plugin' => $paths['plugins'],
                 '@site' => $this->app->getSitePath(),
-                '@sysplugin' => Application::getHerbiePath('/plugins'),
+                // the default of paths.plugins is Herbie's own plugin directory
+                '@plugin' => $paths['plugins'],
                 '@vendor' => $this->app->getVendorPath(),
                 '@web' => $paths['web'],
                 '@snippet' => $paths['app'] . '/templates/snippets',

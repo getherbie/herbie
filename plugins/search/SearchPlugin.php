@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\search;
+namespace herbie\plugins\search;
 
 use Exception;
 use herbie\AbstractPlugin;
@@ -169,6 +169,6 @@ final class SearchPlugin extends AbstractPlugin
 
     private function getTemplatePath(string $name): string
     {
-        return '@sysplugin/search/templates/' . $name;
+        return '@plugin/search/templates/' . $name;
     }
 }

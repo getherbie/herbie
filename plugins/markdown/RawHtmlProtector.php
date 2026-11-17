@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\markdown;
+namespace herbie\plugins\markdown;
 
 /**
  * Protects raw HTML blocks from being parsed as markdown.

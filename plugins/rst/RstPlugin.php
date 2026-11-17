@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\rst;
+namespace herbie\plugins\rst;
 
 use Doctrine\RST\Parser;
 use herbie\Config;
 use herbie\Plugin;
-use herbie\sysplugins\AbstractParserPlugin;
+use herbie\plugins\AbstractParserPlugin;
 use Psr\Log\LoggerInterface;
 
 #[Plugin('rst', requires: ['doctrine/rst-parser' => '^0.5.2'])]

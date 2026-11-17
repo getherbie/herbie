@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins;
+namespace herbie\plugins;
 
 use herbie\AbstractPlugin;
 use herbie\Config;
