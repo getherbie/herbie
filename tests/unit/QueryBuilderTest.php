@@ -225,8 +225,16 @@ final class QueryBuilderTest extends Unit
     {
         $builder = $this->createBuilder($this->createData())->where('type=post');
 
-        // count() returns the number of the last processed result
-        $this->assertCount(2, $builder->all());
+        // count() returns the number of matching records without needing all()
+        $this->assertSame(2, $builder->count());
+    }
+
+    public function testCountIsIdempotent(): void
+    {
+        $builder = $this->createBuilder($this->createData())->where('type=post');
+
+        $this->assertSame(2, $builder->count());
+        $this->assertSame(2, $builder->count());
     }
 
     public function testOne(): void

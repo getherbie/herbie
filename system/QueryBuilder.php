@@ -168,6 +168,7 @@ final class QueryBuilder implements IteratorAggregate
 
     public function count(): int
     {
+        $this->processData();
         return count($this->processed);
     }
 
@@ -183,6 +184,7 @@ final class QueryBuilder implements IteratorAggregate
 
     private function processData(): void
     {
+        $this->processed = [];
         $i = 0;
         $j = 0;
         $this->sort();
