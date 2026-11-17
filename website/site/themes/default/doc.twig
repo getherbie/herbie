@@ -1,4 +1,4 @@
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block content %}
     <div class="content-container">
@@ -16,7 +16,7 @@
                     <div class="sidebar">
                         {{ include('includes/search.twig') }}
                         <h4>Documentation</h4>
-                        {{ menu_tree(route='doc', class='menu') }}
+                        {{ menu_tree(route: 'doc', class: 'menu') }}
                     </div>
                 </div>
             </div>

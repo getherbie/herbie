@@ -1,4 +1,4 @@
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block content %}
     <div class="content-container">
@@ -20,7 +20,7 @@
                                 <ul class="widget-pages-recent-list">
                                     {% for pageItem in recentPages %}
                                         <li class="widget-pages-recent-item">
-                                            {{ link_page(pageItem.route, pageItem.title, {class: "widget-pages-recent-item-link"}) }}
+                                            {{ link_page(pageItem.route, pageItem.title, {class: 'widget-pages-recent-item-link'}) }}
                                         </li>
                                     {% endfor %}
                                 </ul>

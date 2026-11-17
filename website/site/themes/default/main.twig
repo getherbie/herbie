@@ -53,9 +53,9 @@
     {# the icons live in the web root next to index.php, independent of the route #}
     <link rel="icon" href="{{ (site.base_url ~ '/favicon.svg')|replace({'//': '/'}) }}" type="image/svg+xml">
     <link rel="alternate icon" href="{{ (site.base_url ~ '/favicon.ico')|replace({'//': '/'}) }}" sizes="16x16">
-    <title>{{ page_title(delim=' / ', site_title='Herbie CMS', root_title='Herbie CMS - A simple flat-file content management system', reverse=true) }}</title>
+    <title>{{ page_title(delim: ' / ', site_title: 'Herbie CMS', root_title: 'Herbie CMS - A simple flat-file content management system', reverse: true) }}</title>
     <base href="{{ site.base_url }}">
-    {{ css_out(timestamp=true) }}
+    {{ css_out(timestamp: true) }}
 </head>
 <body class="{{ css_classes() }}">
 <div class="header">
@@ -79,7 +79,7 @@
                                     {% for item in site.data.menu %}
                                         {% set active = (item.route == route) ? 'pure-menu-selected' : '' %}
                                         <li class="pure-menu-item {{ active }}">
-                                            {{ link_page(item.route, item.label, {class:"pure-menu-link"}) }}
+                                            {{ link_page(item.route, item.label, {class: 'pure-menu-link'}) }}
                                         </li>
                                     {% endfor %}
                                     <li class="pure-menu-item theme-toggle-item">
@@ -210,12 +210,12 @@ title: Hello
         </div>
     </div>
 </div>
-{{ js_out(timestamp=true) }}
+{{ js_out(timestamp: true) }}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre code[class*=language-]').forEach((el) => {
       hljs.highlightElement(el);
     });
-  });    
+  });
 </script>
 </body>

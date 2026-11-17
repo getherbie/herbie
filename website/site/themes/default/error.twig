@@ -1,4 +1,4 @@
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block content %}
     <div class="content-container">
@@ -8,21 +8,21 @@
                     <div class="content">
                         {# render error according error code #}
                         {% if error.code == 404 %}
-    
+
                             <h1>Page not found</h1>
                             <p>Oops, something got wrong! The page or resource could not be found.</p>
-    
+
                         {% else %}
-    
+
                             <h1>Server Error</h1>
                             <p>An error occurred.</p>
-    
+
                         {% endif %}
-    
+
                         {# render error details in debug mode only #}
-    
+
                         {% if herbie_debug() %}
-    
+
                             <table class="pure-table pure-table-horizontal" style="table-layout: fixed;">
                                 <tr>
                                     <td style="width:10%">Code</td>
@@ -45,7 +45,7 @@
                                     <td><div style="white-space: pre;overflow:auto">{{ error.traceAsString }}</div></td>
                                 </tr>
                             </table>
-    
+
                         {% endif %}
                     </div>
                 </div>

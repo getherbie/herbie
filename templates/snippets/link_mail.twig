@@ -1,5 +1,5 @@
 <span class="link link--mailto">
-    <a 
+    <a
         {%- for key, value in attribs -%}
             {{- ' ' }}{{- key -}}="{{- value|e('html_attr') -}}"
         {%- endfor -%}

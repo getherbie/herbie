@@ -1,5 +1,5 @@
 <div class="plugins">
-    {% set plugins = query(site.data.plugins).where("enabled=true").order('id').all() %}
+    {% set plugins = query(site.data.plugins).where('enabled=true').order('id').all() %}
     <p>There are currently <b>{{ plugins|length }}</b> plugins available.</p>
     {% for item in plugins %}
         {% if item.enabled == true %}
@@ -25,12 +25,12 @@
             <p class="links">
                 {% if item.github %}
                     <a class="pure-button button-small" target="_blank" href="{{ item.github }}">
-                        {{ icon('github', fill='white') }} GitHub
+                        {{ icon('github', fill: 'white') }} GitHub
                     </a>
                 {% endif %}
                 {% if item.packagist %}
                     <a class="pure-button button-small" target="_blank" href="{{ item.packagist }}">
-                        {{ icon('archive-fill', fill='white') }} Packagist
+                        {{ icon('archive-fill', fill: 'white') }} Packagist
                     </a>
                 {% endif %}
             </p>
