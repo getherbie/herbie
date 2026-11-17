@@ -26,11 +26,11 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         // if we see this, redirect was successful
         $I->seeInTitle('Introduction / Documentation / Herbie CMS');
-        $I->see('Documentation', 'h1');
+        $I->see('Introduction', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.toc-links li', 2);
         $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 4);
+        $I->seeNumberOfElements('.content>p', 5);
     }
 
     public function testDocFirstSteps(AcceptanceTester $I)
@@ -65,7 +65,7 @@ final class WebsiteCest
         $I->see('Configuration', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 12);
+        $I->seeNumberOfElements('.content>p', 13);
         $I->seeNumberOfElements('.content>pre', 4);
     }
 
@@ -190,8 +190,9 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Middlewares', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 2);
+        $I->seeNumberOfElements('.content>h2', 3);
+        $I->seeNumberOfElements('.content>p', 12);
+        $I->seeNumberOfElements('.content>pre', 5);
     }
 
     public function testDocIndepthQueryBuilder(AcceptanceTester $I)
@@ -319,7 +320,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Cheat Sheet', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 48);
+        $I->seeNumberOfElements('.content>p', 49);
         $I->seeNumberOfElements('.content>pre', 21);
         $I->seeNumberOfElements('.content>table', 7);
     }

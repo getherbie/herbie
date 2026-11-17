@@ -14,7 +14,7 @@ final class SnippetFunctionTest extends Unit
 
     public function testSnippetFunction(): void
     {
-        $expected = 'Hi there';
+        $expected = "Hi there\n";
         $actual = $this->twig()->renderString('{{ snippet("@site/snippets/test.twig") }}');
         $this->assertEquals($expected, $actual);
     }

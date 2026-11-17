@@ -40,11 +40,7 @@ final class MailLinkFunctionTest extends Unit
 
     private function getHtml(string $link): string
     {
-        return <<<STRING
-        <span class="link link--mailto">
-            {$link}
-        </span>
-        STRING;
+        return "<span class=\"link link--mailto\">\n    {$link}\n</span>\n";
     }
 
     public function testLinkWithEmailAndLabel(): void
