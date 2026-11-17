@@ -45,6 +45,7 @@
         })();
     </script>
     <meta charset="utf-8">
+    <meta name="description" content="Herbie is a blazing fast, lightweight, flat-file CMS built with PHP and Twig. Documentation, plugins, and examples.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     {# the icons live in the web root next to index.php, independent of the route #}
@@ -59,7 +60,7 @@
     <div class="container">
         <div class="inner-container">
             <div class="pure-hidden-tablet pure-hidden-desktop">
-                <a href="#menu" id="menuLink" class="menu-link">
+                <a href="#menu" id="menuLink" class="menu-link" aria-label="Open navigation menu">
                     <!-- Hamburger icon -->
                     <span></span>
                 </a>
@@ -171,7 +172,9 @@ title: Hello
     </div>
 {% endif %}
 
+<main id="main-content">
 {% block content %}{% endblock %}
+</main>
 
 <div class="footer">
     <div class="container">
