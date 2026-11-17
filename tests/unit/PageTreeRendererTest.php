@@ -7,10 +7,10 @@ namespace herbie\tests\unit;
 use Codeception\Test\Unit;
 use herbie\Page;
 use herbie\PageTree;
-use herbie\sysplugins\twig\PageTreeFilterIterator;
-use herbie\sysplugins\twig\PageTreeHtmlRenderer;
-use herbie\sysplugins\twig\PageTreeIterator;
-use herbie\sysplugins\twig\PageTreeTextRenderer;
+use herbie\plugins\twig\PageTreeFilterIterator;
+use herbie\plugins\twig\PageTreeHtmlRenderer;
+use herbie\plugins\twig\PageTreeIterator;
+use herbie\plugins\twig\PageTreeTextRenderer;
 
 /**
  * The renderers turn a page tree into a nested list or an ASCII tree. They are used by the

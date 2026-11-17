@@ -18,7 +18,10 @@ $settings['paths']['app'] = 'APP_PATH';
 $settings['paths']['data'] = 'SITE_PATH/data';
 $settings['paths']['media'] = 'SITE_PATH/media';
 $settings['paths']['pages'] = 'SITE_PATH/pages';
-$settings['paths']['plugins'] = 'SITE_PATH/extend/plugins'; // TODO move config
+// The Herbie plugin directory by default, the `@plugin` alias and the Twig
+// namespace `plugin` point to it; overridable to relocate the system plugins.
+$herbieRoot = dirname(__DIR__);
+$settings['paths']['plugins'] = $herbieRoot . '/plugins';
 $settings['paths']['site'] = 'SITE_PATH';
 $settings['paths']['themes'] = 'SITE_PATH/themes';
 $settings['paths']['web'] = 'WEB_PATH';

@@ -125,7 +125,6 @@ Aliases map shortcut names to filesystem paths:
 @web       -> web/
 @asset     -> site/assets/
 @plugin    -> plugins/
-@sysplugin -> system/plugins/
 @vendor    -> vendor/
 @snippet   -> templates/snippets/
 ~~~

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
-use herbie\sysplugins\contact\ContactPlugin;
+use herbie\plugins\contact\ContactPlugin;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;

@@ -41,7 +41,7 @@
     "autoload": {
         "psr-4": {
             "herbie\\": "system",
-            "herbie\\sysplugins\\": "plugins"
+            "herbie\\plugins\\": "plugins"
         },
         "files": [
             "system/functions.php"

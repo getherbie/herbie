@@ -3,7 +3,7 @@
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
-use herbie\sysplugins\markdown\RawHtmlProtector;
+use herbie\plugins\markdown\RawHtmlProtector;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Table\TableExtension;

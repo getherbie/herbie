@@ -102,12 +102,13 @@ final class TwigRenderer
         $loader2 = new FilesystemLoader($paths);
 
         // namespaces
+        // the user plugin path comes first, so user templates win; the plugin path
+        // of Herbie itself (system plugins) is appended at the same namespace
         $namespaces = [
             'plugin' => $this->config->getAsString('paths.plugins'),
             'page' => $this->config->getAsString('paths.pages'),
             'site' => $this->config->getAsString('paths.site'),
             'snippet' => Application::getHerbiePath('/templates/snippets'),
-            'sysplugin' => Application::getHerbiePath('/plugins'),
             'template' => Application::getHerbiePath('/templates'),
             'vendor' => $this->config->getAsString('paths.app') . '/vendor',
         ];

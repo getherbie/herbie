@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\markdown;
+namespace herbie\plugins\markdown;
 
 use herbie\Config;
 use herbie\Plugin;
-use herbie\sysplugins\AbstractParserPlugin;
+use herbie\plugins\AbstractParserPlugin;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\ExtensionInterface;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\textile;
+namespace herbie\plugins\textile;
 
 use herbie\Config;
 use herbie\Plugin;
-use herbie\sysplugins\AbstractParserPlugin;
+use herbie\plugins\AbstractParserPlugin;
 use Netcarver\Textile\Parser;
 use Psr\Log\LoggerInterface;
 

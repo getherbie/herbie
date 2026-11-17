@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\contact;
+namespace herbie\plugins\contact;
 
 use herbie\AbstractPlugin;
 use herbie\Config;
@@ -283,6 +283,6 @@ final class ContactPlugin extends AbstractPlugin
 
     private function getTemplatePath(string $name): string
     {
-        return '@sysplugin/contact/templates/' . $name;
+        return '@plugin/contact/templates/' . $name;
     }
 }

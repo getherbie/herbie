@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace herbie\sysplugins\dummy;
+namespace herbie\plugins\dummy;
 
 use herbie\events\ContentRenderedEvent;
 use herbie\events\LayoutRenderedEvent;
