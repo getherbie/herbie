@@ -418,8 +418,10 @@ The latter is achieved through dependency injection.
 
 A plugin is a directory with a PHP class that is marked with the `#[Plugin]` attribute.
 
-    myplugin
-    └── MyPlugin.php
+~~~text
+myplugin
+└── MyPlugin.php
+~~~
 
 The first argument of the attribute is the name of the plugin, which is used in the `enabledPlugins` setting and as key `plugins.myplugin` in the configuration.
 Herbie finds the class by scanning the PHP files in the plugin directory, one level deep, without executing them.
@@ -432,9 +434,11 @@ If you change an existing plugin file in a production environment, clear the cac
 A plugin can have default values for its settings.
 They are returned by an optional file `config.php` in the plugin directory and can be overridden in the configuration file `site/config/main.php`.
 
-    myplugin
-    ├── config.php
-    └── MyPlugin.php
+~~~text
+myplugin
+├── config.php
+└── MyPlugin.php
+~~~
 
 The config file must look like this:
 
@@ -669,7 +673,9 @@ How to deploy the plugin on <https://packagist.org> can be found on <https://get
 After deployment, the plugin can be installed using Composer.
 All you need to do is run the following CLI command in your project root directory.
 
-    composer require myvendor/myplugin
+~~~bash
+composer require myvendor/myplugin
+~~~
 
 After that, the plugin needs to be enabled in the configuration.
 

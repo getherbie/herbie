@@ -7,15 +7,17 @@ layout: doc
 
 A Herbie website is usually structured as follows:
 
-    project
-    ├── site
-    ├── vendor
-    └── web
-        ├── assets
-        ├── cache
-        ├── media
-        ├── .htaccess
-        └── index.php
+~~~text
+project
+├── site
+├── vendor
+└── web
+    ├── assets
+    ├── cache
+    ├── media
+    ├── .htaccess
+    └── index.php
+~~~
 
 What these files and directories stand for can be seen in the following table:
 
@@ -41,41 +43,43 @@ What these files and directories stand for can be seen in the following table:
 Normally one works exclusively in the `site` directory of the web project.
 This is usually structured as follows:
 
-    site
-    ├── config
-    │   └── main.php
-    ├── data
-    │   ├── animals.json
-    │   └── persons.yml
-    ├── extend
-    │   ├── commands
-    │   ├── events
-    │   ├── middlewares_app
-    │   ├── middlewares_route
-    │   ├── plugins
-    │   ├── twig_filters
-    │   ├── twig_functions
-    │   ├── twig_globals
-    │   └── twig_tests
-    ├── pages
-    │   ├── company
-    │   │   ├── about-us.md
-    │   │   ├── index.md
-    │   │   ├── our-vision.md
-    │   │   └── team.md
-    │   ├── contact.md
-    │   ├── index.md
-    │   └── services.md
-    ├── runtime
-    │   ├── cache
-    │   │   ├── system
-    │   │   └── twig
-    │   └── log
-    └── themes
-        └─ default
-            ├── assets
-            ├── default.html
-            └── error.html
+~~~text
+site
+├── config
+│   └── main.php
+├── data
+│   ├── animals.json
+│   └── persons.yml
+├── extend
+│   ├── commands
+│   ├── events
+│   ├── middlewares_app
+│   ├── middlewares_route
+│   ├── plugins
+│   ├── twig_filters
+│   ├── twig_functions
+│   ├── twig_globals
+│   └── twig_tests
+├── pages
+│   ├── company
+│   │   ├── about-us.md
+│   │   ├── index.md
+│   │   ├── our-vision.md
+│   │   └── team.md
+│   ├── contact.md
+│   ├── index.md
+│   └── services.md
+├── runtime
+│   ├── cache
+│   │   ├── system
+│   │   └── twig
+│   └── log
+└── themes
+    └─ default
+        ├── assets
+        ├── default.html
+        └── error.html
+~~~
 
 The following table shows what each of these files and directories stand for:
 
@@ -100,10 +104,12 @@ The following table shows what each of these files and directories stand for:
 
 If configuration option `components.urlManager.niceUrls` is enabled, there must be an `.htaccess` file with appropriate instructions in the `web` directory.
 
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . index.php
+~~~apache
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php
+~~~
 
 Thus, all page views are passed on to the central index file.
 This is important for search engine optimization, for example, but also for visitors to the website.

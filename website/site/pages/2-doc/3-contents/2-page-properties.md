@@ -11,18 +11,22 @@ There must be valid YAML between two lines of three hyphens.
 This sounds a bit complicated, but it is quite simple.
 Here is an example for a page properties block:
 
-    ---
-    title: Get started with your own website
-    layout: default.html
-    ---
+~~~yaml
+---
+title: Get started with your own website
+layout: default.html
+---
+~~~
 
 Predefined variables (see reference below) or custom variables can be used as page properties.
 These variables are available in all layout and content files as page variables.
 Here is an example:
 
 {% verbatim %}
-    {{ page.title }}
-    {{ page.layout }}
+~~~twig
+{{ page.title }}
+{{ page.layout }}
+~~~
 {% endverbatim %}
 
 ## Predefined variables
@@ -39,16 +43,20 @@ For example, if you declare a variable `class`, you can retrieve it in the layou
 
 In the page properties you declare the value of the variable:
 
-    ---
-    title: Welcome to my website!
-    class: home
-    ---
+~~~yaml
+---
+title: Welcome to my website!
+class: home
+---
+~~~
 
 In the page content itself, you can access these variables as follows:
 
 {% verbatim %}
-    {{ page.title }}
-    {{ page.layout }}
+~~~twig
+{{ page.title }}
+{{ page.layout }}
+~~~
 {% endverbatim %}
 
 And in layout files you output the variables the same:

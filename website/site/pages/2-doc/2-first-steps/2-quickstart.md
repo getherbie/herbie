@@ -9,15 +9,19 @@ Here is the short version of how to install a simple Herbie website using a webs
 
 With PHP and Composer:
 
-    composer create-project getherbie/start-website mywebsite
-    cd mywebsite/web
-    php -S localhost:8888 index.php
+~~~bash
+composer create-project getherbie/start-website mywebsite
+cd mywebsite/web
+php -S localhost:8888 index.php
+~~~
 
 With Docker and Docker Compose:
 
-    docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
-    cd mywebsite
-    docker compose up website
+~~~bash
+docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
+cd mywebsite
+docker compose up website
+~~~
 
 That's it!
 

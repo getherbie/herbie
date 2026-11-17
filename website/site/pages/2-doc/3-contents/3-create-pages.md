@@ -62,10 +62,12 @@ If the index file is missing, a 404 error page is displayed.
 The easiest way to add pages is to add a text file with an appropriate name in the pages directory.
 For a site with a home page, an about page, and a contact page, the page directory and their corresponding URLs would look like this:
 
-    site/pages
-    ├── about.md        # https://example.com/about
-    ├── contact.md      # https://example.com/contact
-    └── index.md        # https://example.com
+~~~text
+site/pages
+├── about.md        # https://example.com/about
+├── contact.md      # https://example.com/contact
+└── index.md        # https://example.com
+~~~
 
 ## Named folders with index files
 
@@ -73,15 +75,17 @@ You can do it this way, and there is nothing wrong with it at all.
 However, often you want to add more pages or group existing pages into a topic.
 For example, if a team page, a vision page, and a route page are added to the above website, the page index might look like this:
 
-    site/pages
-    ├── about
-    │   ├── index.md    # https://example.com/about
-    │   ├── team.md     # https://example.com/about/team
-    │   └── vision.md   # https://example.com/about/vision
-    ├── contact
-    │   ├── index.md    # https://example.com/contact
-    │   └── route.md    # https://example.com/contact/route
-    └── index.md        # https://example.com
+~~~text
+site/pages
+├── about
+│   ├── index.md    # https://example.com/about
+│   ├── team.md     # https://example.com/about/team
+│   └── vision.md   # https://example.com/about/vision
+├── contact
+│   ├── index.md    # https://example.com/contact
+│   └── route.md    # https://example.com/contact/route
+└── index.md        # https://example.com
+~~~
 
 Which way is better depends largely on the type of website.
 For small websites, named text files without further sub folders are enough.
@@ -92,12 +96,14 @@ For large websites, there is no way around additional sub folders and text files
 By prefixing files with a number followed by a hyphen, you can control sorting and visibility in menus.
 It looks like this, for example:
 
-    site/pages
-    ├── 1-index.md      # visible and sorted
-    ├── 2-about-us.md   # visible and sorted
-    ├── 3-contact.md    # visible and sorted
-    ├── imprint.md      # not visible
-    └── sitemap.md      # not visible
+~~~text
+site/pages
+├── 1-index.md      # visible and sorted
+├── 2-about-us.md   # visible and sorted
+├── 3-contact.md    # visible and sorted
+├── imprint.md      # not visible
+└── sitemap.md      # not visible
+~~~
 
 The pages *index*, *about-us* and *contact* are visible in menus and sorting is defined.
 The pages *sitemap* and *imprint* are not visible in menus and sorting is therefore not relevant.
@@ -112,14 +118,16 @@ Sometimes you want to disable a page or a whole folder.
 This can be done by prefixing the name of the page or folder with an underscore.
 Such pages and folders are not taken into account when scanning the file system.
 
-    site/pages
-    ├── _about          # The folder incl. subpages is disabled
-    │   ├── index.md
-    │   ├── team.md
-    │   └── vision.md
-    ├── contact
-    │   ├── _route.md   # The page is disabled
-    │   └── index.md   
-    └── index.md
+~~~text
+site/pages
+├── _about          # The folder incl. subpages is disabled
+│   ├── index.md
+│   ├── team.md
+│   └── vision.md
+├── contact
+│   ├── _route.md   # The page is disabled
+│   └── index.md   
+└── index.md
+~~~
 
 This is helpful, for example, when pages should be temporarily disabled.

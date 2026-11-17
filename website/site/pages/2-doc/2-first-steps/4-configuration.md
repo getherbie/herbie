@@ -10,10 +10,12 @@ These default configurations are defined in the [config/defaults.php](https://gi
 
 The following variables are available in the configuration file as PHP constants as constant strings:
 
-    APP_PATH
-    SITE_PATH
-    WEB_PATH
-    WEB_URL
+~~~php
+APP_PATH
+SITE_PATH
+WEB_PATH
+WEB_URL
+~~~
 
 These constant strings are parsed at runtime.
 
@@ -56,13 +58,17 @@ All configuration values can be accessed via a function with support for dot not
 The following function calls:
 
 {% verbatim %}
-    {{ site.config.as_string('charset') }}
-    {{ site.config.as_string('fileExtensions.pages') }}
-    {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
+~~~twig
+{{ site.config.as_string('charset') }}
+{{ site.config.as_string('fileExtensions.pages') }}
+{{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
+~~~
 {% endverbatim %}
 
 Return the following values:
 
-    Charset = {{ site.config.as_string('charset') }}
-    Page extensions = {{ site.config.as_string('fileExtensions.pages') }}
-    Enable twig = {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
+~~~text
+Charset = {{ site.config.as_string('charset') }}
+Page extensions = {{ site.config.as_string('fileExtensions.pages') }}
+Enable twig = {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
+~~~

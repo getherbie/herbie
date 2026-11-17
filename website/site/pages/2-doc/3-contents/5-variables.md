@@ -14,11 +14,13 @@ These objects can be accessed in the layout and content files using normal Twig 
 Here are some examples:
 
 {% verbatim %}
-    {{ content.default }}
-    {{ page.title }}
-    {{ page.layout }}
-    {{ site.language }}
-    {{ site.route }}
+~~~twig
+{{ content.default }}
+{{ page.title }}
+{{ page.layout }}
+{{ site.language }}
+{{ site.route }}
+~~~
 {% endverbatim %}
 
 More details on these variables are provided below.

@@ -12,7 +12,9 @@ These system plugins need no installation.
 
 All other plugins are installed with the help of Composer.
 
-    $ composer require getherbie/plugin-disqus
+~~~bash
+$ composer require getherbie/plugin-disqus
+~~~
 
 Plugins in the `site/extend/plugins` directory need no installation either.
 

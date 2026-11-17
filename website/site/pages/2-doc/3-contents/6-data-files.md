@@ -23,14 +23,16 @@ This can be used to prevent copy-paste actions in Twig templates:
 
 In `site/data/persons.yml` the data is recorded:
 
-    - name: Herbie Hancock
-      instrument: Piano
-    - name: Jaco Pastorius
-      instrument: Electric bass
-    - name: Joni Mitchell
-      instrument: Guitar, Voice
-    - name: Wayne Shorter
-      instrument: Saxophone
+~~~yaml
+- name: Herbie Hancock
+  instrument: Piano
+- name: Jaco Pastorius
+  instrument: Electric bass
+- name: Joni Mitchell
+  instrument: Guitar, Voice
+- name: Wayne Shorter
+  instrument: Saxophone
+~~~
 
 This data is accessed via `site.data.persons`.
 The file name `persons.yml` thus becomes the corresponding variable name `persons`.
@@ -38,8 +40,10 @@ The file name `persons.yml` thus becomes the corresponding variable name `person
 In a template you then output the list of persons as follows:
 
 {% verbatim %}
-    {% for person in site.data.persons %}
-      <p>Name: {{ person.name }}<br>
-         Instrument: {{ person.instrument }}</p>
-    {% endfor %}
+~~~twig
+{% for person in site.data.persons %}
+  <p>Name: {{ person.name }}<br>
+     Instrument: {{ person.instrument }}</p>
+{% endfor %}
+~~~
 {% endverbatim %}
