@@ -6,7 +6,7 @@ layout: doc
 # Configuration
 
 Herbie uses a configuration file to hold settings.
-These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/2.x/config/defaults.php) file.
+These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/3.x-develop/config/defaults.php) file.
 
 The following variables are available in the configuration file as PHP constants as constant strings:
 
@@ -72,3 +72,5 @@ Charset = {{ site.config.as_string('charset') }}
 Page extensions = {{ site.config.as_string('fileExtensions.pages') }}
 Enable twig = {{ site.config.as_bool('plugins.CORE.enableTwigInLayoutFilter') }}
 ~~~
+
+The getters with a `get` prefix, such as `get_as_string`, work the same way.

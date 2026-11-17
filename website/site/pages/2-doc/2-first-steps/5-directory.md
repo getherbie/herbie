@@ -46,7 +46,8 @@ This is usually structured as follows:
 ~~~text
 site
 ├── config
-│   └── main.php
+│   ├── main.php
+│   └── main.dist.php
 ├── data
 │   ├── animals.json
 │   └── persons.yml
