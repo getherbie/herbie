@@ -208,7 +208,7 @@ return $middleware;
 
 ### Route middlewares
 
-For adding an route middleware you can create a PHP file in the directory `site/extend/middlewares_app` that returns an array{string, callable} with a route regex expression and a valid PHP callback.
+For adding an route middleware you can create a PHP file in the directory `site/extend/middlewares_route` that returns an array{string, callable} with a route regex expression and a valid PHP callback.
 The route middleware is then registered automatically.
 
 ~~~php
