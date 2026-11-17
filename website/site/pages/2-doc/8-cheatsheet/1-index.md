@@ -178,6 +178,8 @@ $app->addApplicationMiddleware($middleware);
 $app->addRouteMiddleware('news/(.+)', $middleware);
 ~~~
 
+See [Middlewares](doc/indepth/middlewares) for the middleware chain and examples.
+
 **Translations**
 
 Translation files live in `messages/<language>.php` and are used with the `translate` Twig function.
