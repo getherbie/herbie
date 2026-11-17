@@ -75,7 +75,8 @@
         "phpmailer/phpmailer": "^6.9",
         "phpstan/phpstan": "^2.0",
         "slim/psr7": "^1.6",
-        "symfony/process": "^6.4"
+        "symfony/process": "^6.4",
+        "vincentlanglet/twig-cs-fixer": "^4.1"
     },
     "suggest": {
         "doctrine/rst-parser": "Needed by the rst plugin",
@@ -87,6 +88,7 @@
         "test": [
             "@lint",
             "@cs",
+            "@cs-twig",
             "@phpstan",
             "@codecept"
         ],
@@ -97,7 +99,8 @@
         "start:test": "cd tests/_data/web/; php -S localhost:9999 index.php",
         "start:website": "cd website/web/; php -S localhost:9999 index.php",
         "debug:test": "cd tests/_data/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
-        "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php"
+        "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
+        "cs-twig": "./vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php"
     },
     "bin": [
         "herbie"

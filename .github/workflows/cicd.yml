@@ -45,6 +45,9 @@ jobs:
       - name: Check code style with PHP-CS-Fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
+      - name: Check Twig template style with Twig-CS-Fixer
+        run: vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php
+
       - name: Analyse code with PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
 

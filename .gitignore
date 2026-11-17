@@ -1,5 +1,6 @@
 .idea
 .php-cs-fixer.cache
+.twig-cs-fixer.cache
 .DS_Store
 
 # composer vendor dir
