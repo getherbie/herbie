@@ -110,6 +110,11 @@ pre code[class*="language-"] {
     padding: 1em;
     line-height: 1.5;
 }
+/* Directory trees and plain text blocks stay compact */
+pre code.language-text {
+    line-height: 1.25;
+    padding: 0.75em 1em;
+}
 
 .hljs {
     background-color:transparent;
