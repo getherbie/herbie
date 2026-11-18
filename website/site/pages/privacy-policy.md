@@ -6,8 +6,6 @@ title: Privacy Policy
 
 # Privacy Policy
 
-## Privacy
-
 As a rule, using our website does not require you to provide any personal data. Where personal data (such as your name, address or email address) is collected on our pages, this is done on a voluntary basis wherever possible. These data will not be passed on to third parties without your express consent.
 
 We would like to point out that data transmission over the internet (e.g. when communicating by email) can have security vulnerabilities. Complete protection of data against access by third parties is not possible.
