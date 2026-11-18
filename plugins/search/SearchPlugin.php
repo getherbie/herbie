@@ -240,7 +240,7 @@ final class SearchPlugin extends AbstractPlugin
         if (isset($queryParams['exact'])) {
             return filter_var($queryParams['exact'], FILTER_VALIDATE_BOOLEAN);
         }
-        return $this->config->getAsBool('plugins.search.exactMatch', false);
+        return false;
     }
 
     /**
