@@ -1045,7 +1045,7 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
 .plugin-search-results .snippet .date {
     font-family: inherit;
     color: var(--text-muted);
-    font-size: 0.85em;
+    font-size: inherit;
     margin-right: 0.35em;
     white-space: nowrap;
 }
