@@ -8,6 +8,7 @@ use Codeception\Test\Unit;
 use herbie\plugins\search\SearchPlugin;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionProperty;
 
 final class SearchPluginTest extends Unit
 {
@@ -107,6 +108,89 @@ final class SearchPluginTest extends Unit
 
         $this->assertStringNotContainsString('AlphaBeta', $snippet);
         $this->assertStringContainsString('Alpha', $snippet);
+    }
+
+    private function createPluginWithCache(\Psr\SimpleCache\CacheInterface $cache, bool $useCache): SearchPlugin
+    {
+        $plugin = (new ReflectionClass(SearchPlugin::class))->newInstanceWithoutConstructor();
+        $this->setPrivateProperty($plugin, 'cache', $cache);
+        $this->setPrivateProperty($plugin, 'config', new \herbie\Config(['plugins' => ['search' => ['useCache' => $useCache]]]));
+        $this->setPrivateProperty($plugin, 'eventManager', new \herbie\EventManager());
+        $this->setPrivateProperty($plugin, 'urlManager', new \herbie\UrlManager(new \Laminas\Diactoros\ServerRequest(), ['niceUrls' => false]));
+        return $plugin;
+    }
+
+    private function setPrivateProperty(SearchPlugin $plugin, string $propertyName, mixed $value): void
+    {
+        $property = new ReflectionProperty(SearchPlugin::class, $propertyName);
+        $property->setValue($plugin, $value);
+    }
+
+    public function testLoadPageDataUsesCacheOnHit(): void
+    {
+        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $cache->method('get')->willReturn('cached content');
+        $cache->expects($this->never())->method('set');
+
+        $plugin = $this->createPluginWithCache($cache, true);
+        $page = new \herbie\Page(['title' => 'Test'], ['default' => 'hello']);
+
+        $result = $this->invokePrivate($plugin, 'loadPageData', [$page, 'token1']);
+        $this->assertSame(['Test', 'cached content'], $result);
+    }
+
+    public function testLoadPageDataRendersAndCachesOnMiss(): void
+    {
+        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $cache->method('get')->willReturn(null);
+        $cache->expects($this->once())->method('set');
+
+        $plugin = $this->createPluginWithCache($cache, true);
+        $page = new \herbie\Page(['title' => 'Test'], ['default' => 'hello']);
+
+        $result = $this->invokePrivate($plugin, 'loadPageData', [$page, 'token1']);
+        $this->assertSame(['Test', 'hello'], $result);
+    }
+
+    public function testLoadPageDataSkipsCacheWhenDisabled(): void
+    {
+        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $cache->expects($this->never())->method('get');
+        $cache->expects($this->never())->method('set');
+
+        $plugin = $this->createPluginWithCache($cache, false);
+        $page = new \herbie\Page(['title' => 'Test'], ['default' => 'hello']);
+
+        $result = $this->invokePrivate($plugin, 'loadPageData', [$page, 'token1']);
+        $this->assertSame(['Test', 'hello'], $result);
+    }
+
+    public function testCacheInvalidatesOnTokenChange(): void
+    {
+        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $store = [];
+        $cache->method('get')->willReturnCallback(static function (string $key) use (&$store) {
+            return $store[$key] ?? null;
+        });
+        $cache->method('set')->willReturnCallback(static function (string $key, $value) use (&$store): bool {
+            $store[$key] = $value;
+            return true;
+        });
+
+        $plugin = $this->createPluginWithCache($cache, true);
+        $page = new \herbie\Page(['title' => 'Test'], ['default' => 'hello']);
+
+        // First call with token A -> miss, renders, caches.
+        $this->invokePrivate($plugin, 'loadPageData', [$page, 'tokenA']);
+        // Second call with same token -> hit, no re-render.
+        $r2 = $this->invokePrivate($plugin, 'loadPageData', [$page, 'tokenA']);
+        $this->assertSame('hello', $r2[1]);
+        // Third call with different token -> miss (new key), re-renders.
+        $r3 = $this->invokePrivate($plugin, 'loadPageData', [$page, 'tokenB']);
+        $this->assertSame('hello', $r3[1]);
+
+        // Two distinct cache keys were used (invalidation via token change).
+        $this->assertCount(2, $store);
     }
 
     private function createUninitializedPlugin(): SearchPlugin
