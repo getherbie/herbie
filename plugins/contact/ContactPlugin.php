@@ -24,6 +24,11 @@ use Twig\TwigFunction;
 #[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9'])]
 final class ContactPlugin extends AbstractPlugin
 {
+    private const FORM_WINDOW_SECONDS = 900;
+    private const MIN_FORM_AGE_SECONDS = 3;
+    private const RATE_LIMIT_MAX_REQUESTS = 5;
+    private const RATE_LIMIT_WINDOW_SECONDS = 3600;
+
     private Config $config;
     private ?CacheInterface $cache = null;
     private PageRepositoryInterface $pageRepository;
@@ -176,7 +181,7 @@ final class ContactPlugin extends AbstractPlugin
         $timestamp = (int)$parts[0];
         $signature = $parts[1];
         $now = time();
-        if ($timestamp < ($now - 3600) || $timestamp > ($now + 60)) {
+        if ($timestamp < ($now - self::FORM_WINDOW_SECONDS) || $timestamp > $now) {
             return false;
         }
 
@@ -377,10 +382,10 @@ final class ContactPlugin extends AbstractPlugin
 
         try {
             $count = (int)$this->cache->get($key, 0);
-            if ($count >= 5) {
+            if ($count >= self::RATE_LIMIT_MAX_REQUESTS) {
                 return false;
             }
-            $this->cache->set($key, $count + 1, 3600);
+            $this->cache->set($key, $count + 1, self::RATE_LIMIT_WINDOW_SECONDS);
         } catch (Throwable) {
             return true;
         }
@@ -395,10 +400,10 @@ final class ContactPlugin extends AbstractPlugin
             return false;
         }
         $elapsed = time() - $started;
-        if ($elapsed < 3) {
+        if ($elapsed < self::MIN_FORM_AGE_SECONDS) {
             return false;
         }
-        if ($elapsed > 3600) {
+        if ($elapsed > self::FORM_WINDOW_SECONDS) {
             return false;
         }
         return true;

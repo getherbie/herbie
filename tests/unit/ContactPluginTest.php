@@ -56,6 +56,34 @@ final class ContactPluginTest extends Unit
         $this->assertFalse($method->invoke($plugin, ['csrf_token' => '']));
     }
 
+    public function testCsrfTokenExpiresAfterFifteenMinutes(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+
+        $recent = time() - 899;
+        $expired = time() - 901;
+
+        $this->assertTrue($method->invoke($plugin, [
+            'csrf_token' => $recent . ':' . hash_hmac('sha256', (string)$recent, 'test-secret'),
+        ]));
+        $this->assertFalse($method->invoke($plugin, [
+            'csrf_token' => $expired . ':' . hash_hmac('sha256', (string)$expired, 'test-secret'),
+        ]));
+    }
+
+    public function testFutureCsrfTokenIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+
+        $future = time() + 10;
+
+        $this->assertFalse($method->invoke($plugin, [
+            'csrf_token' => $future . ':' . hash_hmac('sha256', (string)$future, 'test-secret'),
+        ]));
+    }
+
     public function testCsrfSecretIsRequired(): void
     {
         $plugin = $this->createUninitializedPlugin();
