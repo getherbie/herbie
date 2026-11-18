@@ -202,7 +202,7 @@ final class TwigRendererTest extends Unit
             }
         };
 
-        $site = new Site($config, $dataRepository, $pageRepository, new UrlManager(new ServerRequest()));
+        $site = Site::fromServices($config, $dataRepository, $pageRepository, new UrlManager(new ServerRequest()));
 
         return new TwigRenderer($config, $eventManager ?? new EventManager(), new NullLogger(), $site);
     }

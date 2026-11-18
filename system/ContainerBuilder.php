@@ -289,7 +289,7 @@ final readonly class ContainerBuilder
             };
         });
 
-        $c->set(Site::class, fn(ContainerInterface $c) => new Site(
+        $c->set(Site::class, fn(ContainerInterface $c) => Site::fromServices(
             $c->get(Config::class),
             $c->get(DataRepositoryInterface::class),
             $c->get(PageRepositoryInterface::class),

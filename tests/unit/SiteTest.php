@@ -196,6 +196,6 @@ final class SiteTest extends Unit
 
         $urlManager = new UrlManager((new ServerRequest())->withUri(new Uri('http://example.com' . $path)));
 
-        return new Site($config, $dataRepository, $pageRepository, $urlManager);
+        return Site::fromServices($config, $dataRepository, $pageRepository, $urlManager);
     }
 }

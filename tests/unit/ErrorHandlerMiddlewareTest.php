@@ -229,7 +229,7 @@ final class ErrorHandlerMiddlewareTest extends Unit
                 return [];
             }
         };
-        $site = new Site($config, $dataRepository, $pageRepository, $urlManager);
+        $site = Site::fromServices($config, $dataRepository, $pageRepository, $urlManager);
 
         $twigRenderer = new TwigRenderer($config, new \herbie\EventManager(), new NullLogger(), $site);
 
