@@ -29,6 +29,10 @@ Aliased template path to custom form template:
 
     template: (string)
 
+Names of the hidden honeypot fields that must stay empty. Empty or invalid values fall back to `phone` and `website`:
+
+    honeypots: (array of strings), default ['phone', 'website']
+
 CSRF settings under `plugins.contact.csrf`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_csrf_secret>:
 
     csrf:
@@ -60,11 +64,11 @@ SMTP defaults (`localhost`, 587, TLS) are only fallbacks and do not send mail on
 
 The plugin applies three lightweight checks, configured with the options above:
 
-- **Honeypots:** The hidden fields `phone` and `website` must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
+- **Honeypots:** The hidden fields listed in `honeypots` (`phone` and `website` by default) must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
 - **Form age:** The hidden `form_time` field records when the form was rendered. Submissions faster than `form.minAgeSeconds` or older than `form.maxAgeSeconds` are silently rejected (3 s and 15 min by default). The CSRF token has its own `csrf.tokenTtlSeconds` (15 min by default) and rejects future timestamps.
 - **Rate limit:** At most `rateLimit.maxRequests` submissions per `rateLimit.windowSeconds` and IP address (5 per hour by default). This requires a PSR-16 `CacheInterface` implementation; without a cache, no limit is applied. The IP is read from `REMOTE_ADDR`, so a reverse proxy must set it correctly.
 
-Custom templates must keep the hidden fields `csrf_token`, `form_time`, `phone` and `website`, otherwise these checks cannot work.
+Custom templates must keep the hidden fields `csrf_token`, `form_time` and every field listed in `honeypots`, otherwise these checks cannot work. Field names used for real input (`name`, `email`, `message`, `form_time`, `csrf_token`) cannot be used as honeypots.
 
 ## Notes
 

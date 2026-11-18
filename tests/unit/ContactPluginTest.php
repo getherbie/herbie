@@ -174,6 +174,38 @@ final class ContactPluginTest extends Unit
         }
     }
 
+    public function testHoneypotFieldNamesAreConfigurable(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret'],
+                'honeypots' => ['company', 'email', 'company', ''],
+            ]],
+        ]));
+
+        $filtered = $this->invokePrivate($plugin, 'filterFormData', [[
+            'name' => 'John',
+            'email' => 'john@example.com',
+            'message' => 'Hello',
+            'company' => '<i>Acme</i>',
+            'phone' => '123',
+        ]]);
+
+        $this->assertSame('Acme', $filtered['company']);
+        $this->assertArrayNotHasKey('phone', $filtered);
+
+        // The configured name triggers the honeypot, an old default name does not.
+        $this->assertTrue($this->invokePrivate($plugin, 'sendEmail', [
+            ['name' => '', 'email' => 'invalid', 'message' => '', 'company' => 'Acme'],
+            'me@example.com',
+        ]));
+        $this->assertFalse($this->invokePrivate($plugin, 'sendEmail', [
+            ['name' => '', 'email' => 'invalid', 'message' => '', 'phone' => '123'],
+            'me@example.com',
+        ]));
+    }
+
     public function testHumanTimingRequiresPlausibleFormAge(): void
     {
         $plugin = $this->createUninitializedPlugin();

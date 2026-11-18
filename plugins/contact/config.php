@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'recipient' => 'me@example.com', // your email address
     'template' => null, // aliased path to custom template
+    'honeypots' => ['phone', 'website'], // hidden fields that must stay empty
     'csrf' => [
         'secret' => '', // signing secret, must be configured
         'tokenTtlSeconds' => 900, // token lifetime (60..3600)

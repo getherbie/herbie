@@ -24,6 +24,7 @@ use Twig\TwigFunction;
 #[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9'])]
 final class ContactPlugin extends AbstractPlugin
 {
+    private const DEFAULT_HONEYPOTS = ['phone', 'website'];
     private const DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
     private const DEFAULT_FORM_MIN_AGE_SECONDS = 3;
     private const DEFAULT_FORM_MAX_AGE_SECONDS = 900;
@@ -116,7 +117,7 @@ final class ContactPlugin extends AbstractPlugin
             $formData = $this->filterFormData($this->getFormData());
 
             // Honeypot fields: silently pretend success for bots.
-            if (!empty($formData['phone']) || !empty($formData['website'])) {
+            if ($this->hasFilledHoneypot($formData)) {
                 $this->logger->info('Contact form honeypot triggered.');
                 $response = $this->createRedirectResponse($route, 'successful');
                 $this->emitResponse($response);
@@ -272,20 +273,50 @@ final class ContactPlugin extends AbstractPlugin
     }
 
     /**
+     * @return list<string>
+     */
+    private function getHoneypotFields(): array
+    {
+        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token'];
+        $fields = [];
+        foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
+            if (is_string($field) && $field !== '' && !in_array($field, $reserved, true)) {
+                $fields[] = $field;
+            }
+        }
+        return $fields === [] ? self::DEFAULT_HONEYPOTS : array_values(array_unique($fields));
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function hasFilledHoneypot(array $data): bool
+    {
+        foreach ($this->getHoneypotFields() as $field) {
+            if (!empty($data[$field])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return array
      */
     private function filterFormData(array $input): array
     {
+        $honeypots = $this->getHoneypotFields();
         $defaults = [
             'name' => '',
             'email' => '',
             'message' => '',
-            'phone' => '',
-            'website' => '',
             'form_time' => '',
         ];
+        foreach ($honeypots as $field) {
+            $defaults[$field] = '';
+        }
         $filtered = $defaults;
-        foreach (['name', 'message', 'phone', 'website'] as $field) {
+        foreach (array_merge(['name', 'message'], $honeypots) as $field) {
             if (isset($input[$field]) && is_string($input[$field])) {
                 $filtered[$field] = strip_tags($input[$field]);
             }
@@ -301,7 +332,7 @@ final class ContactPlugin extends AbstractPlugin
 
     private function sendEmail(array $data, string $recipient): bool
     {
-        if (!empty($data['phone']) || !empty($data['website'])) {
+        if ($this->hasFilledHoneypot($data)) {
             return true;
         }
 
