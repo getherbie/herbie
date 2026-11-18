@@ -23,7 +23,6 @@
         <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
-            <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
             <div class="contact-control-group contact-control-group-honeypot pure-control-group">
                 <label for="website">{{ translate('contact', 'labelWebsite') }}</label>
                 <input class="contact-input pure-input-1" id="website" name="website" type="text" placeholder="" value="{{ data.website }}">
@@ -66,6 +65,8 @@
                     <button type="submit" name="button" value="reset" class="contact-button contact-secondary-button pure-button">{{ translate('contact', 'buttonReset') }}</button>
                 {% endif %}
             </div>
+
+            <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
         </form>
 
     {% endif %}
@@ -93,5 +94,21 @@
     .contact-secondary-button {
         background-color:#e6e6e6;
         color:#666;
+    }
+    .contact-form altcha-widget {
+        display:block;
+        margin-top:1em;
+    }
+    html[data-theme="dark"] altcha-widget {
+        --altcha-color-base: var(--surface, #1e293b);
+        --altcha-color-base-content: var(--text, #e2e8f0);
+        --altcha-color-primary: var(--accent-button, #e5484d);
+        --altcha-color-primary-content: var(--accent-button-text, #111111);
+        --altcha-color-neutral: var(--text-muted, #94a3b8);
+        --altcha-border-color: var(--border, #334155);
+        --altcha-input-background-color: var(--surface, #1e293b);
+        --altcha-input-color: var(--text, #e2e8f0);
+        --altcha-checkbox-border-color: var(--text-muted, #94a3b8);
+        --altcha-spinner-color: var(--accent-button, #e5484d);
     }
 </style>
