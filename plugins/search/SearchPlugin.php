@@ -175,7 +175,7 @@ final class SearchPlugin extends AbstractPlugin
         $results = [];
 
         foreach ($this->pageRepository->findAll() as $item) {
-            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search) || $item->getHidden()) {
+            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search) || $item->getHidden() || $this->isSearchPage($item)) {
                 continue;
             }
             $data = $this->loadPageData($item, $cacheToken);
@@ -240,6 +240,35 @@ final class SearchPlugin extends AbstractPlugin
     {
         $terms = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
         return $terms === false ? [] : $terms;
+    }
+
+    /**
+     * Detect whether a page is (or contains) a search page.
+     *
+     * Such pages must never be indexed, otherwise rendering their content
+     * (which calls search_results()) would trigger infinite recursion.
+     *
+     * @param Page $item
+     */
+    private function isSearchPage(Page $item): bool
+    {
+        // Defense in depth: skip any page that embeds the search functions.
+        foreach ($item->getSegments() as $segment) {
+            if (stripos($segment, 'search_results') !== false || stripos($segment, 'search_form') !== false) {
+                return true;
+            }
+        }
+
+        // Also skip the page currently being rendered (the search page).
+        $urlManagerProperty = new \ReflectionProperty(self::class, 'urlManager');
+        if ($urlManagerProperty->isInitialized($this)) {
+            [$route] = $this->urlManager->parseRequest();
+            if ($route !== '' && $item->getRoute() === $route) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
