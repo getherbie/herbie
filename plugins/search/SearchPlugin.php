@@ -12,7 +12,12 @@ use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\MarkdownConverter;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
@@ -21,6 +26,7 @@ final class SearchPlugin extends AbstractPlugin
 {
     private CacheInterface $cache;
     private Config $config;
+    private LoggerInterface $logger;
     private PageRepositoryInterface $pageRepository;
     private ServerRequestInterface $request;
     private TwigRenderer $twigRenderer;
@@ -33,9 +39,11 @@ final class SearchPlugin extends AbstractPlugin
         ServerRequestInterface $request,
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
+        LoggerInterface $logger,
     ) {
         $this->cache = $cache;
         $this->config = $config;
+        $this->logger = $logger;
         $this->pageRepository = $pageRepository;
         $this->request = $request;
         $this->twigRenderer = $twigRenderer;
@@ -94,28 +102,97 @@ final class SearchPlugin extends AbstractPlugin
     }
 
     /**
-     * @param Page $item
-     * @param bool $usePageCache
-     * @return array
+     * Render page segments to plain text (for search matching).
+     * Uses an internal search cache that is invalidated when any page changes.
+     *
+     * @param string $cacheToken Global cache token (most recent modified timestamp).
      */
-    private function loadPageData(Page $item, bool $usePageCache): array
+    private function loadPageData(Page $item, string $cacheToken): array
     {
-        if (!$usePageCache) {
-            $page = $this->pageRepository->find($item->getPath());
-            if ($page === null) {
-                return [$item->getTitle(), ''];
-            }
-            $title = $page->getTitle();
-            $content = implode('', $page->getSegments());
-            return [$title, $content];
+        // Cache key is per-page, but depends on the global token.
+        // If any page changes, the token changes, old entries are stale.
+        $cacheId = 'search_' . $item->getRoute() . '_' . $cacheToken;
+        $cached = $this->cache->get($cacheId);
+        if ($cached !== null) {
+            return [$item->getTitle(), $cached];
         }
 
-        $cacheId = $item->getCacheId();
-        $html = $this->cache->get($cacheId);
-        if ($html === null) {
-            return [$item->getTitle(), ''];
+        $content = strip_tags($this->renderPageContent($item));
+        $this->cache->set($cacheId, $content);
+        return [$item->getTitle(), $content];
+    }
+
+    /**
+     * Render page segments to HTML.
+     * Always convert by format (Markdown/Textile/RST).
+     * If page has twig: true, additionally run through Twig.
+     */
+    private function renderPageContent(Page $page): string
+    {
+        $rendered = [];
+        foreach ($page->getSegments() as $segmentId => $segment) {
+            $rendered[$segmentId] = $this->renderSegment($segment, $page);
         }
-        return [$item->getTitle(), strip_tags($html)];
+        return implode('', $rendered);
+    }
+
+    /**
+     * Render a single segment: format parser, then Twig if page has twig: true.
+     */
+    private function renderSegment(string $segment, Page $page): string
+    {
+        $content = $this->convertSegment($segment, $page->getFormat());
+        if ($page->getTwig()) {
+            $content = $this->twigRenderer->renderString($content);
+        }
+        return $content;
+    }
+
+    /**
+     * Convert a single segment to HTML based on page format.
+     */
+    private function convertSegment(string $segment, string $format): string
+    {
+        if ($format === 'markdown' || $format === 'md') {
+            return $this->convertMarkdown($segment);
+        }
+
+        if ($format === 'textile') {
+            return $this->convertTextile($segment);
+        }
+
+        if ($format === 'rst') {
+            return $this->convertRst($segment);
+        }
+
+        // HTML, XML, plain text: return as-is
+        return $segment;
+    }
+
+    private function convertMarkdown(string $segment): string
+    {
+        static $converter = null;
+
+        if ($converter === null) {
+            $env = new Environment();
+            $env->addExtension(new CommonMarkCoreExtension());
+            $env->addExtension(new GithubFlavoredMarkdownExtension());
+            $converter = new MarkdownConverter($env);
+        }
+
+        return $converter->convert($segment)->getContent();
+    }
+
+    private function convertTextile(string $segment): string
+    {
+        $plugin = new \herbie\plugins\textile\TextilePlugin($this->config, $this->logger);
+        return $plugin->parse($segment);
+    }
+
+    private function convertRst(string $segment): string
+    {
+        $plugin = new \herbie\plugins\rst\RstPlugin($this->config, $this->logger);
+        return $plugin->parse($segment);
     }
 
     /**
@@ -129,19 +206,33 @@ final class SearchPlugin extends AbstractPlugin
             return [];
         }
 
+        // Build a global cache token once: the most recent modified timestamp across all pages.
+        // If any page changes, the token changes and old cache entries become stale.
+        $cacheToken = '';
+        foreach ($this->pageRepository->findAll() as $page) {
+            $m = $page->getModified();
+            if ($m > $cacheToken) {
+                $cacheToken = $m;
+            }
+        }
+
         $i = 1;
         $max = 100;
         $results = [];
-
-        $usePageCache = $this->config->get('plugins.search.usePageCache', false);
 
         foreach ($this->pageRepository->findAll() as $item) {
             if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search)) {
                 continue;
             }
-            $data = $this->loadPageData($item, $usePageCache);
+            $data = $this->loadPageData($item, $cacheToken);
             if ($this->match($query, $data)) {
-                $results[] = $item;
+                $content = $data[1] ?? '';
+                $results[] = [
+                    'title' => $item->getTitle(),
+                    'route' => $item->getRoute(),
+                    'date' => $item->getDate(),
+                    'snippet' => $this->buildSnippet($content, $query),
+                ];
                 $i++;
             }
         }
@@ -165,6 +256,76 @@ final class SearchPlugin extends AbstractPlugin
             }
         }
         return false;
+    }
+
+    /**
+     * Build a text snippet around the query term, with <mark> highlighting.
+     */
+    private function buildSnippet(string $content, string $query): string
+    {
+        /** @var string|null $normalized */
+        $normalized = preg_replace('/\s+/', ' ', strip_tags($content));
+        if ($normalized === null) {
+            $normalized = strip_tags($content);
+        }
+        $content = $normalized;
+
+        $snippetLength = 200;
+        $queryLower = strtolower($query);
+        $contentLower = strtolower($content);
+
+        $pos = stripos($contentLower, $queryLower);
+        if ($pos === false) {
+            return '';
+        }
+
+        $before = 50;
+        $end = $pos + strlen($query) + $snippetLength;
+        $start = $pos - $before;
+
+        // Trim to content boundaries (sentence breaks)
+        if ($start > 0) {
+            $spacePos = strrpos(substr($content, 0, $start), ' ');
+            if ($spacePos !== false) {
+                $start = $spacePos + 1;
+            }
+        } elseif ($start < 0) {
+            // Query term at/near the beginning — start from 0.
+            $start = 0;
+        }
+
+        if ($end < strlen($content)) {
+            $nextSpace = strpos($content, ' ', $end);
+            if ($nextSpace !== false) {
+                $end = $nextSpace;
+            }
+        }
+
+        $snippet = substr($content, $start, $end - $start);
+        $highlight = htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        // Remove URL query parameters before highlighting
+        // so we don't highlight "?query=..." URLs
+        /** @var string|null $cleaned */
+        $cleaned = preg_replace('/\?[a-z0-9_=+&]+$/i', '', $snippet);
+        if ($cleaned === null) {
+            $cleaned = $snippet;
+        }
+
+        /** @var string|null $highlighted */
+        $highlighted = preg_replace(
+            '/(' . preg_quote($query, '/') . ')/i',
+            "<mark>$highlight</mark>",
+            $cleaned,
+        );
+        if ($highlighted === null) {
+            $highlighted = $cleaned;
+        }
+
+        $prefix = $start > 0 ? '…' : '';
+        $suffix = $end < strlen($content) ? '…' : '';
+
+        return $prefix . $highlighted . $suffix;
     }
 
     private function getTemplatePath(string $name): string

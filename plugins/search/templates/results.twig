@@ -13,6 +13,9 @@
                 {% if result.date %}
                     <div class="date">{{ result.date|date('d. F Y') }}</div>
                 {% endif %}
+                {% if result.snippet %}
+                    <div class="snippet">{{ result.snippet|raw }}</div>
+                {% endif %}
             </div>
         {% endfor %}
     {% endif %}

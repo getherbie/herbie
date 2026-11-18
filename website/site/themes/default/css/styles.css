@@ -1004,6 +1004,13 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
 .plugin-search-results .result {
     margin-bottom: 0.8em;
 }
+.plugin-search-results .snippet {
+    margin-top: 0.4em;
+    font-size: 0.9em;
+    line-height: 1.5;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
 .plugin-search-results .title {
 }
 .plugin-search-results .url {
@@ -1088,6 +1095,12 @@ nav.breadcrumb a:hover {
 
 /* Media Queries */
 @media (min-width:980px) {
+    .pure-g {
+        align-items: flex-start;
+    }
+    .pure-g > [class*='pure-u-'] {
+        min-width: 0;
+    }
 }
 
 @media (min-width:768px) and (max-width:979px) {

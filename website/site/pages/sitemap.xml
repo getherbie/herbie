@@ -1,7 +1,9 @@
 ---
+title: sitemap
 layout: ""
 content_type: text/xml
 keep_extension: true
+no_search: true
 ---
 {% apply spaceless %}
 <?xml version="1.0" encoding="UTF-8" ?>        

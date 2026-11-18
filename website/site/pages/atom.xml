@@ -1,8 +1,10 @@
 ---
+title: Atom Feed
 layout: ""
 content_type: text/xml
 keep_extension: true
 hidden: true
+no_search: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
