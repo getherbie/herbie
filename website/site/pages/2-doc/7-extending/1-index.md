@@ -71,6 +71,8 @@ You can add functionality in different ways, from simple PHP files in the filesy
     </tbody>
 </table>
 
+For details on specific extension points, see [Commands](doc/indepth/commands), [Event Listeners](doc/indepth/events), [Middlewares](doc/indepth/middlewares), [Twig Filters](doc/indepth/twig-filters), [Twig Functions](doc/indepth/twig-functions), [Twig Globals](doc/indepth/twig-globals), and [Twig Tests](doc/indepth/twig-tests).
+
 ## Extension methods
 
 There are four ways to add extensions, with increasing flexibility and complexity.
@@ -107,6 +109,13 @@ There are four ways to add extensions, with increasing flexibility and complexit
     </tbody>
 </table>
 
+### Choosing a method
+
+- **Filesystem**: Best for small, project-specific extensions that should be quick to add.
+- **Programmatic**: Useful when extensions should be registered explicitly in `index.php`, for example together with custom bootstrap logic.
+- **Plugin**: Suitable for grouping related extensions in one class, with optional configuration and dependency checks.
+- **Distributed plugin**: Use this when an extension should be versioned, shared, and installed via Composer.
+
 ## Extending using the filesystem
 
 With the filesystem approach, you add extensions by placing PHP files in the corresponding directories inside `site/extend`.
@@ -129,6 +138,49 @@ With the filesystem approach, you add extensions by placing PHP files in the cor
 </table>
 
 Each file must return the value expected by the extension point. Herbie discovers and registers these files automatically.
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th style="width:35%">Extension point</th>
+            <th style="width:65%">Return value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Console command</td>
+            <td>Command class string</td>
+        </tr>
+        <tr>
+            <td>Event listener</td>
+            <td><code>[eventName, callable]</code> or <code>[eventName, callable, priority]</code></td>
+        </tr>
+        <tr>
+            <td>Application middleware</td>
+            <td>Middleware (callable, instance, or class string)</td>
+        </tr>
+        <tr>
+            <td>Route middleware</td>
+            <td><code>[routeRegex, middleware]</code></td>
+        </tr>
+        <tr>
+            <td>Twig filter</td>
+            <td><code>[name, callable]</code> or <code>[name, callable, options]</code></td>
+        </tr>
+        <tr>
+            <td>Twig function</td>
+            <td><code>[name, callable]</code> or <code>[name, callable, options]</code></td>
+        </tr>
+        <tr>
+            <td>Twig global</td>
+            <td><code>[name, value]</code></td>
+        </tr>
+        <tr>
+            <td>Twig test</td>
+            <td><code>[name, callable]</code> or <code>[name, callable, options]</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ### Console commands
 
@@ -296,18 +348,15 @@ $app = new Application(
     new ApplicationPaths(__DIR__)
 );
 
-// --> start adding your extensions
-
-$app->addConsoleCommand();
-$app->addEventListener();
-$app->addApplicationMiddleware();
-$app->addRouteMiddleware();
-$app->addTwigFilter();
-$app->addTwigFunction();
-$app->addTwigGlobal();
-$app->addTwigTest();
-
-// <-- finish adding your extensions
+// Register extensions here, for example:
+// $app->addConsoleCommand(CustomCommand::class);
+// $app->addEventListener('onTwigInitialized', $event);
+// $app->addApplicationMiddleware($middleware);
+// $app->addRouteMiddleware('^route/.*', $middleware);
+// $app->addTwigFilter('reverse', $twigFilter);
+// $app->addTwigFunction('hello', $twigFunction);
+// $app->addTwigGlobal('datetime', $twigGlobal);
+// $app->addTwigTest('odd', $twigTest);
 
 $app->run();
 ~~~
