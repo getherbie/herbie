@@ -1011,15 +1011,12 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
 }
 .plugin-search-results .result {
     margin-bottom: 1em;
-    padding: 0.9em 1.1em;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    padding-bottom: 0.8em;
+    border-bottom: 1px solid var(--border);
 }
-.plugin-search-results .result:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 14px -6px rgba(0, 0, 0, 0.18);
+.plugin-search-results .result:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 .plugin-search-results .title {
     font-weight: 600;
