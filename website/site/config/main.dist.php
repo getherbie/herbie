@@ -50,6 +50,9 @@ return [
     'plugins' => [
         'contact' => [
             'recipient' => '<plugin_contact_recipient>',
+            'copy' => [
+                'enabled' => true,
+            ],
             'csrf' => [
                 'secret' => '<plugin_contact_csrf_secret>',
             ],

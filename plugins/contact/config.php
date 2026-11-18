@@ -6,6 +6,10 @@ return [
     'recipient' => 'me@example.com', // your email address
     'template' => null, // aliased path to custom template
     'honeypots' => ['phone', 'website'], // hidden fields that must stay empty
+    'copy' => [
+        'enabled' => false, // show opt-in checkbox and send a copy when checked
+        'defaultChecked' => false, // initial state of the checkbox
+    ],
     'csrf' => [
         'secret' => '', // signing secret, must be configured
         'tokenTtlSeconds' => 900, // token lifetime (60..3600)

@@ -179,6 +179,10 @@ final class ContactPlugin extends AbstractPlugin
             'csrf_token' => $this->csrfToken(),
             'form_time' => time(),
             'altcha_challenge' => $this->createAltchaChallenge(),
+            'copy_enabled' => $this->config->getAsBool('plugins.contact.copy.enabled', false),
+            'copy_checked' => $formData === []
+                ? $this->config->getAsBool('plugins.contact.copy.defaultChecked', false)
+                : !empty($formData['sendCopy']),
         ]);
     }
 
@@ -338,7 +342,7 @@ final class ContactPlugin extends AbstractPlugin
      */
     private function getHoneypotFields(): array
     {
-        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token'];
+        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'sendCopy'];
         $fields = [];
         foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
             if (is_string($field) && $field !== '' && !in_array($field, $reserved, true)) {
@@ -372,6 +376,7 @@ final class ContactPlugin extends AbstractPlugin
             'email' => '',
             'message' => '',
             'form_time' => '',
+            'sendCopy' => false,
         ];
         foreach ($honeypots as $field) {
             $defaults[$field] = '';
@@ -387,6 +392,9 @@ final class ContactPlugin extends AbstractPlugin
         }
         if (isset($input['form_time']) && is_string($input['form_time'])) {
             $filtered['form_time'] = preg_replace('/[^0-9]/', '', $input['form_time']) ?? '';
+        }
+        if (isset($input['sendCopy']) && is_string($input['sendCopy'])) {
+            $filtered['sendCopy'] = filter_var($input['sendCopy'], FILTER_VALIDATE_BOOLEAN);
         }
         return $filtered;
     }
@@ -406,16 +414,7 @@ final class ContactPlugin extends AbstractPlugin
         $message .= "Email: {$data['email']}\n\n";
 
         try {
-            $mail = new PHPMailer(true);
-            $mail->CharSet = PHPMailer::CHARSET_UTF8;
-            $mail->isSMTP();
-            $mail->Host = $this->config->getAsString('plugins.contact.smtp.host', 'localhost');
-            $mail->Port = $this->config->getAsInt('plugins.contact.smtp.port', 587);
-            $mail->SMTPAuth = $this->config->getAsBool('plugins.contact.smtp.auth', false);
-            $mail->Username = $this->config->getAsString('plugins.contact.smtp.username', '');
-            $mail->Password = $this->config->getAsString('plugins.contact.smtp.password', '');
-            $mail->SMTPSecure = $this->config->getAsString('plugins.contact.smtp.encryption', 'tls');
-
+            $mail = $this->createMailer();
             $mail->setFrom($recipient);
             $mail->addAddress($recipient);
             $mail->addReplyTo($data['email'], $data['name']);
@@ -424,10 +423,64 @@ final class ContactPlugin extends AbstractPlugin
             $mail->Body = $message;
             $mail->AltBody = $message;
 
-            return $mail->send();
+            $sent = $mail->send();
         } catch (Throwable $exception) {
             $this->logger->error('Failed to send contact form email.', ['exception' => $exception]);
             return false;
+        }
+
+        if (!$sent) {
+            return false;
+        }
+
+        // A failed copy must not turn a delivered message into a failed submission.
+        $this->sendCopy($data, $recipient);
+
+        return true;
+    }
+
+    private function createMailer(): PHPMailer
+    {
+        $mail = new PHPMailer(true);
+        $mail->CharSet = PHPMailer::CHARSET_UTF8;
+        $mail->isSMTP();
+        $mail->Host = $this->config->getAsString('plugins.contact.smtp.host', 'localhost');
+        $mail->Port = $this->config->getAsInt('plugins.contact.smtp.port', 587);
+        $mail->SMTPAuth = $this->config->getAsBool('plugins.contact.smtp.auth', false);
+        $mail->Username = $this->config->getAsString('plugins.contact.smtp.username', '');
+        $mail->Password = $this->config->getAsString('plugins.contact.smtp.password', '');
+        $mail->SMTPSecure = $this->config->getAsString('plugins.contact.smtp.encryption', 'tls');
+
+        return $mail;
+    }
+
+    private function shouldSendCopy(array $data): bool
+    {
+        return $this->config->getAsBool('plugins.contact.copy.enabled', false)
+            && !empty($data['sendCopy'])
+            && $this->isValidMailAddress((string)($data['email'] ?? ''));
+    }
+
+    private function sendCopy(array $data, string $recipient): void
+    {
+        if (!$this->shouldSendCopy($data)) {
+            return;
+        }
+
+        try {
+            $mail = $this->createMailer();
+            $mail->setFrom($recipient);
+            $mail->addAddress($data['email']);
+            $mail->addReplyTo($recipient);
+
+            $body = $this->translator->t('contact', 'mailCopyIntro') . "\n\n" . $data['message'] . "\n";
+            $mail->Subject = $this->translator->t('contact', 'mailSubjectCopy');
+            $mail->Body = $body;
+            $mail->AltBody = $body;
+
+            $mail->send();
+        } catch (Throwable $exception) {
+            $this->logger->warning('Failed to send contact form copy.', ['exception' => $exception]);
         }
     }
 

@@ -59,6 +59,15 @@
                 {% endif %}
             </div>
 
+            {% if copy_enabled %}
+                <div class="contact-control-group contact-control-group-copy pure-control-group">
+                    <label for="sendCopy">
+                        <input id="sendCopy" name="sendCopy" type="checkbox" value="1"{% if copy_checked %} checked{% endif %}>
+                        {{ translate('contact', 'labelSendCopy') }}
+                    </label>
+                </div>
+            {% endif %}
+
             <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
 
             <div class="contact-controls pure-controls">
@@ -94,6 +103,16 @@
     .contact-secondary-button {
         background-color:#e6e6e6;
         color:#666;
+    }
+    .contact-control-group-copy label {
+        display:inline-flex;
+        align-items:center;
+        gap:0.5em;
+        cursor:pointer;
+    }
+    .contact-control-group-copy input {
+        width:auto;
+        accent-color:var(--accent-button, #a94f4f);
     }
     .contact-form altcha-widget {
         display:block;

@@ -284,6 +284,58 @@ final class ContactPluginTest extends Unit
         $this->assertSame('callme', $filtered['phone']);
     }
 
+    public function testCopyFieldIsFilteredAndReserved(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $checked = $this->invokePrivate($plugin, 'filterFormData', [[
+            'name' => 'John',
+            'email' => 'john@example.com',
+            'message' => 'Hello',
+            'sendCopy' => '1',
+        ]]);
+        $this->assertTrue($checked['sendCopy']);
+
+        $unchecked = $this->invokePrivate($plugin, 'filterFormData', [[
+            'name' => 'John',
+            'email' => 'john@example.com',
+            'message' => 'Hello',
+        ]]);
+        $this->assertFalse($unchecked['sendCopy']);
+
+        // Real input fields cannot be configured as honeypots.
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret'],
+                'honeypots' => ['sendCopy', 'altcha'],
+            ]],
+        ]));
+        $this->assertSame(['phone', 'website'], $this->invokePrivate($plugin, 'getHoneypotFields', []));
+    }
+
+    public function testSenderCopyRequiresOptInAndValidAddress(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $data = ['sendCopy' => true, 'email' => 'john@example.com'];
+
+        // Disabled by default.
+        $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [$data]));
+
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret'],
+                'copy' => ['enabled' => true],
+            ]],
+        ]));
+
+        $this->assertTrue($this->invokePrivate($plugin, 'shouldSendCopy', [$data]));
+        $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [['email' => 'john@example.com']]));
+        $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [[
+            'sendCopy' => true,
+            'email' => 'not-an-email',
+        ]]));
+    }
+
     public function testValidateFormDataReturnsErrors(): void
     {
         $plugin = $this->createUninitializedPlugin();
