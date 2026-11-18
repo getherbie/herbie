@@ -47,7 +47,7 @@ CSRF settings under `plugins.contact.csrf`. The secret is required; rendering th
         secret: (string)
         tokenTtlSeconds: (int) token and cookie lifetime, default 900 (60..3600)
 
-The cookie is `HttpOnly`, `SameSite=Lax`, scoped to `/`, and marked `Secure` on HTTPS requests. A submission is accepted only when the form token and the cookie carry the same signed nonce.
+The cookie is `HttpOnly`, `SameSite=Lax`, scoped to `/`, and marked `Secure` on HTTPS requests. It carries a signed issued-at timestamp that matches the hidden token's timestamp when the form is rendered, and the server checks both against the same TTL. Rotating `csrf.secret` invalidates outstanding cookies and tokens immediately. A submission is accepted only when the form token and the cookie carry the same signed nonce.
 
 ALTCHA proof-of-work settings under `plugins.contact.captcha`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_captcha_secret>. Values outside the given range are clamped:
 

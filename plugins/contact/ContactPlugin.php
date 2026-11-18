@@ -118,9 +118,10 @@ final class ContactPlugin extends AbstractPlugin
             return $this->csrfToken;
         }
 
-        $nonce = $this->getCsrfCookieNonce() ?? bin2hex(random_bytes(16));
-        $this->csrfCookieValue = $this->signCsrfCookie($nonce);
+        $cookie = $this->getCsrfCookieData();
+        $nonce = $cookie['nonce'] ?? bin2hex(random_bytes(16));
         $timestamp = (string)time();
+        $this->csrfCookieValue = $this->signCsrfCookie($timestamp, $nonce);
         $signature = $this->signCsrfTokenData($timestamp, $nonce);
         $this->csrfToken = $timestamp . ':' . $nonce . ':' . $signature;
         return $this->csrfToken;
@@ -238,10 +239,7 @@ final class ContactPlugin extends AbstractPlugin
             return false;
         }
 
-        $issuedAt = (int)$timestamp;
-        $now = time();
-        $ttl = $this->configClampedInt('csrf.tokenTtlSeconds', self::DEFAULT_CSRF_TOKEN_TTL_SECONDS, 60, 3600);
-        if ($issuedAt < ($now - $ttl) || $issuedAt > $now) {
+        if (!$this->isFreshCsrfTimestamp($timestamp)) {
             return false;
         }
 
@@ -249,11 +247,14 @@ final class ContactPlugin extends AbstractPlugin
             return false;
         }
 
-        $cookieNonce = $this->getCsrfCookieNonce();
-        return $cookieNonce !== null && hash_equals($cookieNonce, $nonce);
+        $cookie = $this->getCsrfCookieData();
+        return $cookie !== null && hash_equals($cookie['nonce'], $nonce);
     }
 
-    private function getCsrfCookieNonce(): ?string
+    /**
+     * @return array{issuedAt: string, nonce: string}|null
+     */
+    private function getCsrfCookieData(): ?array
     {
         $cookie = $this->request->getCookieParams()[self::CSRF_COOKIE_NAME] ?? null;
         if (!is_string($cookie)) {
@@ -261,22 +262,40 @@ final class ContactPlugin extends AbstractPlugin
         }
 
         $parts = explode(':', $cookie);
-        if (count($parts) !== 2) {
+        if (count($parts) !== 3) {
             return null;
         }
 
-        [$nonce, $signature] = $parts;
-        if (preg_match(self::CSRF_NONCE_PATTERN, $nonce) !== 1) {
+        [$issuedAt, $nonce, $signature] = $parts;
+        if (
+            !ctype_digit($issuedAt)
+            || preg_match(self::CSRF_NONCE_PATTERN, $nonce) !== 1
+            || !$this->isFreshCsrfTimestamp($issuedAt)
+        ) {
             return null;
         }
 
-        $expected = hash_hmac('sha256', 'cookie:' . $nonce, $this->getCsrfSecret());
-        return hash_equals($expected, $signature) ? $nonce : null;
+        $expected = hash_hmac('sha256', 'cookie:' . $issuedAt . ':' . $nonce, $this->getCsrfSecret());
+        return hash_equals($expected, $signature)
+            ? ['issuedAt' => $issuedAt, 'nonce' => $nonce]
+            : null;
     }
 
-    private function signCsrfCookie(string $nonce): string
+    private function isFreshCsrfTimestamp(string $timestamp): bool
     {
-        return $nonce . ':' . hash_hmac('sha256', 'cookie:' . $nonce, $this->getCsrfSecret());
+        $issuedAt = (int)$timestamp;
+        $now = time();
+        $ttl = $this->configClampedInt('csrf.tokenTtlSeconds', self::DEFAULT_CSRF_TOKEN_TTL_SECONDS, 60, 3600);
+        return $issuedAt >= ($now - $ttl) && $issuedAt <= $now;
+    }
+
+    private function signCsrfCookie(string $timestamp, string $nonce): string
+    {
+        return $timestamp . ':' . $nonce . ':' . hash_hmac(
+            'sha256',
+            'cookie:' . $timestamp . ':' . $nonce,
+            $this->getCsrfSecret(),
+        );
     }
 
     private function signCsrfTokenData(string $timestamp, string $nonce): string

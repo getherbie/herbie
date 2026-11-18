@@ -88,14 +88,15 @@ final class ContactPluginTest extends Unit
     public function testCsrfCookieIsAddedToResponse(): void
     {
         $plugin = $this->createUninitializedPlugin();
-        $nonce = explode(':', $plugin->csrfToken())[1];
+        [$tokenTimestamp, $nonce] = explode(':', $plugin->csrfToken());
         $event = new ResponseGeneratedEvent((new ResponseFactory())->createResponse());
 
         $plugin->onResponseGenerated($event);
         $cookie = $event->getResponse()->getHeaderLine('Set-Cookie');
+        preg_match('/herbie_contact_csrf=([^:]+):([^:]+):/', $cookie, $matches);
 
-        $this->assertStringContainsString('herbie_contact_csrf=', $cookie);
-        $this->assertStringContainsString($nonce . ':', $cookie);
+        $this->assertSame($tokenTimestamp, $matches[1] ?? null);
+        $this->assertSame($nonce, $matches[2] ?? null);
         $this->assertStringContainsString('Path=/', $cookie);
         $this->assertStringContainsString('Max-Age=900', $cookie);
         $this->assertStringContainsString('HttpOnly', $cookie);
@@ -124,6 +125,46 @@ final class ContactPluginTest extends Unit
         $this->assertFalse($method->invoke($plugin, [
             'csrf_token' => $this->createCsrfToken(str_repeat('a', 32), time() + 10),
         ]));
+    }
+
+    public function testExpiredCsrfCookieIsRejected(): void
+    {
+        $plugin = $this->createPluginWithCsrfCookie(str_repeat('d', 32), time() - 901);
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+
+        $this->assertFalse($method->invoke($plugin, [
+            'csrf_token' => $this->createCsrfToken(str_repeat('d', 32)),
+        ]));
+    }
+
+    public function testCsrfSecretRotationInvalidatesOutstandingCookieAndToken(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $nonce = str_repeat('e', 32);
+        $timestamp = time();
+        $oldCookie = $timestamp . ':' . $nonce . ':' . hash_hmac(
+            'sha256',
+            'cookie:' . $timestamp . ':' . $nonce,
+            'old-secret',
+        );
+        $this->setPrivateProperty(
+            $plugin,
+            'request',
+            (new ServerRequest())
+                ->withUri(new Uri('https://example.com/contact'))
+                ->withCookieParams(['herbie_contact_csrf' => $oldCookie]),
+        );
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['csrf' => ['secret' => 'new-secret']]],
+        ]));
+        $oldToken = $timestamp . ':' . $nonce . ':' . hash_hmac(
+            'sha256',
+            'token:' . $timestamp . ':' . $nonce,
+            'old-secret',
+        );
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+
+        $this->assertFalse($method->invoke($plugin, ['csrf_token' => $oldToken]));
     }
 
     public function testCsrfSecretIsRequired(): void
@@ -587,16 +628,17 @@ final class ContactPluginTest extends Unit
         $plugin->contact();
     }
 
-    private function createPluginWithCsrfCookie(string $nonce): ContactPlugin
+    private function createPluginWithCsrfCookie(string $nonce, ?int $timestamp = null): ContactPlugin
     {
         $plugin = $this->createUninitializedPlugin();
-        $signature = hash_hmac('sha256', 'cookie:' . $nonce, 'test-secret');
+        $timestamp ??= time();
+        $signature = hash_hmac('sha256', 'cookie:' . $timestamp . ':' . $nonce, 'test-secret');
         $this->setPrivateProperty(
             $plugin,
             'request',
             (new ServerRequest())
                 ->withUri(new Uri('https://example.com/contact'))
-                ->withCookieParams(['herbie_contact_csrf' => $nonce . ':' . $signature]),
+                ->withCookieParams(['herbie_contact_csrf' => $timestamp . ':' . $nonce . ':' . $signature]),
         );
 
         return $plugin;
