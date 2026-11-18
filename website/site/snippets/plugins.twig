@@ -6,30 +6,22 @@
         <div class="plugin">
             <p><strong>{{ attribute(item, 'name') }}</strong></p>
             <p>{{ attribute(item, 'desc') }}</p>
-            <table>
-                <tr>
-                    <td style="width:20%">Author</td>
-                    <td>{{ attribute(item, 'author') }}</td>
-                </tr>
-                <tr>
-                    <td>Version</td>
-                    <td>{{ attribute(item, 'version') }}</td>
-                </tr>
-                {% if item.composer %}
+            {% if item.composer %}
+                <table>
                     <tr>
                         <td style="white-space:nowrap">Composer</td>
                         <td>{{ item.composer }}</td>
                     </tr>
-                {% endif %}
-            </table>
+                </table>
+            {% endif %}
             <p class="links">
                 {% if item.github %}
-                    <a class="pure-button button-small" target="_blank" href="{{ item.github }}">
+                    <a class="plugin-link" target="_blank" href="{{ item.github }}">
                         {{ icon('github') }} GitHub
                     </a>
                 {% endif %}
                 {% if item.packagist %}
-                    <a class="pure-button button-small" target="_blank" href="{{ item.packagist }}">
+                    <a class="plugin-link" target="_blank" href="{{ item.packagist }}">
                         {{ icon('archive-fill') }} Packagist
                     </a>
                 {% endif %}
