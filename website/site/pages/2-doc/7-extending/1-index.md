@@ -5,105 +5,101 @@ layout: doc
 
 # Extending
 
-Depending on the use case extending Herbie is really simple.
-
-Basically, it provides the following extension points to change the flow of the application lifecycle.
+Herbie can be extended at several points in the application lifecycle.
+You can add functionality in different ways, from simple PHP files in the filesystem to distributed Composer plugins.
 
 ## Extension points
 
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th>How-to</th>
+            <th>Extension point</th>
+            <th>Typical use</th>
             <th>Difficulty</th>
-            <th>How often?</th>
-            <th>When?</th>
+            <th>Frequency</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>Console command</td>
+            <td>Provide functionality in the CLI</td>
             <td>Medium</td>
-            <td>Rarely</td>
-            <td>Access via CLI</td>
+            <td>Rare</td>
         </tr>
         <tr>
             <td>Event listener</td>
+            <td>React to system events</td>
             <td>Medium</td>
-            <td>Rarely</td>
-            <td>Hook the system</td>
+            <td>Rare</td>
         </tr>
         <tr>
             <td>Application middleware</td>
+            <td>Modify HTTP requests and responses</td>
             <td>Medium</td>
-            <td>Rarely</td>
-            <td>Change HTTP request/response</td>
+            <td>Rare</td>
         </tr>
         <tr>
             <td>Route middleware</td>
+            <td>Modify HTTP requests and responses for matching routes</td>
             <td>Medium</td>
-            <td>Rarely</td>
-            <td>Change HTTP request/response</td>
+            <td>Rare</td>
         </tr>
         <tr>
             <td>Twig filter</td>
+            <td>Transform values in templates</td>
             <td>Very easy</td>
-            <td>Frequently</td>
-            <td>Value transformation</td>
+            <td>Frequent</td>
         </tr>
         <tr>
             <td>Twig global</td>
+            <td>Provide a global value or helper object</td>
             <td>Very easy</td>
-            <td>Frequently</td>
-            <td>Helper object</td>
+            <td>Frequent</td>
         </tr>
         <tr>
             <td>Twig function</td>
+            <td>Generate content in templates</td>
             <td>Very easy</td>
-            <td>Frequently</td>
-            <td>Content generation</td>
+            <td>Frequent</td>
         </tr>
         <tr>
             <td>Twig test</td>
+            <td>Evaluate boolean conditions in templates</td>
             <td>Very easy</td>
-            <td>Frequently</td>
-            <td>Boolean decision</td>
+            <td>Frequent</td>
         </tr>
     </tbody>
 </table>
 
-And changing the flow of the application lifecycle can be done in four different ways from easy to difficult.
+## Extension methods
+
+There are four ways to add extensions, with increasing flexibility and complexity.
 
 <table class="pure-table pure-table-horizontal">
     <thead>
         <tr>
-            <th style="width:1%">#</th>
-            <th>Extension workflow</th>
+            <th>Method</th>
             <th>Difficulty</th>
             <th>Reusability</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>1</td>
             <td>Using the filesystem</td>
             <td>Very easy</td>
             <td>Low</td>
         </tr>
         <tr>
-            <td>2</td>
             <td>Using a programmatic approach</td>
             <td>Easy</td>
             <td>Low</td>
         </tr>
         <tr>
-            <td>3</td>
             <td>Using a plugin</td>
             <td>Medium</td>
             <td>Medium</td>
         </tr>
         <tr>
-            <td>4</td>
             <td>Using a distributed plugin</td>
             <td>High</td>
             <td>High</td>
@@ -113,8 +109,7 @@ And changing the flow of the application lifecycle can be done in four different
 
 ## Extending using the filesystem
 
-Using the file system means that we work in the `site` directory of the project.
-More precisely, only simple PHP files need to be created and placed in the appropriate directories.
+With the filesystem approach, you add extensions by placing PHP files in the corresponding directories inside `site/extend`.
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -133,12 +128,12 @@ More precisely, only simple PHP files need to be created and placed in the appro
     </tbody>
 </table>
 
-So, let's get started.
+Each file must return the value expected by the extension point. Herbie discovers and registers these files automatically.
 
 ### Console commands
 
-For adding a command you can create a PHP file in the directory `site/extend/commands` that returns a Command class.
-The command is automatically registered and available in the CLI application.
+To add a console command, create a PHP file in `site/extend/commands` that returns a command class.
+The command is registered automatically and becomes available in the CLI.
 
 ~~~php
 <?php
@@ -169,8 +164,8 @@ return CustomCommand::class;
 
 ### Event listeners
 
-For adding an event listener you can create a PHP file in the directory `site/extend/events` that returns an array{string, callable} with the name of the event and a valid PHP callback.
-The event is then registered automatically.
+To add an event listener, create a PHP file in `site/extend/events` that returns an array with the event name and a callable.
+The listener is registered automatically.
 
 ~~~php
 <?php
@@ -186,8 +181,8 @@ return ['onTwigInitialized', $event];
 
 ### Application middlewares
 
-For adding an application middleware you can create a PHP file in the directory `site/extend/middlewares_app` that returns a valid PHP callback.
-The application middleware is then registered automatically.
+To add an application middleware, create a PHP file in `site/extend/middlewares_app` that returns a middleware.
+The middleware is registered automatically.
 
 ~~~php
 <?php
@@ -208,8 +203,8 @@ return $middleware;
 
 ### Route middlewares
 
-For adding an route middleware you can create a PHP file in the directory `site/extend/middlewares_route` that returns an array{string, callable} with a route regex expression and a valid PHP callback.
-The route middleware is then registered automatically.
+To add a route middleware, create a PHP file in `site/extend/middlewares_route` that returns an array with a route regular expression and a middleware.
+The middleware is registered automatically.
 
 ~~~php
 <?php
@@ -225,13 +220,13 @@ $middleware = function (ServerRequestInterface $request, RequestHandlerInterface
     return $response;
 };
 
-return ['route/regex/expression', $middleware];
+return ['^route/.*', $middleware];
 ~~~
 
 ### Twig filters
 
-For adding a Twig filter you can create a PHP file in the directory `site/extend/twig_filters` that returns an array{string, callable} with the name of the filter and a valid PHP callback.
-The filter is then registered automatically.
+To add a Twig filter, create a PHP file in `site/extend/twig_filters` that returns an array with the filter name and a callable.
+The filter is registered automatically.
 
 ~~~php 
 <?php
@@ -245,8 +240,8 @@ return ['reverse', $twigFilter];
 
 ### Twig functions
 
-For adding a Twig function you can create a PHP file in the directory `site/extend/twig_functions` that returns an array{string, callable} with the name of the function and a valid PHP callback.
-The function is then registered automatically.
+To add a Twig function, create a PHP file in `site/extend/twig_functions` that returns an array with the function name and a callable.
+The function is registered automatically.
 
 ~~~php 
 <?php
@@ -260,8 +255,8 @@ return ['hello', $twigFunction];
 
 ### Twig globals
 
-For adding a Twig global you can create a PHP file in the directory `site/extend/twig_globals` that returns an array{string, mixed}.
-The global is then registered automatically.
+To add a Twig global, create a PHP file in `site/extend/twig_globals` that returns an array with the global name and its value.
+The global is registered automatically.
 
 ~~~php
 <?php
@@ -271,8 +266,8 @@ return ['hello', 'world'];
 
 ### Twig tests
 
-For adding a Twig test you can create a PHP file in the directory `site/extend/twig_tests` that returns an array{string, callable} with the name of the test and a valid PHP callback.
-The test is then registered automatically.
+To add a Twig test, create a PHP file in `site/extend/twig_tests` that returns an array with the test name and a callable.
+The test is registered automatically.
 
 ~~~php 
 <?php
@@ -286,10 +281,10 @@ return ['odd', $twigTest];
 
 ## Extending using a programmatic approach
 
-With the programmatic approach, you can achieve exactly the same.
-The difference is that you have to customize the `index.php` bootstrap file and add the extensions programmatically.
-For this purpose there are several add methods available in the `herbie\Application` class.
-A simplified bootstrap file would then look like this.
+With the programmatic approach, you register extensions in the `index.php` bootstrap file.
+The `herbie\Application` class provides `add*` methods for this purpose.
+
+A simplified bootstrap file looks like this:
 
 ~~~php
 <?php
@@ -317,10 +312,9 @@ $app->addTwigTest();
 $app->run();
 ~~~
 
-So, in the end, you have to do exactly the same with the programmatic approach as you do with the file system approach.
-In detail, it then looks like this.
+The following examples show how to register each extension point.
 
-Adding a console command:
+### Console command
 
 ~~~php
 class CustomCommand extends Command
@@ -331,7 +325,7 @@ class CustomCommand extends Command
 $app->addConsoleCommand(CustomCommand::class);
 ~~~ 
 
-Adding an event listener:
+### Event listener
 
 ~~~php
 $event = function (herbie\EventInterface $event): void {
@@ -341,7 +335,7 @@ $event = function (herbie\EventInterface $event): void {
 $app->addEventListener('onTwigInitialized', $event);
 ~~~
 
-Adding an application middleware:
+### Application middleware
 
 ~~~php
 use Psr\Http\Message\ResponseInterface;
@@ -358,15 +352,15 @@ $middleware = function (ServerRequestInterface $request, RequestHandlerInterface
 $app->addApplicationMiddleware($middleware);
 ~~~
 
-Adding a route middleware:
+### Route middleware
 
 ~~~php
 // the route middleware can be the same as the application middleware
 
-$app->addRouteMiddleware('route/to/page', $middleware);
+$app->addRouteMiddleware('^route/.*', $middleware);
 ~~~
 
-Adding a Twig filter:
+### Twig filter
 
 ~~~php
 $twigFilter = function (string $string): string {
@@ -376,7 +370,7 @@ $twigFilter = function (string $string): string {
 $app->addTwigFilter('reverse', $twigFilter);
 ~~~
 
-Adding a Twig global:
+### Twig global
 
 ~~~php
 $twigGlobal = new My\Custom\DateTime();
@@ -384,7 +378,7 @@ $twigGlobal = new My\Custom\DateTime();
 $app->addTwigGlobal('datetime', $twigGlobal);
 ~~~
 
-Adding a Twig function:
+### Twig function
 
 ~~~php
 $twigFunction = function (string $name): string {
@@ -394,7 +388,7 @@ $twigFunction = function (string $name): string {
 $app->addTwigFunction('hello', $twigFunction);
 ~~~
 
-Adding a Twig test:
+### Twig test
 
 ~~~php
 $twigTest = function (int $value): bool {
@@ -406,15 +400,12 @@ $app->addTwigTest('odd', $twigTest);
 
 ## Extending using a plugin
 
-With the approach of creating a plugin, you can achieve exactly the same as before.
-I know, I repeat myself.
-The main differences are:
+A plugin bundles extensions in a dedicated class.
+This approach is more flexible than the filesystem and programmatic approaches:
 
-- this approach of extending is the most flexible and powerful
-- you need to know a little more about programming with PHP
-- within the plugin, you have access to all objects of the application
-
-The latter is achieved through dependency injection.
+- it keeps related extensions together in one place
+- it can provide configuration and declare dependencies
+- it has access to application services through dependency injection
 
 A plugin is a directory with a PHP class that is marked with the `#[Plugin]` attribute.
 
@@ -516,9 +507,9 @@ class MyPlugin implements herbie\PluginInterface
 }
 ~~~
 
-To install the plugin, you need to place the plugin folder into the `site/extend/plugins` directory.
+To install the plugin, place its directory in `site/extend/plugins`.
 
-To enable the plugin, you need to edit the configuration file `site/config/main.php` and add an entry to the comma-separated list of the `enabledPlugins` setting.
+To enable the plugin, add it to the comma-separated `enabledPlugins` setting in `site/config/main.php`.
 
 ~~~php
 <?php 
@@ -527,8 +518,7 @@ return [
 ];
 ~~~
 
-Of course, you need to implement the methods according to the requirements.
-So the complete class looks like:
+A complete plugin class can look like this:
 
 ~~~php
 <?php
@@ -605,7 +595,7 @@ class MyPlugin implements herbie\PluginInterface
             return $response;
         };
         return [
-            ['route/to/page', $middleware]
+            ['^route/.*', $middleware]
         ];
     }
 
@@ -648,15 +638,12 @@ class MyPlugin implements herbie\PluginInterface
 }
 ~~~
 
-That's all you have to do.
-
-A good example is the [dummy system plugin](https://github.com/getherbie/herbie/tree/3.x/plugins/dummy), by the way.
+For a complete example, see the [dummy system plugin](https://github.com/getherbie/herbie/tree/3.x/plugins/dummy).
 
 ## Extending using a distributed plugin
 
-To distribute your plugin now, you need to make it a Composer package.
-To do this, you need to create a JSON file `composer.json` in the plugin folder.
-The file must contain a type with `herbie-plugin`.
+To distribute a plugin, turn it into a Composer package.
+Create a `composer.json` file in the plugin directory and set its type to `herbie-plugin`.
 
 ~~~json
 {
@@ -668,15 +655,14 @@ The file must contain a type with `herbie-plugin`.
 }
 ~~~
 
-How to deploy the plugin on <https://packagist.org> can be found on <https://getcomposer.org>.
+See the [Composer documentation](https://getcomposer.org) for details on publishing packages to [Packagist](https://packagist.org).
 
-After deployment, the plugin can be installed using Composer.
-All you need to do is run the following CLI command in your project root directory.
+After publishing, install the plugin in your project with Composer:
 
 ~~~bash
 composer require myvendor/myplugin
 ~~~
 
-After that, the plugin needs to be enabled in the configuration.
+Then enable the plugin in the configuration.
 
-The system plugins `contact` and `search` are good examples and ship with Herbie.
+The `contact` and `search` plugins, which ship with Herbie, are good examples of distributed plugins.
