@@ -368,6 +368,7 @@ final class WebsiteCest
         $I->seeElement('.contact-input[id=name]');
         $I->seeElement('.contact-input[id=email]');
         $I->seeElement('.contact-input[id=message]');
+        $I->seeElement('altcha-widget[challenge]');
         $I->seeElement('.contact-button');
         $this->testLayoutDefault($I);
     }

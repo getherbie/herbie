@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace herbie\tests\unit;
 
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\CreateChallengeOptions;
+use AltchaOrg\Altcha\Payload;
+use AltchaOrg\Altcha\SolveChallengeOptions;
 use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\Config;
@@ -117,6 +122,116 @@ final class ContactPluginTest extends Unit
         ]));
 
         $this->assertSame('configured-secret', $this->invokePrivate($plugin, 'getCsrfSecret', []));
+    }
+
+    public function testCaptchaSecretIsRequired(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['captcha' => ['secret' => '']]],
+        ]));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A non-empty plugins.contact.captcha.secret must be configured.');
+        $this->invokePrivate($plugin, 'getCaptchaSecret', []);
+    }
+
+    public function testCaptchaSecretPlaceholderIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['captcha' => ['secret' => '<plugin_contact_captcha_secret>']]],
+        ]));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A non-empty plugins.contact.captcha.secret must be configured.');
+        $this->invokePrivate($plugin, 'getCaptchaSecret', []);
+    }
+
+    public function testCaptchaSecretReturnsConfiguredValue(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['captcha' => ['secret' => 'configured-captcha-secret']]],
+        ]));
+
+        $this->assertSame('configured-captcha-secret', $this->invokePrivate($plugin, 'getCaptchaSecret', []));
+    }
+
+    public function testCreatedChallengeIsSignedWithPbkdf2AndExpires(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $data = json_decode($this->invokePrivate($plugin, 'createAltchaChallenge', []), true, 512, JSON_THROW_ON_ERROR);
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('parameters', $data);
+        $this->assertArrayHasKey('signature', $data);
+        $this->assertSame('PBKDF2/SHA-256', $data['parameters']['algorithm']);
+        $this->assertGreaterThan(time(), $data['parameters']['expiresAt']);
+    }
+
+    public function testValidAltchaPayloadIsAccepted(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $payload = $this->solveChallengeForPlugin();
+
+        $this->assertTrue($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => $payload]]));
+    }
+
+    public function testMissingAltchaPayloadIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [[]]));
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => '']]));
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => ['not-a-string']]]));
+    }
+
+    public function testMalformedAltchaPayloadIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => 'not-valid-base64!']]));
+    }
+
+    public function testTamperedAltchaPayloadIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $payload = Payload::fromBase64($this->solveChallengeForPlugin());
+
+        $tampered = new Payload(
+            $payload->challenge,
+            new \AltchaOrg\Altcha\Solution($payload->solution->counter, str_repeat('0', 64)),
+        );
+
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => $tampered->toBase64()]]));
+    }
+
+    public function testExpiredAltchaPayloadIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $payload = $this->solveChallengeForPlugin(time() - 10);
+
+        $this->assertFalse($this->invokePrivate($plugin, 'isValidAltchaPayload', [['altcha' => $payload]]));
+    }
+
+    private function solveChallengeForPlugin(?int $expiresAt = null): string
+    {
+        $secret = 'test-captcha-secret';
+        $altcha = new Altcha($secret, $secret);
+        $challenge = $altcha->createChallenge(new CreateChallengeOptions(
+            algorithm: new Pbkdf2(),
+            cost: 100,
+            counter: 1,
+            expiresAt: $expiresAt ?? time() + 600,
+        ));
+        $solution = $altcha->solveChallenge(new SolveChallengeOptions(
+            challenge: $challenge,
+            algorithm: new Pbkdf2(),
+        ));
+
+        $this->assertNotNull($solution);
+        return (new Payload($challenge, $solution))->toBase64();
     }
 
     public function testFilterFormDataSanitizesInput(): void
@@ -364,7 +479,10 @@ final class ContactPluginTest extends Unit
                 ['niceUrls' => true],
             ),
         );
-        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['csrf' => ['secret' => 'test-secret']]]]));
+        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => [
+            'csrf' => ['secret' => 'test-secret'],
+            'captcha' => ['secret' => 'test-captcha-secret'],
+        ]]]));
         $this->setPrivateProperty($plugin, 'pageRepository', new class implements PageRepositoryInterface {
             public function find(string $id): ?Page
             {

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace herbie\plugins\contact;
 
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\CreateChallengeOptions;
+use AltchaOrg\Altcha\VerifySolutionOptions;
 use herbie\AbstractPlugin;
 use herbie\Config;
 use herbie\Page;
@@ -21,9 +25,13 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 use Twig\TwigFunction;
 
-#[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9'])]
+#[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9', 'altcha-org/altcha' => '^2.4'])]
 final class ContactPlugin extends AbstractPlugin
 {
+    private const CAPTCHA_COST = 5000;
+    private const CAPTCHA_COUNTER_MIN = 5000;
+    private const CAPTCHA_COUNTER_MAX = 10000;
+    private const CAPTCHA_TTL_SECONDS = 600;
     private const DEFAULT_HONEYPOTS = ['phone', 'website'];
     private const DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
     private const DEFAULT_FORM_MIN_AGE_SECONDS = 3;
@@ -114,6 +122,14 @@ final class ContactPlugin extends AbstractPlugin
                 exit;
             }
 
+            // Verify the ALTCHA proof-of-work before processing the form.
+            if (!$this->isValidAltchaPayload($this->getFormData())) {
+                $this->logger->warning('Contact form rejected: invalid CAPTCHA.');
+                $response = $this->createRedirectResponse($route, 'failed');
+                $this->emitResponse($response);
+                exit;
+            }
+
             $formData = $this->filterFormData($this->getFormData());
 
             // Honeypot fields: silently pretend success for bots.
@@ -162,6 +178,7 @@ final class ContactPlugin extends AbstractPlugin
             'route' => $route,
             'csrf_token' => $this->csrfToken(),
             'form_time' => time(),
+            'altcha_challenge' => $this->createAltchaChallenge(),
         ]);
     }
 
@@ -194,8 +211,18 @@ final class ContactPlugin extends AbstractPlugin
 
     private function getCsrfSecret(): string
     {
+        return $this->getRequiredSecret('csrf.secret');
+    }
+
+    private function getCaptchaSecret(): string
+    {
+        return $this->getRequiredSecret('captcha.secret');
+    }
+
+    private function getRequiredSecret(string $key): string
+    {
         try {
-            $secret = $this->config->getAsString('plugins.contact.csrf.secret', '');
+            $secret = $this->config->getAsString('plugins.contact.' . $key, '');
         } catch (Throwable) {
             $secret = '';
         }
@@ -205,10 +232,44 @@ final class ContactPlugin extends AbstractPlugin
         }
 
         if ($secret === '') {
-            throw new \RuntimeException('A non-empty plugins.contact.csrf.secret must be configured.');
+            throw new \RuntimeException(sprintf('A non-empty plugins.contact.%s must be configured.', $key));
         }
 
         return $secret;
+    }
+
+    private function createAltchaChallenge(): string
+    {
+        $secret = $this->getCaptchaSecret();
+        $altcha = new Altcha($secret, $secret);
+        return $altcha->createChallenge(new CreateChallengeOptions(
+            algorithm: new Pbkdf2(),
+            cost: self::CAPTCHA_COST,
+            counter: random_int(self::CAPTCHA_COUNTER_MIN, self::CAPTCHA_COUNTER_MAX),
+            expiresAt: time() + self::CAPTCHA_TTL_SECONDS,
+        ))->toJson();
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    private function isValidAltchaPayload(array $body): bool
+    {
+        $payload = $body['altcha'] ?? '';
+        if (!is_string($payload) || $payload === '') {
+            return false;
+        }
+
+        try {
+            $secret = $this->getCaptchaSecret();
+            $altcha = new Altcha($secret, $secret);
+            return $altcha->verifySolution(new VerifySolutionOptions(
+                algorithm: new Pbkdf2(),
+                payload: $payload,
+            ))->verified;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     private function configClampedInt(string $key, int $default, int $min, int $max): int

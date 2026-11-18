@@ -12,6 +12,8 @@
 
     {% else %}
 
+        {{ js_add('@plugin/contact/assets/altcha.min.js') }}
+
         {% if errors %}
 
             <div class="contact-errors">{{ translate('contact', 'messageError') }}</div>
@@ -21,6 +23,7 @@
         <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
+            <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
             <div class="contact-control-group contact-control-group-honeypot pure-control-group">
                 <label for="website">{{ translate('contact', 'labelWebsite') }}</label>
                 <input class="contact-input pure-input-1" id="website" name="website" type="text" placeholder="" value="{{ data.website }}">

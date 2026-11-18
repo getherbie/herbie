@@ -10,6 +10,9 @@ return [
         'secret' => '', // signing secret, must be configured
         'tokenTtlSeconds' => 900, // token lifetime (60..3600)
     ],
+    'captcha' => [
+        'secret' => '', // ALTCHA HMAC secret, must be configured
+    ],
     'form' => [
         'minAgeSeconds' => 3, // minimum time before a form can be submitted (0..60)
         'maxAgeSeconds' => 900, // maximum time before a form can be submitted (60..3600)

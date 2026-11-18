@@ -58,6 +58,7 @@
         "getherbie/plugin-simplesearch": "self.version"
     },
     "require-dev": {
+        "altcha-org/altcha": "^2.4",
         "behat/gherkin": "^4.18",
         "codeception/c3": "^2.7",
         "codeception/codeception": "^5.0",

@@ -53,6 +53,9 @@ return [
             'csrf' => [
                 'secret' => '<plugin_contact_csrf_secret>',
             ],
+            'captcha' => [
+                'secret' => '<plugin_contact_captcha_secret>',
+            ],
             'smtp' => [
                 'host' => '<plugin_contact_smtp_host>',
                 'port' => 587,

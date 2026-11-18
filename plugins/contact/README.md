@@ -15,7 +15,7 @@ return [
 ];
 ~~~
 
-The plugin requires `phpmailer/phpmailer` (`^6.9`).
+The plugin requires `phpmailer/phpmailer` (`^6.9`) and `altcha-org/altcha` (`^2.4`).
 
 ## Configuration
 
@@ -38,6 +38,11 @@ CSRF settings under `plugins.contact.csrf`. The secret is required; rendering th
     csrf:
         secret: (string)
         tokenTtlSeconds: (int) token lifetime, default 900 (60..3600)
+
+ALTCHA proof-of-work settings under `plugins.contact.captcha`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_captcha_secret>:
+
+    captcha:
+        secret: (string)
 
 Form and rate limit settings (values outside the given range are clamped):
 
@@ -62,13 +67,16 @@ SMTP defaults (`localhost`, 587, TLS) are only fallbacks and do not send mail on
 
 ## Spam protection
 
-The plugin applies three lightweight checks, configured with the options above:
+The plugin applies four lightweight checks, configured with the options above:
 
+- **ALTCHA proof-of-work:** Each form render embeds a signed challenge. The bundled widget computes the solution in the browser (the default widget needs one checkbox interaction) and submits it in the hidden `altcha` field. The server rejects submissions with a missing, invalid, or expired solution before any email is sent. The secret must match between challenge creation and verification.
 - **Honeypots:** The hidden fields listed in `honeypots` (`phone` and `website` by default) must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
 - **Form age:** The hidden `form_time` field records when the form was rendered. Submissions faster than `form.minAgeSeconds` or older than `form.maxAgeSeconds` are silently rejected (3 s and 15 min by default). The CSRF token has its own `csrf.tokenTtlSeconds` (15 min by default) and rejects future timestamps.
 - **Rate limit:** At most `rateLimit.maxRequests` submissions per `rateLimit.windowSeconds` and IP address (5 per hour by default). This requires a PSR-16 `CacheInterface` implementation; without a cache, no limit is applied. The IP is read from `REMOTE_ADDR`, so a reverse proxy must set it correctly.
 
-Custom templates must keep the hidden fields `csrf_token`, `form_time` and every field listed in `honeypots`, otherwise these checks cannot work. Field names used for real input (`name`, `email`, `message`, `form_time`, `csrf_token`) cannot be used as honeypots.
+Custom templates must keep the hidden fields `csrf_token`, `form_time`, the `altcha` field created by the widget, and every field listed in `honeypots`, otherwise these checks cannot work. Field names used for real input (`name`, `email`, `message`, `form_time`, `csrf_token`, `altcha`) cannot be used as honeypots.
+
+The widget script `assets/altcha.min.js` is hosted locally; the contact page loads no third-party scripts and makes no external requests. Proof-of-work requires JavaScript to be enabled in the browser. Because the challenge and solution are bound to the signing secret, keep `captcha.secret` stable for the lifetime of an open form; rotating it invalidates outstanding challenges.
 
 ## Notes
 

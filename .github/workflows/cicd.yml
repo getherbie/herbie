@@ -81,6 +81,7 @@ jobs:
           sed -i "s|<plugin_contact_smtp_password>|${{ secrets.SMTP_PASSWORD }}|g" website/site/config/main.dist.php
           sed -i "s|<plugin_contact_recipient>|${{ secrets.SMTP_RECIPIENT }}|g" website/site/config/main.dist.php
           sed -i "s|<plugin_contact_csrf_secret>|$(openssl rand -hex 32)|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_captcha_secret>|$(openssl rand -hex 32)|g" website/site/config/main.dist.php
 
       - name: Deploy main.php to site config
         run: cp website/site/config/main.dist.php website/site/config/main.php
