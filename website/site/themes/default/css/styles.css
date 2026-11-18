@@ -1061,7 +1061,7 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
     background-color: #fef9c3;
     background: #fef9c3;
     color: inherit;
-    padding: 0 0.1em;
+    padding: 0;
     border-radius: 2px;
     font-weight: inherit;
 }
