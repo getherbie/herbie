@@ -935,7 +935,14 @@ html[data-theme="dark"] .pure-button:hover {
 /* Plugin Search */
 .plugin-search-form form {
     display:flex;
+    flex-wrap: wrap;
     gap:0.5em;
+    align-items: center;
+}
+.plugin-search-form .search-exact {
+    flex-basis: 100%;
+    font-size: 0.9em;
+    color: var(--text-muted);
 }
 .plugin-search-form input[type=text] {
     flex:1;
