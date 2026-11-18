@@ -138,9 +138,13 @@ table {
 
 .pure-table {
     width: 100%;
+    max-width: 100%;
     border:1px solid var(--border);
     border-radius:var(--radius);
-    overflow:hidden;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    display:block;
     background:var(--surface);
 }
 .pure-table thead {
@@ -648,6 +652,16 @@ html[data-theme="dark"] .hero-code {
     display: list-item;
     line-height: 1.8;
     padding: 0;
+}
+.content img {
+    max-width:100%;
+    height:auto;
+}
+.content code {
+    overflow-wrap:anywhere;
+}
+.content pre code {
+    overflow-wrap:normal;
 }
 .content-container {
     margin-top:56px;
