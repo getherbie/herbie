@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace herbie\plugins\search;
 
-use Exception;
 use herbie\AbstractPlugin;
 use herbie\Config;
+use herbie\EventManager;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
-use League\CommonMark\MarkdownConverter;
+use herbie\events\RenderSegmentEvent;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
@@ -26,7 +22,7 @@ final class SearchPlugin extends AbstractPlugin
 {
     private CacheInterface $cache;
     private Config $config;
-    private LoggerInterface $logger;
+    private EventManager $eventManager;
     private PageRepositoryInterface $pageRepository;
     private ServerRequestInterface $request;
     private TwigRenderer $twigRenderer;
@@ -35,15 +31,15 @@ final class SearchPlugin extends AbstractPlugin
     public function __construct(
         CacheInterface $cache,
         Config $config,
+        EventManager $eventManager,
         PageRepositoryInterface $pageRepository,
         ServerRequestInterface $request,
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
-        LoggerInterface $logger,
     ) {
         $this->cache = $cache;
         $this->config = $config;
-        $this->logger = $logger;
+        $this->eventManager = $eventManager;
         $this->pageRepository = $pageRepository;
         $this->request = $request;
         $this->twigRenderer = $twigRenderer;
@@ -111,94 +107,43 @@ final class SearchPlugin extends AbstractPlugin
     {
         // Cache key is per-page, but depends on the global token.
         // If any page changes, the token changes, old entries are stale.
-        $cacheId = 'search_' . $item->getRoute() . '_' . $cacheToken;
-        $cached = $this->cache->get($cacheId);
-        if ($cached !== null) {
-            return [$item->getTitle(), $cached];
+        $content = strip_tags($this->renderPageContent($item));
+
+        // The internal search cache can be disabled via the plugin configuration.
+        // It is keyed per page with a global token of the latest modified timestamp,
+        // so entries are invalidated automatically when any page changes.
+        if ($this->config->getAsBool('plugins.search.useCache', true)) {
+            $cacheId = 'search_' . $item->getRoute() . '_' . $cacheToken;
+            $cached = $this->cache->get($cacheId);
+            if ($cached !== null) {
+                return [$item->getTitle(), $cached];
+            }
+            $this->cache->set($cacheId, $content);
         }
 
-        $content = strip_tags($this->renderPageContent($item));
-        $this->cache->set($cacheId, $content);
         return [$item->getTitle(), $content];
     }
 
     /**
-     * Render page segments to HTML.
-     * Always convert by format (Markdown/Textile/RST).
-     * If page has twig: true, additionally run through Twig.
+     * Render page segments to HTML via the RenderSegmentEvent,
+     * so all registered listeners (format parsers, Twig) are applied.
      */
     private function renderPageContent(Page $page): string
     {
         $rendered = [];
         foreach ($page->getSegments() as $segmentId => $segment) {
-            $rendered[$segmentId] = $this->renderSegment($segment, $page);
+            /** @var RenderSegmentEvent $event */
+            $event = $this->eventManager->dispatch(
+                new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager),
+            );
+            $rendered[$segmentId] = $event->getSegment();
         }
         return implode('', $rendered);
     }
 
     /**
-     * Render a single segment: format parser, then Twig if page has twig: true.
-     */
-    private function renderSegment(string $segment, Page $page): string
-    {
-        $content = $this->convertSegment($segment, $page->getFormat());
-        if ($page->getTwig()) {
-            $content = $this->twigRenderer->renderString($content);
-        }
-        return $content;
-    }
-
-    /**
-     * Convert a single segment to HTML based on page format.
-     */
-    private function convertSegment(string $segment, string $format): string
-    {
-        if ($format === 'markdown' || $format === 'md') {
-            return $this->convertMarkdown($segment);
-        }
-
-        if ($format === 'textile') {
-            return $this->convertTextile($segment);
-        }
-
-        if ($format === 'rst') {
-            return $this->convertRst($segment);
-        }
-
-        // HTML, XML, plain text: return as-is
-        return $segment;
-    }
-
-    private function convertMarkdown(string $segment): string
-    {
-        static $converter = null;
-
-        if ($converter === null) {
-            $env = new Environment();
-            $env->addExtension(new CommonMarkCoreExtension());
-            $env->addExtension(new GithubFlavoredMarkdownExtension());
-            $converter = new MarkdownConverter($env);
-        }
-
-        return $converter->convert($segment)->getContent();
-    }
-
-    private function convertTextile(string $segment): string
-    {
-        $plugin = new \herbie\plugins\textile\TextilePlugin($this->config, $this->logger);
-        return $plugin->parse($segment);
-    }
-
-    private function convertRst(string $segment): string
-    {
-        $plugin = new \herbie\plugins\rst\RstPlugin($this->config, $this->logger);
-        return $plugin->parse($segment);
-    }
-
-    /**
      * @param string $query
      * @return array
-     * @throws Exception
      */
     private function search(string $query): array
     {

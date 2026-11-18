@@ -60,7 +60,7 @@ return [
             ],
         ],
         'search' => [
-            'usePageCache' => $isProduction,
+            'useCache' => $isProduction,
         ],
     ],
 ];
