@@ -258,7 +258,6 @@ function di_class_whitelist(): array
         Translator::class,
         TwigRenderer::class,
         UrlManager::class,
-        Session::class,
     ];
 }
 

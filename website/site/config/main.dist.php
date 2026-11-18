@@ -50,6 +50,7 @@ return [
     'plugins' => [
         'contact' => [
             'recipient' => '<smtp_recipient>',
+            'secret' => '<csrf_secret>',
             'smtp' => [
                 'host' => '<smtp_host>',
                 'port' => 587,

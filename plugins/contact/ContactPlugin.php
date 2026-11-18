@@ -9,7 +9,6 @@ use herbie\Config;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
-use herbie\Session;
 use herbie\Translator;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
@@ -32,7 +31,7 @@ final class ContactPlugin extends AbstractPlugin
     private TwigRenderer $twigRenderer;
     private UrlManager $urlManager;
     private LoggerInterface $logger;
-    private Session $session;
+    private ?string $csrfToken = null;
 
     public function __construct(
         Config $config,
@@ -43,7 +42,6 @@ final class ContactPlugin extends AbstractPlugin
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
         LoggerInterface $logger,
-        Session $session,
     ) {
         $this->config = $config;
         $this->pageRepository = $pageRepository;
@@ -53,7 +51,6 @@ final class ContactPlugin extends AbstractPlugin
         $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
         $this->logger = $logger;
-        $this->session = $session;
     }
 
     public function twigFunctions(): array
@@ -65,21 +62,18 @@ final class ContactPlugin extends AbstractPlugin
     }
 
     /**
-     * The CSRF token for the current session.
+     * A stateless CSRF token signed with the configured secret.
      */
     public function csrfToken(): string
     {
-        if (!$this->session->isActive()) {
-            $this->session->start();
-            $this->session->save();
+        if ($this->csrfToken !== null) {
+            return $this->csrfToken;
         }
-        $existing = (string)$this->session->get('csrf_token', '');
-        if ($existing !== '') {
-            return $existing;
-        }
-        $token = $this->session->generateCsrfToken();
-        $this->session->save();
-        return $token;
+
+        $timestamp = time();
+        $signature = hash_hmac('sha256', (string)$timestamp, $this->getCsrfSecret());
+        $this->csrfToken = $timestamp . ':' . $signature;
+        return $this->csrfToken;
     }
 
     public function contact(): string
@@ -140,10 +134,39 @@ final class ContactPlugin extends AbstractPlugin
     private function isValidCsrfToken(array $body): bool
     {
         $token = $body['csrf_token'] ?? '';
-        if (!is_string($token)) {
+        if (!is_string($token) || $token === '') {
             return false;
         }
-        return $this->session->validateCsrfToken($token);
+
+        $parts = explode(':', $token, 2);
+        if (count($parts) !== 2 || !ctype_digit($parts[0])) {
+            return false;
+        }
+
+        $timestamp = (int)$parts[0];
+        $signature = $parts[1];
+        $now = time();
+        if ($timestamp < ($now - 3600) || $timestamp > ($now + 60)) {
+            return false;
+        }
+
+        $expected = hash_hmac('sha256', (string)$timestamp, $this->getCsrfSecret());
+        return hash_equals($expected, $signature);
+    }
+
+    private function getCsrfSecret(): string
+    {
+        $secret = '';
+        try {
+            $secret = $this->config->getAsString('plugins.contact.secret', '');
+        } catch (Throwable) {
+            $secret = '';
+        }
+        // Ignore unreplaced placeholders from config templates.
+        if ($secret !== '' && str_starts_with($secret, '<') && str_ends_with($secret, '>')) {
+            $secret = '';
+        }
+        return $secret !== '' ? $secret : 'change-this-to-a-random-secret';
     }
 
     private function getFormData(): array

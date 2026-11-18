@@ -29,6 +29,10 @@ Aliased template path to custom form template:
 
     template: (string)
 
+CSRF signing secret (change the default in production):
+
+    secret: (string)
+
 SMTP connection settings are configured under `plugins.contact.smtp`:
 
     smtp:
