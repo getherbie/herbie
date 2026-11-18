@@ -62,6 +62,18 @@ final readonly class Site
         return date_format('c', $lastModified);
     }
 
+    public function getCreated(): string
+    {
+        $lastCreated = 0;
+        foreach ($this->pageRepository->findAll() as $item) {
+            $created = time_from_string($item->getCreated());
+            if ($created > $lastCreated) {
+                $lastCreated = $created;
+            }
+        }
+        return date_format('c', $lastCreated);
+    }
+
     public function getConfig(): Config
     {
         return $this->config;

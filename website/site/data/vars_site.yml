@@ -3,7 +3,7 @@
   desc: The base url.
   type: string
 - name: site.charset
-  desc: 'The charset (default: utf-8)'
+  desc: 'The charset (default: UTF-8)'
   type: string
 - name: site.config
   desc: The config object with its methods.
@@ -18,7 +18,7 @@
   desc: 'The language as 2-digit ISO-code (default: de)'
   type: string
 - name: site.locale
-  desc: 'The locale settings (default: de_DE)'
+  desc: 'The locale settings (default: de_DE.UTF-8)'
   type: string
 - name: site.modified
   desc: The time of the last modified page in ISO-8601 format (2004-02-12T15:19:21+00:00).
