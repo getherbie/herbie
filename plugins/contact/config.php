@@ -5,7 +5,18 @@ declare(strict_types=1);
 return [
     'recipient' => 'me@example.com', // your email address
     'template' => null, // aliased path to custom template
-    'secret' => '', // CSRF signing secret, must be configured
+    'csrf' => [
+        'secret' => '', // signing secret, must be configured
+        'tokenTtlSeconds' => 900, // token lifetime (60..3600)
+    ],
+    'form' => [
+        'minAgeSeconds' => 3, // minimum time before a form can be submitted (0..60)
+        'maxAgeSeconds' => 900, // maximum time before a form can be submitted (60..3600)
+    ],
+    'rateLimit' => [
+        'maxRequests' => 5, // max submissions per IP and window (1..100)
+        'windowSeconds' => 3600, // rate limit window (60..86400)
+    ],
     'smtp' => [
         'host' => 'localhost',
         'port' => 587,

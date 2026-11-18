@@ -29,9 +29,20 @@ Aliased template path to custom form template:
 
     template: (string)
 
-CSRF signing secret (required; rendering the form fails if it is empty or still a placeholder like <csrf_secret>):
+CSRF settings under `plugins.contact.csrf`. The secret is required; rendering the form fails if it is empty or still a placeholder like <csrf_secret>:
 
-    secret: (string)
+    csrf:
+        secret: (string)
+        tokenTtlSeconds: (int) token lifetime, default 900 (60..3600)
+
+Form and rate limit settings (values outside the given range are clamped):
+
+    form:
+        minAgeSeconds: (int) minimum form age, default 3 (0..60)
+        maxAgeSeconds: (int) maximum form age, default 900 (60..3600)
+    rateLimit:
+        maxRequests: (int) submissions per IP and window, default 5 (1..100)
+        windowSeconds: (int) rate limit window, default 3600 (60..86400)
 
 SMTP connection settings are configured under `plugins.contact.smtp`:
 
@@ -44,6 +55,16 @@ SMTP connection settings are configured under `plugins.contact.smtp`:
         encryption: (string) `tls`, `ssl`, or an empty string for no encryption
 
 SMTP defaults (`localhost`, 587, TLS) are only fallbacks and do not send mail on their own. Configure `smtp` for your provider and keep credentials out of version control.
+
+## Spam protection
+
+The plugin applies three lightweight checks, configured with the options above:
+
+- **Honeypots:** The hidden fields `phone` and `website` (plus the legacy `antispam`) must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
+- **Form age:** The hidden `form_time` field records when the form was rendered. Submissions faster than `form.minAgeSeconds` or older than `form.maxAgeSeconds` are silently rejected (3 s and 15 min by default). The CSRF token has its own `csrf.tokenTtlSeconds` (15 min by default) and rejects future timestamps.
+- **Rate limit:** At most `rateLimit.maxRequests` submissions per `rateLimit.windowSeconds` and IP address (5 per hour by default). This requires a PSR-16 `CacheInterface` implementation; without a cache, no limit is applied. The IP is read from `REMOTE_ADDR`, so a reverse proxy must set it correctly.
+
+Custom templates must keep the hidden fields `csrf_token`, `form_time`, `phone` and `website`, otherwise these checks cannot work.
 
 ## Notes
 

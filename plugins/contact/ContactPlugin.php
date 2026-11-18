@@ -24,10 +24,11 @@ use Twig\TwigFunction;
 #[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9'])]
 final class ContactPlugin extends AbstractPlugin
 {
-    private const FORM_WINDOW_SECONDS = 900;
-    private const MIN_FORM_AGE_SECONDS = 3;
-    private const RATE_LIMIT_MAX_REQUESTS = 5;
-    private const RATE_LIMIT_WINDOW_SECONDS = 3600;
+    private const DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
+    private const DEFAULT_FORM_MIN_AGE_SECONDS = 3;
+    private const DEFAULT_FORM_MAX_AGE_SECONDS = 900;
+    private const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 5;
+    private const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 3600;
 
     private Config $config;
     private ?CacheInterface $cache = null;
@@ -181,7 +182,8 @@ final class ContactPlugin extends AbstractPlugin
         $timestamp = (int)$parts[0];
         $signature = $parts[1];
         $now = time();
-        if ($timestamp < ($now - self::FORM_WINDOW_SECONDS) || $timestamp > $now) {
+        $ttl = $this->configClampedInt('csrf.tokenTtlSeconds', self::DEFAULT_CSRF_TOKEN_TTL_SECONDS, 60, 3600);
+        if ($timestamp < ($now - $ttl) || $timestamp > $now) {
             return false;
         }
 
@@ -192,7 +194,7 @@ final class ContactPlugin extends AbstractPlugin
     private function getCsrfSecret(): string
     {
         try {
-            $secret = $this->config->getAsString('plugins.contact.secret', '');
+            $secret = $this->config->getAsString('plugins.contact.csrf.secret', '');
         } catch (Throwable) {
             $secret = '';
         }
@@ -202,10 +204,15 @@ final class ContactPlugin extends AbstractPlugin
         }
 
         if ($secret === '') {
-            throw new \RuntimeException('A non-empty plugins.contact.secret must be configured.');
+            throw new \RuntimeException('A non-empty plugins.contact.csrf.secret must be configured.');
         }
 
         return $secret;
+    }
+
+    private function configClampedInt(string $key, int $default, int $min, int $max): int
+    {
+        return max($min, min($max, $this->config->getAsInt('plugins.contact.' . $key, $default)));
     }
 
     private function getFormData(): array
@@ -380,12 +387,15 @@ final class ContactPlugin extends AbstractPlugin
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         $key = 'contact_rate_' . md5((string)$ip);
 
+        $maxRequests = $this->configClampedInt('rateLimit.maxRequests', self::DEFAULT_RATE_LIMIT_MAX_REQUESTS, 1, 100);
+        $window = $this->configClampedInt('rateLimit.windowSeconds', self::DEFAULT_RATE_LIMIT_WINDOW_SECONDS, 60, 86400);
+
         try {
             $count = (int)$this->cache->get($key, 0);
-            if ($count >= self::RATE_LIMIT_MAX_REQUESTS) {
+            if ($count >= $maxRequests) {
                 return false;
             }
-            $this->cache->set($key, $count + 1, self::RATE_LIMIT_WINDOW_SECONDS);
+            $this->cache->set($key, $count + 1, $window);
         } catch (Throwable) {
             return true;
         }
@@ -400,10 +410,12 @@ final class ContactPlugin extends AbstractPlugin
             return false;
         }
         $elapsed = time() - $started;
-        if ($elapsed < self::MIN_FORM_AGE_SECONDS) {
+        $minAge = $this->configClampedInt('form.minAgeSeconds', self::DEFAULT_FORM_MIN_AGE_SECONDS, 0, 60);
+        if ($elapsed < $minAge) {
             return false;
         }
-        if ($elapsed > self::FORM_WINDOW_SECONDS) {
+        $maxAge = $this->configClampedInt('form.maxAgeSeconds', self::DEFAULT_FORM_MAX_AGE_SECONDS, 60, 3600);
+        if ($elapsed > $maxAge) {
             return false;
         }
         return true;

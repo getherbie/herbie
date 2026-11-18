@@ -89,11 +89,11 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $this->setPrivateProperty($plugin, 'config', new Config([
-            'plugins' => ['contact' => ['secret' => '']],
+            'plugins' => ['contact' => ['csrf' => ['secret' => '']]],
         ]));
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('A non-empty plugins.contact.secret must be configured.');
+        $this->expectExceptionMessage('A non-empty plugins.contact.csrf.secret must be configured.');
         $this->invokePrivate($plugin, 'getCsrfSecret', []);
     }
 
@@ -101,11 +101,11 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $this->setPrivateProperty($plugin, 'config', new Config([
-            'plugins' => ['contact' => ['secret' => '<csrf_secret>']],
+            'plugins' => ['contact' => ['csrf' => ['secret' => '<csrf_secret>']]],
         ]));
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('A non-empty plugins.contact.secret must be configured.');
+        $this->expectExceptionMessage('A non-empty plugins.contact.csrf.secret must be configured.');
         $this->invokePrivate($plugin, 'getCsrfSecret', []);
     }
 
@@ -113,7 +113,7 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $this->setPrivateProperty($plugin, 'config', new Config([
-            'plugins' => ['contact' => ['secret' => 'configured-secret']],
+            'plugins' => ['contact' => ['csrf' => ['secret' => 'configured-secret']]],
         ]));
 
         $this->assertSame('configured-secret', $this->invokePrivate($plugin, 'getCsrfSecret', []));
@@ -197,60 +197,7 @@ final class ContactPluginTest extends Unit
     public function testRateLimitAllowsFiveRequestsPerHourPerIp(): void
     {
         $plugin = $this->createUninitializedPlugin();
-        $cache = new class implements CacheInterface {
-            public array $values = [];
-            public array $ttls = [];
-
-            #[\Override]
-            public function get($key, $default = null)
-            {
-                return $this->values[$key] ?? $default;
-            }
-
-            #[\Override]
-            public function set($key, $value, $ttl = null): bool
-            {
-                $this->values[$key] = $value;
-                $this->ttls[$key] = $ttl;
-                return true;
-            }
-
-            #[\Override]
-            public function delete($key): bool
-            {
-                return true;
-            }
-
-            #[\Override]
-            public function clear(): bool
-            {
-                return true;
-            }
-
-            #[\Override]
-            public function getMultiple($keys, $default = null): iterable
-            {
-                return [];
-            }
-
-            #[\Override]
-            public function setMultiple($values, $ttl = null): bool
-            {
-                return true;
-            }
-
-            #[\Override]
-            public function deleteMultiple($keys): bool
-            {
-                return true;
-            }
-
-            #[\Override]
-            public function has($key): bool
-            {
-                return isset($this->values[$key]);
-            }
-        };
+        $cache = new ArrayCacheStub();
         $this->setPrivateProperty($plugin, 'cache', $cache);
 
         $previousIp = $_SERVER['REMOTE_ADDR'] ?? null;
@@ -262,6 +209,73 @@ final class ContactPluginTest extends Unit
             }
             $this->assertFalse($this->invokePrivate($plugin, 'checkRateLimit', []));
             $this->assertSame(3600, $cache->ttls['contact_rate_' . md5('203.0.113.10')]);
+        } finally {
+            if ($previousIp === null) {
+                unset($_SERVER['REMOTE_ADDR']);
+            } else {
+                $_SERVER['REMOTE_ADDR'] = $previousIp;
+            }
+        }
+    }
+
+    public function testConfiguredWindowsAreClamped(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+
+        // Upper bound: 86400 is clamped to 3600, so a 2h-old token is rejected.
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret', 'tokenTtlSeconds' => 86400],
+            ]],
+        ]));
+        $old = time() - 7200;
+        $this->assertFalse($method->invoke($plugin, [
+            'csrf_token' => $old . ':' . hash_hmac('sha256', (string)$old, 'test-secret'),
+        ]));
+
+        // Lower bounds: 1 is clamped to 60 for both token TTL and max form age.
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret', 'tokenTtlSeconds' => 1],
+                'form' => ['minAgeSeconds' => 0, 'maxAgeSeconds' => 1],
+            ]],
+        ]));
+        $recent = time() - 30;
+        $this->assertTrue($method->invoke($plugin, [
+            'csrf_token' => $recent . ':' . hash_hmac('sha256', (string)$recent, 'test-secret'),
+        ]));
+        $this->assertTrue($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)$recent]]));
+
+        // Form min age upper bound: 999 is clamped to 60, so a 30s-old form is rejected.
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret'],
+                'form' => ['minAgeSeconds' => 999],
+            ]],
+        ]));
+        $this->assertFalse($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)$recent]]));
+    }
+
+    public function testRateLimitConfigIsClamped(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $cache = new ArrayCacheStub();
+        $this->setPrivateProperty($plugin, 'cache', $cache);
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => [
+                'csrf' => ['secret' => 'test-secret'],
+                'rateLimit' => ['maxRequests' => 0, 'windowSeconds' => 1],
+            ]],
+        ]));
+
+        $previousIp = $_SERVER['REMOTE_ADDR'] ?? null;
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.11';
+
+        try {
+            $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
+            $this->assertFalse($this->invokePrivate($plugin, 'checkRateLimit', []));
+            $this->assertSame(60, $cache->ttls['contact_rate_' . md5('203.0.113.11')]);
         } finally {
             if ($previousIp === null) {
                 unset($_SERVER['REMOTE_ADDR']);
@@ -301,7 +315,7 @@ final class ContactPluginTest extends Unit
         };
 
         $this->setPrivateProperty($plugin, 'pageRepository', $pageRepository);
-        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['secret' => 'test-secret']]]));
+        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['csrf' => ['secret' => 'test-secret']]]]));
 
         $this->expectException(\RuntimeException::class);
         $plugin->contact();
@@ -320,7 +334,7 @@ final class ContactPluginTest extends Unit
                 ['niceUrls' => true],
             ),
         );
-        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['secret' => 'test-secret']]]));
+        $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['csrf' => ['secret' => 'test-secret']]]]));
         $this->setPrivateProperty($plugin, 'pageRepository', new class implements PageRepositoryInterface {
             public function find(string $id): ?Page
             {
@@ -350,5 +364,61 @@ final class ContactPluginTest extends Unit
     {
         $property = new ReflectionProperty(ContactPlugin::class, $propertyName);
         $property->setValue($plugin, $value);
+    }
+}
+
+final class ArrayCacheStub implements CacheInterface
+{
+    public array $values = [];
+    public array $ttls = [];
+
+    #[\Override]
+    public function get($key, $default = null)
+    {
+        return $this->values[$key] ?? $default;
+    }
+
+    #[\Override]
+    public function set($key, $value, $ttl = null): bool
+    {
+        $this->values[$key] = $value;
+        $this->ttls[$key] = $ttl;
+        return true;
+    }
+
+    #[\Override]
+    public function delete($key): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function clear(): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function getMultiple($keys, $default = null): iterable
+    {
+        return [];
+    }
+
+    #[\Override]
+    public function setMultiple($values, $ttl = null): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function deleteMultiple($keys): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function has($key): bool
+    {
+        return isset($this->values[$key]);
     }
 }
