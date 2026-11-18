@@ -256,17 +256,6 @@
 -
   id: twig
   name: Twig
-  desc: Das Twig-Plugin ist für das Parsen der HTML-Layoutdateien zuständig und bringt viele Funktionen, Filter und Tests mit.
-  author: Herbie-Team
-  version: 1.0.0
-  composer:
-  github:
-  packagist:
-  status: stable
-  enabled: false
--
-  id: twig
-  name: Twig
   desc: This system plugin provides several Twig filters, functions and tests that are useful for creating a web project with Herbie.
   author: Herbie-Team
   version: 2.0.0

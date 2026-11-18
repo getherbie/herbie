@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - The Indepth chapter now matches the implementation: route middleware regular expressions are not anchored automatically, query builder examples use the hash format for numeric values, the removed `visible` filter is no longer listed, `twigify` is documented, and the event descriptions are corrected.
 - The cheat sheet uses the query builder's `order()` method instead of the non-existent `sortBy()`. The Indepth page files use the same `1-index.md` naming as the other chapters.
 - The parameter of the Twig functions `url_abs` and `url_rel` is marked as required. It was documented with an empty default, but `UrlManager::createUrl()` has never resolved an empty route to the current route. The `TODO` in `createUrl()` promised exactly that, so it is replaced by a description of what the method does.
+- The Plugins page now lists the optional Composer package of each system plugin and distinguishes system, Composer and local plugins. It no longer claims that system plugins have no dependencies. The plugin list uses the labels `Author` and `Version` instead of `Autor` and `API-Version`.
 
 ### Removed
 - `herbie\plugins\markdown\HerbieParsedownExtra`, the PHP 8.3 compatibility workaround for ParsedownExtra.
