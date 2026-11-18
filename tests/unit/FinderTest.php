@@ -60,6 +60,18 @@ final class FinderTest extends Unit
         $this->assertSame(['page.md', 'sub/nested.md'], $paths);
     }
 
+    public function testPageFilesIsSortedNaturally(): void
+    {
+        $finder = new Finder([
+            'path' => dirname(__DIR__) . '/_data/finder-sort',
+            'extensions' => ['md'],
+        ]);
+
+        $names = $this->getBasenames($finder->pageFiles());
+
+        $this->assertSame(['1-first.md', '2-second.md', '10-tenth.md'], $names);
+    }
+
     /**
      * Without configured extensions no file can be a page. A name filter with an
      * empty list would not filter at all, so the result has to be empty.

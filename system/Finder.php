@@ -30,7 +30,7 @@ final readonly class Finder
             return $finder->name('#.^#');
         }
 
-        return $finder->name($patterns)->sortByName();
+        return $finder->name($patterns)->sortByName(true);
     }
 
     protected function getPatterns(array $extensions): array

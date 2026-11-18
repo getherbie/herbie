@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - `time_format()` now uses PHP's `date()` format syntax instead of the deprecated `strftime()` (strftime removed in PHP 9.0). **Breaking:** the function is removed, use `date_format()` instead.
 - **Breaking:** `Alias::get()` resolves only a leading alias and only as a whole segment. An unknown alias throws an `InvalidArgumentException` instead of being returned unchanged; previously `strtr()` replaced every occurrence anywhere in the string, so `@siteother/x` resolved to the path of `@site`. Paths without a leading alias are still returned unchanged. The Twig tests `file_readable` and `file_writable` share this method, so they raise an exception for an unknown alias instead of evaluating to `false`.
 - PSR-17 factory selection in `ContainerBuilder` deduplicated via `preferredPsr17Package()`.
+- Page files are sorted naturally instead of lexicographically, so `10-foo.md` follows `9-foo.md` and `2-foo.md`. Number prefixes no longer need to be zero-padded.
 - `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
 
 ### Documentation
