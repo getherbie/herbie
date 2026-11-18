@@ -7,6 +7,7 @@ return [
     'errorEmptyField' => 'Dies ist ein Pflichtfeld',
     'errorInvalidEmail' => 'Die eingegebene E-Mail ist ungültig',
     'labelAntispam' => 'Dein Vorname',
+    'labelPhone' => 'Deine Telefonnummer',
     'labelEmail' => 'Deine E-Mail',
     'labelMessage' => 'Deine Nachricht',
     'labelName' => 'Dein Name',

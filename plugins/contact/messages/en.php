@@ -7,6 +7,7 @@ return [
     'errorEmptyField' => 'This is a required field',
     'errorInvalidEmail' => 'The entered email is invalid',
     'labelAntispam' => 'Your first name',
+    'labelPhone' => 'Your phone number',
     'labelEmail' => 'Your email',
     'labelMessage' => 'Your message',
     'labelName' => 'Your name',

@@ -67,12 +67,14 @@ final class ContactPluginTest extends Unit
             'email' => '  Foo@Bar.com  ',
             'message' => 'Hello <script>x</script> world',
             'antispam' => '<i>bot</i>',
+            'phone' => '<i>callme</i>',
         ]);
 
         $this->assertSame('  John  ', $filtered['name']);
         $this->assertSame('Foo@Bar.com', $filtered['email']);
         $this->assertSame('Hello x world', $filtered['message']);
         $this->assertSame('bot', $filtered['antispam']);
+        $this->assertSame('callme', $filtered['phone']);
     }
 
     public function testValidateFormDataReturnsErrors(): void

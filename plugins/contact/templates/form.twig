@@ -20,6 +20,11 @@
 
         <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="form_time" value="{{ form_time }}">
+            <div class="contact-control-group contact-control-group-honeypot pure-control-group">
+                <label for="website">{{ translate('contact', 'labelAntispam') }}</label>
+                <input class="contact-input pure-input-1" id="website" name="website" type="text" placeholder="" value="{{ data.website }}">
+            </div>
             <div class="contact-control-group pure-control-group{% if errors.name %} contact-control-group-error{% endif %}">
                 <label for="name">{{ translate('contact', 'labelName') }}</label>
                 <input class="contact-input pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ data.name }}">
@@ -44,11 +49,11 @@
                 {% endif %}
             </div>
 
-            <div class="contact-control-group contact-control-group-antispam pure-control-group{% if errors.antispam %} contact-control-group-error{% endif %}">
-                <label for="antispam">{{ translate('contact', 'labelAntispam') }}</label>
-                <input class="contact-input pure-input-1" id="antispam" name="antispam" type="text" placeholder="" value="{{ data.antispam }}">
-                {% if errors.antispam %}
-                    <span class="contact-form-message pure-form-message is-error">{{ errors.antispam }}</span>
+            <div class="contact-control-group contact-control-group-phone pure-control-group{% if errors.phone %} contact-control-group-error{% endif %}">
+                <label for="phone">{{ translate('contact', 'labelPhone') }}</label>
+                <input class="contact-input pure-input-1" id="phone" name="phone" type="text" placeholder="" value="{{ data.phone }}">
+                {% if errors.phone %}
+                    <span class="contact-form-message pure-form-message is-error">{{ errors.phone }}</span>
                 {% endif %}
             </div>
 
@@ -78,7 +83,8 @@
     .contact-control-group {
         margin-bottom: 1em;
     }
-    .contact-control-group-antispam {
+    .contact-control-group-phone,
+    .contact-control-group-honeypot {
         display: none;
     }
     .contact-secondary-button {

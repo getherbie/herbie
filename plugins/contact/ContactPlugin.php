@@ -16,6 +16,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\CacheInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use Twig\TwigFunction;
@@ -24,6 +25,7 @@ use Twig\TwigFunction;
 final class ContactPlugin extends AbstractPlugin
 {
     private Config $config;
+    private ?CacheInterface $cache = null;
     private PageRepositoryInterface $pageRepository;
     private ServerRequestInterface $request;
     private ResponseFactoryInterface $responseFactory;
@@ -42,6 +44,7 @@ final class ContactPlugin extends AbstractPlugin
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
         LoggerInterface $logger,
+        ?CacheInterface $cache = null,
     ) {
         $this->config = $config;
         $this->pageRepository = $pageRepository;
@@ -51,6 +54,7 @@ final class ContactPlugin extends AbstractPlugin
         $this->twigRenderer = $twigRenderer;
         $this->urlManager = $urlManager;
         $this->logger = $logger;
+        $this->cache = $cache;
     }
 
     public function twigFunctions(): array
@@ -87,6 +91,14 @@ final class ContactPlugin extends AbstractPlugin
         $formErrors = [];
 
         if ($this->formSubmitted()) {
+            // Simple rate limiting per IP address.
+            if (!$this->checkRateLimit()) {
+                $this->logger->warning('Contact form rate limited.');
+                $response = $this->createRedirectResponse($route, 'failed');
+                $this->emitResponse($response);
+                exit;
+            }
+
             // Verify the CSRF token before processing the form.
             if (!$this->isValidCsrfToken($this->getFormData())) {
                 $this->logger->warning('Contact form rejected: invalid CSRF token.');
@@ -96,6 +108,23 @@ final class ContactPlugin extends AbstractPlugin
             }
 
             $formData = $this->filterFormData($this->getFormData());
+
+            // Honeypot fields: silently pretend success for bots.
+            if (!empty($formData['antispam']) || !empty($formData['phone']) || !empty($formData['website'])) {
+                $this->logger->info('Contact form honeypot triggered.');
+                $response = $this->createRedirectResponse($route, 'successful');
+                $this->emitResponse($response);
+                exit;
+            }
+
+            // Time-based check: reject too-fast submissions (bots).
+            if (!$this->isHumanTiming($formData)) {
+                $this->logger->info('Contact form rejected: too fast submission.');
+                $response = $this->createRedirectResponse($route, 'successful');
+                $this->emitResponse($response);
+                exit;
+            }
+
             $formErrors = $this->validateFormData($formData);
             if (empty($formErrors)) {
                 $recipient = $this->config->getAsString('plugins.contact.recipient');
@@ -125,6 +154,7 @@ final class ContactPlugin extends AbstractPlugin
             'status' => $status,
             'route' => $route,
             'csrf_token' => $this->csrfToken(),
+            'form_time' => time(),
         ]);
     }
 
@@ -235,9 +265,12 @@ final class ContactPlugin extends AbstractPlugin
             'email' => '',
             'message' => '',
             'antispam' => '',
+            'phone' => '',
+            'website' => '',
+            'form_time' => '',
         ];
         $filtered = $defaults;
-        foreach (['name', 'message', 'antispam'] as $field) {
+        foreach (['name', 'message', 'antispam', 'phone', 'website'] as $field) {
             if (isset($input[$field]) && is_string($input[$field])) {
                 $filtered[$field] = strip_tags($input[$field]);
             }
@@ -245,12 +278,15 @@ final class ContactPlugin extends AbstractPlugin
         if (isset($input['email']) && is_string($input['email'])) {
             $filtered['email'] = (string)filter_var($input['email'], FILTER_SANITIZE_EMAIL);
         }
+        if (isset($input['form_time']) && is_string($input['form_time'])) {
+            $filtered['form_time'] = preg_replace('/[^0-9]/', '', $input['form_time']) ?? '';
+        }
         return $filtered;
     }
 
     private function sendEmail(array $data, string $recipient): bool
     {
-        if (!empty($data['antispam'])) {
+        if (!empty($data['antispam']) || !empty($data['phone']) || !empty($data['website'])) {
             return true;
         }
 
@@ -324,6 +360,44 @@ final class ContactPlugin extends AbstractPlugin
                 'The contact page must be configured with "cached: false" to avoid caching CSRF tokens.',
             );
         }
+    }
+
+    private function checkRateLimit(): bool
+    {
+        if ($this->cache === null) {
+            return true;
+        }
+
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $key = 'contact_rate_' . md5((string)$ip);
+
+        try {
+            $count = (int)$this->cache->get($key, 0);
+            if ($count >= 5) {
+                return false;
+            }
+            $this->cache->set($key, $count + 1, 3600);
+        } catch (Throwable) {
+            return true;
+        }
+
+        return true;
+    }
+
+    private function isHumanTiming(array $data): bool
+    {
+        $started = (int)($data['form_time'] ?? 0);
+        if ($started <= 0) {
+            return false;
+        }
+        $elapsed = time() - $started;
+        if ($elapsed < 3) {
+            return false;
+        }
+        if ($elapsed > 3600) {
+            return false;
+        }
+        return true;
     }
 
     private function getTemplatePath(string $name): string
