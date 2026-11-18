@@ -40,8 +40,9 @@ Please note that the above configuration is only part of the overall configurati
 - **Multi-term queries:** all search terms must match (AND logic).
 - **Exact search:** append `?exact=1` to the URL or use the checkbox in the
   search form. The full query must then appear as a contiguous phrase.
-- **Excluded pages:** pages with `no_search: true` or `hidden: true` are
-  not indexed.
+- **Excluded pages:** pages with `no_search: true` are not indexed.
+- **Hidden pages:** pages with `hidden: true` are hidden from menus but are
+  still included in search results unless `no_search: true` is set.
 
 ## Page properties
 
@@ -59,6 +60,7 @@ A complete search page looks like this:
     title: Search
     cached: false
     hidden: true
+    no_search: true
     ---
     
     # Search
