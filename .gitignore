@@ -2,6 +2,7 @@
 .php-cs-fixer.cache
 .twig-cs-fixer.cache
 .DS_Store
+AGENTS.md
 
 # composer vendor dir
 /vendor
