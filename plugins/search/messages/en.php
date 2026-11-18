@@ -2,7 +2,7 @@
 
 return [
     'countResultsFound' => '{count} results found.',
-    'exactMatch' => 'Exact match',
+    'exactMatch' => 'Exact phrase',
     'noResultsFoundForQuery' => 'No results found for \'{query}\'.',
     'pleaseEnterASearchTerm' => 'Please enter a search term.',
     'search' => 'Search',

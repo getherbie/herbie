@@ -119,7 +119,17 @@ final class SearchPlugin extends AbstractPlugin
         }
 
         $rendered = $this->renderPageContent($item);
-        $withSpaces = preg_replace('/<[^>]+>/', ' ', $rendered);
+        // Drop script/style elements entirely (including their content) so
+        // hidden code/CSS is not indexed or shown in snippets.
+        $noScripts = preg_replace('/<script\b[^>]*>.*?<\/script>/is', ' ', $rendered);
+        if ($noScripts !== null) {
+            $rendered = $noScripts;
+        }
+        $noStyles = preg_replace('/<style\b[^>]*>.*?<\/style>/is', ' ', $rendered);
+        if ($noStyles !== null) {
+            $rendered = $noStyles;
+        }
+        $withSpaces = preg_replace('/<[^>]+>/u', ' ', $rendered);
         if ($withSpaces === null) {
             $withSpaces = $rendered;
         }
@@ -205,7 +215,7 @@ final class SearchPlugin extends AbstractPlugin
         if ($exact) {
             // Exact search: the full query must appear as a contiguous phrase.
             foreach ($data as $part) {
-                if (!empty($part) && stripos($part, $query) !== false) {
+                if (!empty($part) && mb_stripos($part, $query, 0, 'UTF-8') !== false) {
                     return true;
                 }
             }
@@ -219,7 +229,7 @@ final class SearchPlugin extends AbstractPlugin
                 if (empty($part)) {
                     continue;
                 }
-                if (stripos($part, $term) !== false) {
+                if (mb_stripos($part, $term, 0, 'UTF-8') !== false) {
                     $found = true;
                     break;
                 }
@@ -236,7 +246,7 @@ final class SearchPlugin extends AbstractPlugin
      */
     private function extractSearchTerms(string $query): array
     {
-        $terms = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
+        $terms = preg_split('/\s+/u', trim($query), -1, PREG_SPLIT_NO_EMPTY);
         return $terms === false ? [] : $terms;
     }
 
@@ -291,12 +301,12 @@ final class SearchPlugin extends AbstractPlugin
     private function buildSnippet(string $content, string $query, array $terms, bool $exact): string
     {
         /** @var string|null $withSpaces */
-        $withSpaces = preg_replace('/<[^>]+>/', ' ', $content);
+        $withSpaces = preg_replace('/<[^>]+>/u', ' ', $content);
         if ($withSpaces === null) {
             $withSpaces = $content;
         }
         /** @var string|null $normalized */
-        $normalized = preg_replace('/\s+/', ' ', strip_tags($withSpaces));
+        $normalized = preg_replace('/\s+/u', ' ', strip_tags($withSpaces));
         if ($normalized === null) {
             $normalized = strip_tags($content);
         }
@@ -304,20 +314,20 @@ final class SearchPlugin extends AbstractPlugin
 
         $snippetLength = 200;
         $anchor = $exact ? $query : ($terms[0] ?? $query);
-        $contentLower = strtolower($content);
+        $contentLower = mb_strtolower($content, 'UTF-8');
 
-        $pos = stripos($contentLower, strtolower($anchor));
+        $pos = mb_stripos($content, $anchor, 0, 'UTF-8');
         if ($pos === false) {
             return '';
         }
 
         $before = 50;
-        $end = $pos + strlen($anchor) + $snippetLength;
+        $end = $pos + mb_strlen($anchor, 'UTF-8') + $snippetLength;
         $start = $pos - $before;
 
         // Trim to content boundaries (sentence breaks)
         if ($start > 0) {
-            $spacePos = strrpos(substr($content, 0, $start), ' ');
+            $spacePos = mb_strrpos(mb_substr($content, 0, $start, 'UTF-8'), ' ', 0, 'UTF-8');
             if ($spacePos !== false) {
                 $start = $spacePos + 1;
             }
@@ -326,19 +336,19 @@ final class SearchPlugin extends AbstractPlugin
             $start = 0;
         }
 
-        if ($end < strlen($content)) {
-            $nextSpace = strpos($content, ' ', $end);
+        if ($end < mb_strlen($content, 'UTF-8')) {
+            $nextSpace = mb_strpos($content, ' ', $end, 'UTF-8');
             if ($nextSpace !== false) {
                 $end = $nextSpace;
             }
         }
 
-        $snippet = substr($content, $start, $end - $start);
+        $snippet = mb_substr($content, $start, $end - $start, 'UTF-8');
 
         // Remove URL query parameters before highlighting
         // so we don't highlight "?query=..." URLs
         /** @var string|null $cleaned */
-        $cleaned = preg_replace('/\?[a-z0-9_=+&]+$/i', '', $snippet);
+        $cleaned = preg_replace('/\?[a-z0-9_=+&]+$/iu', '', $snippet);
         if ($cleaned === null) {
             $cleaned = $snippet;
         }
@@ -347,7 +357,7 @@ final class SearchPlugin extends AbstractPlugin
         if ($exact) {
             /** @var string|null $highlightedResult */
             $highlightedResult = preg_replace(
-                '/(' . preg_quote($query, '/') . ')/i',
+                '/(' . preg_quote($query, '/') . ')/iu',
                 '<mark>' . htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
                 $cleaned,
             );
@@ -356,7 +366,7 @@ final class SearchPlugin extends AbstractPlugin
             $highlighted = $cleaned;
             foreach ($terms as $term) {
                 $result = preg_replace(
-                    '/(' . preg_quote($term, '/') . ')/i',
+                    '/(' . preg_quote($term, '/') . ')/iu',
                     '<mark>' . htmlspecialchars($term, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
                     $highlighted,
                 );
@@ -367,7 +377,7 @@ final class SearchPlugin extends AbstractPlugin
         }
 
         $prefix = $start > 0 ? '…' : '';
-        $suffix = $end < strlen($content) ? '…' : '';
+        $suffix = $end < mb_strlen($content, 'UTF-8') ? '…' : '';
 
         return $prefix . $highlighted . $suffix;
     }
