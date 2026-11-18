@@ -45,11 +45,12 @@ final class SearchPluginTest extends Unit
         $this->assertFalse($this->invokePrivate($plugin, 'match', ['herbie rocks', ['herbie', 'rocks'], ['herbie only'], false]));
     }
 
-    public function testMatchExactRequiresWholeWord(): void
+    public function testMatchExactMatchesSubstringPhrase(): void
     {
         $plugin = $this->createUninitializedPlugin();
 
-        $this->assertFalse($this->invokePrivate($plugin, 'match', ['herbie', ['herbie'], ['herbieRocks'], true]));
+        // Exact mode is phrase-based (no word boundaries): "herbie" matches "herbieRocks".
+        $this->assertTrue($this->invokePrivate($plugin, 'match', ['herbie', ['herbie'], ['herbieRocks'], true]));
         $this->assertTrue($this->invokePrivate($plugin, 'match', ['herbie', ['herbie'], ['herbie rocks'], true]));
     }
 
