@@ -6,7 +6,7 @@ return [
     'buttonSubmit' => 'Formular absenden',
     'errorEmptyField' => 'Dies ist ein Pflichtfeld',
     'errorInvalidEmail' => 'Die eingegebene E-Mail ist ungültig',
-    'labelAntispam' => 'Dein Vorname',
+    'labelWebsite' => 'Deine Website',
     'labelPhone' => 'Deine Telefonnummer',
     'labelEmail' => 'Deine E-Mail',
     'labelMessage' => 'Deine Nachricht',

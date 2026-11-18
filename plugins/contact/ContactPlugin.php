@@ -116,7 +116,7 @@ final class ContactPlugin extends AbstractPlugin
             $formData = $this->filterFormData($this->getFormData());
 
             // Honeypot fields: silently pretend success for bots.
-            if (!empty($formData['antispam']) || !empty($formData['phone']) || !empty($formData['website'])) {
+            if (!empty($formData['phone']) || !empty($formData['website'])) {
                 $this->logger->info('Contact form honeypot triggered.');
                 $response = $this->createRedirectResponse($route, 'successful');
                 $this->emitResponse($response);
@@ -280,13 +280,12 @@ final class ContactPlugin extends AbstractPlugin
             'name' => '',
             'email' => '',
             'message' => '',
-            'antispam' => '',
             'phone' => '',
             'website' => '',
             'form_time' => '',
         ];
         $filtered = $defaults;
-        foreach (['name', 'message', 'antispam', 'phone', 'website'] as $field) {
+        foreach (['name', 'message', 'phone', 'website'] as $field) {
             if (isset($input[$field]) && is_string($input[$field])) {
                 $filtered[$field] = strip_tags($input[$field]);
             }
@@ -302,7 +301,7 @@ final class ContactPlugin extends AbstractPlugin
 
     private function sendEmail(array $data, string $recipient): bool
     {
-        if (!empty($data['antispam']) || !empty($data['phone']) || !empty($data['website'])) {
+        if (!empty($data['phone']) || !empty($data['website'])) {
             return true;
         }
 

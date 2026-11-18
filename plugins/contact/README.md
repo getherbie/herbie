@@ -60,7 +60,7 @@ SMTP defaults (`localhost`, 587, TLS) are only fallbacks and do not send mail on
 
 The plugin applies three lightweight checks, configured with the options above:
 
-- **Honeypots:** The hidden fields `phone` and `website` (plus the legacy `antispam`) must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
+- **Honeypots:** The hidden fields `phone` and `website` must stay empty. If a bot fills one of them, the form pretends success and no email is sent.
 - **Form age:** The hidden `form_time` field records when the form was rendered. Submissions faster than `form.minAgeSeconds` or older than `form.maxAgeSeconds` are silently rejected (3 s and 15 min by default). The CSRF token has its own `csrf.tokenTtlSeconds` (15 min by default) and rejects future timestamps.
 - **Rate limit:** At most `rateLimit.maxRequests` submissions per `rateLimit.windowSeconds` and IP address (5 per hour by default). This requires a PSR-16 `CacheInterface` implementation; without a cache, no limit is applied. The IP is read from `REMOTE_ADDR`, so a reverse proxy must set it correctly.
 

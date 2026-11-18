@@ -22,7 +22,7 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
             <div class="contact-control-group contact-control-group-honeypot pure-control-group">
-                <label for="website">{{ translate('contact', 'labelAntispam') }}</label>
+                <label for="website">{{ translate('contact', 'labelWebsite') }}</label>
                 <input class="contact-input pure-input-1" id="website" name="website" type="text" placeholder="" value="{{ data.website }}">
             </div>
             <div class="contact-control-group pure-control-group{% if errors.name %} contact-control-group-error{% endif %}">

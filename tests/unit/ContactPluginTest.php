@@ -129,14 +129,12 @@ final class ContactPluginTest extends Unit
             'name' => '  <b>John</b>  ',
             'email' => '  Foo@Bar.com  ',
             'message' => 'Hello <script>x</script> world',
-            'antispam' => '<i>bot</i>',
             'phone' => '<i>callme</i>',
         ]);
 
         $this->assertSame('  John  ', $filtered['name']);
         $this->assertSame('Foo@Bar.com', $filtered['email']);
         $this->assertSame('Hello x world', $filtered['message']);
-        $this->assertSame('bot', $filtered['antispam']);
         $this->assertSame('callme', $filtered['phone']);
     }
 
@@ -170,7 +168,7 @@ final class ContactPluginTest extends Unit
 
         // sendEmail() short-circuits before SMTP when a honeypot is filled.
         // An invalid email address would otherwise make it return false.
-        foreach (['antispam' => 'bot', 'phone' => '123', 'website' => 'https://spam.example'] as $field => $value) {
+        foreach (['phone' => '123', 'website' => 'https://spam.example'] as $field => $value) {
             $data = ['name' => '', 'email' => 'invalid', 'message' => '', $field => $value];
             $this->assertTrue($this->invokePrivate($plugin, 'sendEmail', [$data, 'me@example.com']));
         }
