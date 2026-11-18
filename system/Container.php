@@ -13,10 +13,7 @@ final class Container implements ContainerInterface
 
     private array $frozen = [];
 
-    /**
-     * @return mixed
-     */
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         return $this->offsetGet($id);
     }
