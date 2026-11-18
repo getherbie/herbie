@@ -77,9 +77,12 @@ site
 │   └── log
 └── themes
     └─ default
-        ├── assets
-        ├── default.html
-        └── error.html
+        ├── css
+        ├── icons
+        ├── includes
+        ├── js
+        ├── default.twig
+        └── error.twig
 ~~~
 
 The following table shows what each of these files and directories stand for:

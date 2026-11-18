@@ -62,9 +62,9 @@ Output content segments in layout files:
 
 {% verbatim %}
 ~~~twig
-{{ content.default }}
-{{ content.left }}
-{{ content.right }}
+{{ content.default|raw }}
+{{ content.left|raw }}
+{{ content.right|raw }}
 ~~~
 {% endverbatim %}
 
@@ -154,7 +154,7 @@ Layouts are Twig files in `site/themes/<theme>/<layout>.twig`; select one with `
 {% extends "main.twig" %}
 
 {% block content %}
-    {{ content.default }}
+    {{ content.default|raw }}
 {% endblock %}
 ~~~
 {% endverbatim %}
@@ -226,7 +226,7 @@ Twig provides the current page, site data and content segments.
 ~~~twig
 {{ page.title }}
 {{ site.data.menu }}
-{{ content.default }}
+{{ content.default|raw }}
 {{ site.route_params.category }}
 ~~~
 {% endverbatim %}

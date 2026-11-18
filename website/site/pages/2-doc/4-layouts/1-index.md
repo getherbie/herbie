@@ -12,12 +12,13 @@ Twig templates are quite easy to understand and very well documented.
 The Twig documentation can be found at <https://twig.symfony.com>.
 
 Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
+The layout file extension is configured with `fileExtensions.layouts` and defaults to `twig`.
 Herbie expects at least two layout files:
 
 ~~~text
 site/themes/default/
-├── default.html        # default page
-└── error.html          # error template  
+├── default.twig        # default page
+└── error.twig          # error template
 ~~~
 
 Often it makes sense to divide the layouts into a main template and one or more sub templates.
@@ -25,11 +26,11 @@ These sub templates inherit the blocks of the main template and can fill them wi
 
 ~~~text
 site/themes/default/
-├── default.html        # default template (required)
-├── error.html          # error page (required)
-├── homepage.html       # homepage template
-├── main.html           # main template
-└── twocols.html        # two-column template
+├── default.twig        # default template (required)
+├── error.twig          # error page (required)
+├── homepage.twig       # homepage template
+├── main.twig           # main template
+└── twocolumn.twig      # two-column template
 ~~~
 
 A simple main template might look like this:
@@ -37,7 +38,7 @@ A simple main template might look like this:
 ## Main template
 
 ~~~twig
-# main.html
+# main.twig
 
 <!DOCTYPE html>
 <html>
@@ -61,9 +62,9 @@ But these blocks do not contain any content yet.
 The sub template inherits from the main template and fills the blocks with content, that are defined in the main template.
 
 ~~~twig
-# default.html
+# default.twig
 
-{% extends "main.html" %}
+{% extends "main.twig" %}
 
 {% block title %}Index{% endblock %}
 
@@ -74,45 +75,47 @@ The sub template inherits from the main template and fills the blocks with conte
 ~~~
 
 
-In order for the whole thing to work dynamically, the content function must be used.
-This content function renders the content of a page segment and inserts it into the layout.
-Internally, the function goes through one or more formatting processes such as rendering Twig or parsing shortcode, markdown or Textile code.
+In order for the whole thing to work dynamically, the global `content` variable provides the rendered content of the page segments.
+Internally, the segments go through one or more formatting processes such as rendering Twig or parsing shortcode, markdown or Textile code.
 
 So, the customized (dynamized) sub template now looks like this:
 
 ~~~twig
-# default.html
+# default.twig
 
-{% extends "main.html" %}
+{% extends "main.twig" %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
-    {{ content('default') }}
+    {{ content.default|raw }}
 {% endblock %}
 ~~~
 
 Both the `title` block for the page title and the `content` block for the page content are filled dynamically.
+The `raw` filter is required because Twig escapes HTML by default.
 
 If you want to place a sidebar next to the normal content column, you can do this as follows.
 
 ~~~twig
-# twocolumn.html
+# twocolumn.twig
 
-{% extends "main.html" %}
+{% extends "main.twig" %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
-    {{ content('default') }}
+    {{ content.default|raw }}
 {% endblock %}
 
 {% block sidebar %}
-    {{ content('sidebar') }}
+    {{ content.sidebar|raw }}
 {% endblock %}
 ~~~
 
 The page properties block is now used to apply one of the prepared layouts to each page.
+The value of `layout` is the file name without the extension, because Herbie appends the extension from `fileExtensions.layouts` (default `twig`).
+If the option is empty, `layout` must contain the full file name.
 
 ~~~html
 ---
@@ -129,5 +132,5 @@ And here is content for the sidebar segment.
 
 Further information on how page contents must be formatted can be found in the [Contents](doc/contents) chapter.
 
-Another good ressource are the layout files of this website itself.
+Another good resource are the layout files of this website itself.
 They are available on GitHub at <https://github.com/getherbie/website/>.

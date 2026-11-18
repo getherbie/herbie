@@ -54,28 +54,29 @@ In this way, more complex layouts can be handled even with simple text files.
 
 ## Render content segments in layout
 
-In layout files content segments are rendered using a global content object.
+In layout files content segments are rendered using a global `content` variable.
 
 {% verbatim %}
 ```twig
-{{ content.default }}
+{{ content.default|raw }}
 ```
 {% endverbatim %}
 
-The content object expects the segment ID as the key name.
+The `content` variable expects the segment ID as the key name.
+The `raw` filter prevents Twig from escaping the rendered HTML.
 If no segment was specified in the page file, the default name must be used.
 
 {% verbatim %}
 ```html
 <body>
     <div class="segment-default">
-        {{ content.default }}
+        {{ content.default|raw }}
     </div>
     <div class="segment-left">
-        {{ content.left }}
+        {{ content.left|raw }}
     </div>
     <div class="segment-right">
-        {{ content.right }}
+        {{ content.right|raw }}
     </div>
 </body>
 ```

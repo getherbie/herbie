@@ -15,7 +15,7 @@ Here are some examples:
 
 {% verbatim %}
 ~~~twig
-{{ content.default }}
+{{ content.default|raw }}
 {{ page.title }}
 {{ page.layout }}
 {{ site.language }}
