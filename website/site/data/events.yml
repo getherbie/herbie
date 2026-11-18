@@ -1,31 +1,31 @@
 ---
-- name: ContentRenderedEvent
-  desc: Triggered after content was rendered
-  order: 1
-- name: LayoutRenderedEvent
-  desc: Triggered after layout was rendered
-  order: 2  
 - name: PluginsInitializedEvent
-  desc: Triggered after plugins were initialized
-  order: 3
-- name: ResponseGeneratedEvent
-  desc: Triggered after HTTP Response was generated
-  order: 4
-- name: ResponseEmittedEvent
-  desc: Triggered after HTTP Response was emitted
-  order: 5
-- name: RenderLayoutEvent
-  desc: Triggered when layout is rendered
-  order: 6
-- name: RenderPageEvent
-  desc: Triggered when page is rendered
-  order: 7
-- name: RenderSegmentEvent
-  desc: Triggered when segment is rendered
-  order: 8
-- name: TranslatorInitializedEvent
-  desc: Triggered after translator was initialized
-  order: 9  
+  desc: Triggered after the plugins were initialized
+  order: 1
 - name: TwigInitializedEvent
   desc: Triggered after Twig was initialized
-  order: 10  
+  order: 2
+- name: TranslatorInitializedEvent
+  desc: Triggered after the translator was initialized
+  order: 3
+- name: RenderPageEvent
+  desc: Triggered when the page is rendered
+  order: 4
+- name: RenderSegmentEvent
+  desc: Triggered when the segment is rendered
+  order: 5
+- name: ContentRenderedEvent
+  desc: Triggered after the content was rendered
+  order: 6
+- name: RenderLayoutEvent
+  desc: Triggered when the layout is rendered
+  order: 7
+- name: LayoutRenderedEvent
+  desc: Triggered after the layout was rendered
+  order: 8
+- name: ResponseGeneratedEvent
+  desc: Triggered after the HTTP response was generated
+  order: 9
+- name: ResponseEmittedEvent
+  desc: Triggered after the HTTP response was emitted
+  order: 10

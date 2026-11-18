@@ -216,19 +216,19 @@ return CustomCommand::class;
 
 ### Event listeners
 
-To add an event listener, create a PHP file in `site/extend/events` that returns an array with the event name and a callable.
+To add an event listener, create a PHP file in `site/extend/events` that returns an array with the event class name and a callable.
 The listener is registered automatically.
 
 ~~~php
 <?php
 
-use herbie\EventInterface;
+use herbie\events\TwigInitializedEvent;
 
-$event = function (EventInterface $event): void {
+$event = function (TwigInitializedEvent $event): void {
     // do something with $event
 };
 
-return ['onTwigInitialized', $event];
+return [TwigInitializedEvent::class, $event];
 ~~~
 
 ### Application middlewares
@@ -343,6 +343,7 @@ A simplified bootstrap file looks like this:
  
 use herbie\Application;
 use herbie\ApplicationPaths;
+use herbie\events\TwigInitializedEvent;
 
 $app = new Application(
     new ApplicationPaths(__DIR__)
@@ -350,7 +351,7 @@ $app = new Application(
 
 // Register extensions here, for example:
 // $app->addConsoleCommand(CustomCommand::class);
-// $app->addEventListener('onTwigInitialized', $event);
+// $app->addEventListener(TwigInitializedEvent::class, $event);
 // $app->addApplicationMiddleware($middleware);
 // $app->addRouteMiddleware('^route/.*', $middleware);
 // $app->addTwigFilter('reverse', $twigFilter);
@@ -377,11 +378,13 @@ $app->addConsoleCommand(CustomCommand::class);
 ### Event listener
 
 ~~~php
-$event = function (herbie\EventInterface $event): void {
+use herbie\events\TwigInitializedEvent;
+
+$event = function (TwigInitializedEvent $event): void {
     // do something with $event
 };
 
-$app->addEventListener('onTwigInitialized', $event);
+$app->addEventListener(TwigInitializedEvent::class, $event);
 ~~~
 
 ### Application middleware
@@ -573,6 +576,7 @@ A complete plugin class can look like this:
 <?php
 
 use herbie\Plugin;
+use herbie\events\TwigInitializedEvent;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -614,11 +618,11 @@ class MyPlugin implements herbie\PluginInterface
 
     public function eventListeners(): array
     {
-        $event = function (herbie\EventInterface $event): void {
+        $event = function (TwigInitializedEvent $event): void {
             // do something with $event
         };
         return [
-            ['onTwigInitialized', $event]
+            [TwigInitializedEvent::class, $event]
         ];
     }
 
