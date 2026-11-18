@@ -6,6 +6,8 @@ namespace herbie\plugins\contact;
 
 use herbie\AbstractPlugin;
 use herbie\Config;
+use herbie\Page;
+use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\Session;
 use herbie\Translator;
@@ -23,6 +25,7 @@ use Twig\TwigFunction;
 final class ContactPlugin extends AbstractPlugin
 {
     private Config $config;
+    private PageRepositoryInterface $pageRepository;
     private ServerRequestInterface $request;
     private ResponseFactoryInterface $responseFactory;
     private Translator $translator;
@@ -33,6 +36,7 @@ final class ContactPlugin extends AbstractPlugin
 
     public function __construct(
         Config $config,
+        PageRepositoryInterface $pageRepository,
         ServerRequestInterface $request,
         ResponseFactoryInterface $responseFactory,
         Translator $translator,
@@ -42,6 +46,7 @@ final class ContactPlugin extends AbstractPlugin
         Session $session,
     ) {
         $this->config = $config;
+        $this->pageRepository = $pageRepository;
         $this->request = $request;
         $this->responseFactory = $responseFactory;
         $this->translator = $translator;
@@ -79,6 +84,8 @@ final class ContactPlugin extends AbstractPlugin
 
     public function contact(): string
     {
+        $this->assertContactPageNotCached();
+
         $status = $this->getQueryParam('status');
         [$route] = $this->urlManager->parseRequest();
 
@@ -283,6 +290,17 @@ final class ContactPlugin extends AbstractPlugin
             }
         }
         echo $response->getBody();
+    }
+
+    private function assertContactPageNotCached(): void
+    {
+        [$route] = $this->urlManager->parseRequest();
+        $page = $this->pageRepository->findAll()->getItem($route);
+        if ($page instanceof Page && $page->getCached()) {
+            throw new \RuntimeException(
+                'The contact page must be configured with "cached: false" to avoid caching CSRF tokens.',
+            );
+        }
     }
 
     private function getTemplatePath(string $name): string
