@@ -222,8 +222,7 @@ final class WebsiteCest
         #$I->seeNumberOfElements('.content>div>div', 3);
         $I->seeNumberOfElements('.content>div>pre', 4);
         $I->seeNumberOfElements('.content>div>table', 4);
-        $I->seeNumberOfElements('.content>ul', 1);
-        $I->seeNumberOfElements('.content>ul>li', 53);
+        $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/filters/index.html');
     }
 
     public function testDocIndepthTwigFunctions(AcceptanceTester $I)
@@ -240,8 +239,7 @@ final class WebsiteCest
         #$I->seeNumberOfElements('.content>div>div', 3);
         $I->seeNumberOfElements('.content>div>pre', 22);
         $I->seeNumberOfElements('.content>div>table', 22);
-        $I->seeNumberOfElements('.content>ul', 1);
-        $I->seeNumberOfElements('.content>ul>li', 16);
+        $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/functions/index.html');
     }
 
     public function testDocIndepthTwigGlobals(AcceptanceTester $I)
@@ -264,8 +262,7 @@ final class WebsiteCest
         $I->see('Twig Tags', 'h1');
         $I->dontSee('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>p', 1);
-        $I->seeNumberOfElements('.content>ul', 1);
-        $I->seeNumberOfElements('.content>ul>li', 20);
+        $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tags/index.html');
     }
 
     public function testDocIndepthTwigTests(AcceptanceTester $I)
@@ -281,8 +278,7 @@ final class WebsiteCest
         $I->seeNumberOfElements('.content>div>p', 2);
         $I->seeNumberOfElements('.content>div>pre', 2);
         $I->seeNumberOfElements('.content>div>table', 2);
-        $I->seeNumberOfElements('.content>ul', 1);
-        $I->seeNumberOfElements('.content>ul>li', 9);
+        $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tests/index.html');
     }
 
     public function testDocPlugins(AcceptanceTester $I)

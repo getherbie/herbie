@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - `UTF8_BOM` constant is now defined at file scope in `FlatFilePagePersistence`.
 
 ### Documentation
+- The Twig pages no longer list Twig's built-in filters, functions, tags and tests. They link to the official Twig documentation and document only Herbie's own additions.
 - The parameter of the Twig functions `url_abs` and `url_rel` is marked as required. It was documented with an empty default, but `UrlManager::createUrl()` has never resolved an empty route to the current route. The `TODO` in `createUrl()` promised exactly that, so it is replaced by a description of what the method does.
 
 ### Removed
