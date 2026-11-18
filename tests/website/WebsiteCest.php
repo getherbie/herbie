@@ -292,6 +292,8 @@ final class WebsiteCest
         $I->seeNumberOfElements('.content>pre', 3);
         $I->seeNumberOfElements('.plugins>p', 1);
         $I->seeNumberOfElements('.plugins>.plugin', 8);
+        $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/contact"]');
+        $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/search"]');
     }
 
     public function testDocExtending(AcceptanceTester $I)

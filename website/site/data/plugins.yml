@@ -23,7 +23,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github:
+  github: https://github.com/getherbie/herbie/tree/3.x/plugins/contact
   packagist:
   enabled: true
 -
@@ -207,7 +207,7 @@
   author: Herbie-Team
   version: 2.0.0
   composer:
-  github:
+  github: https://github.com/getherbie/herbie/tree/3.x/plugins/search
   packagist:
   enabled: true
 -
