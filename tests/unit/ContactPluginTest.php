@@ -101,7 +101,7 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $this->setPrivateProperty($plugin, 'config', new Config([
-            'plugins' => ['contact' => ['csrf' => ['secret' => '<csrf_secret>']]],
+            'plugins' => ['contact' => ['csrf' => ['secret' => '<plugin_contact_csrf_secret>']]],
         ]));
 
         $this->expectException(\RuntimeException::class);

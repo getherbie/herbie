@@ -29,7 +29,7 @@ Aliased template path to custom form template:
 
     template: (string)
 
-CSRF settings under `plugins.contact.csrf`. The secret is required; rendering the form fails if it is empty or still a placeholder like <csrf_secret>:
+CSRF settings under `plugins.contact.csrf`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_csrf_secret>:
 
     csrf:
         secret: (string)
