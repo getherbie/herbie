@@ -171,6 +171,17 @@ final class QueryBuilderTest extends Unit
         $this->assertCount(2, $result);
     }
 
+    public function testWhereHashFormatWithArrayValue(): void
+    {
+        $result = $this->createBuilder($this->createData())->where(['tags' => ['php']])->all();
+
+        $this->assertSame(['Alpha', 'Beta'], array_values(array_column($result, 'title')));
+
+        $result = $this->createBuilder($this->createData())->where(['tags' => ['php', 'js']])->all();
+
+        $this->assertSame(['Alpha', 'Beta', 'Gamma'], array_values(array_column($result, 'title')));
+    }
+
     public function testWhereUnsupportedOperatorThrows(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -221,6 +232,13 @@ final class QueryBuilderTest extends Unit
         $this->assertSame('Beta', reset($result)['title']);
     }
 
+    public function testOffsetIsAppliedAfterWhere(): void
+    {
+        $result = $this->createBuilder($this->createData())->where('type=page')->offset(1)->all();
+
+        $this->assertSame(['Delta'], array_values(array_column($result, 'title')));
+    }
+
     public function testCount(): void
     {
         $builder = $this->createBuilder($this->createData())->where('type=post');
@@ -251,6 +269,15 @@ final class QueryBuilderTest extends Unit
         $this->assertNull($result);
     }
 
+    public function testOneDoesNotLimitSubsequentQueries(): void
+    {
+        $builder = $this->createBuilder($this->createData());
+
+        $this->assertSame('Alpha', $builder->one()['title']);
+        $this->assertCount(4, $builder->all());
+        $this->assertSame(4, $builder->count());
+    }
+
     public function testGetIterator(): void
     {
         $builder = $this->createBuilder($this->createData())->where('type=post');
@@ -269,6 +296,15 @@ final class QueryBuilderTest extends Unit
         $this->assertInstanceOf(Pagination::class, $pagination);
         $this->assertSame(4, $pagination->getTotalItems());
         $this->assertSame(2, $pagination->count());
+    }
+
+    public function testPaginateKeepsConfiguredLimit(): void
+    {
+        $builder = $this->createBuilder($this->createData())->limit(2);
+        $pagination = $builder->paginate(2);
+
+        $this->assertSame(4, $pagination->getTotalItems());
+        $this->assertCount(2, $builder->all());
     }
 
     public function testWhereOnMissingFieldIsFalse(): void

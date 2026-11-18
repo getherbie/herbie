@@ -112,20 +112,20 @@ The String format is best used to specify simple conditions.
 For example:
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("layout=default", "title*=news")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where("layout=default", "title*=news").all()) {{ '}}' }} 
 ~~~
 
 You can chain where clauses, filtering records based on more than one condition with AND:
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("layout=default").where("title*=news").where("hidden=false")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where("layout=default").where("title*=news").where("hidden=false").all()) {{ '}}' }} 
 ~~~
 
 In the string format, values are compared as strings; `true` and `false` are converted when the field is boolean.
 Use the hash format for numeric values.
 
 ~~~twig
-{{ '{{' }} dump(query(data).where({hidden: false, age: 24, size: 14.25, layout: "default"})) {{ '}}' }}
+{{ '{{' }} dump(query(data).where({hidden: false, age: 24, size: 14.25, layout: "default"}).all()) {{ '}}' }}
 ~~~
 
 #### Multiple Fields
@@ -133,18 +133,18 @@ Use the hash format for numeric values.
 If you want to match a value in one field or another, you may specify multiple fields separated by a pipe "|" symbol, i.e.
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("name|title|menu_title=product")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where("name|title|menu_title=product").all()) {{ '}}' }} 
 ~~~
 
 Using the above syntax, the condition matches data whose `name`, `title`, or `menu_title` field has the exact value `product`.
-Matching is case-sensitive.
+The `=` operator is case-sensitive; the text operators `*=`, `^=`, `$=` and `~=` match case-insensitively.
 
 #### Multiple Values
 
 You may also specify an either/or value, by separating each of the values that may match with a pipe character "|".
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("layout=default|blog")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where("layout=default|blog").all()) {{ '}}' }} 
 ~~~
 
 #### Array Fields
@@ -152,7 +152,7 @@ You may also specify an either/or value, by separating each of the values that m
 If the queried field is an array, the operator is applied for each array items as OR conjunction.
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("tags=blog")) {{ '}}' }}
+{{ '{{' }} dump(query(data).where("tags=blog").all()) {{ '}}' }}
 ~~~
 
 Using the above syntax, the query will match if one of the tags equals to "blog".
@@ -164,8 +164,10 @@ It is written as an array whose keys are column names and values the correspondi
 For example:
 
 ~~~twig
-{{ '{{' }} dump(query(data).where({layout: "default", age: 24, size: 178.5, hidden: false})) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where({layout: "default", age: 24, size: 178.5, hidden: false}).all()) {{ '}}' }} 
 ~~~
+
+Array values are matched with OR, i.e. `where({tags: ["blog", "news"]})` matches entries whose `tags` field contains either value.
 
 ### Operator Format
 
@@ -173,7 +175,7 @@ The operator format is best used when you have more complex sub queries that are
 For example:
 
 ~~~twig
-{{ '{{' }} dump(query(data).where(["OR", "layout=default", "title*=blog|news", "date>=2022-12-12"])) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where(["OR", "layout=default", "title*=blog|news", "date>=2022-12-12"]).all()) {{ '}}' }} 
 ~~~
 
 With the syntax above, the individual conditions are OR conjuncted.
@@ -181,7 +183,7 @@ With the syntax above, the individual conditions are OR conjuncted.
 The AND/OR where clause operators can be nested:
 
 ~~~twig
-{{ '{{' }} dump(query(data).where(["OR", ["AND", "layout=default", "title*=blog"], ["AND", "date>=2022-12-12", "cached=true"]])) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where(["OR", ["AND", "layout=default", "title*=blog"], ["AND", "date>=2022-12-12", "cached=true"]]).all()) {{ '}}' }} 
 ~~~
 
 ## Order
@@ -194,14 +196,14 @@ Here are examples of its usage.
 Ordered by title descending:
 
 ~~~twig
-{{ '{{' }} dump(query(data).order("-title")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).order("-title").all()) {{ '}}' }} 
 ~~~
 
 Ordered by title ascending:
 
 ~~~twig
-{{ '{{' }} dump(query(data).order("title")) {{ '}}' }} 
-{{ '{{' }} dump(query(data).order("+title")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).order("title").all()) {{ '}}' }} 
+{{ '{{' }} dump(query(data).order("+title").all()) {{ '}}' }} 
 ~~~
 
 ## Limit
@@ -209,15 +211,15 @@ Ordered by title ascending:
 You may limit the results by using the `limit` method:
 
 ~~~twig
-{{ '{{' }} dump(query(data).limit(10)) {{ '}}' }} 
+{{ '{{' }} dump(query(data).limit(10).all()) {{ '}}' }} 
 ~~~
 
 ## Offset
 
-You may skip results by using the `offset` method:
+The `offset` method skips the first N matching entries, after sorting and filtering:
 
 ~~~twig
-{{ '{{' }} dump(query(data).offset(10).limit(10)) {{ '}}' }} 
+{{ '{{' }} dump(query(data).offset(10).limit(10).all()) {{ '}}' }} 
 ~~~
 
 ## Count
@@ -237,3 +239,4 @@ If you want to get paginated results on a query, you may use the `paginate` meth
 ~~~
 
 This will return an instance of `herbie\Pagination` that you can use to assemble the pagination style of your choice.
+A previously set `limit` is ignored; `paginate` always covers all matching records.

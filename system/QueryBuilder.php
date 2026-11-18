@@ -140,6 +140,19 @@ final class QueryBuilder implements IteratorAggregate
     {
         $items = [];
         foreach ($conditions as $key => $value) {
+            if (is_array($value)) {
+                $orConditions = ['OR'];
+                foreach ($value as $item) {
+                    if (is_scalar($item)) {
+                        $type = get_type($item);
+                        $orConditions[] = ['match' . ucfirst($type), $key, $item];
+                    }
+                }
+                if (count($orConditions) > 1) {
+                    $items[] = $orConditions;
+                }
+                continue;
+            }
             if (is_scalar($value)) {
                 $type = get_type($value);
                 $items[] = ['match' . ucfirst($type), $key, $value];
@@ -177,29 +190,27 @@ final class QueryBuilder implements IteratorAggregate
      */
     public function paginate(int $size): Pagination
     {
-        $this->limit = 0; // query without limit
-        $this->processData();
+        $this->processData(0); // query without limit
         return new Pagination($this->processed, $size);
     }
 
-    private function processData(): void
+    private function processData(?int $limit = null): void
     {
+        $limit ??= $this->limit;
         $this->processed = [];
-        $i = 0;
-        $j = 0;
+        $skipped = 0;
         $this->sort();
         foreach ($this->data as $item) {
-            if (($this->offset > 0) && ($j < ($this->offset))) {
-                $j++;
+            if ($this->processItem($item, array_merge(['AND'], $this->where)) !== true) {
                 continue;
             }
-            $status = $this->processItem($item, array_merge(['AND'], $this->where));
-            if ($status === true) {
-                $this->processed[] = $item;
-                $i++;
-                if (($this->limit > 0) && ($i >= $this->limit)) {
-                    break;
-                }
+            if ($skipped < $this->offset) {
+                $skipped++;
+                continue;
+            }
+            $this->processed[] = $item;
+            if (($limit > 0) && count($this->processed) >= $limit) {
+                break;
             }
         }
     }
@@ -315,8 +326,7 @@ final class QueryBuilder implements IteratorAggregate
 
     public function one(): array|object|null
     {
-        $this->limit = 1;
-        $this->processData();
+        $this->processData(1);
         $item = reset($this->processed);
         if ($item === false) {
             return null;
