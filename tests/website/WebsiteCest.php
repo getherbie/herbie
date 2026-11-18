@@ -216,14 +216,14 @@ final class WebsiteCest
         $I->see('Twig Filters', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>div>h2', 3);
+        $I->seeNumberOfElements('.content>div>h2', 4);
         $I->seeNumberOfElements('.content>p', 2);
-        $I->seeNumberOfElements('.content>div>p', 3);
+        $I->seeNumberOfElements('.content>div>p', 4);
         #$I->seeNumberOfElements('.content>div>div', 3);
-        $I->seeNumberOfElements('.content>div>pre', 3);
-        $I->seeNumberOfElements('.content>div>table', 3);
+        $I->seeNumberOfElements('.content>div>pre', 4);
+        $I->seeNumberOfElements('.content>div>table', 4);
         $I->seeNumberOfElements('.content>ul', 1);
-        $I->seeNumberOfElements('.content>ul>li', 54);
+        $I->seeNumberOfElements('.content>ul>li', 53);
     }
 
     public function testDocIndepthTwigFunctions(AcceptanceTester $I)

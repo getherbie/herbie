@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- New `spaceless` Twig filter. It replaces the Twig filter of the same name that is deprecated since Twig 3.12 and keeps the output of existing templates unchanged.
+
 ### Changed
 - **Breaking:** Minimum PHP version raised from 8.0 to 8.3. Supported versions: 8.3, 8.4, 8.5, 8.6.
 - Version bumped to 3.0.0 (new major line).

@@ -44,7 +44,6 @@
 - name: slice
 - name: slug
 - name: sort
-- name: spaceless
 - name: split
 - name: striptags
 - name: timezone_name

@@ -47,6 +47,7 @@ final class TwigExtension extends AbstractExtension
         return [
             new TwigFilter('format_size', $this->filterFilesize(...)),
             new TwigFilter('slugify', $this->filterSlugify(...)),
+            new TwigFilter('spaceless', $this->filterSpaceless(...), ['pre_escape' => 'html', 'is_safe' => ['html']]),
             new TwigFilter('twigify', $this->twigify(...), ['is_safe' => ['html']]),
         ];
     }
@@ -100,6 +101,17 @@ final class TwigExtension extends AbstractExtension
     public function filterSlugify(string $url): string
     {
         return $this->slugGenerator->generate($url);
+    }
+
+    /**
+     * Removes whitespace between HTML tags.
+     *
+     * Replacement for the Twig `spaceless` filter, which is deprecated since Twig 3.12.
+     * The `pre_escape` and `is_safe` flags must match the original filter to stay XSS-safe.
+     */
+    public function filterSpaceless(?string $content): string
+    {
+        return trim(preg_replace('/>\s+</', '><', $content ?? '') ?? '');
     }
 
     public function cssAdd(
