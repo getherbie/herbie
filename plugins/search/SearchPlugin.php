@@ -147,7 +147,8 @@ final class SearchPlugin extends AbstractPlugin
      */
     private function search(string $query): array
     {
-        if (empty($query)) {
+        $terms = $this->extractSearchTerms($query);
+        if ($terms === []) {
             return [];
         }
 
@@ -166,17 +167,17 @@ final class SearchPlugin extends AbstractPlugin
         $results = [];
 
         foreach ($this->pageRepository->findAll() as $item) {
-            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search)) {
+            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search) || $item->getHidden()) {
                 continue;
             }
             $data = $this->loadPageData($item, $cacheToken);
-            if ($this->match($query, $data)) {
+            if ($this->match($terms, $data)) {
                 $content = $data[1] ?? '';
                 $results[] = [
                     'title' => $item->getTitle(),
                     'route' => $item->getRoute(),
                     'date' => $item->getDate(),
-                    'snippet' => $this->buildSnippet($content, $query),
+                    'snippet' => $this->buildSnippet($content, $terms),
                 ];
                 $i++;
             }
@@ -186,27 +187,45 @@ final class SearchPlugin extends AbstractPlugin
     }
 
     /**
-     * @param string $query
+     * @param string[] $terms
      * @param array $data
      * @return bool
      */
-    private function match(string $query, array $data): bool
+    private function match(array $terms, array $data): bool
     {
-        foreach ($data as $part) {
-            if (empty($part)) {
-                continue;
+        foreach ($terms as $term) {
+            $found = false;
+            foreach ($data as $part) {
+                if (empty($part)) {
+                    continue;
+                }
+                if (stripos($part, $term) !== false) {
+                    $found = true;
+                    break;
+                }
             }
-            if (stripos($part, $query) !== false) {
-                return true;
+            if (!$found) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
-     * Build a text snippet around the query term, with <mark> highlighting.
+     * @return string[]
      */
-    private function buildSnippet(string $content, string $query): string
+    private function extractSearchTerms(string $query): array
+    {
+        $terms = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
+        return $terms === false ? [] : $terms;
+    }
+
+    /**
+     * Build a text snippet around the first search term, with <mark> highlighting for all terms.
+     *
+     * @param string[] $terms
+     */
+    private function buildSnippet(string $content, array $terms): string
     {
         /** @var string|null $normalized */
         $normalized = preg_replace('/\s+/', ' ', strip_tags($content));
@@ -216,16 +235,16 @@ final class SearchPlugin extends AbstractPlugin
         $content = $normalized;
 
         $snippetLength = 200;
-        $queryLower = strtolower($query);
+        $firstTerm = $terms[0];
         $contentLower = strtolower($content);
 
-        $pos = stripos($contentLower, $queryLower);
+        $pos = stripos($contentLower, strtolower($firstTerm));
         if ($pos === false) {
             return '';
         }
 
         $before = 50;
-        $end = $pos + strlen($query) + $snippetLength;
+        $end = $pos + strlen($firstTerm) + $snippetLength;
         $start = $pos - $before;
 
         // Trim to content boundaries (sentence breaks)
@@ -247,7 +266,6 @@ final class SearchPlugin extends AbstractPlugin
         }
 
         $snippet = substr($content, $start, $end - $start);
-        $highlight = htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
         // Remove URL query parameters before highlighting
         // so we don't highlight "?query=..." URLs
@@ -257,14 +275,17 @@ final class SearchPlugin extends AbstractPlugin
             $cleaned = $snippet;
         }
 
-        /** @var string|null $highlighted */
-        $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
-            "<mark>$highlight</mark>",
-            $cleaned,
-        );
-        if ($highlighted === null) {
-            $highlighted = $cleaned;
+        // Highlight all search terms
+        $highlighted = $cleaned;
+        foreach ($terms as $term) {
+            $result = preg_replace(
+                '/(' . preg_quote($term, '/') . ')/i',
+                '<mark>' . htmlspecialchars($term, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
+                $highlighted,
+            );
+            if ($result !== null) {
+                $highlighted = $result;
+            }
         }
 
         $prefix = $start > 0 ? '…' : '';
