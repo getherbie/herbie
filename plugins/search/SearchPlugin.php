@@ -71,6 +71,7 @@ final class SearchPlugin extends AbstractPlugin
         return $this->twigRenderer->renderTemplate($name, [
             'route' => $route,
             'query' => $queryParams['query'] ?? '',
+            'exact' => $this->isExactSearch($queryParams),
         ]);
     }
 
@@ -84,7 +85,8 @@ final class SearchPlugin extends AbstractPlugin
     {
         $queryParams = $this->request->getQueryParams();
         $query = $queryParams['query'] ?? '';
-        $results = $this->search($query);
+        $exact = $this->isExactSearch($queryParams);
+        $results = $this->search($query, $exact);
 
         $name = $this->config->get('plugins.search.resultsTemplate', function () {
             return $this->getTemplatePath('results.twig');
@@ -94,6 +96,7 @@ final class SearchPlugin extends AbstractPlugin
             'query' => $query,
             'results' => $results,
             'submitted' => true,
+            'exact' => $exact,
         ]);
     }
 
@@ -145,7 +148,7 @@ final class SearchPlugin extends AbstractPlugin
      * @param string $query
      * @return array
      */
-    private function search(string $query): array
+    private function search(string $query, bool $exact): array
     {
         $terms = $this->extractSearchTerms($query);
         if ($terms === []) {
@@ -171,7 +174,7 @@ final class SearchPlugin extends AbstractPlugin
                 continue;
             }
             $data = $this->loadPageData($item, $cacheToken);
-            if ($this->match($terms, $data)) {
+            if ($this->match($terms, $data, $exact)) {
                 $content = $data[1] ?? '';
                 $results[] = [
                     'title' => $item->getTitle(),
@@ -191,7 +194,7 @@ final class SearchPlugin extends AbstractPlugin
      * @param array $data
      * @return bool
      */
-    private function match(array $terms, array $data): bool
+    private function match(array $terms, array $data, bool $exact): bool
     {
         foreach ($terms as $term) {
             $found = false;
@@ -199,8 +202,14 @@ final class SearchPlugin extends AbstractPlugin
                 if (empty($part)) {
                     continue;
                 }
-                if (stripos($part, $term) !== false) {
-                    $found = true;
+                if ($exact) {
+                    // Exact search: match whole words only.
+                    $pattern = '/\b' . preg_quote($term, '/') . '\b/';
+                    $found = preg_match($pattern, $part) === 1;
+                } else {
+                    $found = stripos($part, $term) !== false;
+                }
+                if ($found) {
                     break;
                 }
             }
@@ -218,6 +227,20 @@ final class SearchPlugin extends AbstractPlugin
     {
         $terms = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
         return $terms === false ? [] : $terms;
+    }
+
+    /**
+     * Resolve whether exact (whole-word) search is enabled:
+     * a request-level "exact" parameter overrides the plugin configuration.
+     *
+     * @param array $queryParams
+     */
+    private function isExactSearch(array $queryParams): bool
+    {
+        if (isset($queryParams['exact'])) {
+            return filter_var($queryParams['exact'], FILTER_VALIDATE_BOOLEAN);
+        }
+        return $this->config->getAsBool('plugins.search.exactMatch', false);
     }
 
     /**
