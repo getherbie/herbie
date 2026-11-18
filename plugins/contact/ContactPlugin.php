@@ -515,8 +515,7 @@ final class ContactPlugin extends AbstractPlugin
             $mail->addReplyTo($data['email'], $data['name']);
 
             $mail->Subject = $this->translator->t('contact', 'mailSubject');
-            $mail->Body = $message;
-            $mail->AltBody = $message;
+            $this->setPlainTextBody($mail, $message);
 
             $sent = $mail->send();
         } catch (Throwable $exception) {
@@ -549,6 +548,14 @@ final class ContactPlugin extends AbstractPlugin
         return $mail;
     }
 
+    private function setPlainTextBody(PHPMailer $mail, string $body): void
+    {
+        // An AltBody would make PHPMailer send multipart/alternative. Mail clients
+        // rendering the HTML part then fold the message's line breaks into spaces.
+        $mail->isHTML(false);
+        $mail->Body = $body;
+    }
+
     private function shouldSendCopy(array $data): bool
     {
         return $this->config->getAsBool('plugins.contact.copy.enabled', false)
@@ -570,8 +577,7 @@ final class ContactPlugin extends AbstractPlugin
 
             $body = $this->translator->t('contact', 'mailCopyIntro') . "\n\n" . $data['message'] . "\n";
             $mail->Subject = $this->translator->t('contact', 'mailSubjectCopy');
-            $mail->Body = $body;
-            $mail->AltBody = $body;
+            $this->setPlainTextBody($mail, $body);
 
             $mail->send();
         } catch (Throwable $exception) {

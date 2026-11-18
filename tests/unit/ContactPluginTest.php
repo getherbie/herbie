@@ -22,6 +22,7 @@ use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;
 use herbie\UrlManager;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -435,6 +436,20 @@ final class ContactPluginTest extends Unit
             'message' => 'Hello',
         ]);
         $this->assertSame([], $valid);
+    }
+
+    public function testMailBodiesArePlainText(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $mail = new PHPMailer(true);
+        $body = "Hallo Thomas\n\nLG\nHans";
+
+        $this->invokePrivate($plugin, 'setPlainTextBody', [$mail, $body]);
+
+        $this->assertSame(PHPMailer::CONTENT_TYPE_PLAINTEXT, $mail->ContentType);
+        $this->assertFalse($mail->alternativeExists());
+        $this->assertSame('', $mail->AltBody);
+        $this->assertSame($body, $mail->Body);
     }
 
     public function testHoneypotFieldsAreSilentlyAccepted(): void
