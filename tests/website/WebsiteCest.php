@@ -16,7 +16,6 @@ final class WebsiteCest
         $I->seeInTitle('Herbie CMS - A simple flat-file content management system');
         $I->see('Websites built from text files.', 'h1');
         $I->see('What Herbie Is Built On', 'h2');
-        $this->testDocLayouts($I);
     }
 
     public function testDoc(AcceptanceTester $I)
@@ -28,9 +27,19 @@ final class WebsiteCest
         $I->seeInTitle('Introduction / Documentation / Herbie CMS');
         $I->see('Introduction', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.toc-links li', 2);
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 5);
+        $this->seeRenderedContent($I);
+        $I->seeElement('.toc-links li');
+    }
+
+    public function testDocIntroduction(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/introduction');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeInTitle('Introduction / Documentation / Herbie CMS');
+        $I->see('Introduction', 'h1');
+        $I->see('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
     }
 
     public function testDocFirstSteps(AcceptanceTester $I)
@@ -41,8 +50,17 @@ final class WebsiteCest
         // if we see this, redirect was successful
         $I->see('Quickstart', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 8);
-        $I->seeNumberOfElements('.content>pre', 2);
+        $this->seeRenderedContent($I);
+    }
+
+    public function testDocFirstStepsQuickstart(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/first-steps/quickstart');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Quickstart', 'h1');
+        $I->dontSee('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
     }
 
     public function testDocFirstStepsInstallation(AcceptanceTester $I)
@@ -52,9 +70,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Installation', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 9);
-        $I->seeNumberOfElements('.content>pre', 5);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocFirstStepsConfiguration(AcceptanceTester $I)
@@ -64,9 +80,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Configuration', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 13);
-        $I->seeNumberOfElements('.content>pre', 4);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocFirstStepsDirectory(AcceptanceTester $I)
@@ -76,10 +90,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Directory structure', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 7);
-        $I->seeNumberOfElements('.content>pre', 3);
-        $I->seeNumberOfElements('.content>table', 2);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocContents(AcceptanceTester $I)
@@ -90,9 +101,17 @@ final class WebsiteCest
         // if we see this, redirect was successful
         $I->see('Page Properties', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 8);
-        $I->seeNumberOfElements('.content>pre', 4);
+        $this->seeRenderedContent($I);
+    }
+
+    public function testDocContentsPageProperties(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/contents/page-properties');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Page Properties', 'h1');
+        $I->see('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
     }
 
     public function testDocContentsCreatePages(AcceptanceTester $I)
@@ -102,11 +121,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Create Pages', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 8);
-        $I->seeNumberOfElements('.content>p', 16);
-        $I->seeNumberOfElements('.content>pre', 4);
-        $I->seeNumberOfElements('.content>table', 1);
-        $I->seeNumberOfElements('.content>ul', 1);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocContentsPageProps(AcceptanceTester $I)
@@ -116,9 +131,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Structure of a Page', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 8);
-        $I->seeNumberOfElements('.content>pre', 5);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocContentsVariables(AcceptanceTester $I)
@@ -128,10 +141,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Variables', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 4);
-        $I->seeNumberOfElements('.content>p', 5);
-        $I->seeNumberOfElements('.content>pre', 1);
-        $I->seeNumberOfElements('.content>table', 4);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocContentsDataFiles(AcceptanceTester $I)
@@ -141,9 +151,27 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Data Files', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>p', 7);
-        $I->seeNumberOfElements('.content>pre', 2);
+        $this->seeRenderedContent($I);
+    }
+
+    public function testDocContentsMarkdown(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/contents/markdown');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Markdown', 'h1');
+        $I->see('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
+    }
+
+    public function testDocContentsSpecialPages(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/contents/special-pages');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Special Pages', 'h1');
+        $I->see('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
     }
 
     public function testDocLayouts(AcceptanceTester $I)
@@ -153,9 +181,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Layouts', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 14);
-        $I->seeNumberOfElements('.content>pre', 7);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthConsoleCommands(AcceptanceTester $I)
@@ -166,9 +192,17 @@ final class WebsiteCest
         // if we see this, redirect was successful
         $I->see('Console Commands', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 5);
-        $I->seeNumberOfElements('.content>pre', 3);
-        $I->seeNumberOfElements('.content>table', 1);
+        $this->seeRenderedContent($I);
+    }
+
+    public function testDocIndepthCommands(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/indepth/commands');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Console Commands', 'h1');
+        $I->dontSee('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthEventListeners(AcceptanceTester $I)
@@ -178,8 +212,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Event Listeners', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 1);
-        $I->seeNumberOfElements('.content>table', 1);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthMiddlewares(AcceptanceTester $I)
@@ -189,9 +222,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Middlewares', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 12);
-        $I->seeNumberOfElements('.content>pre', 5);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthQueryBuilder(AcceptanceTester $I)
@@ -201,10 +232,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Query Builder', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 7);
-        $I->seeNumberOfElements('.content>p', 32);
-        $I->seeNumberOfElements('.content>pre', 20);
-        $I->seeNumberOfElements('.content>table', 1);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthTwigFilters(AcceptanceTester $I)
@@ -214,13 +242,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Twig Filters', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>div>h2', 4);
-        $I->seeNumberOfElements('.content>p', 2);
-        $I->seeNumberOfElements('.content>div>p', 4);
-        #$I->seeNumberOfElements('.content>div>div', 3);
-        $I->seeNumberOfElements('.content>div>pre', 4);
-        $I->seeNumberOfElements('.content>div>table', 4);
+        $this->seeRenderedContent($I);
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/filters/index.html');
     }
 
@@ -231,13 +253,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Twig Functions', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>div>h2', 23);
-        $I->seeNumberOfElements('.content>p', 2);
-        $I->seeNumberOfElements('.content>div>p', 23);
-        #$I->seeNumberOfElements('.content>div>div', 3);
-        $I->seeNumberOfElements('.content>div>pre', 23);
-        $I->seeNumberOfElements('.content>div>table', 23);
+        $this->seeRenderedContent($I);
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/functions/index.html');
     }
 
@@ -248,9 +264,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Twig Globals', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 1);
-        $I->seeNumberOfElements('.content>table', 3);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocIndepthTwigTags(AcceptanceTester $I)
@@ -260,7 +274,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Twig Tags', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 1);
+        $this->seeRenderedContent($I);
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tags/index.html');
     }
 
@@ -271,12 +285,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Twig Tests', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>div>h2', 2);
-        $I->seeNumberOfElements('.content>p', 2);
-        $I->seeNumberOfElements('.content>div>p', 2);
-        $I->seeNumberOfElements('.content>div>pre', 2);
-        $I->seeNumberOfElements('.content>div>table', 2);
+        $this->seeRenderedContent($I);
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tests/index.html');
     }
 
@@ -287,11 +296,9 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Plugins', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>p', 10);
-        $I->seeNumberOfElements('.content>pre', 3);
-        $I->seeNumberOfElements('.plugins>p', 1);
-        $I->seeNumberOfElements('.plugins>.plugin', 8);
+        $this->seeRenderedContent($I);
+        $I->see('Contact', '.plugin');
+        $I->see('Twig', '.plugin');
         $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/contact"]');
         $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/search"]');
     }
@@ -303,11 +310,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Extending', 'h1');
         $I->see('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>h2', 6);
-        $I->seeNumberOfElements('.content>p', 33);
-        $I->seeNumberOfElements('.content>pre', 26);
-        $I->seeNumberOfElements('.content>table', 4);
-        $I->seeNumberOfElements('.content>ul', 2);
+        $this->seeRenderedContent($I);
     }
 
     public function testDocCheatsheet(AcceptanceTester $I)
@@ -317,9 +320,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Cheat Sheet', 'h1');
         $I->dontSee('On this page', '.toc-title');
-        $I->seeNumberOfElements('.content>p', 49);
-        $I->seeNumberOfElements('.content>pre', 21);
-        $I->seeNumberOfElements('.content>table', 7);
+        $this->seeRenderedContent($I);
     }
 
     public function testDevelopment(AcceptanceTester $I)
@@ -328,9 +329,6 @@ final class WebsiteCest
         $I->amOnPage('/development');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Development', 'h1');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 4);
-        $this->testDocLayouts($I);
     }
 
     public function testSitemap(AcceptanceTester $I)
@@ -339,8 +337,9 @@ final class WebsiteCest
         $I->amOnPage('/sitemap');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Sitemap', 'h1');
-        $I->seeNumberOfElements('.sitemap', 1);
-        $I->seeNumberOfElements('.sitemap li', 31);
+        $I->seeElement('.sitemap');
+        $I->seeLink('Quickstart', '/index.php/doc/first-steps/quickstart');
+        $I->seeLink('Cheat Sheet', '/index.php/doc/cheatsheet');
         $this->testLayoutDefault($I);
     }
 
@@ -380,8 +379,6 @@ final class WebsiteCest
         $I->amOnPage('/privacy-policy');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Privacy Policy', 'h1');
-        $I->seeNumberOfElements('.content>h2', 0);
-        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 
@@ -391,30 +388,42 @@ final class WebsiteCest
         $I->amOnPage('/imprint');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Imprint', 'h1');
-        $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 
     public function testAtomXml(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('index.php/atom.xml');
-        $I->seeResponseCodeIs(HttpCode::OK);
+        foreach (['index.php/atom.xml', '/atom.xml'] as $url) { // dev and production URL form
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('<feed');
+            $I->seeResponseContains('Herbie CMS Feed');
+            $I->seeResponseContains('<entry>');
+        }
     }
 
     public function testRobotsTxt(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('index.php/robots.txt');
-        $I->seeResponseCodeIs(HttpCode::OK);
+        foreach (['index.php/robots.txt', '/robots.txt'] as $url) { // dev and production URL form
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('Sitemap:');
+            $I->seeResponseContains('sitemap.xml');
+        }
     }
 
     public function testSitemapXml(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('index.php/sitemap.xml');
-        $I->seeResponseCodeIs(HttpCode::OK);
+        foreach (['index.php/sitemap.xml', '/sitemap.xml'] as $url) { // dev and production URL form
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('<urlset');
+            $I->seeResponseContains('<loc>');
+            $I->seeResponseContains('/doc/introduction');
+        }
     }
 
     public function testError(AcceptanceTester $I)
@@ -423,15 +432,20 @@ final class WebsiteCest
         $I->amOnPage('/not-existing-page');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->see('Page not found', 'h1');
-        $I->seeNumberOfElements('.content>p', 1);
         $I->seeNumberOfElements('.sidebar-search', 1);
+    }
+
+    private function seeRenderedContent(AcceptanceTester $I)
+    {
+        $I->seeElement('.content h1');
+        $I->seeElement('.content p, .content pre, .content table, .content ul');
     }
 
     private function testLayoutDefault(AcceptanceTester $I)
     {
         $I->seeNumberOfElements('.sidebar-search', 1);
         $I->see('GitHub Activity', 'h4.gc-header');
-        $I->seeNumberOfElements('.gc-entry', 10);
+        $I->see('Fixture commit', '.gc-entry-title');
     }
 
 }

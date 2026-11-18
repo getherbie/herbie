@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Herbie (fixture)</title>
+    <entry>
+        <title>Fixture commit</title>
+        <link href="https://github.com/getherbie/herbie/commit/fixture"/>
+        <updated>2026-01-01T00:00:00Z</updated>
+        <author>
+            <name>Test</name>
+            <uri>https://github.com/test</uri>
+        </author>
+    </entry>
+</feed>

@@ -13,6 +13,7 @@ extensions:
                 if [ ! -f ../site/config/main.php ]; then
                   cp ../site/config/main.dist.php ../site/config/main.php
                 fi
+                cp ../../tests/_data/git_commits.cache ../site/extend/twig_functions/git_commits.cache
                 php -S 127.0.0.1:9371 index.php
               sleep: 1
 modules:
