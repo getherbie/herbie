@@ -2,6 +2,8 @@
 title: Imprint
 ---
 
+<!-- English text translated from the German original with AI assistance. -->
+
 # Imprint
 
 ## Contact address
@@ -25,18 +27,3 @@ The author expressly reserves the right to change, supplement or delete parts of
 References and links to third party websites are outside our area of responsibility.
 Any responsibility for such websites is declined.
 The access and use of such websites is at the user's own risk.
-
-All english text on this page is machine translated.
-
-**In Deutsch**
-
-**Haftungsausschluss**:
-Der Autor übernimmt keinerlei Gewähr hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen.
-Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art, welche aus dem Zugriff oder der Nutzung beziehungsweise Nichtnutzung der veröffentlichten Informationen, durch Missbrauch der Verbindung oder durch technische Störungen entstanden sind, werden ausgeschlossen.
-Alle Angebote sind unverbindlich.
-Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.
-
-**Haftung für Links**:
-Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres Verantwortungsbereichs.
-Es wird jegliche Verantwortung für solche Webseiten abgelehnt.
-Der Zugriff und die Nutzung solcher Webseiten erfolgen auf eigene Gefahr des Nutzers oder der Nutzerin.

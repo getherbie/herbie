@@ -362,12 +362,17 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/contact');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Contact', 'h1');
+        $I->see('Contact us', 'h1');
         $I->seeNumberOfElements('.contact', 1);
         $I->seeElement('.contact-form');
         $I->seeElement('.contact-input[id=name]');
         $I->seeElement('.contact-input[id=email]');
         $I->seeElement('.contact-input[id=message]');
+        $I->seeNumberOfElements('.contact-control-group-honeypot input.contact-input', 2);
+        $I->seeElement('.contact-control-group-honeypot input.contact-input[id=phone][name=phone]');
+        $I->seeElement('.contact-control-group-honeypot input.contact-input[id=website][name=website]');
+        $I->seeElement('altcha-widget[challenge]');
+        $I->seeElement('input[name=send_copy][type=checkbox]');
         $I->seeElement('.contact-button');
         $this->testLayoutDefault($I);
     }
@@ -377,9 +382,9 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/privacy-policy');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Datenschutzhinweise', 'h1');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 7);
+        $I->see('Privacy Policy', 'h1');
+        $I->seeNumberOfElements('.content>h2', 0);
+        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 
@@ -390,7 +395,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Imprint', 'h1');
         $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 8);
+        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 

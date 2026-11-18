@@ -49,13 +49,22 @@ return [
     ],
     'plugins' => [
         'contact' => [
-            'recipient' => '<smtp_recipient>',
+            'recipient' => '<plugin_contact_recipient>',
+            'copy' => [
+                'enabled' => true,
+            ],
+            'csrf' => [
+                'secret' => '<plugin_contact_csrf_secret>',
+            ],
+            'captcha' => [
+                'secret' => '<plugin_contact_captcha_secret>',
+            ],
             'smtp' => [
-                'host' => '<smtp_host>',
+                'host' => '<plugin_contact_smtp_host>',
                 'port' => 587,
                 'auth' => true,
-                'username' => '<smtp_username>',
-                'password' => '<smtp_password>',
+                'username' => '<plugin_contact_smtp_username>',
+                'password' => '<plugin_contact_smtp_password>',
                 'encryption' => 'tls',
             ],
         ],

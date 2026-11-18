@@ -1,8 +1,8 @@
 ---
-title: Contact
+title: Contact us
 cached: false
 ---
 
-# Contact
+# Contact us
 
 {{ contact() }}

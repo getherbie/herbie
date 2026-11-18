@@ -51,6 +51,13 @@ jobs:
       - name: Analyse code with PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
 
+      - name: Prepare test config
+        run: |
+          sed -e "s|<plugin_contact_recipient>|test@example.com|g" \
+              -e "s|<plugin_contact_csrf_secret>|test-csrf-secret|g" \
+              -e "s|<plugin_contact_captcha_secret>|test-captcha-secret|g" \
+              website/site/config/main.dist.php > website/site/config/main.php
+
       - name: Test code with Codeception
         run: vendor/bin/codecept run
 
@@ -76,10 +83,12 @@ jobs:
 
       - name: Configure SMTP secrets
         run: |
-          sed -i "s|<smtp_host>|${{ secrets.SMTP_HOST }}|g" website/site/config/main.dist.php
-          sed -i "s|<smtp_username>|${{ secrets.SMTP_USERNAME }}|g" website/site/config/main.dist.php
-          sed -i "s|<smtp_password>|${{ secrets.SMTP_PASSWORD }}|g" website/site/config/main.dist.php
-          sed -i "s|<smtp_recipient>|${{ secrets.SMTP_RECIPIENT }}|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_smtp_host>|${{ secrets.SMTP_HOST }}|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_smtp_username>|${{ secrets.SMTP_USERNAME }}|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_smtp_password>|${{ secrets.SMTP_PASSWORD }}|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_recipient>|${{ secrets.SMTP_RECIPIENT }}|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_csrf_secret>|$(openssl rand -hex 32)|g" website/site/config/main.dist.php
+          sed -i "s|<plugin_contact_captcha_secret>|$(openssl rand -hex 32)|g" website/site/config/main.dist.php
 
       - name: Deploy main.php to site config
         run: cp website/site/config/main.dist.php website/site/config/main.php
