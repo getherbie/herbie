@@ -232,12 +232,12 @@ final class WebsiteCest
         $I->see('Twig Functions', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 1);
-        $I->seeNumberOfElements('.content>div>h2', 22);
+        $I->seeNumberOfElements('.content>div>h2', 23);
         $I->seeNumberOfElements('.content>p', 2);
-        $I->seeNumberOfElements('.content>div>p', 22);
+        $I->seeNumberOfElements('.content>div>p', 23);
         #$I->seeNumberOfElements('.content>div>div', 3);
-        $I->seeNumberOfElements('.content>div>pre', 22);
-        $I->seeNumberOfElements('.content>div>table', 22);
+        $I->seeNumberOfElements('.content>div>pre', 23);
+        $I->seeNumberOfElements('.content>div>table', 23);
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/functions/index.html');
     }
 

@@ -43,8 +43,8 @@ They are registered with the `Application` class.
 ~~~php
 $app->addApplicationMiddleware(new CustomHeader('one'));
 
-// a class name works as well
-$app->addApplicationMiddleware(CustomHeader::class);
+// a class name of a middleware without constructor arguments works as well
+$app->addApplicationMiddleware(\herbie\middlewares\ResponseTimeMiddleware::class);
 ~~~
 
 Application middlewares can also be added through a plugin with the `applicationMiddlewares()` method, or by placing a PHP file that returns a middleware in the `site/extend/middlewares_app` directory, one middleware per file.
@@ -59,11 +59,11 @@ Route middlewares only run for requests that match a given route.
 They are registered with a route regular expression and a middleware.
 
 ~~~php
-$app->addRouteMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass'], $app->getResponseFactory()));
+$app->addRouteMiddleware('^news/', new HttpBasicAuthMiddleware(['user' => 'pass'], $app->getResponseFactory()));
 ~~~
 
-The route is a regular expression that is matched against the request route.
-The expression is anchored at both ends, a partial match is not sufficient.
+The route is a regular expression that is matched against the request route with `preg_match`.
+The expression is not anchored automatically, so start it with `^` if it must match at the beginning.
 In the example above, only requests to routes below `news/` require authentication.
 
 Route middlewares can also be added through a plugin with the `routeMiddlewares()` method, or by placing a PHP file in the `site/extend/middlewares_route` directory.

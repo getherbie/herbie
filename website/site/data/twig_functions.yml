@@ -468,6 +468,18 @@
   return:
     - string
     - The translated message
+- name: twigify
+  code: >-
+    {{ twigify("Hello {{ page.title }}") }}
+  desc: Renders a string with Twig and returns the result.
+  params:
+    - name: content
+      type: string
+      desc: The string to render with Twig.
+      default: ''
+  return:
+    - string
+    - The rendered string
 - name: url_rel
   code: >-
     {{ url_rel("doc/contents") }}

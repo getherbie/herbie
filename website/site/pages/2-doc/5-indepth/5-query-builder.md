@@ -46,7 +46,7 @@ In Twig the same query builder can be instantiated using the `query` function.
 {{ '{{' }} dump(query(data).where("layout=default").offset(1).limit(1).order('title').all()) {{ '}}' }} 
 ~~~
 
-Some list entites also have a built-in query method, so the query builder can be used as follows.
+Some list entities also have a built-in query method, so the query builder can be used as follows.
 
 ~~~twig
 {{ '{{' }} dump(site.page_list.query().where("layout=default").all()) {{ '}}' }} 
@@ -121,10 +121,11 @@ You can chain where clauses, filtering records based on more than one condition 
 {{ '{{' }} dump(query(data).where("layout=default").where("title*=news").where("hidden=false")) {{ '}}' }} 
 ~~~
 
-Values are type hinted according to the type of the field and one of the scalar types bool, float, int, or string.
+In the string format, values are compared as strings; `true` and `false` are converted when the field is boolean.
+Use the hash format for numeric values.
 
 ~~~twig
-{{ '{{' }} dump(query(data).where("hidden=false", "size=14.25", "age=24", "layout=default")) {{ '}}' }} 
+{{ '{{' }} dump(query(data).where({hidden: false, age: 24, size: 14.25, layout: "default"})) {{ '}}' }}
 ~~~
 
 #### Multiple Fields
@@ -135,7 +136,8 @@ If you want to match a value in one field or another, you may specify multiple f
 {{ '{{' }} dump(query(data).where("name|title|menu_title=product")) {{ '}}' }} 
 ~~~
 
-Using the above syntax, the condition will match any data that have a name, title, or menu_title field of "product" or "Product".
+Using the above syntax, the condition matches data whose `name`, `title`, or `menu_title` field has the exact value `product`.
+Matching is case-sensitive.
 
 #### Multiple Values
 

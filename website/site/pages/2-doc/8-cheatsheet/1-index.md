@@ -259,7 +259,7 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ site.page_list.query().where('layout=doc').sortBy('title') }}
+{{ site.page_list.query().where('layout=doc').order('title') }}
 ~~~
 {% endverbatim %}
 

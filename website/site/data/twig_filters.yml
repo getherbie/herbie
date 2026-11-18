@@ -20,10 +20,10 @@
   return:
     - string
     - The input without whitespace between HTML tags
-- name: visible
+- name: twigify
   code: >-
-    {{ site.page_tree|visible }}
-  desc: Filters the page tree by visible and active page items.
+    {{ "Hello {{ page.title }}"|twigify }}
+  desc: Renders a string with Twig and returns the result.
   return:
-    - pageTree
-    - The filtered page tree
+    - string
+    - The rendered string

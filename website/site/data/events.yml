@@ -6,7 +6,7 @@
   desc: Triggered after layout was rendered
   order: 2  
 - name: PluginsInitializedEvent
-  desc: Triggered after plugins where initialized
+  desc: Triggered after plugins were initialized
   order: 3
 - name: ResponseGeneratedEvent
   desc: Triggered after HTTP Response was generated
@@ -27,5 +27,5 @@
   desc: Triggered after translator was initialized
   order: 9  
 - name: TwigInitializedEvent
-  desc: Triggered after twig was initialized
+  desc: Triggered after Twig was initialized
   order: 10  

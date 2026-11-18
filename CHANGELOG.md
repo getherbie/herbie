@@ -30,6 +30,8 @@ All notable changes to this project will be documented in this file.
 - The Contents chapter was revised: examples use the default layout extension, special pages set `layout: ""` and `content_type`, the page variable reference exists only once, and the Markdown page no longer duplicates the CommonMark option reference.
 - The Layouts page now documents `.twig` layout files, the layout extension configured with `fileExtensions.layouts`, and rendering segments with `content.<id>|raw` instead of the outdated `content()` function.
 - The remaining layout examples in the Contents chapter, the First Steps chapter and the cheat sheet follow the same conventions.
+- The Indepth chapter now matches the implementation: route middleware regular expressions are not anchored automatically, query builder examples use the hash format for numeric values, the removed `visible` filter is no longer listed, `twigify` is documented, and the event descriptions are corrected.
+- The cheat sheet uses the query builder's `order()` method instead of the non-existent `sortBy()`. The Indepth page files use the same `1-index.md` naming as the other chapters.
 - The parameter of the Twig functions `url_abs` and `url_rel` is marked as required. It was documented with an empty default, but `UrlManager::createUrl()` has never resolved an empty route to the current route. The `TODO` in `createUrl()` promised exactly that, so it is replaced by a description of what the method does.
 
 ### Removed
