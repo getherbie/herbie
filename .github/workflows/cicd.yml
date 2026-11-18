@@ -1,13 +1,17 @@
 # GitHub Action for Herbie
 name: CI/CD for Herbie
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 jobs:
   test:
     name: CI - Analyse & Test
     strategy:
       matrix:
-        # operating-systems: ubuntu-latest, windows-latest, macos-latest
-        operating-system: [ubuntu-latest, macos-latest]
+        # macOS runners are expensive: only test on release tags and manual runs,
+        # Ubuntu is sufficient for regular pushes and pull requests.
+        operating-system: ${{ (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch') && fromJSON('["ubuntu-latest", "macos-latest"]') || fromJSON('["ubuntu-latest"]') }}
         php-versions: ['8.3', '8.4', '8.5']
     runs-on: ${{ matrix.operating-system }}
     steps:
