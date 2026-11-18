@@ -175,18 +175,20 @@ final class ContactPlugin extends AbstractPlugin
 
     private function validateFormData(array $data): array
     {
-        extract($data);
-
         $errors = [];
-        if (empty($name)) {
+        $name = (string)($data['name'] ?? '');
+        $email = (string)($data['email'] ?? '');
+        $message = (string)($data['message'] ?? '');
+
+        if (trim($name) === '') {
             $errors['name'] = $this->translator->t('contact', 'errorEmptyField');
         }
-        if (empty($email)) {
+        if (trim($email) === '') {
             $errors['email'] = $this->translator->t('contact', 'errorEmptyField');
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             $errors['email'] = $this->translator->t('contact', 'errorInvalidEmail');
         }
-        if (empty($message)) {
+        if (trim($message) === '') {
             $errors['message'] = $this->translator->t('contact', 'errorEmptyField');
         }
 
@@ -204,14 +206,16 @@ final class ContactPlugin extends AbstractPlugin
             'message' => '',
             'antispam' => '',
         ];
-        $definition = [
-            'name' => FILTER_SANITIZE_STRING,
-            'email' => FILTER_SANITIZE_EMAIL,
-            'message' => FILTER_SANITIZE_STRING,
-            'antispam' => FILTER_SANITIZE_STRING,
-        ];
-        $filtered = (array)filter_var_array($input, $definition);
-        return array_merge($defaults, $filtered);
+        $filtered = $defaults;
+        foreach (['name', 'message', 'antispam'] as $field) {
+            if (isset($input[$field]) && is_string($input[$field])) {
+                $filtered[$field] = strip_tags($input[$field]);
+            }
+        }
+        if (isset($input['email']) && is_string($input['email'])) {
+            $filtered['email'] = (string)filter_var($input['email'], FILTER_SANITIZE_EMAIL);
+        }
+        return $filtered;
     }
 
     private function sendEmail(array $data, string $recipient): bool
@@ -262,7 +266,7 @@ final class ContactPlugin extends AbstractPlugin
 
     private function createRedirectResponse(string $route, string $status): ResponseInterface
     {
-        $url = $this->urlManager->createAbsoluteUrl($route) . '?status=' . $status;
+        $url = $this->urlManager->createAbsoluteUrl($route) . '?status=' . rawurlencode($status);
         return $this->responseFactory->createResponse(303)->withHeader('Location', $url);
     }
 
