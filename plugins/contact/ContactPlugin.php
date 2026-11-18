@@ -413,13 +413,14 @@ final class ContactPlugin extends AbstractPlugin
      */
     private function getHoneypotFields(): array
     {
-        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'sendcopy'];
+        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'sendCopy'];
+        $normalizedReserved = array_map('strtolower', $reserved);
         $fields = [];
         foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
             if (
                 is_string($field)
                 && preg_match('/^[A-Za-z][A-Za-z0-9_-]*$/', $field) === 1
-                && !in_array(strtolower($field), $reserved, true)
+                && !in_array(strtolower($field), $normalizedReserved, true)
             ) {
                 $fields[] = $field;
             }
