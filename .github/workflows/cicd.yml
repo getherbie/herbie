@@ -53,10 +53,10 @@ jobs:
 
       - name: Prepare test config
         run: |
-          cp website/site/config/main.dist.php website/site/config/main.php
-          sed -i "s|<plugin_contact_recipient>|test@example.com|g" website/site/config/main.php
-          sed -i "s|<plugin_contact_csrf_secret>|test-csrf-secret|g" website/site/config/main.php
-          sed -i "s|<plugin_contact_captcha_secret>|test-captcha-secret|g" website/site/config/main.php
+          sed -e "s|<plugin_contact_recipient>|test@example.com|g" \
+              -e "s|<plugin_contact_csrf_secret>|test-csrf-secret|g" \
+              -e "s|<plugin_contact_captcha_secret>|test-captcha-secret|g" \
+              website/site/config/main.dist.php > website/site/config/main.php
 
       - name: Test code with Codeception
         run: vendor/bin/codecept run
