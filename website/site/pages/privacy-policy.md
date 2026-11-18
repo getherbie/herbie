@@ -1,8 +1,8 @@
 ---
-title: Datenschutzhinweise
+title: Privacy Policy
 ---
 
-# Datenschutzhinweise
+# Privacy Policy
 
 ## Datenschutz
 

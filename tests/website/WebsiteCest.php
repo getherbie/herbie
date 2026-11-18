@@ -362,7 +362,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/contact');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Contact', 'h1');
+        $I->see('Contact us', 'h1');
         $I->seeNumberOfElements('.contact', 1);
         $I->seeElement('.contact-form');
         $I->seeElement('.contact-input[id=name]');
@@ -378,7 +378,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/privacy-policy');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Datenschutzhinweise', 'h1');
+        $I->see('Privacy Policy', 'h1');
         $I->seeNumberOfElements('.content>h2', 2);
         $I->seeNumberOfElements('.content>p', 7);
         $this->testLayoutDefault($I);
