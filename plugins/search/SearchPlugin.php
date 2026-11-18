@@ -203,9 +203,11 @@ final class SearchPlugin extends AbstractPlugin
     private function match(string $query, array $terms, array $data, bool $exact): bool
     {
         if ($exact) {
-            // Exact search: the full query must appear as a contiguous phrase.
+            // Exact search: the full query must appear as a contiguous phrase
+            // bounded by word boundaries (case-insensitive).
+            $pattern = '/\b' . preg_quote($query, '/') . '\b/i';
             foreach ($data as $part) {
-                if (!empty($part) && stripos($part, $query) !== false) {
+                if (!empty($part) && preg_match($pattern, $part) === 1) {
                     return true;
                 }
             }
