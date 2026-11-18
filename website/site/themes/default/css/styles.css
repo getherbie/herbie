@@ -1042,6 +1042,12 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
     color: var(--text-muted);
     margin-top: 0.1em;
 }
+.plugin-search-results .snippet .date {
+    color: var(--text-muted);
+    font-size: 0.85em;
+    margin-right: 0.35em;
+    white-space: nowrap;
+}
 .plugin-search-results .snippet {
     margin-top: 0.55em;
     font-size: 0.9em;
