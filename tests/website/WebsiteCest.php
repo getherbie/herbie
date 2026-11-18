@@ -379,8 +379,8 @@ final class WebsiteCest
         $I->amOnPage('/privacy-policy');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Privacy Policy', 'h1');
-        $I->seeNumberOfElements('.content>h2', 2);
-        $I->seeNumberOfElements('.content>p', 7);
+        $I->seeNumberOfElements('.content>h2', 1);
+        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 
