@@ -3,14 +3,15 @@ title: Create Pages
 layout: doc
 ---
 
-# Create pages
+# Create Pages
 
 ## The pages directory
 
 All pages of a Herbie website are stored in the directory `site/pages` as plain text files.
-These text files can be plain text, markdown, textile or HTML files.
+These text files can be Markdown, Textile, reStructuredText, HTML, plain text, XML or RSS files.
+The supported file extensions are listed below.
 
-In order for Herbie to recognize these files and convert them to HTML, they must contain a block of page properties in the header of the file.
+In order for Herbie to recognize these files as pages, they must contain a [page properties block](doc/contents/page-properties) in the header of the file.
 
 ## Allowed files
 
@@ -53,7 +54,7 @@ If you follow the above rules, you will get nicely readable and working links to
 
 ## Homepage
 
-As the only file in the `site/pages` directory, Herbie expects an index file with one of the above extensions.
+As the only required file in the `site/pages` directory, Herbie expects an index file with one of the above extensions.
 This file takes over the function of the homepage or start page and is displayed when *http://www.example.com* is called in the browser.
 If the index file is missing, a 404 error page is displayed.
 
@@ -94,6 +95,7 @@ For large websites, there is no way around additional sub folders and text files
 ## Visibility and sorting
 
 By prefixing files with a number followed by a hyphen, you can control sorting and visibility in menus.
+Pages without a number prefix are hidden by default.
 It looks like this, for example:
 
 ~~~text
@@ -111,6 +113,7 @@ The pages *sitemap* and *imprint* are not visible in menus and sorting is theref
 **Note:** For folders, the preceding number only affects the sorting, but not the visibility.
 
 The visibility of folders is controlled by the index file in the folders.
+The default can be overridden for any page with `hidden: true` or `hidden: false` in the page properties.
 
 ## Disable page or folder
 

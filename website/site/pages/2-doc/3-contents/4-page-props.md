@@ -1,9 +1,9 @@
 ---
-title: Structure of a page
+title: Structure of a Page
 layout: doc
 ---
 
-# Structure of a page
+# Structure of a Page
 
 In the previous chapters it was explained that a page corresponds to a text file in the page directory.
 In the simplest case, a text file looks something like this:
@@ -23,11 +23,11 @@ Herbie creates a page title and adds the text to the default content segment bel
 Unfortunately, most websites are not that simple.
 Usually they are based on multi-column layouts that you want to fill independently.
 This can be achieved with Herbie by using named content segments.
-A named content segment is defined with three minus signs followed by a string and another three minus signs, for example:
+A named content segment is defined by three hyphens, a space, the segment ID, a space and another three hyphens, for example:
 
-```yaml
+~~~text
 --- sidebar ---
-```
+~~~
 
 The following text is then assigned to the content segment with ID sidebar.
 Let's look at a slightly more complicated example:
@@ -81,4 +81,4 @@ If no segment was specified in the page file, the default name must be used.
 ```
 {% endverbatim %}
 
-An illustrative example can also be found in the website repository at GitHub.
+An illustrative example can also be found in the [website repository on GitHub](https://github.com/getherbie/website).

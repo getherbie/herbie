@@ -7,7 +7,8 @@ twig: false
 # Special Pages
 
 Some pages need to keep their file extension in the URL, for example XML, TXT or RSS files.
-Set `keep_extension: true` in the frontmatter for these.
+Set `keep_extension: true` in the page properties block for these.
+Set `layout: ""` so the content is not wrapped in an HTML layout, and `content_type` to the MIME type of the response.
 These examples help search engines discover and index your content (SEO) and provide feeds or crawler instructions.
 
 ## sitemap.xml
@@ -19,8 +20,9 @@ Create a page `site/pages/sitemap.xml`:
 ~~~xml
 ---
 title: Sitemap
+layout: ""
 keep_extension: true
-type: xml
+content_type: text/xml
 ---
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,8 +44,9 @@ Create a page `site/pages/robots.txt`:
 ~~~text
 ---
 title: Robots
+layout: ""
 keep_extension: true
-type: txt
+content_type: text/plain
 ---
 
 User-agent: *
@@ -60,8 +63,9 @@ Create a page `site/pages/atom.xml`:
 ~~~xml
 ---
 title: Atom
+layout: ""
 keep_extension: true
-type: xml
+content_type: text/xml
 ---
 
 <?xml version="1.0" encoding="UTF-8"?>

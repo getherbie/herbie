@@ -33,7 +33,7 @@
   desc: A tree of all available pages.
   type: Traversable
 - name: site.route
-  desc: The requested route to, i.e. `documentation/variables`.
+  desc: The requested route, i.e. `doc/contents/variables`.
   type: string
 - name: site.route_params
   desc: The requested route params.

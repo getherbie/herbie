@@ -35,6 +35,7 @@ More details on these variables are provided below.
 
 ## Page variables
 
+Page variables are defined in the [page properties block](doc/contents/page-properties).
 {{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
 
 ## Site variables

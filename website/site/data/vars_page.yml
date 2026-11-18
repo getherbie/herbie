@@ -20,8 +20,8 @@
     This value is not set automatically.
   type: string
 - name: page.date
-  desc: The date of the page. 
-    The modification date or an explicitly set date.
+  desc: The date of the page.
+    Set explicitly, taken from a date prefix in the file name, or the modification date.
   type: string
 - name: page.excerpt
   desc: The excerpt of the page body.
@@ -31,7 +31,8 @@
     Is set automatically depending on the file extension.
   type: string
 - name: page.hidden
-  desc: If set the page is not visible in navigation elements like sitemap or breadcrumb.
+  desc: If true the page is not visible in navigation elements like menu, sitemap or breadcrumb.
+    Pages without a numeric prefix are hidden by default.
   type: bool
 - name: page.id
   desc: The aliased ID of the page like `@page/2-company/3-about-us.md`.
@@ -42,8 +43,8 @@
   default: false
   type: bool
 - name: page.layout
-  desc: The layout as basename (without file extension). 
-    Layout files are located in folder `site/themes/`.
+  desc: The layout as basename (without file extension).
+    Layout files are located in the configured theme directory under `site/themes/`; the extension is set with `fileExtensions.layouts` (default is `twig`).
   type: string
 - name: page.menu_title
   desc: The title for menu elements like sitemap or breadcrumb. 
@@ -60,10 +61,10 @@
   desc: The parent route of the page like `company`.
   type: string
 - name: page.path
-  desc: The path to the page file, set per default.
+  desc: The path to the page file, set automatically.
   type: string
 - name: page.redirect
-  desc: If set the request will be redirected to the given page.
+  desc: If set the request will be redirected to the given route. Either a route or an array of route and HTTP status code.
   type: string|array
 - name: page.route
   desc: The route of the page like `company/about-us`.

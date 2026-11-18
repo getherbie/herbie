@@ -10,8 +10,8 @@ plugin. The plugin is based on the library
 [league/commonmark](https://commonmark.thephpleague.com), which implements the
 [CommonMark specification](https://spec.commonmark.org/).
 
-The default flavour `commonmark` implements the specification only. Constructs such as tables,
-task lists and footnotes require a different flavour, see [Markdown flavour](#markdown-flavour)
+The default flavor `commonmark` implements the specification only. Constructs such as tables,
+task lists and footnotes require a different flavor, see [Markdown flavor](#markdown-flavor)
 below.
 
 ## Configuration
@@ -67,7 +67,7 @@ return [
     </tbody>
 </table>
 
-## Markdown flavour
+## Markdown flavor
 
 The option `flavor` selects the set of CommonMark extensions. An unknown value falls back to
 `commonmark` without an error message.
@@ -82,11 +82,11 @@ The option `flavor` selects the set of CommonMark extensions. An unknown value f
     <tbody>
         <tr>
             <td><code>commonmark</code></td>
-            <td>The [CommonMark specification](https://spec.commonmark.org/). This is the default.</td>
+            <td>The <a href="https://spec.commonmark.org/">CommonMark specification</a>. This is the default.</td>
         </tr>
         <tr>
             <td><code>gfm</code></td>
-            <td>[GitHub Flavored Markdown](https://github.github.com/gfm/): adds autolinks, tables, strikethrough, task lists and filtered raw HTML.</td>
+            <td><a href="https://github.github.com/gfm/">GitHub Flavored Markdown</a>: adds autolinks, tables, strikethrough, task lists and filtered raw HTML.</td>
         </tr>
         <tr>
             <td><code>markdown-extra</code></td>
@@ -110,218 +110,15 @@ return [
 ## Parser options
 
 Every option of `league/commonmark` can be used in `plugins.markdown.commonmark`. The values are
-passed to the parser environment unchanged. A complete reference is available at
-<https://commonmark.thephpleague.com/2.10/configuration/>.
+passed to the parser environment unchanged. A complete reference is available in the
+[CommonMark documentation](https://commonmark.thephpleague.com/2.10/configuration/).
+
+Herbie sets `html_input` to `allow` and `allow_unsafe_links` to `true` by default, as shown above.
+Further options such as `max_nesting_level`, the `renderer.*` options or the options of the
+`gfm` and `markdown-extra` extensions are described in the CommonMark reference.
 
 Please note that a misspelled **option name** is silently ignored, while an invalid **value**
 throws an exception.
-
-### Available for all flavours
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Option</th>
-            <th>Default</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>html_input</code></td>
-            <td><code>allow</code></td>
-            <td><code>allow</code> renders raw HTML, <code>escape</code> shows it as text, <code>strip</code> removes it</td>
-        </tr>
-        <tr>
-            <td><code>allow_unsafe_links</code></td>
-            <td><code>true</code></td>
-            <td>If <code>false</code>, links like <code>javascript:</code> or <code>data:</code> are removed</td>
-        </tr>
-        <tr>
-            <td><code>max_nesting_level</code></td>
-            <td><code>PHP_INT_MAX</code></td>
-            <td>Maximum depth of nested elements</td>
-        </tr>
-        <tr>
-            <td><code>max_delimiters_per_line</code></td>
-            <td><code>PHP_INT_MAX</code></td>
-            <td>Maximum number of inline delimiters per line</td>
-        </tr>
-        <tr>
-            <td><code>renderer.block_separator</code></td>
-            <td><code>"\n"</code></td>
-            <td>Separator between rendered blocks</td>
-        </tr>
-        <tr>
-            <td><code>renderer.inner_separator</code></td>
-            <td><code>"\n"</code></td>
-            <td>Separator between inner elements</td>
-        </tr>
-        <tr>
-            <td><code>renderer.soft_break</code></td>
-            <td><code>"\n"</code></td>
-            <td>Replacement for a soft line break</td>
-        </tr>
-        <tr>
-            <td><code>slug_normalizer.instance</code></td>
-            <td><code>SlugNormalizer</code></td>
-            <td>Normalizer for heading ids</td>
-        </tr>
-        <tr>
-            <td><code>slug_normalizer.max_length</code></td>
-            <td><code>255</code></td>
-            <td>Maximum length of a heading id</td>
-        </tr>
-        <tr>
-            <td><code>slug_normalizer.unique</code></td>
-            <td><code>document</code></td>
-            <td><code>disabled</code>, <code>document</code> or <code>environment</code></td>
-        </tr>
-        <tr>
-            <td><code>slug_normalizer.reserved</code></td>
-            <td><code>[]</code></td>
-            <td>Reserved heading ids</td>
-        </tr>
-        <tr>
-            <td><code>xml.max_indentation_level</code></td>
-            <td><code>16</code></td>
-            <td>Indentation of the XML renderer</td>
-        </tr>
-    </tbody>
-</table>
-
-### Additional options for the flavour `gfm`
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Option</th>
-            <th>Default</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>autolink.allowed_protocols</code></td>
-            <td><code>["http", "https", "ftp"]</code></td>
-            <td>Protocols that are turned into links</td>
-        </tr>
-        <tr>
-            <td><code>autolink.default_protocol</code></td>
-            <td><code>http</code></td>
-            <td>Protocol for URLs without one, e.g. <code>www.example.com</code></td>
-        </tr>
-        <tr>
-            <td><code>table.wrap.enabled</code></td>
-            <td><code>false</code></td>
-            <td>Wraps every table in an element</td>
-        </tr>
-        <tr>
-            <td><code>table.wrap.tag</code></td>
-            <td><code>div</code></td>
-            <td>Tag of the wrapper</td>
-        </tr>
-        <tr>
-            <td><code>table.wrap.attributes</code></td>
-            <td><code>[]</code></td>
-            <td>Attributes of the wrapper</td>
-        </tr>
-        <tr>
-            <td><code>table.alignment_attributes.left</code></td>
-            <td><code>["align" =&gt; "left"]</code></td>
-            <td>Attributes for left aligned cells</td>
-        </tr>
-        <tr>
-            <td><code>table.alignment_attributes.center</code></td>
-            <td><code>["align" =&gt; "center"]</code></td>
-            <td>Attributes for centered cells</td>
-        </tr>
-        <tr>
-            <td><code>table.alignment_attributes.right</code></td>
-            <td><code>["align" =&gt; "right"]</code></td>
-            <td>Attributes for right aligned cells</td>
-        </tr>
-        <tr>
-            <td><code>table.max_autocompleted_cells</code></td>
-            <td><code>10000</code></td>
-            <td>Limit for auto-completed cells of a table</td>
-        </tr>
-        <tr>
-            <td><code>disallowed_raw_html.disallowed_tags</code></td>
-            <td><code>title</code>, <code>textarea</code>, <code>style</code>, <code>xmp</code>, <code>iframe</code>, <code>noembed</code>, <code>noframes</code>, <code>script</code>, <code>plaintext</code></td>
-            <td>These HTML tags are escaped</td>
-        </tr>
-    </tbody>
-</table>
-
-### Additional options for the flavour `markdown-extra`
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Option</th>
-            <th>Default</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>table.*</code></td>
-            <td>–</td>
-            <td>The same table options as in <code>gfm</code></td>
-        </tr>
-        <tr>
-            <td><code>attributes.allow</code></td>
-            <td><code>[]</code></td>
-            <td>Attribute names that are allowed, e.g. <code>['id', 'class']</code></td>
-        </tr>
-        <tr>
-            <td><code>footnote.backref_class</code></td>
-            <td><code>footnote-backref</code></td>
-            <td>CSS class of the back reference</td>
-        </tr>
-        <tr>
-            <td><code>footnote.backref_symbol</code></td>
-            <td><code>↩</code></td>
-            <td>Symbol of the back reference</td>
-        </tr>
-        <tr>
-            <td><code>footnote.container_add_hr</code></td>
-            <td><code>true</code></td>
-            <td>Adds a horizontal rule above the footnotes</td>
-        </tr>
-        <tr>
-            <td><code>footnote.container_class</code></td>
-            <td><code>footnotes</code></td>
-            <td>CSS class of the footnote container</td>
-        </tr>
-        <tr>
-            <td><code>footnote.enable_inline_footnotes</code></td>
-            <td><code>true</code></td>
-            <td>Allows inline footnotes</td>
-        </tr>
-        <tr>
-            <td><code>footnote.ref_class</code></td>
-            <td><code>footnote-ref</code></td>
-            <td>CSS class of the footnote reference</td>
-        </tr>
-        <tr>
-            <td><code>footnote.ref_id_prefix</code></td>
-            <td><code>fnref:</code></td>
-            <td>Prefix of the reference id</td>
-        </tr>
-        <tr>
-            <td><code>footnote.footnote_class</code></td>
-            <td><code>footnote</code></td>
-            <td>CSS class of the footnote</td>
-        </tr>
-        <tr>
-            <td><code>footnote.footnote_id_prefix</code></td>
-            <td><code>fn:</code></td>
-            <td>Prefix of the footnote id</td>
-        </tr>
-    </tbody>
-</table>
 
 ### Restricting raw HTML
 
@@ -356,9 +153,9 @@ In addition to page content, the parser is available in Twig templates as filter
 Both are registered by default and can be disabled with `enableTwigFilter` and
 `enableTwigFunction`.
 
-## Supported constructs per flavour
+## Supported constructs per flavor
 
-The following table shows which markdown constructs are available in each flavour.
+The following table shows which markdown constructs are available in each flavor.
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -431,8 +228,8 @@ Two details are worth pointing out:
 
 - **HTML entities** such as `&copy;` are decoded and output as the character `©`. This rarely
   changes what the visitor sees, but it changes the generated markup.
-- **Footnotes** with the `[^1]` syntax are only supported by the flavour `markdown-extra`. With
-  the other flavours the caret is treated as the first character of the link target, so `[^1]`
+- **Footnotes** with the `[^1]` syntax are only supported by the flavor `markdown-extra`. With
+  the other flavors the caret is treated as the first character of the link target, so `[^1]`
   becomes a link to `1`.
 
 ### Raw HTML blocks
@@ -443,9 +240,9 @@ HTML:
 
 ~~~html
 <div>
-Absatz 1
+Paragraph 1
 
-Absatz 2
+Paragraph 2
 </div>
 ~~~
 

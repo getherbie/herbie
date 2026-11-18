@@ -92,8 +92,7 @@ final class WebsiteCest
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 2);
         $I->seeNumberOfElements('.content>p', 8);
-        $I->seeNumberOfElements('.content>pre', 5);
-        $I->seeNumberOfElements('.content>table', 1);
+        $I->seeNumberOfElements('.content>pre', 4);
     }
 
     public function testDocContentsCreatePages(AcceptanceTester $I)
@@ -101,7 +100,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/doc/contents/create-pages');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Create pages', 'h1');
+        $I->see('Create Pages', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 8);
         $I->seeNumberOfElements('.content>p', 16);
@@ -115,7 +114,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/doc/contents/page-props');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Structure of a page', 'h1');
+        $I->see('Structure of a Page', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 2);
         $I->seeNumberOfElements('.content>p', 8);
@@ -130,7 +129,7 @@ final class WebsiteCest
         $I->see('Variables', 'h1');
         $I->see('On this page', '.toc-title');
         $I->seeNumberOfElements('.content>h2', 4);
-        $I->seeNumberOfElements('.content>p', 4);
+        $I->seeNumberOfElements('.content>p', 5);
         $I->seeNumberOfElements('.content>pre', 1);
         $I->seeNumberOfElements('.content>table', 4);
     }
