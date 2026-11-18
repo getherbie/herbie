@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Static architecture analysis with Deptrac (`deptrac.php`, `composer deptrac`), which is part of `composer test`. It ensures that the core does not depend on plugins and that plugins only use the public extension API.
 - New `spaceless` Twig filter. It replaces the Twig filter of the same name that is deprecated since Twig 3.12 and keeps the output of existing templates unchanged.
 
 ### Changed

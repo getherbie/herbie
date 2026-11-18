@@ -55,6 +55,9 @@ jobs:
       - name: Analyse code with PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
 
+      - name: Check architecture with Deptrac
+        run: vendor/bin/deptrac analyse --no-progress --formatter=github-actions
+
       - name: Prepare test config
         run: |
           sed -e "s|<plugin_contact_recipient>|test@example.com|g" \
