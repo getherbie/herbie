@@ -391,7 +391,7 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Imprint', 'h1');
         $I->seeNumberOfElements('.content>h2', 3);
-        $I->seeNumberOfElements('.content>p', 8);
+        $I->seeNumberOfElements('.content>p', 4);
         $this->testLayoutDefault($I);
     }
 
