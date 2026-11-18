@@ -29,7 +29,7 @@ Aliased template path to custom form template:
 
     template: (string)
 
-CSRF signing secret (change the default in production):
+CSRF signing secret (required; rendering the form fails if it is empty or still a placeholder like <csrf_secret>):
 
     secret: (string)
 

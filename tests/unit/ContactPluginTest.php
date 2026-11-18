@@ -56,6 +56,40 @@ final class ContactPluginTest extends Unit
         $this->assertFalse($method->invoke($plugin, ['csrf_token' => '']));
     }
 
+    public function testCsrfSecretIsRequired(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['secret' => '']],
+        ]));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A non-empty plugins.contact.secret must be configured.');
+        $this->invokePrivate($plugin, 'getCsrfSecret', []);
+    }
+
+    public function testCsrfSecretPlaceholderIsRejected(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['secret' => '<csrf_secret>']],
+        ]));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A non-empty plugins.contact.secret must be configured.');
+        $this->invokePrivate($plugin, 'getCsrfSecret', []);
+    }
+
+    public function testCsrfSecretReturnsConfiguredValue(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['secret' => 'configured-secret']],
+        ]));
+
+        $this->assertSame('configured-secret', $this->invokePrivate($plugin, 'getCsrfSecret', []));
+    }
+
     public function testFilterFormDataSanitizesInput(): void
     {
         $plugin = $this->createUninitializedPlugin();

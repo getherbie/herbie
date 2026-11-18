@@ -186,7 +186,6 @@ final class ContactPlugin extends AbstractPlugin
 
     private function getCsrfSecret(): string
     {
-        $secret = '';
         try {
             $secret = $this->config->getAsString('plugins.contact.secret', '');
         } catch (Throwable) {
@@ -196,7 +195,12 @@ final class ContactPlugin extends AbstractPlugin
         if ($secret !== '' && str_starts_with($secret, '<') && str_ends_with($secret, '>')) {
             $secret = '';
         }
-        return $secret !== '' ? $secret : 'change-this-to-a-random-secret';
+
+        if ($secret === '') {
+            throw new \RuntimeException('A non-empty plugins.contact.secret must be configured.');
+        }
+
+        return $secret;
     }
 
     private function getFormData(): array
