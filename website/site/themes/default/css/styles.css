@@ -1038,7 +1038,7 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
     word-break: break-all;
 }
 .plugin-search-results .date {
-    font-size: 0.78em;
+    font-size: 0.9em;
     color: var(--text-muted);
     margin-top: 0.1em;
 }
