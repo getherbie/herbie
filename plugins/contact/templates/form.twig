@@ -59,14 +59,14 @@
                 {% endif %}
             </div>
 
+            <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
+
             <div class="contact-controls pure-controls">
                 <button type="submit" name="button" value="submit" class="contact-button pure-button">{{ translate('contact', 'buttonSubmit') }}</button>
                 {% if data.message or data.name or data.email %}
                     <button type="submit" name="button" value="reset" class="contact-button contact-secondary-button pure-button">{{ translate('contact', 'buttonReset') }}</button>
                 {% endif %}
             </div>
-
-            <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
         </form>
 
     {% endif %}
@@ -98,6 +98,7 @@
     .contact-form altcha-widget {
         display:block;
         margin-top:1em;
+        --altcha-max-width:100%;
     }
     html[data-theme="dark"] altcha-widget {
         --altcha-color-base: var(--surface, #1e293b);
