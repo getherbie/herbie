@@ -26,12 +26,22 @@ return [
             'formTemplate' => '@plugin/search/templates/form.twig',
             // path to twig results template
             'resultsTemplate' => '@plugin/search/templates/results.twig',
+            // enable the internal search cache (default: true)
+            'useCache' => true,
         ],
     ],
 ];
 ~~~
 
 Please note that the above configuration is only part of the overall configuration.
+
+## Behavior
+
+- **Multi-term queries:** all search terms must match (AND logic).
+- **Exact search:** append `?exact=1` to the URL or use the checkbox in the
+  search form. The full query must then appear as a contiguous phrase.
+- **Excluded pages:** pages with `no_search: true` or `hidden: true` are
+  not indexed.
 
 ## Page properties
 

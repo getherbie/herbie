@@ -283,6 +283,8 @@ Plugin options are set under `plugins.<name>` in `site/config/main.php`.
         'formTemplate' => '@plugin/search/templates/form.twig',
         // path to twig results template
         'resultsTemplate' => '@plugin/search/templates/results.twig',
+        // enable the internal search cache (default: true)
+        'useCache' => true,
     ],
 ],
 ~~~
