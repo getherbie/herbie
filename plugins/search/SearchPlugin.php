@@ -258,12 +258,9 @@ final class SearchPlugin extends AbstractPlugin
         }
 
         // Also skip the page currently being rendered (the search page).
-        $urlManagerProperty = new \ReflectionProperty(self::class, 'urlManager');
-        if ($urlManagerProperty->isInitialized($this)) {
-            [$route] = $this->urlManager->parseRequest();
-            if ($route !== '' && $item->getRoute() === $route) {
-                return true;
-            }
+        [$route] = $this->urlManager->parseRequest();
+        if ($route !== '' && $item->getRoute() === $route) {
+            return true;
         }
 
         return false;
