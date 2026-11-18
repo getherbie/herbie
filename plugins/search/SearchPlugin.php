@@ -155,7 +155,7 @@ final class SearchPlugin extends AbstractPlugin
         $results = [];
 
         foreach ($this->pageRepository->findAll() as $item) {
-            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search) || $item->getHidden() || $this->isSearchPage($item)) {
+            if (($i > $max) || empty($item->getTitle()) || !empty($item->no_search) || $this->isSearchPage($item)) {
                 continue;
             }
             $data = $this->loadPageData($item, $cacheToken);
