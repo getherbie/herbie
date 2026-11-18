@@ -12,6 +12,7 @@ use AltchaOrg\Altcha\SolveChallengeOptions;
 use Codeception\Test\Unit;
 use herbie\Application;
 use herbie\Config;
+use herbie\events\ResponseGeneratedEvent;
 use herbie\Page;
 use herbie\Translator;
 use herbie\PageList;
@@ -51,42 +52,77 @@ final class ContactPluginTest extends Unit
         $plugin = $this->createUninitializedPlugin();
 
         $token = $plugin->csrfToken();
-        $this->assertIsString($token);
-        $this->assertStringContainsString(':', $token);
+        $parts = explode(':', $token);
+        $this->assertCount(3, $parts);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $parts[1]);
 
         $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
-        $method->setAccessible(true);
+        $withCookie = $this->createPluginWithCsrfCookie($parts[1]);
 
-        $this->assertTrue($method->invoke($plugin, ['csrf_token' => $token]));
-        $this->assertFalse($method->invoke($plugin, ['csrf_token' => 'invalid']));
-        $this->assertFalse($method->invoke($plugin, ['csrf_token' => '']));
+        $this->assertTrue($method->invoke($withCookie, ['csrf_token' => $token]));
+        $this->assertFalse($method->invoke($plugin, ['csrf_token' => $token]));
+        $this->assertFalse($method->invoke($withCookie, ['csrf_token' => 'invalid']));
+        $this->assertFalse($method->invoke($withCookie, ['csrf_token' => '']));
+    }
+
+    public function testCsrfTokenBindsToVisitorCookie(): void
+    {
+        $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
+        $visitorA = $this->createPluginWithCsrfCookie(str_repeat('a', 32));
+        $visitorB = $this->createPluginWithCsrfCookie(str_repeat('b', 32));
+        $token = $this->createCsrfToken(str_repeat('a', 32));
+
+        $this->assertTrue($method->invoke($visitorA, ['csrf_token' => $token]));
+        $this->assertFalse($method->invoke($visitorB, ['csrf_token' => $token]));
+    }
+
+    public function testCsrfTokenReusesValidVisitorCookie(): void
+    {
+        $nonce = str_repeat('c', 32);
+        $plugin = $this->createPluginWithCsrfCookie($nonce);
+
+        $parts = explode(':', $plugin->csrfToken());
+        $this->assertSame($nonce, $parts[1]);
+    }
+
+    public function testCsrfCookieIsAddedToResponse(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $nonce = explode(':', $plugin->csrfToken())[1];
+        $event = new ResponseGeneratedEvent((new ResponseFactory())->createResponse());
+
+        $plugin->onResponseGenerated($event);
+        $cookie = $event->getResponse()->getHeaderLine('Set-Cookie');
+
+        $this->assertStringContainsString('herbie_contact_csrf=', $cookie);
+        $this->assertStringContainsString($nonce . ':', $cookie);
+        $this->assertStringContainsString('Path=/', $cookie);
+        $this->assertStringContainsString('Max-Age=900', $cookie);
+        $this->assertStringContainsString('HttpOnly', $cookie);
+        $this->assertStringContainsString('SameSite=Lax', $cookie);
+        $this->assertStringContainsString('Secure', $cookie);
     }
 
     public function testCsrfTokenExpiresAfterFifteenMinutes(): void
     {
-        $plugin = $this->createUninitializedPlugin();
+        $plugin = $this->createPluginWithCsrfCookie(str_repeat('a', 32));
         $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
 
-        $recent = time() - 899;
-        $expired = time() - 901;
-
         $this->assertTrue($method->invoke($plugin, [
-            'csrf_token' => $recent . ':' . hash_hmac('sha256', (string)$recent, 'test-secret'),
+            'csrf_token' => $this->createCsrfToken(str_repeat('a', 32), time() - 899),
         ]));
         $this->assertFalse($method->invoke($plugin, [
-            'csrf_token' => $expired . ':' . hash_hmac('sha256', (string)$expired, 'test-secret'),
+            'csrf_token' => $this->createCsrfToken(str_repeat('a', 32), time() - 901),
         ]));
     }
 
     public function testFutureCsrfTokenIsRejected(): void
     {
-        $plugin = $this->createUninitializedPlugin();
+        $plugin = $this->createPluginWithCsrfCookie(str_repeat('a', 32));
         $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
 
-        $future = time() + 10;
-
         $this->assertFalse($method->invoke($plugin, [
-            'csrf_token' => $future . ':' . hash_hmac('sha256', (string)$future, 'test-secret'),
+            'csrf_token' => $this->createCsrfToken(str_repeat('a', 32), time() + 10),
         ]));
     }
 
@@ -378,7 +414,7 @@ final class ContactPluginTest extends Unit
         $this->setPrivateProperty($plugin, 'config', new Config([
             'plugins' => ['contact' => [
                 'csrf' => ['secret' => 'test-secret'],
-                'honeypots' => ['company', 'email', 'company', ''],
+                'honeypots' => ['company', 'email', 'button', 'bad name', 'company', ''],
             ]],
         ]));
 
@@ -392,6 +428,7 @@ final class ContactPluginTest extends Unit
 
         $this->assertSame('Acme', $filtered['company']);
         $this->assertArrayNotHasKey('phone', $filtered);
+        $this->assertSame(['company'], $this->invokePrivate($plugin, 'getHoneypotFields', []));
 
         // The configured name triggers the honeypot, an old default name does not.
         $this->assertTrue($this->invokePrivate($plugin, 'sendEmail', [
@@ -448,7 +485,8 @@ final class ContactPluginTest extends Unit
 
     public function testConfiguredWindowsAreClamped(): void
     {
-        $plugin = $this->createUninitializedPlugin();
+        $nonce = str_repeat('a', 32);
+        $plugin = $this->createPluginWithCsrfCookie($nonce);
         $method = new ReflectionMethod(ContactPlugin::class, 'isValidCsrfToken');
 
         // Upper bound: 86400 is clamped to 3600, so a 2h-old token is rejected.
@@ -459,7 +497,7 @@ final class ContactPluginTest extends Unit
         ]));
         $old = time() - 7200;
         $this->assertFalse($method->invoke($plugin, [
-            'csrf_token' => $old . ':' . hash_hmac('sha256', (string)$old, 'test-secret'),
+            'csrf_token' => $this->createCsrfToken($nonce, $old),
         ]));
 
         // Lower bounds: 1 is clamped to 60 for both token TTL and max form age.
@@ -471,7 +509,7 @@ final class ContactPluginTest extends Unit
         ]));
         $recent = time() - 30;
         $this->assertTrue($method->invoke($plugin, [
-            'csrf_token' => $recent . ':' . hash_hmac('sha256', (string)$recent, 'test-secret'),
+            'csrf_token' => $this->createCsrfToken($nonce, $recent),
         ]));
         $this->assertTrue($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)$recent]]));
 
@@ -549,11 +587,38 @@ final class ContactPluginTest extends Unit
         $plugin->contact();
     }
 
+    private function createPluginWithCsrfCookie(string $nonce): ContactPlugin
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $signature = hash_hmac('sha256', 'cookie:' . $nonce, 'test-secret');
+        $this->setPrivateProperty(
+            $plugin,
+            'request',
+            (new ServerRequest())
+                ->withUri(new Uri('https://example.com/contact'))
+                ->withCookieParams(['herbie_contact_csrf' => $nonce . ':' . $signature]),
+        );
+
+        return $plugin;
+    }
+
+    private function createCsrfToken(string $nonce, ?int $timestamp = null): string
+    {
+        $timestamp ??= time();
+        $signature = hash_hmac('sha256', 'token:' . $timestamp . ':' . $nonce, 'test-secret');
+        return $timestamp . ':' . $nonce . ':' . $signature;
+    }
+
     private function createUninitializedPlugin(): ContactPlugin
     {
         $plugin = (new ReflectionClass(ContactPlugin::class))->newInstanceWithoutConstructor();
 
         $this->setPrivateProperty($plugin, 'responseFactory', new ResponseFactory());
+        $this->setPrivateProperty(
+            $plugin,
+            'request',
+            (new ServerRequest())->withUri(new Uri('https://example.com/contact')),
+        );
         $this->setPrivateProperty(
             $plugin,
             'urlManager',

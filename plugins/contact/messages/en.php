@@ -6,6 +6,7 @@ return [
     'buttonSubmit' => 'Send form',
     'errorEmptyField' => 'This is a required field',
     'errorInvalidEmail' => 'The entered email is invalid',
+    'labelHoneypot' => 'Leave this field empty: {field}',
     'labelWebsite' => 'Your website',
     'labelPhone' => 'Your phone number',
     'labelEmail' => 'Your email',

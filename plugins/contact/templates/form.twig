@@ -23,10 +23,12 @@
         <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
-            <div class="contact-control-group contact-control-group-honeypot pure-control-group">
-                <label for="website">{{ translate('contact', 'labelWebsite') }}</label>
-                <input class="contact-input pure-input-1" id="website" name="website" type="text" placeholder="" value="{{ data.website }}">
-            </div>
+            {% for field in honeypot_fields %}
+                <div class="contact-control-group contact-control-group-honeypot pure-control-group">
+                    <label for="{{ field }}">{{ translate('contact', 'labelHoneypot', {field: field}) }}</label>
+                    <input class="contact-input pure-input-1" id="{{ field }}" name="{{ field }}" type="text" tabindex="-1" autocomplete="off" placeholder="" value="{{ data[field] }}">
+                </div>
+            {% endfor %}
             <div class="contact-control-group pure-control-group{% if errors.name %} contact-control-group-error{% endif %}">
                 <label for="name">{{ translate('contact', 'labelName') }}</label>
                 <input class="contact-input pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ data.name }}">
@@ -48,14 +50,6 @@
                 <textarea class="contact-input pure-input-1" id="message" name="message" placeholder="" rows="5">{{ data.message }}</textarea>
                 {% if errors.message %}
                     <span class="contact-form-message pure-form-message is-error">{{ errors.message }}</span>
-                {% endif %}
-            </div>
-
-            <div class="contact-control-group contact-control-group-phone pure-control-group{% if errors.phone %} contact-control-group-error{% endif %}">
-                <label for="phone">{{ translate('contact', 'labelPhone') }}</label>
-                <input class="contact-input pure-input-1" id="phone" name="phone" type="text" placeholder="" value="{{ data.phone }}">
-                {% if errors.phone %}
-                    <span class="contact-form-message pure-form-message is-error">{{ errors.phone }}</span>
                 {% endif %}
             </div>
 
@@ -96,7 +90,6 @@
     .contact-control-group {
         margin-bottom: 1em;
     }
-    .contact-control-group-phone,
     .contact-control-group-honeypot {
         display: none;
     }

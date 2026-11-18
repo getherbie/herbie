@@ -10,6 +10,7 @@ use AltchaOrg\Altcha\CreateChallengeOptions;
 use AltchaOrg\Altcha\VerifySolutionOptions;
 use herbie\AbstractPlugin;
 use herbie\Config;
+use herbie\events\ResponseGeneratedEvent;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
@@ -30,6 +31,8 @@ final class ContactPlugin extends AbstractPlugin
 {
     private const CAPTCHA_COUNTER_MIN = 5000;
     private const CAPTCHA_COUNTER_MAX = 10000;
+    private const CSRF_COOKIE_NAME = 'herbie_contact_csrf';
+    private const CSRF_NONCE_PATTERN = '/^[a-f0-9]{32}$/';
     private const DEFAULT_CAPTCHA_COST = 5000;
     private const DEFAULT_CAPTCHA_TTL_SECONDS = 900;
     private const DEFAULT_HONEYPOTS = ['phone', 'website'];
@@ -49,6 +52,7 @@ final class ContactPlugin extends AbstractPlugin
     private UrlManager $urlManager;
     private LoggerInterface $logger;
     private ?string $csrfToken = null;
+    private ?string $csrfCookieValue = null;
 
     public function __construct(
         Config $config,
@@ -80,8 +84,33 @@ final class ContactPlugin extends AbstractPlugin
         ];
     }
 
+    public function eventListeners(): array
+    {
+        return [
+            [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
+        ];
+    }
+
+    public function onResponseGenerated(ResponseGeneratedEvent $event): void
+    {
+        if ($this->csrfCookieValue === null) {
+            return;
+        }
+
+        $ttl = $this->configClampedInt('csrf.tokenTtlSeconds', self::DEFAULT_CSRF_TOKEN_TTL_SECONDS, 60, 3600);
+        $secure = $this->request->getUri()->getScheme() === 'https' ? '; Secure' : '';
+        $cookie = sprintf(
+            '%s=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=Lax%s',
+            self::CSRF_COOKIE_NAME,
+            $this->csrfCookieValue,
+            $ttl,
+            $secure,
+        );
+        $event->setResponse($event->getResponse()->withAddedHeader('Set-Cookie', $cookie));
+    }
+
     /**
-     * A stateless CSRF token signed with the configured secret.
+     * A stateless CSRF token bound to a signed per-browser cookie.
      */
     public function csrfToken(): string
     {
@@ -89,9 +118,11 @@ final class ContactPlugin extends AbstractPlugin
             return $this->csrfToken;
         }
 
-        $timestamp = time();
-        $signature = hash_hmac('sha256', (string)$timestamp, $this->getCsrfSecret());
-        $this->csrfToken = $timestamp . ':' . $signature;
+        $nonce = $this->getCsrfCookieNonce() ?? bin2hex(random_bytes(16));
+        $this->csrfCookieValue = $this->signCsrfCookie($nonce);
+        $timestamp = (string)time();
+        $signature = $this->signCsrfTokenData($timestamp, $nonce);
+        $this->csrfToken = $timestamp . ':' . $nonce . ':' . $signature;
         return $this->csrfToken;
     }
 
@@ -179,6 +210,7 @@ final class ContactPlugin extends AbstractPlugin
             'csrf_token' => $this->csrfToken(),
             'form_time' => time(),
             'altcha_challenge' => $this->createAltchaChallenge(),
+            'honeypot_fields' => $this->getHoneypotFields(),
             'copy_enabled' => $this->config->getAsBool('plugins.contact.copy.enabled', false),
             'copy_checked' => $formData === []
                 ? $this->config->getAsBool('plugins.contact.copy.defaultChecked', false)
@@ -196,21 +228,60 @@ final class ContactPlugin extends AbstractPlugin
             return false;
         }
 
-        $parts = explode(':', $token, 2);
-        if (count($parts) !== 2 || !ctype_digit($parts[0])) {
+        $parts = explode(':', $token);
+        if (count($parts) !== 3) {
             return false;
         }
 
-        $timestamp = (int)$parts[0];
-        $signature = $parts[1];
+        [$timestamp, $nonce, $signature] = $parts;
+        if (!ctype_digit($timestamp) || preg_match(self::CSRF_NONCE_PATTERN, $nonce) !== 1) {
+            return false;
+        }
+
+        $issuedAt = (int)$timestamp;
         $now = time();
         $ttl = $this->configClampedInt('csrf.tokenTtlSeconds', self::DEFAULT_CSRF_TOKEN_TTL_SECONDS, 60, 3600);
-        if ($timestamp < ($now - $ttl) || $timestamp > $now) {
+        if ($issuedAt < ($now - $ttl) || $issuedAt > $now) {
             return false;
         }
 
-        $expected = hash_hmac('sha256', (string)$timestamp, $this->getCsrfSecret());
-        return hash_equals($expected, $signature);
+        if (!hash_equals($this->signCsrfTokenData($timestamp, $nonce), $signature)) {
+            return false;
+        }
+
+        $cookieNonce = $this->getCsrfCookieNonce();
+        return $cookieNonce !== null && hash_equals($cookieNonce, $nonce);
+    }
+
+    private function getCsrfCookieNonce(): ?string
+    {
+        $cookie = $this->request->getCookieParams()[self::CSRF_COOKIE_NAME] ?? null;
+        if (!is_string($cookie)) {
+            return null;
+        }
+
+        $parts = explode(':', $cookie);
+        if (count($parts) !== 2) {
+            return null;
+        }
+
+        [$nonce, $signature] = $parts;
+        if (preg_match(self::CSRF_NONCE_PATTERN, $nonce) !== 1) {
+            return null;
+        }
+
+        $expected = hash_hmac('sha256', 'cookie:' . $nonce, $this->getCsrfSecret());
+        return hash_equals($expected, $signature) ? $nonce : null;
+    }
+
+    private function signCsrfCookie(string $nonce): string
+    {
+        return $nonce . ':' . hash_hmac('sha256', 'cookie:' . $nonce, $this->getCsrfSecret());
+    }
+
+    private function signCsrfTokenData(string $timestamp, string $nonce): string
+    {
+        return hash_hmac('sha256', 'token:' . $timestamp . ':' . $nonce, $this->getCsrfSecret());
     }
 
     private function getCsrfSecret(): string
@@ -342,10 +413,14 @@ final class ContactPlugin extends AbstractPlugin
      */
     private function getHoneypotFields(): array
     {
-        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'sendCopy'];
+        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'sendcopy'];
         $fields = [];
         foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
-            if (is_string($field) && $field !== '' && !in_array($field, $reserved, true)) {
+            if (
+                is_string($field)
+                && preg_match('/^[A-Za-z][A-Za-z0-9_-]*$/', $field) === 1
+                && !in_array(strtolower($field), $reserved, true)
+            ) {
                 $fields[] = $field;
             }
         }

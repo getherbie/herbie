@@ -6,6 +6,7 @@ return [
     'buttonSubmit' => 'Formular absenden',
     'errorEmptyField' => 'Dies ist ein Pflichtfeld',
     'errorInvalidEmail' => 'Die eingegebene E-Mail ist ungültig',
+    'labelHoneypot' => 'Dieses Feld leer lassen: {field}',
     'labelWebsite' => 'Deine Website',
     'labelPhone' => 'Deine Telefonnummer',
     'labelEmail' => 'Deine E-Mail',
