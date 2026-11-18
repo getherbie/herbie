@@ -16,6 +16,7 @@ use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;
 use herbie\UrlManager;
+use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -161,6 +162,113 @@ final class ContactPluginTest extends Unit
             'message' => 'Hello',
         ]);
         $this->assertSame([], $valid);
+    }
+
+    public function testHoneypotFieldsAreSilentlyAccepted(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        // sendEmail() short-circuits before SMTP when a honeypot is filled.
+        // An invalid email address would otherwise make it return false.
+        foreach (['antispam' => 'bot', 'phone' => '123', 'website' => 'https://spam.example'] as $field => $value) {
+            $data = ['name' => '', 'email' => 'invalid', 'message' => '', $field => $value];
+            $this->assertTrue($this->invokePrivate($plugin, 'sendEmail', [$data, 'me@example.com']));
+        }
+    }
+
+    public function testHumanTimingRequiresPlausibleFormAge(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $now = time();
+
+        $this->assertFalse($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)$now]]));
+        $this->assertFalse($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => '0']]));
+        $this->assertFalse($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)($now - 901)]]));
+        $this->assertTrue($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)($now - 10)]]));
+    }
+
+    public function testRateLimitIsSkippedWithoutCache(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
+    }
+
+    public function testRateLimitAllowsFiveRequestsPerHourPerIp(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+        $cache = new class implements CacheInterface {
+            public array $values = [];
+            public array $ttls = [];
+
+            #[\Override]
+            public function get($key, $default = null)
+            {
+                return $this->values[$key] ?? $default;
+            }
+
+            #[\Override]
+            public function set($key, $value, $ttl = null): bool
+            {
+                $this->values[$key] = $value;
+                $this->ttls[$key] = $ttl;
+                return true;
+            }
+
+            #[\Override]
+            public function delete($key): bool
+            {
+                return true;
+            }
+
+            #[\Override]
+            public function clear(): bool
+            {
+                return true;
+            }
+
+            #[\Override]
+            public function getMultiple($keys, $default = null): iterable
+            {
+                return [];
+            }
+
+            #[\Override]
+            public function setMultiple($values, $ttl = null): bool
+            {
+                return true;
+            }
+
+            #[\Override]
+            public function deleteMultiple($keys): bool
+            {
+                return true;
+            }
+
+            #[\Override]
+            public function has($key): bool
+            {
+                return isset($this->values[$key]);
+            }
+        };
+        $this->setPrivateProperty($plugin, 'cache', $cache);
+
+        $previousIp = $_SERVER['REMOTE_ADDR'] ?? null;
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.10';
+
+        try {
+            for ($i = 0; $i < 5; $i++) {
+                $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
+            }
+            $this->assertFalse($this->invokePrivate($plugin, 'checkRateLimit', []));
+            $this->assertSame(3600, $cache->ttls['contact_rate_' . md5('203.0.113.10')]);
+        } finally {
+            if ($previousIp === null) {
+                unset($_SERVER['REMOTE_ADDR']);
+            } else {
+                $_SERVER['REMOTE_ADDR'] = $previousIp;
+            }
+        }
     }
 
     public function testCachedContactPageThrows(): void
