@@ -167,7 +167,38 @@ final class ContactPluginTest extends Unit
         $this->assertArrayHasKey('parameters', $data);
         $this->assertArrayHasKey('signature', $data);
         $this->assertSame('PBKDF2/SHA-256', $data['parameters']['algorithm']);
-        $this->assertGreaterThan(time(), $data['parameters']['expiresAt']);
+        $this->assertSame(5000, $data['parameters']['cost']);
+        $this->assertGreaterThan(time() + 890, $data['parameters']['expiresAt']);
+        $this->assertLessThan(time() + 910, $data['parameters']['expiresAt']);
+    }
+
+    public function testCaptchaCostAndTtlAreConfigurableAndClamped(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['captcha' => [
+                'secret' => 'test-captcha-secret',
+                'cost' => 1,
+                'ttlSeconds' => 1,
+            ]]],
+        ]));
+        $data = json_decode($this->invokePrivate($plugin, 'createAltchaChallenge', []), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame(1000, $data['parameters']['cost']);
+        $this->assertGreaterThan(time() + 50, $data['parameters']['expiresAt']);
+        $this->assertLessThan(time() + 70, $data['parameters']['expiresAt']);
+
+        $this->setPrivateProperty($plugin, 'config', new Config([
+            'plugins' => ['contact' => ['captcha' => [
+                'secret' => 'test-captcha-secret',
+                'cost' => 999999,
+                'ttlSeconds' => 99999,
+            ]]],
+        ]));
+        $data = json_decode($this->invokePrivate($plugin, 'createAltchaChallenge', []), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame(100000, $data['parameters']['cost']);
+        $this->assertGreaterThan(time() + 3590, $data['parameters']['expiresAt']);
+        $this->assertLessThan(time() + 3610, $data['parameters']['expiresAt']);
     }
 
     public function testValidAltchaPayloadIsAccepted(): void

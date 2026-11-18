@@ -12,6 +12,8 @@ return [
     ],
     'captcha' => [
         'secret' => '', // ALTCHA HMAC secret, must be configured
+        'cost' => 5000, // PBKDF2 iterations (1000..100000)
+        'ttlSeconds' => 900, // challenge lifetime (60..3600)
     ],
     'form' => [
         'minAgeSeconds' => 3, // minimum time before a form can be submitted (0..60)

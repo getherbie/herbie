@@ -28,10 +28,10 @@ use Twig\TwigFunction;
 #[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9', 'altcha-org/altcha' => '^2.4'])]
 final class ContactPlugin extends AbstractPlugin
 {
-    private const CAPTCHA_COST = 5000;
     private const CAPTCHA_COUNTER_MIN = 5000;
     private const CAPTCHA_COUNTER_MAX = 10000;
-    private const CAPTCHA_TTL_SECONDS = 600;
+    private const DEFAULT_CAPTCHA_COST = 5000;
+    private const DEFAULT_CAPTCHA_TTL_SECONDS = 900;
     private const DEFAULT_HONEYPOTS = ['phone', 'website'];
     private const DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
     private const DEFAULT_FORM_MIN_AGE_SECONDS = 3;
@@ -244,9 +244,9 @@ final class ContactPlugin extends AbstractPlugin
         $altcha = new Altcha($secret, $secret);
         return $altcha->createChallenge(new CreateChallengeOptions(
             algorithm: new Pbkdf2(),
-            cost: self::CAPTCHA_COST,
+            cost: $this->configClampedInt('captcha.cost', self::DEFAULT_CAPTCHA_COST, 1000, 100000),
             counter: random_int(self::CAPTCHA_COUNTER_MIN, self::CAPTCHA_COUNTER_MAX),
-            expiresAt: time() + self::CAPTCHA_TTL_SECONDS,
+            expiresAt: time() + $this->configClampedInt('captcha.ttlSeconds', self::DEFAULT_CAPTCHA_TTL_SECONDS, 60, 3600),
         ))->toJson();
     }
 

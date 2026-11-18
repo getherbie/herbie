@@ -39,10 +39,14 @@ CSRF settings under `plugins.contact.csrf`. The secret is required; rendering th
         secret: (string)
         tokenTtlSeconds: (int) token lifetime, default 900 (60..3600)
 
-ALTCHA proof-of-work settings under `plugins.contact.captcha`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_captcha_secret>:
+ALTCHA proof-of-work settings under `plugins.contact.captcha`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_captcha_secret>. Values outside the given range are clamped:
 
     captcha:
         secret: (string)
+        cost: (int) PBKDF2 iterations, default 5000 (1000..100000)
+        ttlSeconds: (int) challenge lifetime, default 900 (60..3600)
+
+`cost` controls the proof-of-work difficulty and only affects newly created challenges; already issued challenges stay valid because their cost is stored in the signed payload. The default `ttlSeconds` matches the CSRF token and form age limits (15 min), so a form does not expire earlier than the surrounding checks.
 
 Form and rate limit settings (values outside the given range are clamped):
 
