@@ -12,11 +12,11 @@
                 <div class="url">{{ url_rel(result.route) }}</div>
                 {% if result.snippet %}
                     <div class="snippet">
-                        {% if result.date %}<span class="date">{{ result.date|date('d. F Y') }}</span> — {% endif %}
+                        {% if result.date %}<span class="date">{{ result.date|date('d. M Y') }}</span> — {% endif %}
                         {{ result.snippet|raw }}
                     </div>
                 {% elseif result.date %}
-                    <div class="date">{{ result.date|date('d. F Y') }}</div>
+                    <div class="date">{{ result.date|date('d. M Y') }}</div>
                 {% endif %}
             </div>
         {% endfor %}
