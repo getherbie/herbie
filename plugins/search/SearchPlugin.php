@@ -108,8 +108,16 @@ final class SearchPlugin extends AbstractPlugin
      */
     private function loadPageData(Page $item, string $cacheToken): array
     {
-        // Cache key is per-page, but depends on the global token.
-        // If any page changes, the token changes, old entries are stale.
+        $useCache = $this->config->getAsBool('plugins.search.useCache', true);
+        $cacheId = $useCache ? 'search_' . $item->getRoute() . '_' . $cacheToken : null;
+
+        if ($useCache && $cacheId !== null) {
+            $cached = $this->cache->get($cacheId);
+            if ($cached !== null) {
+                return [$item->getTitle(), $cached];
+            }
+        }
+
         $rendered = $this->renderPageContent($item);
         $withSpaces = preg_replace('/<[^>]+>/', ' ', $rendered);
         if ($withSpaces === null) {
@@ -117,15 +125,7 @@ final class SearchPlugin extends AbstractPlugin
         }
         $content = strip_tags($withSpaces);
 
-        // The internal search cache can be disabled via the plugin configuration.
-        // It is keyed per page with a global token of the latest modified timestamp,
-        // so entries are invalidated automatically when any page changes.
-        if ($this->config->getAsBool('plugins.search.useCache', true)) {
-            $cacheId = 'search_' . $item->getRoute() . '_' . $cacheToken;
-            $cached = $this->cache->get($cacheId);
-            if ($cached !== null) {
-                return [$item->getTitle(), $cached];
-            }
+        if ($useCache && $cacheId !== null) {
             $this->cache->set($cacheId, $content);
         }
 
