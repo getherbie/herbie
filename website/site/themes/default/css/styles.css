@@ -247,8 +247,8 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
     z-index:1000;
     display:none;
     flex-direction:column;
-    background:#1a1d22;
-    color:#e8e8e8;
+    background:#020617;
+    color:#e2e8f0;
     overflow:hidden;
 }
 .mobile-nav.is-open {
@@ -263,8 +263,8 @@ body.mobile-nav-locked {
     align-items:center;
     justify-content:space-between;
     padding:0.85em 1em;
-    border-bottom:1px solid #3a3f47;
-    background:#23272d;
+    border-bottom:1px solid #334155;
+    background:#0f172a;
 }
 .mobile-nav-title {
     font-weight:700;
@@ -288,7 +288,7 @@ body.mobile-nav-locked {
 }
 .mobile-nav-close:hover,
 .mobile-nav-close:focus {
-    background:#343941;
+    background:#334155;
 }
 .mobile-nav-close span {
     display:block;
@@ -309,28 +309,28 @@ body.mobile-nav-locked {
     padding:0;
 }
 .mobile-nav-children {
-    background:#161a1e;
+    background:#020617;
 }
 .mobile-nav-link {
     display:block;
     padding:0.62em 1em 0.62em calc(1em + var(--level, 0) * 1.15em);
-    color:#e8e8e8;
+    color:#e2e8f0;
     text-decoration:none;
-    border-bottom:1px solid #2a2e34;
+    border-bottom:1px solid #1e293b;
     font-size:0.98em;
 }
 .mobile-nav-children .mobile-nav-link {
     font-size:0.92em;
-    color:#c6cbd2;
+    color:#cbd5e1;
 }
 .mobile-nav-link:hover,
 .mobile-nav-link:focus {
-    background:#2a2f36;
-    color:#fff;
+    background:#1e293b;
+    color:#f8fafc;
 }
 .mobile-nav-link.is-current {
-    background:#343a42;
-    color:#fff;
+    background:#334155;
+    color:#f8fafc;
     font-weight:700;
     box-shadow:inset 3px 0 0 var(--accent);
 }
@@ -342,23 +342,23 @@ body.mobile-nav-locked {
     display:flex;
     justify-content:center;
     padding:0.9em 1em;
-    border-top:1px solid #3a3f47;
-    background:#23272d;
+    border-top:1px solid #334155;
+    background:#0f172a;
 }
 /* the overlay is dark in both themes, so its toggle needs its own colours */
 .mobile-nav-foot .theme-toggle {
     width:auto;
-    border:1px solid #6b7280;
-    background:#343a42;
-    color:#e8e8e8;
+    border:1px solid #475569;
+    background:#1e293b;
+    color:#e2e8f0;
     border-radius:8px;
     padding:0.45em 0.8em;
 }
 .mobile-nav-foot .theme-toggle:hover,
 .mobile-nav-foot .theme-toggle:focus {
-    background:#3a3f47;
-    border-color:#6b7280;
-    color:#ffffff;
+    background:#334155;
+    border-color:#475569;
+    color:#f8fafc;
 }
 
 /* Brand */
