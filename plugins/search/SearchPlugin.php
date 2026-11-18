@@ -110,7 +110,12 @@ final class SearchPlugin extends AbstractPlugin
     {
         // Cache key is per-page, but depends on the global token.
         // If any page changes, the token changes, old entries are stale.
-        $content = strip_tags($this->renderPageContent($item));
+        $rendered = $this->renderPageContent($item);
+        $withSpaces = preg_replace('/<[^>]+>/', ' ', $rendered);
+        if ($withSpaces === null) {
+            $withSpaces = $rendered;
+        }
+        $content = strip_tags($withSpaces);
 
         // The internal search cache can be disabled via the plugin configuration.
         // It is keyed per page with a global token of the latest modified timestamp,
@@ -174,13 +179,13 @@ final class SearchPlugin extends AbstractPlugin
                 continue;
             }
             $data = $this->loadPageData($item, $cacheToken);
-            if ($this->match($terms, $data, $exact)) {
+            if ($this->match($query, $terms, $data, $exact)) {
                 $content = $data[1] ?? '';
                 $results[] = [
                     'title' => $item->getTitle(),
                     'route' => $item->getRoute(),
                     'date' => $item->getDate(),
-                    'snippet' => $this->buildSnippet($content, $terms),
+                    'snippet' => $this->buildSnippet($content, $query, $terms, $exact),
                 ];
                 $i++;
             }
@@ -190,26 +195,32 @@ final class SearchPlugin extends AbstractPlugin
     }
 
     /**
+     * @param string $query
      * @param string[] $terms
      * @param array $data
      * @return bool
      */
-    private function match(array $terms, array $data, bool $exact): bool
+    private function match(string $query, array $terms, array $data, bool $exact): bool
     {
+        if ($exact) {
+            // Exact search: the full query must appear as a contiguous phrase.
+            foreach ($data as $part) {
+                if (!empty($part) && stripos($part, $query) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Default: every search term must appear (AND).
         foreach ($terms as $term) {
             $found = false;
             foreach ($data as $part) {
                 if (empty($part)) {
                     continue;
                 }
-                if ($exact) {
-                    // Exact search: match whole words only.
-                    $pattern = '/\b' . preg_quote($term, '/') . '\b/';
-                    $found = preg_match($pattern, $part) === 1;
-                } else {
-                    $found = stripos($part, $term) !== false;
-                }
-                if ($found) {
+                if (stripos($part, $term) !== false) {
+                    $found = true;
                     break;
                 }
             }
@@ -244,30 +255,38 @@ final class SearchPlugin extends AbstractPlugin
     }
 
     /**
-     * Build a text snippet around the first search term, with <mark> highlighting for all terms.
+     * Build a text snippet around the (first) search term, with <mark> highlighting.
+     *
+     * In exact mode the full query is treated as a single phrase for anchoring
+     * and highlighting; otherwise all terms are highlighted individually.
      *
      * @param string[] $terms
      */
-    private function buildSnippet(string $content, array $terms): string
+    private function buildSnippet(string $content, string $query, array $terms, bool $exact): string
     {
+        /** @var string|null $withSpaces */
+        $withSpaces = preg_replace('/<[^>]+>/', ' ', $content);
+        if ($withSpaces === null) {
+            $withSpaces = $content;
+        }
         /** @var string|null $normalized */
-        $normalized = preg_replace('/\s+/', ' ', strip_tags($content));
+        $normalized = preg_replace('/\s+/', ' ', strip_tags($withSpaces));
         if ($normalized === null) {
             $normalized = strip_tags($content);
         }
         $content = $normalized;
 
         $snippetLength = 200;
-        $firstTerm = $terms[0];
+        $anchor = $exact ? $query : ($terms[0] ?? $query);
         $contentLower = strtolower($content);
 
-        $pos = stripos($contentLower, strtolower($firstTerm));
+        $pos = stripos($contentLower, strtolower($anchor));
         if ($pos === false) {
             return '';
         }
 
         $before = 50;
-        $end = $pos + strlen($firstTerm) + $snippetLength;
+        $end = $pos + strlen($anchor) + $snippetLength;
         $start = $pos - $before;
 
         // Trim to content boundaries (sentence breaks)
@@ -298,16 +317,26 @@ final class SearchPlugin extends AbstractPlugin
             $cleaned = $snippet;
         }
 
-        // Highlight all search terms
-        $highlighted = $cleaned;
-        foreach ($terms as $term) {
-            $result = preg_replace(
-                '/(' . preg_quote($term, '/') . ')/i',
-                '<mark>' . htmlspecialchars($term, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
-                $highlighted,
+        // Highlight search terms (exact mode: whole phrase; otherwise each term).
+        if ($exact) {
+            /** @var string|null $highlightedResult */
+            $highlightedResult = preg_replace(
+                '/(' . preg_quote($query, '/') . ')/i',
+                '<mark>' . htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
+                $cleaned,
             );
-            if ($result !== null) {
-                $highlighted = $result;
+            $highlighted = $highlightedResult !== null ? $highlightedResult : $cleaned;
+        } else {
+            $highlighted = $cleaned;
+            foreach ($terms as $term) {
+                $result = preg_replace(
+                    '/(' . preg_quote($term, '/') . ')/i',
+                    '<mark>' . htmlspecialchars($term, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
+                    $highlighted,
+                );
+                if ($result !== null) {
+                    $highlighted = $result;
+                }
             }
         }
 
