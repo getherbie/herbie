@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - **Breaking:** The global functions `herbie\defined_classes()`, `herbie\defined_functions()` and `herbie\get_callable_name()`. They were only used by `SystemInfoPlugin` and are now private methods of that class.
 
 ### Fixed
+- Local plugins are discovered in `site/extend/plugins` again. `paths.plugins` points to Herbie's own plugin directory since 3.0 and was also used as the local plugin directory, so system plugins were discovered twice and local plugins were ignored. Local plugins now use the new setting `paths.localPlugins`, whose default is `SITE_PATH/extend/plugins`. An overridden `paths.plugins` is respected when the system plugins are relocated.
 - Raw HTML blocks in markdown pages are kept intact again. CommonMark ends an HTML block at the first empty line, so such blocks are protected before parsing. Indented code samples that contain HTML stay code blocks, as before.
 - The error handler answered with an HTML error page for every request, including routes that serve XML such as a feed or a sitemap, so the client received a document with the wrong root element. Such routes now receive an XML error document. In all other cases the `Content-Type` header now describes the body that is actually sent. **Breaking:** `ErrorHandlerMiddleware` requires a `PageRepositoryInterface` and a `UrlManager` in the constructor.
 - `UrlManager::parseRequest()` now caches the parsed request when a route rule matches.

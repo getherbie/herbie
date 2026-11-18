@@ -22,6 +22,8 @@ $settings['paths']['pages'] = 'SITE_PATH/pages';
 // namespace `plugin` point to it; overridable to relocate the system plugins.
 $herbieRoot = dirname(__DIR__);
 $settings['paths']['plugins'] = $herbieRoot . '/plugins';
+// The directory of the local plugins, which need no Composer installation.
+$settings['paths']['localPlugins'] = 'SITE_PATH/extend/plugins';
 $settings['paths']['site'] = 'SITE_PATH';
 $settings['paths']['themes'] = 'SITE_PATH/themes';
 $settings['paths']['web'] = 'WEB_PATH';

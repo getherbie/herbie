@@ -97,8 +97,8 @@ final readonly class ContainerBuilder
             $pluginCacheFile = Application::isDebug()
                 ? null
                 : $this->app->getSitePath() . '/runtime/cache/system/plugins.php';
-            $systemPluginPath = Application::getHerbiePath('/plugins');
-            $localPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
+            $systemPluginPath = $userConfig['paths']['plugins'] ?? $defaultConfig['paths']['plugins'];
+            $localPluginPath = $userConfig['paths']['localPlugins'] ?? $defaultConfig['paths']['localPlugins'];
             $pluginConfigs = (new PluginDiscovery($pluginCacheFile))
                 ->discover($systemPluginPath, $localPluginPath, $processor);
 
