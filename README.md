@@ -136,16 +136,16 @@ Open `localhost:8888` with your favorite web browser.
 Other Docker Compose commands are
 
     # install Composer dependencies
-    docker compose run install
+    docker compose run --rm install
 
     # run test suite
-    docker compose run test
+    docker compose run --rm test
 
     # start test suite website
     docker compose up test-website
 
     # run bash terminal
-    docker compose run bash
+    docker compose run --rm bash
 
 You can use different PHP versions.
 
@@ -176,7 +176,7 @@ You can use different PHP versions.
 
 Open the container shell
 
-    docker compose run bash
+    docker compose run --rm bash
 
 Run tests within the container
 
