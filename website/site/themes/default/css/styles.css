@@ -1043,6 +1043,7 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
     margin-top: 0.1em;
 }
 .plugin-search-results .snippet .date {
+    font-family: inherit;
     color: var(--text-muted);
     font-size: 0.85em;
     margin-right: 0.35em;
