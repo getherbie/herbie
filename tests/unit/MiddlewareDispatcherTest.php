@@ -123,7 +123,7 @@ final class MiddlewareDispatcherTest extends Unit
 
         try {
             $dispatcher->handle(new ServerRequest());
-        } catch (LogicException $e) {
+        } catch (LogicException) {
             // the first middleware has run, because it calls the handler itself
             $this->assertSame(['first'], $calls);
         }
@@ -157,7 +157,7 @@ final class MiddlewareDispatcherTest extends Unit
     {
         return new class ($name, $calls) implements MiddlewareInterface {
             /** @param array<int, string> $calls */
-            public function __construct(private string $name, private array &$calls) {}
+            public function __construct(private readonly string $name, private array &$calls) {}
 
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {

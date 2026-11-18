@@ -9,17 +9,15 @@ use UnexpectedValueException;
 
 final class UrlManager
 {
-    private ServerRequestInterface $serverRequest;
-    private string $baseUrl;
-    private bool $niceUrls;
-    private array $rules;
-    private string $scriptUrl;
+    private readonly string $baseUrl;
+    private readonly bool $niceUrls;
+    private readonly array $rules;
+    private readonly string $scriptUrl;
     /** @var array{string, array<string, string>}|null */
     private ?array $parsedRequest;
 
-    public function __construct(ServerRequestInterface $serverRequest, array $options = [])
+    public function __construct(private readonly ServerRequestInterface $serverRequest, array $options = [])
     {
-        $this->serverRequest = $serverRequest;
         $this->baseUrl = (string)($options['baseUrl'] ?? '');
         $this->niceUrls = (bool)($options['niceUrls'] ?? false);
         $this->rules = (array)($options['rules'] ?? []);
@@ -91,7 +89,7 @@ final class UrlManager
             if (preg_match($regex, $route, $matches)) {
                 $params = array_intersect_key(
                     $matches,
-                    array_flip(array_filter(array_keys($matches), 'is_string')),
+                    array_flip(array_filter(array_keys($matches), is_string(...))),
                 );
                 return $this->parsedRequest = [$rule[1], $params];
             }
@@ -102,7 +100,7 @@ final class UrlManager
     private function cleanPath(string $path): string
     {
         if ($this->scriptUrl !== '') {
-            if (strpos($path, $this->scriptUrl) === 0) {
+            if (str_starts_with($path, $this->scriptUrl)) {
                 $path = substr($path, strlen($this->scriptUrl));
             }
         }

@@ -22,10 +22,6 @@ use Psr\SimpleCache\CacheInterface;
 
 final readonly class PageRendererMiddleware implements MiddlewareInterface
 {
-    private CacheInterface $cache;
-    private EventManager $eventManager;
-    private ResponseFactoryInterface $responseFactory;
-    private UrlManager $urlManager;
     private bool $cacheEnable;
     private int $cacheTTL;
 
@@ -33,16 +29,12 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
      * PageRendererMiddleware constructor.
      */
     public function __construct(
-        CacheInterface $cache,
-        EventManager $eventManager,
-        ResponseFactoryInterface $responseFactory,
-        UrlManager $urlManager,
+        private CacheInterface $cache,
+        private EventManager $eventManager,
+        private ResponseFactoryInterface $responseFactory,
+        private UrlManager $urlManager,
         array $options = [],
     ) {
-        $this->cache = $cache;
-        $this->eventManager = $eventManager;
-        $this->responseFactory = $responseFactory;
-        $this->urlManager = $urlManager;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
@@ -124,7 +116,7 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
 
     private function createRedirectResponse(string $url, int $status): ResponseInterface
     {
-        if (strpos($url, 'http') === 0) { // A valid URL? Take it.
+        if (str_starts_with($url, 'http')) { // A valid URL? Take it.
             $location = $url;
         } else {
             $location = $this->urlManager->createUrl($url); // An internal route? Generate URL.

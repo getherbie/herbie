@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
-final class PageTree extends AbstractNode
+final class PageTree extends AbstractNode implements \Stringable
 {
     public function __toString(): string
     {

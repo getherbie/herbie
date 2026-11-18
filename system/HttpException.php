@@ -10,28 +10,28 @@ final class HttpException extends Exception
 {
     public static function notFound(string $path, ?string $format = null): HttpException
     {
-        $format = $format ?? 'Cannot find any resource at "%s"';
+        $format ??= 'Cannot find any resource at "%s"';
         $message = sprintf($format, $path);
         return new HttpException($message, 404);
     }
 
     public static function fileNotFound(string $path, ?string $format = null): HttpException
     {
-        $format = $format ?? 'File "%s" not found';
+        $format ??= 'File "%s" not found';
         $message = sprintf($format, $path);
         return new HttpException($message, 404);
     }
 
     public static function methodNotAllowed(string $path, string $method, ?string $format = null): HttpException
     {
-        $format = $format ?? 'Cannot access resource "%s" using method "%s"';
+        $format ??= 'Cannot access resource "%s" using method "%s"';
         $message = sprintf($format, $path, $method);
         return new HttpException($message, 405);
     }
 
     public static function badRequest(string $path, ?string $format = null): HttpException
     {
-        $format = $format ?? 'Cannot parse request "%s"';
+        $format ??= 'Cannot parse request "%s"';
         $message = sprintf($format, $path);
         return new HttpException($message, 400);
     }

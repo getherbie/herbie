@@ -8,11 +8,8 @@ use RecursiveFilterIterator;
 
 final class PageTreeFilterIterator extends RecursiveFilterIterator
 {
-    private bool $enableFilter;
-
-    public function __construct(PageTreeIterator $recursiveIterator, bool $enableFilter = true)
+    public function __construct(PageTreeIterator $recursiveIterator, private readonly bool $enableFilter = true)
     {
-        $this->enableFilter = $enableFilter;
         parent::__construct($recursiveIterator);
     }
 

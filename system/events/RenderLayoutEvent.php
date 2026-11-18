@@ -9,14 +9,10 @@ use herbie\AbstractEvent;
 final class RenderLayoutEvent extends AbstractEvent
 {
     private string $content = '';
-    private array $segments;
-    private string $layout;
 
-    public function __construct(array $segments, string $layout)
+    public function __construct(private array $segments, private readonly string $layout)
     {
         $this->content = '';
-        $this->segments = $segments;
-        $this->layout = $layout;
     }
 
     public function getLayout(): string

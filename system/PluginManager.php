@@ -18,21 +18,11 @@ use Twig\TwigTest;
 
 final class PluginManager
 {
-    private EventManager $eventManager;
-
-    private Config $config;
-
     /** @var array<string, InstallablePlugin> */
     private array $loadedPlugins;
 
     /** @var array<string, string> */
     private array $pluginPaths;
-
-    private ContainerInterface $container;
-
-    private Translator $translator;
-
-    private LoggerInterface $logger;
 
     /** @var array<int, MiddlewareInterface|callable|string> */
     private array $applicationMiddlewares;
@@ -48,23 +38,18 @@ final class PluginManager
      * PluginManager constructor.
      */
     public function __construct(
-        Config $config,
-        EventManager $eventManager,
-        Translator $translator,
-        LoggerInterface $logger,
-        ContainerInterface $container, // bad but necessary to enable constructor injection of the plugins
+        private readonly Config $config,
+        private readonly EventManager $eventManager,
+        private readonly Translator $translator,
+        private readonly LoggerInterface $logger,
+        private readonly ContainerInterface $container, // bad but necessary to enable constructor injection of the plugins
     ) {
-        $this->config = $config;
-        $this->container = $container;
-        $this->eventManager = $eventManager;
         $this->initialized = false;
         $this->loadedPlugins = [];
-        $this->logger = $logger;
         $this->applicationMiddlewares = [];
         $this->routeMiddlewares = [];
         $this->consoleCommands = [];
         $this->pluginPaths = [];
-        $this->translator = $translator;
     }
 
     public function init(): void

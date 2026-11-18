@@ -109,7 +109,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getAuthors(?string $type = null): array
     {
-        $type = $type === null ? '__all__' : $type;
+        $type ??= '__all__';
         $authorsPerType = $this->createTaxonomyFor('authors');
         $authors = $authorsPerType[$type] ?? [];
         ksort($authors);
@@ -129,9 +129,7 @@ final class PageList implements IteratorAggregate, Countable
                     $items['__all__'][$item] = 1;
                 }
 
-                if (!isset($items[$pageType])) {
-                    $items[$pageType] = [];
-                }
+                $items[$pageType] ??= [];
                 // per type
                 if (isset($items[$pageType][$item])) {
                     $items[$pageType][$item]++;
@@ -145,7 +143,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getCategories(?string $type = null): array
     {
-        $type = $type === null ? '__all__' : $type;
+        $type ??= '__all__';
         $categoriesPerType = $this->createTaxonomyFor('categories');
         $categories = $categoriesPerType[$type] ?? [];
         ksort($categories);
@@ -154,7 +152,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getTags(?string $type = null): array
     {
-        $type = $type === null ? '__all__' : $type;
+        $type ??= '__all__';
         $tagsPerType = $this->createTaxonomyFor('tags');
         $tags = $tagsPerType[$type] ?? [];
         ksort($tags);
@@ -178,7 +176,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getMonths(?string $type = null): array
     {
-        $type = $type === null ? '__all__' : $type;
+        $type ??= '__all__';
 
         // get items
         $items = ['__all__' => []];
@@ -203,9 +201,7 @@ final class PageList implements IteratorAggregate, Countable
                 $items['__all__'][$key] = $item;
             }
 
-            if (!isset($items[$pageType])) {
-                $items[$pageType] = [];
-            }
+            $items[$pageType] ??= [];
             // per type
             if (isset($items[$pageType][$key])) {
                 $items[$pageType][$key]['count']++;
@@ -221,9 +217,7 @@ final class PageList implements IteratorAggregate, Countable
 
     public function getPageTree(): PageTree
     {
-        if ($this->pageTree === null) {
-            $this->pageTree = (new PageFactory())->newPageTree($this);
-        }
+        $this->pageTree ??= (new PageFactory())->newPageTree($this);
         return $this->pageTree;
     }
 

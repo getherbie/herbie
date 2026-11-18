@@ -27,16 +27,7 @@ final readonly class ContainerBuilder
     private const string PACKAGE_NYHOLM_PSR7_SERVER = 'nyholm/psr7-server';
     private const string PACKAGE_SLIM_PSR7 = 'slim/psr7';
 
-    private Application $app;
-    private ?CacheInterface $cache;
-    private ?LoggerInterface $logger;
-
-    public function __construct(Application $app, ?CacheInterface $cache = null, ?LoggerInterface $logger = null)
-    {
-        $this->app = $app;
-        $this->cache = $cache;
-        $this->logger = $logger;
-    }
+    public function __construct(private Application $app, private ?CacheInterface $cache = null, private ?LoggerInterface $logger = null) {}
 
     public function build(): ContainerInterface
     {
@@ -44,9 +35,7 @@ final readonly class ContainerBuilder
 
         $c->set(Application::class, $this->app);
 
-        $c->set(ContainerInterface::class, function (ContainerInterface $c) {
-            return $c;
-        });
+        $c->set(ContainerInterface::class, fn(ContainerInterface $c) => $c);
 
         $c->set(Alias::class, function (ContainerInterface $c) {
             $paths = $c->get(Config::class)->get('paths');
@@ -64,12 +53,10 @@ final readonly class ContainerBuilder
             ]);
         });
 
-        $c->set(Assets::class, function (ContainerInterface $c) {
-            return new Assets(
-                $c->get(Alias::class),
-                $this->app->getBaseUrl(),
-            );
-        });
+        $c->set(Assets::class, fn(ContainerInterface $c) => new Assets(
+            $c->get(Alias::class),
+            $this->app->getBaseUrl(),
+        ));
 
         if ($this->cache) {
             $c->set(CacheInterface::class, $this->cache);
@@ -93,9 +80,7 @@ final readonly class ContainerBuilder
                 'WEB_URL' => str_untrailing_slash($this->app->getBaseUrl()),
             ];
 
-            $processor = function (array $data) use ($const) {
-                return recursive_array_replace(array_keys($const), array_values($const), $data);
-            };
+            $processor = (fn(array $data) => recursive_array_replace(array_keys($const), array_values($const), $data));
 
             // default config
             $defaultConfigPath = Application::getHerbiePath('/config/defaults.php');
@@ -137,27 +122,21 @@ final readonly class ContainerBuilder
             return new YamlDataRepository($path);
         });
 
-        $c->set(DownloadMiddleware::class, function (ContainerInterface $c) {
-            return new DownloadMiddleware(
-                $c->get(Alias::class),
-                $c->get(StreamFactoryInterface::class),
-                $c->get(ResponseFactoryInterface::class),
-                $c->get(Config::class)->getAsArray('components.downloadMiddleware'),
-            );
-        });
+        $c->set(DownloadMiddleware::class, fn(ContainerInterface $c) => new DownloadMiddleware(
+            $c->get(Alias::class),
+            $c->get(StreamFactoryInterface::class),
+            $c->get(ResponseFactoryInterface::class),
+            $c->get(Config::class)->getAsArray('components.downloadMiddleware'),
+        ));
 
-        $c->set(ErrorHandlerMiddleware::class, function (ContainerInterface $c) {
-            return new ErrorHandlerMiddleware(
-                $c->get(PageRepositoryInterface::class),
-                $c->get(ResponseFactoryInterface::class),
-                $c->get(TwigRenderer::class),
-                $c->get(UrlManager::class),
-            );
-        });
+        $c->set(ErrorHandlerMiddleware::class, fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
+            $c->get(PageRepositoryInterface::class),
+            $c->get(ResponseFactoryInterface::class),
+            $c->get(TwigRenderer::class),
+            $c->get(UrlManager::class),
+        ));
 
-        $c->set(EventManager::class, function () {
-            return new EventManager();
-        });
+        $c->set(EventManager::class, fn() => new EventManager());
 
         $c->set(Finder::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
@@ -183,25 +162,21 @@ final readonly class ContainerBuilder
             });
         }
 
-        $c->set(MiddlewareDispatcher::class, function (ContainerInterface $c) {
-            return new MiddlewareDispatcher(
-                [
-                    $c->get(ErrorHandlerMiddleware::class), // only one at the moment
-                    $c->get(PageResolverMiddleware::class),
-                ],
-                $c->get(PluginManager::class)->getApplicationMiddlewares(),
-                $c->get(PluginManager::class)->getRouteMiddlewares(),
-                [
-                    $c->get(DownloadMiddleware::class),
-                    $c->get(PageRendererMiddleware::class),
-                ],
-                $c->get(UrlManager::class)->parseRequest()[0],
-            );
-        });
+        $c->set(MiddlewareDispatcher::class, fn(ContainerInterface $c) => new MiddlewareDispatcher(
+            [
+                $c->get(ErrorHandlerMiddleware::class), // only one at the moment
+                $c->get(PageResolverMiddleware::class),
+            ],
+            $c->get(PluginManager::class)->getApplicationMiddlewares(),
+            $c->get(PluginManager::class)->getRouteMiddlewares(),
+            [
+                $c->get(DownloadMiddleware::class),
+                $c->get(PageRendererMiddleware::class),
+            ],
+            $c->get(UrlManager::class)->parseRequest()[0],
+        ));
 
-        $c->set(PageFactory::class, function (ContainerInterface $c) {
-            return new PageFactory($c->get(SlugGenerator::class));
-        });
+        $c->set(PageFactory::class, fn(ContainerInterface $c) => new PageFactory($c->get(SlugGenerator::class)));
 
         $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
             $options = $c->get(Config::class)->getAsArray('components.flatFilePagePersistence');
@@ -224,29 +199,23 @@ final readonly class ContainerBuilder
             );
         });
 
-        $c->set(PageRepositoryInterface::class, function (ContainerInterface $c) {
-            return new FlatFilePageRepository(
-                $c->get(PageFactory::class),
-                $c->get(PagePersistenceInterface::class),
-            );
-        });
+        $c->set(PageRepositoryInterface::class, fn(ContainerInterface $c) => new FlatFilePageRepository(
+            $c->get(PageFactory::class),
+            $c->get(PagePersistenceInterface::class),
+        ));
 
-        $c->set(PageResolverMiddleware::class, function (ContainerInterface $c) {
-            return new PageResolverMiddleware(
-                $c->get(PageRepositoryInterface::class),
-                $c->get(UrlManager::class),
-            );
-        });
+        $c->set(PageResolverMiddleware::class, fn(ContainerInterface $c) => new PageResolverMiddleware(
+            $c->get(PageRepositoryInterface::class),
+            $c->get(UrlManager::class),
+        ));
 
-        $c->set(PluginManager::class, function (ContainerInterface $c) {
-            return new PluginManager(
-                $c->get(Config::class),
-                $c->get(EventManager::class),
-                $c->get(Translator::class),
-                $c->get(LoggerInterface::class),
-                $c, // needed for DI in plugins
-            );
-        });
+        $c->set(PluginManager::class, fn(ContainerInterface $c) => new PluginManager(
+            $c->get(Config::class),
+            $c->get(EventManager::class),
+            $c->get(Translator::class),
+            $c->get(LoggerInterface::class),
+            $c, // needed for DI in plugins
+        ));
 
         $c->set(ResponseFactoryInterface::class, function () {
             $package = $this->preferredPsr17Package();
@@ -320,14 +289,12 @@ final readonly class ContainerBuilder
             };
         });
 
-        $c->set(Site::class, function (ContainerInterface $c) {
-            return new Site(
-                $c->get(Config::class),
-                $c->get(DataRepositoryInterface::class),
-                $c->get(PageRepositoryInterface::class),
-                $c->get(UrlManager::class),
-            );
-        });
+        $c->set(Site::class, fn(ContainerInterface $c) => new Site(
+            $c->get(Config::class),
+            $c->get(DataRepositoryInterface::class),
+            $c->get(PageRepositoryInterface::class),
+            $c->get(UrlManager::class),
+        ));
 
         $c->set(SlugGenerator::class, function (ContainerInterface $c) {
             $options = [
@@ -343,14 +310,12 @@ final readonly class ContainerBuilder
             return $translator;
         });
 
-        $c->set(TwigRenderer::class, function (ContainerInterface $c) {
-            return new TwigRenderer(
-                $c->get(Config::class),
-                $c->get(EventManager::class),
-                $c->get(LoggerInterface::class),
-                $c->get(Site::class),
-            );
-        });
+        $c->set(TwigRenderer::class, fn(ContainerInterface $c) => new TwigRenderer(
+            $c->get(Config::class),
+            $c->get(EventManager::class),
+            $c->get(LoggerInterface::class),
+            $c->get(Site::class),
+        ));
 
         $c->set(UrlManager::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class)->getAsArray('components.urlManager');
@@ -382,7 +347,7 @@ final readonly class ContainerBuilder
         return null;
     }
 
-    private function throwPsr17Exception(): void
+    private function throwPsr17Exception(): never
     {
         $packages = [
             [self::PACKAGE_LAMINAS_DIACTOROS],
@@ -391,9 +356,7 @@ final readonly class ContainerBuilder
             [self::PACKAGE_SLIM_PSR7],
         ];
 
-        $packages = array_map(function (array $items): string {
-            return join(' with ', $items);
-        }, $packages);
+        $packages = array_map(fn(array $items): string => join(' with ', $items), $packages);
 
         $message = 'To enable PSR-17 support, install one of the following Composer packages: %s.';
         throw new Exception(sprintf($message, join(', ', $packages)), 500);

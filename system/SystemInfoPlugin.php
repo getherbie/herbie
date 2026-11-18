@@ -13,16 +13,16 @@ use Twig\Error\SyntaxError;
 
 final class SystemInfoPlugin extends AbstractPlugin
 {
-    private string $appPath;
+    private readonly string $appPath;
 
     public function __construct(
-        private Alias $alias,
-        private Config $config,
-        private EventManager $eventManager,
-        private MiddlewareDispatcher $middlewareDispatcher,
-        private PluginManager $pluginManager,
-        private Translator $translator,
-        private TwigRenderer $twigRenderer,
+        private readonly Alias $alias,
+        private readonly Config $config,
+        private readonly EventManager $eventManager,
+        private readonly MiddlewareDispatcher $middlewareDispatcher,
+        private readonly PluginManager $pluginManager,
+        private readonly Translator $translator,
+        private readonly TwigRenderer $twigRenderer,
     ) {
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
@@ -30,7 +30,7 @@ final class SystemInfoPlugin extends AbstractPlugin
     public function twigFunctions(): array
     {
         return [
-            ['herbie_info', [$this, 'herbieInfo'], ['is_safe' => ['html'], 'needs_context' => true]],
+            ['herbie_info', $this->herbieInfo(...), ['is_safe' => ['html'], 'needs_context' => true]],
         ];
     }
 
@@ -88,7 +88,7 @@ final class SystemInfoPlugin extends AbstractPlugin
 
         $stripFromBeginning = [$this->appPath];
         foreach ($stripFromBeginning as $v) {
-            if (strpos($value, $v) === 0) {
+            if (str_starts_with($value, $v)) {
                 $value = substr($value, strlen($v));
             }
         }
@@ -214,7 +214,7 @@ final class SystemInfoPlugin extends AbstractPlugin
                 $value = $mixed;
                 $type = get_type($mixed);
             } elseif (is_object($mixed)) {
-                $value = get_class($mixed);
+                $value = $mixed::class;
                 $type = 'class';
             } else {
                 $value = json_encode($mixed);
@@ -324,7 +324,7 @@ final class SystemInfoPlugin extends AbstractPlugin
                     /** @phpstan-ignore-next-line */
                     $method = (string)$callable[1];
                 }
-                return ['method', get_class($callable[0]) . '->' . $method];
+                return ['method', $callable[0]::class . '->' . $method];
             case is_array($callable):
                 if (is_string($callable[1])) {
                     $method = $callable[1];
@@ -340,14 +340,14 @@ final class SystemInfoPlugin extends AbstractPlugin
                     $class = $reflectionClosure->getClosureScopeClass();
                     $className = $class ? $class->getName() : null;
                     return ['closure', $className ? $className . '--' . $closureName : $closureName];
-                } catch (ReflectionException $e) {
+                } catch (ReflectionException) {
                     return ['unknown', ''];
                 }
             case is_object($callable):
                 if (is_callable($callable)) {
-                    return ['invokable', get_class($callable)];
+                    return ['invokable', $callable::class];
                 }
-                return ['-', get_class($callable)];
+                return ['-', $callable::class];
             default:
                 return ['unknown', ''];
         }

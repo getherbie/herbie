@@ -35,8 +35,6 @@ final readonly class Finder
 
     protected function getPatterns(array $extensions): array
     {
-        return array_map(function (string $extension) {
-            return '*.' . $extension;
-        }, $extensions);
+        return array_map(fn(string $extension) => '*.' . $extension, $extensions);
     }
 }

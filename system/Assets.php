@@ -15,18 +15,16 @@ final class Assets
     private static int $counter = 0;
     private static bool $sorted = false;
     private static array $published = [];
-    private Alias $alias;
     private array $assets = [];
     private string $assetsDir = '/assets';
-    private string $assetsUrl;
-    private string $assetsPath;
+    private readonly string $assetsUrl;
+    private readonly string $assetsPath;
     private int $refresh = 86400;
     private int $permissions = 0755;
 
-    public function __construct(Alias $alias, string $baseUrl)
+    public function __construct(private readonly Alias $alias, string $baseUrl)
     {
-        $this->alias = $alias;
-        $this->assetsPath = $alias->get('@web') . $this->assetsDir;
+        $this->assetsPath = $this->alias->get('@web') . $this->assetsDir;
         $this->assetsUrl = str_leading_slash($baseUrl . $this->assetsDir);
     }
 
@@ -133,7 +131,7 @@ final class Assets
     private function publish(): void
     {
         foreach ($this->assets as $index => $asset) {
-            if (!empty($asset['raw']) || 0 === strpos($asset['path'], '//') || 0 === strpos($asset['path'], 'http')) {
+            if (!empty($asset['raw']) || str_starts_with($asset['path'], '//') || str_starts_with($asset['path'], 'http')) {
                 continue;
             }
 
@@ -185,7 +183,7 @@ final class Assets
     private function buildUrl(string $file): string
     {
         $url = $file;
-        if ('@' === substr($file, 0, 1)) {
+        if (str_starts_with($file, '@')) {
             $trimed = $this->removeAlias($file);
             $url = $this->assetsUrl . '/' . $trimed;
         }

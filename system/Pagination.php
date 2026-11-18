@@ -21,7 +21,7 @@ final class Pagination implements IteratorAggregate, Countable
     private array $items;
     private int $limit;
     private int $page;
-    private int $totalItems;
+    private readonly int $totalItems;
 
     /**
      * @throws Exception

@@ -8,12 +8,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 
 final readonly class PageFactory
 {
-    private ?SlugGenerator $slugGenerator;
-
-    public function __construct(?SlugGenerator $slugGenerator = null)
-    {
-        $this->slugGenerator = $slugGenerator;
-    }
+    public function __construct(private ?SlugGenerator $slugGenerator = null) {}
 
     public function newPage(array $data, array $segments): Page
     {

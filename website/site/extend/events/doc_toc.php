@@ -5,7 +5,7 @@ use herbie\events\RenderSegmentEvent;
 $renderSegmentEvent = function (RenderSegmentEvent $event) {
     $page = $event->getPage();
     $parentRoute = $page->getParentRoute();
-    if (strpos($parentRoute, 'doc') === false) {
+    if (!str_contains($parentRoute, 'doc')) {
         return;
     }
 
@@ -15,7 +15,7 @@ $renderSegmentEvent = function (RenderSegmentEvent $event) {
 
     $segment = $event->getSegment();
 
-    if (strpos($segment, '<h1>') === false) {
+    if (!str_contains($segment, '<h1>')) {
         return;
     }
 

@@ -15,8 +15,8 @@ return [
             $exists = file_exists(CACHE_FILE);
             if (!$exists || (time() > strtotime('+2 hours', filemtime(CACHE_FILE)))) {
                 try {
-                    $data = implode(file('https://github.com/getherbie/herbie/commits/3.x-develop.atom'));
-                } catch (Exception $e) {
+                    $data = implode('', file('https://github.com/getherbie/herbie/commits/3.x-develop.atom'));
+                } catch (Exception) {
                     return null;
                 }
                 file_put_contents(CACHE_FILE, $data);

@@ -15,17 +15,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 #[Plugin('dummy2')]
-final class Dummy2Plugin implements PluginInterface
+final readonly class Dummy2Plugin implements PluginInterface
 {
-    private LoggerInterface $logger;
-
     /**
      * DummyPlugin constructor.
      */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
+    public function __construct(private LoggerInterface $logger) {}
 
     public function apiVersion(): int
     {
@@ -39,9 +34,9 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
-            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
+            [ContentRenderedEvent::class, $this->onContentRendered(...)],
+            [RenderLayoutEvent::class, $this->onRenderLayout(...)],
+            [RenderSegmentEvent::class, $this->onRenderSegment(...)],
         ];
     }
 
@@ -52,7 +47,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'dummyMiddleware'],
+            $this->dummyMiddleware(...),
         ];
     }
 
@@ -63,7 +58,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyFilter']],
+            ['dummy2', $this->twigDummyFilter(...)],
         ];
     }
 
@@ -74,7 +69,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyFunction']],
+            ['dummy2', $this->twigDummyFunction(...)],
         ];
     }
 
@@ -85,7 +80,7 @@ final class Dummy2Plugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy2', [$this, 'twigDummyTest']],
+            ['dummy2', $this->twigDummyTest(...)],
         ];
     }
 
@@ -115,7 +110,7 @@ final class Dummy2Plugin implements PluginInterface
 
     public function onContentRendered(ContentRenderedEvent $event): void
     {
-        $this->logger->debug(get_class($event));
+        $this->logger->debug($event::class);
         // TODO add test
     }
 

@@ -16,7 +16,7 @@ use Composer\InstalledVersions;
  * The result is cached in a file. The cache is renewed if a plugin directory or a Composer plugin is added,
  * removed or updated. It is not renewed if only the content of a file changes.
  */
-final class PluginDiscovery
+final readonly class PluginDiscovery
 {
     private const string ATTRIBUTE = Plugin::class;
 

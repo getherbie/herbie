@@ -10,11 +10,6 @@ use IteratorAggregate;
 /** @implements \IteratorAggregate<int, AbstractNode> */
 abstract class AbstractNode implements IteratorAggregate
 {
-    /**
-     * @var mixed
-     */
-    private mixed $value;
-
     private ?AbstractNode $parent = null;
 
     /**
@@ -25,10 +20,7 @@ abstract class AbstractNode implements IteratorAggregate
     /**
      * @param mixed $value
      */
-    public function __construct($value = null)
-    {
-        $this->value = $value;
-    }
+    public function __construct(private mixed $value = null) {}
 
     /** @return \ArrayIterator<int, AbstractNode> */
     public function getIterator(): ArrayIterator

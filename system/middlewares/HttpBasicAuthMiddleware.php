@@ -18,7 +18,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
     public function __construct(
         #[\SensitiveParameter]
         private array $users,
-        private ResponseFactoryInterface $responseFactory,
+        private readonly ResponseFactoryInterface $responseFactory,
     ) {}
 
     #[\Override]
@@ -75,7 +75,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
      */
     private function parseHeader(string $header)
     {
-        if (strpos($header, 'Basic') !== 0) {
+        if (!str_starts_with($header, 'Basic')) {
             return false;
         }
         $header = explode(':', base64_decode(substr($header, 6)), 2);

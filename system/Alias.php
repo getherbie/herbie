@@ -33,7 +33,7 @@ final class Alias
     private function setInternal(string $alias, string $path): void
     {
         $alias = trim($alias);
-        if (strncmp($alias, '@', 1) <> 0) {
+        if (!str_starts_with($alias, '@')) {
             throw new InvalidArgumentException("Invalid alias {$alias}, @ char missing.");
         }
         if (substr($alias, 1) === '') {
@@ -62,7 +62,7 @@ final class Alias
      */
     public function get(string $alias): string
     {
-        if (strncmp($alias, '@', 1) !== 0) {
+        if (!str_starts_with($alias, '@')) {
             return $alias;
         }
 

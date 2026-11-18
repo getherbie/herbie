@@ -21,15 +21,12 @@ abstract class AbstractParserPlugin extends AbstractPlugin
 {
     protected Config $config;
 
-    protected LoggerInterface $logger;
-
     /**
      * @param string $configPath The path of the plugin configuration, e.g. "plugins.textile"
      */
-    public function __construct(Config $config, LoggerInterface $logger, string $configPath)
+    public function __construct(Config $config, protected LoggerInterface $logger, string $configPath)
     {
         $this->config = $config->getAsConfig($configPath);
-        $this->logger = $logger;
     }
 
     /**
@@ -52,7 +49,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
     public function eventListeners(): array
     {
         return [
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
+            [RenderSegmentEvent::class, $this->onRenderSegment(...)],
         ];
     }
 
@@ -62,7 +59,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
             return [];
         }
         return [
-            [$this->getTwigName(), [$this, 'parse'], ['is_safe' => ['html']]],
+            [$this->getTwigName(), $this->parse(...), ['is_safe' => ['html']]],
         ];
     }
 
@@ -72,7 +69,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
             return [];
         }
         return [
-            [$this->getTwigName(), [$this, 'parse'], ['is_safe' => ['html']]],
+            [$this->getTwigName(), $this->parse(...), ['is_safe' => ['html']]],
         ];
     }
 

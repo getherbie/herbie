@@ -24,16 +24,16 @@ final class MarkdownPlugin extends AbstractParserPlugin
      * - gfm: GitHub Flavored Markdown (CommonMark plus autolinks, tables, strikethrough, task lists)
      * - markdown-extra: Markdown Extra features on top of CommonMark
      */
-    private const FLAVORS = [
+    private const array FLAVORS = [
         'commonmark' => [],
         'gfm' => [GithubFlavoredMarkdownExtension::class],
         'markdown-extra' => [
-            'League\CommonMark\Extension\Attributes\AttributesExtension',
-            'League\CommonMark\Extension\DescriptionList\DescriptionListExtension',
-            'League\CommonMark\Extension\Footnote\FootnoteExtension',
-            'League\CommonMark\Extension\Strikethrough\StrikethroughExtension',
-            'League\CommonMark\Extension\Table\TableExtension',
-            'League\CommonMark\Extension\TaskList\TaskListExtension',
+            \League\CommonMark\Extension\Attributes\AttributesExtension::class,
+            \League\CommonMark\Extension\DescriptionList\DescriptionListExtension::class,
+            \League\CommonMark\Extension\Footnote\FootnoteExtension::class,
+            \League\CommonMark\Extension\Strikethrough\StrikethroughExtension::class,
+            \League\CommonMark\Extension\Table\TableExtension::class,
+            \League\CommonMark\Extension\TaskList\TaskListExtension::class,
         ],
     ];
 

@@ -80,8 +80,6 @@ class YamlDataRepository implements DataRepositoryInterface
     /** @return string[] */
     protected function getPatterns(): array
     {
-        return array_map(function (string $extension) {
-            return '*.' . $extension;
-        }, $this->extensions);
+        return array_map(fn(string $extension) => '*.' . $extension, $this->extensions);
     }
 }

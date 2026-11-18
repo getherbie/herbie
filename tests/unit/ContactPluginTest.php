@@ -347,7 +347,6 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $method = new ReflectionMethod(ContactPlugin::class, 'filterFormData');
-        $method->setAccessible(true);
 
         $filtered = $method->invoke($plugin, [
             'name' => '  <b>John</b>  ',
@@ -418,7 +417,6 @@ final class ContactPluginTest extends Unit
     {
         $plugin = $this->createUninitializedPlugin();
         $method = new ReflectionMethod(ContactPlugin::class, 'validateFormData');
-        $method->setAccessible(true);
 
         $errors = $method->invoke($plugin, [
             'name' => '',

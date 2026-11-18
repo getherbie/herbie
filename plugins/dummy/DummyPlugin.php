@@ -22,17 +22,12 @@ use Psr\Log\LoggerInterface;
 use Twig\TwigFilter;
 
 #[Plugin('dummy')]
-final class DummyPlugin implements PluginInterface
+final readonly class DummyPlugin implements PluginInterface
 {
-    private LoggerInterface $logger;
-
     /**
      * DummyPlugin constructor.
      */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
+    public function __construct(private LoggerInterface $logger) {}
 
     public function apiVersion(): int
     {
@@ -50,16 +45,16 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [ContentRenderedEvent::class, [$this, 'onContentRendered']],
-            [LayoutRenderedEvent::class, [$this, 'onLayoutRendered']],
-            [PluginsInitializedEvent::class, [$this, 'onPluginsInitialized']],
-            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
-            [ResponseEmittedEvent::class, [$this, 'onResponseEmitted']],
-            [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
-            [TranslatorInitializedEvent::class, [$this, 'onTranslatorInitialized']],
-            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
-            [TwigInitializedEvent::class, [$this, 'onTwigInitializedAddFilter']],
+            [ContentRenderedEvent::class, $this->onContentRendered(...)],
+            [LayoutRenderedEvent::class, $this->onLayoutRendered(...)],
+            [PluginsInitializedEvent::class, $this->onPluginsInitialized(...)],
+            [RenderLayoutEvent::class, $this->onRenderLayout(...)],
+            [RenderSegmentEvent::class, $this->onRenderSegment(...)],
+            [ResponseEmittedEvent::class, $this->onResponseEmitted(...)],
+            [ResponseGeneratedEvent::class, $this->onResponseGenerated(...)],
+            [TranslatorInitializedEvent::class, $this->onTranslatorInitialized(...)],
+            [TwigInitializedEvent::class, $this->onTwigInitialized(...)],
+            [TwigInitializedEvent::class, $this->onTwigInitializedAddFilter(...)],
         ];
     }
 
@@ -67,7 +62,7 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            [$this, 'appMiddleware'],
+            $this->appMiddleware(...),
         ];
     }
 
@@ -75,8 +70,8 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['download/dummy.pdf', [$this, 'routeMiddleware']],
-            ['plugins/dummy', [$this, 'routeMiddleware']],
+            ['download/dummy.pdf', $this->routeMiddleware(...)],
+            ['plugins/dummy', $this->routeMiddleware(...)],
         ];
     }
 
@@ -84,7 +79,7 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFilter']],
+            ['dummy', $this->twigDummyFilter(...)],
         ];
     }
 
@@ -99,7 +94,7 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyFunction']],
+            ['dummy', $this->twigDummyFunction(...)],
         ];
     }
 
@@ -107,7 +102,7 @@ final class DummyPlugin implements PluginInterface
     {
         $this->logger->debug(__METHOD__);
         return [
-            ['dummy', [$this, 'twigDummyTest']],
+            ['dummy', $this->twigDummyTest(...)],
         ];
     }
 
@@ -137,46 +132,44 @@ final class DummyPlugin implements PluginInterface
 
     public function onContentRendered(ContentRenderedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onLayoutRendered(LayoutRenderedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onPluginsInitialized(PluginsInitializedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onResponseEmitted(ResponseEmittedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onResponseGenerated(ResponseGeneratedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onTranslatorInitialized(TranslatorInitializedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onTwigInitialized(TwigInitializedEvent $event): void
     {
-        $this->logger->debug('Event ' . get_class($event) . ' was triggered');
+        $this->logger->debug('Event ' . $event::class . ' was triggered');
     }
 
     public function onTwigInitializedAddFilter(TwigInitializedEvent $event): void
     {
         $this->logger->debug(__METHOD__);
         $event->getEnvironment()->addFilter(
-            new TwigFilter('dummy_dynamic', function (string $content): string {
-                return $content . 'Dummy Filter Dynamic';
-            }),
+            new TwigFilter('dummy_dynamic', fn(string $content): string => $content . 'Dummy Filter Dynamic'),
         );
     }
 

@@ -39,9 +39,8 @@ use ReturnTypeWillChange;
  * @property string $type
  */
 /** @implements \ArrayAccess<string, mixed> */
-final class Page implements ArrayAccess
+final class Page implements ArrayAccess, \Stringable
 {
-    private ?SlugGenerator $slugGenerator;
     /** @var string[] */
     private array $authors;
     private bool $cached;
@@ -73,9 +72,8 @@ final class Page implements ArrayAccess
     private bool $twig;
     private string $type;
 
-    public function __construct(array $data = [], ?array $segments = null, ?SlugGenerator $slugGenerator = null)
+    public function __construct(array $data = [], ?array $segments = null, private readonly ?SlugGenerator $slugGenerator = null)
     {
-        $this->slugGenerator = $slugGenerator;
         // set defaults
         $this->authors = [];
         $this->cached = true;
@@ -289,20 +287,12 @@ final class Page implements ArrayAccess
 
     public function setFormat(string $format): void
     {
-        switch (trim($format)) {
-            case 'md':
-            case 'markdown':
-                $format = 'markdown';
-                break;
-            case 'textile':
-                $format = 'textile';
-                break;
-            case 'rst':
-                $format = 'rst';
-                break;
-            default:
-                $format = 'raw';
-        }
+        $format = match (trim($format)) {
+            'md', 'markdown' => 'markdown',
+            'textile' => 'textile',
+            'rst' => 'rst',
+            default => 'raw',
+        };
         $this->format = $format;
     }
 
@@ -593,12 +583,12 @@ final class Page implements ArrayAccess
         if (empty($route) || empty($current)) {
             return false;
         }
-        return 0 === strpos($route, $current);
+        return str_starts_with($route, $current);
     }
 
     public function isStaticPage(): bool
     {
-        return 0 === strpos($this->getPath(), '@page');
+        return str_starts_with($this->getPath(), '@page');
     }
 
     public function __toString(): string

@@ -6,6 +6,4 @@ namespace herbie\tests\_data\site\extend\twig_tests;
 
 use Twig\TwigTest;
 
-return new TwigTest('local_odd', function ($value) {
-    return ($value % 2) !== 0;
-});
+return new TwigTest('local_odd', fn($value) => ($value % 2) !== 0);

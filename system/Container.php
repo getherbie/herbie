@@ -34,14 +34,10 @@ final class Container implements ContainerInterface
             return $this->frozen[$offset];
         }
         if (is_callable($this->values[$offset])) {
-            if (!isset($this->frozen[$offset])) {
-                $this->frozen[$offset] = $this->values[$offset]($this);
-            }
+            $this->frozen[$offset] ??= $this->values[$offset]($this);
             return $this->frozen[$offset];
         }
-        if (!isset($this->frozen[$offset])) {
-            $this->frozen[$offset] = $this->values[$offset];
-        }
+        $this->frozen[$offset] ??= $this->values[$offset];
         return $this->frozen[$offset];
     }
 

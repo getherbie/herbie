@@ -16,15 +16,15 @@ final class RawHtmlProtector
     /**
      * Private use area (U+E000 and U+E001), so the placeholder can't be a part of the content.
      */
-    private const PLACEHOLDER_START = "\xee\x80\x80";
+    private const string PLACEHOLDER_START = "\xee\x80\x80";
 
-    private const PLACEHOLDER_END = "\xee\x80\x81";
+    private const string PLACEHOLDER_END = "\xee\x80\x81";
 
     /**
      * Elements that start a raw HTML block in CommonMark, if the start tag stands on a
      * line of its own. That is type 1 to type 6 of the CommonMark specification.
      */
-    private const HTML_BLOCK_TAGS = [
+    private const array HTML_BLOCK_TAGS = [
         'address', 'article', 'aside', 'base', 'basefont', 'blockquote', 'body', 'caption', 'center',
         'col', 'colgroup', 'dd', 'details', 'dialog', 'dir', 'div', 'dl', 'dt', 'fieldset', 'figcaption',
         'figure', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head',
@@ -36,7 +36,7 @@ final class RawHtmlProtector
     /**
      * Elements whose content is kept as it is by HTML renderers.
      */
-    private const LITERAL_TAGS = ['pre', 'script', 'style', 'textarea'];
+    private const array LITERAL_TAGS = ['pre', 'script', 'style', 'textarea'];
 
     /** @var array<int, string> */
     private array $blocks = [];

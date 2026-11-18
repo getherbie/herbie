@@ -15,7 +15,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
 {
     /** @var MiddlewareInterface[]|string[] */
     private array $composedMiddlewares;
-    private array $middlewares;
+    private readonly array $middlewares;
 
     /**
      * Dispatcher constructor.

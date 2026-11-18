@@ -57,17 +57,11 @@ $app->addRouteMiddleware('features', new CustomHeader('features'));
 
 $app->addRouteMiddleware('news/(.+)', new HttpBasicAuthMiddleware(['user' => 'pass'], $app->getResponseFactory()));
 
-$app->addTwigFunction('myfunction', function () {
-    return 'My Function';
-});
+$app->addTwigFunction('myfunction', fn() => 'My Function');
 
-$app->addTwigFilter('myfilter', function () {
-    return 'My Filter';
-});
+$app->addTwigFilter('myfilter', fn() => 'My Filter');
 
-$app->addTwigTest('mytest', function () {
-    return true;
-});
+$app->addTwigTest('mytest', fn() => true);
 
 $app->addEventListener(RenderSegmentEvent::class, function (RenderSegmentEvent $event) {
     // do something with $event
@@ -81,9 +75,7 @@ $app->addEventListener(RenderSegmentEvent::class, new TestFilter());
 
 $app->addEventListener(TwigInitializedEvent::class, function (TwigInitializedEvent $event): void {
     $event->getEnvironment()->addFilter(
-        new TwigFilter('my_filter', function (string $content): string {
-            return $content . ' My Filter';
-        }),
+        new TwigFilter('my_filter', fn(string $content): string => $content . ' My Filter'),
     );
 });
 

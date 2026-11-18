@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class CallableMiddleware implements MiddlewareInterface
+final readonly class CallableMiddleware implements MiddlewareInterface
 {
     /**
      * The callable to proxy.

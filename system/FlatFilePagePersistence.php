@@ -19,23 +19,17 @@ if (!defined('UTF8_BOM')) {
  */
 final class FlatFilePagePersistence implements PagePersistenceInterface
 {
-    private Alias $alias;
-    private CacheInterface $cache;
-    private Finder $finder;
-    private bool $cacheEnable;
-    private int $cacheTTL;
+    private readonly bool $cacheEnable;
+    private readonly int $cacheTTL;
     /** @var array<int, string>|null */
     private ?array $parentsCache = null;
 
     public function __construct(
-        Alias $alias,
-        CacheInterface $cache,
-        Finder $finder,
+        private readonly Alias $alias,
+        private readonly CacheInterface $cache,
+        private readonly Finder $finder,
         array $options = [],
     ) {
-        $this->alias = $alias;
-        $this->cache = $cache;
-        $this->finder = $finder;
         $this->cacheEnable = (bool)($options['cache'] ?? false);
         $this->cacheTTL = (int)($options['cacheTTL'] ?? 0);
     }
@@ -53,7 +47,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             // Prevent path traversal outside of the page root.
             if (
                 $rootReal === false || $idReal === false
-                || strpos($idReal, $rootReal . DIRECTORY_SEPARATOR) !== 0
+                || !str_starts_with($idReal, $rootReal . DIRECTORY_SEPARATOR)
             ) {
                 return null;
             }
@@ -61,7 +55,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             $relativePath = dirname($relativePathName);
             $fileInfo = new SplFileInfo($id, ltrim($relativePath, '/'), ltrim($relativePathName, '/'));
             return $this->readFile($fileInfo);
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
     }
@@ -82,17 +76,11 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
         $data = Yaml::parse($yaml);
 
-        if (!isset($data['format'])) {
-            $data['format'] = pathinfo($path, PATHINFO_EXTENSION);
-        }
+        $data['format'] ??= pathinfo($path, PATHINFO_EXTENSION);
 
-        if (!isset($data['path'])) {
-            $data['path'] = $path;
-        }
+        $data['path'] ??= $path;
 
-        if (!isset($data['modified'])) {
-            $data['modified'] = date_format('c', file_mtime($path));
-        }
+        $data['modified'] ??= date_format('c', file_mtime($path));
 
         if (!isset($data['date'])) {
             if (preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $basename, $matches)) {
@@ -102,26 +90,18 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             }
         }
 
-        if (!isset($data['hidden'])) {
-            $data['hidden'] = !preg_match('/^[0-9]+-/', $basename);
-        }
+        $data['hidden'] ??= !preg_match('/^[0-9]+-/', $basename);
 
         if (!isset($data['route'])) {
             $trimExtension = empty($data['keep_extension']);
             $data['route'] = $this->createRoute($alias, $trimExtension);
         }
 
-        if (!isset($data['parent_route'])) {
-            $data['parent_route'] = trim(dirname($data['route']), '.');
-        }
+        $data['parent_route'] ??= trim(dirname($data['route']), '.');
 
-        if (!isset($data['id'])) {
-            $data['id'] = $alias;
-        }
+        $data['id'] ??= $alias;
 
-        if (!isset($data['parent_id'])) {
-            $data['parent_id'] = $this->determineParentId($alias);
-        }
+        $data['parent_id'] ??= $this->determineParentId($alias);
 
         return [
             'data' => $data,
@@ -152,9 +132,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
                 },
                 $content,
             );
-            if ($protected === null) {
-                $protected = $content;
-            }
+            $protected ??= $content;
 
             $splitContent = preg_split('/^-{3} (.+) -{3}\\R?$/m', $protected, -1, PREG_SPLIT_DELIM_CAPTURE);
             if ($splitContent === false) {
@@ -216,7 +194,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         $segments = str_explode_filtered($route, '/');
 
         if (isset($segments[0])) {
-            if (substr($segments[0], 0, 1) === '@') {
+            if (str_starts_with($segments[0], '@')) {
                 unset($segments[0]);
             }
         }
@@ -248,7 +226,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         $filename = $this->getFilenameWithoutPrefix($alias);
 
         if ($filename === 'index') {
-            $segment = dirname(dirname($alias));
+            $segment = dirname($alias, 2);
         } else {
             $segment = dirname($alias);
         }
@@ -260,7 +238,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         $segmentDepth = substr_count($segment, '/');
 
         foreach ($parents as $parent) {
-            if (strpos($parent, $segment) !== 0) {
+            if (!str_starts_with($parent, $segment)) {
                 continue;
             }
             $parentDepth = substr_count($parent, '/');

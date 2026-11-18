@@ -20,37 +20,13 @@ use Twig\TwigFunction;
 #[Plugin('search')]
 final class SearchPlugin extends AbstractPlugin
 {
-    private CacheInterface $cache;
-    private Config $config;
-    private EventManager $eventManager;
-    private PageRepositoryInterface $pageRepository;
-    private ServerRequestInterface $request;
-    private TwigRenderer $twigRenderer;
-    private UrlManager $urlManager;
-
-    public function __construct(
-        CacheInterface $cache,
-        Config $config,
-        EventManager $eventManager,
-        PageRepositoryInterface $pageRepository,
-        ServerRequestInterface $request,
-        TwigRenderer $twigRenderer,
-        UrlManager $urlManager,
-    ) {
-        $this->cache = $cache;
-        $this->config = $config;
-        $this->eventManager = $eventManager;
-        $this->pageRepository = $pageRepository;
-        $this->request = $request;
-        $this->twigRenderer = $twigRenderer;
-        $this->urlManager = $urlManager;
-    }
+    public function __construct(private readonly CacheInterface $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
 
     public function twigFunctions(): array
     {
         return [
-            new TwigFunction('search_results', [$this, 'results'], ['is_safe' => ['html']]),
-            new TwigFunction('search_form', [$this, 'form'], ['is_safe' => ['html']]),
+            new TwigFunction('search_results', $this->results(...), ['is_safe' => ['html']]),
+            new TwigFunction('search_form', $this->form(...), ['is_safe' => ['html']]),
         ];
     }
 
@@ -62,9 +38,7 @@ final class SearchPlugin extends AbstractPlugin
      */
     public function form(): string
     {
-        $name = $this->config->get('plugins.search.formTemplate', function () {
-            return $this->getTemplatePath('form.twig');
-        });
+        $name = $this->config->get('plugins.search.formTemplate', fn() => $this->getTemplatePath('form.twig'));
 
         [$route] = $this->urlManager->parseRequest();
         $queryParams = $this->request->getQueryParams();
@@ -88,9 +62,7 @@ final class SearchPlugin extends AbstractPlugin
         $exact = $this->isExactSearch($queryParams);
         $results = $this->search($query, $exact);
 
-        $name = $this->config->get('plugins.search.resultsTemplate', function () {
-            return $this->getTemplatePath('results.twig');
-        });
+        $name = $this->config->get('plugins.search.resultsTemplate', fn() => $this->getTemplatePath('results.twig'));
 
         return $this->twigRenderer->renderTemplate($name, [
             'query' => $query,
@@ -130,9 +102,7 @@ final class SearchPlugin extends AbstractPlugin
             $rendered = $noStyles;
         }
         $withSpaces = preg_replace('/<[^>]+>/u', ' ', $rendered);
-        if ($withSpaces === null) {
-            $withSpaces = $rendered;
-        }
+        $withSpaces ??= $rendered;
         $content = strip_tags($withSpaces);
 
         if ($useCache && $cacheId !== null) {
@@ -302,14 +272,10 @@ final class SearchPlugin extends AbstractPlugin
     {
         /** @var string|null $withSpaces */
         $withSpaces = preg_replace('/<[^>]+>/u', ' ', $content);
-        if ($withSpaces === null) {
-            $withSpaces = $content;
-        }
+        $withSpaces ??= $content;
         /** @var string|null $normalized */
         $normalized = preg_replace('/\s+/u', ' ', strip_tags($withSpaces));
-        if ($normalized === null) {
-            $normalized = strip_tags($content);
-        }
+        $normalized ??= strip_tags($content);
         $content = $normalized;
 
         $snippetLength = 200;
@@ -349,9 +315,7 @@ final class SearchPlugin extends AbstractPlugin
         // so we don't highlight "?query=..." URLs
         /** @var string|null $cleaned */
         $cleaned = preg_replace('/\?[a-z0-9_=+&]+$/iu', '', $snippet);
-        if ($cleaned === null) {
-            $cleaned = $snippet;
-        }
+        $cleaned ??= $snippet;
 
         // Highlight search terms (exact mode: whole phrase; otherwise each term).
         if ($exact) {
@@ -361,7 +325,7 @@ final class SearchPlugin extends AbstractPlugin
                 '<mark>' . htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</mark>',
                 $cleaned,
             );
-            $highlighted = $highlightedResult !== null ? $highlightedResult : $cleaned;
+            $highlighted = $highlightedResult ?? $cleaned;
         } else {
             $highlighted = $cleaned;
             foreach ($terms as $term) {

@@ -6,17 +6,15 @@ namespace herbie;
 
 final class ApplicationPaths
 {
-    private string $app;
     private string $site;
     private string $vendor;
     private string $web;
 
-    public function __construct(string $app, ?string $site = null, ?string $vendor = null, ?string $web = null)
+    public function __construct(private readonly string $app, ?string $site = null, ?string $vendor = null, ?string $web = null)
     {
-        $this->app = $app;
-        $this->site = $site ?? ($app . '/site');
-        $this->vendor = $vendor ?? ($app . '/vendor');
-        $this->web = $web ?? ($app . '/web');
+        $this->site = $site ?? ($this->app . '/site');
+        $this->vendor = $vendor ?? ($this->app . '/vendor');
+        $this->web = $web ?? ($this->app . '/web');
     }
 
     public function getApp(string $append = ''): string

@@ -26,10 +26,10 @@ final class TwigRenderer
      * TwigRenderer constructor.
      */
     public function __construct(
-        private Config $config,
-        private EventManager $eventManager,
-        private LoggerInterface $logger,
-        private Site $site,
+        private readonly Config $config,
+        private readonly EventManager $eventManager,
+        private readonly LoggerInterface $logger,
+        private readonly Site $site,
     ) {}
 
     /**

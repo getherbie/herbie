@@ -11,10 +11,10 @@ use herbie\UrlManager;
 final class RenderSegmentEvent extends AbstractEvent
 {
     public function __construct(
-        private Page $page,
+        private readonly Page $page,
         private string $segment,
-        private string $segmentId,
-        private UrlManager $urlManager,
+        private readonly string $segmentId,
+        private readonly UrlManager $urlManager,
     ) {}
 
 

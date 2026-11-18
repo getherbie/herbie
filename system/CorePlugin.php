@@ -14,13 +14,13 @@ use Twig\Error\SyntaxError;
 
 final class CorePlugin extends AbstractPlugin
 {
-    private string $layoutFileExtension;
-    private bool $enableTwigInLayoutFilter;
-    private bool $enableTwigInSegmentFilter;
+    private readonly string $layoutFileExtension;
+    private readonly bool $enableTwigInLayoutFilter;
+    private readonly bool $enableTwigInSegmentFilter;
 
     public function __construct(
         Config $config,
-        private TwigRenderer $twigRenderer,
+        private readonly TwigRenderer $twigRenderer,
     ) {
         $this->enableTwigInLayoutFilter = $config->getAsBool('plugins.CORE.enableTwigInLayoutFilter');
         $this->enableTwigInSegmentFilter = $config->getAsBool('plugins.CORE.enableTwigInSegmentFilter');
@@ -37,16 +37,16 @@ final class CorePlugin extends AbstractPlugin
     public function eventListeners(): array
     {
         return [
-            [RenderLayoutEvent::class, [$this, 'onRenderLayout']],
-            [RenderPageEvent::class, [$this, 'onRenderPage']],
-            [RenderSegmentEvent::class, [$this, 'onRenderSegment']],
+            [RenderLayoutEvent::class, $this->onRenderLayout(...)],
+            [RenderPageEvent::class, $this->onRenderPage(...)],
+            [RenderSegmentEvent::class, $this->onRenderSegment(...)],
         ];
     }
 
     public function twigFunctions(): array
     {
         return [
-            ['herbie_debug', [$this, 'herbieDebug']],
+            ['herbie_debug', $this->herbieDebug(...)],
         ];
     }
 

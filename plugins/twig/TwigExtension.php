@@ -34,37 +34,10 @@ use function herbie\str_trailing_slash;
 
 final class TwigExtension extends AbstractExtension
 {
-    private Alias $alias;
-    private Assets $assets;
-    private Config $config;
-    private Environment $environment;
-    private PageRepositoryInterface $pageRepository;
-    private SlugGenerator $slugGenerator;
-    private Translator $translator;
-    private UrlManager $urlManager;
-
     /**
      * TwigExtension constructor.
      */
-    public function __construct(
-        Alias $alias,
-        Assets $assets,
-        Config $config,
-        Environment $environment,
-        PageRepositoryInterface $pageRepository,
-        SlugGenerator $slugGenerator,
-        Translator $translator,
-        UrlManager $urlManager,
-    ) {
-        $this->alias = $alias;
-        $this->assets = $assets;
-        $this->config = $config;
-        $this->environment = $environment;
-        $this->pageRepository = $pageRepository;
-        $this->slugGenerator = $slugGenerator;
-        $this->translator = $translator;
-        $this->urlManager = $urlManager;
-    }
+    public function __construct(private readonly Alias $alias, private readonly Assets $assets, private readonly Config $config, private readonly Environment $environment, private readonly PageRepositoryInterface $pageRepository, private readonly SlugGenerator $slugGenerator, private readonly Translator $translator, private readonly UrlManager $urlManager) {}
 
     /**
      * @return TwigFilter[]
@@ -72,9 +45,9 @@ final class TwigExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('format_size', [$this, 'filterFilesize']),
-            new TwigFilter('slugify', [$this, 'filterSlugify']),
-            new TwigFilter('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),
+            new TwigFilter('format_size', $this->filterFilesize(...)),
+            new TwigFilter('slugify', $this->filterSlugify(...)),
+            new TwigFilter('twigify', $this->twigify(...), ['is_safe' => ['html']]),
         ];
     }
 
@@ -84,29 +57,29 @@ final class TwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('css_add', [$this, 'cssAdd']),
-            new TwigFunction('css_classes', [$this, 'cssClasses'], ['needs_context' => true]),
-            new TwigFunction('css_out', [$this, 'cssOut'], ['is_safe' => ['html']]),
-            new TwigFunction('image', [$this, 'image'], ['is_safe' => ['html']]),
-            new TwigFunction('js_add', [$this, 'jsAdd']),
-            new TwigFunction('js_out', [$this, 'jsOut'], ['is_safe' => ['html']]),
-            new TwigFunction('link_file', [$this, 'linkFile'], ['is_safe' => ['html']]),
-            new TwigFunction('link_mail', [$this, 'linkMail'], ['is_safe' => ['html']]),
-            new TwigFunction('link_media', [$this, 'linkMedia'], ['is_safe' => ['html']]),
-            new TwigFunction('link_page', [$this, 'linkPage'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_ascii_tree', [$this, 'menuAsciiTree'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_breadcrumb', [$this, 'menuBreadcrumb'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_list', [$this, 'menuList'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_pager', [$this, 'menuPager'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_sitemap', [$this, 'menuSitemap'], ['is_safe' => ['html']]),
-            new TwigFunction('menu_tree', [$this, 'menuTree'], ['is_safe' => ['html']]),
-            new TwigFunction('page_title', [$this, 'pageTitle'], ['needs_context' => true]),
-            new TwigFunction('query', [$this, 'query']),
-            new TwigFunction('snippet', [$this, 'snippet'], ['is_safe' => ['all']]),
-            new TwigFunction('translate', [$this, 'translate']),
-            new TwigFunction('twigify', [$this, 'twigify'], ['is_safe' => ['html']]),
-            new TwigFunction('url_rel', [$this, 'urlRelative']),
-            new TwigFunction('url_abs', [$this, 'urlAbsolute']),
+            new TwigFunction('css_add', $this->cssAdd(...)),
+            new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
+            new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
+            new TwigFunction('js_add', $this->jsAdd(...)),
+            new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('link_file', $this->linkFile(...), ['is_safe' => ['html']]),
+            new TwigFunction('link_mail', $this->linkMail(...), ['is_safe' => ['html']]),
+            new TwigFunction('link_media', $this->linkMedia(...), ['is_safe' => ['html']]),
+            new TwigFunction('link_page', $this->linkPage(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_ascii_tree', $this->menuAsciiTree(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_breadcrumb', $this->menuBreadcrumb(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_list', $this->menuList(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_pager', $this->menuPager(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_sitemap', $this->menuSitemap(...), ['is_safe' => ['html']]),
+            new TwigFunction('menu_tree', $this->menuTree(...), ['is_safe' => ['html']]),
+            new TwigFunction('page_title', $this->pageTitle(...), ['needs_context' => true]),
+            new TwigFunction('query', $this->query(...)),
+            new TwigFunction('snippet', $this->snippet(...), ['is_safe' => ['all']]),
+            new TwigFunction('translate', $this->translate(...)),
+            new TwigFunction('twigify', $this->twigify(...), ['is_safe' => ['html']]),
+            new TwigFunction('url_rel', $this->urlRelative(...)),
+            new TwigFunction('url_abs', $this->urlAbsolute(...)),
         ];
     }
 
@@ -116,8 +89,8 @@ final class TwigExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('file_readable', [$this, 'testIsReadable']),
-            new TwigTest('file_writable', [$this, 'testIsWritable']),
+            new TwigTest('file_readable', $this->testIsReadable(...)),
+            new TwigTest('file_writable', $this->testIsWritable(...)),
         ];
     }
 
@@ -186,8 +159,8 @@ final class TwigExtension extends AbstractExtension
         bool $info = false,
         array $attribs = [],
     ): string {
-        $attribs['alt'] = $attribs['alt'] ?? '';
-        $attribs['class'] = $attribs['class'] ?? 'link__label';
+        $attribs['alt'] ??= '';
+        $attribs['class'] ??= 'link__label';
 
         $baseUrl = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.route'));
         $storagePath = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.storagePath'));
@@ -256,7 +229,7 @@ final class TwigExtension extends AbstractExtension
         string $template = '@snippet/link_mail.twig',
     ): string {
         $attribs['href'] = 'mailto:' . $email;
-        $attribs['class'] = $attribs['class'] ?? 'link__label';
+        $attribs['class'] ??= 'link__label';
 
         ksort($attribs);
 
@@ -267,7 +240,7 @@ final class TwigExtension extends AbstractExtension
 
         try {
             return $this->environment->render($template, $context);
-        } catch (Error $e) {
+        } catch (Error) {
             return $email;
         }
     }
@@ -306,7 +279,7 @@ final class TwigExtension extends AbstractExtension
         if (!empty($home)) {
             if (is_array($home)) {
                 $route = reset($home);
-                $label = isset($home[1]) ? $home[1] : 'Home';
+                $label = $home[1] ?? 'Home';
             } else {
                 $route = $home;
                 $label = 'Home';
@@ -406,9 +379,7 @@ final class TwigExtension extends AbstractExtension
         $pageList = $this->pageRepository->findAll();
 
         if ($limit !== '') {
-            $pageList = $pageList->filter(function ($page) use ($limit) {
-                return strpos($page->getRoute(), $limit) === 0;
-            });
+            $pageList = $pageList->filter(fn($page) => str_starts_with($page->getRoute(), $limit));
         }
 
         $prevPage = null;
@@ -548,7 +519,7 @@ final class TwigExtension extends AbstractExtension
             $href = $route;
         }
 
-        $attribs['class'] = $attribs['class'] ?? '';
+        $attribs['class'] ??= '';
         $attribs['class'] = trim($attribs['class'] . ' link__label');
 
         $replace = [
@@ -622,7 +593,7 @@ final class TwigExtension extends AbstractExtension
 
     public function linkFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
     {
-        $attribs['class'] = $attribs['class'] ?? 'link__label';
+        $attribs['class'] ??= 'link__label';
 
         if (!empty($info)) {
             $fileInfo = $this->getFileInfo($path);

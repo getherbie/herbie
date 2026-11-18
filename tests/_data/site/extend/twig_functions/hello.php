@@ -6,6 +6,4 @@ namespace herbie\tests\_data\site\extend\twig_functions;
 
 use Twig\TwigFunction;
 
-return new TwigFunction('local_hello', function ($name) {
-    return "Hello {$name}!";
-});
+return new TwigFunction('local_hello', fn($name) => "Hello {$name}!");

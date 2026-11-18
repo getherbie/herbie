@@ -12,8 +12,8 @@ final class FlatFilePageRepository implements PageRepositoryInterface
      * FlatfilePageRepository constructor.
      */
     public function __construct(
-        private PageFactory $pageFactory,
-        private PagePersistenceInterface $pagePersistence,
+        private readonly PageFactory $pageFactory,
+        private readonly PagePersistenceInterface $pagePersistence,
     ) {}
 
     /**

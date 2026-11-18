@@ -23,33 +23,27 @@ use function herbie\str_trailing_slash;
 #[Plugin('imagine', requires: ['imagine/imagine' => '^1.3'])]
 final class ImaginePlugin extends AbstractPlugin
 {
-    protected Config $config;
-
     protected string $basePath;
 
     protected string $cachePath;
 
-    private Alias $alias;
-
-    public function __construct(Alias $alias, Config $config)
+    public function __construct(private readonly Alias $alias, protected Config $config)
     {
-        $this->alias = $alias;
-        $this->config = $config;
-        $this->basePath = str_trailing_slash($config->getAsString('urls.web'));
+        $this->basePath = str_trailing_slash($this->config->getAsString('urls.web'));
         $this->cachePath = $this->config->getAsString('plugins.imagine.cachePath');
     }
 
     public function twigFilters(): array
     {
         return [
-            ['imagine', [$this, 'imagineFilter']],
+            ['imagine', $this->imagineFilter(...)],
         ];
     }
 
     public function twigFunctions(): array
     {
         return [
-            ['imagine', [$this, 'imagineFunction'], ['is_safe' => ['html']]],
+            ['imagine', $this->imagineFunction(...), ['is_safe' => ['html']]],
         ];
     }
 
@@ -57,7 +51,7 @@ final class ImaginePlugin extends AbstractPlugin
     {
         $absolutePath = $this->alias->get('@media/' . $path);
 
-        $attribs['class'] = $attribs['class'] ?? 'imagine';
+        $attribs['class'] ??= 'imagine';
 
         if (!is_file($absolutePath)) {
             $attribs['class'] = trim($attribs['class'] . ' imagine--file-not-found');
@@ -74,7 +68,7 @@ final class ImaginePlugin extends AbstractPlugin
 
         $cachePath = $this->applyFilterSet($path, $sanitizedFilter);
 
-        $attribs['alt'] = $attribs['alt'] ?? '';
+        $attribs['alt'] ??= '';
 
         if (empty($attribs['width']) && empty($attribs['height'])) {
             [$width, $height] = $this->getImageSize($cachePath);

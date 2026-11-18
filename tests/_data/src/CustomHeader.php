@@ -11,12 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CustomHeader implements MiddlewareInterface
 {
-    private string $identifier;
-
-    public function __construct(string $identifier)
-    {
-        $this->identifier = $identifier;
-    }
+    public function __construct(private readonly string $identifier) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

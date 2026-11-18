@@ -29,19 +29,18 @@ use Twig\TwigFunction;
 #[Plugin('contact', requires: ['phpmailer/phpmailer' => '^6.9', 'altcha-org/altcha' => '^2.4'])]
 final class ContactPlugin extends AbstractPlugin
 {
-    private const CAPTCHA_COUNTER_MIN = 5000;
-    private const CAPTCHA_COUNTER_MAX = 10000;
-    private const CSRF_COOKIE_NAME = 'herbie_contact_csrf';
-    private const CSRF_NONCE_PATTERN = '/^[a-f0-9]{32}$/';
-    private const DEFAULT_CAPTCHA_COST = 5000;
-    private const DEFAULT_CAPTCHA_TTL_SECONDS = 900;
-    private const DEFAULT_HONEYPOTS = ['phone', 'website'];
-    private const DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
-    private const DEFAULT_FORM_MIN_AGE_SECONDS = 3;
-    private const DEFAULT_FORM_MAX_AGE_SECONDS = 900;
-    private const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 5;
-    private const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 3600;
-
+    private const int CAPTCHA_COUNTER_MIN = 5000;
+    private const int CAPTCHA_COUNTER_MAX = 10000;
+    private const string CSRF_COOKIE_NAME = 'herbie_contact_csrf';
+    private const string CSRF_NONCE_PATTERN = '/^[a-f0-9]{32}$/';
+    private const int DEFAULT_CAPTCHA_COST = 5000;
+    private const int DEFAULT_CAPTCHA_TTL_SECONDS = 900;
+    private const array DEFAULT_HONEYPOTS = ['phone', 'website'];
+    private const int DEFAULT_CSRF_TOKEN_TTL_SECONDS = 900;
+    private const int DEFAULT_FORM_MIN_AGE_SECONDS = 3;
+    private const int DEFAULT_FORM_MAX_AGE_SECONDS = 900;
+    private const int DEFAULT_RATE_LIMIT_MAX_REQUESTS = 5;
+    private const int DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 3600;
     private Config $config;
     private ?CacheInterface $cache = null;
     private PageRepositoryInterface $pageRepository;
@@ -79,7 +78,7 @@ final class ContactPlugin extends AbstractPlugin
     public function twigFunctions(): array
     {
         return [
-            new TwigFunction('contact', [$this, 'contact'], ['is_safe' => ['html']]),
+            new TwigFunction('contact', $this->contact(...), ['is_safe' => ['html']]),
             new TwigFunction('csrf_token', fn(): string => $this->csrfToken()),
         ];
     }
@@ -87,7 +86,7 @@ final class ContactPlugin extends AbstractPlugin
     public function eventListeners(): array
     {
         return [
-            [ResponseGeneratedEvent::class, [$this, 'onResponseGenerated']],
+            [ResponseGeneratedEvent::class, $this->onResponseGenerated(...)],
         ];
     }
 
@@ -199,9 +198,7 @@ final class ContactPlugin extends AbstractPlugin
             $formErrors = [];
         }
 
-        $template = $this->config->get('plugins.contact.template', function () {
-            return $this->getTemplatePath('form.twig');
-        });
+        $template = $this->config->get('plugins.contact.template', fn() => $this->getTemplatePath('form.twig'));
 
         return $this->twigRenderer->renderTemplate($template, [
             'data' => $formData,
@@ -433,7 +430,7 @@ final class ContactPlugin extends AbstractPlugin
     private function getHoneypotFields(): array
     {
         $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'send_copy'];
-        $normalizedReserved = array_map('strtolower', $reserved);
+        $normalizedReserved = array_map(strtolower(...), $reserved);
         $fields = [];
         foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
             if (

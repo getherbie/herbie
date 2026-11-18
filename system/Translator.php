@@ -89,9 +89,7 @@ final class Translator
      */
     public function addPath(string $category, $path): void
     {
-        if (!isset($this->paths[$category])) {
-            $this->paths[$category] = [];
-        }
+        $this->paths[$category] ??= [];
         if (is_string($path)) {
             $path = [$path];
         } elseif (!is_array($path)) {

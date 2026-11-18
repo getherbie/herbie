@@ -72,7 +72,7 @@ function render_exception(Throwable $exception): string
         $format = "%s [%s] in %s on line %s\n\n%s\n\nStack trace:\n%s";
         $message = sprintf(
             $format,
-            get_class($exception),
+            $exception::class,
             $exception->getCode(),
             $exception->getFile(),
             $exception->getLine(),
@@ -109,7 +109,7 @@ function str_explode_filtered(string $list, string $delim, int $limit = PHP_INT_
         return [];
     }
     $values = explode($delim, $list, $limit);
-    return array_filter(array_map('trim', $values));
+    return array_filter(array_map(trim(...), $values));
 }
 
 /**
@@ -180,7 +180,7 @@ function handle_internal_webserver_assets(string $file): void
         // Prevent directory traversal outside of the base directory.
         if (
             $requestedAbsoluteFile === false || $baseDir === false
-            || strpos($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR) !== 0
+            || !str_starts_with($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR)
         ) {
             http_response_code(404);
             exit;
@@ -316,7 +316,7 @@ function time_from_string(string $datetime): int
  */
 function date_format(string $format, ?int $timestamp = null): string
 {
-    $timestamp = $timestamp ?? time();
+    $timestamp ??= time();
     return date($format, $timestamp);
 }
 

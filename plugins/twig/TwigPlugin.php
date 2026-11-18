@@ -19,19 +19,19 @@ use herbie\UrlManager;
 final class TwigPlugin extends AbstractPlugin
 {
     public function __construct(
-        private Alias $alias,
-        private Assets $assets,
-        private Config $config,
-        private PageRepositoryInterface $pageRepository,
-        private SlugGenerator $slugGenerator,
-        private Translator $translator,
-        private UrlManager $urlManager,
+        private readonly Alias $alias,
+        private readonly Assets $assets,
+        private readonly Config $config,
+        private readonly PageRepositoryInterface $pageRepository,
+        private readonly SlugGenerator $slugGenerator,
+        private readonly Translator $translator,
+        private readonly UrlManager $urlManager,
     ) {}
 
     public function eventListeners(): array
     {
         return [
-            [TwigInitializedEvent::class, [$this, 'onTwigInitialized']],
+            [TwigInitializedEvent::class, $this->onTwigInitialized(...)],
         ];
     }
 

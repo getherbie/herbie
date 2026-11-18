@@ -18,9 +18,6 @@ use function herbie\str_trailing_slash;
 
 final readonly class DownloadMiddleware implements MiddlewareInterface
 {
-    private Alias $alias;
-    private StreamFactoryInterface $streamFactory;
-    private ResponseFactoryInterface $responseFactory;
     private string $route;
     private string $storagePath;
 
@@ -28,14 +25,11 @@ final readonly class DownloadMiddleware implements MiddlewareInterface
      * DownloadMiddleware constructor.
      */
     public function __construct(
-        Alias $alias,
-        StreamFactoryInterface $streamFactory,
-        ResponseFactoryInterface $responseFactory,
+        private Alias $alias,
+        private StreamFactoryInterface $streamFactory,
+        private ResponseFactoryInterface $responseFactory,
         array $config,
     ) {
-        $this->alias = $alias;
-        $this->streamFactory = $streamFactory;
-        $this->responseFactory = $responseFactory;
         $this->route = str_trailing_slash((string)($config['route'] ?? ''));
         $this->storagePath = str_trailing_slash((string)($config['storagePath'] ?? ''));
     }
@@ -94,10 +88,9 @@ final readonly class DownloadMiddleware implements MiddlewareInterface
     private function determineContentType(string $filepath): string
     {
         $extension = (string)pathinfo($filepath, PATHINFO_EXTENSION);
-        switch ($extension) {
-            case 'pdf':
-                return 'application/pdf';
-        }
-        throw SystemException::serverError('No content-type found for ' . $extension);
+        return match ($extension) {
+            'pdf' => 'application/pdf',
+            default => throw SystemException::serverError('No content-type found for ' . $extension),
+        };
     }
 }

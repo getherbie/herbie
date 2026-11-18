@@ -121,7 +121,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
             $cssClasses[] = 'current';
         }
         if (!empty($menuItemRoute)) {
-            if (strpos($route, $menuItemRoute) === 0) {
+            if (str_starts_with($route, $menuItemRoute)) {
                 $cssClasses[] = 'active';
             }
         }

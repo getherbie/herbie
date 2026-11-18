@@ -24,7 +24,6 @@ final class Application
     public const int VERSION_API = 2;
     /** @var array<int, mixed> */
     private array $applicationMiddlewares;
-    private ApplicationPaths $applicationPaths;
     private ?string $baseUrl;
     /** @var string[] */
     private array $consoleCommands;
@@ -49,7 +48,7 @@ final class Application
      * @throws SystemException
      */
     public function __construct(
-        ApplicationPaths $paths,
+        private readonly ApplicationPaths $applicationPaths,
         ?CacheInterface $cache = null,
         ?LoggerInterface $logger = null,
     ) {
@@ -57,7 +56,6 @@ final class Application
         set_exception_handler(new UncaughtExceptionHandler());
 
         $this->applicationMiddlewares = [];
-        $this->applicationPaths = $paths;
         $this->baseUrl = null;
         $this->consoleCommands = [];
         $this->eventListeners = [];
@@ -228,9 +226,7 @@ final class Application
 
     public function getBaseUrl(): string
     {
-        if ($this->baseUrl === null) {
-            $this->baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
-        }
+        $this->baseUrl ??= rtrim(dirname($this->getScriptUrl()), '\\/');
 
         return $this->baseUrl;
     }
@@ -254,7 +250,7 @@ final class Application
                 $this->scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
             } elseif (isset($phpSelf) && ($pos = strpos($phpSelf, '/' . $scriptName)) !== false) {
                 $this->scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
-            } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && str_starts_with($scriptFile, $_SERVER['DOCUMENT_ROOT'])) {
                 $this->scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
                 throw new RuntimeException('Unable to determine the entry script URL.');

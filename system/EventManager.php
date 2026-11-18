@@ -31,7 +31,7 @@ final class EventManager implements EventDispatcherInterface, ListenerProviderIn
 
     public function getListenersForEvent(object $event): iterable
     {
-        $eventType = get_class($event);
+        $eventType = $event::class;
 
         if (isset($this->listeners[$eventType])) {
             $listOfListenersByPriority = $this->listeners[$eventType];

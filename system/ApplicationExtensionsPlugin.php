@@ -6,7 +6,7 @@ namespace herbie;
 
 final class ApplicationExtensionsPlugin extends AbstractPlugin
 {
-    public function __construct(private Application $application) {}
+    public function __construct(private readonly Application $application) {}
 
     public function consoleCommands(): array
     {

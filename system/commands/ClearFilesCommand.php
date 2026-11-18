@@ -15,7 +15,7 @@ final class ClearFilesCommand extends Command
 {
     protected static $defaultName = 'clear-files';
     protected static $defaultDescription = 'Clears asset, cache and log files';
-    public function __construct(private Config $config)
+    public function __construct(private readonly Config $config)
     {
         parent::__construct();
     }
@@ -66,7 +66,7 @@ final class ClearFilesCommand extends Command
 
         $items = [];
         foreach ($cachePaths as $key => $value) {
-            if (strpos($key, $type) === 0) {
+            if (str_starts_with($key, $type)) {
                 $items[$key] = $value;
             }
         }

@@ -11,9 +11,7 @@ return [
     TwigInitializedEvent::class,
     function (TwigInitializedEvent $event): void {
         $event->getEnvironment()->addFilter(
-            new TwigFilter('my_filter2', function (string $content): string {
-                return $content . ' My Filter 2';
-            }),
+            new TwigFilter('my_filter2', fn(string $content): string => $content . ' My Filter 2'),
         );
     },
 ];

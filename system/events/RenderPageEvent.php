@@ -10,9 +10,9 @@ use herbie\Page;
 final class RenderPageEvent extends AbstractEvent
 {
     public function __construct(
-        private Page $page,
-        private string $route,
-        private array $routeParams,
+        private readonly Page $page,
+        private readonly string $route,
+        private readonly array $routeParams,
     ) {}
 
     public function getPage(): Page
