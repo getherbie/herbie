@@ -1,90 +1,102 @@
 ---
 - name: page.authors
-  desc: One or more authors of the page
+  desc: One or more authors of the page.
   type: string[]
+  default: []
 - name: page.cached
-  desc: If set the page is cached (depending if caching is active)
+  desc: If set, the rendered page may be cached (only effective when caching is enabled).
   type: bool
+  default: true
 - name: page.cache_id
-  desc: The cache ID used for identifying when caching (read-only)
-  type: string  
+  desc: Computed read-only cache identifier for the page (`page-<id>`). Not a stored field and not included in `toArray()`.
+  type: string
 - name: page.categories
-  desc: One or more categories, that belongs to the page
+  desc: One or more categories that belong to the page.
   type: string[]
+  default: []
 - name: page.content_type
-  desc: The Content-Type of the page for the HTTP response, automatically set by Herbie.
+  desc: Content-Type of the HTTP response. Defaults to `text/html` and can be overridden in front matter; it is not derived automatically from file extension or format.
+  type: string
   default: text/html
-  type: string
 - name: page.created
-  desc: The creation time of the page. 
-    This value is not set automatically.
+  desc: Creation time of the page. Not set automatically; valid values are formatted as ISO 8601 (`c`).
   type: string
+  default: ""
 - name: page.date
-  desc: The date of the page.
-    Set explicitly, taken from a date prefix in the file name, or the modification date.
+  desc: Date of the page. Set explicitly, taken from a date prefix in the file name (`YYYY-MM-DD...`) when loading from file, or derived from the file modification time.
   type: string
+  default: ""
 - name: page.excerpt
-  desc: The excerpt of the page body.
+  desc: Optional excerpt text. This is a manual field in core and is not automatically extracted from the page body.
   type: string
+  default: ""
 - name: page.format
-  desc: The formatter like markdown or textile. 
-    Is set automatically depending on the file extension.
+  desc: Page content format/formatter. When loading from file, it is taken from the file extension if not set. Values are normalized to `markdown` (`md`/`markdown`), `textile`, `rst`, or `raw`.
   type: string
+  default: raw
 - name: page.hidden
-  desc: If true the page is not visible in navigation elements like menu, sitemap or breadcrumb.
-    Pages without a numeric prefix are hidden by default.
+  desc: If true, the page is not visible in navigation elements like menu, sitemap, or breadcrumb. For file-based pages, it defaults to true when the file name has no numeric prefix (unless explicitly set).
   type: bool
-- name: page.id
-  desc: The aliased ID of the page like `@page/2-company/3-about-us.md`.
-  type: string
-- name: page.keep_extension
-  desc: If true the file extension is used for urls. 
-    Useful for xml pages like sitemap for search engines.
   default: false
+- name: page.id
+  desc: Aliased page ID, for example `@page/2-company/3-about-us.md`. Set automatically when loading from file if not provided.
+  type: string
+  default: ""
+- name: page.keep_extension
+  desc: If true, the file extension is kept in the URL/route. Useful for pages like XML sitemaps or robots.txt.
   type: bool
+  default: false
 - name: page.layout
-  desc: The layout as basename (without file extension).
-    Layout files are located in the configured theme directory under `site/themes/`; the extension is set with `fileExtensions.layouts` (default is `twig`).
+  desc: Layout basename without file extension. Layout files are located in `site/themes/<theme>/` and use the extension configured by `fileExtensions.layouts` (default `twig`). An empty value renders without a layout wrapper.
   type: string
+  default: default
 - name: page.menu_title
-  desc: The title for menu elements like sitemap or breadcrumb. 
-    If empty the page title will be shown.
+  desc: Title used in navigation elements like menu, sitemap, or breadcrumb. When read and empty, it falls back to `page.title`.
   type: string
+  default: ""
 - name: page.modified
-  desc: The modification time of the page as ISO 8601 formatted string.
-    This value is set automatically.
-  type: string  
+  desc: Modification time of the page as an ISO 8601 (`c`) formatted string. Set automatically from the file modification time when loading from file if not provided.
+  type: string
+  default: ""
 - name: page.parent_id
-  desc: The aliased parent ID of the page like `@page/2-company/1-index.md`
+  desc: Aliased parent page ID, for example `@page/2-company/1-index.md`. Determined automatically when loading from file if not provided.
   type: string
+  default: ""
 - name: page.parent_route
-  desc: The parent route of the page like `company`.
+  desc: Parent route of the page, for example `company`. Derived automatically when loading from file if not provided.
   type: string
+  default: ""
 - name: page.path
-  desc: The path to the page file, set automatically.
+  desc: Path to the page file. Set automatically when loading from file if not provided.
   type: string
+  default: ""
 - name: page.redirect
-  desc: If set the request will be redirected to the given route. Either a route or an array of route and HTTP status code.
+  desc: Redirect target. Can be set as a route string or as `[url, status]`; strings are normalized to `[url, 302]`. Stored/read value is an array (`[]` or `[url, status]`) with status code 300-308.
   type: string|array
+  default: []
 - name: page.route
-  desc: The route of the page like `company/about-us`.
+  desc: Route of the page, for example `company/about-us`. Derived automatically from the alias/file name when loading from file if not provided.
   type: string
+  default: ""
 - name: page.segments
-  desc: The page content as associative key value array.
-    The content is lazy loaded and not available until this member variable is accessed.    
+  desc: Page content as an associative array of segments (including `default`). Lazy-loaded from the page file on first access if not already provided.
   type: array
 - name: page.tags
-  desc: One or more tags that belongs to the page.
+  desc: One or more tags that belong to the page.
   type: string[]
+  default: []
 - name: page.title
-  desc: The title of the page.
+  desc: Title of the page.
   type: string
+  default: ""
 - name: page.twig
-  desc: 'If set the page will be parsed by the Twig Renderer first (default: true).'
+  desc: If true, the page is processed by the Twig renderer before rendering.
   type: bool
+  default: true
 - name: page.type
-  desc: 'The page type (default: page).'
+  desc: Page type.
   type: string
+  default: page
 - name: page.<name>
-  desc: Any numbers of custom variables.
+  desc: Any number of custom variables defined in front matter or set programmatically.
   type: mixed
