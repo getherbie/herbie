@@ -1050,11 +1050,12 @@ html[data-theme="dark"] .plugin-search-form input[type=submit] {
     color: var(--text);
 }
 .plugin-search-results .snippet mark {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--accent) 30%, var(--surface));
     color: var(--text);
-    padding: 0 0.18em;
+    padding: 0.05em 0.2em;
     border-radius: 3px;
     font-weight: 600;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 
