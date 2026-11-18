@@ -372,7 +372,7 @@ final class WebsiteCest
         $I->seeElement('.contact-control-group-honeypot input.contact-input[id=phone][name=phone]');
         $I->seeElement('.contact-control-group-honeypot input.contact-input[id=website][name=website]');
         $I->seeElement('altcha-widget[challenge]');
-        $I->seeElement('input[name=sendCopy][type=checkbox]');
+        $I->seeElement('input[name=send_copy][type=checkbox]');
         $I->seeElement('.contact-button');
         $this->testLayoutDefault($I);
     }

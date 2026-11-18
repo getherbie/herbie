@@ -89,7 +89,7 @@ The plugin applies five lightweight checks, configured with the options above:
 - **Form age:** The hidden `form_time` field records when the form was rendered. Submissions faster than `form.minAgeSeconds` or older than `form.maxAgeSeconds` are silently rejected (3 s and 15 min by default). The CSRF token has its own `csrf.tokenTtlSeconds` (15 min by default) and rejects future timestamps.
 - **Rate limit:** At most `rateLimit.maxRequests` submissions per `rateLimit.windowSeconds` and IP address (5 per hour by default). This requires a PSR-16 `CacheInterface` implementation; without a cache, no limit is applied. The IP is read from `REMOTE_ADDR`, so a reverse proxy must set it correctly.
 
-Custom templates must keep the hidden fields `csrf_token`, `form_time`, the `altcha` field created by the widget, and every field listed in `honeypots`, otherwise these checks cannot work. Field names used for real input (`name`, `email`, `message`, `form_time`, `csrf_token`, `altcha`, `button`, `sendCopy`) cannot be used as honeypots.
+Custom templates must keep the hidden fields `csrf_token`, `form_time`, the `altcha` field created by the widget, and every field listed in `honeypots`, otherwise these checks cannot work. Field names used for real input (`name`, `email`, `message`, `form_time`, `csrf_token`, `altcha`, `button`, `send_copy`) cannot be used as honeypots.
 
 The widget script `assets/altcha.min.js` is hosted locally; the contact page loads no third-party scripts and makes no external requests. Proof-of-work requires JavaScript to be enabled in the browser. Because the challenge and solution are bound to the signing secret, keep `captcha.secret` stable for the lifetime of an open form; rotating it invalidates outstanding challenges.
 

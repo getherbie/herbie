@@ -328,22 +328,22 @@ final class ContactPluginTest extends Unit
             'name' => 'John',
             'email' => 'john@example.com',
             'message' => 'Hello',
-            'sendCopy' => '1',
+            'send_copy' => '1',
         ]]);
-        $this->assertTrue($checked['sendCopy']);
+        $this->assertTrue($checked['send_copy']);
 
         $unchecked = $this->invokePrivate($plugin, 'filterFormData', [[
             'name' => 'John',
             'email' => 'john@example.com',
             'message' => 'Hello',
         ]]);
-        $this->assertFalse($unchecked['sendCopy']);
+        $this->assertFalse($unchecked['send_copy']);
 
         // Real input fields cannot be configured as honeypots.
         $this->setPrivateProperty($plugin, 'config', new Config([
             'plugins' => ['contact' => [
                 'csrf' => ['secret' => 'test-secret'],
-                'honeypots' => ['sendCopy', 'altcha'],
+                'honeypots' => ['send_copy', 'altcha'],
             ]],
         ]));
         $this->assertSame(['phone', 'website'], $this->invokePrivate($plugin, 'getHoneypotFields', []));
@@ -352,7 +352,7 @@ final class ContactPluginTest extends Unit
     public function testSenderCopyRequiresOptInAndValidAddress(): void
     {
         $plugin = $this->createUninitializedPlugin();
-        $data = ['sendCopy' => true, 'email' => 'john@example.com'];
+        $data = ['send_copy' => true, 'email' => 'john@example.com'];
 
         // Disabled by default.
         $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [$data]));
@@ -367,7 +367,7 @@ final class ContactPluginTest extends Unit
         $this->assertTrue($this->invokePrivate($plugin, 'shouldSendCopy', [$data]));
         $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [['email' => 'john@example.com']]));
         $this->assertFalse($this->invokePrivate($plugin, 'shouldSendCopy', [[
-            'sendCopy' => true,
+            'send_copy' => true,
             'email' => 'not-an-email',
         ]]));
     }

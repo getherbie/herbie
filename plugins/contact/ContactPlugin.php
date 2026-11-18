@@ -214,7 +214,7 @@ final class ContactPlugin extends AbstractPlugin
             'copy_enabled' => $this->config->getAsBool('plugins.contact.copy.enabled', false),
             'copy_checked' => $formData === []
                 ? $this->config->getAsBool('plugins.contact.copy.defaultChecked', false)
-                : !empty($formData['sendCopy']),
+                : !empty($formData['send_copy']),
         ]);
     }
 
@@ -413,7 +413,7 @@ final class ContactPlugin extends AbstractPlugin
      */
     private function getHoneypotFields(): array
     {
-        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'sendCopy'];
+        $reserved = ['name', 'email', 'message', 'form_time', 'csrf_token', 'altcha', 'button', 'send_copy'];
         $normalizedReserved = array_map('strtolower', $reserved);
         $fields = [];
         foreach ($this->config->getAsArray('plugins.contact.honeypots') as $field) {
@@ -452,7 +452,7 @@ final class ContactPlugin extends AbstractPlugin
             'email' => '',
             'message' => '',
             'form_time' => '',
-            'sendCopy' => false,
+            'send_copy' => false,
         ];
         foreach ($honeypots as $field) {
             $defaults[$field] = '';
@@ -469,8 +469,8 @@ final class ContactPlugin extends AbstractPlugin
         if (isset($input['form_time']) && is_string($input['form_time'])) {
             $filtered['form_time'] = preg_replace('/[^0-9]/', '', $input['form_time']) ?? '';
         }
-        if (isset($input['sendCopy']) && is_string($input['sendCopy'])) {
-            $filtered['sendCopy'] = filter_var($input['sendCopy'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($input['send_copy']) && is_string($input['send_copy'])) {
+            $filtered['send_copy'] = filter_var($input['send_copy'], FILTER_VALIDATE_BOOLEAN);
         }
         return $filtered;
     }
@@ -533,7 +533,7 @@ final class ContactPlugin extends AbstractPlugin
     private function shouldSendCopy(array $data): bool
     {
         return $this->config->getAsBool('plugins.contact.copy.enabled', false)
-            && !empty($data['sendCopy'])
+            && !empty($data['send_copy'])
             && $this->isValidMailAddress((string)($data['email'] ?? ''));
     }
 
