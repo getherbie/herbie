@@ -3,5 +3,6 @@ title: robots.txt
 layout: ""
 content_type: text/plain
 keep_extension: true
+no_search: true
 ---
 Sitemap: {{ url_abs('sitemap.xml') }}

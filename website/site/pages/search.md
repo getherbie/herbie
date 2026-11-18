@@ -2,6 +2,7 @@
 title: Search
 cached: false
 hidden: true
+no_search: true
 ---
 
 # Search
