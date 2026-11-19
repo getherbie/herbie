@@ -48,7 +48,6 @@ return [
     // ...
     'collections' => [
         'default' => [
-            'test' => true,
             'filters' => [
                 'thumbnail' => [
                     'size' => [360, 240],
@@ -90,6 +89,12 @@ With the above configuration you set two Imagine collections `resize` and `crop`
 
 - A resize collection to resize an image to a size of 280 x 280 pixels
 - A crop collection to crop an image to a size of 560 x 560 pixels
+
+Each collection supports these options:
+
+- `filters` (array): the filters to apply
+- `quality` (int, optional): quality value passed to Imagine when saving the image
+- `cache` (bool, optional): cache the generated image and reuse it on subsequent requests (default: `true`)
 
 ## Usage
 
@@ -143,9 +148,9 @@ Example:
         <td></td>
     </tr>
     <tr class="param">
-        <td>filterSet</td>
+        <td>collection</td>
         <td>string</td>
-        <td>The filter set to be applied.</td>
+        <td>The filter collection to be applied.</td>
         <td>default</td>
     </tr>
     <tr class="param">

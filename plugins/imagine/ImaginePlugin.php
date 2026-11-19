@@ -118,13 +118,9 @@ final class ImaginePlugin extends AbstractPlugin
         $filterConfig = $this->config->getAsArray("plugins.imagine.collections.{$filterSet}");
         $cachePath = $this->resolveCachePath($relpath, $filterSet);
 
-        if (!empty($filterConfig['test'])) {
-            if (is_file($cachePath)) {
-                unlink($cachePath);
-            }
-        }
+        $cache = (bool)($filterConfig['cache'] ?? true);
 
-        if (is_file($cachePath)) {
+        if ($cache && is_file($cachePath)) {
             return $cachePath;
         }
 

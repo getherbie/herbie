@@ -20,7 +20,6 @@ return [
     'enabledPlugins' => 'twig,markdown,rst,textile,imagine,dummy',
     'plugins' => [
         'imagine' => [
-            'test' => true,
             'collections' => [
                 'bsp1' => [
                     'filters' => [
