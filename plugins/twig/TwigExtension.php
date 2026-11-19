@@ -48,7 +48,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFilter('format_bytes', $this->filterBytes(...)),
             new TwigFilter('slugify', $this->filterSlugify(...)),
             new TwigFilter('spaceless', $this->filterSpaceless(...), ['pre_escape' => 'html', 'is_safe' => ['html']]),
-            new TwigFilter('twigify', $this->twigify(...), ['is_safe' => ['html']]),
+            new TwigFilter('twigify', $this->filterTwigify(...), ['is_safe' => ['html']]),
         ];
     }
 
@@ -79,7 +79,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('query', $this->query(...)),
             new TwigFunction('snippet', $this->snippet(...), ['is_safe' => ['all']]),
             new TwigFunction('translate', $this->translate(...)),
-            new TwigFunction('twigify', $this->twigify(...), ['is_safe' => ['html']]),
+            new TwigFunction('twigify', $this->filterTwigify(...), ['is_safe' => ['html']]),
             new TwigFunction('url_rel', $this->urlRelative(...)),
             new TwigFunction('url_abs', $this->urlAbsolute(...)),
         ];
@@ -666,7 +666,7 @@ final class TwigExtension extends AbstractExtension
         return is_writable($filename);
     }
 
-    public function twigify(string $content): string
+    public function filterTwigify(string $content): string
     {
         return $this->environment->render($content);
     }
