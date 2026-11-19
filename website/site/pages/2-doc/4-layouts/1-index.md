@@ -14,6 +14,7 @@ The Twig documentation can be found at <https://twig.symfony.com>.
 Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
 The layout file extension is configured with `fileExtensions.layouts` and defaults to `twig`.
 Use the `@theme` alias to reference assets of the active theme without hardcoding its name, e.g. `{{ css_add("@theme/css/styles.css") }}`.
+Templates missing from the active theme are looked up in the parent theme configured with `themeParent` (default: `default`).
 Herbie expects at least two layout files:
 
 ~~~text

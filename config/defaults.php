@@ -9,6 +9,7 @@ $settings['language'] = 'de';
 $settings['locale'] = 'de_DE.UTF-8';
 $settings['charset'] = 'UTF-8';
 $settings['theme'] = 'default';
+$settings['themeParent'] = 'default';
 
 /**
  * Paths
