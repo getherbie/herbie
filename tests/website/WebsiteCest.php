@@ -179,7 +179,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/doc/layouts');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Layouts', 'h1');
+        $I->see('Themes and layouts', 'h1');
         $I->see('On this page', '.toc-title');
         $this->seeRenderedContent($I);
     }

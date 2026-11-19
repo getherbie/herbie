@@ -1,50 +1,90 @@
 ---
-title: Layouts
+title: Themes and layouts
 layout: doc
 twig: false
 ---
 
-# Layouts
+# Themes and layouts
 
-Layout files are implemented in Herbie using the Twig template engine.
-Twig templates are quite easy to understand and very well documented.
+Herbie uses the [Twig](https://twig.symfony.com) template engine for layouts.
+A theme provides the templates and assets that determine the appearance of a site; each page selects a layout and fills it with content.
 
-The Twig documentation can be found at <https://twig.symfony.com>.
+## How themes work
 
-Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
+The following terms are used here:
+
+- **Theme** – a directory under `site/themes` that bundles the templates, assets and icons for a site's appearance.
+- **Parent theme** – the theme named in `themeParent`, used when a file is missing from the active theme.
+- **Template** – any Twig file. Layouts are templates, but base templates and snippets are templates too and are not selectable as layouts.
+- **Layout** – a Twig template in the theme that a page selects with `layout:`. Its name is the file name without the extension.
+- **Asset** – a CSS, JS or image file referenced through `@theme` and published below `/assets/themes/`.
+- **Token** – a CSS custom property provided by a theme and read by plugins.
+- **Segment** – a named part of a page's content, available in templates as `content.<name>`.
+
+The active theme is selected globally in `site/config/main.php`; the default is `default`:
+
+~~~php
+'theme' => 'my-theme',
+'themeParent' => 'default',
+~~~
+
+When Herbie renders a page, it takes the layout name from the page's `layout` property and looks for the matching Twig file in this order:
+
+1. `site/themes/<theme>/<layout>.twig` – the active theme
+2. `site/themes/<themeParent>/<layout>.twig` – the parent theme (default: `default`)
+
+The first file found wins. A theme therefore only needs to contain the files it wants to change; everything else comes from the parent.
+Set `themeParent` to an empty string to disable this fallback.
+
+~~~text
+site/themes/
+├── default/            # parent: base templates, tokens, icons
+└── my-theme/           # active: only the files that differ
+    ├── css/styles.css
+    └── default.twig
+~~~
+
+Assets and icons follow the same order. The `@theme` alias points at the active theme directory, so templates can reference its assets without hardcoding the theme name:
+
+~~~twig
+{{ css_add("@theme/css/styles.css") }}
+~~~
+
+If the file is missing from the active theme, the parent theme supplies it.
+Icons loaded with `icon()` are resolved in the same way.
+Published assets keep the active theme in their URL, for example `/assets/themes/<theme>/css/styles.css`.
+
+## Layout files
+
+Layout files are stored under `site/themes/<theme>`, where the last path segment is the name of the active theme.
 The layout file extension is configured with `fileExtensions.layouts` and defaults to `twig`.
-Use the `@theme` alias to reference assets of the active theme without hardcoding its name, e.g. `{{ css_add("@theme/css/styles.css") }}`.
-Templates missing from the active theme are looked up in the parent theme configured with `themeParent` (default: `default`). Assets referenced through `@theme` and icons loaded with `icon()` use the same fallback: the active theme wins, the parent theme supplies everything it does not provide. Set `themeParent` to an empty string to disable the fallback.
-
-## CSS naming conventions
-
-CSS shipped by Herbie uses a `herbie-` prefix for classes and `--herbie-` for custom properties. Plugin styles add the plugin name as scope, e.g. `.herbie-contact-errors` and `--herbie-contact-error`.
-
-Theme tokens such as `--surface` and `--accent-button` are intentionally unprefixed: they are provided by the active theme and read by plugins with `var(--surface, #ffffff)`. Tokens owned by third-party libraries (e.g. `--altcha-*`) keep their original names.
 
 Herbie expects at least two layout files:
 
 ~~~text
 site/themes/default/
-├── default.twig        # default page
-└── error.twig          # error template
+├── default.twig        # default layout
+└── error.twig          # error layout
 ~~~
 
-Often it makes sense to divide the layouts into a main template and one or more sub templates.
-These sub templates inherit the blocks of the main template and can fill them with content.
+A layout is a Twig template in the theme; a page selects it with `layout:`.
+Layouts usually extend a base template and fill its blocks with content.
+In the following example `main.twig` is the base template, while `default.twig`, `homepage.twig` and `twocolumn.twig` are layouts.
 
 ~~~text
 site/themes/default/
-├── default.twig        # default template (required)
-├── error.twig          # error page (required)
-├── homepage.twig       # homepage template
-├── main.twig           # main template
-└── twocolumn.twig      # two-column template
+├── default.twig        # default layout (required)
+├── error.twig          # error layout (required)
+├── homepage.twig       # homepage layout
+├── main.twig           # base template
+└── twocolumn.twig      # two-column layout
 ~~~
 
-A simple main template might look like this:
+## Template inheritance
 
-## Main template
+### Main template
+
+The main (base) template defines blocks that sub templates can fill. A simple example:
 
 ~~~twig
 # main.twig
@@ -63,12 +103,11 @@ A simple main template might look like this:
 </html>
 ~~~
 
-In the main template, three blocks (title, content, sidebar) have been defined.
-But these blocks do not contain any content yet.
+The example defines three blocks (`title`, `content` and `sidebar`) without any content.
 
-## Sub template
+### Sub template
 
-The sub template inherits from the main template and fills the blocks with content, that are defined in the main template.
+A sub (child) template extends the main template and fills its blocks:
 
 ~~~twig
 # default.twig
@@ -83,11 +122,9 @@ The sub template inherits from the main template and fills the blocks with conte
 {% endblock %}
 ~~~
 
-
-In order for the whole thing to work dynamically, the global `content` variable provides the rendered content of the page segments.
-Internally, the segments go through one or more formatting processes such as rendering Twig or parsing shortcode, markdown or Textile code.
-
-So, the customized (dynamized) sub template now looks like this:
+To make this dynamic, the global `content` variable provides the rendered content of the page segments.
+Internally, the segments go through one or more formatting processes such as rendering Twig or parsing shortcode, Markdown or Textile code.
+The sub template now looks like this:
 
 ~~~twig
 # default.twig
@@ -101,10 +138,10 @@ So, the customized (dynamized) sub template now looks like this:
 {% endblock %}
 ~~~
 
-Both the `title` block for the page title and the `content` block for the page content are filled dynamically.
+The `title` block takes the page title, the `content` block the page content.
 The `raw` filter is required because Twig escapes HTML by default.
 
-If you want to place a sidebar next to the normal content column, you can do this as follows.
+To place a sidebar next to the normal content column, fill the `sidebar` block as well:
 
 ~~~twig
 # twocolumn.twig
@@ -122,9 +159,11 @@ If you want to place a sidebar next to the normal content column, you can do thi
 {% endblock %}
 ~~~
 
-The page properties block is now used to apply one of the prepared layouts to each page.
-The value of `layout` is the file name without the extension, because Herbie appends the extension from `fileExtensions.layouts` (default `twig`).
-If the option is empty, `layout` must contain the full file name.
+## Selecting a layout
+
+The `layout` page property applies one of the prepared layouts to a page.
+Its value is the file name without the extension, because Herbie appends the extension from `fileExtensions.layouts` (default `twig`).
+If `fileExtensions.layouts` is empty, `layout` must contain the full file name.
 
 ~~~html
 ---
@@ -141,5 +180,15 @@ And here is content for the sidebar segment.
 
 Further information on how page contents must be formatted can be found in the [Contents](doc/contents) chapter.
 
-Another good resource are the layout files of this website itself.
+## CSS naming conventions
+
+CSS shipped by Herbie uses a `herbie-` prefix for classes and `--herbie-` for custom properties.
+Plugin styles add the plugin name as scope, e.g. `.herbie-contact-errors` and `--herbie-contact-error`.
+
+Theme tokens such as `--surface` and `--accent-button` are intentionally unprefixed: they are provided by the active theme and read by plugins with `var(--surface, #ffffff)`.
+Tokens owned by third-party libraries (e.g. `--altcha-*`) keep their original names.
+
+## Further reading
+
+Another good resource is the layout files of this website itself.
 They are available on GitHub at <https://github.com/getherbie/website/>.
