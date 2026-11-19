@@ -20,7 +20,6 @@ use herbie\Translator;
 use herbie\UrlManager;
 use Traversable;
 use Twig\Environment;
-use Twig\Error\Error;
 use Twig\Runtime\EscaperRuntime;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -270,11 +269,7 @@ final class TwigExtension extends AbstractExtension
             'label' => $label ?? $email,
         ];
 
-        try {
-            return $this->environment->render($template, $context);
-        } catch (Error) {
-            return $email;
-        }
+        return $this->environment->render($template, $context);
     }
 
     public function menuAsciiTree(

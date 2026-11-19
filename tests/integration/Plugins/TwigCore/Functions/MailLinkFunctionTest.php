@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
+use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
@@ -73,7 +74,8 @@ final class MailLinkFunctionTest extends Unit
 
     public function testLinkWithNotExistingCustomTemplate(): void
     {
+        $this->expectException(LoaderError::class);
         $twig = '{{ link_mail("me@example.com", template="@not/existing/template.twig") }}';
-        $this->assertEquals('me@example.com', $this->twig()->renderString($twig));
+        $this->twig()->renderString($twig);
     }
 }
