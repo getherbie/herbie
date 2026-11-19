@@ -57,10 +57,23 @@ final readonly class ContainerBuilder
             ]);
         });
 
-        $c->set(Assets::class, fn(ContainerInterface $c) => new Assets(
-            $c->get(Alias::class),
-            $this->app->getBaseUrl(),
-        ));
+        $c->set(Assets::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class);
+            $theme = trim($config->getAsString('theme'));
+            $themeParent = trim($config->getAsString('themeParent'));
+            $themeFallbackPaths = [];
+            if ($theme !== '' && $themeParent !== '' && $themeParent !== $theme) {
+                $parentPath = trim($config->getAsString('paths.themes')) . '/' . $themeParent;
+                if (is_dir($parentPath)) {
+                    $themeFallbackPaths[] = $parentPath;
+                }
+            }
+            return new Assets(
+                $c->get(Alias::class),
+                $this->app->getBaseUrl(),
+                $themeFallbackPaths,
+            );
+        });
 
         if ($this->cache) {
             $c->set(CacheInterface::class, $this->cache);

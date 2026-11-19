@@ -71,6 +71,29 @@ final class AssetsTest extends Unit
         $this->assertSame($firstModified, filemtime($marker));
     }
 
+    public function testParentAssetIsPublishedForEachActiveTheme(): void
+    {
+        $parent = $this->fixturePath . '/src/parent';
+        $web = $this->fixturePath . '/web';
+
+        $child = new Assets(new Alias([
+            '@theme' => $this->fixturePath . '/src/child',
+            '@web' => $web,
+        ]), '/', [$parent]);
+        $child->addCss('@theme/css/shared.css');
+        $child->outputCss();
+
+        $activeParent = new Assets(new Alias([
+            '@theme' => $parent,
+            '@web' => $web,
+        ]), '/');
+        $activeParent->addCss('@theme/css/shared.css');
+        $activeParent->outputCss();
+
+        $this->assertFileExists($web . '/assets/themes/child/css/shared.css');
+        $this->assertFileExists($web . '/assets/themes/parent/css/shared.css');
+    }
+
     public function testChangedSourceIsRepublished(): void
     {
         $src = $this->fixturePath . '/src/css/styles.css';

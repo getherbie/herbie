@@ -14,7 +14,7 @@ The Twig documentation can be found at <https://twig.symfony.com>.
 Layout files are stored under `site/themes/default`, where the last path segment stands for the current theme.
 The layout file extension is configured with `fileExtensions.layouts` and defaults to `twig`.
 Use the `@theme` alias to reference assets of the active theme without hardcoding its name, e.g. `{{ css_add("@theme/css/styles.css") }}`.
-Templates missing from the active theme are looked up in the parent theme configured with `themeParent` (default: `default`).
+Templates missing from the active theme are looked up in the parent theme configured with `themeParent` (default: `default`). Assets referenced through `@theme` and icons loaded with `icon()` use the same fallback: the active theme wins, the parent theme supplies everything it does not provide. Set `themeParent` to an empty string to disable the fallback.
 
 ## CSS naming conventions
 

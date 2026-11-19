@@ -20,11 +20,33 @@ final class WebsiteIconFunctionTest extends Unit
         $this->assertStringContainsString('data-theme="default"', $this->renderIcon('', 'herbie'));
     }
 
-    private function renderIcon(string $theme, string $name): string
+    public function testIconFallsBackToTheConfiguredParentTheme(): void
+    {
+        $this->assertStringContainsString(
+            'data-theme="custom-parent"',
+            $this->renderIcon('blog.rot', 'parent-only', 'custom-parent'),
+        );
+    }
+
+    public function testIconUsesDefaultAsParentTheme(): void
+    {
+        $this->assertStringContainsString(
+            'data-theme="default"',
+            $this->renderIcon('blog.rot', 'parent-only', 'default'),
+        );
+    }
+
+    public function testIconFallbackCanBeDisabled(): void
+    {
+        $this->assertSame('', $this->renderIcon('blog.rot', 'parent-only', ''));
+    }
+
+    private function renderIcon(string $theme, string $name, string $themeParent = ''): string
     {
         $sitePath = dirname(__DIR__) . '/integration/Fixtures/theme-site';
         $config = new Config([
             'theme' => $theme,
+            'themeParent' => $themeParent,
             'paths' => [
                 'themes' => $sitePath . '/themes',
             ],

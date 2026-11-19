@@ -9,28 +9,40 @@ use Twig\TwigFunction;
 use function herbie\file_read;
 
 // Site functions are included in LocalExtensionsPlugin method scope, so $this->config is available here.
+$themesPath = trim($this->config->getAsString('paths.themes'));
 $theme = trim($this->config->getAsString('theme'));
 if ($theme === '') {
     $theme = 'default';
 }
-$template = $this->config->getAsString('paths.themes') . '/' . $theme . '/icons/{icon}.svg';
+$themes = [$theme];
+$themeParent = trim($this->config->getAsString('themeParent'));
+if ($themeParent !== '' && $themeParent !== $theme && is_dir($themesPath . '/' . $themeParent)) {
+    $themes[] = $themeParent;
+}
+$templates = [];
+foreach ($themes as $candidate) {
+    $templates[] = $themesPath . '/' . $candidate . '/icons/{icon}.svg';
+}
 
-return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) use ($template) {
-    $filepath = str_replace('{icon}', $name, $template);
-    if (!is_file($filepath)) {
-        return '';
-    }
-    $svg = file_read($filepath);
+return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) use ($templates) {
+    foreach ($templates as $template) {
+        $filepath = str_replace('{icon}', $name, $template);
+        if (!is_file($filepath)) {
+            continue;
+        }
+        $svg = file_read($filepath);
 
-    if ($width > 0) {
-        $svg = str_replace('width="16"', 'width="' . $width . '"', $svg);
-    }
-    if (!empty($height)) {
-        $svg = str_replace('height="16"', 'height="' . $height . '"', $svg);
-    }
-    if (!empty($fill)) {
-        $svg = str_replace('fill="currentColor"', 'fill="' . $fill . '"', $svg);
-    }
+        if ($width > 0) {
+            $svg = str_replace('width="16"', 'width="' . $width . '"', $svg);
+        }
+        if (!empty($height)) {
+            $svg = str_replace('height="16"', 'height="' . $height . '"', $svg);
+        }
+        if (!empty($fill)) {
+            $svg = str_replace('fill="currentColor"', 'fill="' . $fill . '"', $svg);
+        }
 
-    return $svg;
+        return $svg;
+    }
+    return '';
 }, ['is_safe' => ['all']]);
