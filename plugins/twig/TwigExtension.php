@@ -393,7 +393,7 @@ final class TwigExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function menuPager(
-        string $limit = '',
+        string $prefix = '',
         string $prev_label = '',
         string $next_label = '',
         string $prev_icon = '',
@@ -404,8 +404,8 @@ final class TwigExtension extends AbstractExtension
         [$route] = $this->urlManager->parseRequest();
         $pageList = $this->pageRepository->findAll();
 
-        if ($limit !== '') {
-            $pageList = $pageList->filter(fn($page) => str_starts_with($page->getRoute(), $limit));
+        if ($prefix !== '') {
+            $pageList = $pageList->filter(fn($page) => str_starts_with($page->getRoute(), $prefix));
         }
 
         $prevPage = null;
@@ -453,7 +453,7 @@ final class TwigExtension extends AbstractExtension
 
         return $this->environment->render($template, [
             'class' => $class,
-            'limit' => $limit,
+            'prefix' => $prefix,
             'prev' => $prev,
             'next' => $next,
             'prev_label' => $prev_label,

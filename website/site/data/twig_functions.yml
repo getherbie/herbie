@@ -222,9 +222,9 @@
   desc: Creates a pagination with links to the previous an next page within the current page branch.
     All parameters are optional and passed as named parameters (see twig).
   params:
-    - name: limit
+    - name: prefix
       type: string
-      desc: Limits the pagination to a certain branch of the page tree.
+      desc: Limits the pagination to a certain branch of the page tree (route prefix).
       default: ''
     - name: prev_label
       type: string
