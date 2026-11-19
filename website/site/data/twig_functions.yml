@@ -103,14 +103,14 @@
       type: string
       desc: The label for the HTML tag.
       default: "\""
-    - name: info
-      type: bool
-      desc: If true file info will be added after the link.
-      default: 'false'
     - name: attribs
       type: array
       desc: One or more HTML attributes.
       default: "[ ]"
+    - name: info
+      type: bool
+      desc: If true file info will be added after the link.
+      default: 'false'
     - name: template
       type: string
       desc: The aliased path to the template file.
@@ -363,14 +363,14 @@
       type: string
       desc: The label.
       default: ''
-    - name: info
-      type: bool
-      desc: Adds info with file size und file extension.
-      default: false
     - name: attribs
       type: array
       desc: The HTML attributes passed as an associative array.
       default: ''
+    - name: info
+      type: bool
+      desc: Adds info with file size und file extension.
+      default: false
     - name: template
       type: string
       desc: The aliased path to the template file.

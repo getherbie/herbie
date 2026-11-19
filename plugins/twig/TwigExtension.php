@@ -175,8 +175,8 @@ final class TwigExtension extends AbstractExtension
     public function linkMedia(
         string $path,
         string $label = '',
-        bool $info = false,
         array $attribs = [],
+        bool $info = false,
         string $template = '@snippet/link_media.twig',
     ): string {
         $attribs['alt'] ??= '';
@@ -655,8 +655,8 @@ final class TwigExtension extends AbstractExtension
     public function linkFile(
         string $path,
         string $label = '',
-        bool $info = false,
         array $attribs = [],
+        bool $info = false,
         string $template = '@snippet/link_file.twig',
     ): string {
         $attribs['class'] ??= 'link__label';
