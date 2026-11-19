@@ -1328,6 +1328,10 @@ html[data-theme="dark"] .page-index blockquote {
     border-left-color:var(--accent);
 }
 
+html[data-theme="dark"] .pure-table code {
+    background-color:color-mix(in srgb, var(--text) 12%, var(--surface));
+}
+
 /* Syntax highlighting: readable in both themes */
 html[data-theme="light"] .hljs { color:#24292f; background:var(--code-bg); }
 html[data-theme="light"] .hljs-tag { color:#116329; }

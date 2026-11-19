@@ -9,7 +9,7 @@
     {% for data in attribute(site.data, type) %}
         <tr>
             <td>{{ data.name }}</td>
-            <td markdown="1">{{ data.desc|raw }}</td>
+            <td>{{ data.desc|markdown }}</td>
             <td>{{ data.type }}</td>
         </tr>
     {% endfor %}
