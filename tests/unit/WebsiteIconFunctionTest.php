@@ -15,7 +15,7 @@ final class WebsiteIconFunctionTest extends Unit
         $this->assertStringContainsString('data-theme="blog.rot"', $this->renderIcon('blog.rot', 'herbie'));
     }
 
-    public function testIconFallsBackToDefaultTheme(): void
+    public function testEmptyThemeUsesDefaultTheme(): void
     {
         $this->assertStringContainsString('data-theme="default"', $this->renderIcon('', 'herbie'));
     }
