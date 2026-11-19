@@ -1,18 +1,4 @@
 -
-  id: adminpanel
-  name: Adminpanel
-  desc: Stellt eine Administrationsoberfläche zur Verfügung, mit der du Seiten, Blogposts, Daten, Mediadateien und mehr verwalten kannst.
-  composer: getherbie/plugin-adminpanel
-  github: https://github.com/getherbie/plugin-adminpanel
-  packagist: https://packagist.org/packages/getherbie/plugin-adminpanel
-  enabled: false
--
-  id: blanktarget
-  name: Blanktarget
-  desc: Mit dem Blanktarget-Plugin werden Markdown-Links in einem neuen Fenster geöffnet, falls der Linktitel mit einem Unterstrich beginnt.
-  github: https://github.com/Netzweberei/plugin-blanktarget
-  enabled: false
--
   id: contact
   name: Contact
   desc: Contact adds a simple contact form with name, email and message fields to a website created with Herbie.
@@ -20,14 +6,6 @@
   github: https://github.com/getherbie/herbie/tree/3.x/plugins/contact
   packagist:
   enabled: true
--
-  id: disqus
-  name: Disqus
-  desc: Bindet den Webservice Disqus ein.
-  composer: getherbie/plugin-disqus
-  github: https://github.com/getherbie/plugin-disqus
-  packagist: https://packagist.org/packages/getherbie/plugin-disqus
-  enabled: false  
 -
   id: dummy
   name: Dummy
@@ -38,60 +16,6 @@
   packagist:
   status: stable
   enabled: true
--  
-  id: feed
-  name: Feed
-  desc: Generiert aus deinen Seiten und Blogposts automatisch einen RSS- und einen Atom-Feed im XML-Format und stellt diese als Seiten bereit.
-  composer: getherbie/plugin-feed
-  github: https://github.com/getherbie/plugin-feed
-  packagist: https://packagist.org/packages/getherbie/plugin-feed
-  enabled: false  
--
-  id: fileproxy
-  name: Fileproxy
-  desc: Das Fileproxy-Plugin ermöglicht dir die Veröffentlichung von (Bild-)Dateien direkt aus dem Seitenbaum heraus.
-  github: https://github.com/Netzweberei/plugin-fileproxy
-  enabled: false
--
-  id: gist
-  name: Gist
-  desc: Mit dem Gist-Plugin bettest du Snippets von Gist in deine Website ein.
-  composer: getherbie/plugin-gist
-  github: https://github.com/getherbie/plugin-gist
-  packagist: https://packagist.org/packages/getherbie/plugin-gist
-  enabled: false
--
-  id: googlemaps
-  name: Google Maps
-  desc: Bindet eine Google Map via JavaScript inklusive eines statischen Bildes als Fallback ein.
-  composer: getherbie/plugin-googlemaps
-  github: https://github.com/getherbie/plugin-googlemaps
-  packagist: https://packagist.org/packages/getherbie/plugin-googlemaps
-  enabled: false
--
-  id: grid
-  name: Grid
-  desc: Mit dem Gist-Plugin erstellst du in deinen Inhalten (HTML-/CSS-)Grids.
-  composer: getherbie/plugin-grid
-  github: https://github.com/getherbie/plugin-grid
-  packagist:
-  enabled: false
--
-  id: highlight
-  name: Highlight
-  desc: Hebt die Syntax einer bestimmten Programmiersprache hervor. Das Plugin ist ein Wrapper für den hervorragenden Syntax-Highlighter GeSHi.
-  composer: getherbie/plugin-highlight
-  github: https://github.com/getherbie/plugin-highlight
-  packagist: https://packagist.org/packages/getherbie/plugin-highlight
-  enabled: false
--
-  id: highlightjs
-  name: HighlightJS
-  desc: Mit dem HighlightJS-Plugin nutzt du den javascript-basierten Syntax-Highlighter highlight.js mit 130 Sprachen und 65 Stilen.
-  composer: getherbie/plugin-highlightjs
-  github: https://github.com/getherbie/plugin-highlightjs
-  packagist: https://packagist.org/packages/getherbie/plugin-highlightjs
-  enabled: false
 -
   id: imagine
   name: Imagine
@@ -102,14 +26,6 @@
   packagist:
   enabled: true
 -
-  id: lipsum
-  name: Lipsum
-  desc: Bietet die Möglichkeit, einfach und schnell Blindtext auszugeben.
-  composer: getherbie/plugin-lipsum
-  github: https://github.com/getherbie/plugin-lipsum
-  packagist: https://packagist.org/packages/getherbie/plugin-lipsum
-  enabled: false
--
   id: markdown
   name: Markdown
   desc: This system plugin can be used to parse markdown-formatted texts.
@@ -119,37 +35,6 @@
   packagist:
   status: stable
   enabled: true
--
-  id: mathjax
-  name: MathJax
-  desc: Mit dem MathJax-Plugin bindest du die gleichnamige JavaScript display engine MathJax in deine Website ein und schreibst damit schöne mathematische Formeln.
-  composer: getherbie/plugin-mathjax
-  github: https://github.com/getherbie/plugin-mathjax
-  packagist: https://packagist.org/packages/getherbie/plugin-mathjax
-  status: stable
-  enabled: false
--
-  id: random
-  name: Random
-  desc: Ermöglicht es, auf einer beliebigen Seite zufallsgesteurt den Inhalt einer anderen Seite anzuzeigen.
-  composer: getherbie/plugin-random
-  github: https://github.com/getherbie/plugin-random
-  packagist: https://packagist.org/packages/getherbie/plugin-random
-  enabled: false
--
-  id: redirect
-  name: Redirect
-  desc: Mit diesem Plugin kannst du auf Seitenbasis eine Weiterleitung zu einer URL vornehmen.
-  composer: getherbie/plugin-redirect
-  github: https://github.com/getherbie/plugin-redirect
-  packagist: https://packagist.org/packages/getherbie/plugin-redirect
-  enabled: false
--
-  id: ress
-  name: RESS
-  desc: Mit Hilfe dess RESS-Plugins kann die Ausgabe des Servers an das Gerät angepasst werden kann, mit dem die Website aktuell besucht wird.
-  github: https://github.com/Netzweberei/plugin-ress
-  enabled: false
 -
   id: rst
   name: reStructuredText
@@ -169,31 +54,6 @@
   packagist:
   enabled: true
 -
-  id: shortcode
-  name: Shortcode
-  desc: Shortcodes sind BBTags, die man mit PHP beliebig durch Funktionalität erweitern kann. Shortcodes gibt es in WordPress seit der Version 2.5.
-  composer:
-  github:
-  packagist:
-  status: stable
-  enabled: false
--
-  id: smartypants
-  name: Smartypants
-  desc: Mit Hilfe des Smartypants-Parsers von Michel Fortin werden typografische Anpassungen am Inhalt und Seitentitel vorgenommen.
-  composer: getherbie/plugin-smartypants
-  github: https://github.com/getherbie/plugin-smartypants
-  packagist: https://packagist.org/packages/getherbie/plugin-smartypants
-  enabled: false
--
-  id: test
-  name: Test
-  desc: Das Testplugin lotet die Möglichkeiten von Herbie aus.
-  composer: getherbie/plugin-test
-  github: https://github.com/getherbie/plugin-test
-  packagist: https://packagist.org/packages/getherbie/plugin-test
-  enabled: false
--
   id: textile
   name: Textile
   desc: This system plugin can be used to parse textile-formatted texts.
@@ -212,19 +72,3 @@
   packagist:
   status: stable
   enabled: true
--
-  id: video
-  name: Video
-  desc: Bettet ein Video ein, das sich automatisch der Grösse des Displays des Benutzers anpasst. Aktuell wird YouTube und Vimeo unterstützt.
-  composer: getherbie/plugin-video
-  github: https://github.com/getherbie/plugin-video
-  packagist: https://packagist.org/packages/getherbie/plugin-video
-  enabled: false  
--
-  id: xmlsitemap
-  name: XML-Sitemap
-  desc: Generiert aus deinen Seiten und Blogposts automatisch eine XML-Sitemap für Google und Co. und stellt sie als Seite bereit.
-  composer: getherbie/plugin-xmlsitemap
-  github: https://github.com/getherbie/plugin-xmlsitemap
-  packagist: https://packagist.org/packages/getherbie/plugin-xmlsitemap
-  enabled: false
