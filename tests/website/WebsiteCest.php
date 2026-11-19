@@ -395,15 +395,11 @@ final class WebsiteCest
     {
         /** @var Web $I */
         foreach (['index.php/atom.xml', '/atom.xml'] as $url) { // dev and production URL form
-            // Note: amOnPage() (PhpBrowser/Guzzle) fails on PHP 8.3 with
-            // "Unsupported HTTP/1 subversion" for these raw XML responses, so
-            // fetch them via file_get_contents instead.
-            $context = stream_context_create(['http' => ['timeout' => 10, 'ignore_errors' => true, 'proxy' => '']]);
-            $response = @file_get_contents('http://127.0.0.1:9371/' . ltrim($url, '/'), false, $context);
-            \PHPUnit\Framework\Assert::assertNotFalse($response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('<feed', $response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('Herbie CMS Feed', $response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('<entry>', $response);
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('<feed');
+            $I->seeResponseContains('Herbie CMS Feed');
+            $I->seeResponseContains('<entry>');
         }
     }
 
@@ -411,12 +407,10 @@ final class WebsiteCest
     {
         /** @var Web $I */
         foreach (['index.php/robots.txt', '/robots.txt'] as $url) { // dev and production URL form
-            // See note in testAtomXml: PhpBrowser/Guzzle fails on PHP 8.3 for raw responses.
-            $context = stream_context_create(['http' => ['timeout' => 10, 'ignore_errors' => true, 'proxy' => '']]);
-            $response = @file_get_contents('http://127.0.0.1:9371/' . ltrim($url, '/'), false, $context);
-            \PHPUnit\Framework\Assert::assertNotFalse($response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('Sitemap:', $response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('sitemap.xml', $response);
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('Sitemap:');
+            $I->seeResponseContains('sitemap.xml');
         }
     }
 
@@ -424,13 +418,11 @@ final class WebsiteCest
     {
         /** @var Web $I */
         foreach (['index.php/sitemap.xml', '/sitemap.xml'] as $url) { // dev and production URL form
-            // See note in testAtomXml: PhpBrowser/Guzzle fails on PHP 8.3 for raw responses.
-            $context = stream_context_create(['http' => ['timeout' => 10, 'ignore_errors' => true, 'proxy' => '']]);
-            $response = @file_get_contents('http://127.0.0.1:9371/' . ltrim($url, '/'), false, $context);
-            \PHPUnit\Framework\Assert::assertNotFalse($response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('<urlset', $response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('<loc>', $response);
-            \PHPUnit\Framework\Assert::assertStringContainsString('/doc/introduction', $response);
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeResponseContains('<urlset');
+            $I->seeResponseContains('<loc>');
+            $I->seeResponseContains('/doc/introduction');
         }
     }
 

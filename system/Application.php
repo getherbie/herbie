@@ -250,6 +250,8 @@ final class Application
                 $this->scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
             } elseif (isset($phpSelf) && ($pos = strpos($phpSelf, '/' . $scriptName)) !== false) {
                 $this->scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
+            } elseif (php_sapi_name() === 'cli-server' && !str_starts_with($scriptFile, '/') && !preg_match('#^[A-Za-z]:[/\\\\]#', $scriptFile)) {
+                $this->scriptUrl = '/' . ltrim($scriptFile, '\\/');
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && str_starts_with($scriptFile, $_SERVER['DOCUMENT_ROOT'])) {
                 $this->scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
