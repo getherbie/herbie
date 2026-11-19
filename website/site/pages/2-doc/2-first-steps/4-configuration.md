@@ -6,7 +6,7 @@ layout: doc
 # Configuration
 
 Herbie uses a configuration file to hold settings.
-These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/3.x-develop/config/defaults.php) file.
+These default configurations are defined in the [config/defaults.php](https://github.com/getherbie/herbie/blob/3.x/config/defaults.php) file.
 
 The following variables are available in the configuration file as PHP constants as constant strings:
 
