@@ -1,6 +1,6 @@
 [![Packagist](https://img.shields.io/packagist/dt/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 [![GitHub (pre-)release](https://img.shields.io/github/release/getherbie/herbie/all.svg)](https://github.com/getherbie/herbie/releases)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/3.x-develop/LICENCE.md)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/getherbie/herbie/blob/3.x/LICENCE.md)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/getherbie/herbie.svg)](https://packagist.org/packages/getherbie/herbie)
 
 # Herbie
@@ -47,154 +47,81 @@ Herbie is well tested:
 
 8.3 / 8.4 / 8.5 / 8.6
 
-## Installation
+## Quick Start
 
-### With PHP and Composer on your machine 
+Create your own Herbie website with Docker (recommended):
 
-The easiest way to install Herbie is through Composer.
-Run the following commands in your terminal to create a new project and install all dependent libraries.
-
-    composer create-project getherbie/start-website mywebsite
-
-Change to the `mywebsite/web` directory.
-
-    cd mywebsite/web
-
-Start the built-in webserver.
-    
-    php -S localhost:8888 index.php
-
-Open <http://localhost:8888> with your browser.
-You should see your first Herbie website. 
-
-### With Docker and Docker Compose on your machine
-
-Create website and install dependencies.
-
-    docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
-
-Change to the `mywebsite` directory and start website.
-
+    docker run --rm -v "$PWD":/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
     cd mywebsite
     docker compose up website
 
-Open <http://localhost:8888> with your browser.
+Open <http://localhost:8888>.
 
-## Development Environment
+<details>
+<summary>Without Docker (PHP & Composer required)</summary>
 
-If you need a development environment, you can follow these steps.
-
-### With PHP and Composer on your machine
-
-Clone the GitHub repository.
-
-    git clone https://github.com/getherbie/herbie.git
-
-Change to the `herbie` directory.
-
-    cd herbie
-
-Install Composer dependencies.
-
-    composer install
-
-Change to the `website/web` directory.
-
-    cd website/web/
-
-Start PHP's internal web server.
-
+    composer create-project getherbie/start-website mywebsite
+    cd mywebsite/web
     php -S localhost:8888 index.php
 
-Open `localhost:8888` with your favorite web browser.
+</details>
 
-If you want to have additional console output or logging information, set the debug environment variable.
+## Development
 
-    HERBIE_DEBUG=1 php -S localhost:8888 index.php
-
-If you want to use Xdebug (3.x), start the internal web server as follows.
-Hint: For this to work, Xdebug must of course be installed.
-
-    XDEBUG_MODE=debug php -S localhost:8888 index.php
-
-### With Docker and Docker Compose on your machine
-
-Clone the GitHub repository.
+Work on this repository with Docker (recommended):
 
     git clone https://github.com/getherbie/herbie.git
-
-Change to the `herbie` directory.
-
     cd herbie
-
-Start PHP's built-in web server and launch website.
-
     docker compose up website
 
-Open `localhost:8888` with your favorite web browser.
+Open <http://localhost:8888>.
 
-Other Docker Compose commands are
+Common tasks:
 
-    # install Composer dependencies
-    docker compose run --rm install
+    docker compose run --rm install    # install Composer dependencies
+    docker compose run --rm test       # run test suite
+    docker compose up test-website     # start test suite website
+    docker compose run --rm bash       # open a shell
 
-    # run test suite
-    docker compose run --rm test
-
-    # start test suite website
-    docker compose up test-website
-
-    # run bash terminal
-    docker compose run --rm bash
-
-You can use different PHP versions.
+Use a different PHP version (default: 8.3):
 
     PHP_VERSION=8.3 docker compose up website
     PHP_VERSION=8.4 docker compose up website
     PHP_VERSION=8.5 docker compose up website
     PHP_VERSION=8.6 docker compose up website
 
-## Tests
-
-### With PHP on your machine
-
-    # run tests
-    php vendor/bin/codecept run
-
-    # run unit tests
-    php vendor/bin/codecept run unit
-
-    # run integration tests
-    php vendor/bin/codecept run integration
-
-    # run acceptance tests
-    php vendor/bin/codecept run acceptance
-
-    # run tests with Code Coverage
-    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
-
-### With Docker Compose on your machine
-
-Open the container shell
+Run specific test suites or coverage inside a container:
 
     docker compose run --rm bash
 
-Run tests within the container
+Then run:
 
-    # run tests
     php vendor/bin/codecept run
-
-    # run unit tests
     php vendor/bin/codecept run unit
-
-    # run integration tests
     php vendor/bin/codecept run integration
-    
-    # run acceptance tests
     php vendor/bin/codecept run acceptance
-
-    # run tests with Code Coverage
     XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+
+<details>
+<summary>Without Docker (PHP & Composer required)</summary>
+
+    git clone https://github.com/getherbie/herbie.git
+    cd herbie
+    composer install
+    cd website/web
+    php -S localhost:8888 index.php
+
+Optional: `HERBIE_DEBUG=1 php -S localhost:8888 index.php` for debug output, or `XDEBUG_MODE=debug php -S localhost:8888 index.php` for Xdebug.
+
+Run tests:
+
+    php vendor/bin/codecept run
+    php vendor/bin/codecept run unit
+    php vendor/bin/codecept run integration
+    php vendor/bin/codecept run acceptance
+    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+
+</details>
 
 ## More Information
 
