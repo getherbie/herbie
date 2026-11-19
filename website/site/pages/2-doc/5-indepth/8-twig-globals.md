@@ -5,16 +5,10 @@ layout: doc
 
 # Twig Globals
 
-The following variables are available in layout and content files.
+Herbie provides three global variables in Twig layouts. `page` and `site` are also available in content files; `content` is layout-only.
 
-## Global Variables
+## Global variables
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+{{ snippet("@site/snippets/variables.twig", {type:"vars_global", typeFirst:true}) }}
 
-## Site Variables
-
-{{ snippet("@site/snippets/variables.twig", {type:"vars_site"}) }}
-
-## Page Variables
-
-{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
+Details on the properties of these objects are documented under [Variables](doc/contents/variables).

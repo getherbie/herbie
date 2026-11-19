@@ -1,16 +1,27 @@
+{% set typeFirst = typeFirst|default(false) %}
 <table class="pure-table pure-table-horizontal">
     <thead>
     <tr>
-        <th style="width:25%">Variable</th>
-        <th style="width:65%">Description</th>
-        <th style="width:10%">Type</th>
+        <th>Variable</th>
+        {% if typeFirst %}
+        <th>Type</th>
+        <th>Description</th>
+        {% else %}
+        <th>Description</th>
+        <th>Type</th>
+        {% endif %}
     </tr>
     </thead>
     {% for data in attribute(site.data, type) %}
         <tr>
             <td>{{ data.name }}</td>
+            {% if typeFirst %}
+            <td>{{ data.type }}</td>
+            <td>{{ data.desc|markdown }}</td>
+            {% else %}
             <td>{{ data.desc|markdown }}</td>
             <td>{{ data.type }}</td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>
