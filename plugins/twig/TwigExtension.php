@@ -238,6 +238,11 @@ final class TwigExtension extends AbstractExtension
         return $result;
     }
 
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function linkMail(
         string $email,
         ?string $label = null,
