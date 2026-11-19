@@ -9,9 +9,6 @@ AGENTS.md
 /vendor
 /website/vendor
 
-# composer lock files
-/website/composer.lock
-
 # site folder
 /site
 
