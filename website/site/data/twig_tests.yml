@@ -7,6 +7,7 @@
   desc: Tests if the given alias or path exists and is readable.
   return:
     - bool
+    - Whether the alias or path exists and is readable.
 - name: path_writable
   code: >-
     {% if "@site/data" is path_writable %}
@@ -15,3 +16,4 @@
   desc: Tests if the given alias or path exists and is writable.
   return:
     - bool
+    - Whether the alias or path exists and is writable.

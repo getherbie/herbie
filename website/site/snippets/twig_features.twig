@@ -8,14 +8,21 @@
             See: <a href="{{ see[0] }}">{{ see[1] }}</a>
         {% endif %}
     </p>
+    {% set params = item.params|default([]) %}
+    {% set hasParams = params|length > 0 %}
     <table class="pure-table pure-table-horizontal">
         <tr class="code">
+            {% if hasParams %}
             <td>Parameter</td>
             <td>Type</td>
             <td>Description</td>
             <td>Default</td>
+            {% else %}
+            <td>[return]</td>
+            <td>Description</td>
+            {% endif %}
         </tr>
-        {% for param in item.params %}
+        {% for param in params %}
         <tr class="param">
             <td>{{ param.name }}</td>
             <td>{{ param.type }}</td>
@@ -24,9 +31,9 @@
         </tr>
         {% endfor %}
         <tr class="return">
-            <td>[return]</td>
+            {% if hasParams %}<td>[return]</td>{% endif %}
             <td>{{ item.return.0 }}</td>
-            <td colspan="2">{{ item.return.1 }}</td>
+            <td colspan="{{ hasParams ? 2 : 1 }}">{{ item.return.1 }}</td>
         </tr>
     </table>
     {% if item.code is defined and item.code != '' %}
