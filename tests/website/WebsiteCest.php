@@ -45,12 +45,12 @@ final class WebsiteCest
     public function testDocFirstSteps(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('/doc/first-steps'); // redirects to /doc/first-steps/quickstart
+        $I->amOnPage('/doc/first-steps');
         $I->seeResponseCodeIs(HttpCode::OK);
-        // if we see this, redirect was successful
-        $I->see('Quickstart', 'h1');
+        $I->see('First Steps', 'h1');
         $I->dontSee('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->seeLink('Quickstart', 'doc/first-steps/quickstart');
     }
 
     public function testDocFirstStepsQuickstart(AcceptanceTester $I)
@@ -96,12 +96,12 @@ final class WebsiteCest
     public function testDocContents(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('/doc/contents'); // redirects to 1st subpage
+        $I->amOnPage('/doc/contents');
         $I->seeResponseCodeIs(HttpCode::OK);
-        // if we see this, redirect was successful
-        $I->see('Page Properties', 'h1');
-        $I->see('On this page', '.toc-title');
+        $I->see('Contents', 'h1');
+        $I->dontSee('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->seeLink('Page Properties', 'doc/contents/page-properties');
     }
 
     public function testDocContentsPageProperties(AcceptanceTester $I)
@@ -184,15 +184,15 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthConsoleCommands(AcceptanceTester $I)
+    public function testDocIndepth(AcceptanceTester $I)
     {
         /** @var Web $I */
-        $I->amOnPage('/doc/indepth'); // redirects to 1st subpage
+        $I->amOnPage('/doc/indepth');
         $I->seeResponseCodeIs(HttpCode::OK);
-        // if we see this, redirect was successful
-        $I->see('Console Commands', 'h1');
+        $I->see('Indepth', 'h1');
         $I->dontSee('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->seeLink('Console Commands', 'doc/indepth/commands');
     }
 
     public function testDocIndepthCommands(AcceptanceTester $I)
