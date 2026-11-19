@@ -31,7 +31,7 @@ final class MailLinkFunctionTest extends Unit
     public function testLinkWithEmail(): void
     {
         $expected = $this->getHtml(
-            '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">me@example.com</a>',
+            '<a class="link__label" href="mailto:me@example.com">me@example.com</a>',
         );
         $twig = '{{ link_mail("me@example.com") }}';
         $actual = $this->twig()->renderString($twig);
@@ -46,7 +46,7 @@ final class MailLinkFunctionTest extends Unit
     public function testLinkWithEmailAndLabel(): void
     {
         $expected = $this->getHtml(
-            '<a class="link__label" href="mailto&#x3A;me&#x40;example.com">Example</a>',
+            '<a class="link__label" href="mailto:me@example.com">Example</a>',
         );
         $twig = '{{ link_mail("me@example.com", "Example") }}';
         $actual = $this->twig()->renderString($twig);
@@ -56,7 +56,7 @@ final class MailLinkFunctionTest extends Unit
     public function testLinkWithEmailLabelAndAttribs(): void
     {
         $expected = $this->getHtml(
-            '<a class="link-class" href="mailto&#x3A;me&#x40;example.com" id="link-id">Example</a>',
+            '<a class="link-class" href="mailto:me@example.com" id="link-id">Example</a>',
         );
         $twig = '{{ link_mail("me@example.com", "Example", {class:"link-class", id:"link-id"}) }}';
         $actual = $this->twig()->renderString($twig);

@@ -118,22 +118,22 @@ final class TwigExtension extends AbstractExtension
 
     public function cssAdd(
         array|string $paths,
-        array $attr = [],
+        array $attribs = [],
         ?string $group = null,
         bool $raw = false,
         int $pos = 1,
     ): void {
-        $this->assets->addCss($paths, $attr, $group, $raw, $pos);
+        $this->assets->addCss($paths, $attribs, $group, $raw, $pos);
     }
 
     public function jsAdd(
         array|string $paths,
-        array $attr = [],
+        array $attribs = [],
         ?string $group = null,
         bool $raw = false,
         int $pos = 1,
     ): void {
-        $this->assets->addJs($paths, $attr, $group, $raw, $pos);
+        $this->assets->addJs($paths, $attribs, $group, $raw, $pos);
     }
 
     /**
@@ -228,6 +228,17 @@ final class TwigExtension extends AbstractExtension
         return str_replace(',', '.', (string)round($size, 1)) . ' ' . $units[$i];
     }
 
+    /**
+     * Renders an associative array of HTML attributes into a single string.
+     *
+     * Available escaping strategies (passed as second argument):
+     * - 'html'              : htmlspecialchars (quotes, <, >, &)
+     * - 'html_attr'         : strict (default; encodes everything except [a-zA-Z0-9,._-])
+     * - 'html_attr_relaxed' : like html_attr but also allows :, @, [, ] (useful for URLs/emails)
+     * - 'js', 'css', 'url'  : other Twig strategies
+     *
+     * @see https://twig.symfony.com/doc/3.x/filters/escape.html
+     */
     public function attributes(array $attribs = [], string $strategy = 'html_attr'): string
     {
         $result = '';
