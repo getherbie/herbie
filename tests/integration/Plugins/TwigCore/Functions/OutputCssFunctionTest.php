@@ -22,6 +22,21 @@ final class OutputCssFunctionTest extends Unit
         );
     }
 
+    public function testThemeAssetIsResolvedFromTheActiveTheme(): void
+    {
+        $app = $this->tester->initApplication(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/theme-site',
+        );
+
+        $twig = '{{ css_add("@theme/css/site.css") }}'
+            . '{{ css_out() }}';
+        $this->assertEquals(
+            '<link href="/assets/theme/css/site.css" type="text/css" rel="stylesheet">',
+            $app->getTwigRenderer()->renderString($twig),
+        );
+    }
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(
