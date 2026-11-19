@@ -152,6 +152,7 @@ You can use different PHP versions.
     PHP_VERSION=8.3 docker compose up website
     PHP_VERSION=8.4 docker compose up website
     PHP_VERSION=8.5 docker compose up website
+    PHP_VERSION=8.6 docker compose up website
 
 ## Tests
 

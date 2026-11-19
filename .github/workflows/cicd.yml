@@ -12,7 +12,7 @@ jobs:
         # macOS runners are expensive: only test on release tags and manual runs,
         # Ubuntu is sufficient for regular pushes and pull requests.
         operating-system: ${{ (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch') && fromJSON('["ubuntu-latest", "macos-latest"]') || fromJSON('["ubuntu-latest"]') }}
-        php-versions: ['8.3', '8.4', '8.5']
+        php-versions: ['8.3', '8.4', '8.5', '8.6']
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
