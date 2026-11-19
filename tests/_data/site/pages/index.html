@@ -10,15 +10,15 @@ title: Index
 
 <h2>Downloads</h2>
 
-{{ link_media('favicon.ico', 'File', true) }}
+{{ link_download('favicon.ico', 'File', {}, true) }}
 
 <a href="{{ url_rel('/download/dummy.pdf') }}">Download</a>
 
 <ul>
-    <li>{{ link_media('dummy.pdf') }}</li>
-    <li>{{ link_media('dummy.pdf', 'Dummy', {}, false) }}</li>
-    <li>{{ link_media('dummy.pdf', 'Dummy', {}, true) }}</li>
-    <li>{{ link_media('dummy.pdf', 'Dummy', { target:"_blank"}, true) }}</li>
+    <li>{{ link_download('dummy.pdf') }}</li>
+    <li>{{ link_download('dummy.pdf', 'Dummy', {}, false) }}</li>
+    <li>{{ link_download('dummy.pdf', 'Dummy', {}, true) }}</li>
+    <li>{{ link_download('dummy.pdf', 'Dummy', { target:"_blank"}, true) }}</li>
 </ul>
 
 <h2>Imagine</h2>

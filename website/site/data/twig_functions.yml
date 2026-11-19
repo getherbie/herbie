@@ -338,9 +338,9 @@
   return:
     - string
     - The JavaScript assets
-- name: link_media
+- name: link_download
   code: >-
-    {{ link_media("dummy.pdf", "My dummy file", true, {class: "link-file"}) }}
+    {{ link_download("dummy.pdf", "My dummy file", {class: "link-file"}, true) }}
   desc: Returns a HTML link with a file from site/media folder.
   params:
     - name: path
@@ -362,7 +362,7 @@
     - name: template
       type: string
       desc: The aliased path to the template file.
-      default: "@snippet/link_media.twig"
+      default: "@snippet/link_download.twig"
   return:
     - string
     - The link to a file

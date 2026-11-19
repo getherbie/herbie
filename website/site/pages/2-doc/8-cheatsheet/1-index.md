@@ -202,11 +202,11 @@ Snippets are Twig files in `templates/snippets/` and can be included with `snipp
 
 **Media / Assets**
 
-Media lives in `site/media/`, theme assets in `site/assets/`. Use `link_media()`, `image()` and `asset()` helpers.
+Media lives in `site/media/`, theme assets in `site/assets/`. Use `link_download()`, `image()` and `asset()` helpers.
 
 {% verbatim %}
 ~~~twig
-{{ link_media('image.jpg') }}
+{{ link_download('image.jpg') }}
 ~~~
 {% endverbatim %}
 
@@ -248,7 +248,7 @@ Use the URL and link helpers instead of hard-coded paths.
 {% verbatim %}
 ~~~twig
 {{ link_page('about') }}
-{{ link_media('image.jpg') }}
+{{ link_download('image.jpg') }}
 {{ url_abs('sitemap.xml') }}
 ~~~
 {% endverbatim %}

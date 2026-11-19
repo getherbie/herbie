@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class FileLinkFunctionTest extends Unit
+final class DownloadLinkFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
@@ -16,7 +16,7 @@ final class FileLinkFunctionTest extends Unit
     {
         $this->assertEquals(
             '<span class="link link--media"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ link_media("dummy.pdf") }}'),
+            $this->twig()->renderString('{{ link_download("dummy.pdf") }}'),
         );
     }
 

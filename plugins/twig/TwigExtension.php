@@ -67,7 +67,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
             new TwigFunction('link_file', $this->linkFile(...), ['is_safe' => ['html']]),
             new TwigFunction('link_mail', $this->linkMail(...), ['is_safe' => ['html']]),
-            new TwigFunction('link_media', $this->linkMedia(...), ['is_safe' => ['html']]),
+            new TwigFunction('link_download', $this->linkDownload(...), ['is_safe' => ['html']]),
             new TwigFunction('link_page', $this->linkPage(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_ascii_tree', $this->menuAsciiTree(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_breadcrumb', $this->menuBreadcrumb(...), ['is_safe' => ['html']]),
@@ -171,12 +171,12 @@ final class TwigExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function linkMedia(
+    public function linkDownload(
         string $path,
         string $label = '',
         array $attribs = [],
         bool $info = false,
-        string $template = '@snippet/link_media.twig',
+        string $template = '@snippet/link_download.twig',
     ): string {
         $attribs['alt'] ??= '';
         $attribs['class'] ??= 'link__label';
