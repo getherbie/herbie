@@ -45,7 +45,7 @@ final class TwigExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('format_size', $this->filterFilesize(...)),
+            new TwigFilter('format_bytes', $this->filterBytes(...)),
             new TwigFilter('slugify', $this->filterSlugify(...)),
             new TwigFilter('spaceless', $this->filterSpaceless(...), ['pre_escape' => 'html', 'is_safe' => ['html']]),
             new TwigFilter('twigify', $this->twigify(...), ['is_safe' => ['html']]),
@@ -205,13 +205,13 @@ final class TwigExtension extends AbstractExtension
             return '';
         }
         $replace = [
-            '{size}' => $this->filterFilesize(file_size($path)),
+            '{size}' => $this->filterBytes(file_size($path)),
             '{extension}' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
         ];
         return strtr(' ({extension}, {size})', $replace);
     }
 
-    public function filterFilesize(int $size): string
+    public function filterBytes(int $size): string
     {
         if ($size <= 0) {
             return '0';

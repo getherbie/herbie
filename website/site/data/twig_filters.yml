@@ -1,7 +1,7 @@
 ---
-- name: format_size
+- name: format_bytes
   code: >-
-    {{ 12345678|format_size }}
+    {{ 12345678|format_bytes }}
   desc: Returns file size in a human readable format (B, KB, MB, GB, TB, PB).
   return:
     - string
