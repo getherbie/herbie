@@ -1,14 +1,14 @@
-<div class="contact">
+<div class="herbie-contact">
 
     {% if status == 'failed' %}
 
         <p>{{ translate('contact', 'messageFailed') }}</p>
-        <p><a href="{{ url_rel(route) }}" class="contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
+        <p><a href="{{ url_rel(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
 
     {% elseif status == 'successful' %}
 
         <p>{{ translate('contact', 'messageSuccessful') }}</p>
-        <p><a href="{{ url_rel(route) }}" class="contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
+        <p><a href="{{ url_rel(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
 
     {% else %}
 
@@ -16,45 +16,45 @@
 
         {% if errors %}
 
-            <div class="contact-errors">{{ translate('contact', 'messageError') }}</div>
+            <div class="herbie-contact-errors">{{ translate('contact', 'messageError') }}</div>
 
         {% endif %}
 
-        <form class="contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
+        <form class="herbie-contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
             {% for field in honeypot_fields %}
-                <div class="contact-control-group contact-control-group-honeypot pure-control-group">
+                <div class="herbie-contact-control-group herbie-contact-control-group-honeypot pure-control-group">
                     <label for="{{ field }}">{{ translate('contact', 'labelHoneypot', {field: field}) }}</label>
-                    <input class="contact-input pure-input-1" id="{{ field }}" name="{{ field }}" type="text" tabindex="-1" autocomplete="off" placeholder="" value="{{ data[field] }}">
+                    <input class="herbie-contact-input pure-input-1" id="{{ field }}" name="{{ field }}" type="text" tabindex="-1" autocomplete="off" placeholder="" value="{{ data[field] }}">
                 </div>
             {% endfor %}
-            <div class="contact-control-group pure-control-group{% if errors.name %} contact-control-group-error{% endif %}">
+            <div class="herbie-contact-control-group pure-control-group{% if errors.name %} herbie-contact-control-group-error{% endif %}">
                 <label for="name">{{ translate('contact', 'labelName') }}</label>
-                <input class="contact-input pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ data.name }}">
+                <input class="herbie-contact-input pure-input-1" id="name" name="name" type="text" placeholder="" value="{{ data.name }}">
                 {% if errors.name %}
-                    <span class="contact-form-message pure-form-message is-error">{{ errors.name }}</span>
+                    <span class="herbie-contact-form-message pure-form-message herbie-contact-form-message--error">{{ errors.name }}</span>
                 {% endif %}
             </div>
 
-            <div class="contact-control-group pure-control-group{% if errors.email %} contact-control-group-error{% endif %}">
+            <div class="herbie-contact-control-group pure-control-group{% if errors.email %} herbie-contact-control-group-error{% endif %}">
                 <label for="email">{{ translate('contact', 'labelEmail') }}</label>
-                <input class="contact-input pure-input-1" id="email" name="email" type="email" placeholder="" value="{{ data.email }}">
+                <input class="herbie-contact-input pure-input-1" id="email" name="email" type="email" placeholder="" value="{{ data.email }}">
                 {% if errors.email %}
-                    <span class="contact-form-message pure-form-message is-error">{{ errors.email }}</span>
+                    <span class="herbie-contact-form-message pure-form-message herbie-contact-form-message--error">{{ errors.email }}</span>
                 {% endif %}
             </div>
 
-            <div class="contact-control-group pure-control-group{% if errors.message %} contact-control-group-error{% endif %}">
+            <div class="herbie-contact-control-group pure-control-group{% if errors.message %} herbie-contact-control-group-error{% endif %}">
                 <label for="message">{{ translate('contact', 'labelMessage') }}</label>
-                <textarea class="contact-input pure-input-1" id="message" name="message" placeholder="" rows="5">{{ data.message }}</textarea>
+                <textarea class="herbie-contact-input pure-input-1" id="message" name="message" placeholder="" rows="5">{{ data.message }}</textarea>
                 {% if errors.message %}
-                    <span class="contact-form-message pure-form-message is-error">{{ errors.message }}</span>
+                    <span class="herbie-contact-form-message pure-form-message herbie-contact-form-message--error">{{ errors.message }}</span>
                 {% endif %}
             </div>
 
             {% if copy_enabled %}
-                <div class="contact-control-group contact-control-group-copy pure-control-group">
+                <div class="herbie-contact-control-group herbie-contact-control-group-copy pure-control-group">
                     <label for="send_copy">
                         <input id="send_copy" name="send_copy" type="checkbox" value="1"{% if copy_checked %} checked{% endif %}>
                         {{ translate('contact', 'labelSendCopy') }}
@@ -64,10 +64,10 @@
 
             <altcha-widget challenge="{{ altcha_challenge }}"></altcha-widget>
 
-            <div class="contact-controls pure-controls">
-                <button type="submit" name="button" value="submit" class="contact-button pure-button">{{ translate('contact', 'buttonSubmit') }}</button>
+            <div class="herbie-contact-controls pure-controls">
+                <button type="submit" name="button" value="submit" class="herbie-contact-button pure-button">{{ translate('contact', 'buttonSubmit') }}</button>
                 {% if data.message or data.name or data.email %}
-                    <button type="submit" name="button" value="reset" class="contact-button contact-secondary-button pure-button">{{ translate('contact', 'buttonReset') }}</button>
+                    <button type="submit" name="button" value="reset" class="herbie-contact-button herbie-contact-secondary-button pure-button">{{ translate('contact', 'buttonReset') }}</button>
                 {% endif %}
             </div>
         </form>
@@ -77,37 +77,43 @@
 </div>
 
 <style>
-    .contact-errors {
+    .herbie-contact {
+        --herbie-contact-error: #e85a5a;
+        --herbie-contact-error-contrast: #ffffff;
+        --herbie-contact-secondary-bg: #e6e6e6;
+        --herbie-contact-secondary-text: #666666;
+    }
+    .herbie-contact-errors {
         font-size: 0.9em;
-        background: rgb(232, 90, 90);
-        color: white;
+        background: var(--herbie-contact-error);
+        color: var(--herbie-contact-error-contrast);
         padding: 1em;
         margin-bottom: 1em;
     }
-    .contact-form-message.is-error {
-        color: rgb(232, 90, 90);
+    .herbie-contact-form-message--error {
+        color: var(--herbie-contact-error);
     }
-    .contact-control-group {
+    .herbie-contact-control-group {
         margin-bottom: 1em;
     }
-    .contact-control-group-honeypot {
+    .herbie-contact-control-group-honeypot {
         display: none;
     }
-    .contact-secondary-button {
-        background-color:#e6e6e6;
-        color:#666;
+    .herbie-contact-secondary-button {
+        background-color:var(--herbie-contact-secondary-bg);
+        color:var(--herbie-contact-secondary-text);
     }
-    .contact-control-group-copy label {
+    .herbie-contact-control-group-copy label {
         display:inline-flex;
         align-items:center;
         gap:0.5em;
         cursor:pointer;
     }
-    .contact-control-group-copy input {
+    .herbie-contact-control-group-copy input {
         width:auto;
         accent-color:var(--accent-button, #a94f4f);
     }
-    .contact-form altcha-widget {
+    .herbie-contact-form altcha-widget {
         display:block;
         margin:1em 0;
         --altcha-max-width:100%;

@@ -15,6 +15,13 @@ Layout files are stored under `site/themes/default`, where the last path segment
 The layout file extension is configured with `fileExtensions.layouts` and defaults to `twig`.
 Use the `@theme` alias to reference assets of the active theme without hardcoding its name, e.g. `{{ css_add("@theme/css/styles.css") }}`.
 Templates missing from the active theme are looked up in the parent theme configured with `themeParent` (default: `default`).
+
+## CSS naming conventions
+
+CSS shipped by Herbie uses a `herbie-` prefix for classes and `--herbie-` for custom properties. Plugin styles add the plugin name as scope, e.g. `.herbie-contact-errors` and `--herbie-contact-error`.
+
+Theme tokens such as `--surface` and `--accent-button` are intentionally unprefixed: they are provided by the active theme and read by plugins with `var(--surface, #ffffff)`. Tokens owned by third-party libraries (e.g. `--altcha-*`) keep their original names.
+
 Herbie expects at least two layout files:
 
 ~~~text

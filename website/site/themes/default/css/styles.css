@@ -1038,8 +1038,8 @@ html[data-theme="dark"] .pure-button:hover {
 }
 
 /* Contact form */
-.contact-form input.contact-input,
-.contact-form textarea.contact-input {
+.herbie-contact-form input.herbie-contact-input,
+.herbie-contact-form textarea.herbie-contact-input {
     background:var(--surface);
     border:1px solid var(--border);
     border-radius:8px;
@@ -1047,17 +1047,17 @@ html[data-theme="dark"] .pure-button:hover {
     color:var(--text);
     font:inherit;
 }
-.contact-form input.contact-input:focus,
-.contact-form textarea.contact-input:focus {
+.herbie-contact-form input.herbie-contact-input:focus,
+.herbie-contact-form textarea.herbie-contact-input:focus {
     border-color:var(--accent);
     outline:2px solid color-mix(in srgb, var(--accent) 35%, transparent);
     outline-offset:1px;
 }
-.contact .contact-secondary-button {
+.herbie-contact .herbie-contact-secondary-button {
     background:var(--code-bg);
     color:var(--text);
 }
-.contact .contact-secondary-button:hover {
+.herbie-contact .herbie-contact-secondary-button:hover {
     background:var(--border);
     color:var(--text);
 }
