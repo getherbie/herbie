@@ -18,6 +18,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
+use UnexpectedValueException;
 
 final readonly class ContainerBuilder
 {
@@ -41,7 +42,7 @@ final readonly class ContainerBuilder
             $config = $c->get(Config::class);
             $paths = $config->get('paths');
             $theme = trim($config->getAsString('theme'));
-            $themePath = $theme === '' ? $paths['themes'] : $paths['themes'] . '/' . $theme;
+            $themePath = $paths['themes'] . '/' . $theme;
             return new Alias([
                 '@app' => $paths['app'],
                 '@asset' => $this->app->getSitePath() . '/assets',
@@ -62,7 +63,7 @@ final readonly class ContainerBuilder
             $theme = trim($config->getAsString('theme'));
             $themeParent = trim($config->getAsString('themeParent'));
             $themeFallbackPaths = [];
-            if ($theme !== '' && $themeParent !== '' && $themeParent !== $theme) {
+            if ($themeParent !== '' && $themeParent !== $theme) {
                 $parentPath = trim($config->getAsString('paths.themes')) . '/' . $themeParent;
                 if (is_dir($parentPath)) {
                     $themeFallbackPaths[] = $parentPath;
@@ -127,7 +128,11 @@ final readonly class ContainerBuilder
 
             $allConfig = array_replace_recursive($defaultConfig, $userConfig);
 
-            return new Config($allConfig);
+            $config = new Config($allConfig);
+            if (trim($config->getAsString('theme')) === '') {
+                throw new UnexpectedValueException('Config "theme" must not be empty.', 500);
+            }
+            return $config;
         });
 
         $c->set(DataRepositoryInterface::class, function (ContainerInterface $c) {

@@ -21,7 +21,8 @@ The following terms are used here:
 - **Token** – a CSS custom property provided by a theme and read by plugins.
 - **Segment** – a named part of a page's content, available in templates as `content.<name>`.
 
-The active theme is selected globally in `site/config/main.php`; the default is `default`:
+The active theme is selected globally in `site/config/main.php`; the default is `default`.
+The value must be a non-empty theme name; an empty value is rejected:
 
 ~~~php
 'theme' => 'my-theme',

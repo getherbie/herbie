@@ -11,9 +11,6 @@ use function herbie\file_read;
 // Site functions are included in LocalExtensionsPlugin method scope, so $this->config is available here.
 $themesPath = trim($this->config->getAsString('paths.themes'));
 $theme = trim($this->config->getAsString('theme'));
-if ($theme === '') {
-    $theme = 'default';
-}
 $themes = [$theme];
 $themeParent = trim($this->config->getAsString('themeParent'));
 if ($themeParent !== '' && $themeParent !== $theme && is_dir($themesPath . '/' . $themeParent)) {

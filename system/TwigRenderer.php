@@ -90,16 +90,11 @@ final class TwigRenderer
         $themeParent = trim($this->config->getAsString('themeParent'));
         $themePath = trim($this->config->getAsString('paths.themes'));
 
-        $paths = [];
-        if ($theme === '') {
-            $paths[] = $themePath;
-        } else {
-            $paths[] = $themePath . '/' . $theme;
-            // Twig searches the paths in order, so the parent only supplies
-            // templates the active theme does not contain.
-            if ($themeParent !== '' && $themeParent !== $theme && is_dir($themePath . '/' . $themeParent)) {
-                $paths[] = $themePath . '/' . $themeParent;
-            }
+        $paths = [$themePath . '/' . $theme];
+        // Twig searches the paths in order, so the parent only supplies
+        // templates the active theme does not contain.
+        if ($themeParent !== '' && $themeParent !== $theme && is_dir($themePath . '/' . $themeParent)) {
+            $paths[] = $themePath . '/' . $themeParent;
         }
 
         $paths = $this->validatePaths($paths);
