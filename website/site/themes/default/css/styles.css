@@ -147,6 +147,11 @@ table {
     display:block;
     background:var(--surface);
 }
+/* Rows of tables without a thead would otherwise shrink to their content. */
+.pure-table:not(:has(thead)) tbody {
+    display:table;
+    width:100%;
+}
 .pure-table thead {
     background:transparent;
     color:var(--heading);
