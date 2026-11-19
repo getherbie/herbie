@@ -42,7 +42,7 @@ final class WritableTest extends Unit
     public function testWritableWithEmptyParam(): void
     {
         $twig = <<<TWIG
-            {%- if '' is file_writable -%}yes{% else %}no{%- endif -%}
+            {%- if '' is path_writable -%}yes{% else %}no{%- endif -%}
         TWIG;
         $this->assertSame('no', $this->twig()->renderString($twig));
     }
@@ -50,7 +50,7 @@ final class WritableTest extends Unit
     public function testWritableWithExistingAlias(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy.pdf' is file_writable -%}yes{% else %}no{%- endif -%}
+            {%- if '@media/dummy.pdf' is path_writable -%}yes{% else %}no{%- endif -%}
         TWIG;
         $this->assertSame('yes', $this->twig()->renderString($twig));
     }
@@ -58,7 +58,7 @@ final class WritableTest extends Unit
     public function testWritableWithExistingAliasWithoutPermissions(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy-no-rights.pdf' is file_writable -%}yes{% else %}no{%- endif -%}
+            {%- if '@media/dummy-no-rights.pdf' is path_writable -%}yes{% else %}no{%- endif -%}
         TWIG;
         $this->assertSame('no', $this->twig()->renderString($twig));
     }
@@ -66,7 +66,7 @@ final class WritableTest extends Unit
     public function testReadableWithNotExistingAlias(): void
     {
         $twig = <<<TWIG
-            {%- if '@media/dummy-xyz.pdf' is file_writable -%}yes{% else %}no{%- endif -%}
+            {%- if '@media/dummy-xyz.pdf' is path_writable -%}yes{% else %}no{%- endif -%}
         TWIG;
         $this->assertSame('no', $this->twig()->renderString($twig));
     }

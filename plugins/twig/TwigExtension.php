@@ -91,8 +91,8 @@ final class TwigExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('file_readable', $this->testIsReadable(...)),
-            new TwigTest('file_writable', $this->testIsWritable(...)),
+            new TwigTest('path_readable', $this->isPathReadable(...)),
+            new TwigTest('path_writable', $this->isPathWritable(...)),
         ];
     }
 
@@ -648,7 +648,7 @@ final class TwigExtension extends AbstractExtension
         ]);
     }
 
-    public function testIsReadable(string $alias): bool
+    public function isPathReadable(string $alias): bool
     {
         if ($alias === '') {
             return false;
@@ -657,7 +657,7 @@ final class TwigExtension extends AbstractExtension
         return is_readable($filename);
     }
 
-    public function testIsWritable(string $alias): bool
+    public function isPathWritable(string $alias): bool
     {
         if ($alias === '') {
             return false;
