@@ -2,10 +2,13 @@
 - name: format_bytes
   code: >-
     {{ 12345678|format_bytes }}
-  desc: Returns file size in a human readable format (B, KB, MB, GB, TB, PB).
+  desc: >-
+    Formats a byte count in a human readable format (B, KB, MB, GB, TB, PB).
+    Uses 1024-based units and rounds to one decimal place.
+    Values <= 0 return "0", a single byte returns "1 Byte", and the largest unit is PB.
   return:
     - string
-    - The file size in human readable format
+    - The byte count in human readable format
 - name: slugify
   code: >-
     {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
