@@ -152,9 +152,9 @@ final class TwigExtension extends AbstractExtension
             $layout = $context['page']->getLayout();
         }
 
-        $theme = 'default';
-        if (!empty($context['theme'])) {
-            $theme = $context['theme'];
+        $theme = trim($this->config->getAsString('theme'));
+        if ($theme === '') {
+            $theme = 'default';
         }
 
         $language = 'en';

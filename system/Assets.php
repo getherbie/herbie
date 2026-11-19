@@ -22,8 +22,12 @@ final class Assets
     private int $refresh = 86400;
     private int $permissions = 0755;
 
-    public function __construct(private readonly Alias $alias, string $baseUrl)
-    {
+    /** @param array<int, string> $themeFallbackPaths */
+    public function __construct(
+        private readonly Alias $alias,
+        string $baseUrl,
+        private readonly array $themeFallbackPaths = [],
+    ) {
         $this->assetsPath = $this->alias->get('@web') . $this->assetsDir;
         $this->assetsUrl = str_leading_slash($baseUrl . $this->assetsDir);
     }
@@ -135,12 +139,12 @@ final class Assets
                 continue;
             }
 
-            $srcPath = $this->alias->get($asset['path']);
-            if (isset(self::$published[$srcPath])) {
+            $srcPath = $this->resolveSourcePath($asset['path']);
+            $dstPath = $this->assetsPath . '/' . $this->removeAlias($asset['path']);
+            if (isset(self::$published[$dstPath])) {
                 continue;
             }
 
-            $dstPath = $this->assetsPath . '/' . $this->removeAlias($asset['path']);
             $dstDir = dirname($dstPath);
             if (!is_dir($dstDir)) {
                 mkdir($dstDir, $this->permissions, true);
@@ -158,14 +162,36 @@ final class Assets
                 copy($srcPath, $dstPath);
             }
             $this->assets[$index]['timestamp'] = file_mtime($dstPath);
-            self::$published[$srcPath] = true;
+            self::$published[$dstPath] = true;
         }
+    }
+
+    private function resolveSourcePath(string $path): string
+    {
+        $srcPath = $this->alias->get($path);
+        if (is_file($srcPath) || !str_starts_with($path, '@theme/')) {
+            return $srcPath;
+        }
+
+        $relative = substr($path, strlen('@theme/'));
+        foreach ($this->themeFallbackPaths as $themePath) {
+            $candidate = $themePath . '/' . $relative;
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+        return $srcPath;
     }
 
     private function removeAlias(string $file): string
     {
         $parts = explode('/', $file);
-        array_shift($parts);
+        $alias = array_shift($parts);
+        // Namespace theme assets by the active theme so switching themes cannot
+        // reuse a published path that still holds another theme's file.
+        if ($alias === '@theme') {
+            return 'themes/' . basename($this->alias->get('@theme')) . '/' . implode('/', $parts);
+        }
         return implode('/', $parts);
     }
 

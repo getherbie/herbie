@@ -38,13 +38,17 @@ final readonly class ContainerBuilder
         $c->set(ContainerInterface::class, fn(ContainerInterface $c) => $c);
 
         $c->set(Alias::class, function (ContainerInterface $c) {
-            $paths = $c->get(Config::class)->get('paths');
+            $config = $c->get(Config::class);
+            $paths = $config->get('paths');
+            $theme = trim($config->getAsString('theme'));
+            $themePath = $theme === '' ? $paths['themes'] : $paths['themes'] . '/' . $theme;
             return new Alias([
                 '@app' => $paths['app'],
                 '@asset' => $this->app->getSitePath() . '/assets',
                 '@media' => $paths['media'],
                 '@page' => $paths['pages'],
                 '@site' => $this->app->getSitePath(),
+                '@theme' => $themePath,
                 // the default of paths.plugins is Herbie's own plugin directory
                 '@plugin' => $paths['plugins'],
                 '@vendor' => $this->app->getVendorPath(),
@@ -53,10 +57,23 @@ final readonly class ContainerBuilder
             ]);
         });
 
-        $c->set(Assets::class, fn(ContainerInterface $c) => new Assets(
-            $c->get(Alias::class),
-            $this->app->getBaseUrl(),
-        ));
+        $c->set(Assets::class, function (ContainerInterface $c) {
+            $config = $c->get(Config::class);
+            $theme = trim($config->getAsString('theme'));
+            $themeParent = trim($config->getAsString('themeParent'));
+            $themeFallbackPaths = [];
+            if ($theme !== '' && $themeParent !== '' && $themeParent !== $theme) {
+                $parentPath = trim($config->getAsString('paths.themes')) . '/' . $themeParent;
+                if (is_dir($parentPath)) {
+                    $themeFallbackPaths[] = $parentPath;
+                }
+            }
+            return new Assets(
+                $c->get(Alias::class),
+                $this->app->getBaseUrl(),
+                $themeFallbackPaths,
+            );
+        });
 
         if ($this->cache) {
             $c->set(CacheInterface::class, $this->cache);

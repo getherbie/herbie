@@ -179,7 +179,7 @@ final class WebsiteCest
         /** @var Web $I */
         $I->amOnPage('/doc/layouts');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Layouts', 'h1');
+        $I->see('Themes and layouts', 'h1');
         $I->see('On this page', '.toc-title');
         $this->seeRenderedContent($I);
     }
@@ -359,17 +359,17 @@ final class WebsiteCest
         $I->amOnPage('/contact');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Contact us', 'h1');
-        $I->seeNumberOfElements('.contact', 1);
-        $I->seeElement('.contact-form');
-        $I->seeElement('.contact-input[id=name]');
-        $I->seeElement('.contact-input[id=email]');
-        $I->seeElement('.contact-input[id=message]');
-        $I->seeNumberOfElements('.contact-control-group-honeypot input.contact-input', 2);
-        $I->seeElement('.contact-control-group-honeypot input.contact-input[id=phone][name=phone]');
-        $I->seeElement('.contact-control-group-honeypot input.contact-input[id=website][name=website]');
+        $I->seeNumberOfElements('.herbie-contact', 1);
+        $I->seeElement('.herbie-contact-form');
+        $I->seeElement('.herbie-contact-input[id=name]');
+        $I->seeElement('.herbie-contact-input[id=email]');
+        $I->seeElement('.herbie-contact-input[id=message]');
+        $I->seeNumberOfElements('.herbie-contact-control-group-honeypot input.herbie-contact-input', 2);
+        $I->seeElement('.herbie-contact-control-group-honeypot input.herbie-contact-input[id=phone][name=phone]');
+        $I->seeElement('.herbie-contact-control-group-honeypot input.herbie-contact-input[id=website][name=website]');
         $I->seeElement('altcha-widget[challenge]');
         $I->seeElement('input[name=send_copy][type=checkbox]');
-        $I->seeElement('.contact-button');
+        $I->seeElement('.herbie-contact-button');
         $this->testLayoutDefault($I);
     }
 
