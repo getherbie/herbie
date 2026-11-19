@@ -8,8 +8,14 @@ use Twig\TwigFunction;
 
 use function herbie\file_read;
 
-return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) {
-    $template = dirname(__DIR__, 2) . '/themes/default/icons/{icon}.svg';
+// Site functions are included in LocalExtensionsPlugin method scope, so $this->config is available here.
+$theme = trim($this->config->getAsString('theme'));
+if ($theme === '') {
+    $theme = 'default';
+}
+$template = $this->config->getAsString('paths.themes') . '/' . $theme . '/icons/{icon}.svg';
+
+return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) use ($template) {
     $filepath = str_replace('{icon}', $name, $template);
     if (!is_file($filepath)) {
         return '';
