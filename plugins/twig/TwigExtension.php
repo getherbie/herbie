@@ -597,12 +597,12 @@ final class TwigExtension extends AbstractExtension
         return implode($delim, $titles);
     }
 
-    public function query(iterable $iterator): QueryBuilder
+    public function query(iterable $data): QueryBuilder
     {
-        if ($iterator instanceof Traversable) {
-            $data = iterator_to_array($iterator);
+        if ($data instanceof Traversable) {
+            $data = iterator_to_array($data);
         } else {
-            $data = (array)$iterator;
+            $data = (array)$data;
         }
         return (new QueryBuilder())->from($data);
     }

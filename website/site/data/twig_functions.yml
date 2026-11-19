@@ -467,7 +467,7 @@
     The query builder can be applied to any type of iterable data structure.
     The queried data can be narrowed down, filtered, sorted and limited.
   params:
-    - name: iterator
+    - name: data
       type: iterable
       desc: The data to be queried.
       default: iterable
