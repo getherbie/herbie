@@ -19,6 +19,18 @@ final class CssClassesFunctionTest extends Unit
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCssClassesFunctionUsesTheConfiguredTheme(): void
+    {
+        $app = $this->tester->initApplication(
+            dirname(__DIR__, 5),
+            dirname(__DIR__, 3) . '/Fixtures/theme-site',
+        );
+
+        $expected = 'page-error theme-blog-rot layout-default language-de';
+        $actual = $app->getTwigRenderer()->renderString('{{ css_classes() }}');
+        $this->assertEquals($expected, $actual);
+    }
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(
