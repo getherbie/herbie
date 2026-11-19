@@ -95,15 +95,16 @@ The widget script `assets/altcha.min.js` is hosted locally; the contact page loa
 
 ## Notes
 
-If you have enabled page caching, you must disable it.
+The contact form must not be served from cache, because each render creates dynamic security tokens (CSRF, ALTCHA and `form_time`).
+
+Set `cached: false` on the contact page:
 
     ---
     title: Contact form
     cached: false
     ---
 
-Also, the global config `components.pageRendererMiddleware.cache` must be set to false.
-Otherwise the page would be loaded from the page cache.
+The page renderer only caches pages whose `cached` property is `true`, so it is not necessary to disable `components.pageRendererMiddleware.cache` globally if the contact page is marked as `cached: false`.
 
 The form is then rendered using the Twig function of the same name.
 
