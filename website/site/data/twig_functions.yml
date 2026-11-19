@@ -29,7 +29,7 @@
     - The absolute URL.
 - name: css_add
   code: >-
-    {{ css_add("@site/themes/styles.css", {class: "styles"}, "default", false, 1) }}
+    {{ css_add("@theme/css/styles.css", {class: "styles"}, "default", false, 1) }}
   desc: Adds a CSS asset to the HTML page.
   params:
     - name: paths
@@ -56,7 +56,7 @@
     - void
 - name: js_add
   code: >-
-    {{ js_add("@site/themes/script.js", {class: "scripts"}, "default", false, 1) }}
+    {{ js_add("@theme/js/script.js", {class: "scripts"}, "default", false, 1) }}
   desc: Adds a JavaScript asset to the HTML page.
   params:
     - name: paths
