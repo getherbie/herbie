@@ -32,7 +32,7 @@ final class OutputCssFunctionTest extends Unit
         $twig = '{{ css_add("@theme/css/site.css") }}'
             . '{{ css_out() }}';
         $this->assertEquals(
-            '<link href="/assets/theme/css/site.css" type="text/css" rel="stylesheet">',
+            '<link href="/assets/themes/blog.rot/css/site.css" type="text/css" rel="stylesheet">',
             $app->getTwigRenderer()->renderString($twig),
         );
     }

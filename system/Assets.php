@@ -166,10 +166,10 @@ final class Assets
     {
         $parts = explode('/', $file);
         $alias = array_shift($parts);
-        // Keep the theme segment so switching themes cannot reuse a published
-        // asset path that still holds another theme's file.
+        // Namespace theme assets by the active theme so switching themes cannot
+        // reuse a published path that still holds another theme's file.
         if ($alias === '@theme') {
-            return 'theme/' . implode('/', $parts);
+            return 'themes/' . basename($this->alias->get('@theme')) . '/' . implode('/', $parts);
         }
         return implode('/', $parts);
     }
