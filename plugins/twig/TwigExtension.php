@@ -533,24 +533,11 @@ final class TwigExtension extends AbstractExtension
      */
     public function image(
         string $src,
-        int $width = 0,
-        int $height = 0,
-        string $alt = '',
-        string $class = '',
+        array $attribs = [],
         string $template = '@snippet/image.twig',
     ): string {
-        $attribs = [];
         $attribs['src'] = $this->urlManager->createUrl('/') . $src;
-        $attribs['alt'] = $alt;
-        if (!empty($width)) {
-            $attribs['width'] = (string)$width;
-        }
-        if (!empty($height)) {
-            $attribs['height'] = (string)$height;
-        }
-        if (!empty($class)) {
-            $attribs['class'] = $class;
-        }
+        $attribs['alt'] ??= '';
 
         return $this->environment->render($template, [
             'attribs' => $attribs,

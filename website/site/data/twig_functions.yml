@@ -92,7 +92,7 @@
     - The string with CSS classes.
 - name: link_file
   code: >-
-    {{ link_file("media/download.pdf", "Download", true, {class:"download"}) }}
+    {{ link_file("media/download.pdf", "Download", {class:"download"}, true) }}
   desc: Returns a link to a file with additional info like file type and size.
   params:
     - name: path
@@ -118,7 +118,7 @@
   return: []
 - name: image
   code: >-
-   {{ image("media/portrait.jpg", 100, 200, "Portrait", "photo") }}
+   {{ image("media/portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
   desc: Returns an image markup tag. 
     No image processing is performed.
   params:
@@ -126,22 +126,10 @@
       type: string
       desc: The relative web path to the image file.
       default: ''
-    - name: width
-      type: int
-      desc: The width of the image.
-      default: '0'
-    - name: height
-      type: int
-      desc: The height of the image.
-      default: '0'
-    - name: alt
-      type: string
-      desc: The alt text of the image.
-      default: '""'
-    - name: class
-      type: string
-      desc: The HTML class attribute.
-      default: '""'
+    - name: attribs
+      type: array
+      desc: HTML attributes for the image tag (e.g. width, height, alt, class).
+      default: '[]'
     - name: template
       type: string
       desc: The aliased path to the template file.
