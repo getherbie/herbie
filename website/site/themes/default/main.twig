@@ -53,7 +53,7 @@
     {# the icons live in the web root next to index.php, independent of the route #}
     <link rel="icon" href="{{ (site.base_url ~ '/favicon.svg')|replace({'//': '/'}) }}" type="image/svg+xml">
     <link rel="alternate icon" href="{{ (site.base_url ~ '/favicon.ico')|replace({'//': '/'}) }}" sizes="16x16">
-    <title>{{ page_title(delim: ' / ', site_title: 'Herbie CMS', root_title: 'Herbie CMS - A simple flat-file content management system', reverse: true) }}</title>
+    <title>{{ page_title(delimiter: ' / ', site_title: 'Herbie CMS', root_title: 'Herbie CMS - A simple flat-file content management system', reverse: true) }}</title>
     <base href="{{ site.base_url }}">
     {{ css_out(timestamp: true) }}
 </head>

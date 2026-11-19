@@ -1,8 +1,8 @@
 {% apply spaceless %}
 <ul class="breadcrumb">
     {% for item in items %}
-        {% if not loop.first and delim is not empty %}
-            <li class="delim">{{ delim }}</li>
+        {% if not loop.first and delimiter is not empty %}
+            <li class="delim">{{ delimiter }}</li>
         {% endif %}
         <li><a href="{{ item.url }}">{{ item.label|raw }}</a></li>
     {% endfor %}

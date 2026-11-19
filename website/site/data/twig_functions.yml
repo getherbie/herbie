@@ -48,7 +48,7 @@
       type: bool
       desc: Returns CSS inline instead of as a link.
       default: 'false'
-    - name: pos
+    - name: position
       type: int
       desc: The sort order of the CSS asset.
       default: "-1"
@@ -75,7 +75,7 @@
       type: bool
       desc: Returns JavaScript inline instead of as a link.
       default: 'false'
-    - name: pos
+    - name: position
       type: int
       desc: The sort order of the JavaScript asset.
       default: "-1"
@@ -107,7 +107,7 @@
       type: array
       desc: One or more HTML attributes.
       default: "[ ]"
-    - name: info
+    - name: show_info
       type: bool
       desc: If true file info will be added after the link.
       default: 'false'
@@ -168,9 +168,9 @@
   desc: Returns a breadcrumb path for the given page.
     All parameters are passed as an associative array.
   params:
-    - name: delim
+    - name: delimiter
       type: string
-      desc: The delim.
+      desc: The delimiter.
       default: '""'
     - name: home
       type: array
@@ -355,7 +355,7 @@
       type: array
       desc: The HTML attributes passed as an associative array.
       default: ''
-    - name: info
+    - name: show_info
       type: bool
       desc: Adds info with file size und file extension.
       default: false
@@ -420,9 +420,9 @@
   desc: Returns the SEO optimized page title of the website. 
     All parameters are optional and passed as named parameters.
   params:
-    - name: delim
+    - name: delimiter
       type: string
-      desc: The delim.
+      desc: The delimiter.
       default: '" / "'
     - name: site_title
       type: string

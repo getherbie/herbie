@@ -120,9 +120,9 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         ?string $group = null,
         bool $raw = false,
-        int $pos = 1,
+        int $position = 1,
     ): void {
-        $this->assets->addCss($paths, $attribs, $group, $raw, $pos);
+        $this->assets->addCss($paths, $attribs, $group, $raw, $position);
     }
 
     public function jsAdd(
@@ -130,9 +130,9 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         ?string $group = null,
         bool $raw = false,
-        int $pos = 1,
+        int $position = 1,
     ): void {
-        $this->assets->addJs($paths, $attribs, $group, $raw, $pos);
+        $this->assets->addJs($paths, $attribs, $group, $raw, $position);
     }
 
     /**
@@ -175,7 +175,7 @@ final class TwigExtension extends AbstractExtension
         string $path,
         string $label = '',
         array $attribs = [],
-        bool $info = false,
+        bool $show_info = false,
         string $template = '@snippet/link_download.twig',
     ): string {
         $attribs['alt'] ??= '';
@@ -188,7 +188,7 @@ final class TwigExtension extends AbstractExtension
         $href = $this->urlManager->createUrl($baseUrl . $path);
         $resolvedPath = $this->alias->get($storagePath . $path);
 
-        $fileInfo = $info ? $this->getFileInfo($resolvedPath) : '';
+        $fileInfo = $show_info ? $this->getFileInfo($resolvedPath) : '';
         $label = $label === '' ? basename($resolvedPath) : $label;
 
         return $this->environment->render($template, [
@@ -298,7 +298,7 @@ final class TwigExtension extends AbstractExtension
      * @throws SyntaxError
      */
     public function menuBreadcrumb(
-        string $delim = '',
+        string $delimiter = '',
         array $home = [],
         bool $reverse = false,
         string $template = '@snippet/menu_breadcrumb.twig',
@@ -332,7 +332,7 @@ final class TwigExtension extends AbstractExtension
 
         return $this->environment->render($template, [
             'items' => $items,
-            'delim' => $delim,
+            'delimiter' => $delimiter,
         ]);
     }
 
@@ -569,7 +569,7 @@ final class TwigExtension extends AbstractExtension
      */
     public function pageTitle(
         array $context,
-        string $delim = ' / ',
+        string $delimiter = ' / ',
         string $site_title = '',
         string $root_title = '',
         bool $reverse = false,
@@ -594,7 +594,7 @@ final class TwigExtension extends AbstractExtension
             $titles = array_reverse($titles);
         }
 
-        return implode($delim, $titles);
+        return implode($delimiter, $titles);
     }
 
     public function query(iterable $data): QueryBuilder
@@ -631,18 +631,18 @@ final class TwigExtension extends AbstractExtension
         string $path,
         string $label = '',
         array $attribs = [],
-        bool $info = false,
+        bool $show_info = false,
         string $template = '@snippet/link_file.twig',
     ): string {
         $attribs['class'] ??= 'link__label';
         $label = $label === '' ? basename($path) : $label;
-        $fileInfo = $info ? $this->getFileInfo($path) : '';
+        $fileInfo = $show_info ? $this->getFileInfo($path) : '';
 
         return $this->environment->render($template, [
             'path' => $path,
             'href' => $path,
             'label' => $label,
-            'info' => $info,
+            'info' => $show_info,
             'file_info' => $fileInfo,
             'attribs' => $attribs,
         ]);
