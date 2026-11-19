@@ -173,9 +173,9 @@
       desc: The delim.
       default: '""'
     - name: home
-      type: array|string
-      desc: The link to the homepage. An array must be like [route, label].
-      default: '""'
+      type: array
+      desc: The link to the homepage as [route, label]. Pass an empty array to omit.
+      default: '[]'
     - name: reverse
       type: bool
       desc: Reverse the breadcrumb.

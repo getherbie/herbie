@@ -292,29 +292,22 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
-     * @param array{0: string, 1?: string}|string $home
+     * @param array $home
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function menuBreadcrumb(
         string $delim = '',
-        array|string $home = '',
+        array $home = [],
         bool $reverse = false,
         string $template = '@snippet/menu_breadcrumb.twig',
     ): string {
-        // TODO use string type for param $homeLink (like "route|label")
-
         $items = [];
 
         if (!empty($home)) {
-            if (is_array($home)) {
-                $route = reset($home);
-                $label = $home[1] ?? 'Home';
-            } else {
-                $route = $home;
-                $label = 'Home';
-            }
+            $route = reset($home);
+            $label = $home[1] ?? 'Home';
             $items[] = [
                 'route' => $route,
                 'label' => $label,
