@@ -1,0 +1,10 @@
+{% apply spaceless %}
+<div class="{{ class }}">
+    {%- if prev -%}
+        <a class="{{ class }}-link-prev" href="{{ prev.url }}">{% if prev.icon is not empty %}<span class="{{ class }}-icon-prev">{{ prev.icon|raw }}</span>{% endif %}<span class="{{ class }}-label-prev">{{ prev.label|raw }}</span></a>
+    {%- endif -%}
+    {%- if next -%}
+        <a class="{{ class }}-link-next" href="{{ next.url }}"><span class="{{ class }}-label-next">{{ next.label|raw }}</span>{% if next.icon is not empty %}<span class="{{ class }}-icon-next">{{ next.icon|raw }}</span>{% endif %}</a>
+    {%- endif -%}
+</div>
+{% endapply %}

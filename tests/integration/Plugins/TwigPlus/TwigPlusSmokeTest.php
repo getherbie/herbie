@@ -58,7 +58,7 @@ final class TwigPlusSmokeTest extends Unit
     public function testMenuPagerFunction(): void
     {
         $expected = '<div class="pager">'
-            . '<a href="/zeta/psi"class="pager-link-next"><span class="pager-label-next">Zeta Psi</span></a>'
+            . '<a class="pager-link-next" href="/zeta/psi"><span class="pager-label-next">Zeta Psi</span></a>'
             . '</div>';
         $actual = $this->twig()->renderString('{{ menu_pager() }}');
         $this->assertEquals($expected, $actual);

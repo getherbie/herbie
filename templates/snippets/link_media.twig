@@ -1,0 +1,8 @@
+{% apply spaceless %}
+<span class="link link--media">
+    <a href="{{ href }}"{{ attributes(attribs) }}>{{- label|raw -}}</a>
+    {%- if file_info is not empty -%}
+        <span class="link__info">{{- file_info -}}</span>
+    {%- endif -%}
+</span>
+{% endapply %}

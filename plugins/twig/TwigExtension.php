@@ -21,6 +21,7 @@ use herbie\UrlManager;
 use Traversable;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Runtime\EscaperRuntime;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -58,6 +59,7 @@ final class TwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
+            new TwigFunction('attributes', $this->attributes(...), ['is_safe' => ['html']]),
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
@@ -165,11 +167,17 @@ final class TwigExtension extends AbstractExtension
         return str_replace(['/', '.'], '-', $class);
     }
 
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function linkMedia(
         string $path,
         string $label = '',
         bool $info = false,
         array $attribs = [],
+        string $template = '@snippet/link_media.twig',
     ): string {
         $attribs['alt'] ??= '';
         $attribs['class'] ??= 'link__label';
@@ -179,19 +187,17 @@ final class TwigExtension extends AbstractExtension
 
         // combine url and path
         $href = $this->urlManager->createUrl($baseUrl . $path);
-        $path = $this->alias->get($storagePath . $path);
+        $resolvedPath = $this->alias->get($storagePath . $path);
 
-        if (!empty($info)) {
-            $fileInfo = $this->getFileInfo($path);
-        }
+        $fileInfo = $info ? $this->getFileInfo($resolvedPath) : '';
+        $label = $label === '' ? basename($resolvedPath) : $label;
 
-        $replace = [
-            '{href}' => $href,
-            '{attribs}' => $this->buildHtmlAttributes($attribs),
-            '{label}' => empty($label) ? basename($path) : $label,
-            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo),
-        ];
-        return strtr('<span class="link link--media"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+        return $this->environment->render($template, [
+            'href' => $href,
+            'attribs' => $attribs,
+            'label' => $label,
+            'file_info' => $fileInfo,
+        ]);
     }
 
     private function getFileInfo(string $path): string
@@ -222,16 +228,14 @@ final class TwigExtension extends AbstractExtension
         return str_replace(',', '.', (string)round($size, 1)) . ' ' . $units[$i];
     }
 
-    /**
-     * @param array<string, string> $attribs
-     */
-    private function buildHtmlAttributes(array $attribs = []): string
+    public function attributes(array $attribs = [], string $strategy = 'html_attr'): string
     {
-        $attribsAsString = '';
+        $result = '';
         foreach ($attribs as $key => $value) {
-            $attribsAsString .= $key . '="' . $value . '" ';
+            $escaped = $this->environment->getRuntime(EscaperRuntime::class)->escape((string)$value, $strategy);
+            $result .= ' ' . $key . '="' . $escaped . '"';
         }
-        return trim($attribsAsString);
+        return $result;
     }
 
     public function linkMail(
@@ -278,15 +282,19 @@ final class TwigExtension extends AbstractExtension
 
     /**
      * @param array{0: string, 1?: string}|string $home
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function menuBreadcrumb(
         string $delim = '',
         array|string $home = '',
         bool $reverse = false,
+        string $template = '@snippet/menu_breadcrumb.twig',
     ): string {
         // TODO use string type for param $homeLink (like "route|label")
 
-        $links = [];
+        $items = [];
 
         if (!empty($home)) {
             if (is_array($home)) {
@@ -296,39 +304,32 @@ final class TwigExtension extends AbstractExtension
                 $route = $home;
                 $label = 'Home';
             }
-            $links[] = $this->createLink($route, $label);
+            $items[] = [
+                'route' => $route,
+                'label' => $label,
+                'url' => $this->urlManager->createUrl($route),
+            ];
         }
 
         [$route] = $this->urlManager->parseRequest();
         $pageTrail = $this->pageRepository->findAll()->getPageTrail($route);
         foreach ($pageTrail as $item) {
-            $links[] = $this->createLink($item->getRoute(), $item->getMenuTitle());
+            $itemRoute = $item->getRoute();
+            $items[] = [
+                'route' => $itemRoute,
+                'label' => $item->getMenuTitle(),
+                'url' => $this->urlManager->createUrl($itemRoute),
+            ];
         }
 
         if (!empty($reverse)) {
-            $links = array_reverse($links);
+            $items = array_reverse($items);
         }
 
-        $html = '<ul class="breadcrumb">';
-        foreach ($links as $i => $link) {
-            if ($i > 0 && !empty($delim)) {
-                $html .= '<li class="delim">' . $delim . '</li>';
-            }
-            $html .= '<li>' . $link . '</li>';
-        }
-        $html .= '</ul>';
-
-        return $html;
-    }
-
-    /**
-     * @param array<string, string> $attribs
-     */
-    protected function createLink(string $route, string $label, array $attribs = []): string
-    {
-        $url = $this->urlManager->createUrl($route);
-        $attribsAsString = $this->buildHtmlAttributes($attribs);
-        return sprintf('<a href="%s"%s>%s</a>', $url, $attribsAsString, $label);
+        return $this->environment->render($template, [
+            'items' => $items,
+            'delim' => $delim,
+        ]);
     }
 
     /**
@@ -376,7 +377,9 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
-     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function menuPager(
         string $limit = '',
@@ -385,7 +388,7 @@ final class TwigExtension extends AbstractExtension
         string $prev_icon = '',
         string $next_icon = '',
         string $class = 'pager',
-        string $template = '<div class="{class}">{prev}{next}</div>',
+        string $template = '@snippet/menu_pager.twig',
     ): string {
         [$route] = $this->urlManager->parseRequest();
         $pageList = $this->pageRepository->findAll();
@@ -411,33 +414,42 @@ final class TwigExtension extends AbstractExtension
             $lastPage = $page;
         }
 
-        $replacements = [
-            '{class}' => $class,
-            '{prev}' => '',
-            '{next}' => '',
-        ];
-
+        $prev = null;
         if (isset($prevPage)) {
-            $label = empty($prev_label) ? $prevPage->getMenuTitle() : $prev_label;
-            $label = sprintf('<span class="%s-label-prev">%s</span>', $class, $label);
-            if ($prev_icon) {
-                $label = sprintf('<span class="%s-icon-prev">%s</span>%s', $class, $prev_icon, $label);
-            }
-            $attribs = ['class' => $class . '-link-prev'];
-            $replacements['{prev}'] = $this->createLink($prevPage->getRoute(), $label, $attribs);
+            $effectiveLabel = $prev_label !== '' ? $prev_label : $prevPage->getMenuTitle();
+            $prev = [
+                'page' => $prevPage,
+                'route' => $prevPage->getRoute(),
+                'url' => $this->urlManager->createUrl($prevPage->getRoute()),
+                'menu_title' => $prevPage->getMenuTitle(),
+                'label' => $effectiveLabel,
+                'icon' => $prev_icon,
+            ];
         }
 
+        $next = null;
         if (isset($nextPage)) {
-            $label = empty($next_label) ? $nextPage->getMenuTitle() : $next_label;
-            $label = sprintf('<span class="%s-label-next">%s</span>', $class, $label);
-            if ($next_icon) {
-                $label = sprintf('%s<span class="%s-icon-next">%s</span>', $label, $class, $next_icon);
-            }
-            $attribs = ['class' => $class . '-link-next'];
-            $replacements['{next}'] = $this->createLink($nextPage->getRoute(), $label, $attribs);
+            $effectiveLabel = $next_label !== '' ? $next_label : $nextPage->getMenuTitle();
+            $next = [
+                'page' => $nextPage,
+                'route' => $nextPage->getRoute(),
+                'url' => $this->urlManager->createUrl($nextPage->getRoute()),
+                'menu_title' => $nextPage->getMenuTitle(),
+                'label' => $effectiveLabel,
+                'icon' => $next_icon,
+            ];
         }
 
-        return strtr($template, $replacements);
+        return $this->environment->render($template, [
+            'class' => $class,
+            'limit' => $limit,
+            'prev' => $prev,
+            'next' => $next,
+            'prev_label' => $prev_label,
+            'next_label' => $next_label,
+            'prev_icon' => $prev_icon,
+            'next_icon' => $next_icon,
+        ]);
     }
 
     public function menuSitemap(
@@ -498,12 +510,18 @@ final class TwigExtension extends AbstractExtension
         return $this->environment->render($path, $context);
     }
 
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function image(
         string $src,
         int $width = 0,
         int $height = 0,
         string $alt = '',
         string $class = '',
+        string $template = '@snippet/image.twig',
     ): string {
         $attribs = [];
         $attribs['src'] = $this->urlManager->createUrl('/') . $src;
@@ -517,32 +535,42 @@ final class TwigExtension extends AbstractExtension
         if (!empty($class)) {
             $attribs['class'] = $class;
         }
-        return sprintf('<img %s>', $this->buildHtmlAttributes($attribs));
+
+        return $this->environment->render($template, [
+            'attribs' => $attribs,
+        ]);
     }
 
-    public function linkPage(string $route, string $label, array $attribs = []): string
-    {
-        $scheme = parse_url($route, PHP_URL_SCHEME);
-        if ($scheme === null) {
-            $class = 'link--page';
-            $href = $this->urlManager->createUrl($route);
-        } else {
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function linkPage(
+        string $route,
+        string $label,
+        array $attribs = [],
+        string $template = '@snippet/link_page.twig',
+    ): string {
+        $external = parse_url($route, PHP_URL_SCHEME) !== null;
+        if ($external) {
             $class = 'link--external';
             $href = $route;
+        } else {
+            $class = 'link--page';
+            $href = $this->urlManager->createUrl($route);
         }
 
-        $attribs['class'] ??= '';
-        $attribs['class'] = trim($attribs['class'] . ' link__label');
+        $attribs['class'] = trim(($attribs['class'] ?? '') . ' link__label');
 
-        $replace = [
-            '{class}' => $class,
-            '{href}' => $href,
-            '{attribs}' => $this->buildHtmlAttributes($attribs),
-            '{label}' => $label,
-        ];
-
-        $template = '<span class="link {class}"><a href="{href}" {attribs}>{label}</a></span>';
-        return strtr($template, $replace);
+        return $this->environment->render($template, [
+            'route' => $route,
+            'label' => $label,
+            'href' => $href,
+            'class' => $class,
+            'attribs' => $attribs,
+            'external' => $external,
+        ]);
     }
 
     /**
@@ -603,21 +631,30 @@ final class TwigExtension extends AbstractExtension
         return $this->urlManager->createAbsoluteUrl($route);
     }
 
-    public function linkFile(string $path, string $label = '', bool $info = false, array $attribs = []): string
-    {
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function linkFile(
+        string $path,
+        string $label = '',
+        bool $info = false,
+        array $attribs = [],
+        string $template = '@snippet/link_file.twig',
+    ): string {
         $attribs['class'] ??= 'link__label';
+        $label = $label === '' ? basename($path) : $label;
+        $fileInfo = $info ? $this->getFileInfo($path) : '';
 
-        if (!empty($info)) {
-            $fileInfo = $this->getFileInfo($path);
-        }
-
-        $replace = [
-            '{href}' => $path,
-            '{attribs}' => $this->buildHtmlAttributes($attribs),
-            '{label}' => empty($label) ? basename($path) : $label,
-            '{info}' => empty($fileInfo) ? '' : sprintf('<span class="link__info">%s</span>', $fileInfo),
-        ];
-        return strtr('<span class="link link--file"><a href="{href}" {attribs}>{label}</a>{info}</span>', $replace);
+        return $this->environment->render($template, [
+            'path' => $path,
+            'href' => $path,
+            'label' => $label,
+            'info' => $info,
+            'file_info' => $fileInfo,
+            'attribs' => $attribs,
+        ]);
     }
 
     public function testIsReadable(string $alias): bool

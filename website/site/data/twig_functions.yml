@@ -1,4 +1,20 @@
 ---
+- name: attributes
+  code: >-
+    {{ attributes({class: "btn", id: "submit"}) }}
+  desc: Renders an associative array of HTML attributes into a single escaped string.
+  params:
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: "[]"
+    - name: strategy
+      type: string
+      desc: The escaping strategy to use (html or html_attr).
+      default: "html_attr"
+  return:
+    - string
+    - The rendered attributes.
 - name: url_abs
   code: >-
     {{ url_abs("doc/contents/variables") }}
@@ -95,6 +111,10 @@
       type: array
       desc: One or more HTML attributes.
       default: "[ ]"
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "@snippet/link_file.twig"
   return: []
 - name: image
   code: >-
@@ -122,6 +142,10 @@
       type: string
       desc: The HTML class attribute.
       default: '""'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "@snippet/image.twig"
   return:
     - string
     - The image markup
@@ -168,6 +192,10 @@
       type: bool
       desc: Reverse the breadcrumb.
       default: 'false'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "@snippet/menu_breadcrumb.twig"
   return:
     - string
     - The breadcrumb path as HTML.
@@ -235,8 +263,8 @@
       default: ''
     - name: template
       type: string
-      desc: The template.
-      default: "<div class=\"{class}\">{prev}{next}</div>"
+      desc: The aliased path to the template file.
+      default: "@snippet/menu_pager.twig"
   return:
     - string
     - The generated markup
@@ -343,12 +371,16 @@
       type: array
       desc: The HTML attributes passed as an associative array.
       default: ''
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "@snippet/link_media.twig"
   return:
     - string
     - The link to a file
 - name: link_mail
   code: >-
-    {{ link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link.twig") }}
+    {{ link_mail("me@example.com", "John Doe", {class: "link-page"}, "@snippet/link_mail.twig") }}
   desc: Returns a HTML mailto link.
   params:
     - name: email
@@ -366,7 +398,7 @@
     - name: template
       type: string
       desc: The aliased path to the template file.
-      default: ''      
+      default: "@snippet/link_mail.twig"
   return:
     - string
     - The mailto link  
@@ -387,6 +419,10 @@
       type: array
       desc: The HTML attributes passed as an associative array.
       default: ''
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "@snippet/link_page.twig"
   return:
     - string
     - The link to a route
