@@ -365,6 +365,7 @@ final class WebsiteCest
             'mathjax' => 'MathJax Renderer',
             'grid' => 'Grid System',
             'disqus' => 'Disqus Comments',
+            'video' => 'Video Embeds',
             'lipsum' => 'Lipsum Generator',
         ];
         foreach ($titles as $name => $title) {
@@ -395,6 +396,11 @@ final class WebsiteCest
     public function testDocExtendingPluginExampleDisqus(AcceptanceTester $I)
     {
         $this->seePluginExample($I, 'disqus', 'Disqus Comments');
+    }
+
+    public function testDocExtendingPluginExampleVideo(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'video', 'Video Embeds');
     }
 
     public function testDocExtendingPluginExampleLipsum(AcceptanceTester $I)
