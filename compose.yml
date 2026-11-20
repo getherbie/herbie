@@ -26,14 +26,14 @@ services:
     command: ["composer", "install"]
     volumes:
       - .:/app
-  test:
+  qa:
     build:
       context: .
       args:
         - PHP_VERSION=${PHP_VERSION:-8.3}      
     profiles: [website]
     working_dir: "/app" 
-    command: ["composer", "test"]
+    command: ["composer", "qa"]
     volumes:
       - .:/app
   test-website:
@@ -47,7 +47,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8888:80"
+      - "8889:80"
   bash:
     build:
       context: .
