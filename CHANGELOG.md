@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - TBD
+## [3.0.0] - 2026-11-20
 
 ### Added
 - Static architecture analysis with Deptrac (`deptrac.php`, `composer qa:check:deptrac`), which is part of `composer qa`. It ensures that the core does not depend on plugins and that plugins only use the public extension API.
