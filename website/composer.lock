@@ -280,12 +280,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getherbie/herbie.git",
-                "reference": "079edb30f8bbd14376d53c480b626f4c2c7acbf3"
+                "reference": "531ff79036bb07311d5cbb715472da6b47163a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getherbie/herbie/zipball/079edb30f8bbd14376d53c480b626f4c2c7acbf3",
-                "reference": "079edb30f8bbd14376d53c480b626f4c2c7acbf3",
+                "url": "https://api.github.com/repos/getherbie/herbie/zipball/531ff79036bb07311d5cbb715472da6b47163a38",
+                "reference": "531ff79036bb07311d5cbb715472da6b47163a38",
                 "shasum": ""
             },
             "require": {
@@ -333,10 +333,12 @@
                 "vincentlanglet/twig-cs-fixer": "^4.1"
             },
             "suggest": {
+                "altcha-org/altcha": "Needed by the contact plugin",
                 "doctrine/rst-parser": "Needed by the rst plugin",
                 "imagine/imagine": "Needed by the imagine plugin",
                 "league/commonmark": "Needed by the markdown plugin",
-                "netcarver/textile": "Needed by the textile plugin"
+                "netcarver/textile": "Needed by the textile plugin",
+                "phpmailer/phpmailer": "Needed by the contact plugin"
             },
             "bin": [
                 "herbie"
@@ -367,7 +369,8 @@
                 "issues": "https://github.com/getherbie/herbie/issues",
                 "source": "https://github.com/getherbie/herbie/tree/3.x-develop"
             },
-            "time": "2026-11-19T13:38:28+00:00"
+            "time": "2026-11-20T14:16:37+00:00",
+            "published-time": "2026-11-20T14:17:01+00:00"
         },
         {
             "name": "imagine/imagine",
@@ -2380,10 +2383,10 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.11.0"
 }
