@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - The page tree now preserves the order of the page list when a section's index page has a higher number prefix than its siblings. Previously all index pages were attached first, so such a section appeared at the top of menus.
 
+### Documentation
+- The Extending chapter is split into focused pages for extension points, registration methods, plugin classes, Composer packages and six example plugins. The pages explain plugin discovery, configuration defaults, dependency declarations, Twig registration forms and Markdown/HTML caveats; the Plugins page uses consistent placeholder names.
+
 ## [3.0.0] - 2026-11-20
 
 ### Added

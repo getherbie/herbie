@@ -309,8 +309,97 @@ final class WebsiteCest
         $I->amOnPage('/doc/extending');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Extending', 'h1');
-        $I->see('On this page', '.toc-title');
+        $I->dontSee('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $pages = [
+            'What can be extended' => 'extension-points',
+            'Files in site/extend' => 'files',
+            'Register in index.php' => 'bootstrap',
+            'Plugin class' => 'plugin-class',
+            'Composer package' => 'composer-package',
+            'Example plugins' => 'examples',
+        ];
+        foreach ($pages as $title => $route) {
+            $I->seeLink($title, 'doc/extending/' . $route);
+            $I->see($title, '.sidebar .menu');
+        }
+    }
+
+    public function testDocExtendingExtensionPoints(AcceptanceTester $I)
+    {
+        $this->seeExtendingPage($I, 'extension-points', 'What can be extended');
+    }
+
+    public function testDocExtendingFilesystem(AcceptanceTester $I)
+    {
+        $this->seeExtendingPage($I, 'files', 'Files in site/extend');
+    }
+
+    public function testDocExtendingProgrammatic(AcceptanceTester $I)
+    {
+        $this->seeExtendingPage($I, 'bootstrap', 'Register in index.php');
+    }
+
+    public function testDocExtendingPlugin(AcceptanceTester $I)
+    {
+        $this->seeExtendingPage($I, 'plugin-class', 'Plugin class', false);
+    }
+
+    public function testDocExtendingDistributedPlugin(AcceptanceTester $I)
+    {
+        $this->seeExtendingPage($I, 'composer-package', 'Composer package', false);
+    }
+
+    public function testDocExtendingPluginExamples(AcceptanceTester $I)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/extending/examples');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Example plugins', 'h1');
+        $I->dontSee('On this page', '.toc-title');
+        $this->seeRenderedContent($I);
+        $I->seeElement('.content ul');
+        $titles = [
+            'random' => 'Random Page',
+            'gist' => 'GitHub Gist',
+            'mathjax' => 'MathJax Renderer',
+            'grid' => 'Grid System',
+            'disqus' => 'Disqus Comments',
+            'lipsum' => 'Lipsum Generator',
+        ];
+        foreach ($titles as $name => $title) {
+            $I->seeLink($title, 'doc/extending/examples/' . $name);
+        }
+    }
+
+    public function testDocExtendingPluginExampleRandom(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'random', 'Random Page');
+    }
+
+    public function testDocExtendingPluginExampleGist(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'gist', 'GitHub Gist');
+    }
+
+    public function testDocExtendingPluginExampleMathjax(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'mathjax', 'MathJax Renderer');
+    }
+
+    public function testDocExtendingPluginExampleGrid(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'grid', 'Grid System');
+    }
+
+    public function testDocExtendingPluginExampleDisqus(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'disqus', 'Disqus Comments');
+    }
+
+    public function testDocExtendingPluginExampleLipsum(AcceptanceTester $I)
+    {
+        $this->seePluginExample($I, 'lipsum', 'Lipsum Generator');
     }
 
     public function testDocCheatsheet(AcceptanceTester $I)
@@ -439,6 +528,33 @@ final class WebsiteCest
     {
         $I->seeElement('.content h1');
         $I->seeElement('.content p, .content pre, .content table, .content ul');
+    }
+
+    private function seeExtendingPage(AcceptanceTester $I, string $route, string $title, bool $toc = true)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/extending/' . $route);
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see($title, 'h1');
+        if ($toc) {
+            $I->see('On this page', '.toc-title');
+        } else {
+            $I->dontSee('On this page', '.toc-title');
+        }
+        $this->seeRenderedContent($I);
+    }
+
+    private function seePluginExample(AcceptanceTester $I, string $name, string $title)
+    {
+        /** @var Web $I */
+        $I->amOnPage('/doc/extending/examples/' . $name);
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see($title, 'h1');
+        $I->seeInTitle($title);
+        $I->see($title, '.sidebar .menu');
+        $I->see('On this page', '.toc-title');
+        $I->see('Usage', 'h2');
+        $this->seeRenderedContent($I);
     }
 
     private function testLayoutDefault(AcceptanceTester $I)
