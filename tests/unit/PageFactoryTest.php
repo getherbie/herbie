@@ -99,6 +99,43 @@ final class PageFactoryTest extends Unit
         $this->assertSame(['Team', 'Vision'], $children);
     }
 
+    public function testNewPageTreeFollowsThePageListOrderForIndexPages(): void
+    {
+        $factory = new PageFactory();
+        $pageList = new PageList([
+            $this->createPage('about', '1-about/index.md', '', 'About'),
+            $this->createPage('about/team', '1-about/1-team.md', 'about', 'Team'),
+            $this->createPage('about/projects', '1-about/2-projects/index.md', 'about', 'Projects'),
+            $this->createPage('about/vision', '1-about/3-vision.md', 'about', 'Vision'),
+        ]);
+
+        $tree = $factory->newPageTree($pageList);
+        $about = $tree->findByRoute('about');
+
+        $this->assertInstanceOf(PageTree::class, $about);
+        $children = [];
+        foreach ($about as $child) {
+            $this->assertInstanceOf(PageTree::class, $child);
+            $children[] = (string)$child;
+        }
+        $this->assertSame(['Team', 'Projects', 'Vision'], $children);
+    }
+
+    public function testNewPageTreeAttachesChildrenListedBeforeTheirParent(): void
+    {
+        $factory = new PageFactory();
+        $pageList = new PageList([
+            $this->createPage('about/team', '1-about/1-team.md', 'about', 'Team'),
+            $this->createPage('about', '1-about/index.md', '', 'About'),
+        ]);
+
+        $tree = $factory->newPageTree($pageList);
+
+        $team = $tree->findByRoute('about/team');
+        $this->assertInstanceOf(PageTree::class, $team);
+        $this->assertSame('Team', (string)$team);
+    }
+
     public function testNewPageTreeAlsoFindsNestedIndexPages(): void
     {
         $factory = new PageFactory();

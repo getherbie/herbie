@@ -28,39 +28,27 @@ final readonly class PageFactory
     public function newPageTree(PageList $pageList): PageTree
     {
         $tree = new PageTree();
+        $pages = iterator_to_array($pageList);
 
-        // first go through all index pages
-        foreach ($pageList as $page) {
-            if (!$this->isIndexPage($page->getPath())) {
-                continue;
-            }
-            $parentRoute = $page->getParentRoute();
-            $parent = $tree->findByRoute($parentRoute);
-            if ($parent) {
+        // A page can be listed before its parent. Attach it only when the parent
+        // node exists, so the order of the page list is preserved.
+        while ($pages !== []) {
+            $attached = false;
+            foreach ($pages as $key => $page) {
+                $parent = $tree->findByRoute($page->getParentRoute());
+                if ($parent === null) {
+                    continue;
+                }
                 $parent->addChild(new PageTree($page));
+                unset($pages[$key]);
+                $attached = true;
             }
-        }
-
-        // then go through all non-index pages
-        foreach ($pageList as $page) {
-            if ($this->isIndexPage($page->getPath())) {
-                continue;
-            }
-            $parentRoute = $page->getParentRoute();
-            $parent = $tree->findByRoute($parentRoute);
-            if ($parent) {
-                $parent->addChild(new PageTree($page));
+            if (!$attached) {
+                break; // pages without an existing parent are ignored
             }
         }
 
         return $tree;
-    }
-
-    private function isIndexPage(string $path): bool
-    {
-        $filename = pathinfo($path, PATHINFO_FILENAME);
-        $filenameWithoutPrefix = preg_replace('/^([0-9])+-/', '', $filename);
-        return $filenameWithoutPrefix === 'index';
     }
 
     public function newPageTrail(array $pages): PageTrail

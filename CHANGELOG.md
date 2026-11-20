@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- The page tree now preserves the order of the page list when a section's index page has a higher number prefix than its siblings. Previously all index pages were attached first, so such a section appeared at the top of menus.
+
 ## [3.0.0] - 2026-11-20
 
 ### Added
