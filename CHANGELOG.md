@@ -121,6 +121,10 @@ See https://github.com/getherbie/herbie/issues/82.
 ## [1.0.0] - 2016-03-25
 - Release of Version 1.0.0
 
+## [0.x] - 2014-11-11 to 2016-03-10
+
+The releases `v0.5.0`, `v0.5.1`, `v0.6.0`, `v0.6.1`, `v0.7.0`, `v0.8.0`, `v0.8.1`, `v0.8.2`, `v0.8.3`, `v0.8.4`, `v0.8.5` and `v0.8.6` predate this changelog, which was introduced with 1.0.1. See the [Git tags](https://github.com/getherbie/herbie/tags) for their history.
+
 ---
 
 `Added` for new features.  
@@ -143,3 +147,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [1.1.0]: https://github.com/getherbie/herbie/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/getherbie/herbie/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/getherbie/herbie/compare/v0.5.0...v1.0.0
+[0.x]: https://github.com/getherbie/herbie/tags
