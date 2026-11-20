@@ -16,7 +16,7 @@ hero:
       url: https://github.com/getherbie/herbie/releases
       image: https://img.shields.io/github/release/getherbie/herbie/all.svg
     - alt: License BSD 3-Clause
-      url: https://github.com/getherbie/herbie/blob/master/LICENCE.md
+      url: https://github.com/getherbie/herbie/blob/3.x/LICENCE.md
       image: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
     - alt: PHP from Packagist
       url: https://packagist.org/packages/getherbie/herbie
