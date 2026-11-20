@@ -30,6 +30,9 @@ content_type: text/xml
     {% for item in site.page_list %}
     <url>
         <loc>{{ url_abs(item.route) }}</loc>
+        {% if(item.date) %}
+            <lastmod>{{ item.date|date("c") }}</lastmod>
+        {% endif %}
     </url>
     {% endfor %}
 </urlset>
@@ -62,14 +65,32 @@ Create a page `site/pages/atom.xml`:
 
 ~~~xml
 ---
-title: Atom
+title: Atom Feed
 layout: ""
-keep_extension: true
 content_type: text/xml
+keep_extension: true
+no_search: true
 ---
 
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    ...
+    <title>My Site Feed</title>
+    <subtitle>The latest posts from my site.</subtitle>
+    <link href="{{ url_abs('atom.xml') }}" rel="self" />
+    <link href="{{ url_abs('/') }}" />
+    <id>{{ url_abs('/') }}</id>
+    <updated>{{ "now"|date('r') }}</updated>
+    {% for item in site.page_list %}
+        {% if item.title != '' %}
+        <entry>
+            <title>{{ item.title }} / My Site</title>
+            <link href="{{ url_abs(item.route) }}"/>
+            <id>{{ url_abs(item.route) }}</id>
+            {% if item.date %}<published>{{ item.date|date("c") }}</published>{% endif %}
+            {% if item.date %}<updated>{{ item.date|date("c") }}</updated>{% endif %}
+            {% if item.abstract %}<summary>{{ item.abstract }}</summary>{% endif %}
+        </entry>
+        {% endif %}
+    {% endfor %}
 </feed>
 ~~~
