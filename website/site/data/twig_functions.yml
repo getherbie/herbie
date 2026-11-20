@@ -1,7 +1,7 @@
 ---
 - name: html_attributes
   code: >-
-    {{ html_attributes({class: "btn", id: "submit"}) }}
+    {{ html_attributes({class: "btn", disabled: true, hidden: false, title: null}) }}
   desc: Renders an associative array of HTML attributes into a single escaped string. Attributes with null or false values are omitted, true renders a boolean attribute.
   params:
     - name: attribs

@@ -6,9 +6,10 @@ All notable changes to this project will be documented in this file.
 ## [3.0.0] - TBD
 
 ### Added
-- Static architecture analysis with Deptrac (`deptrac.php`, `composer deptrac`), which is part of `composer test`. It ensures that the core does not depend on plugins and that plugins only use the public extension API.
+- Static architecture analysis with Deptrac (`deptrac.php`, `composer qa:check:deptrac`), which is part of `composer qa`. It ensures that the core does not depend on plugins and that plugins only use the public extension API.
 - New `spaceless` Twig filter. It replaces the Twig filter of the same name that is deprecated since Twig 3.12 and keeps the output of existing templates unchanged.
-- Code style checks with php-cs-fixer (PER-CS 3.0, replaces phpcs/PSR-12) and Twig-CS-Fixer, and a PHP lint script. All three run first in `composer test` and in CI.
+- Code style checks with php-cs-fixer (PER-CS 3.0, replaces phpcs/PSR-12) and Twig-CS-Fixer, and a PHP lint script. All three run first in `composer qa` and in CI.
+- Composer scripts are grouped under a `qa:*` prefix. `composer qa` runs everything, `qa:check:*` the static checks, `qa:test:*` the Codeception suites and `qa:fix:*` the fixable code-style rules.
 - Theme conventions: templates, `@theme` assets and icons are resolved from the active theme with one parent theme as fallback, configured with `themeParent` (default: `default`). Theme assets are published under `/assets/themes/<theme>/`.
 - New Twig function `html_attributes()` that serializes and escapes HTML attributes. Attributes with `null` or `false` values are omitted, `true` renders a boolean attribute, and names are escaped. `link_file`, `link_page`, `link_download`, `image`, `menu_breadcrumb` and `menu_pager` render their HTML with Twig snippets (`templates/snippets/`) and accept a `template` parameter for custom overrides.
 - The contact form is protected by a signed double-submit CSRF token (stateless, no server session), a self-hosted ALTCHA proof-of-work, configurable honeypot fields, form-age checks and a per-IP rate limit. A sender copy can be enabled with `plugins.contact.copy.enabled`. The secrets `plugins.contact.csrf.secret` and `plugins.contact.captcha.secret` are required, the form fails to render if they are empty or still a placeholder. Mail is sent with PHPMailer, SMTP settings are under `plugins.contact.smtp`.
