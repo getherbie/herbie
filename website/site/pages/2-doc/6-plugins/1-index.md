@@ -28,7 +28,7 @@ $ composer require league/commonmark:^2.10
 All other plugins are installed with the help of Composer.
 
 ~~~bash
-$ composer require getherbie/plugin-disqus
+$ composer require myvendor/myplugin
 ~~~
 
 Plugins in the `site/extend/plugins` directory need no installation either.
@@ -40,7 +40,7 @@ It does not matter whether a plugin is a system, a Composer or a local plugin.
 ~~~php
 <?php
 return [
-    'enabledPlugins' => 'markdown,contact,search,disqus',
+    'enabledPlugins' => 'markdown,contact,search,myplugin',
 ];
 ~~~
 
