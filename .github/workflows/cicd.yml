@@ -59,7 +59,7 @@ jobs:
   publish:
     name: CD - Push to server
     needs: test
-    if: github.ref == 'refs/heads/2.x' || github.ref == 'refs/heads/3.x' || github.ref == 'refs/heads/3.x-develop'
+    if: github.ref == 'refs/heads/3.x' || github.ref == 'refs/heads/3.x-develop'
     runs-on: ubuntu-latest
 
     steps:
