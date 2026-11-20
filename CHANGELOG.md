@@ -1,13 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [3.0.1] - 2026-11-20
 
 ### Fixed
-- The page tree now preserves the order of the page list when a section's index page has a higher number prefix than its siblings. Previously all index pages were attached first, so such a section appeared at the top of menus.
+- The page tree now preserves the order of the page list when a section's index page has a higher number prefix than its siblings.
 
 ### Documentation
-- The Extending chapter is split into focused pages for extension points, registration methods, plugin classes, Composer packages and six example plugins. The pages explain plugin discovery, configuration defaults, dependency declarations, Twig registration forms and Markdown/HTML caveats; the Plugins page uses consistent placeholder names.
+- Extending is split into focused pages with seven plugin examples, including Video Embeds. Special Pages now shows complete examples for `sitemap.xml`, `atom.xml` and `robots.txt`.
 
 ## [3.0.0] - 2026-11-20
 
@@ -146,6 +146,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/getherbie/herbie/compare/v3.0.0...HEAD
+[3.0.1]: https://github.com/getherbie/herbie/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/getherbie/herbie/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/getherbie/herbie/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/getherbie/herbie/compare/v2.0.0...v2.1.0
