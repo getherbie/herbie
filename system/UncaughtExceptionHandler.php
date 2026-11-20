@@ -11,7 +11,7 @@ final class UncaughtExceptionHandler
     public function __invoke(Throwable $exception): void
     {
         if (!headers_sent()) {
-            header("HTTP/1.1 " . $exception->getCode());
+            header("HTTP/1.1 500");
         }
 
         echo render_exception($exception);
