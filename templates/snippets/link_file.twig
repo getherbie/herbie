@@ -1,6 +1,6 @@
 {% apply spaceless %}
 <span class="link link--file">
-    <a href="{{ href }}"{{ attributes(attribs) }}>{{- label|raw -}}</a>
+    <a href="{{ href }}" {{- html_attributes(attribs) }}>{{- label|raw -}}</a>
     {%- if file_info is not empty -%}
         <span class="link__info">{{- file_info -}}</span>
     {%- endif -%}

@@ -1,5 +1,5 @@
 {% apply spaceless %}
 <span class="link {{ class }}">
-    <a href="{{ href }}"{{ attributes(attribs) }}>{{- label|raw -}}</a>
+    <a href="{{ href }}" {{- html_attributes(attribs) }}>{{- label|raw -}}</a>
 </span>
 {% endapply %}

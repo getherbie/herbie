@@ -58,7 +58,7 @@ final class TwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('attributes', $this->attributes(...), ['is_safe' => ['html']]),
+            new TwigFunction('html_attributes', $this->htmlAttributes(...), ['is_safe' => ['html']]),
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
@@ -226,6 +226,8 @@ final class TwigExtension extends AbstractExtension
 
     /**
      * Renders an associative array of HTML attributes into a single string.
+     * Attributes with null or false values are omitted, true renders a boolean
+     * attribute without a value. Names are escaped with 'html_attr_relaxed'.
      *
      * Available escaping strategies (passed as second argument):
      * - 'html'              : htmlspecialchars (quotes, <, >, &)
@@ -235,12 +237,18 @@ final class TwigExtension extends AbstractExtension
      *
      * @see https://twig.symfony.com/doc/3.x/filters/escape.html
      */
-    public function attributes(array $attribs = [], string $strategy = 'html_attr'): string
+    public function htmlAttributes(array $attribs = [], string $strategy = 'html_attr'): string
     {
         $result = '';
+        $escaper = $this->environment->getRuntime(EscaperRuntime::class);
         foreach ($attribs as $key => $value) {
-            $escaped = $this->environment->getRuntime(EscaperRuntime::class)->escape((string)$value, $strategy);
-            $result .= ' ' . $key . '="' . $escaped . '"';
+            if (null === $value || false === $value) {
+                continue;
+            }
+            $result .= ' ' . $escaper->escape((string)$key, 'html_attr_relaxed');
+            if (true !== $value) {
+                $result .= '="' . $escaper->escape((string)$value, $strategy) . '"';
+            }
         }
         return $result;
     }
