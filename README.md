@@ -7,25 +7,25 @@
 
 > Create <u>small</u> but fully functional websites or blogs in no time and with little effort 👌
 
-Herbie is a simple, modern, fast and highly customizable flat-file Content Management System (CMS) powered by PHP, Twig, Markdown, Textile, reStructuredText and other human-readable text files.
+Herbie is a blazing fast, lightweight, and highly customizable flat-file Content Management System (CMS) running on PHP, Twig, Markdown, Textile, reStructuredText, and other human-readable text files.
 
-## Featuring
+## What Herbie Is Built On
 
-Herbie is powered by proven libraries:
+Herbie relies on battle-tested libraries:
 
-* [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html) and [Textile](https://textile-lang.com) for formatting page content
-* [Twig](https://twig.symfony.com) template engine for rendering layouts and extending the core
-* [Yaml](http://www.yaml.org) and [JSON](https://www.json.org) for data structure files
-* [Composer](http://getcomposer.org) and [Packagist](https://packagist.org) for Dependency and Plugin Management
+* [Markdown](https://www.markdownguide.org), [reStructuredText](https://docutils.sourceforge.io/rst.html), and [Textile](https://textile-lang.com) for page content formatting
+* [Twig](https://twig.symfony.com) as the template engine for layouts and core extensibility
+* [YAML](http://www.yaml.org) and [JSON](https://www.json.org) for structured data
+* [Composer](https://getcomposer.org) and [Packagist](https://packagist.org) for dependency and plugin management
 
-Thanks to its plugin system Herbie is highly customizable and brings support for:
+Its plugin system makes Herbie highly extensible, with built-in support for:
 
-* Application and Route Middlewares
-* Event Listeners
-* Twig Filters, Twig Globals, Twig Functions and Twig Tests
-* Symfony Console Commands
+* Application and route middlewares
+* Event listeners
+* Custom Twig filters, functions, tests, and globals
+* Console commands
 
-Herbie implements the following PHP standard recommendations:
+Herbie follows the PHP-FIG standards:
 
 * [PSR-3](https://www.php-fig.org/psr/psr-3/) Logger Interface
 * [PSR-4](https://www.php-fig.org/psr/psr-4/) Autoloading Standard
@@ -37,11 +37,12 @@ Herbie implements the following PHP standard recommendations:
 * [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Factories
 * [PER-CS 3.0](https://www.php-fig.org/per/coding-style/) Coding Style
 
-Herbie is well tested:
+Quality is ensured through:
 
-- Unit, Integration and Acceptance Tests with [Codeception](https://codeception.com)
-- Static Code Analysis with [PHPStan](https://phpstan.org)
-- Code Fixing with [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
+* Unit, integration, and acceptance testing with [Codeception](https://codeception.com)
+* Static analysis with [PHPStan](https://phpstan.org)
+* Automated code style enforcement with [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) and [Twig-CS-Fixer](https://github.com/vincentlanglet/twig-cs-fixer)
+* Static architecture analysis with [Deptrac](https://github.com/deptrac/deptrac)
 
 ## Supported PHP Versions
 
@@ -79,9 +80,9 @@ Open <http://localhost:8888>.
 Common tasks:
 
     docker compose run --rm install    # install Composer dependencies
-    docker compose run --rm test       # run test suite
-    docker compose up test-website     # start test suite website
+    docker compose run --rm qa         # run all checks and tests
     docker compose run --rm bash       # open a shell
+    docker compose up test-website     # test fixture site on http://localhost:8889
 
 Use a different PHP version (default: 8.3):
 
@@ -90,17 +91,35 @@ Use a different PHP version (default: 8.3):
     PHP_VERSION=8.5 docker compose up website
     PHP_VERSION=8.6 docker compose up website
 
-Run specific test suites or coverage inside a container:
+Checks and tests (inside the container via `docker compose run --rm bash`, or with local PHP/Composer):
 
-    docker compose run --rm bash
+    composer qa                  # all checks and all test suites
 
-Then run:
+Static checks only:
 
-    php vendor/bin/codecept run
-    php vendor/bin/codecept run unit
-    php vendor/bin/codecept run integration
-    php vendor/bin/codecept run acceptance
-    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+    composer qa:check            # lint, cs, cs-twig, phpstan, deptrac
+    composer qa:check:phpstan    # or a single check
+    composer qa:check:deptrac
+    composer qa:check:lint
+    composer qa:check:cs
+    composer qa:check:cs-twig
+
+Tests only:
+
+    composer qa:test             # all suites
+    composer qa:test:unit        # or a single suite
+    composer qa:test:integration
+    composer qa:test:acceptance
+    composer qa:test:website
+    composer qa:test:coverage
+
+Auto-fix code style:
+
+    composer qa:fix              # PHP and Twig
+    composer qa:fix:cs           # PHP only
+    composer qa:fix:cs-twig      # Twig only
+
+Coverage requires Xdebug or PCOV. The Docker image includes Xdebug, so `composer qa:test:coverage` works inside the container; for a local PHP installation you need to install a coverage driver first.
 
 <details>
 <summary>Without Docker (PHP & Composer required)</summary>
@@ -112,14 +131,6 @@ Then run:
     php -S localhost:8888 index.php
 
 Optional: `HERBIE_DEBUG=1 php -S localhost:8888 index.php` for debug output, or `XDEBUG_MODE=debug php -S localhost:8888 index.php` for Xdebug.
-
-Run tests:
-
-    php vendor/bin/codecept run
-    php vendor/bin/codecept run unit
-    php vendor/bin/codecept run integration
-    php vendor/bin/codecept run acceptance
-    XDEBUG_MODE=coverage php vendor/bin/codecept run --coverage --coverage-xml --coverage-html
 
 </details>
 

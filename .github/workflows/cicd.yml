@@ -43,20 +43,8 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Lint PHP files
-        run: composer lint
-
-      - name: Check code style with PHP-CS-Fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
-
-      - name: Check Twig template style with Twig-CS-Fixer
-        run: vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php
-
-      - name: Analyse code with PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit 256M
-
-      - name: Check architecture with Deptrac
-        run: vendor/bin/deptrac analyse --no-progress --formatter=github-actions
+      - name: Run static checks
+        run: composer qa:check
 
       - name: Prepare test config
         run: |
@@ -65,13 +53,13 @@ jobs:
               -e "s|<plugin_contact_captcha_secret>|test-captcha-secret|g" \
               website/site/config/main.dist.php > website/site/config/main.php
 
-      - name: Test code with Codeception
-        run: vendor/bin/codecept run
+      - name: Run tests
+        run: composer qa:test
 
   publish:
     name: CD - Push to server
     needs: test
-    if: github.ref == 'refs/heads/2.x' || github.ref == 'refs/heads/3.x' || github.ref == 'refs/heads/3.x-develop'
+    if: github.ref == 'refs/heads/3.x' || github.ref == 'refs/heads/3.x-develop'
     runs-on: ubuntu-latest
 
     steps:

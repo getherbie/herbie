@@ -81,30 +81,46 @@
         "vincentlanglet/twig-cs-fixer": "^4.1"
     },
     "suggest": {
+        "altcha-org/altcha": "Needed by the contact plugin",
         "doctrine/rst-parser": "Needed by the rst plugin",
         "imagine/imagine": "Needed by the imagine plugin",
         "league/commonmark": "Needed by the markdown plugin",
-        "netcarver/textile": "Needed by the textile plugin"
+        "netcarver/textile": "Needed by the textile plugin",
+        "phpmailer/phpmailer": "Needed by the contact plugin"
     },
     "scripts": {
-        "test": [
-            "@lint",
-            "@cs",
-            "@cs-twig",
-            "@phpstan",
-            "@deptrac",
-            "@codecept"
+        "qa": [
+            "@qa:check",
+            "@qa:test"
         ],
-        "lint": "find . -type f \\( -name '*.php' -o -path ./herbie \\) -not -path '*/vendor/*' -exec php -l {} + > /dev/null",
-        "cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
-        "codecept": "./vendor/bin/codecept run",
-        "phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
-        "deptrac": "./vendor/bin/deptrac analyse --no-progress",
+        "qa:check": [
+            "@qa:check:lint",
+            "@qa:check:cs",
+            "@qa:check:cs-twig",
+            "@qa:check:phpstan",
+            "@qa:check:deptrac"
+        ],
+        "qa:check:lint": "find . -type f \\( -name '*.php' -o -path ./herbie \\) -not -path '*/vendor/*' -exec php -l {} + > /dev/null",
+        "qa:check:cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "qa:check:cs-twig": "./vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php",
+        "qa:check:phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
+        "qa:check:deptrac": "./vendor/bin/deptrac analyse --no-progress",
+        "qa:fix": [
+            "@qa:fix:cs",
+            "@qa:fix:cs-twig"
+        ],
+        "qa:fix:cs": "./vendor/bin/php-cs-fixer fix",
+        "qa:fix:cs-twig": "./vendor/bin/twig-cs-fixer fix --config .twig-cs-fixer.php",
+        "qa:test": "./vendor/bin/codecept run",
+        "qa:test:unit": "./vendor/bin/codecept run unit",
+        "qa:test:integration": "./vendor/bin/codecept run integration",
+        "qa:test:acceptance": "./vendor/bin/codecept run acceptance",
+        "qa:test:website": "./vendor/bin/codecept run website",
+        "qa:test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html",
         "start:test": "cd tests/_data/web/; php -S localhost:9999 index.php",
         "start:website": "cd website/web/; php -S localhost:9999 index.php",
         "debug:test": "cd tests/_data/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
-        "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php",
-        "cs-twig": "./vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php"
+        "debug:website": "cd website/web/; HERBIE_DEBUG=1 XDEBUG_MODE=debug php -S localhost:9999 index.php"
     },
     "bin": [
         "herbie"

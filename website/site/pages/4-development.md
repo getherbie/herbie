@@ -5,7 +5,7 @@ title: Development
 # Development
 
 [Herbie at GitHub](https://github.com/getherbie/herbie)  
-[Herbie at Packagist](https://packagist.org/packages/getherbie/)
+[Herbie at Packagist](https://packagist.org/packages/getherbie/herbie)
 
 ## Support
 

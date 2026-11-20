@@ -7,20 +7,20 @@ layout: doc
 
 Here is the short version of how to install a simple Herbie website using a website template.
 
-With PHP and Composer:
+With Docker and Docker Compose (recommended):
+
+~~~bash
+docker run --rm -v "$PWD":/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
+cd mywebsite
+docker compose up website
+~~~
+
+Without Docker (PHP and Composer required):
 
 ~~~bash
 composer create-project getherbie/start-website mywebsite
 cd mywebsite/web
 php -S localhost:8888 index.php
-~~~
-
-With Docker and Docker Compose:
-
-~~~bash
-docker run --rm -v $PWD:/app composer create-project --ignore-platform-reqs getherbie/start-website mywebsite
-cd mywebsite
-docker compose up website
 ~~~
 
 That's it!
