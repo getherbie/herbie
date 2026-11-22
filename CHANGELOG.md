@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - The page-list cache key includes `@page`, preventing absolute paths from other checkouts from poisoning the list.
-- `FileCache` and `NullCache` validate PSR-16 keys (`[A-Za-z0-9_.-]`, max. 64, excluding `.`/`..`); `FileCache` writes via temporary file and `rename()`.
+- `FileCache` and `NullCache` validate keys (`A-Z a-z 0-9 _ .` plus `-` for Herbie BC, max. 64, excluding `.`/`..`); `FileCache` writes via temporary file and `rename()`.
 - `setMultiple()` and `deleteMultiple()` return `false` if any single operation fails.
 
 ### Deprecated
