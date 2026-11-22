@@ -27,10 +27,14 @@ final class ImaginePlugin extends AbstractPlugin
 
     protected string $cachePath;
 
+    protected string $cacheUrlPath;
+
     public function __construct(private readonly Alias $alias, protected Config $config)
     {
         $this->basePath = str_trailing_slash($this->config->getAsString('urls.web'));
-        $this->cachePath = $this->config->getAsString('plugins.imagine.cachePath');
+        $cachePath = $this->config->getAsString('plugins.imagine.cachePath');
+        $this->cacheUrlPath = $this->normalizeCacheUrlPath($cachePath);
+        $this->cachePath = rtrim($this->alias->get('@web/' . $this->cacheUrlPath), '/');
     }
 
     public function twigFilters(): array
@@ -78,9 +82,11 @@ final class ImaginePlugin extends AbstractPlugin
             }
         }
 
+        $cacheUrl = $this->resolveCacheUrl($path, $sanitizedFilter);
+
         return sprintf(
             '<img src="%s"%s>',
-            $this->basePath . $cachePath,
+            $this->basePath . $cacheUrl,
             $this->buildHtmlAttributes($attribs),
         );
     }
@@ -150,26 +156,67 @@ final class ImaginePlugin extends AbstractPlugin
 
     protected function resolveCachePath(string $path, string $filter): string
     {
-        $info = pathinfo($path);
-        $dirname = $info['dirname'] ?? '';
-        $extension = $info['extension'] ?? '';
+        return $this->cachePath . '/' . $this->buildCacheFilePath($path, $filter);
+    }
 
-        $dirname = trim($dirname, '.');
-        if ($dirname !== '') {
-            $dirname = '/' . $dirname;
+    protected function resolveCacheUrl(string $path, string $filter): string
+    {
+        return $this->cacheUrlPath . '/' . $this->buildCacheFilePath($path, $filter);
+    }
+
+    private function buildCacheFilePath(string $path, string $filter): string
+    {
+        $info = pathinfo($path);
+        $dirname = trim((string)($info['dirname'] ?? ''), '.');
+        $extension = (string)($info['extension'] ?? '');
+        $dot = $extension !== '' ? '.' : '';
+        $filename = sprintf('%s-%s%s%s', $info['filename'], $filter, $dot, $extension);
+
+        if ($dirname === '') {
+            return $filename;
         }
 
-        $dot = $extension !== '' ? '.' : '';
+        return $dirname . '/' . $filename;
+    }
 
-        return sprintf(
-            '%s%s/%s-%s%s%s',
-            $this->cachePath,
-            $dirname,
-            $info['filename'],
-            $filter,
-            $dot,
-            $extension,
-        );
+    private function normalizeCacheUrlPath(string $cachePath): string
+    {
+        $normalized = str_replace('\\', '/', trim($cachePath));
+        if ($normalized === '' || $normalized === '/') {
+            throw new InvalidArgumentException(
+                'Imagine cachePath must be a web-relative path like "cache/imagine".',
+            );
+        }
+        if (preg_match('#^[A-Za-z]:/#', $normalized) === 1 || str_starts_with($normalized, '/')) {
+            throw new InvalidArgumentException(
+                'Imagine cachePath must be a web-relative path like "cache/imagine".',
+            );
+        }
+
+        $parts = [];
+        foreach (explode('/', $normalized) as $part) {
+            if ($part === '' || $part === '.') {
+                continue;
+            }
+            if ($part === '..') {
+                if ($parts === []) {
+                    throw new InvalidArgumentException(
+                        'Imagine cachePath must not contain path traversal segments.',
+                    );
+                }
+                array_pop($parts);
+                continue;
+            }
+            $parts[] = $part;
+        }
+
+        if ($parts === []) {
+            throw new InvalidArgumentException(
+                'Imagine cachePath must be a web-relative path like "cache/imagine".',
+            );
+        }
+
+        return implode('/', $parts);
     }
 
     private function getImageSize(string $cachePath): array
@@ -198,8 +245,10 @@ final class ImaginePlugin extends AbstractPlugin
 
         $sanitizedFilterSet = $this->sanitizeFilterName($collection);
 
+        $this->applyFilterSet($path, $sanitizedFilterSet);
+
         return new Markup(
-            $this->basePath . $this->applyFilterSet($path, $sanitizedFilterSet),
+            $this->basePath . $this->resolveCacheUrl($path, $sanitizedFilterSet),
             'utf8',
         );
     }

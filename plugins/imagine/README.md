@@ -37,6 +37,21 @@ return [
 ];
 ~~~
 
+`cachePath` is a web-relative path below `@web`. The generated image files are stored there
+independent of the current working directory, and the generated URLs use the same path.
+
+Examples:
+
+~~~php
+// default: files are written to web/cache/imagine and served from /cache/imagine/...
+'cachePath' => 'cache/imagine',
+~~~
+
+~~~php
+// custom web-relative path: files are written to web/media/cache and served from /media/cache/...
+'cachePath' => 'media/cache',
+~~~
+
 ## Filter sets
 
 To use Imagine in Herbie, one or more filter collections must be defined, each containing one or more filters.
