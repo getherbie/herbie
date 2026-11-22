@@ -188,7 +188,7 @@ final readonly class FileCache implements CacheInterface
                 return false;
             }
 
-            // Windows cannot rename over an existing file.
+            // POSIX renames atomically; Windows needs unlink+rename (non-atomic, acceptable for cache).
             if (PHP_OS_FAMILY === 'Windows' && file_exists($filename) && !unlink($filename)) {
                 return false;
             }
