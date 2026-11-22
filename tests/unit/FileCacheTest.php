@@ -44,7 +44,7 @@ final class FileCacheTest extends Unit
         $cache->set('key', 'old');
         $cache->set('key', 'new');
         $this->assertSame('new', $cache->get('key'));
-        $this->assertSame(['herbie_key'], array_values(array_diff(scandir($this->cachePath), ['.', '..'])));
+        $this->assertSame(['key'], array_values(array_diff(scandir($this->cachePath), ['.', '..'])));
     }
 
     public function testGetDefault(): void
@@ -71,31 +71,30 @@ final class FileCacheTest extends Unit
         $this->assertTrue($cache->clear());
         $this->assertFalse($cache->has('a'));
         $this->assertFalse($cache->has('b'));
-        $this->assertFileExists($this->cachePath . '/plugins.php');
+        $this->assertFileDoesNotExist($this->cachePath . '/plugins.php');
         $this->assertFileExists($this->cachePath . '/.gitignore');
-        unlink($this->cachePath . '/plugins.php');
         unlink($this->cachePath . '/.gitignore');
     }
 
     public function testUnexpectedCacheValueReturnsDefault(): void
     {
         $cache = new FileCache($this->cachePath);
-        file_put_contents($this->cachePath . '/herbie_key', serialize('garbage'));
+        file_put_contents($this->cachePath . '/key', serialize('garbage'));
         $this->assertSame('default', $cache->get('key', 'default'));
     }
 
-    public function testKeyIsUsedAsPrefixedFilename(): void
+    public function testKeyIsUsedAsFilename(): void
     {
         $cache = new FileCache($this->cachePath);
         $cache->set('herbie_pages_modified', 1700000000);
-        $this->assertFileExists($this->cachePath . '/herbie_herbie_pages_modified');
+        $this->assertFileExists($this->cachePath . '/herbie_pages_modified');
     }
 
     public function testMinimumCharacterSetIsAllowed(): void
     {
         $cache = new FileCache($this->cachePath);
 
-        foreach (['key_1', 'a.b', '.', '..'] as $key) {
+        foreach (['key_1', 'a.b'] as $key) {
             $this->assertTrue($cache->set($key, 'value'));
             $this->assertSame('value', $cache->get($key));
         }
@@ -137,7 +136,7 @@ final class FileCacheTest extends Unit
             static fn(string $key) => $cache->delete($key),
         ];
 
-        foreach (['', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
+        foreach (['', '.', '..', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
             foreach ($operations as $operation) {
                 try {
                     $operation($key);
@@ -159,7 +158,7 @@ final class FileCacheTest extends Unit
     public function testSetMultipleReturnsFalseWhenOneWriteFails(): void
     {
         $cache = new FileCache($this->cachePath);
-        mkdir($this->cachePath . '/herbie_key');
+        mkdir($this->cachePath . '/key');
 
         set_error_handler(static fn(int $type, string $message): bool => true);
         try {
@@ -171,14 +170,14 @@ final class FileCacheTest extends Unit
         $this->assertFalse($result);
         $this->assertSame('value', $cache->get('other'));
 
-        rmdir($this->cachePath . '/herbie_key');
+        rmdir($this->cachePath . '/key');
     }
 
     public function testDeleteMultipleReturnsFalseWhenOneDeleteFails(): void
     {
         $cache = new FileCache($this->cachePath);
         $cache->set('other', 'value');
-        mkdir($this->cachePath . '/herbie_key');
+        mkdir($this->cachePath . '/key');
 
         set_error_handler(static fn(int $type, string $message): bool => true);
         try {
@@ -190,6 +189,6 @@ final class FileCacheTest extends Unit
         $this->assertFalse($result);
         $this->assertFalse($cache->has('other'));
 
-        rmdir($this->cachePath . '/herbie_key');
+        rmdir($this->cachePath . '/key');
     }
 }

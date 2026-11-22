@@ -78,9 +78,10 @@ final class NullCache implements CacheInterface
 
     private function validateKey(mixed $key): string
     {
-        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1) {
+        // PSR-16 minimum: [A-Za-z0-9_.], 1-64 characters.
+        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1 || $key === '.' || $key === '..') {
             throw new CacheInvalidArgumentException(
-                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.].',
+                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.], excluding "." and "..".',
             );
         }
 

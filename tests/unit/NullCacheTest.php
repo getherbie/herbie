@@ -37,7 +37,7 @@ final class NullCacheTest extends Unit
     {
         $cache = new NullCache();
 
-        foreach (['key_1', 'a.b', '.', '..'] as $key) {
+        foreach (['key_1', 'a.b'] as $key) {
             $this->assertSame('default', $cache->get($key, 'default'));
             $this->assertFalse($cache->set($key, 'value'));
         }
@@ -53,7 +53,7 @@ final class NullCacheTest extends Unit
             static fn(string $key) => $cache->delete($key),
         ];
 
-        foreach (['', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
+        foreach (['', '.', '..', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
             foreach ($operations as $operation) {
                 try {
                     $operation($key);

@@ -10,12 +10,12 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `Application::getCache()` returns `herbie\Cache`, still PSR-16 compatible.
 - `psr/simple-cache` raised from `^1.0` to `^3.0`; custom PSR-16 implementations need typed signatures.
-- `FileCache` now stores `herbie_<key>` files with a serialized payload instead of `md5(key).cache` JSON files. Old entries are ignored; `clear()` removes only Herbie files and leaves other files in the directory untouched.
+- `FileCache` now stores `<key>` files with a serialized payload instead of `md5(key).cache` JSON files. Old entries are ignored; `clear()` removes all files in the configured cache directory.
 - CD publishes only from `refs/heads/3.x`; `3.x-develop` no longer triggers a release.
 
 ### Fixed
 - The page-list cache key includes `@page`, preventing absolute paths from other checkouts from poisoning the list.
-- `FileCache` and `NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64 characters); `FileCache` writes `herbie_<key>` files via temporary file and `rename()`, and `clear()` removes only those files.
+- `FileCache` and `NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64 characters, excluding `.`/`..`); `FileCache` writes via temporary file and `rename()`.
 - `setMultiple()` and `deleteMultiple()` return `false` if any single operation fails.
 
 ### Deprecated

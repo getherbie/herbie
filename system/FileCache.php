@@ -10,8 +10,6 @@ use Psr\SimpleCache\CacheInterface;
 
 final readonly class FileCache implements CacheInterface
 {
-    private const string FILE_PREFIX = 'herbie_';
-
     private string $path;
 
     public function __construct(string $path)
@@ -36,7 +34,7 @@ final readonly class FileCache implements CacheInterface
     #[\Override]
     public function clear(): bool
     {
-        $filenames = glob($this->path . DIRECTORY_SEPARATOR . self::FILE_PREFIX . '*');
+        $filenames = glob($this->path . DIRECTORY_SEPARATOR . '*');
         if ($filenames === false) {
             return false;
         }
@@ -59,14 +57,15 @@ final readonly class FileCache implements CacheInterface
 
     protected function getFilename(string $key): string
     {
-        return $this->path . DIRECTORY_SEPARATOR . self::FILE_PREFIX . $key;
+        return $this->path . DIRECTORY_SEPARATOR . $key;
     }
 
     private function validateKey(mixed $key): string
     {
-        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1) {
+        // PSR-16 minimum: [A-Za-z0-9_.], 1-64 characters.
+        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1 || $key === '.' || $key === '..') {
             throw new CacheInvalidArgumentException(
-                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.].',
+                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.], excluding "." and "..".',
             );
         }
 
