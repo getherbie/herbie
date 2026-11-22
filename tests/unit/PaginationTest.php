@@ -198,6 +198,83 @@ final class PaginationTest extends Unit
         $this->assertSame(1, $pagination->getPreviousPage());
     }
 
+    public function testUsesPageFromRequestByDefault(): void
+    {
+        $_GET['page'] = '2';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(2, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testExplicitPageOverridesRequest(): void
+    {
+        $_GET['page'] = '3';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10, 1);
+            $this->assertSame(1, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testInvalidRequestPageFallsBackToFirstPage(): void
+    {
+        $_GET['page'] = 'not-a-number';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(1, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testArrayRequestPageFallsBackToFirstPage(): void
+    {
+        $_GET['page'] = ['2'];
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(1, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testZeroRequestPageFallsBackToFirstPage(): void
+    {
+        $_GET['page'] = '0';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(1, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testNegativeRequestPageFallsBackToFirstPage(): void
+    {
+        $_GET['page'] = '-1';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(1, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testOutOfRangeRequestPageIsClampedToLastPage(): void
+    {
+        $_GET['page'] = '999';
+        try {
+            $pagination = new Pagination($this->createItems(25), 10);
+            $this->assertSame(3, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
     public function testNonIterableThrows(): void
     {
         $this->expectException(\TypeError::class);

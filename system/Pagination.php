@@ -26,7 +26,7 @@ final class Pagination implements IteratorAggregate, Countable
     /**
      * @throws Exception
      */
-    public function __construct(iterable $items, int $limit = 10, int $page = 1)
+    public function __construct(iterable $items, int $limit = 10, ?int $page = null)
     {
         if (is_array($items)) {
             $this->items = $items;
@@ -40,7 +40,19 @@ final class Pagination implements IteratorAggregate, Countable
         }
         $this->totalItems = count($this->items);
         $this->setLimit($limit);
-        $this->setCurrentPage($page);
+        $this->setCurrentPage($page ?? $this->getPageFromRequest());
+    }
+
+    private function getPageFromRequest(): int
+    {
+        $raw = $_GET['page'] ?? 1;
+        if (is_array($raw)) {
+            return 1;
+        }
+        $page = filter_var($raw, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        return is_int($page) ? $page : 1;
     }
 
     /**

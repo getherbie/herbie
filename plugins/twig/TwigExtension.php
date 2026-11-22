@@ -376,11 +376,7 @@ final class TwigExtension extends AbstractExtension
         $limit = $limit < 1 ? $totalItems : $limit;
         $limit = min(max($limit, 1), $totalItems);
 
-        // get sanitized page
-        $page = (int)filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
-
         $pagination = new Pagination($items, $limit);
-        $pagination->setCurrentPage($page);
 
         return $this->environment->render($template, ['pagination' => $pagination]);
     }
