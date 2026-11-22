@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie;
 
 use Exception;
-use Psr\SimpleCache\CacheInterface;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
@@ -26,7 +25,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
     public function __construct(
         private readonly Alias $alias,
-        private readonly CacheInterface $cache,
+        private readonly Cache $cache,
         private readonly Finder $finder,
         array $options = [],
     ) {
@@ -285,34 +284,36 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     #[\Override]
     public function findAll(): array
     {
-        $items = [];
-
         $useCache = $this->cacheEnable && $this->cacheTTL > 0;
-        $baseCacheId = 'pagelist_' . md5(__METHOD__);
         $modified = $useCache ? $this->finder->pagesModified() : 0;
-        $cacheId = $baseCacheId . '_' . $modified;
+
+        // The cached pages contain absolute paths. Include the page root so a
+        // cache written from another checkout (e.g. Docker mounting /app) is
+        // never reused for a different application path.
+        $items = $this->cache->remember(
+            'pagelist_' . md5(__METHOD__ . $this->alias->get('@page')),
+            $modified,
+            fn() => $this->loadPages(),
+            $this->cacheTTL,
+            enabled: $useCache,
+        );
 
         if ($useCache) {
-            $cached = $this->cache->get($cacheId);
-            if (is_array($cached)) {
-                return $cached;
-            }
+            $this->cache->set('herbie_pages_modified', $modified, $this->cacheTTL);
         }
 
+        return $items;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function loadPages(): array
+    {
+        $items = [];
         foreach ($this->finder->pageFiles() as $page) {
             $items[] = $this->readFile($page);
         }
-
-        if ($useCache) {
-            $previous = $this->cache->get($baseCacheId . '_previous');
-            if (is_string($previous) && $previous !== $cacheId) {
-                $this->cache->delete($previous);
-            }
-            $this->cache->set($baseCacheId . '_previous', $cacheId, $this->cacheTTL);
-            $this->cache->set('herbie_pages_modified', $modified, $this->cacheTTL);
-            $this->cache->set($cacheId, $items, $this->cacheTTL);
-        }
-
         return $items;
     }
 }

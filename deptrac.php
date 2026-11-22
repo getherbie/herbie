@@ -12,7 +12,7 @@ use Deptrac\Deptrac\Contract\Config\Ruleset;
 return static function (DeptracConfig $config): void {
     // Public extension API, every plugin may depend on it.
     $extensionApiClasses = ClassNameRegexConfig::create(
-        '#^herbie\\(AbstractPlugin|Plugin|PluginInterface|InstallablePlugin|Config|Alias|Assets|Translator|TwigRenderer|TwigStringLoader|UrlManager|EventManager|AbstractNode|Page|PageFactory|PageList|PagePersistenceInterface|PageRepositoryInterface|PageTrail|PageTree|Pagination|QueryBuilder|Site|DataRepositoryInterface|AbstractEvent)$#',
+        '#^herbie\\(AbstractPlugin|Plugin|PluginInterface|InstallablePlugin|Config|Alias|Assets|Translator|TwigRenderer|TwigStringLoader|UrlManager|EventManager|AbstractNode|Page|PageFactory|PageList|PagePersistenceInterface|PageRepositoryInterface|PageTrail|PageTree|Pagination|QueryBuilder|Site|DataRepositoryInterface|Cache|AbstractEvent)$#',
     );
     // The event classes are part of the extension API as well.
     $extensionApiEvents = DirectoryConfig::create('system/events/.*');

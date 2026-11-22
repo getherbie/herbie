@@ -114,7 +114,7 @@ final class SearchPluginTest extends Unit
     private function createPluginWithCache(\Psr\SimpleCache\CacheInterface $cache, bool $useCache): SearchPlugin
     {
         $plugin = (new ReflectionClass(SearchPlugin::class))->newInstanceWithoutConstructor();
-        $this->setPrivateProperty($plugin, 'cache', $cache);
+        $this->setPrivateProperty($plugin, 'cache', new \herbie\Cache($cache));
         $this->setPrivateProperty($plugin, 'config', new \herbie\Config(['plugins' => ['search' => ['useCache' => $useCache]]]));
         $this->setPrivateProperty($plugin, 'eventManager', new \herbie\EventManager());
         $this->setPrivateProperty($plugin, 'urlManager', new \herbie\UrlManager(new \Laminas\Diactoros\ServerRequest(), ['niceUrls' => false]));
@@ -143,7 +143,7 @@ final class SearchPluginTest extends Unit
     public function testLoadPageDataRendersAndCachesOnMiss(): void
     {
         $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
-        $cache->method('get')->willReturn(null);
+        $cache->method('get')->willReturnCallback(static fn(string $key, mixed $default = null): mixed => $default);
         $cache->expects($this->exactly(2))->method('set');
 
         $plugin = $this->createPluginWithCache($cache, true);
@@ -170,8 +170,8 @@ final class SearchPluginTest extends Unit
     {
         $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
         $store = [];
-        $cache->method('get')->willReturnCallback(static function (string $key) use (&$store) {
-            return $store[$key] ?? null;
+        $cache->method('get')->willReturnCallback(static function (string $key, mixed $default = null) use (&$store) {
+            return $store[$key] ?? $default;
         });
         $cache->method('set')->willReturnCallback(static function (string $key, $value) use (&$store): bool {
             $store[$key] = $value;

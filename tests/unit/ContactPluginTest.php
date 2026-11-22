@@ -12,17 +12,18 @@ use AltchaOrg\Altcha\SolveChallengeOptions;
 use Codeception\Test\Unit;
 use DateInterval;
 use herbie\Application;
+use herbie\Cache;
 use herbie\Config;
 use herbie\events\ResponseGeneratedEvent;
 use herbie\Page;
-use herbie\Translator;
 use herbie\PageList;
 use herbie\PageRepositoryInterface;
 use herbie\plugins\contact\ContactPlugin;
+use herbie\Translator;
+use herbie\UrlManager;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;
-use herbie\UrlManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
@@ -507,18 +508,11 @@ final class ContactPluginTest extends Unit
         $this->assertTrue($this->invokePrivate($plugin, 'isHumanTiming', [['form_time' => (string)($now - 10)]]));
     }
 
-    public function testRateLimitIsSkippedWithoutCache(): void
-    {
-        $plugin = $this->createUninitializedPlugin();
-
-        $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
-    }
-
     public function testRateLimitAllowsFiveRequestsPerHourPerIp(): void
     {
         $plugin = $this->createUninitializedPlugin();
-        $cache = new ArrayCacheStub();
-        $this->setPrivateProperty($plugin, 'cache', $cache);
+        $storage = new ArrayCacheStub();
+        $this->setPrivateProperty($plugin, 'cache', new Cache($storage));
 
         $previousIp = $_SERVER['REMOTE_ADDR'] ?? null;
         $_SERVER['REMOTE_ADDR'] = '203.0.113.10';
@@ -528,7 +522,7 @@ final class ContactPluginTest extends Unit
                 $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
             }
             $this->assertFalse($this->invokePrivate($plugin, 'checkRateLimit', []));
-            $this->assertSame(3600, $cache->ttls['contact_rate_' . md5('203.0.113.10')]);
+            $this->assertSame(3600, $storage->ttls['contact_rate_' . md5('203.0.113.10')]);
         } finally {
             if ($previousIp === null) {
                 unset($_SERVER['REMOTE_ADDR']);
@@ -581,8 +575,8 @@ final class ContactPluginTest extends Unit
     public function testRateLimitConfigIsClamped(): void
     {
         $plugin = $this->createUninitializedPlugin();
-        $cache = new ArrayCacheStub();
-        $this->setPrivateProperty($plugin, 'cache', $cache);
+        $storage = new ArrayCacheStub();
+        $this->setPrivateProperty($plugin, 'cache', new Cache($storage));
         $this->setPrivateProperty($plugin, 'config', new Config([
             'plugins' => ['contact' => [
                 'csrf' => ['secret' => 'test-secret'],
@@ -596,7 +590,7 @@ final class ContactPluginTest extends Unit
         try {
             $this->assertTrue($this->invokePrivate($plugin, 'checkRateLimit', []));
             $this->assertFalse($this->invokePrivate($plugin, 'checkRateLimit', []));
-            $this->assertSame(60, $cache->ttls['contact_rate_' . md5('203.0.113.11')]);
+            $this->assertSame(60, $storage->ttls['contact_rate_' . md5('203.0.113.11')]);
         } finally {
             if ($previousIp === null) {
                 unset($_SERVER['REMOTE_ADDR']);

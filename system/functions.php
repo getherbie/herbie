@@ -241,6 +241,8 @@ function di_class_whitelist(): array
         Application::class,
         Alias::class,
         Assets::class,
+        Cache::class,
+        // @deprecated Inject Cache::class in new plugins.
         CacheInterface::class,
         Config::class,
         DataRepositoryInterface::class,

@@ -6,6 +6,7 @@ use Ausi\SlugGenerator\SlugGenerator;
 use BadMethodCallException;
 use Codeception\Test\Unit;
 use herbie\Alias;
+use herbie\Cache;
 use herbie\Finder;
 use herbie\FlatFilePagePersistence;
 use herbie\FlatFilePageRepository;
@@ -702,7 +703,7 @@ final class PageTest extends Unit
                 new Alias([
                     '@page' => __DIR__ . '/Fixtures/site/pages',
                 ]),
-                new NullCache(),
+                new Cache(new NullCache()),
                 new Finder([
                     'extensions' => ['md'],
                     'path' => dirname(__DIR__) . '/integration/Fixtures/site/pages',

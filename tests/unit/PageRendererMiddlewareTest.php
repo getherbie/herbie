@@ -6,6 +6,7 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use DateInterval;
+use herbie\Cache;
 use herbie\EventManager;
 use herbie\events\LayoutRenderedEvent;
 use herbie\events\RenderLayoutEvent;
@@ -13,9 +14,8 @@ use herbie\events\RenderSegmentEvent;
 use herbie\HttpException;
 use herbie\middlewares\PageRendererMiddleware;
 use herbie\middlewares\PageResolverMiddleware;
-use herbie\Page;
 use herbie\NullCache;
-use Psr\SimpleCache\CacheInterface;
+use herbie\Page;
 use herbie\UrlManager;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
@@ -23,6 +23,7 @@ use Laminas\Diactoros\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 final class PageRendererMiddlewareTest extends Unit
 {
@@ -177,7 +178,7 @@ final class PageRendererMiddlewareTest extends Unit
             }
         };
 
-        $middleware = $this->createMiddleware($page, new EventManager(), $cache);
+        $middleware = $this->createMiddleware($page, new EventManager(), new Cache($cache));
 
         $response = $middleware->process($this->requestFor($page), $this->terminalHandler());
 
@@ -187,10 +188,10 @@ final class PageRendererMiddlewareTest extends Unit
     private function createMiddleware(
         ?Page $page = null,
         ?EventManager $eventManager = null,
-        ?CacheInterface $cache = null,
+        ?Cache $cache = null,
     ): PageRendererMiddleware {
         return new PageRendererMiddleware(
-            $cache ?? new NullCache(),
+            $cache ?? new Cache(new NullCache()),
             $eventManager ?? new EventManager(),
             new ResponseFactory(),
             $this->createUrlManager(),

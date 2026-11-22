@@ -3,7 +3,10 @@
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
+use herbie\Cache;
+use Psr\SimpleCache\CacheInterface;
 
+use function herbie\di_class_whitelist;
 use function herbie\is_digit;
 use function herbie\is_natural;
 
@@ -53,5 +56,13 @@ class FunctionsTest extends Unit
         $this->assertFalse(is_natural(-1, true));
         $this->assertTrue(is_natural(0, true));
         $this->assertTrue(is_natural(1, true));
+    }
+
+    public function testDiWhitelistContainsBothCacheIds(): void
+    {
+        $whitelist = di_class_whitelist();
+
+        $this->assertContains(Cache::class, $whitelist);
+        $this->assertContains(CacheInterface::class, $whitelist);
     }
 }

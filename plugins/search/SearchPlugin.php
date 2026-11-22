@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace herbie\plugins\search;
 
 use herbie\AbstractPlugin;
+use herbie\Cache;
 use herbie\Config;
 use herbie\EventManager;
+use herbie\events\RenderSegmentEvent;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
-use herbie\events\RenderSegmentEvent;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
 #[Plugin('search')]
@@ -22,7 +22,7 @@ final class SearchPlugin extends AbstractPlugin
 {
     private const int CACHE_TTL = 60 * 60 * 24;
 
-    public function __construct(private readonly CacheInterface $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
+    public function __construct(private readonly Cache $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
 
     public function twigFunctions(): array
     {
@@ -82,17 +82,19 @@ final class SearchPlugin extends AbstractPlugin
      */
     private function loadPageData(Page $item, int|string $cacheToken): array
     {
-        $useCache = $this->config->getAsBool('plugins.search.useCache', true);
-        $baseCacheId = 'search_' . md5($item->getRoute());
-        $cacheId = $useCache ? $baseCacheId . '_' . $cacheToken : null;
+        $content = $this->cache->remember(
+            'search_' . md5($item->getRoute()),
+            $cacheToken,
+            fn() => $this->extractSearchText($item),
+            self::CACHE_TTL,
+            enabled: $this->config->getAsBool('plugins.search.useCache', true),
+        );
 
-        if ($useCache && $cacheId !== null) {
-            $cached = $this->cache->get($cacheId);
-            if ($cached !== null) {
-                return [$item->getTitle(), $cached];
-            }
-        }
+        return [$item->getTitle(), $content];
+    }
 
+    private function extractSearchText(Page $item): string
+    {
         $rendered = $this->renderPageContent($item);
         // Drop script/style elements entirely (including their content) so
         // hidden code/CSS is not indexed or shown in snippets.
@@ -106,18 +108,7 @@ final class SearchPlugin extends AbstractPlugin
         }
         $withSpaces = preg_replace('/<[^>]+>/u', ' ', $rendered);
         $withSpaces ??= $rendered;
-        $content = strip_tags($withSpaces);
-
-        if ($useCache && $cacheId !== null) {
-            $previous = $this->cache->get($baseCacheId . '_previous');
-            if (is_string($previous) && $previous !== $cacheId) {
-                $this->cache->delete($previous);
-            }
-            $this->cache->set($baseCacheId . '_previous', $cacheId, self::CACHE_TTL);
-            $this->cache->set($cacheId, $content, self::CACHE_TTL);
-        }
-
-        return [$item->getTitle(), $content];
+        return strip_tags($withSpaces);
     }
 
     /**

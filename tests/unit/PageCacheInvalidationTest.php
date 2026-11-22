@@ -6,6 +6,7 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\Alias;
+use herbie\Cache;
 use herbie\Config;
 use herbie\EventManager;
 use herbie\FileCache;
@@ -33,7 +34,7 @@ final class PageCacheInvalidationTest extends Unit
     private string $tempDir;
     private string $pagesDir;
     private string $pageFile;
-    private FileCache $cache;
+    private Cache $cache;
 
     protected function setUp(): void
     {
@@ -42,7 +43,7 @@ final class PageCacheInvalidationTest extends Unit
         $this->pagesDir = $this->tempDir . '/pages';
         $this->pageFile = $this->pagesDir . '/about.md';
         mkdir($this->pagesDir, 0755, true);
-        $this->cache = new FileCache($this->tempDir . '/cache');
+        $this->cache = new Cache(new FileCache($this->tempDir . '/cache'));
     }
 
     protected function tearDown(): void

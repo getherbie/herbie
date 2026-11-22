@@ -1,6 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-11-22
+
+### Added
+- New `herbie\Cache` wraps the PSR-16 storage and adds `remember()` for versioned cache entries. Rendered pages, page lists and search results now use it, so markdown edits are visible on the next request without running `herbie clear-files`.
+
+### Changed
+- `Application::getCache()` now returns `herbie\Cache`. The returned object still implements `Psr\SimpleCache\CacheInterface`.
+- CI tracks `3.x` instead of `3.x-develop`.
+
+### Fixed
+- The page-list cache key includes the `@page` alias, preventing environment-specific absolute paths from poisoning the cached list.
+- `FileCache` and `NullCache` validate PSR-16 keys (`[A-Za-z0-9_.]`, max. 64 characters); `FileCache` also writes atomically via a temporary file and `rename()`.
+
+### Deprecated
+- Injecting `Psr\SimpleCache\CacheInterface` into plugins still works as a BC alias for `herbie\Cache::class`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.
+
 ## [3.0.1] - 2026-11-20
 
 ### Fixed

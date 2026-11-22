@@ -433,8 +433,9 @@ final class WebsiteCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see('Sitemap', 'h1');
         $I->seeElement('.sitemap');
-        $I->seeLink('Quickstart', '/index.php/doc/first-steps/quickstart');
-        $I->seeLink('Cheat Sheet', '/index.php/doc/cheatsheet');
+        // The URL form depends on urlManager.niceUrls from the local config.
+        $I->seeLink('Quickstart');
+        $I->seeLink('Cheat Sheet');
         $this->testLayoutDefault($I);
     }
 

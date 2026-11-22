@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie\middlewares;
 
+use herbie\Cache;
 use herbie\EventManager;
 use herbie\events\ContentRenderedEvent;
 use herbie\events\LayoutRenderedEvent;
@@ -18,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\SimpleCache\CacheInterface;
 
 use function herbie\file_mtime;
 
@@ -31,7 +31,7 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
      * PageRendererMiddleware constructor.
      */
     public function __construct(
-        private CacheInterface $cache,
+        private Cache $cache,
         private EventManager $eventManager,
         private ResponseFactoryInterface $responseFactory,
         private UrlManager $urlManager,
@@ -68,61 +68,51 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
             return $this->createRedirectResponse(...$redirect);
         }
 
-        $content = null;
-
-        $baseCacheId = 'page_' . md5($page->getCacheId());
         $path = $page->getPath();
-        $cacheId = $baseCacheId . '_' . (is_file($path) ? file_mtime($path) : 0);
-        $useCache = $this->cacheEnable && !empty($page->getCached());
-
-        if ($useCache) {
-            $content = $this->cache->get($cacheId);
-        }
-
-        if (null === $content) {
-            $this->eventManager->dispatch(new RenderPageEvent($page, $route, $routeParams));
-
-            // render segments
-            $segments = [];
-            foreach ($page->getSegments() as $segmentId => $segment) {
-                /** @var RenderSegmentEvent $event */
-                $event = $this->eventManager->dispatch(
-                    new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager),
-                );
-                $renderedSegment = $event->getSegment();
-                $segments[$segmentId] = $renderedSegment;
-            }
-
-            /** @var ContentRenderedEvent $event */
-            $event = $this->eventManager->dispatch(new ContentRenderedEvent($segments));
-            $segments = $event->getSegments();
-
-            // render layout
-            if (empty($page->getLayout())) {
-                $content = implode('', $segments);
-            } else {
-                /** @var RenderLayoutEvent $event */
-                $event = $this->eventManager->dispatch(new RenderLayoutEvent($segments, $page->getLayout()));
-                $content = $event->getContent();
-            }
-
-            /** @var LayoutRenderedEvent $event */
-            $event = $this->eventManager->dispatch(new LayoutRenderedEvent($content));
-            $content = $event->getContent();
-
-            if ($useCache) {
-                $previous = $this->cache->get($baseCacheId . '_previous');
-                if (is_string($previous) && $previous !== $cacheId) {
-                    $this->cache->delete($previous);
-                }
-                $this->cache->set($baseCacheId . '_previous', $cacheId, $this->cacheTTL);
-                $this->cache->set($cacheId, $content, $this->cacheTTL);
-            }
-        }
+        $content = $this->cache->remember(
+            'page_' . md5($page->getCacheId()),
+            is_file($path) ? file_mtime($path) : 0,
+            fn() => $this->renderContent($page, $route, $routeParams),
+            $this->cacheTTL,
+            enabled: $this->cacheEnable && !empty($page->getCached()),
+        );
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($content);
         return $response->withHeader('Content-Type', $page->getContentType());
+    }
+
+    private function renderContent(Page $page, string $route, array $routeParams): string
+    {
+        $this->eventManager->dispatch(new RenderPageEvent($page, $route, $routeParams));
+
+        // render segments
+        $segments = [];
+        foreach ($page->getSegments() as $segmentId => $segment) {
+            /** @var RenderSegmentEvent $event */
+            $event = $this->eventManager->dispatch(
+                new RenderSegmentEvent($page, $segment, $segmentId, $this->urlManager),
+            );
+            $renderedSegment = $event->getSegment();
+            $segments[$segmentId] = $renderedSegment;
+        }
+
+        /** @var ContentRenderedEvent $event */
+        $event = $this->eventManager->dispatch(new ContentRenderedEvent($segments));
+        $segments = $event->getSegments();
+
+        // render layout
+        if (empty($page->getLayout())) {
+            $content = implode('', $segments);
+        } else {
+            /** @var RenderLayoutEvent $event */
+            $event = $this->eventManager->dispatch(new RenderLayoutEvent($segments, $page->getLayout()));
+            $content = $event->getContent();
+        }
+
+        /** @var LayoutRenderedEvent $event */
+        $event = $this->eventManager->dispatch(new LayoutRenderedEvent($content));
+        return $event->getContent();
     }
 
     private function createRedirectResponse(string $url, int $status): ResponseInterface
