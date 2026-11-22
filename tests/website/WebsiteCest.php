@@ -5,9 +5,18 @@ namespace herbie\tests\acceptance;
 use AcceptanceTester;
 use Codeception\Lib\Interfaces\Web;
 use Codeception\Util\HttpCode;
+use herbie\FileCache;
 
 final class WebsiteCest
 {
+    public function _after(AcceptanceTester $I): void
+    {
+        $path = dirname(__DIR__, 2) . '/website/site/runtime/cache/system';
+        if (is_dir($path)) {
+            (new FileCache($path))->clear();
+        }
+    }
+
     public function testHomepage(AcceptanceTester $I)
     {
         /** @var Web $I */
