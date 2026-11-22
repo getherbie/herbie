@@ -10,9 +10,8 @@ plugin. The plugin is based on the library
 [league/commonmark](https://commonmark.thephpleague.com), which implements the
 [CommonMark specification](https://spec.commonmark.org/).
 
-The default flavor `commonmark` implements the specification only. Constructs such as tables,
-task lists and footnotes require a different flavor, see [Markdown flavor](#markdown-flavor)
-below.
+The default flavor `commonmark` implements the specification only. Constructs such as tables
+and task lists require `gfm`, see [Markdown flavor](#markdown-flavor) below.
 
 ## Configuration
 
@@ -88,10 +87,6 @@ The option `flavor` selects the set of CommonMark extensions. An unknown value f
             <td><code>gfm</code></td>
             <td><a href="https://github.github.com/gfm/">GitHub Flavored Markdown</a>: adds autolinks, tables, strikethrough, task lists and filtered raw HTML.</td>
         </tr>
-        <tr>
-            <td><code>markdown-extra</code></td>
-            <td>Markdown Extra features on top of CommonMark: attributes, definition lists, footnotes, strikethrough, tables and task lists.</td>
-        </tr>
     </tbody>
 </table>
 
@@ -114,8 +109,8 @@ passed to the parser environment unchanged. A complete reference is available in
 [CommonMark documentation](https://commonmark.thephpleague.com/2.10/configuration/).
 
 Herbie sets `html_input` to `allow` and `allow_unsafe_links` to `true` by default, as shown above.
-Further options such as `max_nesting_level`, the `renderer.*` options or the options of the
-`gfm` and `markdown-extra` extensions are described in the CommonMark reference.
+Further options such as `max_nesting_level`, the `renderer.*` options or the `gfm` extension
+options are described in the CommonMark reference.
 
 Please note that a misspelled **option name** is silently ignored, while an invalid **value**
 throws an exception.
@@ -163,7 +158,6 @@ The following table shows which markdown constructs are available in each flavor
             <th>Construct</th>
             <th><code>commonmark</code></th>
             <th><code>gfm</code></th>
-            <th><code>markdown-extra</code></th>
         </tr>
     </thead>
     <tbody>
@@ -171,47 +165,24 @@ The following table shows which markdown constructs are available in each flavor
             <td>Pipe tables</td>
             <td>plain text</td>
             <td>table</td>
-            <td>table</td>
         </tr>
         <tr>
             <td>Task lists</td>
             <td>plain text</td>
-            <td>checkbox</td>
             <td>checkbox</td>
         </tr>
         <tr>
             <td>Strikethrough</td>
             <td>plain text</td>
             <td><code>&lt;del&gt;</code></td>
-            <td><code>&lt;del&gt;</code></td>
-        </tr>
-        <tr>
-            <td>Footnotes</td>
-            <td>link</td>
-            <td>link</td>
-            <td>footnotes</td>
-        </tr>
-        <tr>
-            <td>Definition lists</td>
-            <td>plain text</td>
-            <td>plain text</td>
-            <td><code>&lt;dl&gt;</code></td>
-        </tr>
-        <tr>
-            <td>Attributes <code>{: #id }</code></td>
-            <td>plain text</td>
-            <td>plain text</td>
-            <td>applied</td>
         </tr>
         <tr>
             <td>Bare URLs</td>
             <td>plain text</td>
             <td>linked</td>
-            <td>plain text</td>
         </tr>
         <tr>
             <td>HTML entities</td>
-            <td>decoded</td>
             <td>decoded</td>
             <td>decoded</td>
         </tr>
@@ -219,18 +190,14 @@ The following table shows which markdown constructs are available in each flavor
             <td>Raw HTML block</td>
             <td>preserved</td>
             <td>preserved</td>
-            <td>preserved</td>
         </tr>
     </tbody>
 </table>
 
-Two details are worth pointing out:
+One detail is worth pointing out:
 
 - **HTML entities** such as `&copy;` are decoded and output as the character `©`. This rarely
   changes what the visitor sees, but it changes the generated markup.
-- **Footnotes** with the `[^1]` syntax are only supported by the flavor `markdown-extra`. With
-  the other flavors the caret is treated as the first character of the link target, so `[^1]`
-  becomes a link to `1`.
 
 ### Raw HTML blocks
 

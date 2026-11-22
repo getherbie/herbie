@@ -27,6 +27,7 @@ final class MarkdownPlugin extends AbstractParserPlugin
     private const array FLAVORS = [
         'commonmark' => [],
         'gfm' => [GithubFlavoredMarkdownExtension::class],
+        // @deprecated Kept for backwards compatibility with 3.0 configurations.
         'markdown-extra' => [
             \League\CommonMark\Extension\Attributes\AttributesExtension::class,
             \League\CommonMark\Extension\DescriptionList\DescriptionListExtension::class,
@@ -94,6 +95,11 @@ final class MarkdownPlugin extends AbstractParserPlugin
         $flavour = $this->config->getAsString('flavor', 'commonmark');
         if (!isset(self::FLAVORS[$flavour])) {
             $flavour = 'commonmark';
+        }
+        if ($flavour === 'markdown-extra') {
+            $this->logger->warning(
+                'The markdown flavor "markdown-extra" is deprecated; use "commonmark" or "gfm" instead.',
+            );
         }
 
         return self::FLAVORS[$flavour];

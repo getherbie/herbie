@@ -5,6 +5,7 @@ namespace herbie\tests\unit;
 use Codeception\Test\Unit;
 use herbie\Config;
 use herbie\plugins\markdown\MarkdownPlugin;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 final class MarkdownPluginTest extends Unit
@@ -65,6 +66,17 @@ final class MarkdownPluginTest extends Unit
         $this->assertStringContainsString('The note.', $html);
     }
 
+    public function testDeprecatedMarkdownExtraFlavorLogsWarning(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('warning')
+            ->with($this->stringContains('markdown-extra'));
+
+        $plugin = $this->createPlugin('markdown-extra', $logger);
+        $plugin->parse('# Title');
+    }
+
     public function testUnknownFlavorFallsBackToCommonMark(): void
     {
         $plugin = $this->createPlugin('not-existing-flavor');
@@ -85,7 +97,7 @@ final class MarkdownPluginTest extends Unit
         $this->assertStringNotContainsString('&lt;div', $html);
     }
 
-    private function createPlugin(string $flavor = 'commonmark'): MarkdownPlugin
+    private function createPlugin(string $flavor = 'commonmark', ?LoggerInterface $logger = null): MarkdownPlugin
     {
         $config = new Config([
             'plugins' => [
@@ -103,6 +115,6 @@ final class MarkdownPluginTest extends Unit
             ],
         ]);
 
-        return new MarkdownPlugin($config, new NullLogger());
+        return new MarkdownPlugin($config, $logger ?? new NullLogger());
     }
 }
