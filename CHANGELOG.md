@@ -4,18 +4,24 @@ All notable changes to this project will be documented in this file.
 ## [3.1.0] - 2026-11-22
 
 ### Added
-- New `herbie\Cache` wraps the PSR-16 storage and adds `remember()` for versioned cache entries. Rendered pages, page lists and search results now use it, so markdown edits are visible on the next request without running `herbie clear-files`.
+- Public `herbie\Cache` wraps PSR-16 storage and adds `remember()` for versioned entries. Rendered pages, page lists and search results use page-file mtimes as version, exposed by `Finder::pagesModified()` and the `herbie_pages_modified` cache entry; markdown edits appear on the next request without `herbie clear-files`.
+- `herbie\CacheInvalidArgumentException` implements `Psr\SimpleCache\InvalidArgumentException`.
 
 ### Changed
-- `Application::getCache()` now returns `herbie\Cache`. The returned object still implements `Psr\SimpleCache\CacheInterface`.
-- CI tracks `3.x` instead of `3.x-develop`.
+- `Application::getCache()` returns `herbie\Cache`, still PSR-16 compatible.
+- `psr/simple-cache` raised from `^1.0` to `^3.0`; custom PSR-16 implementations need typed signatures.
+- `FileCache` now uses the key as filename and a serialized payload instead of `md5(key).cache` JSON files. Old entries are regenerated and removed by `clear()`.
+- CD publishes only from `refs/heads/3.x`; `3.x-develop` no longer triggers a release.
 
 ### Fixed
-- The page-list cache key includes the `@page` alias, preventing environment-specific absolute paths from poisoning the cached list.
-- `FileCache` and `NullCache` validate PSR-16 keys (`[A-Za-z0-9_.]`, max. 64 characters); `FileCache` also writes atomically via a temporary file and `rename()`.
+- The page-list cache key includes `@page`, preventing absolute paths from other checkouts from poisoning the list.
+- `FileCache` and `NullCache` validate PSR-16 keys (`[A-Za-z0-9_.]`, max. 64 characters); `FileCache` writes via temporary file and `rename()`.
 
 ### Deprecated
-- Injecting `Psr\SimpleCache\CacheInterface` into plugins still works as a BC alias for `herbie\Cache::class`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.
+- Injecting `Psr\SimpleCache\CacheInterface` into plugins still resolves to `herbie\Cache`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.
+
+### Documentation
+- Added Website Starter demo links and a third hero CTA with theme styles.
 
 ## [3.0.1] - 2026-11-20
 
