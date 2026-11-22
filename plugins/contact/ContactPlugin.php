@@ -9,6 +9,7 @@ use AltchaOrg\Altcha\Altcha;
 use AltchaOrg\Altcha\CreateChallengeOptions;
 use AltchaOrg\Altcha\VerifySolutionOptions;
 use herbie\AbstractPlugin;
+use herbie\Cache;
 use herbie\Config;
 use herbie\events\ResponseGeneratedEvent;
 use herbie\Page;
@@ -21,7 +22,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\SimpleCache\CacheInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use Twig\TwigFunction;
@@ -42,7 +42,7 @@ final class ContactPlugin extends AbstractPlugin
     private const int DEFAULT_RATE_LIMIT_MAX_REQUESTS = 5;
     private const int DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 3600;
     private Config $config;
-    private ?CacheInterface $cache = null;
+    private Cache $cache;
     private PageRepositoryInterface $pageRepository;
     private ServerRequestInterface $request;
     private ResponseFactoryInterface $responseFactory;
@@ -62,7 +62,7 @@ final class ContactPlugin extends AbstractPlugin
         TwigRenderer $twigRenderer,
         UrlManager $urlManager,
         LoggerInterface $logger,
-        ?CacheInterface $cache = null,
+        Cache $cache,
     ) {
         $this->config = $config;
         $this->pageRepository = $pageRepository;
@@ -622,10 +622,6 @@ final class ContactPlugin extends AbstractPlugin
 
     private function checkRateLimit(): bool
     {
-        if ($this->cache === null) {
-            return true;
-        }
-
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         $key = 'contact_rate_' . md5((string)$ip);
 

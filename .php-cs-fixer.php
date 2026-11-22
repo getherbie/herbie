@@ -11,5 +11,6 @@ return $config
     ->setRules([
         '@PER-CS3x0' => true,
         'cast_spaces' => ['space' => 'none'],
+        'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
     ])
     ->setFinder($finder);

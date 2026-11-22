@@ -77,18 +77,22 @@ final readonly class ContainerBuilder
         });
 
         if ($this->cache) {
-            $c->set(CacheInterface::class, $this->cache);
+            $c->set(Cache::class, new Cache($this->cache));
         } else {
-            $c->set(CacheInterface::class, function (ContainerInterface $c) {
+            $c->set(Cache::class, function (ContainerInterface $c) {
                 $config = $c->get(Config::class)->getAsArray('components.fileCache');
                 if (isset($config['path'])) {
-                    return new FileCache(
+                    $storage = new FileCache(
                         $c->get(Alias::class)->get($config['path']),
                     );
+                } else {
+                    $storage = new NullCache();
                 }
-                return new NullCache();
+                return new Cache($storage);
             });
         }
+        // BC alias: plugins may still inject the PSR-16 interface.
+        $c->set(CacheInterface::class, static fn(ContainerInterface $c): CacheInterface => $c->get(Cache::class));
 
         $c->set(Config::class, function (ContainerInterface $c) {
             $const = [
@@ -204,7 +208,7 @@ final readonly class ContainerBuilder
             $options = $c->get(Config::class)->getAsArray('components.flatFilePagePersistence');
             return new FlatFilePagePersistence(
                 $c->get(Alias::class),
-                $c->get(CacheInterface::class),
+                $c->get(Cache::class),
                 $c->get(Finder::class),
                 $options,
             );
@@ -213,7 +217,7 @@ final readonly class ContainerBuilder
         $c->set(PageRendererMiddleware::class, function (ContainerInterface $c) {
             $options = $c->get(Config::class)->getAsArray('components.pageRendererMiddleware');
             return new PageRendererMiddleware(
-                $c->get(CacheInterface::class),
+                $c->get(Cache::class),
                 $c->get(EventManager::class),
                 $c->get(ResponseFactoryInterface::class),
                 $c->get(UrlManager::class),

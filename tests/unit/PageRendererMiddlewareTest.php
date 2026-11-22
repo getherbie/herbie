@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
+use DateInterval;
+use herbie\Cache;
 use herbie\EventManager;
 use herbie\events\LayoutRenderedEvent;
 use herbie\events\RenderLayoutEvent;
@@ -12,9 +14,8 @@ use herbie\events\RenderSegmentEvent;
 use herbie\HttpException;
 use herbie\middlewares\PageRendererMiddleware;
 use herbie\middlewares\PageResolverMiddleware;
-use herbie\Page;
 use herbie\NullCache;
-use Psr\SimpleCache\CacheInterface;
+use herbie\Page;
 use herbie\UrlManager;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
@@ -22,6 +23,7 @@ use Laminas\Diactoros\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 final class PageRendererMiddlewareTest extends Unit
 {
@@ -128,19 +130,19 @@ final class PageRendererMiddlewareTest extends Unit
         $page = new Page(['layout' => ''], ['a' => 'fresh']);
         $cache = new class implements CacheInterface {
             #[\Override]
-            public function get($key, $default = null)
+            public function get(string $key, mixed $default = null): mixed
             {
                 return 'from the cache';
             }
 
             #[\Override]
-            public function set($key, $value, $ttl = null): bool
+            public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function delete($key): bool
+            public function delete(string $key): bool
             {
                 return true;
             }
@@ -152,31 +154,31 @@ final class PageRendererMiddlewareTest extends Unit
             }
 
             #[\Override]
-            public function getMultiple($keys, $default = null): iterable
+            public function getMultiple(iterable $keys, mixed $default = null): iterable
             {
                 return [];
             }
 
             #[\Override]
-            public function setMultiple($values, $ttl = null): bool
+            public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function deleteMultiple($keys): bool
+            public function deleteMultiple(iterable $keys): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function has($key): bool
+            public function has(string $key): bool
             {
                 return true;
             }
         };
 
-        $middleware = $this->createMiddleware($page, new EventManager(), $cache);
+        $middleware = $this->createMiddleware($page, new EventManager(), new Cache($cache));
 
         $response = $middleware->process($this->requestFor($page), $this->terminalHandler());
 
@@ -186,10 +188,10 @@ final class PageRendererMiddlewareTest extends Unit
     private function createMiddleware(
         ?Page $page = null,
         ?EventManager $eventManager = null,
-        ?CacheInterface $cache = null,
+        ?Cache $cache = null,
     ): PageRendererMiddleware {
         return new PageRendererMiddleware(
-            $cache ?? new NullCache(),
+            $cache ?? new Cache(new NullCache()),
             $eventManager ?? new EventManager(),
             new ResponseFactory(),
             $this->createUrlManager(),

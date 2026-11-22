@@ -5,22 +5,24 @@ declare(strict_types=1);
 namespace herbie\plugins\search;
 
 use herbie\AbstractPlugin;
+use herbie\Cache;
 use herbie\Config;
 use herbie\EventManager;
+use herbie\events\RenderSegmentEvent;
 use herbie\Page;
 use herbie\PageRepositoryInterface;
 use herbie\Plugin;
 use herbie\TwigRenderer;
 use herbie\UrlManager;
-use herbie\events\RenderSegmentEvent;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\SimpleCache\CacheInterface;
 use Twig\TwigFunction;
 
 #[Plugin('search')]
 final class SearchPlugin extends AbstractPlugin
 {
-    public function __construct(private readonly CacheInterface $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
+    private const int CACHE_TTL = 60 * 60 * 24;
+
+    public function __construct(private readonly Cache $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
 
     public function twigFunctions(): array
     {
@@ -76,20 +78,23 @@ final class SearchPlugin extends AbstractPlugin
      * Render page segments to plain text (for search matching).
      * Uses an internal search cache that is invalidated when any page changes.
      *
-     * @param string $cacheToken Global cache token (most recent modified timestamp).
+     * @param int|string $cacheToken Global cache token (most recent modified timestamp).
      */
-    private function loadPageData(Page $item, string $cacheToken): array
+    private function loadPageData(Page $item, int|string $cacheToken): array
     {
-        $useCache = $this->config->getAsBool('plugins.search.useCache', true);
-        $cacheId = $useCache ? 'search_' . $item->getRoute() . '_' . $cacheToken : null;
+        $content = $this->cache->remember(
+            'search_' . md5($item->getRoute()),
+            $cacheToken,
+            fn() => $this->extractSearchText($item),
+            self::CACHE_TTL,
+            enabled: $this->config->getAsBool('plugins.search.useCache', true),
+        );
 
-        if ($useCache && $cacheId !== null) {
-            $cached = $this->cache->get($cacheId);
-            if ($cached !== null) {
-                return [$item->getTitle(), $cached];
-            }
-        }
+        return [$item->getTitle(), $content];
+    }
 
+    private function extractSearchText(Page $item): string
+    {
         $rendered = $this->renderPageContent($item);
         // Drop script/style elements entirely (including their content) so
         // hidden code/CSS is not indexed or shown in snippets.
@@ -103,13 +108,7 @@ final class SearchPlugin extends AbstractPlugin
         }
         $withSpaces = preg_replace('/<[^>]+>/u', ' ', $rendered);
         $withSpaces ??= $rendered;
-        $content = strip_tags($withSpaces);
-
-        if ($useCache && $cacheId !== null) {
-            $this->cache->set($cacheId, $content);
-        }
-
-        return [$item->getTitle(), $content];
+        return strip_tags($withSpaces);
     }
 
     /**
@@ -140,13 +139,16 @@ final class SearchPlugin extends AbstractPlugin
             return [];
         }
 
-        // Build a global cache token once: the most recent modified timestamp across all pages.
-        // If any page changes, the token changes and old cache entries become stale.
-        $cacheToken = '';
-        foreach ($this->pageRepository->findAll() as $page) {
-            $m = $page->getModified();
-            if ($m > $cacheToken) {
-                $cacheToken = $m;
+        // Use the page files' mtime published by the persistence, not the (cached) page list.
+        $cacheToken = $this->cache->get('herbie_pages_modified');
+        if (!is_int($cacheToken)) {
+            clearstatcache(true);
+            $cacheToken = 0;
+            foreach ($this->pageRepository->findAll() as $page) {
+                $path = $page->getPath();
+                if (is_file($path)) {
+                    $cacheToken = max($cacheToken, filemtime($path) ?: 0);
+                }
             }
         }
 

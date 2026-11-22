@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df14cdafedd5105d8d3d9468c6c21c4f",
+    "content-hash": "0eb2fb0754545d003bff1fee2ece2567",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -276,16 +276,16 @@
         },
         {
             "name": "getherbie/herbie",
-            "version": "dev-3.x-develop",
+            "version": "3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getherbie/herbie.git",
-                "reference": "531ff79036bb07311d5cbb715472da6b47163a38"
+                "reference": "439d38f35666c3aaa6a964f4386596e6145ef7a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getherbie/herbie/zipball/531ff79036bb07311d5cbb715472da6b47163a38",
-                "reference": "531ff79036bb07311d5cbb715472da6b47163a38",
+                "url": "https://api.github.com/repos/getherbie/herbie/zipball/439d38f35666c3aaa6a964f4386596e6145ef7a9",
+                "reference": "439d38f35666c3aaa6a964f4386596e6145ef7a9",
                 "shasum": ""
             },
             "require": {
@@ -340,6 +340,7 @@
                 "netcarver/textile": "Needed by the textile plugin",
                 "phpmailer/phpmailer": "Needed by the contact plugin"
             },
+            "default-branch": true,
             "bin": [
                 "herbie"
             ],
@@ -367,10 +368,10 @@
             ],
             "support": {
                 "issues": "https://github.com/getherbie/herbie/issues",
-                "source": "https://github.com/getherbie/herbie/tree/3.x-develop"
+                "source": "https://github.com/getherbie/herbie/tree/3.x"
             },
-            "time": "2026-11-20T14:16:37+00:00",
-            "published-time": "2026-11-20T14:17:01+00:00"
+            "time": "2026-11-22T07:22:16+00:00",
+            "published-time": "2026-11-22T07:22:21+00:00"
         },
         {
             "name": "imagine/imagine",

@@ -7,7 +7,7 @@
     },
     "require": {
         "altcha-org/altcha": "^2.4",
-        "getherbie/herbie": "dev-3.x-develop@dev",
+        "getherbie/herbie": "3.x-dev",
         "imagine/imagine": "^1.3",
         "laminas/laminas-diactoros": "^2.0",
         "league/commonmark": "^2.10",

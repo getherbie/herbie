@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-11-22
+
+### Added
+- `herbie\Cache` adds `remember()` for versioned PSR-16 entries. Rendered pages, page lists and search use page-file mtimes (`Finder::pagesModified()`, `herbie_pages_modified`); markdown edits apply on the next request.
+- `herbie\CacheInvalidArgumentException` implements `Psr\SimpleCache\InvalidArgumentException`.
+
+### Changed
+- `Application::getCache()` returns `herbie\Cache`, still PSR-16 compatible.
+- `psr/simple-cache` raised from `^1.0` to `^3.0`; custom PSR-16 implementations need typed signatures.
+- `FileCache` stores serialized data in `<key>` files instead of `md5(key).cache` JSON; old entries are ignored and `clear()` removes all files in the cache directory.
+- CD publishes only from `refs/heads/3.x`; `3.x-develop` no longer triggers a release.
+
+### Fixed
+- Page-list cache keys include `@page`, avoiding poisoning by absolute paths.
+- `FileCache`/`NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64, excluding `.`/`..`); `FileCache` writes via temp file + `rename()`.
+- `setMultiple()`/`deleteMultiple()` return `false` if any operation fails.
+- `FileCache` overwrites existing entries on Windows via `unlink()` before `rename()`.
+
+### Deprecated
+- Injecting `Psr\SimpleCache\CacheInterface` still resolves to `herbie\Cache` but is deprecated; inject `herbie\Cache` instead.
+
+### Documentation
+- Added Website Starter demo links and a third hero CTA with theme styles.
+
 ## [3.0.1] - 2026-11-20
 
 ### Fixed

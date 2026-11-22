@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace herbie;
 
 use Exception;
-use Psr\SimpleCache\CacheInterface;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
@@ -26,7 +25,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
 
     public function __construct(
         private readonly Alias $alias,
-        private readonly CacheInterface $cache,
+        private readonly Cache $cache,
         private readonly Finder $finder,
         array $options = [],
     ) {
@@ -285,23 +284,36 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     #[\Override]
     public function findAll(): array
     {
-        $items = [];
+        $useCache = $this->cacheEnable && $this->cacheTTL > 0;
+        $modified = $useCache ? $this->finder->pagesModified() : 0;
 
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $cached = $this->cache->get(__METHOD__);
-            if (is_array($cached)) {
-                return $cached;
-            }
+        // The cached pages contain absolute paths. Include the page root so a
+        // cache written from another checkout (e.g. Docker mounting /app) is
+        // never reused for a different application path.
+        $items = $this->cache->remember(
+            'pagelist_' . md5(__METHOD__ . $this->alias->get('@page')),
+            $modified,
+            fn() => $this->loadPages(),
+            $this->cacheTTL,
+            enabled: $useCache,
+        );
+
+        if ($useCache) {
+            $this->cache->set('herbie_pages_modified', $modified, $this->cacheTTL);
         }
 
+        return $items;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function loadPages(): array
+    {
+        $items = [];
         foreach ($this->finder->pageFiles() as $page) {
             $items[] = $this->readFile($page);
         }
-
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $this->cache->set(__METHOD__, $items, $this->cacheTTL);
-        }
-
         return $items;
     }
 }

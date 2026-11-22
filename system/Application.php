@@ -20,7 +20,7 @@ use Twig\Error\LoaderError;
 
 final class Application
 {
-    public const string VERSION_SEMVER = '3.0.0';
+    public const string VERSION_SEMVER = '3.1.0';
     public const int VERSION_API = 2;
     /** @var array<int, mixed> */
     private array $applicationMiddlewares;
@@ -416,8 +416,8 @@ final class Application
         return $this->eventListeners;
     }
 
-    public function getCache(): CacheInterface
+    public function getCache(): Cache
     {
-        return $this->container->get(CacheInterface::class);
+        return $this->container->get(Cache::class);
     }
 }

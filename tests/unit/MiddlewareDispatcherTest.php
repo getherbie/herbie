@@ -4,9 +4,9 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\MiddlewareDispatcher;
-use LogicException;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\ServerRequest;
+use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
