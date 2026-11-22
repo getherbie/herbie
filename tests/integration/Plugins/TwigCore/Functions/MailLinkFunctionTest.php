@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace herbie\tests\integration\Plugins\TwigCore\Functions;
 
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 use Codeception\Test\Unit;
 use herbie\TwigRenderer;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 use UnitTester;
 
 final class MailLinkFunctionTest extends Unit
