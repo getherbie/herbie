@@ -14,6 +14,7 @@ use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 #[Plugin('markdown', requires: ['league/commonmark' => '^2.10'])]
 final class MarkdownPlugin extends AbstractParserPlugin
@@ -118,8 +119,15 @@ final class MarkdownPlugin extends AbstractParserPlugin
                 || !class_exists($extension)
                 || !is_subclass_of($extension, ExtensionInterface::class)
             ) {
-                $value = is_string($extension) ? $extension : gettype($extension);
+                $value = is_string($extension) ? $extension : (is_object($extension) ? get_class($extension) : gettype($extension));
                 throw new InvalidArgumentException(sprintf('Invalid markdown extension class "%s".', $value));
+            }
+            $reflection = new ReflectionClass($extension);
+            if (!$reflection->isInstantiable() || ($reflection->getConstructor()?->getNumberOfRequiredParameters() ?? 0) > 0) {
+                throw new InvalidArgumentException(sprintf(
+                    'Markdown extension class "%s" must be instantiable without constructor arguments.',
+                    $extension,
+                ));
             }
         }
     }

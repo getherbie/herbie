@@ -6,6 +6,8 @@ use Codeception\Test\Unit;
 use herbie\Config;
 use herbie\plugins\markdown\MarkdownPlugin;
 use InvalidArgumentException;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
+use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -109,6 +111,13 @@ final class MarkdownPluginTest extends Unit
         $this->assertStringContainsString('“Hi”', $html);
     }
 
+    public function testDuplicateExtensionsAreDeduplicated(): void
+    {
+        $plugin = $this->createPlugin(extensions: [SmartPunctExtension::class, SmartPunctExtension::class]);
+
+        $this->assertStringContainsString('“Hi”', $plugin->parse('"Hi"'));
+    }
+
     public function testExtensionOptionsArePassedThrough(): void
     {
         $plugin = $this->createPlugin(
@@ -138,6 +147,22 @@ final class MarkdownPluginTest extends Unit
         $this->expectException(InvalidArgumentException::class);
 
         $plugin = $this->createPlugin(extensions: [\stdClass::class]);
+        $plugin->parse('# Title');
+    }
+
+    public function testExtensionWithRequiredConstructorArgumentsThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('instantiable without constructor arguments');
+
+        $this->createPlugin(extensions: [\herbie\tests\unit\MarkdownPluginTestConstructorExtension::class]);
+    }
+
+    public function testMalformedExtensionConfigValueThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $plugin = $this->createPlugin(extensions: [['not' => 'a-class']]);
         $plugin->parse('# Title');
     }
 
@@ -177,4 +202,11 @@ final class MarkdownPluginTest extends Unit
 
         return new MarkdownPlugin($config, $logger ?? new NullLogger());
     }
+}
+
+final class MarkdownPluginTestConstructorExtension implements ExtensionInterface
+{
+    public function __construct(public readonly string $required) {}
+
+    public function register(EnvironmentBuilderInterface $environment): void {}
 }
