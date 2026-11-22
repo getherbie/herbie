@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ### Deprecated
 - Injecting `Psr\SimpleCache\CacheInterface` still resolves to `herbie\Cache` but is deprecated; inject `herbie\Cache` instead.
+- The markdown flavor `markdown-extra` is deprecated and logs a warning; it still works for compatibility. Use `commonmark` or `gfm` instead.
 
 ### Documentation
 - Added Website Starter demo links and a third hero CTA with theme styles.

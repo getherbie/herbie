@@ -52,7 +52,6 @@ The option `flavor` selects the set of CommonMark extensions:
 | --- | --- |
 | `commonmark` | The [CommonMark specification](https://spec.commonmark.org/). This is the default. |
 | `gfm` | [GitHub Flavored Markdown](https://github.github.com/gfm/): adds autolinks, tables, strikethrough, task lists and filtered raw HTML. |
-| `markdown-extra` | Markdown Extra features on top of CommonMark: attributes, definition lists, footnotes, strikethrough, tables and task lists. |
 
 An unknown value falls back to `commonmark`.
 
@@ -96,22 +95,6 @@ throws an exception.
 | `table.alignment_attributes.right` | `["align" => "right"]` | Attributes for right aligned cells |
 | `table.max_autocompleted_cells` | `10000` | Limit for auto-completed cells of a table |
 | `disallowed_raw_html.disallowed_tags` | `title`, `textarea`, `style`, `xmp`, `iframe`, `noembed`, `noframes`, `script`, `plaintext` | These HTML tags are escaped |
-
-#### Additional options for the flavour `markdown-extra`
-
-| Option | Default | Description |
-| --- | --- | --- |
-| `table.*` | – | The same table options as in `gfm` |
-| `attributes.allow` | `[]` | Attribute names that are allowed, e.g. `['id', 'class']` |
-| `footnote.backref_class` | `footnote-backref` | CSS class of the back reference |
-| `footnote.backref_symbol` | `↩` | Symbol of the back reference |
-| `footnote.container_add_hr` | `true` | Adds a horizontal rule above the footnotes |
-| `footnote.container_class` | `footnotes` | CSS class of the footnote container |
-| `footnote.enable_inline_footnotes` | `true` | Allows inline footnotes |
-| `footnote.ref_class` | `footnote-ref` | CSS class of the footnote reference |
-| `footnote.ref_id_prefix` | `fnref:` | Prefix of the reference id |
-| `footnote.footnote_class` | `footnote` | CSS class of the footnote |
-| `footnote.footnote_id_prefix` | `fn:` | Prefix of the footnote id |
 
 ## Usage
 
