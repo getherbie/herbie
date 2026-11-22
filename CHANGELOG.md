@@ -4,20 +4,20 @@ All notable changes to this project will be documented in this file.
 ## [3.1.0] - 2026-11-22
 
 ### Added
-- Public `herbie\Cache` wraps PSR-16 storage and adds `remember()` for versioned entries. Rendered pages, page lists and search results use page-file mtimes as version, exposed by `Finder::pagesModified()` and the `herbie_pages_modified` cache entry; markdown edits appear on the next request without `herbie clear-files`.
+- `herbie\Cache` adds `remember()` for versioned PSR-16 entries. Rendered pages, page lists and search use page-file mtimes (`Finder::pagesModified()`, `herbie_pages_modified`); markdown edits apply on the next request.
 - `herbie\CacheInvalidArgumentException` implements `Psr\SimpleCache\InvalidArgumentException`.
 
 ### Changed
 - `Application::getCache()` returns `herbie\Cache`, still PSR-16 compatible.
 - `psr/simple-cache` raised from `^1.0` to `^3.0`; custom PSR-16 implementations need typed signatures.
-- `FileCache` now stores `<key>` files with a serialized payload instead of `md5(key).cache` JSON files. Old entries are ignored; `clear()` removes all files in the configured cache directory.
+- `FileCache` stores serialized data in `<key>` files instead of `md5(key).cache` JSON; old entries are ignored and `clear()` removes all files in the cache directory.
 - CD publishes only from `refs/heads/3.x`; `3.x-develop` no longer triggers a release.
 
 ### Fixed
-- The page-list cache key includes `@page`, preventing absolute paths from other checkouts from poisoning the list.
-- `FileCache` and `NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64 characters, excluding `.`/`..`); `FileCache` writes via temporary file and `rename()`.
-- `setMultiple()` and `deleteMultiple()` return `false` if any single operation fails.
-- `FileCache` overwrites existing entries on Windows, where `rename()` cannot replace an existing file.
+- Page-list cache keys include `@page`, avoiding poisoning by absolute paths.
+- `FileCache`/`NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64, excluding `.`/`..`); `FileCache` writes via temp file + `rename()`.
+- `setMultiple()`/`deleteMultiple()` return `false` if any operation fails.
+- `FileCache` overwrites existing entries on Windows via `unlink()` before `rename()`.
 
 ### Deprecated
 - Injecting `Psr\SimpleCache\CacheInterface` into plugins still resolves to `herbie\Cache`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.
