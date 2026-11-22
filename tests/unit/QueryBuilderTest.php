@@ -307,6 +307,28 @@ final class QueryBuilderTest extends Unit
         $this->assertCount(2, $builder->all());
     }
 
+    public function testPaginateUsesPageFromRequestByDefault(): void
+    {
+        $_GET['page'] = '2';
+        try {
+            $pagination = $this->createBuilder($this->createData())->paginate(2);
+            $this->assertSame(2, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
+    public function testPaginateUsesExplicitPage(): void
+    {
+        $_GET['page'] = '1';
+        try {
+            $pagination = $this->createBuilder($this->createData())->paginate(2, 2);
+            $this->assertSame(2, $pagination->getCurrentPage());
+        } finally {
+            unset($_GET['page']);
+        }
+    }
+
     public function testWhereOnMissingFieldIsFalse(): void
     {
         $result = $this->createBuilder($this->createData())->where('notexisting=value')->all();
