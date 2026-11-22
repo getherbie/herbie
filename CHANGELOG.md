@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - The page-list cache key includes `@page`, preventing absolute paths from other checkouts from poisoning the list.
 - `FileCache` and `NullCache` validate strict PSR-16 keys (`[A-Za-z0-9_.]`, 1–64 characters, excluding `.`/`..`); `FileCache` writes via temporary file and `rename()`.
 - `setMultiple()` and `deleteMultiple()` return `false` if any single operation fails.
+- `FileCache` overwrites existing entries on Windows, where `rename()` cannot replace an existing file.
 
 ### Deprecated
 - Injecting `Psr\SimpleCache\CacheInterface` into plugins still resolves to `herbie\Cache`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.

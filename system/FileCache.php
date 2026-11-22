@@ -188,6 +188,11 @@ final readonly class FileCache implements CacheInterface
                 return false;
             }
 
+            // Windows cannot rename over an existing file.
+            if (PHP_OS_FAMILY === 'Windows' && file_exists($filename) && !unlink($filename)) {
+                return false;
+            }
+
             return rename($tempFile, $filename);
         } finally {
             if (is_file($tempFile)) {
