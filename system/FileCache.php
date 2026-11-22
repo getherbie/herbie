@@ -10,6 +10,8 @@ use Psr\SimpleCache\CacheInterface;
 
 final readonly class FileCache implements CacheInterface
 {
+    private const string FILE_PREFIX = 'herbie_';
+
     private string $path;
 
     public function __construct(string $path)
@@ -34,17 +36,19 @@ final readonly class FileCache implements CacheInterface
     #[\Override]
     public function clear(): bool
     {
-        $filenames = glob($this->path . '/*');
+        $filenames = glob($this->path . DIRECTORY_SEPARATOR . self::FILE_PREFIX . '*');
         if ($filenames === false) {
             return false;
         }
+
+        $result = true;
         foreach ($filenames as $filename) {
-            if (is_file($filename)) {
-                unlink($filename);
+            if (is_file($filename) && !unlink($filename)) {
+                $result = false;
             }
         }
 
-        return true;
+        return $result;
     }
 
     #[\Override]
@@ -55,16 +59,17 @@ final readonly class FileCache implements CacheInterface
 
     protected function getFilename(string $key): string
     {
-        return $this->path . DIRECTORY_SEPARATOR . $key;
+        return $this->path . DIRECTORY_SEPARATOR . self::FILE_PREFIX . $key;
     }
 
     private function validateKey(mixed $key): string
     {
-        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1) {
+        if (!is_string($key) || preg_match('/^(?!\.{1,2}$)[A-Za-z0-9_.-]{1,64}$/D', $key) !== 1) {
             throw new CacheInvalidArgumentException(
-                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.].',
+                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.-], excluding "." and "..".',
             );
         }
+
         return $key;
     }
 
@@ -76,10 +81,12 @@ final readonly class FileCache implements CacheInterface
         if (!is_array($keys) && !$keys instanceof \Traversable) {
             throw new CacheInvalidArgumentException('Cache keys must be an array or Traversable.');
         }
+
         $result = [];
         foreach ($keys as $key) {
             $result[] = $this->validateKey($key);
         }
+
         return $result;
     }
 
@@ -90,6 +97,7 @@ final readonly class FileCache implements CacheInterface
         foreach ($this->validateKeys($keys) as $key) {
             $multiple[$key] = $this->get($key, $default);
         }
+
         return $multiple;
     }
 
@@ -141,17 +149,21 @@ final readonly class FileCache implements CacheInterface
         if (!array_key_exists('allowed_classes', $options)) {
             $options['allowed_classes'] = false;
         }
+
         return unserialize($data, $options);
     }
 
     #[\Override]
     public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
     {
+        $result = true;
         foreach ($values as $key => $value) {
-            $this->set($this->validateKey($key), $value, $ttl);
+            if (!$this->set($this->validateKey($key), $value, $ttl)) {
+                $result = false;
+            }
         }
 
-        return true;
+        return $result;
     }
 
     #[\Override]
@@ -176,6 +188,7 @@ final readonly class FileCache implements CacheInterface
             if (file_put_contents($tempFile, serialize($file)) === false) {
                 return false;
             }
+
             return rename($tempFile, $filename);
         } finally {
             if (is_file($tempFile)) {
@@ -187,10 +200,13 @@ final readonly class FileCache implements CacheInterface
     #[\Override]
     public function deleteMultiple(iterable $keys): bool
     {
+        $result = true;
         foreach ($this->validateKeys($keys) as $key) {
-            $this->delete($key);
+            if (!$this->delete($key)) {
+                $result = false;
+            }
         }
 
-        return true;
+        return $result;
     }
 }

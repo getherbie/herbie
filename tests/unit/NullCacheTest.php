@@ -33,6 +33,14 @@ final class NullCacheTest extends Unit
         $this->assertTrue($cache->deleteMultiple(['a']));
     }
 
+    public function testHyphensAreAllowed(): void
+    {
+        $cache = new NullCache();
+
+        $this->assertSame('default', $cache->get('page-1', 'default'));
+        $this->assertFalse($cache->set('page-1', 'value'));
+    }
+
     public function testIllegalKeysThrowForAllKeyMethods(): void
     {
         $cache = new NullCache();
@@ -43,7 +51,7 @@ final class NullCacheTest extends Unit
             static fn(string $key) => $cache->delete($key),
         ];
 
-        foreach (['', 'has-hyphen', 'a/b', 'a@b', 'a:b', str_repeat('a', 65)] as $key) {
+        foreach (['', '.', '..', 'has space', 'a/b', 'a@b', 'a:b', str_repeat('a', 65)] as $key) {
             foreach ($operations as $operation) {
                 try {
                     $operation($key);
