@@ -6,12 +6,12 @@ layout: doc
 # Markdown
 
 Pages with the file extension `.md` or `.markdown` are converted to HTML by the markdown system
-plugin. The plugin is based on the library
-[league/commonmark](https://commonmark.thephpleague.com), which implements the
-[CommonMark specification](https://spec.commonmark.org/).
+plugin. The plugin is based on the [league/commonmark](https://commonmark.thephpleague.com) library,
+a PHP Markdown parser that supports CommonMark, GitHub Flavored Markdown, and additional
+extensions.
 
 The default flavor `commonmark` implements the specification only. Constructs such as tables
-and task lists require `gfm`, see [Markdown flavor](#markdown-flavor) below.
+and task lists require `gfm`, see [Markdown flavor](doc/contents/markdown#markdown-flavor) below.
 
 ## Configuration
 
@@ -25,6 +25,7 @@ return [
             'enableTwigFilter' => true,
             'enableTwigFunction' => true,
             'flavor' => 'commonmark',
+            'extensions' => [],
             'commonmark' => [
                 'html_input' => 'allow',
                 'allow_unsafe_links' => true,
@@ -57,6 +58,11 @@ return [
             <td><code>flavor</code></td>
             <td><code>commonmark</code></td>
             <td>The markdown dialect, see below</td>
+        </tr>
+        <tr>
+            <td><code>extensions</code></td>
+            <td><code>[]</code></td>
+            <td>Additional CommonMark extension classes on top of the selected flavor</td>
         </tr>
         <tr>
             <td><code>commonmark</code></td>
@@ -101,52 +107,6 @@ return [
     ],
 ];
 ~~~
-
-## Parser options
-
-Every option of `league/commonmark` can be used in `plugins.markdown.commonmark`. The values are
-passed to the parser environment unchanged. A complete reference is available in the
-[CommonMark documentation](https://commonmark.thephpleague.com/2.10/configuration/).
-
-Herbie sets `html_input` to `allow` and `allow_unsafe_links` to `true` by default, as shown above.
-Further options such as `max_nesting_level`, the `renderer.*` options or the `gfm` extension
-options are described in the CommonMark reference.
-
-Please note that a misspelled **option name** is silently ignored, while an invalid **value**
-throws an exception.
-
-### Restricting raw HTML
-
-Raw HTML in markdown pages is rendered as it is by default. If the content comes from untrusted
-authors, this is a security risk. The option `html_input` allows to restrict it:
-
-~~~php
-return [
-    'plugins' => [
-        'markdown' => [
-            'commonmark' => [
-                'html_input' => 'escape',
-                'allow_unsafe_links' => false,
-            ],
-        ],
-    ],
-];
-~~~
-
-## Twig filter and function
-
-In addition to page content, the parser is available in Twig templates as filter and as function.
-
-~~~twig
-{{ '{{' }} '# A heading'|markdown {{ '}}' }}
-~~~
-
-~~~twig
-{{ '{{' }} markdown('# A heading') {{ '}}' }}
-~~~
-
-Both are registered by default and can be disabled with `enableTwigFilter` and
-`enableTwigFunction`.
 
 ## Supported constructs per flavor
 
@@ -199,6 +159,69 @@ One detail is worth pointing out:
 - **HTML entities** such as `&copy;` are decoded and output as the character `©`. This rarely
   changes what the visitor sees, but it changes the generated markup.
 
+## Additional extensions
+
+The option `extensions` enables additional extension classes on top of the selected flavor. Many
+extensions shipped with `league/commonmark` can be used without an additional Composer package.
+Each class must implement `League\CommonMark\Extension\ExtensionInterface` and be instantiable
+without constructor arguments; duplicates are ignored. Extensions that require custom
+programmatic setup cannot be added through configuration alone.
+
+To enable typographic quotes, dashes and ellipses:
+
+~~~php
+return [
+    'plugins' => [
+        'markdown' => [
+            'extensions' => [
+                \League\CommonMark\Extension\SmartPunct\SmartPunctExtension::class,
+            ],
+            'commonmark' => [
+                'smartpunct' => [
+                    'double_quote_opener' => '“',
+                    'double_quote_closer' => '”',
+                    'single_quote_opener' => '‘',
+                    'single_quote_closer' => '’',
+                ],
+            ],
+        ],
+    ],
+];
+~~~
+
+If an extension provides configuration, pass it through `plugins.markdown.commonmark` as usual.
+
+## Parser options
+
+Every option of `league/commonmark` can be used in `plugins.markdown.commonmark`. The values are
+passed to the parser environment unchanged. A complete reference is available in the
+[configuration reference](https://commonmark.thephpleague.com/2.x/configuration/).
+
+Herbie sets `html_input` to `allow` and `allow_unsafe_links` to `true` by default, as shown above.
+Further options such as `max_nesting_level`, the `renderer.*` options or the `gfm` extension
+options are described in the configuration reference.
+
+Please note that a misspelled **option name** is silently ignored, while an invalid **value**
+throws an exception.
+
+### Restricting raw HTML
+
+Raw HTML in markdown pages is rendered as it is by default. If the content comes from untrusted
+authors, this is a security risk. The option `html_input` allows to restrict it:
+
+~~~php
+return [
+    'plugins' => [
+        'markdown' => [
+            'commonmark' => [
+                'html_input' => 'escape',
+                'allow_unsafe_links' => false,
+            ],
+        ],
+    ],
+];
+~~~
+
 ### Raw HTML blocks
 
 Raw HTML blocks end at the first empty line according to the CommonMark specification. Herbie
@@ -214,3 +237,18 @@ Paragraph 2
 ~~~
 
 Indented code samples that contain HTML remain code blocks.
+
+## Twig filter and function
+
+In addition to page content, the parser is available in Twig templates as filter and as function.
+
+~~~twig
+{{ '{{' }} '# A heading'|markdown {{ '}}' }}
+~~~
+
+~~~twig
+{{ '{{' }} markdown('# A heading') {{ '}}' }}
+~~~
+
+Both are registered by default and can be disabled with `enableTwigFilter` and
+`enableTwigFunction`.

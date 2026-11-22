@@ -51,6 +51,20 @@ final class MarkdownPluginTest extends Unit
         $app->getTwigRenderer()->renderString('{{ markdown("# This is markdown") }}');
     }
 
+    public function testConfiguredSmartPunctExtension(): void
+    {
+        $app = $this->initApplication(
+            dirname(__DIR__, 3),
+            dirname(__DIR__) . '/Fixtures/markdown-smartpunct',
+        );
+
+        $html = $app->getTwigRenderer()->renderString('{{ \'"Hi" -- ...\'|markdown }}');
+
+        $this->assertStringContainsString('“Hi”', $html);
+        $this->assertStringContainsString('–', $html);
+        $this->assertStringContainsString('…', $html);
+    }
+
     protected function _setUp(): void
     {
         $this->app = $this->initApplication(

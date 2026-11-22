@@ -31,6 +31,7 @@ return [
             'enableTwigFilter' => true,
             'enableTwigFunction' => true,
             'flavor' => 'commonmark',
+            'extensions' => [],
             'commonmark' => [
                 'html_input' => 'allow',
                 'allow_unsafe_links' => true,
@@ -55,11 +56,41 @@ The option `flavor` selects the set of CommonMark extensions:
 
 An unknown value falls back to `commonmark`.
 
+### Additional extensions
+
+The option `extensions` enables additional extension classes on top of the selected flavor. Many
+extensions shipped with `league/commonmark` can be used without an additional Composer package.
+Each class must implement `League\CommonMark\Extension\ExtensionInterface` and be instantiable
+without constructor arguments; duplicates are ignored. Extensions that require custom
+programmatic setup cannot be added through configuration alone.
+
+To enable typographic quotes, dashes and ellipses:
+
+~~~php
+return [
+    'plugins' => [
+        'markdown' => [
+            'extensions' => [
+                \League\CommonMark\Extension\SmartPunct\SmartPunctExtension::class,
+            ],
+            'commonmark' => [
+                'smartpunct' => [
+                    'double_quote_opener' => '“',
+                    'double_quote_closer' => '”',
+                    'single_quote_opener' => '‘',
+                    'single_quote_closer' => '’',
+                ],
+            ],
+        ],
+    ],
+];
+~~~
+
 ### CommonMark options
 
 Every option of `league/commonmark` can be used in `plugins.markdown.commonmark`, they are
-passed to the parser environment as they are. A complete reference is available at
-<https://commonmark.thephpleague.com/2.10/configuration/>.
+passed to the parser environment as they are. A complete reference is available in the
+[configuration reference](https://commonmark.thephpleague.com/2.x/configuration/).
 
 Please note that a misspelled **option name** is silently ignored, while an invalid **value**
 throws an exception.

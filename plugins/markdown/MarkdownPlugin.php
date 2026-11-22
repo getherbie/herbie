@@ -7,6 +7,7 @@ namespace herbie\plugins\markdown;
 use herbie\Config;
 use herbie\Plugin;
 use herbie\plugins\AbstractParserPlugin;
+use InvalidArgumentException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\ExtensionInterface;
@@ -43,6 +44,7 @@ final class MarkdownPlugin extends AbstractParserPlugin
     public function __construct(Config $config, LoggerInterface $logger)
     {
         parent::__construct($config, $logger, 'plugins.markdown');
+        $this->assertValidExtensions();
     }
 
     protected function getFormats(): array
@@ -86,7 +88,7 @@ final class MarkdownPlugin extends AbstractParserPlugin
     }
 
     /**
-     * Returns the extension classes of the configured flavour
+     * Returns the extension classes of the configured flavour and the additional configured extensions
      *
      * @return string[]
      */
@@ -102,12 +104,29 @@ final class MarkdownPlugin extends AbstractParserPlugin
             );
         }
 
-        return self::FLAVORS[$flavour];
+        /** @var array<mixed> $extensions */
+        $extensions = array_merge(self::FLAVORS[$flavour], $this->config->getAsArray('extensions'));
+
+        return array_values(array_unique(array_filter($extensions, 'is_string')));
+    }
+
+    private function assertValidExtensions(): void
+    {
+        foreach ($this->config->getAsArray('extensions') as $extension) {
+            if (
+                !is_string($extension)
+                || !class_exists($extension)
+                || !is_subclass_of($extension, ExtensionInterface::class)
+            ) {
+                $value = is_string($extension) ? $extension : gettype($extension);
+                throw new InvalidArgumentException(sprintf('Invalid markdown extension class "%s".', $value));
+            }
+        }
     }
 
     /**
      * Options for the CommonMark environment, they are passed as they are.
-     * See https://commonmark.thephpleague.com/2.10/configuration/
+     * See https://commonmark.thephpleague.com/2.x/configuration/
      *
      * @return array<string, mixed>
      */
