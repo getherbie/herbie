@@ -20,6 +20,8 @@ use Twig\TwigFunction;
 #[Plugin('search')]
 final class SearchPlugin extends AbstractPlugin
 {
+    private const int CACHE_TTL = 60 * 60 * 24;
+
     public function __construct(private readonly CacheInterface $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
 
     public function twigFunctions(): array
@@ -76,12 +78,13 @@ final class SearchPlugin extends AbstractPlugin
      * Render page segments to plain text (for search matching).
      * Uses an internal search cache that is invalidated when any page changes.
      *
-     * @param string $cacheToken Global cache token (most recent modified timestamp).
+     * @param int|string $cacheToken Global cache token (most recent modified timestamp).
      */
-    private function loadPageData(Page $item, string $cacheToken): array
+    private function loadPageData(Page $item, int|string $cacheToken): array
     {
         $useCache = $this->config->getAsBool('plugins.search.useCache', true);
-        $cacheId = $useCache ? 'search_' . $item->getRoute() . '_' . $cacheToken : null;
+        $baseCacheId = 'search_' . md5($item->getRoute());
+        $cacheId = $useCache ? $baseCacheId . '_' . $cacheToken : null;
 
         if ($useCache && $cacheId !== null) {
             $cached = $this->cache->get($cacheId);
@@ -106,7 +109,12 @@ final class SearchPlugin extends AbstractPlugin
         $content = strip_tags($withSpaces);
 
         if ($useCache && $cacheId !== null) {
-            $this->cache->set($cacheId, $content);
+            $previous = $this->cache->get($baseCacheId . '_previous');
+            if (is_string($previous) && $previous !== $cacheId) {
+                $this->cache->delete($previous);
+            }
+            $this->cache->set($baseCacheId . '_previous', $cacheId, self::CACHE_TTL);
+            $this->cache->set($cacheId, $content, self::CACHE_TTL);
         }
 
         return [$item->getTitle(), $content];
@@ -140,13 +148,16 @@ final class SearchPlugin extends AbstractPlugin
             return [];
         }
 
-        // Build a global cache token once: the most recent modified timestamp across all pages.
-        // If any page changes, the token changes and old cache entries become stale.
-        $cacheToken = '';
-        foreach ($this->pageRepository->findAll() as $page) {
-            $m = $page->getModified();
-            if ($m > $cacheToken) {
-                $cacheToken = $m;
+        // Use the page files' mtime published by the persistence, not the (cached) page list.
+        $cacheToken = $this->cache->get('herbie_pages_modified');
+        if (!is_int($cacheToken)) {
+            clearstatcache(true);
+            $cacheToken = 0;
+            foreach ($this->pageRepository->findAll() as $page) {
+                $path = $page->getPath();
+                if (is_file($path)) {
+                    $cacheToken = max($cacheToken, filemtime($path) ?: 0);
+                }
             }
         }
 

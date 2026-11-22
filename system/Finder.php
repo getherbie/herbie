@@ -33,6 +33,19 @@ final readonly class Finder
         return $finder->name($patterns)->sortByName(true);
     }
 
+    /**
+     * Most recent modification time across all page files.
+     */
+    public function pagesModified(): int
+    {
+        clearstatcache(true);
+        $modified = 0;
+        foreach ($this->pageFiles() as $file) {
+            $modified = max($modified, $file->getMTime());
+        }
+        return $modified;
+    }
+
     protected function getPatterns(array $extensions): array
     {
         return array_map(fn(string $extension) => '*.' . $extension, $extensions);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use DateInterval;
 use Psr\SimpleCache\CacheInterface;
 
 final class NullCache implements CacheInterface
@@ -14,7 +15,7 @@ final class NullCache implements CacheInterface
      * @return mixed
      */
     #[\Override]
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $default;
     }
@@ -25,7 +26,7 @@ final class NullCache implements CacheInterface
      * @param null $ttl
      */
     #[\Override]
-    public function set($key, $value, $ttl = null): bool
+    public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
     {
         return false;
     }
@@ -34,7 +35,7 @@ final class NullCache implements CacheInterface
      * @param string $key
      */
     #[\Override]
-    public function delete($key): bool
+    public function delete(string $key): bool
     {
         return true;
     }
@@ -51,7 +52,7 @@ final class NullCache implements CacheInterface
      * @return iterable
      */
     #[\Override]
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         foreach ($keys as $key) {
             yield $key => $default;
@@ -63,7 +64,7 @@ final class NullCache implements CacheInterface
      * @param null $ttl
      */
     #[\Override]
-    public function setMultiple($values, $ttl = null): bool
+    public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
     {
         return false;
     }
@@ -72,7 +73,7 @@ final class NullCache implements CacheInterface
      * @param iterable $keys
      */
     #[\Override]
-    public function deleteMultiple($keys): bool
+    public function deleteMultiple(iterable $keys): bool
     {
         return true;
     }
@@ -81,7 +82,7 @@ final class NullCache implements CacheInterface
      * @param string $key
      */
     #[\Override]
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return false;
     }

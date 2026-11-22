@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
+use DateInterval;
 use herbie\EventManager;
 use herbie\events\LayoutRenderedEvent;
 use herbie\events\RenderLayoutEvent;
@@ -128,19 +129,19 @@ final class PageRendererMiddlewareTest extends Unit
         $page = new Page(['layout' => ''], ['a' => 'fresh']);
         $cache = new class implements CacheInterface {
             #[\Override]
-            public function get($key, $default = null)
+            public function get(string $key, mixed $default = null): mixed
             {
                 return 'from the cache';
             }
 
             #[\Override]
-            public function set($key, $value, $ttl = null): bool
+            public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function delete($key): bool
+            public function delete(string $key): bool
             {
                 return true;
             }
@@ -152,25 +153,25 @@ final class PageRendererMiddlewareTest extends Unit
             }
 
             #[\Override]
-            public function getMultiple($keys, $default = null): iterable
+            public function getMultiple(iterable $keys, mixed $default = null): iterable
             {
                 return [];
             }
 
             #[\Override]
-            public function setMultiple($values, $ttl = null): bool
+            public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function deleteMultiple($keys): bool
+            public function deleteMultiple(iterable $keys): bool
             {
                 return true;
             }
 
             #[\Override]
-            public function has($key): bool
+            public function has(string $key): bool
             {
                 return true;
             }

@@ -10,6 +10,7 @@ use AltchaOrg\Altcha\CreateChallengeOptions;
 use AltchaOrg\Altcha\Payload;
 use AltchaOrg\Altcha\SolveChallengeOptions;
 use Codeception\Test\Unit;
+use DateInterval;
 use herbie\Application;
 use herbie\Config;
 use herbie\events\ResponseGeneratedEvent;
@@ -724,13 +725,13 @@ final class ArrayCacheStub implements CacheInterface
     public array $ttls = [];
 
     #[\Override]
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->values[$key] ?? $default;
     }
 
     #[\Override]
-    public function set($key, $value, $ttl = null): bool
+    public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
     {
         $this->values[$key] = $value;
         $this->ttls[$key] = $ttl;
@@ -738,7 +739,7 @@ final class ArrayCacheStub implements CacheInterface
     }
 
     #[\Override]
-    public function delete($key): bool
+    public function delete(string $key): bool
     {
         return true;
     }
@@ -750,25 +751,25 @@ final class ArrayCacheStub implements CacheInterface
     }
 
     #[\Override]
-    public function getMultiple($keys, $default = null): iterable
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         return [];
     }
 
     #[\Override]
-    public function setMultiple($values, $ttl = null): bool
+    public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
     {
         return true;
     }
 
     #[\Override]
-    public function deleteMultiple($keys): bool
+    public function deleteMultiple(iterable $keys): bool
     {
         return true;
     }
 
     #[\Override]
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return isset($this->values[$key]);
     }

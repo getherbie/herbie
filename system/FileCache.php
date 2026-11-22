@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace herbie;
 
-use InvalidArgumentException;
+use DateInterval;
+use DateTimeImmutable;
 use Psr\SimpleCache\CacheInterface;
 
 final readonly class FileCache implements CacheInterface
@@ -16,15 +17,15 @@ final readonly class FileCache implements CacheInterface
         $path = rtrim($path, DIRECTORY_SEPARATOR);
 
         if (empty($path)) {
-            throw new InvalidArgumentException('Path was not provided');
+            throw new CacheInvalidArgumentException('Path was not provided');
         }
 
         if (!is_dir($path) && !@mkdir($path, 0755, true) && !is_dir($path)) {
-            throw new InvalidArgumentException('Provided path directory does not exist and/or could not be created');
+            throw new CacheInvalidArgumentException('Provided path directory does not exist and/or could not be created');
         }
 
         if (!is_writable($path)) {
-            throw new InvalidArgumentException('Provided path is not a writable directory');
+            throw new CacheInvalidArgumentException('Provided path is not a writable directory');
         }
 
         $this->path = $path;
@@ -33,12 +34,12 @@ final readonly class FileCache implements CacheInterface
     #[\Override]
     public function clear(): bool
     {
-        $filenames = glob($this->path . '/*.cache');
+        $filenames = glob($this->path . '/*');
         if ($filenames === false) {
             return false;
         }
         foreach ($filenames as $filename) {
-            if (file_exists($filename)) {
+            if (is_file($filename)) {
                 unlink($filename);
             }
         }
@@ -47,37 +48,55 @@ final readonly class FileCache implements CacheInterface
     }
 
     #[\Override]
-    public function has($key)
+    public function has(string $key): bool
     {
-        if (empty($key)) {
-            return false;
-        }
-
-        return file_exists($this->getFilename($key));
+        return file_exists($this->getFilename($this->validateKey($key)));
     }
 
     protected function getFilename(string $key): string
     {
-        return $this->path . DIRECTORY_SEPARATOR . md5($key) . '.cache';
+        return $this->path . DIRECTORY_SEPARATOR . $key;
+    }
+
+    private function validateKey(mixed $key): string
+    {
+        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1) {
+            throw new CacheInvalidArgumentException(
+                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.].',
+            );
+        }
+        return $key;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function validateKeys(mixed $keys): array
+    {
+        if (!is_array($keys) && !$keys instanceof \Traversable) {
+            throw new CacheInvalidArgumentException('Cache keys must be an array or Traversable.');
+        }
+        $result = [];
+        foreach ($keys as $key) {
+            $result[] = $this->validateKey($key);
+        }
+        return $result;
     }
 
     #[\Override]
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $multiple = [];
-        foreach ($keys as $key) {
+        foreach ($this->validateKeys($keys) as $key) {
             $multiple[$key] = $this->get($key, $default);
         }
         return $multiple;
     }
 
     #[\Override]
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
-        if (empty($key)) {
-            return $default;
-        }
-
+        $key = $this->validateKey($key);
         $cacheFile = $this->getFilename($key);
 
         if (!file_exists($cacheFile)) {
@@ -85,14 +104,9 @@ final readonly class FileCache implements CacheInterface
         }
 
         $contents = (string)file_get_contents($cacheFile);
+        $file = $this->unserialize($contents);
 
-        if (!json_validate($contents)) {
-            return $default;
-        }
-
-        $file = json_decode($contents, true);
-
-        if (!is_array($file) || $file['key'] !== $key) {
+        if (!is_array($file) || ($file['key'] ?? null) !== $key) {
             return $default;
         }
 
@@ -102,13 +116,13 @@ final readonly class FileCache implements CacheInterface
             return $default;
         }
 
-        return $this->unserialize($file['value']) ?? $default;
+        return $file['value'];
     }
 
     #[\Override]
-    public function delete($key)
+    public function delete(string $key): bool
     {
-        $filename = $this->getFilename($key);
+        $filename = $this->getFilename($this->validateKey($key));
 
         if (file_exists($filename)) {
             return unlink($filename);
@@ -131,44 +145,49 @@ final readonly class FileCache implements CacheInterface
     }
 
     #[\Override]
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, int|DateInterval|null $ttl = null): bool
     {
         foreach ($values as $key => $value) {
-            $this->set($key, $value, $ttl);
+            $this->set($this->validateKey($key), $value, $ttl);
         }
 
         return true;
     }
 
     #[\Override]
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
     {
-        if (empty($key)) {
-            return false;
+        $key = $this->validateKey($key);
+        if ($ttl instanceof DateInterval) {
+            $ttl = (new DateTimeImmutable())->add($ttl)->getTimestamp() - time();
         }
 
         $file = [
             'key' => $key,
-            'value' => $this->serialize($value),
+            'value' => $value,
             'ttl' => $ttl,
             'ctime' => time(),
         ];
 
-        return (bool)file_put_contents($this->getFilename($key), json_encode($file));
-    }
+        $filename = $this->getFilename($key);
+        $tempFile = $filename . '.' . bin2hex(random_bytes(8)) . '.tmp';
 
-    /**
-     * @param mixed $data
-     */
-    protected function serialize($data): string
-    {
-        return serialize($data);
+        try {
+            if (file_put_contents($tempFile, serialize($file)) === false) {
+                return false;
+            }
+            return rename($tempFile, $filename);
+        } finally {
+            if (is_file($tempFile)) {
+                unlink($tempFile);
+            }
+        }
     }
 
     #[\Override]
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys): bool
     {
-        foreach ((array)$keys as $key) {
+        foreach ($this->validateKeys($keys) as $key) {
             $this->delete($key);
         }
 

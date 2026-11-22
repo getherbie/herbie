@@ -287,8 +287,13 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
     {
         $items = [];
 
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $cached = $this->cache->get(__METHOD__);
+        $useCache = $this->cacheEnable && $this->cacheTTL > 0;
+        $baseCacheId = 'pagelist_' . md5(__METHOD__);
+        $modified = $useCache ? $this->finder->pagesModified() : 0;
+        $cacheId = $baseCacheId . '_' . $modified;
+
+        if ($useCache) {
+            $cached = $this->cache->get($cacheId);
             if (is_array($cached)) {
                 return $cached;
             }
@@ -298,8 +303,14 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
             $items[] = $this->readFile($page);
         }
 
-        if ($this->cacheEnable && $this->cacheTTL > 0) {
-            $this->cache->set(__METHOD__, $items, $this->cacheTTL);
+        if ($useCache) {
+            $previous = $this->cache->get($baseCacheId . '_previous');
+            if (is_string($previous) && $previous !== $cacheId) {
+                $this->cache->delete($previous);
+            }
+            $this->cache->set($baseCacheId . '_previous', $cacheId, $this->cacheTTL);
+            $this->cache->set('herbie_pages_modified', $modified, $this->cacheTTL);
+            $this->cache->set($cacheId, $items, $this->cacheTTL);
         }
 
         return $items;

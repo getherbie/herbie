@@ -144,7 +144,7 @@ final class SearchPluginTest extends Unit
     {
         $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
         $cache->method('get')->willReturn(null);
-        $cache->expects($this->once())->method('set');
+        $cache->expects($this->exactly(2))->method('set');
 
         $plugin = $this->createPluginWithCache($cache, true);
         $page = new \herbie\Page(['title' => 'Test'], ['default' => 'hello']);
@@ -175,6 +175,10 @@ final class SearchPluginTest extends Unit
         });
         $cache->method('set')->willReturnCallback(static function (string $key, $value) use (&$store): bool {
             $store[$key] = $value;
+            return true;
+        });
+        $cache->method('delete')->willReturnCallback(static function (string $key) use (&$store): bool {
+            unset($store[$key]);
             return true;
         });
 

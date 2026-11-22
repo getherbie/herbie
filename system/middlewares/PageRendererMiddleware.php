@@ -20,6 +20,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\CacheInterface;
 
+use function herbie\file_mtime;
+
 final readonly class PageRendererMiddleware implements MiddlewareInterface
 {
     private bool $cacheEnable;
@@ -68,8 +70,12 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
 
         $content = null;
 
-        $cacheId = $page->getCacheId();
-        if ($this->cacheEnable && !empty($page->getCached())) {
+        $baseCacheId = 'page_' . md5($page->getCacheId());
+        $path = $page->getPath();
+        $cacheId = $baseCacheId . '_' . (is_file($path) ? file_mtime($path) : 0);
+        $useCache = $this->cacheEnable && !empty($page->getCached());
+
+        if ($useCache) {
             $content = $this->cache->get($cacheId);
         }
 
@@ -104,7 +110,12 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
             $event = $this->eventManager->dispatch(new LayoutRenderedEvent($content));
             $content = $event->getContent();
 
-            if ($this->cacheEnable && !empty($page->getCached())) {
+            if ($useCache) {
+                $previous = $this->cache->get($baseCacheId . '_previous');
+                if (is_string($previous) && $previous !== $cacheId) {
+                    $this->cache->delete($previous);
+                }
+                $this->cache->set($baseCacheId . '_previous', $cacheId, $this->cacheTTL);
                 $this->cache->set($cacheId, $content, $this->cacheTTL);
             }
         }
