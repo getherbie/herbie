@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - `FileCache` overwrites existing entries on Windows via `unlink()` before `rename()`.
 
 ### Deprecated
-- Injecting `Psr\SimpleCache\CacheInterface` into plugins still resolves to `herbie\Cache`. New plugins should inject `herbie\Cache`; the alias may be removed in a future major release.
+- Injecting `Psr\SimpleCache\CacheInterface` still resolves to `herbie\Cache` but is deprecated; inject `herbie\Cache` instead.
 
 ### Documentation
 - Added Website Starter demo links and a third hero CTA with theme styles.
