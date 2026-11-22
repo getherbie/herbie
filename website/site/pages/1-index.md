@@ -6,8 +6,10 @@ hero:
   subtitle: Herbie is a blazing fast, lightweight, and highly customizable CMS running on PHP, Twig, Markdown, and YAML. No database required.
   primary_label: Get started
   primary_route: doc/first-steps/installation
-  secondary_label: View on GitHub
-  secondary_url: https://github.com/getherbie/herbie
+  secondary_label: View demo
+  secondary_url: https://start.herbie.tebe.ch/
+  tertiary_label: View on GitHub
+  tertiary_url: https://github.com/getherbie/herbie
   badges:
     - alt: Packagist downloads
       url: https://packagist.org/packages/getherbie/herbie

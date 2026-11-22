@@ -58,6 +58,8 @@ Create your own Herbie website with Docker (recommended):
 
 Open <http://localhost:8888>.
 
+Want to see it first? The [Herbie Website Starter](https://start.herbie.tebe.ch/) demo ships with 7 themes.
+
 <details>
 <summary>Without Docker (PHP & Composer required)</summary>
 

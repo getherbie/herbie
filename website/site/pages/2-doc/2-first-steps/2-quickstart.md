@@ -7,6 +7,8 @@ layout: doc
 
 Here is the short version of how to install a simple Herbie website using a website template.
 
+<p><a class="pure-button" href="https://start.herbie.tebe.ch/">View demo</a></p>
+
 With Docker and Docker Compose (recommended):
 
 ~~~bash
