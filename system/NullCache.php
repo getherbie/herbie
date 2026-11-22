@@ -78,18 +78,9 @@ final class NullCache implements CacheInterface
 
     private function validateKey(mixed $key): string
     {
-        if (!is_string($key)) {
-            throw new CacheInvalidArgumentException('Cache key must be a string.');
-        }
-
-        $length = strlen($key);
-        if ($length < 1 || $length > 64) {
-            throw new CacheInvalidArgumentException('Cache key must be 1 to 64 bytes long.');
-        }
-
-        if (strpbrk($key, '{}()/\\@:') !== false || str_contains($key, "\0") || $key === '.' || $key === '..') {
+        if (!is_string($key) || preg_match('/^[A-Za-z0-9_.]{1,64}$/D', $key) !== 1) {
             throw new CacheInvalidArgumentException(
-                'Cache key must not contain {}()/\\@: or NUL, and must not be "." or "..".',
+                'Cache key must be a string of 1 to 64 characters from [A-Za-z0-9_.].',
             );
         }
 

@@ -91,14 +91,14 @@ final class FileCacheTest extends Unit
         $this->assertFileExists($this->cachePath . '/herbie_herbie_pages_modified');
     }
 
-    public function testAdditionalCharactersAreAllowed(): void
+    public function testMinimumCharacterSetIsAllowed(): void
     {
         $cache = new FileCache($this->cachePath);
 
-        $this->assertTrue($cache->set('page-1', 'value'));
-        $this->assertSame('value', $cache->get('page-1'));
-        $this->assertTrue($cache->set('has space', 'value'));
-        $this->assertSame('value', $cache->get('has space'));
+        foreach (['key_1', 'a.b', '.', '..'] as $key) {
+            $this->assertTrue($cache->set($key, 'value'));
+            $this->assertSame('value', $cache->get($key));
+        }
     }
 
     public function testTtlExpiry(): void
@@ -137,7 +137,7 @@ final class FileCacheTest extends Unit
             static fn(string $key) => $cache->delete($key),
         ];
 
-        foreach (['', '.', '..', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
+        foreach (['', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {
             foreach ($operations as $operation) {
                 try {
                     $operation($key);
