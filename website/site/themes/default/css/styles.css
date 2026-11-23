@@ -608,7 +608,7 @@ body.mobile-nav-locked {
     --footer-text: rgba(255, 255, 255, 0.7);
     --footer-link: #ffffff;
     --footer-link-hover: #cccccc;
-    --footer-rule: #cccccc;
+    --footer-rule: rgba(255, 255, 255, 0.15);
     background-color:var(--footer-bg);
     margin-top:80px;
     font-size:0.85em;
