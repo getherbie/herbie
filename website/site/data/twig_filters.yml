@@ -12,10 +12,10 @@
 - name: slugify
   code: >-
     {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
-  desc: Returns a string slug for using as an URL segment.
+  desc: Converts a string into a URL-friendly slug, a simplified text suitable for use in URL segments.
   return:
     - string
-    - The slugified string
+    - The slug
 - name: spaceless
   code: >-
     {{ "<div>   <strong>foo</strong>   </div>"|spaceless }}
@@ -26,7 +26,7 @@
 - name: twigify
   code: >-
     {{ "Hello {{ page.title }}"|twigify }}
-  desc: Renders a string with Twig and returns the result.
+  desc: Renders a string as a Twig template in the current context and returns the result.
   return:
     - string
     - The rendered string

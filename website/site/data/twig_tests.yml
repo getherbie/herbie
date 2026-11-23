@@ -4,16 +4,16 @@
     {% if "@site/data" is path_readable %}
       Path or file is readable
     {% endif %}
-  desc: Tests if the given alias or path exists and is readable.
+  desc: Tests whether the given alias or filesystem path exists and is readable.
   return:
     - bool
-    - Whether the alias or path exists and is readable.
+    - True if the alias or filesystem path exists and is readable.
 - name: path_writable
   code: >-
     {% if "@site/data" is path_writable %}
       Path or file is writable
-    {% endif %}  
-  desc: Tests if the given alias or path exists and is writable.
+    {% endif %}
+  desc: Tests whether the given alias or filesystem path exists and is writable.
   return:
     - bool
-    - Whether the alias or path exists and is writable.
+    - True if the alias or filesystem path exists and is writable.

@@ -140,7 +140,7 @@
                     <div class="hero-actions">
                         <a class="pure-button hero-button" href="{{ url_rel(page.hero.primary_route) }}">{{ page.hero.primary_label }}</a>
                         <a class="hero-button hero-button-secondary" href="{{ page.hero.secondary_url }}">{{ page.hero.secondary_label }}</a>
-                        <a class="hero-button hero-button-tertiary" href="{{ page.hero.tertiary_url }}">{{ page.hero.tertiary_label }}</a>
+                        <a class="hero-button hero-button-tertiary" href="{{ page.hero.tertiary_url }}" aria-label="{{ page.hero.tertiary_label }}">{{ icon('github', 20, 20) }}</a>
                     </div>
                     <div class="hero-badges">
                         {% for badge in page.hero.badges %}

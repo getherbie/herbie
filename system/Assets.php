@@ -34,6 +34,7 @@ final class Assets
 
     /**
      * @param array|string $paths
+     * TODO: Rename $raw for clarity. When true, $paths is treated as inline CSS content, not a file path/URL.
      */
     public function addCss($paths, array $attr = [], ?string $group = null, bool $raw = false, int $pos = 1): void
     {
@@ -81,6 +82,7 @@ final class Assets
 
     /**
      * @param array|string $paths
+     * TODO: Rename $raw for clarity. When true, $paths is treated as inline JavaScript content, not a file path/URL.
      */
     public function addJs($paths, array $attr = [], ?string $group = null, bool $raw = false, int $pos = 1): void
     {

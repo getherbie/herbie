@@ -92,7 +92,7 @@ final class PageFormatterCest
         $I->amOnPage('/formatter/invalid');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->see('Page not found');
-        $I->see('Oops, something got wrong!');
+        $I->see('could not be found');
     }
 
     public function testTextPageWithVariousFormattings(AcceptanceTester $I)

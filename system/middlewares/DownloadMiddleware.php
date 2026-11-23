@@ -87,9 +87,36 @@ final readonly class DownloadMiddleware implements MiddlewareInterface
      */
     private function determineContentType(string $filepath): string
     {
-        $extension = (string)pathinfo($filepath, PATHINFO_EXTENSION);
+        $extension = strtolower((string)pathinfo($filepath, PATHINFO_EXTENSION));
         return match ($extension) {
+            '7z' => 'application/x-7z-compressed',
+            'bz2' => 'application/x-bzip2',
+            'csv' => 'text/csv',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'epub' => 'application/epub+zip',
+            'gif' => 'image/gif',
+            'gz', 'tgz' => 'application/gzip',
+            'jpeg', 'jpg' => 'image/jpeg',
+            'json' => 'application/json',
+            'mp3' => 'audio/mpeg',
+            'mp4' => 'video/mp4',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+            'odt' => 'application/vnd.oasis.opendocument.text',
             'pdf' => 'application/pdf',
+            'png' => 'image/png',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'rar' => 'application/vnd.rar',
+            'rtf' => 'application/rtf',
+            'svg' => 'image/svg+xml',
+            'tar' => 'application/x-tar',
+            'txt' => 'text/plain',
+            'webp' => 'image/webp',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'xml' => 'application/xml',
+            'zip' => 'application/zip',
             default => throw SystemException::serverError('No content-type found for ' . $extension),
         };
     }

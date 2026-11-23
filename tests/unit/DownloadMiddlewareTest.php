@@ -67,14 +67,48 @@ final class DownloadMiddlewareTest extends Unit
         $middleware->process($this->requestFor('download/missing.pdf'), $this->terminalHandler());
     }
 
+    public function testCommonDownloadTypesAreServedWithExpectedContentType(): void
+    {
+        $files = [
+            'archive.zip' => 'application/zip',
+            'document.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'notes.txt' => 'text/plain',
+            'picture.png' => 'image/png',
+            'sheet.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+
+        $middleware = $this->createMiddleware();
+        foreach ($files as $filename => $contentType) {
+            file_put_contents($this->storage . '/' . $filename, 'content');
+            $response = $middleware->process($this->requestFor('download/' . $filename), $this->terminalHandler());
+            $this->assertSame($contentType, $response->getHeaderLine('Content-type'), $filename);
+        }
+    }
+
+    public function testUppercaseAndMixedCaseFileExtensionsAreHandledCaseInsensitively(): void
+    {
+        $files = [
+            'REPORT.PDF' => 'application/pdf',
+            'Image.JpG' => 'image/jpeg',
+            'ARCHIVE.ZIP' => 'application/zip',
+        ];
+
+        $middleware = $this->createMiddleware();
+        foreach ($files as $filename => $contentType) {
+            file_put_contents($this->storage . '/' . $filename, 'content');
+            $response = $middleware->process($this->requestFor('download/' . $filename), $this->terminalHandler());
+            $this->assertSame($contentType, $response->getHeaderLine('Content-type'), $filename);
+        }
+    }
+
     public function testUnsupportedFileExtensionThrowsServerError(): void
     {
-        file_put_contents($this->storage . '/notes.txt', 'text');
+        file_put_contents($this->storage . '/notes.unknownext', 'text');
         $middleware = $this->createMiddleware();
 
         $this->expectException(SystemException::class);
 
-        $middleware->process($this->requestFor('download/notes.txt'), $this->terminalHandler());
+        $middleware->process($this->requestFor('download/notes.unknownext'), $this->terminalHandler());
     }
 
     public function testFileNameWithUmlautsIsServed(): void

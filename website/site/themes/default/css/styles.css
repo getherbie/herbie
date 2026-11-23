@@ -522,20 +522,23 @@ body.mobile-nav-locked {
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    padding:0 1.3em;
+    width:2.6em;
     min-height:2.6em;
+    padding:0;
     font-size:1rem;
     line-height:1;
-    border:1px solid var(--border);
+    border:1px solid currentColor;
     border-radius:8px;
     background:transparent;
     color:var(--text-muted);
     transition:background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
+.hero-button-tertiary svg {
+    display:block;
+}
 .hero-button-tertiary:hover,
 .hero-button-tertiary:focus {
     background:var(--code-bg);
-    border-color:var(--text-muted);
     color:var(--heading);
 }
 .hero-badges {
@@ -608,7 +611,7 @@ body.mobile-nav-locked {
     --footer-text: rgba(255, 255, 255, 0.7);
     --footer-link: #ffffff;
     --footer-link-hover: #cccccc;
-    --footer-rule: #cccccc;
+    --footer-rule: rgba(255, 255, 255, 0.15);
     background-color:var(--footer-bg);
     margin-top:80px;
     font-size:0.85em;
@@ -626,8 +629,8 @@ body.mobile-nav-locked {
 }
 .footer li a {
     display:inline-block;
-    min-height:24px;
-    line-height:24px;
+    padding:0.25rem 0;
+    line-height:1.5;
 }
 .footer ul {
     list-style-type:none;
@@ -635,7 +638,7 @@ body.mobile-nav-locked {
     padding:0;
 }
 .footer li {
-    line-height:1.6em;
+    line-height:1.6;
 }
 .footer h3 {
     color:var(--footer-link);
@@ -643,8 +646,12 @@ body.mobile-nav-locked {
 .footer p {
     padding-right:1em;
 }
+.footer-links,
+.footer-about {
+    margin-bottom:2rem;
+}
 .footer hr {
-    margin-top:5em;
+    margin-top:3em;
     margin-bottom:2em;
     background-color:var(--footer-rule);
     border:none;
@@ -653,6 +660,13 @@ body.mobile-nav-locked {
 
 .footer-copyright {
     margin-top: 1em;
+}
+
+@media (min-width: 48em) {
+    .footer-links,
+    .footer-about {
+        margin-bottom:0;
+    }
 }
 
 .toc {
