@@ -204,8 +204,6 @@ This means Twig output becomes part of the Markdown input. HTML returned by Twig
 [Variables]({{ '{{' }} url_rel('doc/contents/variables') }})
 ~~~
 
-Use `link_page()` outside Markdown link syntax, for example as a standalone Twig expression.
-
 Because segment rendering is event-based, custom listeners or priorities can change this behavior.
 
 ## Parser options
