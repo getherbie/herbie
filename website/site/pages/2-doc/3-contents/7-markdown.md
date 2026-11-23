@@ -198,9 +198,7 @@ By default, Herbie processes page segments in this order:
 1. Twig renders the segment when `page.twig` is enabled and `plugins.CORE.enableTwigInSegmentFilter` is `true`.
 2. The Markdown plugin parses the resulting segment for Markdown pages.
 
-This means Twig output becomes part of the Markdown input. HTML returned by Twig functions can therefore break when it is placed inside Markdown syntax. For example, `link_page()` returns an HTML link and should not be used inside Markdown link syntax like `[text]({{ link_page(...) }})`.
-
-For links inside Markdown, prefer URL-only helpers such as `url_rel()` or `url_abs()`:
+This means Twig output becomes part of the Markdown input. HTML returned by Twig functions can therefore break when placed inside Markdown syntax. For links inside Markdown, prefer URL-only helpers such as `url_rel()` or `url_abs()`:
 
 ~~~markdown
 [Variables]({{ '{{' }} url_rel('doc/contents/variables') }})
