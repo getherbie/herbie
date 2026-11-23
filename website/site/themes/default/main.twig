@@ -139,7 +139,16 @@
                     <p class="hero-subtitle">{{ page.hero.subtitle }}</p>
                     <div class="hero-actions">
                         <a class="pure-button hero-button" href="{{ url_rel(page.hero.primary_route) }}">{{ page.hero.primary_label }}</a>
-                        <a class="hero-button hero-button-secondary" href="{{ page.hero.secondary_url }}">{{ page.hero.secondary_label }}</a>
+                        {% if page.hero.demos %}
+                            <div class="hero-demo-group">
+                                <a class="pure-button hero-button hero-button-demo" href="{{ page.hero.demo_url }}" aria-haspopup="true" aria-expanded="false" aria-controls="hero-demo-menu">{{ page.hero.demo_label }} <span class="hero-demo-caret" aria-hidden="true"></span></a>
+                                <div class="hero-demo-menu" id="hero-demo-menu">
+                                    {% for demo in page.hero.demos %}
+                                        <a href="{{ demo.url }}">{{ demo.label }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
                         <a class="hero-button hero-button-tertiary" href="{{ page.hero.tertiary_url }}" aria-label="{{ page.hero.tertiary_label }}">{{ icon('github', 20, 20) }}</a>
                     </div>
                     <div class="hero-badges">

@@ -92,3 +92,32 @@ for(let i = 0; i < links.length; i++) {
         links[i].target = '_blank';
     }
 }
+
+// demo dropdown: click to toggle, click outside or Escape to close
+document.querySelectorAll('.hero-demo-group').forEach(function (group) {
+    var trigger = group.querySelector('.hero-button-demo');
+    var menu = group.querySelector('.hero-demo-menu');
+    if (!trigger || !menu) return;
+
+    function close() {
+        group.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var open = !group.classList.contains('is-open');
+        group.classList.toggle('is-open', open);
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!group.contains(event.target)) close();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') close();
+    });
+});
+

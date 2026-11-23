@@ -7,8 +7,6 @@ layout: doc
 
 Here is the short version of how to install a simple Herbie website using a website template.
 
-<p><a class="pure-button" href="https://start.herbie.tebe.ch/">View demo</a></p>
-
 With Docker and Docker Compose (recommended):
 
 ~~~bash
@@ -34,4 +32,8 @@ But it's really not witchcraft and shouldn't be too difficult.
 
 It gets more exciting when you customize the layout, add new pages, or edit content.
 
-If problems have already occurred at this point, the first thing you should do is check all system requirements. 
+If problems have already occurred at this point, the first thing you should do is check all system requirements.
+
+See the starter website in action:
+
+<p><a class="pure-button" href="https://start.herbie.tebe.ch/">View starter website</a></p>

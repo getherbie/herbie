@@ -5,9 +5,18 @@ hero:
   title: Websites built from text files.
   subtitle: Herbie is a blazing fast, lightweight, and highly customizable CMS running on PHP, Twig, Markdown, and YAML. No database required.
   primary_label: Get started
-  primary_route: doc/first-steps/installation
-  secondary_label: View demo
-  secondary_url: https://start.herbie.tebe.ch/
+  primary_route: doc/first-steps/quickstart
+  demo_label: View demos
+  demo_url: https://demo.herbie.tebe.ch/
+  demos:
+    - label: Photo Gallery
+      url: https://demo.herbie.tebe.ch/?site=gallery
+    - label: Hut Guide
+      url: https://demo.herbie.tebe.ch/?site=huetten
+    - label: Cookbook
+      url: https://demo.herbie.tebe.ch/?site=cookbook
+    - label: Star Atlas
+      url: https://demo.herbie.tebe.ch/?site=stars
   tertiary_label: View on GitHub
   tertiary_url: https://github.com/getherbie/herbie
   badges:
