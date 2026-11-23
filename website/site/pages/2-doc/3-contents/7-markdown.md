@@ -191,6 +191,25 @@ return [
 
 If an extension provides configuration, pass it through `plugins.markdown.commonmark` as usual.
 
+## Twig and Markdown processing order
+
+By default, Herbie processes page segments in this order:
+
+1. Twig renders the segment when `page.twig` is enabled and `plugins.CORE.enableTwigInSegmentFilter` is `true`.
+2. The Markdown plugin parses the resulting segment for Markdown pages.
+
+This means Twig output becomes part of the Markdown input. HTML returned by Twig functions can therefore break when it is placed inside Markdown syntax. For example, `link_page()` returns an HTML link and should not be used inside Markdown link syntax like `[text]({{ link_page(...) }})`.
+
+For links inside Markdown, prefer URL-only helpers such as `url_rel()` or `url_abs()`:
+
+~~~markdown
+[Variables]({{ '{{' }} url_rel('doc/contents/variables') }})
+~~~
+
+Use `link_page()` outside Markdown link syntax, for example as a standalone Twig expression.
+
+Because segment rendering is event-based, custom listeners or priorities can change this behavior.
+
 ## Parser options
 
 Every option of `league/commonmark` can be used in `plugins.markdown.commonmark`. The values are
