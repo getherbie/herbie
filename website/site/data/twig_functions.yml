@@ -2,7 +2,7 @@
 - name: html_attributes
   code: >-
     {{ html_attributes({class: "btn", disabled: true, hidden: false, title: null}) }}
-  desc: Renders an associative array of HTML attributes into an escaped string. Null and false values are omitted; true renders a boolean attribute. Attribute names are escaped with the html_attr_relaxed strategy.
+  desc: Renders an associative array of HTML attributes into an escaped string. `null` and `false` values are omitted; `true` renders a boolean attribute. Attribute names are escaped with the `html_attr_relaxed` strategy.
   params:
     - name: attribs
       type: array
@@ -10,7 +10,7 @@
       default: '[]'
     - name: strategy
       type: string
-      desc: The Twig escaping strategy used for attribute values, for example html_attr, html, js, url, or css.
+      desc: The Twig escaping strategy used for attribute values, for example `html_attr`, `html`, `js`, `url`, or `css`.
       default: 'html_attr'
   return:
     - string
@@ -30,7 +30,7 @@
 - name: css_add
   code: >-
     {{ css_add("@theme/css/styles.css", {class: "styles"}, "default", false, 1) }}
-  desc: Registers a CSS asset for output by "css_out". Use raw=true to include the CSS inline.
+  desc: Registers a CSS asset for output by `css_out`. Use `raw=true` to include the CSS inline.
   params:
     - name: paths
       type: string|array
@@ -46,7 +46,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: If true, paths is treated as inline CSS content and rendered in a <style> tag instead of being referenced by URL.
+      desc: If true, paths is treated as inline CSS content and rendered in a `style` tag instead of being referenced by URL.
       default: 'false'
     - name: position
       type: int
@@ -57,7 +57,7 @@
 - name: js_add
   code: >-
     {{ js_add("@theme/js/script.js", {class: "scripts"}, "default", false, 1) }}
-  desc: Registers a JavaScript asset for output by "js_out". Use raw=true to include the script inline.
+  desc: Registers a JavaScript asset for output by `js_out`. Use `raw=true` to include the script inline.
   params:
     - name: paths
       type: string|array
@@ -73,7 +73,7 @@
       default: 'null'
     - name: raw
       type: bool
-      desc: If true, paths is treated as inline JavaScript content and rendered in a <script> tag instead of being referenced by URL.
+      desc: If true, paths is treated as inline JavaScript content and rendered in a `script` tag instead of being referenced by URL.
       default: 'false'
     - name: position
       type: int
@@ -93,7 +93,7 @@
 - name: link_file
   code: >-
     {{ link_file("media/download.pdf", "Download", {class:"download"}, true) }}
-  desc: Returns an HTML link to a web-accessible file. Use this for direct file URLs; use link_download() for files served through the download middleware.
+  desc: Returns an HTML link to a web-accessible file. Use this for direct file URLs; use `link_download()` for files served through the download middleware.
   params:
     - name: path
       type: string
@@ -249,7 +249,7 @@
 - name: menu_sitemap
   code: >-
     {{ menu_sitemap("doc", 1, false, "sitemap") }}
-  desc: Returns an HTML sitemap as a nested unordered list. This is an alias for menu_tree() with "sitemap" as the default CSS class.
+  desc: Returns an HTML sitemap as a nested unordered list. This is an alias for `menu_tree()` with `sitemap` as the default CSS class.
   params:
     - name: route
       type: string
@@ -329,7 +329,7 @@
 - name: link_download
   code: >-
     {{ link_download("dummy.pdf", "My dummy file", {class: "link-file"}, true) }}
-  desc: Returns an HTML link to a file served by the download middleware. By default the middleware serves files from @site/media under the download route. It supports common download file types (for example PDF, archives, Office documents, images, audio, video, and text files). Use link_file() for regular web-accessible files.
+  desc: Returns an HTML link to a file served by the download middleware. By default the middleware serves files from `@site/media` under the download route. It supports common download file types (for example PDF, archives, Office documents, images, audio, video, and text files). Use `link_file()` for regular web-accessible files.
   params:
     - name: path
       type: string
@@ -381,7 +381,7 @@
 - name: link_page
   code: >-
     {{ link_page("doc/contents/variables", "Content variables", {class: "link-page"}) }}
-  desc: Returns an HTML link for a given route or URL. Use url_rel() or url_abs() when you only need the URL string.
+  desc: Returns an HTML link for a given route or URL. Use `url_rel()` or `url_abs()` when you only need the URL string.
   params:
     - name: route
       type: string
