@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Markdown plugin: `plugins.markdown.extensions` adds CommonMark extension classes on top of the selected flavor; extension options can be passed through `plugins.markdown.commonmark`.
-- `FileMiddleware` serves `@media` under both public URLs (`urls.media` and the new `urls.download`) on every SAPI. `/media/...` sends `Content-Disposition: inline` semantics (no attachment header); `/download/...` forces a download with `Content-Disposition: attachment`.
-- New Twig helpers `media_url()`, `embed()` and `download()`. `image()` now resolves plain filenames and `@media/...` paths through `urls.media`.
-- Responses are emitted in chunks, so large media files are streamed instead of being loaded into PHP memory. `Content-Length` and `X-Content-Type-Options: nosniff` are sent for file responses.
+- `MediaMiddleware` serves `@media` under the public media URL `urls.media` (by default `/media/...`) on every SAPI. Types a browser can display are sent inline, everything else as attachment; `?download` forces a download. Hidden files, PHP files and SVG/HTML inline delivery are blocked. `Content-Length` and `X-Content-Type-Options: nosniff` are sent.
+- Twig function `file_url()` returns the public URL of a file: paths below `/media/` are served by Herbie, every other path is relative to the web root. The option `download` appends `?download`.
+- Twig function `embed()` returns an iframe for a file.
+- Responses are emitted in chunks, so large media files are streamed instead of being loaded into PHP memory.
 
 ### Changed
-- `MediaMiddleware` and `DownloadMiddleware` are replaced by `FileMiddleware`. `components.downloadMiddleware.route` and `storagePath` are replaced by `urls.download`; both routes serve the same `@media` directory.
+- `DownloadMiddleware` is replaced by `MediaMiddleware`. **Breaking:** `components.downloadMiddleware.route` and `components.downloadMiddleware.storagePath` are removed; files are always served from `@media` under `urls.media`. Files are sent as attachment only for non-displayable types or with `?download` (the former middleware sent no `Content-Disposition`). Unknown file types are now delivered as `application/octet-stream` attachment instead of failing.
+- `link_download()` creates `/media/...?download` URLs. `link_file()`, `image()` and `embed()` resolve paths through `file_url()` and add the base URL, so `link_file("a.pdf")` renders `href="/a.pdf"`.
+
+### Deprecated
+- The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0.
 
 ### Fixed
 - `handle_internal_webserver_assets()` now passes requests for files that are missing below the web root to the application, so media files below `site/media` are reachable under the CLI server.

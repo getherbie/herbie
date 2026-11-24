@@ -202,16 +202,20 @@ Snippets are Twig files in `templates/snippets/` and can be included with `snipp
 
 **Media / Assets**
 
-Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Both public URLs serve files from `@media`: `urls.media` (`/media/...`) for inline use and `urls.download` (`/download/...`) as attachment. Filenames are relative to `@media`.
+Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie serves `@media` under `/media/...` (`urls.media`): types a browser can display are opened inline, everything else is downloaded. `?download` forces a download. Paths that do not start with `/media/` are relative to the web root and served by the web server.
 
 {% verbatim %}
 ~~~twig
-{{ image('photo.jpg') }}                    {# <img src="/media/photo.jpg"> #}
-{{ embed('manual.pdf') }}                   {# <iframe src="/media/manual.pdf"> #}
-{{ download('manual.pdf', 'Handbuch') }}    {# attachment under /download/... #}
-{{ media_url('photo.jpg') }}                {# /media/photo.jpg #}
+{{ image('/media/photo.jpg') }}                {# <img src="/media/photo.jpg"> #}
+{{ image('/logo.png') }}                       {# <img src="/logo.png"> from the web root #}
+{{ embed('/media/manual.pdf') }}               {# <iframe src="/media/manual.pdf"> #}
+{{ link_download('manual.pdf', 'Handbuch') }}  {# /media/manual.pdf?download #}
+{{ file_url('/media/photo.jpg') }}             {# /media/photo.jpg #}
+{{ file_url('/media/manual.pdf', {download: true}) }}  {# /media/manual.pdf?download #}
 ~~~
 {% endverbatim %}
+
+In plain Markdown or HTML use the URL directly (`![Logo](/media/logo.png)`) when the site runs in the web root, otherwise `{{ file_url('/media/logo.png') }}`.
 
 `@media/photo.jpg` and `media/photo.jpg` are accepted as well.
 

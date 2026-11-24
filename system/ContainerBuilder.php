@@ -7,7 +7,7 @@ namespace herbie;
 use Ausi\SlugGenerator\SlugGenerator;
 use Exception;
 use herbie\middlewares\ErrorHandlerMiddleware;
-use herbie\middlewares\FileMiddleware;
+use herbie\middlewares\MediaMiddleware;
 use herbie\middlewares\PageRendererMiddleware;
 use herbie\middlewares\PageResolverMiddleware;
 use Psr\Container\ContainerInterface;
@@ -148,14 +148,14 @@ final readonly class ContainerBuilder
             return new YamlDataRepository($path);
         });
 
-        $c->set(FileMiddleware::class, function (ContainerInterface $c) {
+        $c->set(MediaMiddleware::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
-            return new FileMiddleware(
+            return new MediaMiddleware(
                 $c->get(Alias::class),
                 $c->get(StreamFactoryInterface::class),
                 $c->get(ResponseFactoryInterface::class),
+                $c->get(UrlManager::class),
                 $config->getAsString('urls.media'),
-                $config->getAsString('urls.download'),
                 $config->getAsString('urls.web'),
             );
         });
@@ -201,7 +201,7 @@ final readonly class ContainerBuilder
             $c->get(PluginManager::class)->getApplicationMiddlewares(),
             $c->get(PluginManager::class)->getRouteMiddlewares(),
             [
-                $c->get(FileMiddleware::class),
+                $c->get(MediaMiddleware::class),
                 $c->get(PageRendererMiddleware::class),
             ],
             $c->get(UrlManager::class)->parseRequest()[0],

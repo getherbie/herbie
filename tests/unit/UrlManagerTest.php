@@ -92,6 +92,31 @@ final class UrlManagerTest extends Unit
         $this->assertSame($um->createUrl('news/entry-one'), $um->createUrl('/news/entry-one'));
     }
 
+    public function testCreateWebUrlAddsTheBaseUrl(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), ['niceUrls' => true, 'baseUrl' => '/base', 'scriptUrl' => '']);
+
+        $this->assertSame('/base/logo.png', $um->createWebUrl('logo.png'));
+        $this->assertSame('/base/logo.png', $um->createWebUrl('/logo.png'));
+    }
+
+    public function testCreateWebUrlNeverContainsTheScriptName(): void
+    {
+        $um = new UrlManager(
+            $this->makeRequest('/'),
+            ['niceUrls' => false, 'baseUrl' => '/base', 'scriptUrl' => '/base/index.php'],
+        );
+
+        $this->assertSame('/base/logo.png', $um->createWebUrl('logo.png'));
+    }
+
+    public function testCreateWebUrlInTheWebRoot(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), ['niceUrls' => true, 'baseUrl' => '']);
+
+        $this->assertSame('/logo.png', $um->createWebUrl('logo.png'));
+    }
+
     public function testEmptyRouteYieldsTheSiteRoot(): void
     {
         $request = $this->makeRequest('/doc/contents');

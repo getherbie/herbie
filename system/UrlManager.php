@@ -51,6 +51,17 @@ final class UrlManager
     }
 
     /**
+     * Creates a URL for a file below the web root.
+     *
+     * Unlike createUrl() the result never contains the script name, because the web server
+     * delivers the file directly.
+     */
+    public function createWebUrl(string $path): string
+    {
+        return $this->baseUrl . '/' . str_unleading_slash($path);
+    }
+
+    /**
      * Filters a generated URL.
      * @param string $url The URL.
      * @return string The filtered URL.

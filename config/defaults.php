@@ -34,7 +34,6 @@ $settings['paths']['web'] = 'WEB_PATH';
  */
 $settings['urls'] = [];
 $settings['urls']['media'] = 'WEB_URL/media';
-$settings['urls']['download'] = 'WEB_URL/download';
 $settings['urls']['web'] = 'WEB_URL/';
 
 /**

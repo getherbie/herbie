@@ -93,11 +93,11 @@
 - name: link_file
   code: >-
     {{ link_file("media/download.pdf", "Download", {class:"download"}, true) }}
-  desc: Returns an HTML link to a web-accessible file. Use this for direct file URLs; use `link_download()` for files served through the download middleware.
+  desc: Returns an HTML link to a file. The path is resolved like in `file_url()`; use `link_download()` to force a download of a media file.
   params:
     - name: path
       type: string
-      desc: The relative web path to the file.
+      desc: The public path to the file, for example `/media/download.pdf` or `/files/info.pdf`.
       default: ''
     - name: label
       type: string
@@ -121,11 +121,11 @@
 - name: image
   code: >-
     {{ image("portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
-  desc: Returns an HTML image element for a file in `@media`. The path is relative to `@media`; `media/...` and `@media/...` are accepted too. No image processing is performed.
+  desc: Returns an HTML image element for a file. A path below `/media/` is served by Herbie from `@media`, every other path is relative to the web root. See `file_url()`. No image processing is performed.
   params:
     - name: src
       type: string
-      desc: The path to the image file relative to @media.
+      desc: The public path to the image file, for example `/media/portrait.jpg` or `/logo.png`.
       default: ''
     - name: attribs
       type: array
@@ -138,30 +138,30 @@
   return:
     - string
     - The HTML image element
-- name: media_url
+- name: file_url
   code: >-
-    {{ media_url("manual.pdf") }}
-  desc: Returns the public URL for a file in `@media`, based on `urls.media` (or another `urls.*` key).
+    {{ file_url("/media/manual.pdf", {download: true}) }}
+  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and the option `download` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. External URLs and anchors are returned unchanged.'
   params:
     - name: path
       type: string
-      desc: The path relative to @media. Leading `@media/` or the configured route prefix are optional.
+      desc: The public path to the file, for example `/media/manual.pdf` or `/logo.png`.
       default: ''
-    - name: urlKey
-      type: string
-      desc: The config key of the public URL, for example `urls.media` or `urls.download`.
-      default: "urls.media"
+    - name: options
+      type: array
+      desc: 'Options as an associative array. `download` (bool) forces a download, it has an effect on media files only.'
+      default: '[]'
   return:
     - string
     - The public URL
 - name: embed
   code: >-
-    {{ embed("manual.pdf", {title: "Handbuch"}) }}
-  desc: Returns an iframe embedding a file from `@media` under the inline media URL.
+    {{ embed("/media/manual.pdf", {title: "Handbuch"}) }}
+  desc: Returns an iframe embedding a file. The path is resolved like in `file_url()`.
   params:
     - name: path
       type: string
-      desc: The path relative to @media.
+      desc: The public path to the file, for example `/media/manual.pdf`.
       default: ''
     - name: attribs
       type: array
@@ -171,34 +171,6 @@
       type: string
       desc: The aliased path to the template file.
       default: "@snippet/embed.twig"
-  return:
-    - string
-    - The rendered HTML
-- name: download
-  code: >-
-    {{ download("manual.pdf", "Handbuch", {class: "link-file"}, true) }}
-  desc: 'Returns an HTML link that forces a download. Alias of `link_download()`; the file is served from `@media` under `urls.download` with `Content-Disposition: attachment`.'
-  params:
-    - name: path
-      type: string
-      desc: The path relative to @media.
-      default: ''
-    - name: label
-      type: string
-      desc: The link label. If empty, the file basename is used.
-      default: ''
-    - name: attribs
-      type: array
-      desc: The HTML attributes passed as an associative array.
-      default: '[]'
-    - name: show_info
-      type: bool
-      desc: If true, file extension and size are appended to the label.
-      default: 'false'
-    - name: template
-      type: string
-      desc: The aliased path to the template file.
-      default: "@snippet/link_download.twig"
   return:
     - string
     - The rendered HTML
@@ -393,11 +365,11 @@
 - name: link_download
   code: >-
     {{ link_download("dummy.pdf", "My dummy file", {class: "link-file"}, true) }}
-  desc: 'Returns an HTML link to a file in `@media`. The URL is built from `urls.download` (by default `/download/...`) and forces a download via `Content-Disposition: attachment`. Use `link_file()` for regular web-accessible files.'
+  desc: 'Returns an HTML link to a file in `@media` that forces a download (`/media/...?download`). Shortcut for `link_file()` with a download URL, see `file_url()`.'
   params:
     - name: path
       type: string
-      desc: The path to the file relative to @media.
+      desc: The path to the file relative to @media. The prefix `/media/` is optional.
       default: ''
     - name: label
       type: string
