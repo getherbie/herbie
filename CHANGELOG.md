@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 - `DownloadMiddleware` is replaced by `MediaMiddleware`. **Breaking:** `components.downloadMiddleware.route` and `components.downloadMiddleware.storagePath` are removed; files are always served from `@media` under `urls.media`. Files are sent as attachment only for non-displayable types or with `?download` (the former middleware sent no `Content-Disposition`). Unknown file types are now delivered as `application/octet-stream` attachment instead of failing.
 - `link_download()` creates `/media/...?download` URLs. `link_file()`, `image()` and `embed()` resolve paths through `file_url()` and add the base URL, so `link_file("a.pdf")` renders `href="/a.pdf"`.
 
+- `web/media/` is no longer shipped. Files in an existing `web/media/` are still delivered by the web server and take precedence over `site/media`.
+
 ### Deprecated
 - The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0.
 

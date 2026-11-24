@@ -26,6 +26,9 @@
   desc: Directory with customized Twig Tests.
 - name: snippets
   desc: Reusable Twig snippet templates, included from pages and layouts.
+- name: media
+  desc: Files that are linked through the content, for example images, PDFs, videos or MP3s.
+    Herbie serves them under `/media/...`.
 - name: pages
   desc: The CMS pages of the website.
     These are saved as text files (Markdown, Textile, Text, HTML).

@@ -15,9 +15,6 @@
   desc: The repository for JavaScript, CSS and image files, which are needed for the layout of the website.
 - name: web/cache
   desc: The cache for files that should be publicly accessible, e.g. resized images.
-- name: web/media
-  desc: This directory contains files that are linked through the content.
-    For example, images, PDFs, videos, MP3s, etc.
 - name: web/.htaccess
   desc: If configuration option `components.urlManager.niceUrls` is enabled, this file must exist with corresponding instructions.
 - name: web/index.php
