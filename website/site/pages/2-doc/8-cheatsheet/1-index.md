@@ -202,13 +202,18 @@ Snippets are Twig files in `templates/snippets/` and can be included with `snipp
 
 **Media / Assets**
 
-Media lives in `site/media/`, theme assets in `site/assets/`. Use `link_download()`, `image()` and `asset()` helpers.
+Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Both public URLs serve files from `@media`: `urls.media` (`/media/...`) for inline use and `urls.download` (`/download/...`) as attachment. Filenames are relative to `@media`.
 
 {% verbatim %}
 ~~~twig
-{{ link_download('image.jpg') }}
+{{ image('photo.jpg') }}                    {# <img src="/media/photo.jpg"> #}
+{{ embed('manual.pdf') }}                   {# <iframe src="/media/manual.pdf"> #}
+{{ download('manual.pdf', 'Handbuch') }}    {# attachment under /download/... #}
+{{ media_url('photo.jpg') }}                {# /media/photo.jpg #}
 ~~~
 {% endverbatim %}
+
+`@media/photo.jpg` and `media/photo.jpg` are accepted as well.
 
 **Page Types**
 

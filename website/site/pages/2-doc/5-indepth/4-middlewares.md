@@ -95,7 +95,7 @@ The complete chain of a request looks like this:
 2. `PageResolverMiddleware`, resolves the page for the request route
 3. your application middlewares, in registration order
 4. your route middlewares, for matching routes, in registration order
-5. `DownloadMiddleware`, serves media files and asset files
+5. `FileMiddleware`, serves files from `@media` under the public media and download URLs
 6. `PageRendererMiddleware`, renders the page with Twig and outputs the response
 
 The `PageResolverMiddleware` attaches the resolved page, route and route parameters to the request.

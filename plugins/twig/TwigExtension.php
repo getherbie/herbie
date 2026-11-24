@@ -30,7 +30,9 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 
 use function herbie\file_size;
+use function herbie\str_route_from_url;
 use function herbie\str_trailing_slash;
+use function herbie\str_unleading_slash;
 
 final class TwigExtension extends AbstractExtension
 {
@@ -62,12 +64,16 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('download', $this->linkDownload(...), ['is_safe' => ['html']]),
+            new TwigFunction('embed', $this->embed(...), ['is_safe' => ['html']]),
             new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
             new TwigFunction('js_add', $this->jsAdd(...)),
             new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
             new TwigFunction('link_file', $this->linkFile(...), ['is_safe' => ['html']]),
             new TwigFunction('link_mail', $this->linkMail(...), ['is_safe' => ['html']]),
             new TwigFunction('link_download', $this->linkDownload(...), ['is_safe' => ['html']]),
+            new TwigFunction('media_url', $this->mediaUrl(...)),
+            new TwigFunction('mediaUrl', $this->mediaUrl(...)),
             new TwigFunction('link_page', $this->linkPage(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_ascii_tree', $this->menuAsciiTree(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_breadcrumb', $this->menuBreadcrumb(...), ['is_safe' => ['html']]),
@@ -178,12 +184,8 @@ final class TwigExtension extends AbstractExtension
         $attribs['alt'] ??= '';
         $attribs['class'] ??= 'link__label';
 
-        $baseUrl = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.route'));
-        $storagePath = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.storagePath'));
-
-        // combine url and path
-        $href = $this->urlManager->createUrl($baseUrl . $path);
-        $resolvedPath = $this->alias->get($storagePath . $path);
+        $href = $this->mediaUrl($path, 'urls.download');
+        $resolvedPath = $this->alias->get('@media/' . $this->mediaPath($path, 'urls.media'));
 
         $fileInfo = $show_info ? $this->getFileInfo($resolvedPath) : '';
         $label = $label === '' ? basename($resolvedPath) : $label;
@@ -525,12 +527,63 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         string $template = '@snippet/image.twig',
     ): string {
-        $attribs['src'] = $this->urlManager->createUrl('/') . $src;
+        $attribs['src'] = $this->mediaUrl($src);
         $attribs['alt'] ??= '';
 
         return $this->environment->render($template, [
             'attribs' => $attribs,
         ]);
+    }
+
+    /**
+     * Returns the public URL for a file in @media.
+     */
+    public function mediaUrl(string $path, string $urlKey = 'urls.media'): string
+    {
+        $route = str_trailing_slash(str_route_from_url(
+            $this->config->getAsString($urlKey),
+            $this->config->getAsString('urls.web'),
+        ));
+
+        return $this->urlManager->createUrl($route . $this->mediaPath($path, $urlKey));
+    }
+
+    /**
+     * Returns an HTML element that embeds a file from @media.
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function embed(
+        string $path,
+        array $attribs = [],
+        string $template = '@snippet/embed.twig',
+    ): string {
+        $attribs['src'] = $this->mediaUrl($path);
+        $attribs['title'] ??= basename($this->mediaPath($path, 'urls.media'));
+
+        return $this->environment->render($template, [
+            'attribs' => $attribs,
+        ]);
+    }
+
+    private function mediaPath(string $path, string $urlKey): string
+    {
+        $path = str_replace('\\', '/', $path);
+        if (str_starts_with($path, '@media/')) {
+            $path = substr($path, 7);
+        }
+
+        $prefix = rtrim(str_trailing_slash(str_route_from_url(
+            $this->config->getAsString($urlKey),
+            $this->config->getAsString('urls.web'),
+        )), '/');
+        if ($prefix !== '' && ($path === $prefix || str_starts_with($path, $prefix . '/'))) {
+            $path = substr($path, strlen($prefix));
+        }
+
+        return str_unleading_slash($path);
     }
 
     /**

@@ -34,6 +34,7 @@ $settings['paths']['web'] = 'WEB_PATH';
  */
 $settings['urls'] = [];
 $settings['urls']['media'] = 'WEB_URL/media';
+$settings['urls']['download'] = 'WEB_URL/download';
 $settings['urls']['web'] = 'WEB_URL/';
 
 /**
@@ -59,13 +60,6 @@ $settings['components'] = [];
  */
 $settings['components']['dataRepository'] = [];
 $settings['components']['dataRepository']['adapter'] = 'json';
-
-/**
- * Download Middleware Component
- */
-$settings['components']['downloadMiddleware'] = [];
-$settings['components']['downloadMiddleware']['route'] = 'download';
-$settings['components']['downloadMiddleware']['storagePath'] = '@site/media';
 
 /**
  * PSR-16 File Cache Component

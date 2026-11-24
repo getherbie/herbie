@@ -221,7 +221,22 @@ final class Application
             }
         }
         header_remove('X-Powered-By'); // don't expose php
-        echo $response->getBody();
+
+        $body = $response->getBody();
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+        while (!$body->eof()) {
+            $chunk = $body->read(1048576);
+            if ($chunk === '') {
+                break;
+            }
+            echo $chunk;
+            if (ob_get_level() > 0) {
+                ob_flush();
+            }
+            flush();
+        }
     }
 
     public function getBaseUrl(): string

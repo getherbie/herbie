@@ -12,11 +12,27 @@ final class ImageFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
-    public function testPowerOn(): void
+    public function testMediaPathIsAddedAutomatically(): void
+    {
+        $this->assertEquals(
+            '<img src="/media/dummy-200x100.gif" alt="">',
+            $this->twig()->renderString('{{ image("dummy-200x100.gif") }}'),
+        );
+    }
+
+    public function testExplicitMediaPathIsAccepted(): void
     {
         $this->assertEquals(
             '<img src="/media/dummy-200x100.gif" alt="">',
             $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}'),
+        );
+    }
+
+    public function testMediaAliasIsAccepted(): void
+    {
+        $this->assertEquals(
+            '<img src="/media/dummy-200x100.gif" alt="">',
+            $this->twig()->renderString('{{ image("@media/dummy-200x100.gif") }}'),
         );
     }
 

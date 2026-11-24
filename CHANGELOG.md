@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Markdown plugin: `plugins.markdown.extensions` adds CommonMark extension classes on top of the selected flavor; extension options can be passed through `plugins.markdown.commonmark`.
+- `FileMiddleware` serves `@media` under both public URLs (`urls.media` and the new `urls.download`) on every SAPI. `/media/...` sends `Content-Disposition: inline` semantics (no attachment header); `/download/...` forces a download with `Content-Disposition: attachment`.
+- New Twig helpers `media_url()`, `embed()` and `download()`. `image()` now resolves plain filenames and `@media/...` paths through `urls.media`.
+- Responses are emitted in chunks, so large media files are streamed instead of being loaded into PHP memory. `Content-Length` and `X-Content-Type-Options: nosniff` are sent for file responses.
+
+### Changed
+- `MediaMiddleware` and `DownloadMiddleware` are replaced by `FileMiddleware`. `components.downloadMiddleware.route` and `storagePath` are replaced by `urls.download`; both routes serve the same `@media` directory.
+
+### Fixed
+- `handle_internal_webserver_assets()` now passes requests for files that are missing below the web root to the application, so media files below `site/media` are reachable under the CLI server.
 
 ## [3.1.0] - 2026-11-22
 
