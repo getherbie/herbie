@@ -56,3 +56,7 @@ php -S localhost:8888 index.php
 ~~~
 
 The website can now be opened in the browser at <http://localhost:8888>.
+
+Always start the built-in server with `index.php` as router script. Without it, PHP itself answers
+requests for files that do not exist in the `web` directory, such as `/media/logo.png`, with a 404
+error before Herbie is called.
