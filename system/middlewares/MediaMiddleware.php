@@ -237,6 +237,7 @@ final readonly class MediaMiddleware implements MiddlewareInterface
             return null;
         }
         $ifRange = trim($request->getHeaderLine('If-Range'));
+        // intentional: an exact match is required, also for a date (RFC 9110 section 13.1.5), unlike If-Modified-Since
         if ($ifRange !== '' && $ifRange !== $etag && $ifRange !== $lastModified) {
             return null;
         }

@@ -66,7 +66,10 @@ loaded into memory.
 
 Herbie sends `ETag`, `Last-Modified` and `Cache-Control: public, max-age=86400`. A browser reuses a
 file for one day. After that it asks again and receives `304 Not Modified` without the file if it
-has not changed. If you replace a file, it gets a new `ETag`.
+has not changed. The `ETag` changes when the modification time or the size of the file changes.
+
+A replaced file can therefore appear with a delay of up to one day. To show it immediately, use a
+new file name or append a query string, for example `/media/logo.png?v=2`.
 
 Every request to `/media/...` is answered by PHP and starts Herbie. Large files are streamed in
 chunks, so the memory consumption stays low, but a PHP process is busy for the whole download.
