@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file.
 - Markdown plugin: `plugins.markdown.extensions` adds CommonMark extension classes on top of the selected flavor; extension options can be passed through `plugins.markdown.commonmark`.
 - `MediaMiddleware` serves `@media` under the public media URL `urls.media` (by default `/media/...`) on every SAPI. Types a browser can display are sent inline, everything else as attachment; `?download` forces a download. Hidden files, PHP files and SVG/HTML inline delivery are blocked. `Content-Length` and `X-Content-Type-Options: nosniff` are sent. A single HTTP byte range is supported (`206 Partial Content`, `416` if it cannot be satisfied, `Accept-Ranges: bytes`), so seeking in video and audio works; several ranges in one request are answered with the whole file; `If-Range` is honored. `HEAD` requests get the headers without a body. Files are sent with `ETag`, `Last-Modified` and `Cache-Control: public, max-age=86400`; conditional requests (`If-None-Match`, `If-Modified-Since`) are answered with `304 Not Modified`.
 - Twig function `file_url()` returns the public URL of a file: paths below `/media/` are served by Herbie, every other path is relative to the web root. The option `download` appends `?download`.
-- Twig function `embed()` returns an iframe for a file.
 - `herbie\FileRangeStream` is a read-only PSR-7 stream for a byte range of a file.
 - `UrlManager::createWebUrl()` creates the URL of a file below the web root. It never contains the script name.
 - Imagine plugin: `imagine()` and `|imagine` accept the public media URL (`/media/photo.jpg`) in addition to a path relative to `@media`.
@@ -15,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `DownloadMiddleware` is replaced by `MediaMiddleware`. **Breaking:** `components.downloadMiddleware.route` and `components.downloadMiddleware.storagePath` are removed; files are always served from `@media` under `urls.media`. Files are sent as attachment only for non-displayable types or with `?download` (the former middleware sent no `Content-Disposition`). Unknown file types are now delivered as `application/octet-stream` attachment instead of failing.
-- `link_download()` creates `/media/...?download` URLs. `link_file()`, `image()` and `embed()` resolve paths through `file_url()` and add the base URL, so `link_file("a.pdf")` renders `href="/a.pdf"`.
+- `link_download()` creates `/media/...?download` URLs. `link_file()` and `image()` resolve paths through `file_url()` and add the base URL, so `link_file("a.pdf")` renders `href="/a.pdf"`.
 - `web/media/` is no longer shipped. Files in an existing `web/media/` are still delivered by the web server and take precedence over `site/media`.
 
 ### Deprecated

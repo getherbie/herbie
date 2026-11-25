@@ -52,7 +52,7 @@ Only the presence of the parameter counts, not its value: `?download=0` forces a
 
 An SVG file is still displayed when you use it as an image (`<img src="/media/logo.svg">`,
 `![Logo](/media/logo.svg)` or `image('/media/logo.svg')`). Only opening its URL directly downloads
-it, and an `<iframe>` or `embed()` does not display it.
+it, and an `<iframe>` does not display it.
 
 Types that are opened inline: `avif`, `css`, `gif`, `ico`, `jpeg`, `jpg`, `js`, `json`, `mp3`,
 `mp4`, `pdf`, `png`, `txt` and `webp`.
@@ -106,7 +106,6 @@ own site the HTML attribute `download` works as well: `<a href="/media/manual.pd
 ~~~twig
 {{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img alt="Logo" src="/media/logo.png"> #}
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
-{{ embed('/media/manual.pdf', {title: 'Manual'}) }}         {# <iframe title="Manual" src="/media/manual.pdf"> #}
 {{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
 {{ link_download('manual.pdf', 'Manual', {}, true) }}       {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}

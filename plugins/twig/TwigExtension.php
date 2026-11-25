@@ -63,7 +63,6 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
-            new TwigFunction('embed', $this->embed(...), ['is_safe' => ['html']]),
             new TwigFunction('file_url', $this->fileUrl(...)),
             new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
             new TwigFunction('js_add', $this->jsAdd(...)),
@@ -561,26 +560,6 @@ final class TwigExtension extends AbstractExtension
         }
 
         return $this->urlManager->createWebUrl($this->encodePath($path)) . $suffix;
-    }
-
-    /**
-     * Returns an HTML element that embeds a file.
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function embed(
-        string $path,
-        array $attribs = [],
-        string $template = '@snippet/embed.twig',
-    ): string {
-        $attribs['src'] = $this->fileUrl($path);
-        $attribs['title'] ??= basename($this->splitSuffix($path)[0]);
-
-        return $this->environment->render($template, [
-            'attribs' => $attribs,
-        ]);
     }
 
     /**

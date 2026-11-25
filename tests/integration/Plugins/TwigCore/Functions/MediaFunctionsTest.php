@@ -67,14 +67,6 @@ final class MediaFunctionsTest extends Unit
         );
     }
 
-    public function testEmbedReturnsAnIframe(): void
-    {
-        $this->assertSame(
-            '<iframe src="/media/dummy.pdf" title="dummy.pdf"></iframe>',
-            $this->twig()->renderString('{{ embed("/media/dummy.pdf") }}'),
-        );
-    }
-
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(

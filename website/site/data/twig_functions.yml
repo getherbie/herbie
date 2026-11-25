@@ -154,26 +154,6 @@
   return:
     - string
     - The public URL
-- name: embed
-  code: >-
-    {{ embed("/media/manual.pdf", {title: "Handbuch"}) }}
-  desc: Returns an iframe embedding a file. The path is resolved like in `file_url()`.
-  params:
-    - name: path
-      type: string
-      desc: The public path to the file, for example `/media/manual.pdf`.
-      default: ''
-    - name: attribs
-      type: array
-      desc: The HTML attributes passed as an associative array.
-      default: '[]'
-    - name: template
-      type: string
-      desc: The aliased path to the template file.
-      default: "@snippet/embed.twig"
-  return:
-    - string
-    - The rendered HTML
 - name: menu_ascii_tree
   code: >-
     {{ menu_ascii_tree("doc", 2, true) }}
