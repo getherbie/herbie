@@ -126,8 +126,9 @@ How a path is interpreted:
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - `link_download()` always refers to a file in `site/media/`, the prefix `/media/` is optional.
 - The option `download` has an effect on media files only, a web server ignores `?download`.
-- Special characters in file names are encoded. A `?` or `#` in the path starts the query string or
-  fragment.
+- Special characters in file names are encoded. Pass the path unencoded, for example
+  `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
+  `#` in the path starts the query string or fragment.
 
 The Imagine plugin function `imagine()` and the filter `|imagine` accept the public URL
 `/media/...` as well. A path without a leading `/media/`, as in `imagine('portrait.jpg')`, is
