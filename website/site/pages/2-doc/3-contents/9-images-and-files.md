@@ -76,6 +76,11 @@ chunks, so the memory consumption stays low, but a PHP process is busy for the w
 Put very large or very frequently requested files, such as big PDFs, videos or many images, into the
 web directory, for example `web/files/`. The web server delivers them directly and much faster.
 
+The number of simultaneous PHP processes and `max_execution_time` are limited on every host, and
+often low on shared hosting. A few slow downloads can block the site, and a large download can be
+cut off after the time limit. A browser resumes an interrupted download, because range requests are
+supported. Keep `/media/` for small and medium files and put large files into the web directory.
+
 With nginx, switch off `fastcgi_buffering` for `/media/`. Otherwise nginx buffers a large file
 before it sends it to the client.
 
