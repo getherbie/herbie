@@ -83,6 +83,9 @@ supported. Keep `/media/` for small and medium files and put large files into th
 
 With nginx, switch off `fastcgi_buffering` for `/media/`. Otherwise nginx buffers a large file
 before it sends it to the client.
+A `location` block for static files, for example to set cache headers for `jpg` or `pdf`, needs
+`try_files $uri /index.php?$query_string;` as well. Otherwise nginx answers `/media/...` with 404
+without passing the request to Herbie.
 
 ## Markdown and HTML
 
@@ -104,6 +107,9 @@ Write the URL directly:
 
 `/favicon.ico` points to the web directory and is delivered by the web server. For files of your
 own site the HTML attribute `download` works as well: `<a href="/media/manual.pdf" download>`.
+
+With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as text. Use the flavor
+`commonmark` (default) or a page in HTML format (`.html`).
 
 ## Twig
 
