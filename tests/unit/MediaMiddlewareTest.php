@@ -327,6 +327,128 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame('abcdefghijklm', (string)$response->getBody());
     }
 
+    public function testResponsesCanBeCached(): void
+    {
+        [$etag, $lastModified] = $this->createClip();
+
+        $response = $this->createMiddleware()->process($this->requestFor('media/clip.mp4'), $this->terminalHandler());
+
+        $this->assertSame($etag, $response->getHeaderLine('ETag'));
+        $this->assertSame($lastModified, $response->getHeaderLine('Last-Modified'));
+        $this->assertSame('public, max-age=86400', $response->getHeaderLine('Cache-Control'));
+    }
+
+    /**
+     * @return array<string, array{string, string}> Header name, value (placeholders {etag} and {date})
+     */
+    public static function matchingValidators(): array
+    {
+        return [
+            'matching etag' => ['If-None-Match', '{etag}'],
+            'weak etag' => ['If-None-Match', 'W/{etag}'],
+            'etag in a list' => ['If-None-Match', '"other", {etag}'],
+            'any etag' => ['If-None-Match', '*'],
+            'unmodified since' => ['If-Modified-Since', '{date}'],
+            'unmodified since a later date' => ['If-Modified-Since', 'Sun, 31 Dec 2023 23:59:59 GMT'],
+        ];
+    }
+
+    /**
+     * @dataProvider matchingValidators
+     */
+    public function testConditionalRequestIsAnsweredWith304(string $header, string $value): void
+    {
+        [$etag, $lastModified] = $this->createClip();
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withHeader($header, strtr($value, [
+                '{etag}' => $etag,
+                '{date}' => $lastModified,
+            ])),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(304, $response->getStatusCode());
+        $this->assertSame($etag, $response->getHeaderLine('ETag'));
+        $this->assertSame($lastModified, $response->getHeaderLine('Last-Modified'));
+        $this->assertSame('public, max-age=86400', $response->getHeaderLine('Cache-Control'));
+        $this->assertSame('', (string)$response->getBody());
+    }
+
+    /**
+     * @return array<string, array{array<string, string>}>
+     */
+    public static function nonMatchingValidators(): array
+    {
+        return [
+            'other etag' => [['If-None-Match' => '"other"']],
+            'modified since' => [['If-Modified-Since' => 'Tue, 14 Nov 2023 22:13:19 GMT']],
+            'invalid date' => [['If-Modified-Since' => 'not a date']],
+            'etag takes precedence over the date' => [[
+                'If-None-Match' => '"other"',
+                'If-Modified-Since' => 'Sun, 31 Dec 2023 23:59:59 GMT',
+            ]],
+        ];
+    }
+
+    /**
+     * @dataProvider nonMatchingValidators
+     * @param array<string, string> $headers
+     */
+    public function testNonMatchingConditionalRequestSendsTheFile(array $headers): void
+    {
+        $this->createClip();
+        $request = $this->requestFor('media/clip.mp4');
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
+        $response = $this->createMiddleware()->process($request, $this->terminalHandler());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('abcdefghijklm', (string)$response->getBody());
+    }
+
+    public function testConditionalRequestIsOnlyAnsweredWith304ForGetAndHead(): void
+    {
+        [$etag] = $this->createClip();
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withMethod('POST')->withHeader('If-None-Match', $etag),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testIfRangeWithTheEtagKeepsTheRange(): void
+    {
+        [$etag] = $this->createClip();
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withHeader('Range', 'bytes=0-4')->withHeader('If-Range', $etag),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(206, $response->getStatusCode());
+        $this->assertSame('abcde', (string)$response->getBody());
+    }
+
+    public function testIfRangeWithTheDateKeepsTheRange(): void
+    {
+        [, $lastModified] = $this->createClip();
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')
+                ->withHeader('Range', 'bytes=0-4')
+                ->withHeader('If-Range', $lastModified),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(206, $response->getStatusCode());
+        $this->assertSame('abcde', (string)$response->getBody());
+    }
+
     public function testRangeOfAnEmptyFileSendsTheWholeFile(): void
     {
         file_put_contents($this->mediaDir . '/empty.mp3', '');
@@ -467,6 +589,22 @@ final class MediaMiddlewareTest extends Unit
             $mediaUrl,
             $webUrl,
         );
+    }
+
+    /**
+     * Creates the file `clip.mp4` with a fixed modification time.
+     *
+     * @return array{string, string} The expected ETag and Last-Modified header
+     */
+    private function createClip(): array
+    {
+        $file = $this->mediaDir . '/clip.mp4';
+        file_put_contents($file, 'abcdefghijklm');
+        $mtime = 1700000000;
+        touch($file, $mtime);
+        clearstatcache();
+
+        return [sprintf('"%x-%x"', $mtime, 13), gmdate('D, d M Y H:i:s', $mtime) . ' GMT'];
     }
 
     private function requestFor(string $route, array $query = []): ServerRequestInterface

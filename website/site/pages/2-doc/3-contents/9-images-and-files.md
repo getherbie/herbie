@@ -62,6 +62,20 @@ video and audio files and resuming interrupted downloads therefore work. A reque
 ranges in one header is answered with the whole file. Large video files are streamed and not
 loaded into memory.
 
+## Caching and large files
+
+Herbie sends `ETag`, `Last-Modified` and `Cache-Control: public, max-age=86400`. A browser reuses a
+file for one day. After that it asks again and receives `304 Not Modified` without the file if it
+has not changed. If you replace a file, it gets a new `ETag`.
+
+Every request to `/media/...` is answered by PHP and starts Herbie. Large files are streamed in
+chunks, so the memory consumption stays low, but a PHP process is busy for the whole download.
+Put very large or very frequently requested files, such as big PDFs, videos or many images, into the
+web directory, for example `web/files/`. The web server delivers them directly and much faster.
+
+With nginx, switch off `fastcgi_buffering` for `/media/`. Otherwise nginx buffers a large file
+before it sends it to the client.
+
 ## Markdown and HTML
 
 Write the URL directly:

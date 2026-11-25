@@ -23,6 +23,7 @@ use function herbie\str_route_from_url;
  * Types a browser can display are sent inline, everything else as attachment.
  * The query parameter `?download` forces an attachment for any file.
  * A single HTTP byte range (`Range: bytes=...`) is supported, e.g. for seeking in video and audio.
+ * ETag, Last-Modified and Cache-Control are sent, conditional requests are answered with 304.
  *
  * The former route `download/...` is kept as a deprecated alias and redirects
  * to `<media>/...?download`.
@@ -31,6 +32,9 @@ final readonly class MediaMiddleware implements MiddlewareInterface
 {
     // @deprecated Since 3.2.0, remove in 4.0 together with the redirect in process().
     private const string LEGACY_DOWNLOAD_ROUTE = 'download';
+
+    /** Browsers and proxies may reuse a file for one day, then they ask again with ETag and Last-Modified. */
+    private const string CACHE_CONTROL = 'public, max-age=86400';
 
     /** @var array<string, string> */
     private const array MIME_TYPES = [
@@ -125,7 +129,15 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         $attachment = $forceDownload || !in_array($extension, self::INLINE_EXTENSIONS, true);
 
         $size = filesize($filepath);
-        $range = $size === false ? null : $this->requestedRange($request, $size);
+        $mtime = filemtime($filepath);
+        $etag = ($size !== false && $mtime !== false) ? sprintf('"%x-%x"', $mtime, $size) : null;
+        $lastModified = $mtime !== false ? gmdate('D, d M Y H:i:s', $mtime) . ' GMT' : null;
+
+        if ($etag !== null && $mtime !== false && $this->isNotModified($request, $etag, $mtime)) {
+            return $this->notModified($etag, (string)$lastModified);
+        }
+
+        $range = $size === false ? null : $this->requestedRange($request, $size, $etag, $lastModified);
         if ($range === false) {
             return $this->rangeNotSatisfiable((int)$size);
         }
@@ -133,7 +145,14 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         $response = $this->responseFactory->createResponse($range === null ? 200 : 206)
             ->withHeader('Content-Type', $this->contentType($extension))
             ->withHeader('X-Content-Type-Options', 'nosniff')
-            ->withHeader('Accept-Ranges', 'bytes');
+            ->withHeader('Accept-Ranges', 'bytes')
+            ->withHeader('Cache-Control', self::CACHE_CONTROL);
+        if ($etag !== null) {
+            $response = $response->withHeader('ETag', $etag);
+        }
+        if ($lastModified !== null) {
+            $response = $response->withHeader('Last-Modified', $lastModified);
+        }
         if ($size !== false) {
             $length = $range === null ? $size : $range[1] - $range[0] + 1;
             $response = $response->withHeader('Content-Length', (string)$length);
@@ -155,16 +174,70 @@ final readonly class MediaMiddleware implements MiddlewareInterface
     }
 
     /**
+     * Evaluates the conditional headers If-None-Match and If-Modified-Since of a GET or HEAD request.
+     * If-None-Match takes precedence, If-Modified-Since is only used without it.
+     */
+    private function isNotModified(ServerRequestInterface $request, string $etag, int $mtime): bool
+    {
+        if (!in_array(strtoupper($request->getMethod()), ['GET', 'HEAD'], true)) {
+            return false;
+        }
+
+        $ifNoneMatch = trim($request->getHeaderLine('If-None-Match'));
+        if ($ifNoneMatch !== '') {
+            if ($ifNoneMatch === '*') {
+                return true;
+            }
+            foreach (explode(',', $ifNoneMatch) as $candidate) {
+                $candidate = trim($candidate);
+                // weak comparison: the weak indicator is ignored
+                if (str_starts_with($candidate, 'W/')) {
+                    $candidate = substr($candidate, 2);
+                }
+                if ($candidate === $etag) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        $ifModifiedSince = trim($request->getHeaderLine('If-Modified-Since'));
+        if ($ifModifiedSince !== '') {
+            $time = strtotime($ifModifiedSince);
+            return $time !== false && $mtime <= $time;
+        }
+
+        return false;
+    }
+
+    private function notModified(string $etag, string $lastModified): ResponseInterface
+    {
+        return $this->responseFactory->createResponse(304)
+            ->withHeader('ETag', $etag)
+            ->withHeader('Last-Modified', $lastModified)
+            ->withHeader('Cache-Control', self::CACHE_CONTROL);
+    }
+
+    /**
      * Evaluates the Range header. Only a single byte range is supported. Everything else, e.g. multiple
-     * ranges, an invalid header or a conditional request with If-Range, is ignored and the whole file is sent.
+     * ranges or an invalid header, is ignored and the whole file is sent. The same applies if the validator
+     * of an If-Range header does not match the file.
      *
      * @return array{int, int}|false|null The first and last byte, false if the range cannot be satisfied,
      *                                    null if the whole file has to be sent.
      */
-    private function requestedRange(ServerRequestInterface $request, int $size): array|false|null
-    {
+    private function requestedRange(
+        ServerRequestInterface $request,
+        int $size,
+        ?string $etag,
+        ?string $lastModified,
+    ): array|false|null {
         $header = trim($request->getHeaderLine('Range'));
-        if ($header === '' || $size <= 0 || $request->hasHeader('If-Range')) {
+        if ($header === '' || $size <= 0) {
+            return null;
+        }
+        $ifRange = trim($request->getHeaderLine('If-Range'));
+        if ($ifRange !== '' && $ifRange !== $etag && $ifRange !== $lastModified) {
             return null;
         }
         // intentional: an invalid or unsupported header (other unit, several ranges) is ignored, see RFC 7233
