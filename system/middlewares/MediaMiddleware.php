@@ -290,6 +290,7 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         }
 
         // no hidden files or directories, no executable files
+        // (requested path only: a symlink to such a file inside @media is accepted)
         foreach (explode('/', str_replace('\\', '/', $relativePath)) as $segment) {
             if (str_starts_with($segment, '.')) {
                 throw HttpException::fileNotFound($relativePath);
