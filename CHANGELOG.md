@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- `MediaMiddleware` sends `Cache-Control: max-age=86400` instead of `public, max-age=86400`. Shared caches no longer store media files that are requested with an `Authorization` header, e.g. files protected by `HttpBasicAuthMiddleware`.
+
 ## [3.2.0] - 2026-11-25
 
 ### Added

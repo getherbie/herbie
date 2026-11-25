@@ -64,7 +64,7 @@ loaded into memory.
 
 ## Caching and large files
 
-Herbie sends `ETag`, `Last-Modified` and `Cache-Control: public, max-age=86400`. A browser reuses a
+Herbie sends `ETag`, `Last-Modified` and `Cache-Control: max-age=86400`. A browser reuses a
 file for one day. After that it asks again and receives `304 Not Modified` without the file if it
 has not changed. The `ETag` changes when the modification time or the size of the file changes.
 

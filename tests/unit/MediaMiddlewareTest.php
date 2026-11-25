@@ -335,7 +335,7 @@ final class MediaMiddlewareTest extends Unit
 
         $this->assertSame($etag, $response->getHeaderLine('ETag'));
         $this->assertSame($lastModified, $response->getHeaderLine('Last-Modified'));
-        $this->assertSame('public, max-age=86400', $response->getHeaderLine('Cache-Control'));
+        $this->assertSame('max-age=86400', $response->getHeaderLine('Cache-Control'));
     }
 
     /**
@@ -371,7 +371,7 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame(304, $response->getStatusCode());
         $this->assertSame($etag, $response->getHeaderLine('ETag'));
         $this->assertSame($lastModified, $response->getHeaderLine('Last-Modified'));
-        $this->assertSame('public, max-age=86400', $response->getHeaderLine('Cache-Control'));
+        $this->assertSame('max-age=86400', $response->getHeaderLine('Cache-Control'));
         $this->assertSame('', (string)$response->getBody());
     }
 

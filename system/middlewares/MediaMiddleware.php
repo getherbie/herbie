@@ -33,8 +33,12 @@ final readonly class MediaMiddleware implements MiddlewareInterface
     // @deprecated Since 3.2.0, remove in 4.0 together with the redirect in process().
     private const string LEGACY_DOWNLOAD_ROUTE = 'download';
 
-    /** Browsers and proxies may reuse a file for one day, then they ask again with ETag and Last-Modified. */
-    private const string CACHE_CONTROL = 'public, max-age=86400';
+    /**
+     * Browsers and proxies may reuse a file for one day, then they ask again with ETag and Last-Modified.
+     * Intentionally not "public": shared caches must not store responses to requests with an
+     * Authorization header, e.g. media protected by HttpBasicAuthMiddleware (RFC 9111 section 3.5).
+     */
+    private const string CACHE_CONTROL = 'max-age=86400';
 
     /** @var array<string, string> */
     private const array MIME_TYPES = [
