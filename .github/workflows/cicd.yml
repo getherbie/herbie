@@ -99,6 +99,18 @@ jobs:
       - name: Rename index-prod.php
         run: rm website/web/index.php && mv website/web/index-prod.php website/web/index.php
 
+      - name: Smoke test
+        working-directory: website/web
+        run: |
+          php -S 127.0.0.1:9371 index.php > /tmp/smoke-server.log 2>&1 &
+          sleep 2
+          base=http://127.0.0.1:9371
+          paths=$(curl -sf "$base/sitemap.xml" | grep -o '<loc>[^<]*</loc>' | sed -e 's|<[^>]*>||g' -e 's|^https\?://[^/]*||')
+          test -n "$paths" || { echo "No pages found in sitemap.xml" >&2; exit 1; }
+          for path in $paths "/search?query=herbie"; do
+            curl -sf -o /dev/null "$base$path" || { echo "Smoke test failed: $path" >&2; tail -20 /tmp/smoke-server.log >&2; exit 1; }
+          done
+
       - name: Deploy to server via scp
         uses: appleboy/scp-action@v1
         with:
