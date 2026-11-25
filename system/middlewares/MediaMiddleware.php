@@ -133,6 +133,10 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         if ($attachment) {
             $response = $response->withHeader('Content-Disposition', $this->attachmentHeader(basename($filepath)));
         }
+        // a HEAD response has the same headers, but no body that would have to be read
+        if (strtoupper($request->getMethod()) === 'HEAD') {
+            return $response->withBody($this->streamFactory->createStream());
+        }
         return $response->withBody($stream);
     }
 

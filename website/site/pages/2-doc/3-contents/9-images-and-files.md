@@ -48,6 +48,8 @@ Files in the public web directory (`web/`) are delivered directly by the web ser
     </tbody>
 </table>
 
+Only the presence of the parameter counts, not its value: `?download=0` forces a download as well.
+
 Types that are opened inline: `avif`, `css`, `gif`, `ico`, `jpeg`, `jpg`, `js`, `json`, `mp3`,
 `mp4`, `pdf`, `png`, `txt` and `webp`.
 

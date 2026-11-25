@@ -203,6 +203,44 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame('next middleware', (string)$passedOn->getBody());
     }
 
+    public function testHeadRequestHasTheHeadersButNoBody(): void
+    {
+        file_put_contents($this->mediaDir . '/photo.png', 'image content');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/photo.png')->withMethod('HEAD'),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('image/png', $response->getHeaderLine('Content-Type'));
+        $this->assertSame('13', $response->getHeaderLine('Content-Length'));
+        $this->assertSame('', (string)$response->getBody());
+    }
+
+    public function testHtmlIsNeverServedInline(): void
+    {
+        file_put_contents($this->mediaDir . '/page.html', '<script>alert(1)</script>');
+
+        $response = $this->createMiddleware()->process($this->requestFor('media/page.html'), $this->terminalHandler());
+
+        $this->assertSame('application/octet-stream', $response->getHeaderLine('Content-Type'));
+        $this->assertStringContainsString('attachment;', $response->getHeaderLine('Content-Disposition'));
+        $this->assertSame('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
+    }
+
+    public function testDownloadParameterCountsByPresenceNotByValue(): void
+    {
+        file_put_contents($this->mediaDir . '/manual.pdf', '%PDF-1.4 test');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/manual.pdf', ['download' => '0']),
+            $this->terminalHandler(),
+        );
+
+        $this->assertStringContainsString('attachment;', $response->getHeaderLine('Content-Disposition'));
+    }
+
     // @deprecated Since 3.2.0, remove in 4.0 together with the legacy download route.
     public function testLegacyDownloadRouteRedirectsToTheMediaRoute(): void
     {
@@ -215,13 +253,53 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame('/media/' . rawurlencode('über.pdf') . '?download', $response->getHeaderLine('Location'));
     }
 
-    private function createMiddleware(string $mediaUrl = '/media', string $webUrl = '/'): MediaMiddleware
+    // @deprecated Since 3.2.0, remove in 4.0 together with the legacy download route.
+    public function testLegacyDownloadRedirectKeepsSubdirectoriesAndEncodedCharacters(): void
     {
+        $route = 'download/sub/' . rawurlencode('a b#c?d.pdf') . '/x%2Fy.pdf';
+
+        $response = $this->createMiddleware()->process($this->requestFor($route), $this->terminalHandler());
+
+        $this->assertSame(
+            '/media/sub/' . rawurlencode('a b#c?d.pdf') . '/x%2Fy.pdf?download',
+            $response->getHeaderLine('Location'),
+        );
+    }
+
+    // @deprecated Since 3.2.0, remove in 4.0 together with the legacy download route.
+    public function testLegacyDownloadRedirectIncludesTheBaseUrl(): void
+    {
+        $middleware = $this->createMiddleware('/base/media', '/base/', '/base');
+
+        $response = $middleware->process($this->requestFor('download/sub/photo.png'), $this->terminalHandler());
+
+        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame('/base/media/sub/photo.png?download', $response->getHeaderLine('Location'));
+    }
+
+    public function testMediaRouteIsServedBelowABaseUrl(): void
+    {
+        file_put_contents($this->mediaDir . '/photo.png', 'image content');
+        $middleware = $this->createMiddleware('/base/media', '/base/', '/base');
+
+        $response = $middleware->process($this->requestFor('media/photo.png'), $this->terminalHandler());
+
+        $this->assertSame('image/png', $response->getHeaderLine('Content-Type'));
+    }
+
+    private function createMiddleware(
+        string $mediaUrl = '/media',
+        string $webUrl = '/',
+        string $baseUrl = '',
+    ): MediaMiddleware {
         return new MediaMiddleware(
             new Alias(['@media' => $this->mediaDir]),
             new StreamFactory(),
             new ResponseFactory(),
-            new UrlManager(new ServerRequest(), ['baseUrl' => '', 'niceUrls' => true, 'scriptUrl' => '/index.php']),
+            new UrlManager(
+                new ServerRequest(),
+                ['baseUrl' => $baseUrl, 'niceUrls' => true, 'scriptUrl' => '/index.php'],
+            ),
             $mediaUrl,
             $webUrl,
         );
