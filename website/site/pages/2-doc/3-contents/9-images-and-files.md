@@ -53,9 +53,10 @@ Only the presence of the parameter counts, not its value: `?download=0` forces a
 Types that are opened inline: `avif`, `css`, `gif`, `ico`, `jpeg`, `jpg`, `js`, `json`, `mp3`,
 `mp4`, `pdf`, `png`, `txt` and `webp`.
 
-Herbie does not support HTTP range requests. Seeking in video and audio files does not work
-reliably, and some browsers (Safari) may not play them at all. Put large video and audio files into
-the web directory, for example `web/videos/`. The web server delivers them with range support.
+Herbie supports HTTP range requests with a single byte range (`Range: bytes=0-999`). Seeking in
+video and audio files and resuming interrupted downloads therefore work. A request with several
+ranges in one header is answered with the whole file. Large video files are streamed and not
+loaded into memory.
 
 ## Markdown and HTML
 

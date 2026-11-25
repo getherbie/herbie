@@ -203,6 +203,170 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame('next middleware', (string)$passedOn->getBody());
     }
 
+    public function testResponsesAdvertiseByteRanges(): void
+    {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process($this->requestFor('media/clip.mp4'), $this->terminalHandler());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('bytes', $response->getHeaderLine('Accept-Ranges'));
+        $this->assertSame('', $response->getHeaderLine('Content-Range'));
+        $this->assertSame('abcdefghijklm', (string)$response->getBody());
+    }
+
+    /**
+     * @return array<string, array{string, string, string}> Range header, Content-Range, expected body
+     */
+    public static function satisfiableRanges(): array
+    {
+        return [
+            'first bytes' => ['bytes=0-4', 'bytes 0-4/13', 'abcde'],
+            'open end' => ['bytes=5-', 'bytes 5-12/13', 'fghijklm'],
+            'last bytes' => ['bytes=-3', 'bytes 10-12/13', 'klm'],
+            'suffix longer than the file' => ['bytes=-100', 'bytes 0-12/13', 'abcdefghijklm'],
+            'end beyond the file' => ['bytes=10-100', 'bytes 10-12/13', 'klm'],
+            'single byte' => ['bytes=7-7', 'bytes 7-7/13', 'h'],
+        ];
+    }
+
+    /**
+     * @dataProvider satisfiableRanges
+     */
+    public function testRangeRequestIsAnsweredWithPartialContent(
+        string $range,
+        string $contentRange,
+        string $expectedBody,
+    ): void {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withHeader('Range', $range),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(206, $response->getStatusCode());
+        $this->assertSame($contentRange, $response->getHeaderLine('Content-Range'));
+        $this->assertSame((string)strlen($expectedBody), $response->getHeaderLine('Content-Length'));
+        $this->assertSame('video/mp4', $response->getHeaderLine('Content-Type'));
+        $this->assertSame('bytes', $response->getHeaderLine('Accept-Ranges'));
+        $this->assertSame($expectedBody, (string)$response->getBody());
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function unsatisfiableRanges(): array
+    {
+        return [
+            'start behind the end' => ['bytes=20-30'],
+            'start at the size' => ['bytes=13-'],
+            'empty suffix' => ['bytes=-0'],
+        ];
+    }
+
+    /**
+     * @dataProvider unsatisfiableRanges
+     */
+    public function testUnsatisfiableRangeIsAnsweredWith416(string $range): void
+    {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withHeader('Range', $range),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(416, $response->getStatusCode());
+        $this->assertSame('bytes */13', $response->getHeaderLine('Content-Range'));
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function ignoredRanges(): array
+    {
+        return [
+            'multiple ranges' => ['bytes=0-1,3-4'],
+            'last before first' => ['bytes=5-2'],
+            'unknown unit' => ['items=0-1'],
+            'no numbers' => ['bytes=-'],
+            'garbage' => ['bytes=abc'],
+        ];
+    }
+
+    /**
+     * @dataProvider ignoredRanges
+     */
+    public function testUnsupportedRangeSendsTheWholeFile(string $range): void
+    {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withHeader('Range', $range),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('', $response->getHeaderLine('Content-Range'));
+        $this->assertSame('abcdefghijklm', (string)$response->getBody());
+    }
+
+    public function testRangeIsIgnoredForConditionalRequests(): void
+    {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')
+                ->withHeader('Range', 'bytes=0-4')
+                ->withHeader('If-Range', '"etag"'),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('abcdefghijklm', (string)$response->getBody());
+    }
+
+    public function testRangeOfAnEmptyFileSendsTheWholeFile(): void
+    {
+        file_put_contents($this->mediaDir . '/empty.mp3', '');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/empty.mp3')->withHeader('Range', 'bytes=0-4'),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('0', $response->getHeaderLine('Content-Length'));
+    }
+
+    public function testRangeRequestKeepsTheAttachmentHeader(): void
+    {
+        file_put_contents($this->mediaDir . '/archive.zip', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/archive.zip')->withHeader('Range', 'bytes=5-'),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(206, $response->getStatusCode());
+        $this->assertStringContainsString('attachment;', $response->getHeaderLine('Content-Disposition'));
+    }
+
+    public function testHeadRequestWithRangeHasThePartialHeadersButNoBody(): void
+    {
+        file_put_contents($this->mediaDir . '/clip.mp4', 'abcdefghijklm');
+
+        $response = $this->createMiddleware()->process(
+            $this->requestFor('media/clip.mp4')->withMethod('HEAD')->withHeader('Range', 'bytes=0-4'),
+            $this->terminalHandler(),
+        );
+
+        $this->assertSame(206, $response->getStatusCode());
+        $this->assertSame('5', $response->getHeaderLine('Content-Length'));
+        $this->assertSame('', (string)$response->getBody());
+    }
+
     public function testHeadRequestHasTheHeadersButNoBody(): void
     {
         file_put_contents($this->mediaDir . '/photo.png', 'image content');

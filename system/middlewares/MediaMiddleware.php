@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace herbie\middlewares;
 
 use herbie\Alias;
+use herbie\FileRangeStream;
 use herbie\HttpException;
 use herbie\UrlManager;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -21,6 +22,7 @@ use function herbie\str_route_from_url;
  *
  * Types a browser can display are sent inline, everything else as attachment.
  * The query parameter `?download` forces an attachment for any file.
+ * A single HTTP byte range (`Range: bytes=...`) is supported, e.g. for seeking in video and audio.
  *
  * The former route `download/...` is kept as a deprecated alias and redirects
  * to `<media>/...?download`.
@@ -122,13 +124,22 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         $forceDownload = array_key_exists('download', $request->getQueryParams());
         $attachment = $forceDownload || !in_array($extension, self::INLINE_EXTENSIONS, true);
 
-        $stream = $this->streamFactory->createStreamFromFile($filepath);
-        $size = $stream->getSize() ?? filesize($filepath);
-        $response = $this->responseFactory->createResponse()
+        $size = filesize($filepath);
+        $range = $size === false ? null : $this->requestedRange($request, $size);
+        if ($range === false) {
+            return $this->rangeNotSatisfiable((int)$size);
+        }
+
+        $response = $this->responseFactory->createResponse($range === null ? 200 : 206)
             ->withHeader('Content-Type', $this->contentType($extension))
-            ->withHeader('X-Content-Type-Options', 'nosniff');
+            ->withHeader('X-Content-Type-Options', 'nosniff')
+            ->withHeader('Accept-Ranges', 'bytes');
         if ($size !== false) {
-            $response = $response->withHeader('Content-Length', (string)$size);
+            $length = $range === null ? $size : $range[1] - $range[0] + 1;
+            $response = $response->withHeader('Content-Length', (string)$length);
+        }
+        if ($range !== null) {
+            $response = $response->withHeader('Content-Range', sprintf('bytes %d-%d/%d', $range[0], $range[1], $size));
         }
         if ($attachment) {
             $response = $response->withHeader('Content-Disposition', $this->attachmentHeader(basename($filepath)));
@@ -137,7 +148,55 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         if (strtoupper($request->getMethod()) === 'HEAD') {
             return $response->withBody($this->streamFactory->createStream());
         }
-        return $response->withBody($stream);
+        if ($range !== null) {
+            return $response->withBody(new FileRangeStream($filepath, $range[0], $range[1] - $range[0] + 1));
+        }
+        return $response->withBody($this->streamFactory->createStreamFromFile($filepath));
+    }
+
+    /**
+     * Evaluates the Range header. Only a single byte range is supported. Everything else, e.g. multiple
+     * ranges, an invalid header or a conditional request with If-Range, is ignored and the whole file is sent.
+     *
+     * @return array{int, int}|false|null The first and last byte, false if the range cannot be satisfied,
+     *                                    null if the whole file has to be sent.
+     */
+    private function requestedRange(ServerRequestInterface $request, int $size): array|false|null
+    {
+        $header = trim($request->getHeaderLine('Range'));
+        if ($header === '' || $size <= 0 || $request->hasHeader('If-Range')) {
+            return null;
+        }
+        if (preg_match('/^bytes=(\d*)-(\d*)$/', $header, $matches) !== 1) {
+            return null;
+        }
+        [, $first, $last] = $matches;
+
+        if ($first === '') {
+            // suffix range: the last n bytes
+            if ($last === '') {
+                return null;
+            }
+            $suffix = (int)$last;
+            return $suffix === 0 ? false : [max(0, $size - $suffix), $size - 1];
+        }
+
+        $start = (int)$first;
+        if ($last !== '' && (int)$last < $start) {
+            return null;
+        }
+        if ($start >= $size) {
+            return false;
+        }
+        $end = $last === '' ? $size - 1 : min((int)$last, $size - 1);
+        return [$start, $end];
+    }
+
+    private function rangeNotSatisfiable(int $size): ResponseInterface
+    {
+        return $this->responseFactory->createResponse(416)
+            ->withHeader('Accept-Ranges', 'bytes')
+            ->withHeader('Content-Range', 'bytes */' . $size);
     }
 
     /**

@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Markdown plugin: `plugins.markdown.extensions` adds CommonMark extension classes on top of the selected flavor; extension options can be passed through `plugins.markdown.commonmark`.
-- `MediaMiddleware` serves `@media` under the public media URL `urls.media` (by default `/media/...`) on every SAPI. Types a browser can display are sent inline, everything else as attachment; `?download` forces a download. Hidden files, PHP files and SVG/HTML inline delivery are blocked. `Content-Length` and `X-Content-Type-Options: nosniff` are sent.
+- `MediaMiddleware` serves `@media` under the public media URL `urls.media` (by default `/media/...`) on every SAPI. Types a browser can display are sent inline, everything else as attachment; `?download` forces a download. Hidden files, PHP files and SVG/HTML inline delivery are blocked. `Content-Length` and `X-Content-Type-Options: nosniff` are sent. A single HTTP byte range is supported (`206 Partial Content`, `416` if it cannot be satisfied, `Accept-Ranges: bytes`), so seeking in video and audio works; several ranges in one request are answered with the whole file. `HEAD` requests get the headers without a body.
 - Twig function `file_url()` returns the public URL of a file: paths below `/media/` are served by Herbie, every other path is relative to the web root. The option `download` appends `?download`.
 - Twig function `embed()` returns an iframe for a file.
+- `herbie\FileRangeStream` is a read-only PSR-7 stream for a byte range of a file.
 - `UrlManager::createWebUrl()` creates the URL of a file below the web root. It never contains the script name.
 - Imagine plugin: `imagine()` and `|imagine` accept the public media URL (`/media/photo.jpg`) in addition to a path relative to `@media`.
 - Responses are emitted in chunks of 1 MB and flushed after each chunk, so large media files are streamed instead of being loaded into PHP memory. This applies to all responses, not only to files.
