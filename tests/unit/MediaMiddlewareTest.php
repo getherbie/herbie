@@ -203,6 +203,7 @@ final class MediaMiddlewareTest extends Unit
         $this->assertSame('next middleware', (string)$passedOn->getBody());
     }
 
+    // @deprecated Since 3.2.0, remove in 4.0 together with the legacy download route.
     public function testLegacyDownloadRouteRedirectsToTheMediaRoute(): void
     {
         $response = $this->createMiddleware()->process(

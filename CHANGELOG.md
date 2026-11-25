@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - `MediaMiddleware` serves `@media` under the public media URL `urls.media` (by default `/media/...`) on every SAPI. Types a browser can display are sent inline, everything else as attachment; `?download` forces a download. Hidden files, PHP files and SVG/HTML inline delivery are blocked. `Content-Length` and `X-Content-Type-Options: nosniff` are sent.
 - Twig function `file_url()` returns the public URL of a file: paths below `/media/` are served by Herbie, every other path is relative to the web root. The option `download` appends `?download`.
 - Twig function `embed()` returns an iframe for a file.
+- Imagine plugin: `imagine()` and `|imagine` accept the public media URL (`/media/photo.jpg`) in addition to a path relative to `@media`.
 - Responses are emitted in chunks, so large media files are streamed instead of being loaded into PHP memory.
 
 ### Changed
@@ -17,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - `web/media/` is no longer shipped. Files in an existing `web/media/` are still delivered by the web server and take precedence over `site/media`.
 
 ### Deprecated
-- The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0.
+- The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0. In the code it is marked with `@deprecated` in `MediaMiddleware` and its test.
 
 ### Fixed
 - `handle_internal_webserver_assets()` now passes requests for files that are missing below the web root to the application, so media files below `site/media` are reachable under the CLI server.

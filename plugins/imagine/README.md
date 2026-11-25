@@ -127,7 +127,7 @@ With the activation of the system plugin, one Twig filter and one Twig function 
     <tr class="param">
         <td>path</td>
         <td>string</td>
-        <td>The path to an image within the @media directory.</td>
+        <td>The path to an image within the @media directory. The public URL <code>/media/...</code> is accepted as well.</td>
         <td></td>
     </tr>
     <tr class="param">
@@ -159,7 +159,7 @@ Example:
     <tr class="param">
         <td>path</td>
         <td>string</td>
-        <td>The path to an image within the @media directory.</td>
+        <td>The path to an image within the @media directory. The public URL <code>/media/...</code> is accepted as well.</td>
         <td></td>
     </tr>
     <tr class="param">

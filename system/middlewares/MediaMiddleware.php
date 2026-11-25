@@ -27,6 +27,7 @@ use function herbie\str_route_from_url;
  */
 final readonly class MediaMiddleware implements MiddlewareInterface
 {
+    // @deprecated Since 3.2.0, remove in 4.0 together with the redirect in process().
     private const string LEGACY_DOWNLOAD_ROUTE = 'download';
 
     /** @var array<string, string> */
@@ -102,10 +103,12 @@ final readonly class MediaMiddleware implements MiddlewareInterface
     {
         $route = (string)$request->getAttribute(PageResolverMiddleware::HERBIE_REQUEST_ATTRIBUTE_ROUTE, '');
 
+        // @deprecated Since 3.2.0, remove in 4.0: former download route, redirects to the media route.
         $legacyPrefix = self::LEGACY_DOWNLOAD_ROUTE . '/';
         if ($this->route !== '' && str_starts_with($route, $legacyPrefix) && strlen($route) > strlen($legacyPrefix)) {
             return $this->redirectToMedia(substr($route, strlen($legacyPrefix)));
         }
+        // end of @deprecated
 
         $prefix = $this->route . '/';
         if ($this->route === '' || !str_starts_with($route, $prefix)) {

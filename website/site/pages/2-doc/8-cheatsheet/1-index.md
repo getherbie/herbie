@@ -217,8 +217,6 @@ Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie 
 
 In plain Markdown or HTML use the URL directly (`![Logo](/media/logo.png)`) when the site runs in the web root, otherwise `{{ file_url('/media/logo.png') }}`.
 
-`@media/photo.jpg` and `media/photo.jpg` are accepted as well.
-
 **Page Types**
 
 Valid values for `type:` are `page`, `navigation`, `search`, `rss`, `data` and `site`.

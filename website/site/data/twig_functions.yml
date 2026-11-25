@@ -120,7 +120,7 @@
     - The rendered HTML
 - name: image
   code: >-
-    {{ image("portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
+    {{ image("/media/portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
   desc: Returns an HTML image element for a file. A path below `/media/` is served by Herbie from `@media`, every other path is relative to the web root. See `file_url()`. No image processing is performed.
   params:
     - name: src
