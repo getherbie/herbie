@@ -14,7 +14,6 @@ project
 └── web
     ├── assets
     ├── cache
-    ├── media
     ├── .htaccess
     └── index.php
 ~~~
@@ -61,6 +60,9 @@ site
 │   ├── twig_functions
 │   ├── twig_globals
 │   └── twig_tests
+├── media
+│   ├── logo.png
+│   └── manual.pdf
 ├── pages
 │   ├── company
 │   │   ├── about-us.md

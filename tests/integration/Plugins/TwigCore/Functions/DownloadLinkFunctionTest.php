@@ -15,8 +15,16 @@ final class DownloadLinkFunctionTest extends Unit
     public function testPowerOn(): void
     {
         $this->assertEquals(
-            '<span class="link link--media"><a href="/download/dummy.pdf" alt="" class="link__label">dummy.pdf</a></span>',
+            '<span class="link link--media"><a href="/media/dummy.pdf?download" alt="" class="link__label">dummy.pdf</a></span>',
             $this->twig()->renderString('{{ link_download("dummy.pdf") }}'),
+        );
+    }
+
+    public function testMediaPrefixIsOptional(): void
+    {
+        $this->assertEquals(
+            '<span class="link link--media"><a href="/media/dummy.pdf?download" alt="" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ link_download("/media/dummy.pdf") }}'),
         );
     }
 

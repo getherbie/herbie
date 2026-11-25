@@ -26,6 +26,7 @@ php -S localhost:8888 index.php
 That's it!
 
 After that, the website <http://localhost:8888> can be opened in the browser.
+Keep `index.php` in the command: it is the router script that lets Herbie serve files such as `/media/logo.png`.
 
 For the above commands, however, basic knowledge of using the console and Composer, the dependency manager for PHP, is required.
 But it's really not witchcraft and shouldn't be too difficult.

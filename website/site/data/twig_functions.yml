@@ -93,11 +93,11 @@
 - name: link_file
   code: >-
     {{ link_file("media/download.pdf", "Download", {class:"download"}, true) }}
-  desc: Returns an HTML link to a web-accessible file. Use this for direct file URLs; use `link_download()` for files served through the download middleware.
+  desc: Returns an HTML link to a file. The path is resolved like in `file_url()`; use `link_download()` to force a download of a media file.
   params:
     - name: path
       type: string
-      desc: The relative web path to the file.
+      desc: The public path to the file, for example `/media/download.pdf` or `/files/info.pdf`.
       default: ''
     - name: label
       type: string
@@ -120,12 +120,12 @@
     - The rendered HTML
 - name: image
   code: >-
-    {{ image("portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
-  desc: Returns an HTML image element for a web-accessible image. No image processing is performed.
+    {{ image("/media/portrait.jpg", {width: 100, height: 200, alt: "Portrait", class: "photo"}) }}
+  desc: Returns an HTML image element for a file. A path below `/media/` is served by Herbie from `@media`, every other path is relative to the web root. See `file_url()`. No image processing is performed.
   params:
     - name: src
       type: string
-      desc: The relative web path to the image file, for example a file in the media directory.
+      desc: The public path to the image file, for example `/media/portrait.jpg` or `/logo.png`.
       default: ''
     - name: attribs
       type: array
@@ -138,6 +138,22 @@
   return:
     - string
     - The HTML image element
+- name: file_url
+  code: >-
+    {{ file_url("/media/manual.pdf", {download: true}) }}
+  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and the option `download` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. External URLs and anchors are returned unchanged.'
+  params:
+    - name: path
+      type: string
+      desc: The public path to the file, for example `/media/manual.pdf` or `/logo.png`.
+      default: ''
+    - name: options
+      type: array
+      desc: 'Options as an associative array. `download` (bool) forces a download, it has an effect on media files only.'
+      default: '[]'
+  return:
+    - string
+    - The public URL
 - name: menu_ascii_tree
   code: >-
     {{ menu_ascii_tree("doc", 2, true) }}
@@ -329,11 +345,11 @@
 - name: link_download
   code: >-
     {{ link_download("dummy.pdf", "My dummy file", {class: "link-file"}, true) }}
-  desc: Returns an HTML link to a file served by the download middleware. By default the middleware serves files from `@site/media` under the download route. It supports common download file types (for example PDF, archives, Office documents, images, audio, video, and text files). Use `link_file()` for regular web-accessible files.
+  desc: 'Returns an HTML link to a file in `@media` that forces a download (`/media/...?download`). Shortcut for `link_file()` with a download URL, see `file_url()`.'
   params:
     - name: path
       type: string
-      desc: The path to the file relative to the configured download storage path (default @site/media).
+      desc: The path to the file relative to @media. The prefix `/media/` is optional.
       default: ''
     - name: label
       type: string

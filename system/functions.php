@@ -64,6 +64,18 @@ function str_untrailing_slash(string $string): string
 }
 
 /**
+ * Returns the site-relative route for a configured URL below the web URL.
+ */
+function str_route_from_url(string $url, string $webUrl): string
+{
+    $webUrl = str_untrailing_slash($webUrl);
+    if ($webUrl !== '' && str_starts_with($url, $webUrl . '/')) {
+        $url = substr($url, strlen($webUrl));
+    }
+    return str_unleading_slash($url);
+}
+
+/**
  * @param Throwable $exception
  */
 function render_exception(Throwable $exception): string
@@ -177,20 +189,19 @@ function handle_internal_webserver_assets(string $file): void
     if (preg_match($regex, $requestUri)) {
         $baseDir = realpath(dirname($file));
         $requestedAbsoluteFile = $baseDir !== false ? realpath($baseDir . $requestUri) : false;
-        // Prevent directory traversal outside of the base directory.
+        // Prevent directory traversal outside of the base directory. Let the application
+        // handle files that are not below the web root, e.g. the public media URL.
         if (
             $requestedAbsoluteFile === false || $baseDir === false
             || !str_starts_with($requestedAbsoluteFile, $baseDir . DIRECTORY_SEPARATOR)
         ) {
-            http_response_code(404);
-            exit;
+            return;
+        }
+        if (!is_readable($requestedAbsoluteFile)) {
+            return;
         }
         $extension = pathinfo($requestedAbsoluteFile, PATHINFO_EXTENSION);
         header('Content-Type: ' . ($mimeTypes[$extension] ?? 'text/plain'));
-        if (!is_readable($requestedAbsoluteFile)) {
-            http_response_code(404);
-            exit;
-        }
         readfile($requestedAbsoluteFile);
         exit;
     }

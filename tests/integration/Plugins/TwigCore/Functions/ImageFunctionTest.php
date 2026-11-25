@@ -12,11 +12,31 @@ final class ImageFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
-    public function testPowerOn(): void
+    public function testMediaPathIsServedByHerbie(): void
+    {
+        $this->assertEquals(
+            '<img src="/media/dummy-200x100.gif" alt="">',
+            $this->twig()->renderString('{{ image("/media/dummy-200x100.gif") }}'),
+        );
+    }
+
+    public function testMediaPathWithoutLeadingSlashIsAccepted(): void
     {
         $this->assertEquals(
             '<img src="/media/dummy-200x100.gif" alt="">',
             $this->twig()->renderString('{{ image("media/dummy-200x100.gif") }}'),
+        );
+    }
+
+    public function testOtherPathsAreRelativeToTheWebRoot(): void
+    {
+        $this->assertEquals(
+            '<img src="/assets/logo.png" alt="">',
+            $this->twig()->renderString('{{ image("assets/logo.png") }}'),
+        );
+        $this->assertEquals(
+            '<img src="/logo.png" alt="">',
+            $this->twig()->renderString('{{ image("/logo.png") }}'),
         );
     }
 

@@ -18,6 +18,7 @@ use Imagine\Image\Point;
 use InvalidArgumentException;
 use Twig\Markup;
 
+use function herbie\str_route_from_url;
 use function herbie\str_trailing_slash;
 
 #[Plugin('imagine', requires: ['imagine/imagine' => '^1.3'])]
@@ -53,6 +54,7 @@ final class ImaginePlugin extends AbstractPlugin
 
     public function imagineFunction(string $path, string $collection = 'default', array $attribs = []): string
     {
+        $path = $this->mediaRelativePath($path);
         $absolutePath = $this->alias->get('@media/' . $path);
 
         $attribs['class'] ??= 'imagine';
@@ -89,6 +91,22 @@ final class ImaginePlugin extends AbstractPlugin
             $this->basePath . $cacheUrl,
             $this->buildHtmlAttributes($attribs),
         );
+    }
+
+    /**
+     * Accepts the public media URL (e.g. "/media/photo.jpg") in addition to a path relative to @media.
+     * Only a leading slash followed by the media route is treated as the public URL.
+     */
+    private function mediaRelativePath(string $path): string
+    {
+        $route = trim(str_route_from_url(
+            $this->config->getAsString('urls.media'),
+            $this->config->getAsString('urls.web'),
+        ), '/');
+        if ($route !== '' && str_starts_with($path, '/' . $route . '/')) {
+            return substr($path, strlen($route) + 2);
+        }
+        return $path;
     }
 
     private function getTransparentOnePixelSrc(): string
@@ -236,6 +254,7 @@ final class ImaginePlugin extends AbstractPlugin
      */
     public function imagineFilter(string $path, string $collection = 'default'): Markup
     {
+        $path = $this->mediaRelativePath($path);
         $absolutePath = $this->alias->get('@media/' . $path);
 
         if (!is_file($absolutePath)) {

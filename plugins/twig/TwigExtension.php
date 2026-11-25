@@ -30,7 +30,8 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 
 use function herbie\file_size;
-use function herbie\str_trailing_slash;
+use function herbie\str_route_from_url;
+use function herbie\str_unleading_slash;
 
 final class TwigExtension extends AbstractExtension
 {
@@ -62,6 +63,7 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('file_url', $this->fileUrl(...)),
             new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
             new TwigFunction('js_add', $this->jsAdd(...)),
             new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
@@ -178,12 +180,10 @@ final class TwigExtension extends AbstractExtension
         $attribs['alt'] ??= '';
         $attribs['class'] ??= 'link__label';
 
-        $baseUrl = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.route'));
-        $storagePath = str_trailing_slash($this->config->getAsString('components.downloadMiddleware.storagePath'));
-
-        // combine url and path
-        $href = $this->urlManager->createUrl($baseUrl . $path);
-        $resolvedPath = $this->alias->get($storagePath . $path);
+        // downloads are always served from @media, the path is relative to it
+        $relative = $this->mediaRelativePath($path);
+        $href = $this->fileUrl($this->mediaRoute() . '/' . $relative, ['download' => true]);
+        $resolvedPath = $this->alias->get('@media/' . $relative);
 
         $fileInfo = $show_info ? $this->getFileInfo($resolvedPath) : '';
         $label = $label === '' ? basename($resolvedPath) : $label;
@@ -525,12 +525,92 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         string $template = '@snippet/image.twig',
     ): string {
-        $attribs['src'] = $this->urlManager->createUrl('/') . $src;
+        $attribs['src'] = $this->fileUrl($src);
         $attribs['alt'] ??= '';
 
         return $this->environment->render($template, [
             'attribs' => $attribs,
         ]);
+    }
+
+    /**
+     * Returns the public URL for a file.
+     *
+     * A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from
+     * `@media`. Every other path is relative to the web root and served by the web server.
+     * External URLs, anchors and query-only values are returned unchanged.
+     *
+     * Option `download` appends `?download` and forces a download (media files only).
+     */
+    public function fileUrl(string $path, array $options = []): string
+    {
+        if ($path === '' || preg_match('~^([a-z][a-z0-9+.-]*:|//|[#?])~i', $path) === 1) {
+            return $path;
+        }
+
+        [$path, $suffix] = $this->splitSuffix(str_replace('\\', '/', $path));
+        $path = str_unleading_slash($path);
+        $route = $this->mediaRoute();
+
+        if ($route !== '' && ($path === $route || str_starts_with($path, $route . '/'))) {
+            if (!empty($options['download'])) {
+                $suffix = '?download' . ($suffix !== '' && $suffix[0] === '?' ? '&' . substr($suffix, 1) : $suffix);
+            }
+            return $this->urlManager->createUrl($this->encodePath($path)) . $suffix;
+        }
+
+        return $this->urlManager->createWebUrl($this->encodePath($path)) . $suffix;
+    }
+
+    /**
+     * Returns the route of the public media URL relative to the web URL, e.g. "media".
+     */
+    private function mediaRoute(): string
+    {
+        return trim(str_route_from_url(
+            $this->config->getAsString('urls.media'),
+            $this->config->getAsString('urls.web'),
+        ), '/');
+    }
+
+    /**
+     * Returns a path relative to @media. The media route prefix is optional.
+     */
+    private function mediaRelativePath(string $path): string
+    {
+        $path = str_unleading_slash(str_replace('\\', '/', $path));
+        $route = $this->mediaRoute();
+        if ($route !== '' && str_starts_with($path, $route . '/')) {
+            $path = substr($path, strlen($route) + 1);
+        }
+        return $path;
+    }
+
+    /**
+     * Returns the file system path for a public file path, e.g. to read its size.
+     */
+    private function filePath(string $path): string
+    {
+        $path = str_unleading_slash($this->splitSuffix(str_replace('\\', '/', $path))[0]);
+        $route = $this->mediaRoute();
+        if ($route !== '' && str_starts_with($path, $route . '/')) {
+            return $this->alias->get('@media/' . substr($path, strlen($route) + 1));
+        }
+        return $this->alias->get('@web/' . $path);
+    }
+
+    /**
+     * @return array{string, string} The path and the trailing query string or fragment.
+     */
+    private function splitSuffix(string $path): array
+    {
+        $pos = strcspn($path, '?#');
+        return [substr($path, 0, $pos), substr($path, $pos)];
+    }
+
+    private function encodePath(string $path): string
+    {
+        return implode('/', array_map(rawurlencode(...), explode('/', $path)));
     }
 
     /**
@@ -637,11 +717,11 @@ final class TwigExtension extends AbstractExtension
     ): string {
         $attribs['class'] ??= 'link__label';
         $label = $label === '' ? basename($path) : $label;
-        $fileInfo = $show_info ? $this->getFileInfo($path) : '';
+        $fileInfo = $show_info ? $this->getFileInfo($this->filePath($path)) : '';
 
         return $this->environment->render($template, [
             'path' => $path,
-            'href' => $path,
+            'href' => $this->fileUrl($path),
             'label' => $label,
             'info' => $show_info,
             'file_info' => $fileInfo,

@@ -61,13 +61,6 @@ $settings['components']['dataRepository'] = [];
 $settings['components']['dataRepository']['adapter'] = 'json';
 
 /**
- * Download Middleware Component
- */
-$settings['components']['downloadMiddleware'] = [];
-$settings['components']['downloadMiddleware']['route'] = 'download';
-$settings['components']['downloadMiddleware']['storagePath'] = '@site/media';
-
-/**
  * PSR-16 File Cache Component
  */
 $settings['components']['fileCache'] = [];
