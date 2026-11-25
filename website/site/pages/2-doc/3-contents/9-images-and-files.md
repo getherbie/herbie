@@ -80,14 +80,14 @@ own site the HTML attribute `download` works as well: `<a href="/media/manual.pd
 
 {% verbatim %}
 ~~~twig
-{{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img src="/media/logo.png" alt="Logo"> #}
+{{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img alt="Logo" src="/media/logo.png"> #}
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
-{{ embed('/media/manual.pdf', {title: 'Manual'}) }}         {# <iframe src="/media/manual.pdf" title="Manual"> #}
-{{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf"> #}
-{{ link_download('manual.pdf', 'Manual', {}, true) }}       {# <a href="/media/manual.pdf?download">Manual (PDF, 2.1 MB)</a> #}
+{{ embed('/media/manual.pdf', {title: 'Manual'}) }}         {# <iframe title="Manual" src="/media/manual.pdf"> #}
+{{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
+{{ link_download('manual.pdf', 'Manual', {}, true) }}       {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
 {{ file_url('/media/manual.pdf', {download: true}) }}       {# /media/manual.pdf?download #}
-{{ imagine('/media/portrait.jpg', 'thumb') }}               {# resized copy of site/media/portrait.jpg #}
+{{ imagine('/media/portrait.jpg') }}                        {# <img> of a resized copy, see the Imagine plugin #}
 ~~~
 {% endverbatim %}
 
@@ -116,7 +116,8 @@ of the domain, which is wrong if the site runs in a subdirectory such as `https:
 (`/index.php/media/logo.png`).
 
 The Twig helpers add the base URL and, for media files, the script name. Use `file_url()` in your
-content, it works in Markdown and HTML as well, because page content is processed by Twig first:
+content, it works in Markdown and HTML as well, because page content is processed by Twig first
+(this is the default):
 
 {% verbatim %}
 ~~~markdown
