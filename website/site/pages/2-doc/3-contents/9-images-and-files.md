@@ -50,6 +50,10 @@ Files in the public web directory (`web/`) are delivered directly by the web ser
 
 Only the presence of the parameter counts, not its value: `?download=0` forces a download as well.
 
+An SVG file is still displayed when you use it as an image (`<img src="/media/logo.svg">`,
+`![Logo](/media/logo.svg)` or `image('/media/logo.svg')`). Only opening its URL directly downloads
+it, and an `<iframe>` or `embed()` does not display it.
+
 Types that are opened inline: `avif`, `css`, `gif`, `ico`, `jpeg`, `jpg`, `js`, `json`, `mp3`,
 `mp4`, `pdf`, `png`, `txt` and `webp`.
 
@@ -148,10 +152,14 @@ path absolute again.
 
 ## Configuration
 
-The public URL of the media files is configured in `site/config/main.php`:
+The directory and the public URL of the media files are configured in `site/config/main.php`.
+These are the defaults:
 
 ~~~php
 return [
+    'paths' => [
+        'media' => 'SITE_PATH/media',
+    ],
     'urls' => [
         'media' => 'WEB_URL/media',
     ],
