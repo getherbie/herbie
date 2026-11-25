@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 ### Deprecated
 - The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0. In the code it is marked with `@deprecated` in `MediaMiddleware` and its test.
+- The markdown flavor `markdown-extra` is deprecated and logs a warning; it still works for compatibility. Use `commonmark` or `gfm` instead.
 
 ### Fixed
 - Imagine plugin: `plugins.imagine.cachePath` is a web-relative path below `@web`. Generated images are written there independent of the current working directory, and the generated URLs use the same path. Invalid values (absolute paths, `..` above the web root) throw an `InvalidArgumentException`.
@@ -45,7 +46,6 @@ All notable changes to this project will be documented in this file.
 
 ### Deprecated
 - Injecting `Psr\SimpleCache\CacheInterface` still resolves to `herbie\Cache` but is deprecated; inject `herbie\Cache` instead.
-- The markdown flavor `markdown-extra` is deprecated and logs a warning; it still works for compatibility. Use `commonmark` or `gfm` instead.
 
 ### Documentation
 - Added Website Starter demo links and a third hero CTA with theme styles.
