@@ -167,6 +167,7 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         if ($header === '' || $size <= 0 || $request->hasHeader('If-Range')) {
             return null;
         }
+        // intentional: an invalid or unsupported header (other unit, several ranges) is ignored, see RFC 7233
         if (preg_match('/^bytes=(\d*)-(\d*)$/', $header, $matches) !== 1) {
             return null;
         }
@@ -175,6 +176,7 @@ final readonly class MediaMiddleware implements MiddlewareInterface
         if ($first === '') {
             // suffix range: the last n bytes
             if ($last === '') {
+                // intentional: "bytes=-" is syntactically invalid and ignored
                 return null;
             }
             $suffix = (int)$last;
@@ -183,6 +185,7 @@ final readonly class MediaMiddleware implements MiddlewareInterface
 
         $start = (int)$first;
         if ($last !== '' && (int)$last < $start) {
+            // intentional: the last byte before the first byte is invalid and ignored
             return null;
         }
         if ($start >= $size) {
