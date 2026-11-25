@@ -51,6 +51,10 @@ Files in the public web directory (`web/`) are delivered directly by the web ser
 Types that are opened inline: `avif`, `css`, `gif`, `ico`, `jpeg`, `jpg`, `js`, `json`, `mp3`,
 `mp4`, `pdf`, `png`, `txt` and `webp`.
 
+Herbie does not support HTTP range requests. Seeking in video and audio files does not work
+reliably, and some browsers (Safari) may not play them at all. Put large video and audio files into
+the web directory, for example `web/videos/`. The web server delivers them with range support.
+
 ## Markdown and HTML
 
 Write the URL directly:
