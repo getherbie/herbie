@@ -43,6 +43,10 @@ final class Pagination implements IteratorAggregate, Countable
         $this->setCurrentPage($page ?? $this->getPageFromRequest());
     }
 
+    /**
+     * TODO: 4.0: Read the page from the PSR-7 ServerRequestInterface in the callers
+     * (TwigExtension::menuList(), QueryBuilder::paginate()) and pass it in, instead of reading $_GET here.
+     */
     private function getPageFromRequest(): int
     {
         $raw = $_GET['page'] ?? 1;
