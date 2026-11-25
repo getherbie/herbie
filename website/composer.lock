@@ -280,12 +280,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getherbie/herbie.git",
-                "reference": "8f324c142a3d80f78e2267c0d4161b564f06e75f"
+                "reference": "51ecceda446465e80f271071c8c5b20a7ad8dce5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getherbie/herbie/zipball/8f324c142a3d80f78e2267c0d4161b564f06e75f",
-                "reference": "8f324c142a3d80f78e2267c0d4161b564f06e75f",
+                "url": "https://api.github.com/repos/getherbie/herbie/zipball/51ecceda446465e80f271071c8c5b20a7ad8dce5",
+                "reference": "51ecceda446465e80f271071c8c5b20a7ad8dce5",
                 "shasum": ""
             },
             "require": {
@@ -370,7 +370,8 @@
                 "issues": "https://github.com/getherbie/herbie/issues",
                 "source": "https://github.com/getherbie/herbie/tree/3.x"
             },
-            "time": "2026-11-22T11:37:40+00:00"
+            "time": "2026-11-25T06:01:33+00:00",
+            "published-time": "2026-11-25T06:01:41+00:00"
         },
         {
             "name": "imagine/imagine",
@@ -2383,10 +2384,10 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.11.0"
 }
