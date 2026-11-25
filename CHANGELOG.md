@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [3.2.0] - 2026-11-25
 
 ### Added
 - Markdown plugin: `plugins.markdown.extensions` adds CommonMark extension classes on top of the selected flavor; extension options can be passed through `plugins.markdown.commonmark`.
@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 - The route `/download/...` redirects (301) to `/media/...?download` and will be removed in 4.0. In the code it is marked with `@deprecated` in `MediaMiddleware` and its test.
 
 ### Fixed
+- Imagine plugin: `plugins.imagine.cachePath` is a web-relative path below `@web`. Generated images are written there independent of the current working directory, and the generated URLs use the same path. Invalid values (absolute paths, `..` above the web root) throw an `InvalidArgumentException`.
+- Pagination: `Pagination` and `QueryBuilder::paginate()` read the current page from the `page` query parameter automatically. `Pagination` and `QueryBuilder::paginate()` accept an optional `$page` argument to override it.
 - `handle_internal_webserver_assets()` now passes requests for files that are missing below the web root to the application, so media files below `site/media` are reachable under the CLI server. A missing asset such as a `.css` file now returns the application's 404 page instead of an empty 404 response. Paths outside the web root are handled by the application as well, which checks them itself.
 
 ## [3.1.0] - 2026-11-22
@@ -192,7 +194,8 @@ The releases `v0.5.0`, `v0.5.1`, `v0.6.0`, `v0.6.1`, `v0.7.0`, `v0.8.0`, `v0.8.1
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/getherbie/herbie/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/getherbie/herbie/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/getherbie/herbie/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/getherbie/herbie/compare/v3.0.0...v3.1.0
 [3.0.1]: https://github.com/getherbie/herbie/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/getherbie/herbie/compare/v2.2.0...v3.0.0
