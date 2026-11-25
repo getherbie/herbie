@@ -74,7 +74,15 @@ jobs:
           ini-values: register_argc_argv=On
 
       - name: Install PHP dependencies
-        run: composer install --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
+        run: |
+          # Packagist may lag behind a push: retry, and abort if the commit never shows up
+          for i in 1 2 3 4 5 6; do
+            composer update getherbie/herbie --working-dir website --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
+            grep -q "$GITHUB_SHA" website/composer.lock && exit 0
+            sleep 10
+          done
+          echo "Herbie $GITHUB_SHA was not installed" >&2
+          exit 1
 
       - name: Configure SMTP secrets
         run: |
