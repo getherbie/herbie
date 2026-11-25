@@ -20,7 +20,7 @@ use Twig\Error\LoaderError;
 
 final class Application
 {
-    public const string VERSION_SEMVER = '3.2.0';
+    public const string VERSION_SEMVER = '3.2.1';
     public const int VERSION_API = 2;
     /** @var array<int, mixed> */
     private array $applicationMiddlewares;

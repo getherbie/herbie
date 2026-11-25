@@ -118,9 +118,9 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 {{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img alt="Logo" src="/media/logo.png"> #}
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
 {{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
-{{ link_download('manual.pdf', 'Manual', {}, true) }}       {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
+{{ link_download('manual.pdf', 'Manual', show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
-{{ file_url('/media/manual.pdf', {download: true}) }}       {# /media/manual.pdf?download #}
+{{ file_url('/media/manual.pdf', download: true) }}         {# /media/manual.pdf?download #}
 {{ imagine('/media/portrait.jpg') }}                        {# <img> of a resized copy, see the Imagine plugin #}
 ~~~
 {% endverbatim %}
@@ -131,7 +131,7 @@ How a path is interpreted:
   other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - `link_download()` always refers to a file in `site/media/`, the prefix `/media/` is optional.
-- The option `download` has an effect on media files only, a web server ignores `?download`.
+- `download: true` has an effect on media files only, a web server ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
@@ -157,7 +157,7 @@ content, it works in Markdown and HTML as well, because page content is processe
 {% verbatim %}
 ~~~markdown
 ![Logo]({{ file_url('/media/logo.png') }})
-[Download the manual]({{ file_url('/media/manual.pdf', {download: true}) }})
+[Download the manual]({{ file_url('/media/manual.pdf', download: true) }})
 ~~~
 
 ~~~html

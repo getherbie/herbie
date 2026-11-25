@@ -140,17 +140,17 @@
     - The HTML image element
 - name: file_url
   code: >-
-    {{ file_url("/media/manual.pdf", {download: true}) }}
-  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and the option `download` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. External URLs and anchors are returned unchanged.'
+    {{ file_url("/media/manual.pdf", download: true) }}
+  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and `download: true` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. External URLs and anchors are returned unchanged.'
   params:
     - name: path
       type: string
       desc: The public path to the file, for example `/media/manual.pdf` or `/logo.png`.
       default: ''
-    - name: options
-      type: array
-      desc: 'Options as an associative array. `download` (bool) forces a download, it has an effect on media files only.'
-      default: '[]'
+    - name: download
+      type: bool
+      desc: 'Forces a download by appending `?download`. Has an effect on media files only.'
+      default: 'false'
   return:
     - string
     - The public URL

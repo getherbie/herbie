@@ -28,7 +28,7 @@ final class MediaFunctionsTest extends Unit
     {
         $this->assertSame(
             '/media/dummy.pdf?download',
-            $this->twig()->renderString('{{ file_url("/media/dummy.pdf", {download: true}) }}'),
+            $this->twig()->renderString('{{ file_url("/media/dummy.pdf", download: true) }}'),
         );
     }
 
@@ -36,7 +36,7 @@ final class MediaFunctionsTest extends Unit
     {
         $this->assertSame(
             '/logo.png',
-            $this->twig()->renderString('{{ file_url("/logo.png", {download: true}) }}'),
+            $this->twig()->renderString('{{ file_url("/logo.png", download: true) }}'),
         );
     }
 
@@ -63,7 +63,7 @@ final class MediaFunctionsTest extends Unit
         // Twig escapes the ampersand, which is correct inside HTML attributes
         $this->assertSame(
             '/media/dummy.pdf?download&amp;v=2',
-            $this->twig()->renderString('{{ file_url("/media/dummy.pdf?v=2", {download: true}) }}'),
+            $this->twig()->renderString('{{ file_url("/media/dummy.pdf?v=2", download: true) }}'),
         );
     }
 

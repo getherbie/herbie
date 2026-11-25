@@ -210,7 +210,7 @@ Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie 
 {{ image('/logo.png') }}                       {# <img src="/logo.png"> from the web root #}
 {{ link_download('manual.pdf', 'Handbuch') }}  {# /media/manual.pdf?download #}
 {{ file_url('/media/photo.jpg') }}             {# /media/photo.jpg #}
-{{ file_url('/media/manual.pdf', {download: true}) }}  {# /media/manual.pdf?download #}
+{{ file_url('/media/manual.pdf', download: true) }}    {# /media/manual.pdf?download #}
 ~~~
 {% endverbatim %}
 

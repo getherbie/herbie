@@ -182,7 +182,7 @@ final class TwigExtension extends AbstractExtension
 
         // downloads are always served from @media, the path is relative to it
         $relative = $this->mediaRelativePath($path);
-        $href = $this->fileUrl($this->mediaRoute() . '/' . $relative, ['download' => true]);
+        $href = $this->fileUrl($this->mediaRoute() . '/' . $relative, download: true);
         $resolvedPath = $this->alias->get('@media/' . $relative);
 
         $fileInfo = $show_info ? $this->getFileInfo($resolvedPath) : '';
@@ -540,9 +540,9 @@ final class TwigExtension extends AbstractExtension
      * `@media`. Every other path is relative to the web root and served by the web server.
      * External URLs, anchors and query-only values are returned unchanged.
      *
-     * Option `download` appends `?download` and forces a download (media files only).
+     * `download: true` appends `?download` and forces a download (media files only).
      */
-    public function fileUrl(string $path, array $options = []): string
+    public function fileUrl(string $path, bool $download = false): string
     {
         if ($path === '' || preg_match('~^([a-z][a-z0-9+.-]*:|//|[#?])~i', $path) === 1) {
             return $path;
@@ -553,7 +553,7 @@ final class TwigExtension extends AbstractExtension
         $route = $this->mediaRoute();
 
         if ($route !== '' && ($path === $route || str_starts_with($path, $route . '/'))) {
-            if (!empty($options['download'])) {
+            if ($download) {
                 $suffix = '?download' . ($suffix !== '' && $suffix[0] === '?' ? '&' . substr($suffix, 1) : $suffix);
             }
             return $this->urlManager->createUrl($this->encodePath($path)) . $suffix;

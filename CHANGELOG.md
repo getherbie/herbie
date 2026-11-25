@@ -1,9 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [3.2.1] - 2026-11-25
 
 ### Fixed
+- `file_url()` takes the named argument `download: true` instead of an options array (`{download: true}`), like other Twig functions.
+- `Application::VERSION_SEMVER` reported `3.1.0` in the 3.2.0 release.
 - `MediaMiddleware` sends `Cache-Control: max-age=86400` instead of `public, max-age=86400`. Shared caches no longer store media files that are requested with an `Authorization` header, e.g. files protected by `HttpBasicAuthMiddleware`.
 
 ## [3.2.0] - 2026-11-25
@@ -199,7 +201,8 @@ The releases `v0.5.0`, `v0.5.1`, `v0.6.0`, `v0.6.1`, `v0.7.0`, `v0.8.0`, `v0.8.1
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]: https://github.com/getherbie/herbie/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/getherbie/herbie/compare/v3.2.1...HEAD
+[3.2.1]: https://github.com/getherbie/herbie/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/getherbie/herbie/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/getherbie/herbie/compare/v3.0.0...v3.1.0
 [3.0.1]: https://github.com/getherbie/herbie/compare/v3.0.0...v3.0.1
