@@ -105,6 +105,50 @@ return ['news/(.+)', $middleware];
 
 Both approaches are described in [Extending](doc/extending).
 
+### Generated responses
+
+A route middleware can return generated content, for example a ZIP archive or an XML export, instead of passing the request on.
+To stay independent of a PSR-7 implementation, create the response with the PSR-17 factories `ResponseFactoryInterface` and `StreamFactoryInterface`.
+A [plugin class](doc/extending/plugin-class) receives them through dependency injection in its constructor.
+
+~~~php
+<?php
+
+use herbie\AbstractPlugin;
+use herbie\Plugin;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+#[Plugin('export')]
+final class ExportPlugin extends AbstractPlugin
+{
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private StreamFactoryInterface $streamFactory,
+    ) {}
+
+    #[\Override]
+    public function routeMiddlewares(): array
+    {
+        return [['^export\.csv$', $this->export(...)]];
+    }
+
+    private function export(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        $csv = "id,title\n1,Hello\n";
+        return $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'text/csv; charset=utf-8')
+            ->withHeader('Content-Disposition', 'attachment; filename="export.csv"')
+            ->withBody($this->streamFactory->createStream($csv));
+    }
+}
+~~~
+
+Middleware files in `site/extend/middlewares_route` do not receive these factories, use a plugin class for generated responses.
+
 ## Built-in Middlewares
 
 Herbie runs its own middlewares before and after the ones you register.
