@@ -18,16 +18,19 @@ final class RstPlugin extends AbstractParserPlugin
         parent::__construct($config, $logger, 'plugins.rst');
     }
 
+    #[\Override]
     protected function getFormats(): array
     {
         return ['rst'];
     }
 
+    #[\Override]
     protected function getTwigName(): string
     {
         return 'rst';
     }
 
+    #[\Override]
     public function parse(string $value): string
     {
         return $this->parseSafely(

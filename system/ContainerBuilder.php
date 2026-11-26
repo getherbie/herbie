@@ -36,7 +36,7 @@ final readonly class ContainerBuilder
 
         $c->set(Application::class, $this->app);
 
-        $c->set(ContainerInterface::class, fn(ContainerInterface $c) => $c);
+        $c->set(ContainerInterface::class, fn(ContainerInterface $c): \Psr\Container\ContainerInterface => $c);
 
         $c->set(Alias::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
@@ -160,14 +160,14 @@ final readonly class ContainerBuilder
             );
         });
 
-        $c->set(ErrorHandlerMiddleware::class, fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
+        $c->set(ErrorHandlerMiddleware::class, fn(ContainerInterface $c): \herbie\middlewares\ErrorHandlerMiddleware => new ErrorHandlerMiddleware(
             $c->get(PageRepositoryInterface::class),
             $c->get(ResponseFactoryInterface::class),
             $c->get(TwigRenderer::class),
             $c->get(UrlManager::class),
         ));
 
-        $c->set(EventManager::class, fn() => new EventManager());
+        $c->set(EventManager::class, fn(): \herbie\EventManager => new EventManager());
 
         $c->set(Finder::class, function (ContainerInterface $c) {
             $config = $c->get(Config::class);
@@ -193,7 +193,7 @@ final readonly class ContainerBuilder
             });
         }
 
-        $c->set(MiddlewareDispatcher::class, fn(ContainerInterface $c) => new MiddlewareDispatcher(
+        $c->set(MiddlewareDispatcher::class, fn(ContainerInterface $c): \herbie\MiddlewareDispatcher => new MiddlewareDispatcher(
             [
                 $c->get(ErrorHandlerMiddleware::class), // only one at the moment
                 $c->get(PageResolverMiddleware::class),
@@ -207,7 +207,7 @@ final readonly class ContainerBuilder
             $c->get(UrlManager::class)->parseRequest()[0],
         ));
 
-        $c->set(PageFactory::class, fn(ContainerInterface $c) => new PageFactory($c->get(SlugGenerator::class)));
+        $c->set(PageFactory::class, fn(ContainerInterface $c): \herbie\PageFactory => new PageFactory($c->get(SlugGenerator::class)));
 
         $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
             $options = $c->get(Config::class)->getAsArray('components.flatFilePagePersistence');
@@ -230,17 +230,17 @@ final readonly class ContainerBuilder
             );
         });
 
-        $c->set(PageRepositoryInterface::class, fn(ContainerInterface $c) => new FlatFilePageRepository(
+        $c->set(PageRepositoryInterface::class, fn(ContainerInterface $c): \herbie\FlatFilePageRepository => new FlatFilePageRepository(
             $c->get(PageFactory::class),
             $c->get(PagePersistenceInterface::class),
         ));
 
-        $c->set(PageResolverMiddleware::class, fn(ContainerInterface $c) => new PageResolverMiddleware(
+        $c->set(PageResolverMiddleware::class, fn(ContainerInterface $c): \herbie\middlewares\PageResolverMiddleware => new PageResolverMiddleware(
             $c->get(PageRepositoryInterface::class),
             $c->get(UrlManager::class),
         ));
 
-        $c->set(PluginManager::class, fn(ContainerInterface $c) => new PluginManager(
+        $c->set(PluginManager::class, fn(ContainerInterface $c): \herbie\PluginManager => new PluginManager(
             $c->get(Config::class),
             $c->get(EventManager::class),
             $c->get(Translator::class),
@@ -320,7 +320,7 @@ final readonly class ContainerBuilder
             };
         });
 
-        $c->set(Site::class, fn(ContainerInterface $c) => new Site(
+        $c->set(Site::class, fn(ContainerInterface $c): \herbie\Site => new Site(
             $c->get(Config::class),
             $c->get(DataRepositoryInterface::class),
             $c->get(PageRepositoryInterface::class),
@@ -341,7 +341,7 @@ final readonly class ContainerBuilder
             return $translator;
         });
 
-        $c->set(TwigRenderer::class, fn(ContainerInterface $c) => new TwigRenderer(
+        $c->set(TwigRenderer::class, fn(ContainerInterface $c): \herbie\TwigRenderer => new TwigRenderer(
             $c->get(Config::class),
             $c->get(EventManager::class),
             $c->get(LoggerInterface::class),

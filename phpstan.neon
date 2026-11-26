@@ -1,6 +1,7 @@
 parameters:
 	treatPhpDocTypesAsCertain: false
 	level: 8
+	checkMissingOverrideMethodAttribute: true
 	ignoreErrors:
 		-
 			identifier: missingType.iterableValue

@@ -53,7 +53,7 @@ final class PageRendererMiddlewareTest extends Unit
         $page = new Page(['layout' => 'default'], ['a' => 'first']);
         $eventManager = new EventManager();
         $dispatched = [];
-        $eventManager->addListener(RenderLayoutEvent::class, function (RenderLayoutEvent $event) use (&$dispatched) {
+        $eventManager->addListener(RenderLayoutEvent::class, function (RenderLayoutEvent $event) use (&$dispatched): void {
             $dispatched[] = $event->getLayout();
             $event->setContent('rendered by the listener');
         });
@@ -69,7 +69,7 @@ final class PageRendererMiddlewareTest extends Unit
     {
         $page = new Page(['layout' => ''], ['a' => 'original']);
         $eventManager = new EventManager();
-        $eventManager->addListener(RenderSegmentEvent::class, function (RenderSegmentEvent $event) {
+        $eventManager->addListener(RenderSegmentEvent::class, function (RenderSegmentEvent $event): void {
             $event->setSegment(strtoupper($event->getSegment()));
         });
         $middleware = $this->createMiddleware($page, $eventManager);
@@ -83,7 +83,7 @@ final class PageRendererMiddlewareTest extends Unit
     {
         $page = new Page(['layout' => ''], ['a' => 'content']);
         $eventManager = new EventManager();
-        $eventManager->addListener(LayoutRenderedEvent::class, function (LayoutRenderedEvent $event) {
+        $eventManager->addListener(LayoutRenderedEvent::class, function (LayoutRenderedEvent $event): void {
             $event->setContent($event->getContent() . ' + suffix');
         });
         $middleware = $this->createMiddleware($page, $eventManager);

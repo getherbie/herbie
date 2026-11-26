@@ -16,6 +16,7 @@ return RectorConfig::configure()
         // loader (Parser::extractClass) only recognizes `new class`, so it then misreads
         // `implements` as the class name and fails with "Class ...\implements does not exist".
         \Rector\Php82\Rector\Class_\ReadOnlyClassRector::class,
+        \Rector\Php83\Rector\Class_\ReadOnlyAnonymousClassRector::class,
 
         // Marks properties as `readonly`. Tests set private properties via reflection, which
         // then fails with "Cannot modify readonly property".
@@ -26,4 +27,5 @@ return RectorConfig::configure()
         // fail with "must not be accessed before initialization".
         \Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
     ])
-    ->withPhpSets(php83: true);
+    ->withPhpSets(php83: true)
+    ->withTypeCoverageLevel(10);

@@ -27,6 +27,7 @@ final class CorePlugin extends AbstractPlugin
         $this->layoutFileExtension = trim($config->getAsString('fileExtensions.layouts'));
     }
 
+    #[\Override]
     public function consoleCommands(): array
     {
         return [
@@ -34,6 +35,7 @@ final class CorePlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function eventListeners(): array
     {
         return [
@@ -43,6 +45,7 @@ final class CorePlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         return [
@@ -50,6 +53,7 @@ final class CorePlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function twigGlobals(): array
     {
         return [];

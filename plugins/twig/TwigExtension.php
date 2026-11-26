@@ -43,6 +43,7 @@ final class TwigExtension extends AbstractExtension
     /**
      * @return TwigFilter[]
      */
+    #[\Override]
     public function getFilters(): array
     {
         return [
@@ -56,6 +57,7 @@ final class TwigExtension extends AbstractExtension
     /**
      * @return TwigFunction[]
      */
+    #[\Override]
     public function getFunctions(): array
     {
         return [
@@ -90,6 +92,7 @@ final class TwigExtension extends AbstractExtension
     /**
      * @return TwigTest[]
      */
+    #[\Override]
     public function getTests(): array
     {
         return [
@@ -399,7 +402,7 @@ final class TwigExtension extends AbstractExtension
         $pageList = $this->pageRepository->findAll();
 
         if ($prefix !== '') {
-            $pageList = $pageList->filter(fn($page) => str_starts_with($page->getRoute(), $prefix));
+            $pageList = $pageList->filter(fn($page): bool => str_starts_with($page->getRoute(), $prefix));
         }
 
         $prevPage = null;

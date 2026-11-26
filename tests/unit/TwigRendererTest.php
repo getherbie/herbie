@@ -55,7 +55,7 @@ final class TwigRendererTest extends Unit
     {
         $eventManager = new EventManager();
         $dispatched = false;
-        $eventManager->addListener(TwigInitializedEvent::class, function () use (&$dispatched) {
+        $eventManager->addListener(TwigInitializedEvent::class, function () use (&$dispatched): void {
             $dispatched = true;
         });
         $renderer = $this->createRenderer($eventManager);
@@ -69,7 +69,7 @@ final class TwigRendererTest extends Unit
     {
         $eventManager = new EventManager();
         $count = 0;
-        $eventManager->addListener(TwigInitializedEvent::class, function () use (&$count) {
+        $eventManager->addListener(TwigInitializedEvent::class, function () use (&$count): void {
             $count++;
         });
         $renderer = $this->createRenderer($eventManager);

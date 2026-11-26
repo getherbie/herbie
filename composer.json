@@ -76,6 +76,7 @@
         "nyholm/psr7-server": "^1.0",
         "phpmailer/phpmailer": "^6.9",
         "phpstan/phpstan": "^2.0",
+        "rector/rector": "^2.9",
         "slim/psr7": "^1.6",
         "symfony/process": "^6.4",
         "vincentlanglet/twig-cs-fixer": "^4.1"
@@ -103,7 +104,7 @@
         "qa:check:lint": "find . -type f \\( -name '*.php' -o -path ./herbie \\) -not -path '*/vendor/*' -exec php -l {} + > /dev/null",
         "qa:check:cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
         "qa:check:cs-twig": "./vendor/bin/twig-cs-fixer lint --config .twig-cs-fixer.php",
-        "qa:check:phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M",
+        "qa:check:phpstan": "./vendor/bin/phpstan analyse --memory-limit 256M --error-format=raw",
         "qa:check:deptrac": "./vendor/bin/deptrac analyse --no-progress",
         "qa:fix": [
             "@qa:fix:cs",

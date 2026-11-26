@@ -334,6 +334,7 @@ final class QueryBuilder implements IteratorAggregate
         return $item;
     }
 
+    #[\Override]
     public function getIterator(): Traversable
     {
         $this->processData();

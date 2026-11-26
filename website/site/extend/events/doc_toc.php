@@ -2,7 +2,7 @@
 
 use herbie\events\RenderSegmentEvent;
 
-$renderSegmentEvent = function (RenderSegmentEvent $event) {
+$renderSegmentEvent = function (RenderSegmentEvent $event): void {
     $page = $event->getPage();
     $parentRoute = $page->getParentRoute();
     if (!str_contains($parentRoute, 'doc')) {

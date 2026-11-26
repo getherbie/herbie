@@ -48,16 +48,19 @@ final class MarkdownPlugin extends AbstractParserPlugin
         $this->assertValidExtensions();
     }
 
+    #[\Override]
     protected function getFormats(): array
     {
         return ['markdown', 'md'];
     }
 
+    #[\Override]
     protected function getTwigName(): string
     {
         return 'markdown';
     }
 
+    #[\Override]
     public function parse(string $value): string
     {
         return $this->parseSafely(
@@ -108,7 +111,7 @@ final class MarkdownPlugin extends AbstractParserPlugin
         /** @var array<mixed> $extensions */
         $extensions = array_merge(self::FLAVORS[$flavour], $this->config->getAsArray('extensions'));
 
-        return array_values(array_unique(array_filter($extensions, 'is_string')));
+        return array_values(array_unique(array_filter($extensions, is_string(...))));
     }
 
     private function assertValidExtensions(): void
@@ -119,7 +122,7 @@ final class MarkdownPlugin extends AbstractParserPlugin
                 || !class_exists($extension)
                 || !is_subclass_of($extension, ExtensionInterface::class)
             ) {
-                $value = is_string($extension) ? $extension : (is_object($extension) ? get_class($extension) : gettype($extension));
+                $value = is_string($extension) ? $extension : (get_debug_type($extension));
                 throw new InvalidArgumentException(sprintf('Invalid markdown extension class "%s".', $value));
             }
             $reflection = new ReflectionClass($extension);

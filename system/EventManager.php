@@ -14,6 +14,7 @@ final class EventManager implements EventDispatcherInterface, ListenerProviderIn
 
     public function __construct() {}
 
+    #[\Override]
     public function dispatch(object $event): object
     {
         // If the event is already stopped, nothing to do here.
@@ -29,6 +30,7 @@ final class EventManager implements EventDispatcherInterface, ListenerProviderIn
         return $event;
     }
 
+    #[\Override]
     public function getListenersForEvent(object $event): iterable
     {
         $eventType = $event::class;

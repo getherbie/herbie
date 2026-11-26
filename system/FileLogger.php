@@ -48,6 +48,7 @@ final class FileLogger implements LoggerInterface
         $this->level = self::LEVELS[$level];
     }
 
+    #[\Override]
     public function debug($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::DEBUG)) {
@@ -60,6 +61,7 @@ final class FileLogger implements LoggerInterface
         return self::LEVELS[$level] >= $this->level;
     }
 
+    #[\Override]
     public function log($level, $message, array $context = [])
     {
         // Build log line
@@ -130,6 +132,7 @@ final class FileLogger implements LoggerInterface
         return (new DateTimeImmutable('now'))->format('Y-m-d H:i:s.u');
     }
 
+    #[\Override]
     public function info($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::INFO)) {
@@ -137,6 +140,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function notice($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::NOTICE)) {
@@ -144,6 +148,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function warning($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::WARNING)) {
@@ -151,6 +156,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function error($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::ERROR)) {
@@ -158,6 +164,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function critical($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::CRITICAL)) {
@@ -165,6 +172,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function alert($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::ALERT)) {
@@ -172,6 +180,7 @@ final class FileLogger implements LoggerInterface
         }
     }
 
+    #[\Override]
     public function emergency($message, array $context = [])
     {
         if ($this->logAtThisLevel(LogLevel::EMERGENCY)) {

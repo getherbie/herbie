@@ -12,7 +12,7 @@ use function herbie\is_natural;
 
 class FunctionsTest extends Unit
 {
-    public function testIsDigit()
+    public function testIsDigit(): void
     {
         $tests = [
             [42, true],
@@ -38,7 +38,7 @@ class FunctionsTest extends Unit
         }
     }
 
-    public function testIsNatural()
+    public function testIsNatural(): void
     {
         // without zero
         $tests = [

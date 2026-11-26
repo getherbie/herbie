@@ -6,6 +6,7 @@ namespace herbie;
 
 final class PageTree extends AbstractNode implements \Stringable
 {
+    #[\Override]
     public function __toString(): string
     {
         $menuItem = $this->getMenuItem();

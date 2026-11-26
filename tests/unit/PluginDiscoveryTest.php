@@ -220,7 +220,7 @@ final class PluginDiscoveryTest extends Unit
             ];
             PHP);
 
-        $processor = fn(array $data) => [
+        $processor = fn(array $data): array => [
             'pluginName' => $data['pluginName'],
             'config' => ['path' => str_replace('APP_PATH', '/app', $data['config']['path'])],
         ];
@@ -288,8 +288,8 @@ final class PluginDiscoveryTest extends Unit
         $this->writePlugin('system', 'foo', 'FooPlugin.php', $this->pluginCode('FooV1'));
         file_put_contents($this->root . '/system/foo/config.php', "<?php\n\nreturn ['url' => 'WEB_URL/foo'];\n");
 
-        $first = $this->discover($cacheFile, fn(array $data) => ['url' => str_replace('WEB_URL', 'https://a.test', $data['url'])]);
-        $second = $this->discover($cacheFile, fn(array $data) => ['url' => str_replace('WEB_URL', 'https://b.test', $data['url'])]);
+        $first = $this->discover($cacheFile, fn(array $data): array => ['url' => str_replace('WEB_URL', 'https://a.test', $data['url'])]);
+        $second = $this->discover($cacheFile, fn(array $data): array => ['url' => str_replace('WEB_URL', 'https://b.test', $data['url'])]);
 
         $this->assertSame('https://a.test/foo', $first['foo']['url']);
         $this->assertSame('https://b.test/foo', $second['foo']['url']);
@@ -304,7 +304,7 @@ final class PluginDiscoveryTest extends Unit
             ->discover($this->root . '/system', $this->root . '/local', $processor);
 
         // ignore Composer plugins that are installed in the environment running the tests
-        return array_filter($plugins, fn(array $plugin) => $plugin['location'] !== 'composer');
+        return array_filter($plugins, fn(array $plugin): bool => $plugin['location'] !== 'composer');
     }
 
     private function pluginCode(string $class, string $name = 'foo'): string

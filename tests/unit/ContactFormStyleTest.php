@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 
 final class ContactFormStyleTest extends Unit
 {
-    private const FORM = __DIR__ . '/../../plugins/contact/templates/form.twig';
+    private const string FORM = __DIR__ . '/../../plugins/contact/templates/form.twig';
 
     public function testAltchaColorsDoNotDependOnTheWebsitesDarkModeAttribute(): void
     {

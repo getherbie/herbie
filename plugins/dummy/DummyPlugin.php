@@ -29,11 +29,13 @@ final readonly class DummyPlugin implements PluginInterface
      */
     public function __construct(private LoggerInterface $logger) {}
 
+    #[\Override]
     public function apiVersion(): int
     {
         return 2;
     }
 
+    #[\Override]
     public function consoleCommands(): array
     {
         return [
@@ -41,6 +43,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function eventListeners(): array
     {
         $this->logger->debug(__METHOD__);
@@ -58,6 +61,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function applicationMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
@@ -66,6 +70,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function routeMiddlewares(): array
     {
         $this->logger->debug(__METHOD__);
@@ -75,6 +80,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function twigFilters(): array
     {
         $this->logger->debug(__METHOD__);
@@ -83,6 +89,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function twigGlobals(): array
     {
         return [
@@ -90,6 +97,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         $this->logger->debug(__METHOD__);
@@ -98,6 +106,7 @@ final readonly class DummyPlugin implements PluginInterface
         ];
     }
 
+    #[\Override]
     public function twigTests(): array
     {
         $this->logger->debug(__METHOD__);

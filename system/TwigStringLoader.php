@@ -13,6 +13,7 @@ final class TwigStringLoader implements LoaderInterface
     /**
      * @throws LoaderError
      */
+    #[\Override]
     public function getSourceContext(string $name): Source
     {
         if (true === $this->isLayoutTemplate($name)) {
@@ -34,17 +35,20 @@ final class TwigStringLoader implements LoaderInterface
         return false;
     }
 
+    #[\Override]
     public function exists(string $name): bool
     {
         $bool = $this->isLayoutTemplate($name);
         return !$bool;
     }
 
+    #[\Override]
     public function getCacheKey(string $name): string
     {
         return md5($name);
     }
 
+    #[\Override]
     public function isFresh(string $name, int $time): bool
     {
         return true;

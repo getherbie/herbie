@@ -62,6 +62,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         return $this->handle($request);
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $current = $this->getMiddleware();

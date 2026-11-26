@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 
 final class WebsiteThemeStylesTest extends Unit
 {
-    private const STYLES = __DIR__ . '/../../website/site/themes/default/css/styles.css';
+    private const string STYLES = __DIR__ . '/../../website/site/themes/default/css/styles.css';
 
     public function testColorsAreOnlyDefinedAsTokens(): void
     {

@@ -16,8 +16,9 @@ final class JsonDataRepository extends YamlDataRepository implements DataReposit
         $this->path = $path;
     }
 
+    #[\Override]
     protected function parseData(string $contents): array
     {
-        return json_decode($contents, true);
+        return json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
     }
 }

@@ -27,6 +27,7 @@ final class SystemInfoPlugin extends AbstractPlugin
         $this->appPath = str_untrailing_slash($config->getAsString('paths.app'));
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         return [

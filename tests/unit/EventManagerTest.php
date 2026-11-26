@@ -114,13 +114,13 @@ final class EventManagerTest extends Unit
     {
         $manager = new EventManager();
 
-        $this->assertSame($manager, $manager->addListener(\stdClass::class, static fn() => null));
+        $this->assertSame($manager, $manager->addListener(\stdClass::class, static fn(): null => null));
     }
 
     public function testGetListeners(): void
     {
         $manager = new EventManager();
-        $manager->addListener(\stdClass::class, static fn() => null);
+        $manager->addListener(\stdClass::class, static fn(): null => null);
 
         $listeners = $manager->getListeners();
 

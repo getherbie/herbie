@@ -47,10 +47,10 @@ final class NullCacheTest extends Unit
     {
         $cache = new NullCache();
         $operations = [
-            static fn(string $key) => $cache->get($key),
-            static fn(string $key) => $cache->set($key, 'value'),
-            static fn(string $key) => $cache->has($key),
-            static fn(string $key) => $cache->delete($key),
+            static fn(string $key): mixed => $cache->get($key),
+            static fn(string $key): bool => $cache->set($key, 'value'),
+            $cache->has(...),
+            $cache->delete(...),
         ];
 
         foreach (['', '.', '..', 'page-1', 'has space', 'a/b', 'a\\b', 'a@b', 'a:b', 'a{b', 'a}b', 'a(b', 'a)b', "a\0b", str_repeat('a', 65)] as $key) {

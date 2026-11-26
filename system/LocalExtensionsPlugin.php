@@ -13,6 +13,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
 {
     public function __construct(protected Config $config) {}
 
+    #[\Override]
     public function consoleCommands(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathConsoleCommands');
@@ -51,6 +52,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return include $file;
     }
 
+    #[\Override]
     public function eventListeners(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathEventListeners');
@@ -64,6 +66,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $events;
     }
 
+    #[\Override]
     public function applicationMiddlewares(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathApplicationMiddlewares');
@@ -85,6 +88,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $this->includePhpFile($file);
     }
 
+    #[\Override]
     public function routeMiddlewares(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathRouteMiddlewares');
@@ -106,6 +110,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $this->includePhpFile($file);
     }
 
+    #[\Override]
     public function twigFilters(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigFilters');
@@ -127,6 +132,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $this->includePhpFile($file);
     }
 
+    #[\Override]
     public function twigGlobals(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigGlobals');
@@ -140,6 +146,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $globals;
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigFunctions');
@@ -161,6 +168,7 @@ final class LocalExtensionsPlugin extends AbstractPlugin
         return $this->includePhpFile($file);
     }
 
+    #[\Override]
     public function twigTests(): array
     {
         $dir = $this->config->getAsString('plugins.LOCAL_EXT.pathTwigTests');

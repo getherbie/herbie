@@ -72,7 +72,7 @@ final readonly class PageRendererMiddleware implements MiddlewareInterface
         $content = $this->cache->remember(
             'page_' . md5($page->getCacheId()),
             is_file($path) ? file_mtime($path) : 0,
-            fn() => $this->renderContent($page, $route, $routeParams),
+            fn(): string => $this->renderContent($page, $route, $routeParams),
             $this->cacheTTL,
             enabled: $this->cacheEnable && !empty($page->getCached()),
         );

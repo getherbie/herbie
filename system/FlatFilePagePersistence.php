@@ -293,7 +293,7 @@ final class FlatFilePagePersistence implements PagePersistenceInterface
         $items = $this->cache->remember(
             'pagelist_' . md5(__METHOD__ . $this->alias->get('@page')),
             $modified,
-            fn() => $this->loadPages(),
+            fn(): array => $this->loadPages(),
             $this->cacheTTL,
             enabled: $useCache,
         );

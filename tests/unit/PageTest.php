@@ -22,7 +22,7 @@ final class PageTest extends Unit
 {
     protected FlatFilePageRepository $repository;
 
-    public function testAuthors()
+    public function testAuthors(): void
     {
         $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasAuthor('None Existing'));
@@ -41,7 +41,7 @@ final class PageTest extends Unit
 
     }
 
-    public function testCached()
+    public function testCached(): void
     {
         // default value
         $page = new Page();
@@ -61,7 +61,7 @@ final class PageTest extends Unit
     // ---------------------------------------------------------
     // string[] $authors
 
-    public function testCacheId()
+    public function testCacheId(): void
     {
         // default value
         $page = new Page();
@@ -75,7 +75,7 @@ final class PageTest extends Unit
 
     // bool $cached
 
-    public function testCategories()
+    public function testCategories(): void
     {
         $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasCategory('None Existing Category'));
@@ -94,7 +94,7 @@ final class PageTest extends Unit
 
     }
 
-    public function testContentType()
+    public function testContentType(): void
     {
         // default value
         $page = new Page();
@@ -109,7 +109,7 @@ final class PageTest extends Unit
 
     // string[] $categories
 
-    public function testCreated()
+    public function testCreated(): void
     {
         // default value
         $page = new Page();
@@ -125,7 +125,7 @@ final class PageTest extends Unit
 
     // string $content_type
 
-    public function testDate()
+    public function testDate(): void
     {
         // default value
         $page = new Page();
@@ -149,7 +149,7 @@ final class PageTest extends Unit
 
     // string $created
 
-    public function testExcert()
+    public function testExcert(): void
     {
         // default value
         $page = new Page();
@@ -165,7 +165,7 @@ final class PageTest extends Unit
     // array<int|string, mixed> $customData
     // string $date
 
-    public function testFormat()
+    public function testFormat(): void
     {
         // default value
         $page = new Page();
@@ -188,7 +188,7 @@ final class PageTest extends Unit
 
     // string $excerpt
 
-    public function testHidden()
+    public function testHidden(): void
     {
         // default value
         $page = new Page();
@@ -205,7 +205,7 @@ final class PageTest extends Unit
 
     // string $format
 
-    public function testKeepExtension()
+    public function testKeepExtension(): void
     {
         // default value
         $page = new Page();
@@ -222,7 +222,7 @@ final class PageTest extends Unit
 
     // bool $hidden
 
-    public function testLayout()
+    public function testLayout(): void
     {
         // default value
         $page = new Page();
@@ -237,7 +237,7 @@ final class PageTest extends Unit
 
     // bool $keep_extension
 
-    public function testMenuTitle()
+    public function testMenuTitle(): void
     {
         // default value
         $page = new Page();
@@ -255,7 +255,7 @@ final class PageTest extends Unit
 
     // string $layout
 
-    public function testModified()
+    public function testModified(): void
     {
         // default value
         $page = new Page();
@@ -271,7 +271,7 @@ final class PageTest extends Unit
 
     // string $menu_title
 
-    public function testPath()
+    public function testPath(): void
     {
         // default value
         $page = new Page();
@@ -286,7 +286,7 @@ final class PageTest extends Unit
 
     // string $modified
 
-    public function testRedirect()
+    public function testRedirect(): void
     {
         // default value
         $page = new Page();
@@ -322,7 +322,7 @@ final class PageTest extends Unit
 
     // string $path
 
-    public function testRoute()
+    public function testRoute(): void
     {
         // default value
         $page = new Page();
@@ -337,7 +337,7 @@ final class PageTest extends Unit
 
     // array<void>|array{status: int, url: string} $redirect
 
-    public function testTags()
+    public function testTags(): void
     {
         $page = new Page([], null, new SlugGenerator());
         $this->assertFalse($page->hasTag('None Existing Tag'));
@@ -358,7 +358,7 @@ final class PageTest extends Unit
 
     // string $route
 
-    public function testTitle()
+    public function testTitle(): void
     {
         // default value
         $page = new Page();
@@ -373,7 +373,7 @@ final class PageTest extends Unit
 
     // string[] $tags
 
-    public function testTwig()
+    public function testTwig(): void
     {
         // default value
         $page = new Page();
@@ -390,7 +390,7 @@ final class PageTest extends Unit
 
     // string $title
 
-    public function testType()
+    public function testType(): void
     {
         // default value
         $page = new Page();
@@ -405,7 +405,7 @@ final class PageTest extends Unit
 
     // bool $twig
 
-    public function testToString()
+    public function testToString(): void
     {
         $page = new Page();
         $this->assertEquals('', (string)$page);
@@ -415,7 +415,7 @@ final class PageTest extends Unit
 
     // string $type
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $data = [
             // member data
@@ -454,7 +454,7 @@ final class PageTest extends Unit
         $this->assertEquals($data, $page->toArray());
     }
 
-    public function testMagicMethods()
+    public function testMagicMethods(): void
     {
         $page = new Page(['title' => 'My Title']);
         $this->assertTrue(isset($page->title));
@@ -467,7 +467,7 @@ final class PageTest extends Unit
         (string)$page->nonExistingVariable;
     }
 
-    public function testWithSlugGenerator()
+    public function testWithSlugGenerator(): void
     {
         $page = new Page(['author' => 'Niels-Henning Ørsted Pedersen']);
         try {
@@ -481,14 +481,14 @@ final class PageTest extends Unit
         $this->assertEquals('Niels-Henning Ørsted Pedersen', $pageWithGenerator->getAuthor('Niels-Henning Ørsted Pedersen'));
     }
 
-    public function testSetDataWithDataKey()
+    public function testSetDataWithDataKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Field data is not allowed.');
         new Page(['data' => 'foo/bar']);
     }
 
-    public function testArrayAccessMethods()
+    public function testArrayAccessMethods(): void
     {
         $page = new Page();
         $page['title'] = 'Title';
@@ -507,7 +507,7 @@ final class PageTest extends Unit
         return $page;
     }
 
-    public function testGetLayout()
+    public function testGetLayout(): void
     {
         $page = new Page();
         $this->assertSame('default', $page->getLayout());
@@ -515,7 +515,7 @@ final class PageTest extends Unit
 
     // ---------------------------------------------------------
 
-    public function testGetSegment()
+    public function testGetSegment(): void
     {
         $page = new Page();
         $page->setSegments([
@@ -531,7 +531,7 @@ final class PageTest extends Unit
         $this->assertSame('', $page->getSegment('notExistingKey'));
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $page = (new PageFactory())->newPage(
             [
@@ -559,26 +559,26 @@ final class PageTest extends Unit
         );
     }
 
-    public function testSetData()
+    public function testSetData(): void
     {
         $page = new Page(['title' => 'Test title', 'layout' => 'test']);
         $this->assertSame('Test title', $page->getTitle());
         $this->assertSame('test', $page->getLayout());
     }
 
-    public function testSetDataException()
+    public function testSetDataException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Page(['data' => []]);
     }
 
-    public function testSetSegmentsException()
+    public function testSetSegmentsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Page(['segments' => []]);
     }
 
-    public function testSetDate()
+    public function testSetDate(): void
     {
         date_default_timezone_set('Europe/Zurich');
 
@@ -643,7 +643,7 @@ final class PageTest extends Unit
     /**
      * @depends testToArray2
      */
-    public function testMagicalGetMethod(Page $page)
+    public function testMagicalGetMethod(Page $page): void
     {
         // Member var
         $this->assertSame('layout.html', $page->layout);
@@ -655,7 +655,7 @@ final class PageTest extends Unit
      * @depends testToArray2
      * @expectedException LogicException
      */
-    public function testMagicalGetMethodException(Page $page)
+    public function testMagicalGetMethodException(Page $page): void
     {
         $this->expectExceptionMessage("Field notExistingMember does not exist.");
         $page->notExistingMember;
@@ -664,7 +664,7 @@ final class PageTest extends Unit
     /**
      * @depends testToArray2
      */
-    public function testMagicalIssetMethod(Page $page)
+    public function testMagicalIssetMethod(Page $page): void
     {
         // Member var
         $this->assertSame(true, isset($page->layout));
@@ -677,7 +677,7 @@ final class PageTest extends Unit
     /**
      * @depends testConstructor
      */
-    public function testMagicalSetMethod(Page $page)
+    public function testMagicalSetMethod(Page $page): void
     {
         // Member var
         $page->title = 'My Title';
@@ -690,7 +690,7 @@ final class PageTest extends Unit
     /**
      * @depends testToArray2
      */
-    public function testToString2(Page $page)
+    public function testToString2(Page $page): void
     {
         $this->assertSame('Page Data', (string)$page);
     }

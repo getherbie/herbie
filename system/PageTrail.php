@@ -21,11 +21,13 @@ final readonly class PageTrail implements IteratorAggregate, Countable
     public function __construct(private array $items) {}
 
     /** @return \ArrayIterator<int, Page> */
+    #[\Override]
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }
 
+    #[\Override]
     public function count(): int
     {
         return count($this->items);

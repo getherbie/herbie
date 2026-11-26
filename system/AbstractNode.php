@@ -23,6 +23,7 @@ abstract class AbstractNode implements IteratorAggregate
     public function __construct(private mixed $value = null) {}
 
     /** @return \ArrayIterator<int, AbstractNode> */
+    #[\Override]
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->children);

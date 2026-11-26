@@ -13,6 +13,7 @@ final class PageTreeFilterIterator extends RecursiveFilterIterator
         parent::__construct($recursiveIterator);
     }
 
+    #[\Override]
     public function accept(): bool
     {
         if (!$this->enableFilter) {
@@ -25,6 +26,7 @@ final class PageTreeFilterIterator extends RecursiveFilterIterator
         return false;
     }
 
+    #[\Override]
     public function getChildren(): self
     {
         return new self(

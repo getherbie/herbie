@@ -28,6 +28,7 @@ final class TwigPlugin extends AbstractPlugin
         private readonly UrlManager $urlManager,
     ) {}
 
+    #[\Override]
     public function eventListeners(): array
     {
         return [

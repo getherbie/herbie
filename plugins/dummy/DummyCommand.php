@@ -13,6 +13,7 @@ final class DummyCommand extends Command
     protected static $defaultName = 'dummy';
     protected static $defaultDescription = 'Creates a new user.';
 
+    #[\Override]
     protected function configure(): void
     {
         $this

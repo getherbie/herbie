@@ -27,36 +27,43 @@ final class PageTreeIterator implements RecursiveIterator
         }
     }
 
+    #[\Override]
     public function getChildren(): PageTreeIterator
     {
         return new self($this->children[$this->position]->getChildren());
     }
 
+    #[\Override]
     public function hasChildren(): bool
     {
         return $this->children[$this->position]->hasChildren();
     }
 
+    #[\Override]
     public function current(): PageTree
     {
         return $this->children[$this->position];
     }
 
+    #[\Override]
     public function key(): int
     {
         return $this->position;
     }
 
+    #[\Override]
     public function next(): void
     {
         $this->position++;
     }
 
+    #[\Override]
     public function rewind(): void
     {
         $this->position = 0;
     }
 
+    #[\Override]
     public function valid(): bool
     {
         return isset($this->children[$this->position]);

@@ -13,6 +13,7 @@ final class Container implements ContainerInterface
 
     private array $frozen = [];
 
+    #[\Override]
     public function get(string $id): mixed
     {
         return $this->offsetGet($id);
@@ -43,6 +44,7 @@ final class Container implements ContainerInterface
         return isset($this->frozen[$offset]) || isset($this->values[$offset]);
     }
 
+    #[\Override]
     public function has(string $id): bool
     {
         return $this->offsetExists($id);

@@ -30,11 +30,13 @@ final class PageList implements IteratorAggregate, Countable
     }
 
     /** @return \ArrayIterator<int, Page> */
+    #[\Override]
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }
 
+    #[\Override]
     public function count(): int
     {
         return count($this->items);

@@ -66,6 +66,7 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
         $this->itemCallback = $callback;
     }
 
+    #[\Override]
     public function beginIteration(): void
     {
         $this->output .= $this->getTemplate('beginIteration');
@@ -80,16 +81,19 @@ final class PageTreeHtmlRenderer extends RecursiveIteratorIterator
         return strtr($this->template[$key], $replacements);
     }
 
+    #[\Override]
     public function endIteration(): void
     {
         $this->output .= $this->getTemplate('endIteration');
     }
 
+    #[\Override]
     public function beginChildren(): void
     {
         $this->output .= $this->getTemplate('beginChildren');
     }
 
+    #[\Override]
     public function endChildren(): void
     {
         $this->output .= $this->getTemplate('endChildren');

@@ -38,7 +38,7 @@ final class ConfigTest extends Unit
         ],
     ];
 
-    public function testGetAsBool()
+    public function testGetAsBool(): void
     {
         $this->assertIsBool($this->config->getAsBool('bool'));
         $this->expectException(UnexpectedValueException::class);
@@ -46,7 +46,7 @@ final class ConfigTest extends Unit
         $this->assertIsNotBool($this->config->getAsBool('string'));
     }
 
-    public function testGetAsInt()
+    public function testGetAsInt(): void
     {
         $this->assertIsInt($this->config->getAsInt('int'));
         $this->expectException(UnexpectedValueException::class);
@@ -54,7 +54,7 @@ final class ConfigTest extends Unit
         $this->assertIsNotInt($this->config->getAsInt('bool'));
     }
 
-    public function testGetAsFloat()
+    public function testGetAsFloat(): void
     {
         $this->assertIsFloat($this->config->getAsFloat('float'));
         $this->expectException(UnexpectedValueException::class);
@@ -62,7 +62,7 @@ final class ConfigTest extends Unit
         $this->assertIsNotFloat($this->config->getAsFloat('int'));
     }
 
-    public function testGetAsString()
+    public function testGetAsString(): void
     {
         $this->assertIsString($this->config->getAsString('string'));
         $this->expectException(UnexpectedValueException::class);
@@ -70,7 +70,7 @@ final class ConfigTest extends Unit
         $this->assertIsNotString($this->config->getAsString('float'));
     }
 
-    public function testGetAsArray()
+    public function testGetAsArray(): void
     {
         $this->assertIsArray($this->config->getAsArray('array'));
         $this->expectException(UnexpectedValueException::class);
@@ -78,7 +78,7 @@ final class ConfigTest extends Unit
         $this->assertIsNotArray($this->config->getAsArray('string'));
     }
 
-    public function testGetAsConfig()
+    public function testGetAsConfig(): void
     {
         $this->assertIsObject($this->config->getAsConfig('array'));
         $this->expectException(UnexpectedValueException::class);
@@ -86,27 +86,27 @@ final class ConfigTest extends Unit
         $this->assertIsNotObject($this->config->getAsConfig('bool'));
     }
 
-    public function testGetAsConfigWithNull()
+    public function testGetAsConfigWithNull(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Config for "not-existing-key" not found');
         $this->assertIsNotObject($this->config->getAsConfig('not-existing-key'));
     }
 
-    public function testCheck()
+    public function testCheck(): void
     {
         $this->assertTrue($this->config->check('string'));
         $this->assertFalse($this->config->check('not-existing-key'));
     }
 
-    public function testGetWithEmptyName()
+    public function testGetWithEmptyName(): void
     {
         $values = $this->config->get('');
         $this->assertIsArray($values);
         $this->assertEquals($this->testValues, $values);
     }
 
-    public function testNestedValues()
+    public function testNestedValues(): void
     {
         $config = new Config($this->nestedTestValues);
         $this->assertIsBool($config->get('one.bool'));
@@ -116,7 +116,7 @@ final class ConfigTest extends Unit
         $this->assertIsString($config->get('one.two.three.four.five.string'));
     }
 
-    public function testFlatten()
+    public function testFlatten(): void
     {
         $flatten = $this->config->flatten();
         $this->assertIsArray($flatten);
@@ -132,7 +132,7 @@ final class ConfigTest extends Unit
         $this->assertEquals($expected, $flatten);
     }
 
-    public function testFlattenWithNested()
+    public function testFlattenWithNested(): void
     {
         $config = new Config($this->nestedTestValues);
         $flatten = $config->flatten();

@@ -18,6 +18,7 @@ class YamlDataRepository implements DataRepositoryInterface
      * YamlDataRepository constructor.
      * @throws SystemException
      */
+    #[\Override]
     public function __construct(protected string $path)
     {
         if (!is_dir($this->path)) {
@@ -80,6 +81,6 @@ class YamlDataRepository implements DataRepositoryInterface
     /** @return string[] */
     protected function getPatterns(): array
     {
-        return array_map(fn(string $extension) => '*.' . $extension, $this->extensions);
+        return array_map(fn(string $extension): string => '*.' . $extension, $this->extensions);
     }
 }

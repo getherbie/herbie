@@ -24,6 +24,7 @@ final class SearchPlugin extends AbstractPlugin
 
     public function __construct(private readonly Cache $cache, private readonly Config $config, private readonly EventManager $eventManager, private readonly PageRepositoryInterface $pageRepository, private readonly ServerRequestInterface $request, private readonly TwigRenderer $twigRenderer, private readonly UrlManager $urlManager) {}
 
+    #[\Override]
     public function twigFunctions(): array
     {
         return [
@@ -40,7 +41,7 @@ final class SearchPlugin extends AbstractPlugin
      */
     public function form(): string
     {
-        $name = $this->config->get('plugins.search.formTemplate', fn() => $this->getTemplatePath('form.twig'));
+        $name = $this->config->get('plugins.search.formTemplate', fn(): string => $this->getTemplatePath('form.twig'));
 
         [$route] = $this->urlManager->parseRequest();
         $queryParams = $this->request->getQueryParams();
@@ -64,7 +65,7 @@ final class SearchPlugin extends AbstractPlugin
         $exact = $this->isExactSearch($queryParams);
         $results = $this->search($query, $exact);
 
-        $name = $this->config->get('plugins.search.resultsTemplate', fn() => $this->getTemplatePath('results.twig'));
+        $name = $this->config->get('plugins.search.resultsTemplate', fn(): string => $this->getTemplatePath('results.twig'));
 
         return $this->twigRenderer->renderTemplate($name, [
             'query' => $query,
@@ -85,7 +86,7 @@ final class SearchPlugin extends AbstractPlugin
         $content = $this->cache->remember(
             'search_' . md5($item->getRoute()),
             $cacheToken,
-            fn() => $this->extractSearchText($item),
+            fn(): string => $this->extractSearchText($item),
             self::CACHE_TTL,
             enabled: $this->config->getAsBool('plugins.search.useCache', true),
         );

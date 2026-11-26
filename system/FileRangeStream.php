@@ -34,6 +34,7 @@ final class FileRangeStream implements StreamInterface
         $this->close();
     }
 
+    #[\Override]
     public function __toString(): string
     {
         try {
@@ -44,6 +45,7 @@ final class FileRangeStream implements StreamInterface
         }
     }
 
+    #[\Override]
     public function close(): void
     {
         if (is_resource($this->handle)) {
@@ -52,6 +54,7 @@ final class FileRangeStream implements StreamInterface
         $this->handle = null;
     }
 
+    #[\Override]
     public function detach()
     {
         $handle = $this->handle;
@@ -59,26 +62,31 @@ final class FileRangeStream implements StreamInterface
         return $handle;
     }
 
+    #[\Override]
     public function getSize(): int
     {
         return $this->length;
     }
 
+    #[\Override]
     public function tell(): int
     {
         return $this->position;
     }
 
+    #[\Override]
     public function eof(): bool
     {
         return $this->handle === null || $this->position >= $this->length;
     }
 
+    #[\Override]
     public function isSeekable(): bool
     {
         return $this->handle !== null;
     }
 
+    #[\Override]
     public function seek(int $offset, int $whence = SEEK_SET): void
     {
         if ($this->handle === null) {
@@ -97,26 +105,31 @@ final class FileRangeStream implements StreamInterface
         $this->position = $target;
     }
 
+    #[\Override]
     public function rewind(): void
     {
         $this->seek(0);
     }
 
+    #[\Override]
     public function isWritable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function write(string $string): int
     {
         throw new RuntimeException('Stream is not writable.');
     }
 
+    #[\Override]
     public function isReadable(): bool
     {
         return $this->handle !== null;
     }
 
+    #[\Override]
     public function read(int $length): string
     {
         if ($this->handle === null) {
@@ -134,6 +147,7 @@ final class FileRangeStream implements StreamInterface
         return $data;
     }
 
+    #[\Override]
     public function getContents(): string
     {
         $contents = '';
@@ -147,6 +161,7 @@ final class FileRangeStream implements StreamInterface
         return $contents;
     }
 
+    #[\Override]
     public function getMetadata(?string $key = null)
     {
         return $key === null ? [] : null;

@@ -13,7 +13,7 @@ final class PageTreeTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
 
-    public function testUnfilteredTree()
+    public function testUnfilteredTree(): void
     {
         $twig = <<<TWIG
             {%- for item1 in site.page_tree -%}

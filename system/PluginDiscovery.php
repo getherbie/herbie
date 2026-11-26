@@ -181,7 +181,7 @@ final readonly class PluginDiscovery
         $ignored = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
         $tokens = array_values(array_filter(
             token_get_all($code),
-            fn($token) => !is_array($token) || !in_array($token[0], $ignored, true),
+            fn($token): bool => !is_array($token) || !in_array($token[0], $ignored, true),
         ));
         $count = count($tokens);
 

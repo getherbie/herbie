@@ -63,6 +63,7 @@ final class Pagination implements IteratorAggregate, Countable
      * Gets the items on the current page
      */
     /** @return \ArrayIterator<int, mixed> */
+    #[\Override]
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->getItems());
@@ -79,6 +80,7 @@ final class Pagination implements IteratorAggregate, Countable
     /**
      * Get the number of items on the current page
      */
+    #[\Override]
     public function count(): int
     {
         return count($this->getItems());

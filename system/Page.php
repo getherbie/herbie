@@ -591,6 +591,7 @@ final class Page implements ArrayAccess, \Stringable
         return str_starts_with($this->getPath(), '@page');
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->title;
@@ -611,6 +612,7 @@ final class Page implements ArrayAccess, \Stringable
     /**
      * @param mixed $offset
      */
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return $this->__isset($offset);
@@ -632,6 +634,7 @@ final class Page implements ArrayAccess, \Stringable
      * @param mixed $offset
      * @return mixed
      */
+    #[\Override]
     #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
@@ -670,6 +673,7 @@ final class Page implements ArrayAccess, \Stringable
      * @param mixed $offset
      * @param mixed $value
      */
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->__set($offset, $value);
@@ -678,6 +682,7 @@ final class Page implements ArrayAccess, \Stringable
     /**
      * @param mixed $offset
      */
+    #[\Override]
     public function offsetUnset($offset): void
     {
         throw new BadMethodCallException('Unset is not supported.');

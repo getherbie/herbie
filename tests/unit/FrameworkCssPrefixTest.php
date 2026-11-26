@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 
 final class FrameworkCssPrefixTest extends Unit
 {
-    private const TOKEN_PREFIXES = ['--herbie-', '--altcha-'];
+    private const array TOKEN_PREFIXES = ['--herbie-', '--altcha-'];
 
     public function testStyleBlocksUsePrefixedClassSelectors(): void
     {

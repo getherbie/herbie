@@ -38,6 +38,7 @@ final class ImaginePlugin extends AbstractPlugin
         $this->cachePath = rtrim($this->alias->get('@web/' . $this->cacheUrlPath), '/');
     }
 
+    #[\Override]
     public function twigFilters(): array
     {
         return [
@@ -45,6 +46,7 @@ final class ImaginePlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         return [

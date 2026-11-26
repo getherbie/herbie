@@ -46,6 +46,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
      */
     abstract public function parse(string $value): string;
 
+    #[\Override]
     public function eventListeners(): array
     {
         return [
@@ -53,6 +54,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function twigFilters(): array
     {
         if (!$this->config->getAsBool('enableTwigFilter')) {
@@ -63,6 +65,7 @@ abstract class AbstractParserPlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function twigFunctions(): array
     {
         if (!$this->config->getAsBool('enableTwigFunction')) {

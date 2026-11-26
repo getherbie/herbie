@@ -41,40 +41,22 @@ final class ContactPlugin extends AbstractPlugin
     private const int DEFAULT_FORM_MAX_AGE_SECONDS = 900;
     private const int DEFAULT_RATE_LIMIT_MAX_REQUESTS = 5;
     private const int DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 3600;
-    private Config $config;
-    private Cache $cache;
-    private PageRepositoryInterface $pageRepository;
-    private ServerRequestInterface $request;
-    private ResponseFactoryInterface $responseFactory;
-    private Translator $translator;
-    private TwigRenderer $twigRenderer;
-    private UrlManager $urlManager;
-    private LoggerInterface $logger;
     private ?string $csrfToken = null;
     private ?string $csrfCookieValue = null;
 
     public function __construct(
-        Config $config,
-        PageRepositoryInterface $pageRepository,
-        ServerRequestInterface $request,
-        ResponseFactoryInterface $responseFactory,
-        Translator $translator,
-        TwigRenderer $twigRenderer,
-        UrlManager $urlManager,
-        LoggerInterface $logger,
-        Cache $cache,
-    ) {
-        $this->config = $config;
-        $this->pageRepository = $pageRepository;
-        $this->request = $request;
-        $this->responseFactory = $responseFactory;
-        $this->translator = $translator;
-        $this->twigRenderer = $twigRenderer;
-        $this->urlManager = $urlManager;
-        $this->logger = $logger;
-        $this->cache = $cache;
-    }
+        private Config $config,
+        private PageRepositoryInterface $pageRepository,
+        private ServerRequestInterface $request,
+        private ResponseFactoryInterface $responseFactory,
+        private Translator $translator,
+        private TwigRenderer $twigRenderer,
+        private UrlManager $urlManager,
+        private LoggerInterface $logger,
+        private Cache $cache,
+    ) {}
 
+    #[\Override]
     public function twigFunctions(): array
     {
         return [
@@ -83,6 +65,7 @@ final class ContactPlugin extends AbstractPlugin
         ];
     }
 
+    #[\Override]
     public function eventListeners(): array
     {
         return [
@@ -198,7 +181,7 @@ final class ContactPlugin extends AbstractPlugin
             $formErrors = [];
         }
 
-        $template = $this->config->get('plugins.contact.template', fn() => $this->getTemplatePath('form.twig'));
+        $template = $this->config->get('plugins.contact.template', fn(): string => $this->getTemplatePath('form.twig'));
 
         return $this->twigRenderer->renderTemplate($template, [
             'data' => $formData,
