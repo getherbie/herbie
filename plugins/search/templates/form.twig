@@ -1,5 +1,5 @@
 <div class="plugin-search-form">
-    <form action="{{ url_rel(route) }}" method="get">
+    <form action="{{ page_url(route) }}" method="get">
         <input type="text" name="query" value="{{ query }}" {% if not query %}autofocus{% endif %}>
         <input type="submit" value="{{ translate('search', 'search') }}">
         <label class="search-exact">

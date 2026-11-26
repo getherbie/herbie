@@ -47,7 +47,7 @@ CSRF settings under `plugins.contact.csrf`. The secret is required; rendering th
         secret: (string)
         tokenTtlSeconds: (int) token and cookie lifetime, default 900 (60..3600)
 
-The cookie is `HttpOnly`, `SameSite=Lax`, scoped to `/`, and marked `Secure` on HTTPS requests. It carries a signed issued-at timestamp that matches the hidden token's timestamp when the form is rendered, and the server checks both against the same TTL. Rotating `csrf.secret` invalidates outstanding cookies and tokens immediately. A submission is accepted only when the form token and the cookie carry the same signed nonce.
+The cookie is `HttpOnly`, `SameSite=Lax`, scoped to `/`, and marked `Secure` on HTTPS requests. It carries a signed issued-at timestamp that matches the hidden token's timestamp when the form is rendered, and the server checks both against the same TTL. Rotating `csrf.secret` invalidates outstanding cookies and tokens immediately. A submission is accepted only when the form token and the cookie carry the same signed nonce. The `csrf_token()` Twig function is deprecated since 3.3.0 and will be removed in 4.0; `contact_form()` passes the token to its template as the `csrf_token` variable, so custom templates do not need the function.
 
 ALTCHA proof-of-work settings under `plugins.contact.captcha`. The secret is required; rendering the form fails if it is empty or still a placeholder like <plugin_contact_captcha_secret>. Values outside the given range are clamped:
 
@@ -106,9 +106,9 @@ Set `cached: false` on the contact page:
 
 The page renderer only caches pages whose `cached` property is `true`, so it is not necessary to disable `components.pageRendererMiddleware.cache` globally if the contact page is marked as `cached: false`.
 
-The form is then rendered using the Twig function of the same name.
+The form is rendered with the `contact_form()` Twig function. The old `contact()` name is deprecated since 3.3.0 and will be removed in 4.0.
 
-    {{ contact() }}
+    {{ contact_form() }}
 
 Additional content can be placed before or after the function call.
 A complete contact page looks like this:
@@ -122,7 +122,7 @@ A complete contact page looks like this:
 
     Please fill in all fields of the contact form:
 
-    {{ contact() }}
+    {{ contact_form() }}
 
     We can also be reached via email or phone at...
 
