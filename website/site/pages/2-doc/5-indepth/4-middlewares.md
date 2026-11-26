@@ -53,6 +53,25 @@ Both approaches are described in [Extending](doc/extending).
 The middleware that ships with Herbie for this purpose is the `herbie\middlewares\ResponseTimeMiddleware`.
 It measures the request time and sets the header `X-Response-Time`.
 
+### Global response headers
+
+Herbie has no configuration option for response headers. Use an application middleware instead.
+The following file sets `X-Robots-Tag` on every response, for example to keep a staging site out of search engines.
+
+~~~php
+<?php
+// site/extend/middlewares_app/noindex.php
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+return function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+    $response = $handler->handle($request);
+    return $response->withHeader('X-Robots-Tag', 'noindex, nofollow');
+};
+~~~
+
 ## Route Middlewares
 
 Route middlewares only run for requests that match a given route.
