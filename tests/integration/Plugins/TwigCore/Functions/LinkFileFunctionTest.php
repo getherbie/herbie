@@ -12,6 +12,7 @@ final class LinkFileFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_file().
     public function testPowerOn(): void
     {
         $this->assertEquals(
@@ -20,11 +21,44 @@ final class LinkFileFunctionTest extends Unit
         );
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_file().
     public function testMediaPathIsServedByHerbie(): void
     {
         $this->assertEquals(
             '<span class="link link--file"><a href="/media/dummy.pdf" class="link__label">dummy.pdf</a></span>',
             $this->twig()->renderString('{{ link_file("/media/dummy.pdf") }}'),
+        );
+    }
+
+    public function testFileLink(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="/dummy.pdf" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("dummy.pdf") }}'),
+        );
+    }
+
+    public function testFileLinkMediaPathIsServedByHerbie(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="/media/dummy.pdf" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("/media/dummy.pdf") }}'),
+        );
+    }
+
+    public function testFileLinkDownloadAddsTheDownloadParameter(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="/media/dummy.pdf?download" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("/media/dummy.pdf", download: true) }}'),
+        );
+    }
+
+    public function testFileLinkDownloadIgnoresWebRootPaths(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="/dummy.pdf" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("dummy.pdf", download: true) }}'),
         );
     }
 

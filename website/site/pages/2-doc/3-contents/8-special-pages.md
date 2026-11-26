@@ -29,7 +29,7 @@ content_type: text/xml
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     {% for item in site.page_list %}
     <url>
-        <loc>{{ url_abs(item.route) }}</loc>
+        <loc>{{ page_url(item.route, absolute: true) }}</loc>
         {% if(item.date) %}
             <lastmod>{{ item.date|date("c") }}</lastmod>
         {% endif %}
@@ -54,7 +54,7 @@ content_type: text/plain
 
 User-agent: *
 Disallow:
-Sitemap: {{ url_abs('sitemap.xml') }}
+Sitemap: {{ page_url('sitemap.xml', absolute: true) }}
 ~~~
 
 ## atom.xml
@@ -76,16 +76,16 @@ no_search: true
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>My Site Feed</title>
     <subtitle>The latest posts from my site.</subtitle>
-    <link href="{{ url_abs('atom.xml') }}" rel="self" />
-    <link href="{{ url_abs('/') }}" />
-    <id>{{ url_abs('/') }}</id>
+    <link href="{{ page_url('atom.xml', absolute: true) }}" rel="self" />
+    <link href="{{ page_url('/', absolute: true) }}" />
+    <id>{{ page_url('/', absolute: true) }}</id>
     <updated>{{ "now"|date('r') }}</updated>
     {% for item in site.page_list %}
         {% if item.title != '' %}
         <entry>
             <title>{{ item.title }} / My Site</title>
-            <link href="{{ url_abs(item.route) }}"/>
-            <id>{{ url_abs(item.route) }}</id>
+            <link href="{{ page_url(item.route, absolute: true) }}"/>
+            <id>{{ page_url(item.route, absolute: true) }}</id>
             {% if item.date %}<published>{{ item.date|date("c") }}</published>{% endif %}
             {% if item.date %}<updated>{{ item.date|date("c") }}</updated>{% endif %}
             {% if item.abstract %}<summary>{{ item.abstract }}</summary>{% endif %}

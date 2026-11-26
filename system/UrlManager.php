@@ -32,6 +32,12 @@ final class UrlManager
         return (string)$absUrl;
     }
 
+    public function createAbsoluteWebUrl(string $path): string
+    {
+        $url = $this->createWebUrl($path);
+        return (string)$this->serverRequest->getUri()->withPath($url);
+    }
+
     /**
      * Creates a URL for a route.
      *

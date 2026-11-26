@@ -5,4 +5,4 @@ content_type: text/plain
 keep_extension: true
 no_search: true
 ---
-Sitemap: {{ url_abs('sitemap.xml') }}
+Sitemap: {{ page_url('sitemap.xml', absolute: true) }}

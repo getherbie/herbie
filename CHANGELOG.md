@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Twig functions `page_url()`, `page_link()`, `file_link()` and `mail_link()` follow the `<object>_<result>` naming scheme. `page_url(route, absolute: true)` replaces `url_abs()`. `file_link()` additionally accepts `download: true`, which appends `?download` for media files.
+- Twig function `file_url()` accepts `absolute: true` and returns the URL with scheme and host of the current request. `UrlManager::createAbsoluteWebUrl()` creates the absolute URL of a file below the web root.
+- Imagine plugin: `image_resize()` is the new name of `imagine()`. The `|imagine` filter keeps its name.
+
+### Deprecated
+- The Twig functions `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()`, `link_mail()` and `imagine()` are deprecated since 3.3.0 and will be removed in 4.0. They still behave as before. `link_download()` keeps adding `/media/` itself; replace it with `file_link('/media/x.pdf', 'Label', download: true)`. `image()` and `file_url()` keep their names.
+
+### Documentation
+- Updated the Twig function reference, the images-and-files, cheatsheet, Markdown and special-pages guides and the Imagine README to the new function names.
+
 ## [3.2.1] - 2026-11-25
 
 ### Fixed

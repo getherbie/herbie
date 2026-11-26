@@ -117,28 +117,34 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 ~~~twig
 {{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img alt="Logo" src="/media/logo.png"> #}
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
-{{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
-{{ link_download('manual.pdf', 'Manual', show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
+{{ file_link('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
+{{ file_link('/media/manual.pdf', 'Manual', download: true, show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
 {{ file_url('/media/manual.pdf', download: true) }}         {# /media/manual.pdf?download #}
-{{ imagine('/media/portrait.jpg') }}                        {# <img> of a resized copy, see the Imagine plugin #}
+{{ file_url('/media/manual.pdf', absolute: true) }}         {# https://example.com/media/manual.pdf #}
+{{ image_resize('/media/portrait.jpg') }}                   {# <img> of a resized copy, see the Imagine plugin #}
 ~~~
 {% endverbatim %}
+
+The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()`, `link_mail()`
+and `imagine()` are deprecated since 3.3.0 and will be removed in 4.0. `image()` and `file_url()`
+keep their names. `link_download()` still adds `/media/` itself; replace it with
+`file_link('/media/manual.pdf', 'Manual', download: true)`.
 
 How a path is interpreted:
 
 - A path that starts with `/media/` (or `media/`) is served by Herbie from `site/media/`. Every
   other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
-- `link_download()` always refers to a file in `site/media/`, the prefix `/media/` is optional.
-- `download: true` has an effect on media files only, a web server ignores `?download`.
+- A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
+  `site/media/`; `download: true` forces a download for media files. A web server ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
 
-The Imagine plugin function `imagine()` and the filter `|imagine` accept the public URL
-`/media/...` as well. A path without a leading `/media/`, as in `imagine('portrait.jpg')`, is
-relative to `site/media/` as before.
+The Imagine plugin function `image_resize()` and the filter `|imagine` accept the public URL
+`/media/...` as well. A path without a leading `/media/`, as in `image_resize('portrait.jpg')`, is
+relative to `site/media/` as before. `imagine()` remains as a deprecated alias of `image_resize()`.
 
 See also the [Twig functions](doc/indepth/twig-functions) reference.
 
@@ -165,7 +171,7 @@ content, it works in Markdown and HTML as well, because page content is processe
 ~~~
 {% endverbatim %}
 
-Inside Markdown link syntax use `file_url()`, not `image()` or `link_file()`. They return HTML and
+Inside Markdown link syntax use `file_url()`, not `image()` or `file_link()`. They return HTML and
 would break the syntax, see [Twig and Markdown processing order](doc/contents/markdown#twig-and-markdown-processing-order).
 
 **Rule:** write `/media/...` if the site runs in the root of the domain, otherwise use

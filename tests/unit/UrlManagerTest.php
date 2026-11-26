@@ -141,4 +141,21 @@ final class UrlManagerTest extends Unit
 
         $this->assertSame('http://example.com/', $um->createAbsoluteUrl(''));
     }
+
+    public function testCreateAbsoluteWebUrlUsesTheRequestHost(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), ['niceUrls' => true, 'baseUrl' => '/base']);
+
+        $this->assertSame('http://example.com/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
+
+    public function testCreateAbsoluteWebUrlNeverContainsTheScriptName(): void
+    {
+        $um = new UrlManager(
+            $this->makeRequest('/'),
+            ['niceUrls' => false, 'baseUrl' => '/base', 'scriptUrl' => '/base/index.php'],
+        );
+
+        $this->assertSame('http://example.com/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
 }

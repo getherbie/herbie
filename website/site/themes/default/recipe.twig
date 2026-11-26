@@ -20,7 +20,7 @@
                                 <ul class="widget-pages-recent-list">
                                     {% for pageItem in recentPages %}
                                         <li class="widget-pages-recent-item">
-                                            {{ link_page(pageItem.route, pageItem.title, {class: 'widget-pages-recent-item-link'}) }}
+                                            {{ page_link(pageItem.route, pageItem.title, {class: 'widget-pages-recent-item-link'}) }}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -34,7 +34,7 @@
                                 <ul>
                                     {% for category, count in categories %}
                                         {% set route = '/recipes/category/' ~ category|slugify %}
-                                        <li>{{ link_page(route, category) }} ({{ count }})</li>
+                                        <li>{{ page_link(route, category) }} ({{ count }})</li>
                                     {% endfor %}
                                 </ul>
                             </div>

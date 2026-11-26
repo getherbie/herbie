@@ -208,7 +208,7 @@ Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie 
 ~~~twig
 {{ image('/media/photo.jpg') }}                {# <img src="/media/photo.jpg"> #}
 {{ image('/logo.png') }}                       {# <img src="/logo.png"> from the web root #}
-{{ link_download('manual.pdf', 'Handbuch') }}  {# /media/manual.pdf?download #}
+{{ file_link('/media/manual.pdf', 'Handbuch', download: true) }} {# /media/manual.pdf?download #}
 {{ file_url('/media/photo.jpg') }}             {# /media/photo.jpg #}
 {{ file_url('/media/manual.pdf', download: true) }}    {# /media/manual.pdf?download #}
 ~~~
@@ -253,9 +253,9 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ link_page('about') }}
-{{ link_download('image.jpg') }}
-{{ url_abs('sitemap.xml') }}
+{{ page_link('about', 'About') }}
+{{ file_link('/media/image.jpg', 'Image', download: true) }}
+{{ page_url('sitemap.xml', absolute: true) }}
 ~~~
 {% endverbatim %}
 
