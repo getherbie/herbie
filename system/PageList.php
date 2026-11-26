@@ -60,7 +60,7 @@ final class PageList implements IteratorAggregate, Countable
         }
         if (is_string($key) && is_scalar($value)) {
             return new self(
-                array_filter($this->items, function ($val) use ($key, $value) {
+                array_filter($this->items, function (\herbie\Page $val) use ($key, $value): bool {
                     if ($val->{$key} === $value) {
                         return true;
                     }
@@ -95,7 +95,7 @@ final class PageList implements IteratorAggregate, Countable
         }
 
         $field = is_string($mixed) ? $mixed : 'title';
-        uasort($items, function ($a, $b) use ($field, $direction) {
+        uasort($items, function ($a, $b) use ($field, $direction): int {
             if ($a->{$field} === $b->{$field}) {
                 return 0;
             }

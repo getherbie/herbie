@@ -232,7 +232,7 @@ final class QueryBuilder implements IteratorAggregate
             $direction = 'desc';
         }
 
-        return uasort($this->data, function ($value1, $value2) use ($field, $direction) {
+        return uasort($this->data, function (array $value1, array $value2) use ($field, $direction): int {
             if (!isset($value1[$field]) || !isset($value2[$field])) {
                 return 0;
             }

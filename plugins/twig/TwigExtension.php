@@ -487,7 +487,7 @@ final class TwigExtension extends AbstractExtension
         $htmlTree = new PageTreeHtmlRenderer($filterIterator);
         $htmlTree->setMaxDepth($depth);
         $htmlTree->setClass($class);
-        $htmlTree->setItemCallback(function (PageTree $node) {
+        $htmlTree->setItemCallback(function (PageTree $node): string {
             $menuItem = $node->getMenuItem();
             $href = $this->urlManager->createUrl($menuItem->getRoute());
             return sprintf('<a href="%s">%s</a>', $href, $menuItem->getMenuTitle());

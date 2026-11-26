@@ -117,7 +117,7 @@ final readonly class Site
     /**
      * @return mixed
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         $getter = 'get' . str_replace('_', '', $name);
         if (method_exists($this, $getter)) {

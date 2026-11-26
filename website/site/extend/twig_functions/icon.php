@@ -21,7 +21,7 @@ foreach ($themes as $candidate) {
     $templates[] = $themesPath . '/' . $candidate . '/icons/{icon}.svg';
 }
 
-return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) use ($templates) {
+return new TwigFunction('icon', function (string $name, ?int $width = null, ?int $height = null, ?string $fill = null) use ($templates): string|array {
     foreach ($templates as $template) {
         $filepath = str_replace('{icon}', $name, $template);
         if (!is_file($filepath)) {

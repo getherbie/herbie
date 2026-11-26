@@ -499,7 +499,7 @@ final class PageTest extends Unit
         unset($page['title']);
     }
 
-    public function testConstructor()
+    public function testConstructor(): \herbie\Page
     {
         $page = new Page();
         $layout = $page->getLayout();
@@ -695,7 +695,7 @@ final class PageTest extends Unit
         $this->assertSame('Page Data', (string)$page);
     }
 
-    protected function _before()
+    protected function _before(): void
     {
         $this->repository = new FlatFilePageRepository(
             new PageFactory(),

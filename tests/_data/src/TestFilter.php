@@ -8,7 +8,7 @@ use herbie\events\RenderSegmentEvent;
 
 class TestFilter
 {
-    public function __invoke(RenderSegmentEvent $event)
+    public function __invoke(RenderSegmentEvent $event): void
     {
         // do someghint with $event
     }

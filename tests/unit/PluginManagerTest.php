@@ -53,7 +53,7 @@ final class PluginManagerTest extends Unit
             ],
         ]);
 
-        $keys = array_map(fn($plugin) => $plugin->getKey(), $manager->resolveInstallablePlugins());
+        $keys = array_map(fn(\herbie\InstallablePlugin $plugin): string => $plugin->getKey(), $manager->resolveInstallablePlugins());
 
         $this->assertSame(['local1', 'system1', 'composer1', 'system2'], $keys);
     }
@@ -82,7 +82,7 @@ final class PluginManagerTest extends Unit
             'plugins' => ['foo' => $this->pluginConfig('foo', 'system')],
         ], $logger);
 
-        $keys = array_map(fn($plugin) => $plugin->getKey(), $manager->resolveInstallablePlugins());
+        $keys = array_map(fn(\herbie\InstallablePlugin $plugin): string => $plugin->getKey(), $manager->resolveInstallablePlugins());
 
         $this->assertSame(['foo'], $keys);
         $this->assertCount(1, $logger->warnings);
@@ -158,7 +158,7 @@ final class PluginManagerTest extends Unit
             ],
         ]);
 
-        $keys = array_map(fn($plugin) => $plugin->getKey(), $manager->resolveInstallablePlugins());
+        $keys = array_map(fn(\herbie\InstallablePlugin $plugin): string => $plugin->getKey(), $manager->resolveInstallablePlugins());
 
         $this->assertSame(['bar'], $keys);
     }
@@ -196,7 +196,7 @@ final class PluginManagerTest extends Unit
             /** @var string[] */
             public array $warnings = [];
 
-            public function log($level, $message, array $context = [])
+            public function log($level, $message, array $context = []): void
             {
                 if ($level === LogLevel::WARNING) {
                     $this->warnings[] = (string)$message;

@@ -7,7 +7,7 @@ use Codeception\Util\HttpCode;
 
 final class PageFormatterCest
 {
-    public function testMarkdownPageWithMdExtension(AcceptanceTester $I)
+    public function testMarkdownPageWithMdExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/markdown-1');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -15,7 +15,7 @@ final class PageFormatterCest
         $I->see('This is a markdown formatted page.', 'p');
     }
 
-    public function testMarkdownPageWithMarkdownExtension(AcceptanceTester $I)
+    public function testMarkdownPageWithMarkdownExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/markdown-2');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -23,7 +23,7 @@ final class PageFormatterCest
         $I->see('This is a markdown formatted page.', 'p');
     }
 
-    public function testMarkdownPageWithTextExtension(AcceptanceTester $I)
+    public function testMarkdownPageWithTextExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/markdown-3');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -31,7 +31,7 @@ final class PageFormatterCest
         $I->see('This is a markdown formatted page.', 'p');
     }
 
-    public function testPageWithTextileExtension(AcceptanceTester $I)
+    public function testPageWithTextileExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/textile');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -39,7 +39,7 @@ final class PageFormatterCest
         $I->see('This is a textile formatted page.', 'p');
     }
 
-    public function testPageWithHtmExtension(AcceptanceTester $I)
+    public function testPageWithHtmExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/htm');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -47,7 +47,7 @@ final class PageFormatterCest
         $I->see('This is a HTM formatted page.', 'p');
     }
 
-    public function testPageWithHtmlExtension(AcceptanceTester $I)
+    public function testPageWithHtmlExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/html');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -55,7 +55,7 @@ final class PageFormatterCest
         $I->see('This is a HTML formatted page.', 'p');
     }
 
-    public function testPageWithTextExtension(AcceptanceTester $I)
+    public function testPageWithTextExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/text');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -63,7 +63,7 @@ final class PageFormatterCest
         $I->see('This is a text formatted page.');
     }
 
-    public function testPageWithRssExtension(AcceptanceTester $I)
+    public function testPageWithRssExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/rss');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -71,7 +71,7 @@ final class PageFormatterCest
         $I->see('This is a RSS formatted page.');
     }
 
-    public function testMarkdownPageWithRstExtension(AcceptanceTester $I)
+    public function testMarkdownPageWithRstExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/rest');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -79,7 +79,7 @@ final class PageFormatterCest
         $I->see('This is a reStructuredText formatted page.', 'p');
     }
 
-    public function testPageWithXmlExtension(AcceptanceTester $I)
+    public function testPageWithXmlExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/xml');
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -87,7 +87,7 @@ final class PageFormatterCest
         $I->see('This is a XML formatted page.');
     }
 
-    public function testPageWithWrongExtension(AcceptanceTester $I)
+    public function testPageWithWrongExtension(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/invalid');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
@@ -95,7 +95,7 @@ final class PageFormatterCest
         $I->see('could not be found');
     }
 
-    public function testTextPageWithVariousFormattings(AcceptanceTester $I)
+    public function testTextPageWithVariousFormattings(AcceptanceTester $I): void
     {
         $I->amOnPage('/formatter/various');
         $I->seeResponseCodeIs(HttpCode::OK);

@@ -8,19 +8,16 @@ use UnexpectedValueException;
 
 final class ConfigTest extends Unit
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private ?\herbie\Config $config = null;
 
-    private $testValues = [
+    private array $testValues = [
         'bool' => true,
         'int' => 2,
         'float' => 1.75,
         'array' => [1, 2, 3],
         'string' => 'yes',
     ];
-    private $nestedTestValues = [
+    private array $nestedTestValues = [
         'one' => [
             'bool' => false,
             'two' => [
@@ -153,7 +150,7 @@ final class ConfigTest extends Unit
         $this->assertEquals($expected, $flatten);
     }
 
-    protected function _before()
+    protected function _before(): void
     {
         $this->config = new Config($this->testValues);
     }

@@ -8,7 +8,7 @@ use Codeception\Util\HttpCode;
 
 final class DummyPluginCest
 {
-    public function testDummyPlugin(AcceptanceTester $I)
+    public function testDummyPlugin(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/plugins/dummy');

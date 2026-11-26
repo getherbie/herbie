@@ -141,7 +141,7 @@ final readonly class FileCache implements CacheInterface
     /**
      * @return mixed
      */
-    protected function unserialize(string $data, array $options = [])
+    protected function unserialize(string $data, array $options = []): mixed
     {
         // Restrict deserialization to scalar/array values only to mitigate
         // object injection via tampered cache files (security hardening).

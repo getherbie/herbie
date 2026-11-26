@@ -38,7 +38,7 @@ final readonly class ContainerBuilder
 
         $c->set(ContainerInterface::class, fn(ContainerInterface $c): \Psr\Container\ContainerInterface => $c);
 
-        $c->set(Alias::class, function (ContainerInterface $c) {
+        $c->set(Alias::class, function (ContainerInterface $c): \herbie\Alias {
             $config = $c->get(Config::class);
             $paths = $config->get('paths');
             $theme = trim($config->getAsString('theme'));
@@ -58,7 +58,7 @@ final readonly class ContainerBuilder
             ]);
         });
 
-        $c->set(Assets::class, function (ContainerInterface $c) {
+        $c->set(Assets::class, function (ContainerInterface $c): \herbie\Assets {
             $config = $c->get(Config::class);
             $theme = trim($config->getAsString('theme'));
             $themeParent = trim($config->getAsString('themeParent'));
@@ -79,7 +79,7 @@ final readonly class ContainerBuilder
         if ($this->cache) {
             $c->set(Cache::class, new Cache($this->cache));
         } else {
-            $c->set(Cache::class, function (ContainerInterface $c) {
+            $c->set(Cache::class, function (ContainerInterface $c): \herbie\Cache {
                 $config = $c->get(Config::class)->getAsArray('components.fileCache');
                 if (isset($config['path'])) {
                     $storage = new FileCache(
@@ -94,7 +94,7 @@ final readonly class ContainerBuilder
         // BC alias: plugins may still inject the PSR-16 interface.
         $c->set(CacheInterface::class, static fn(ContainerInterface $c): CacheInterface => $c->get(Cache::class));
 
-        $c->set(Config::class, function (ContainerInterface $c) {
+        $c->set(Config::class, function (ContainerInterface $c): \herbie\Config {
             $const = [
                 'APP_PATH' => str_untrailing_slash($this->app->getApplicationPath()),
                 'SITE_PATH' => str_untrailing_slash($this->app->getSitePath()),
@@ -139,7 +139,7 @@ final readonly class ContainerBuilder
             return $config;
         });
 
-        $c->set(DataRepositoryInterface::class, function (ContainerInterface $c) {
+        $c->set(DataRepositoryInterface::class, function (ContainerInterface $c): \herbie\JsonDataRepository|\herbie\YamlDataRepository {
             $adapter = $c->get(Config::class)->get('components.dataRepository.adapter');
             $path = $c->get(Config::class)->get('paths.data');
             if ($adapter === 'json') {
@@ -148,7 +148,7 @@ final readonly class ContainerBuilder
             return new YamlDataRepository($path);
         });
 
-        $c->set(MediaMiddleware::class, function (ContainerInterface $c) {
+        $c->set(MediaMiddleware::class, function (ContainerInterface $c): \herbie\middlewares\MediaMiddleware {
             $config = $c->get(Config::class);
             return new MediaMiddleware(
                 $c->get(Alias::class),
@@ -169,7 +169,7 @@ final readonly class ContainerBuilder
 
         $c->set(EventManager::class, fn(): \herbie\EventManager => new EventManager());
 
-        $c->set(Finder::class, function (ContainerInterface $c) {
+        $c->set(Finder::class, function (ContainerInterface $c): \herbie\Finder {
             $config = $c->get(Config::class);
             return new Finder([
                 'extensions' => str_explode_filtered($config->getAsString('fileExtensions.pages'), ','),
@@ -180,7 +180,7 @@ final readonly class ContainerBuilder
         if ($this->logger) {
             $c->set(LoggerInterface::class, $this->logger);
         } else {
-            $c->set(LoggerInterface::class, function (ContainerInterface $c) {
+            $c->set(LoggerInterface::class, function (ContainerInterface $c): \herbie\FileLogger|\Psr\Log\NullLogger {
                 $config = $c->get(Config::class)->getAsArray('components.fileLogger');
                 if (isset($config['path'], $config['channel'], $config['level'])) {
                     return new FileLogger(
@@ -209,7 +209,7 @@ final readonly class ContainerBuilder
 
         $c->set(PageFactory::class, fn(ContainerInterface $c): \herbie\PageFactory => new PageFactory($c->get(SlugGenerator::class)));
 
-        $c->set(PagePersistenceInterface::class, function (ContainerInterface $c) {
+        $c->set(PagePersistenceInterface::class, function (ContainerInterface $c): \herbie\FlatFilePagePersistence {
             $options = $c->get(Config::class)->getAsArray('components.flatFilePagePersistence');
             return new FlatFilePagePersistence(
                 $c->get(Alias::class),
@@ -219,7 +219,7 @@ final readonly class ContainerBuilder
             );
         });
 
-        $c->set(PageRendererMiddleware::class, function (ContainerInterface $c) {
+        $c->set(PageRendererMiddleware::class, function (ContainerInterface $c): \herbie\middlewares\PageRendererMiddleware {
             $options = $c->get(Config::class)->getAsArray('components.pageRendererMiddleware');
             return new PageRendererMiddleware(
                 $c->get(Cache::class),
@@ -248,7 +248,7 @@ final readonly class ContainerBuilder
             $c, // needed for DI in plugins
         ));
 
-        $c->set(ResponseFactoryInterface::class, function () {
+        $c->set(ResponseFactoryInterface::class, function (): \Laminas\Diactoros\ResponseFactory|\GuzzleHttp\Psr7\HttpFactory|\Nyholm\Psr7\Factory\Psr17Factory|\Slim\Psr7\Factory\ResponseFactory {
             $package = $this->preferredPsr17Package();
             if ($package === null) {
                 $this->throwPsr17Exception();
@@ -262,7 +262,7 @@ final readonly class ContainerBuilder
             };
         });
 
-        $c->set(ServerRequestFactoryInterface::class, function () {
+        $c->set(ServerRequestFactoryInterface::class, function (): \Laminas\Diactoros\ServerRequestFactory|\GuzzleHttp\Psr7\HttpFactory|\Nyholm\Psr7\Factory\Psr17Factory|\Slim\Psr7\Factory\ServerRequestFactory {
             $package = $this->preferredPsr17Package();
             if ($package === null) {
                 $this->throwPsr17Exception();
@@ -306,7 +306,7 @@ final readonly class ContainerBuilder
             return $serverRequestFactory->createFromGlobals();
         });
 
-        $c->set(StreamFactoryInterface::class, function () {
+        $c->set(StreamFactoryInterface::class, function (): \Laminas\Diactoros\StreamFactory|\GuzzleHttp\Psr7\HttpFactory|\Nyholm\Psr7\Factory\Psr17Factory|\Slim\Psr7\Factory\StreamFactory {
             $package = $this->preferredPsr17Package();
             if ($package === null) {
                 $this->throwPsr17Exception();
@@ -327,7 +327,7 @@ final readonly class ContainerBuilder
             $c->get(UrlManager::class),
         ));
 
-        $c->set(SlugGenerator::class, function (ContainerInterface $c) {
+        $c->set(SlugGenerator::class, function (ContainerInterface $c): \Ausi\SlugGenerator\SlugGenerator {
             $options = [
                 'locale' => $c->get(Config::class)->get('language'),
                 'delimiter' => '-',
@@ -335,7 +335,7 @@ final readonly class ContainerBuilder
             return new SlugGenerator($options);
         });
 
-        $c->set(Translator::class, function (ContainerInterface $c) {
+        $c->set(Translator::class, function (ContainerInterface $c): \herbie\Translator {
             $translator = new Translator($c->get(Config::class)->get('language'));
             $translator->addPath('app', Application::getHerbiePath('/messages'));
             return $translator;
@@ -348,7 +348,7 @@ final readonly class ContainerBuilder
             $c->get(Site::class),
         ));
 
-        $c->set(UrlManager::class, function (ContainerInterface $c) {
+        $c->set(UrlManager::class, function (ContainerInterface $c): \herbie\UrlManager {
             $config = $c->get(Config::class)->getAsArray('components.urlManager');
             $config['baseUrl'] = $this->app->getBaseUrl();
             $config['scriptUrl'] = $this->app->getScriptUrl();

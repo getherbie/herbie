@@ -10,7 +10,7 @@ const CACHE_FILE = __DIR__ . '/git_commits.cache';
 
 return [
     'git_commits',
-    function () {
+    function (): string {
         $commits_from_cache = function (): ?string {
             $exists = file_exists(CACHE_FILE);
             if (!$exists || (time() > strtotime('+2 hours', filemtime(CACHE_FILE)))) {

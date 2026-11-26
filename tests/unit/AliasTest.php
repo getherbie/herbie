@@ -9,10 +9,7 @@ use InvalidArgumentException;
 
 final class AliasTest extends Unit
 {
-    /**
-     * @var Alias
-     */
-    private $alias;
+    private ?\herbie\Alias $alias = null;
 
     public function testGetAll(): void
     {
@@ -112,7 +109,7 @@ final class AliasTest extends Unit
         $this->alias->update('@missing', 'test');
     }
 
-    protected function _before()
+    protected function _before(): void
     {
         $this->alias = new Alias([
             '@foo' => 'foo',

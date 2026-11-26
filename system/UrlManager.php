@@ -126,7 +126,7 @@ final class UrlManager
      */
     private function getRegex(string $pattern, array $replacements): ?string
     {
-        $string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function ($matches) use ($replacements) {
+        $string = preg_replace_callback('/{([a-zA-Z0-9\_\-]+)}/', function (array $matches) use ($replacements): string {
             if (count($matches) === 2) {
                 $name = $matches[1];
                 if (empty($replacements[$name])) {

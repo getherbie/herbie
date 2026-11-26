@@ -12,7 +12,7 @@ class Acceptance extends Module
     /**
      * Define custom actions here
      */
-    public function seeResponseContains(string $text)
+    public function seeResponseContains(string $text): void
     {
         $this->assertStringContainsString(
             $text,

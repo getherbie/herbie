@@ -17,7 +17,7 @@ final class WebsiteCest
         }
     }
 
-    public function testHomepage(AcceptanceTester $I)
+    public function testHomepage(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/');
@@ -27,7 +27,7 @@ final class WebsiteCest
         $I->see('What Herbie Is Built On', 'h2');
     }
 
-    public function testDoc(AcceptanceTester $I)
+    public function testDoc(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc'); // redirects to /doc/introduction
@@ -40,7 +40,7 @@ final class WebsiteCest
         $I->seeElement('.toc-links li');
     }
 
-    public function testDocIntroduction(AcceptanceTester $I)
+    public function testDocIntroduction(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/introduction');
@@ -51,7 +51,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocFirstSteps(AcceptanceTester $I)
+    public function testDocFirstSteps(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/first-steps');
@@ -62,7 +62,7 @@ final class WebsiteCest
         $I->seeLink('Quickstart', 'doc/first-steps/quickstart');
     }
 
-    public function testDocFirstStepsQuickstart(AcceptanceTester $I)
+    public function testDocFirstStepsQuickstart(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/first-steps/quickstart');
@@ -72,7 +72,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocFirstStepsInstallation(AcceptanceTester $I)
+    public function testDocFirstStepsInstallation(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/first-steps/installation');
@@ -82,7 +82,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocFirstStepsConfiguration(AcceptanceTester $I)
+    public function testDocFirstStepsConfiguration(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/first-steps/configuration');
@@ -92,7 +92,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocFirstStepsDirectory(AcceptanceTester $I)
+    public function testDocFirstStepsDirectory(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/first-steps/directory');
@@ -102,7 +102,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContents(AcceptanceTester $I)
+    public function testDocContents(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents');
@@ -113,7 +113,7 @@ final class WebsiteCest
         $I->seeLink('Page Properties', 'doc/contents/page-properties');
     }
 
-    public function testDocContentsPageProperties(AcceptanceTester $I)
+    public function testDocContentsPageProperties(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/page-properties');
@@ -123,7 +123,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsCreatePages(AcceptanceTester $I)
+    public function testDocContentsCreatePages(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/create-pages');
@@ -133,7 +133,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsPageProps(AcceptanceTester $I)
+    public function testDocContentsPageProps(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/page-props');
@@ -143,7 +143,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsVariables(AcceptanceTester $I)
+    public function testDocContentsVariables(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/variables');
@@ -153,7 +153,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsDataFiles(AcceptanceTester $I)
+    public function testDocContentsDataFiles(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/data-files');
@@ -163,7 +163,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsMarkdown(AcceptanceTester $I)
+    public function testDocContentsMarkdown(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/markdown');
@@ -173,7 +173,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocContentsSpecialPages(AcceptanceTester $I)
+    public function testDocContentsSpecialPages(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/contents/special-pages');
@@ -183,7 +183,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocLayouts(AcceptanceTester $I)
+    public function testDocLayouts(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/layouts');
@@ -193,7 +193,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepth(AcceptanceTester $I)
+    public function testDocIndepth(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth');
@@ -204,7 +204,7 @@ final class WebsiteCest
         $I->seeLink('Console Commands', 'doc/indepth/commands');
     }
 
-    public function testDocIndepthCommands(AcceptanceTester $I)
+    public function testDocIndepthCommands(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/commands');
@@ -214,7 +214,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthEventListeners(AcceptanceTester $I)
+    public function testDocIndepthEventListeners(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/events');
@@ -224,7 +224,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthMiddlewares(AcceptanceTester $I)
+    public function testDocIndepthMiddlewares(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/middlewares');
@@ -234,7 +234,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthQueryBuilder(AcceptanceTester $I)
+    public function testDocIndepthQueryBuilder(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/query-builder');
@@ -244,7 +244,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthTwigFilters(AcceptanceTester $I)
+    public function testDocIndepthTwigFilters(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/twig-filters');
@@ -255,7 +255,7 @@ final class WebsiteCest
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/filters/index.html');
     }
 
-    public function testDocIndepthTwigFunctions(AcceptanceTester $I)
+    public function testDocIndepthTwigFunctions(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/twig-functions');
@@ -266,7 +266,7 @@ final class WebsiteCest
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/functions/index.html');
     }
 
-    public function testDocIndepthTwigGlobals(AcceptanceTester $I)
+    public function testDocIndepthTwigGlobals(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/twig-globals');
@@ -276,7 +276,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDocIndepthTwigTags(AcceptanceTester $I)
+    public function testDocIndepthTwigTags(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/twig-tags');
@@ -287,7 +287,7 @@ final class WebsiteCest
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tags/index.html');
     }
 
-    public function testDocIndepthTwigTests(AcceptanceTester $I)
+    public function testDocIndepthTwigTests(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/indepth/twig-tests');
@@ -298,7 +298,7 @@ final class WebsiteCest
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tests/index.html');
     }
 
-    public function testDocPlugins(AcceptanceTester $I)
+    public function testDocPlugins(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/plugins');
@@ -312,7 +312,7 @@ final class WebsiteCest
         $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/search"]');
     }
 
-    public function testDocExtending(AcceptanceTester $I)
+    public function testDocExtending(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/extending');
@@ -334,32 +334,32 @@ final class WebsiteCest
         }
     }
 
-    public function testDocExtendingExtensionPoints(AcceptanceTester $I)
+    public function testDocExtendingExtensionPoints(AcceptanceTester $I): void
     {
         $this->seeExtendingPage($I, 'extension-points', 'What can be extended');
     }
 
-    public function testDocExtendingFilesystem(AcceptanceTester $I)
+    public function testDocExtendingFilesystem(AcceptanceTester $I): void
     {
         $this->seeExtendingPage($I, 'files', 'Files in site/extend');
     }
 
-    public function testDocExtendingProgrammatic(AcceptanceTester $I)
+    public function testDocExtendingProgrammatic(AcceptanceTester $I): void
     {
         $this->seeExtendingPage($I, 'bootstrap', 'Register in index.php');
     }
 
-    public function testDocExtendingPlugin(AcceptanceTester $I)
+    public function testDocExtendingPlugin(AcceptanceTester $I): void
     {
         $this->seeExtendingPage($I, 'plugin-class', 'Plugin class', false);
     }
 
-    public function testDocExtendingDistributedPlugin(AcceptanceTester $I)
+    public function testDocExtendingDistributedPlugin(AcceptanceTester $I): void
     {
         $this->seeExtendingPage($I, 'composer-package', 'Composer package', false);
     }
 
-    public function testDocExtendingPluginExamples(AcceptanceTester $I)
+    public function testDocExtendingPluginExamples(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/extending/examples');
@@ -382,42 +382,42 @@ final class WebsiteCest
         }
     }
 
-    public function testDocExtendingPluginExampleRandom(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleRandom(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'random', 'Random Page');
     }
 
-    public function testDocExtendingPluginExampleGist(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleGist(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'gist', 'GitHub Gist');
     }
 
-    public function testDocExtendingPluginExampleMathjax(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleMathjax(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'mathjax', 'MathJax Renderer');
     }
 
-    public function testDocExtendingPluginExampleGrid(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleGrid(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'grid', 'Grid System');
     }
 
-    public function testDocExtendingPluginExampleDisqus(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleDisqus(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'disqus', 'Disqus Comments');
     }
 
-    public function testDocExtendingPluginExampleVideo(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleVideo(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'video', 'Video Embeds');
     }
 
-    public function testDocExtendingPluginExampleLipsum(AcceptanceTester $I)
+    public function testDocExtendingPluginExampleLipsum(AcceptanceTester $I): void
     {
         $this->seePluginExample($I, 'lipsum', 'Lipsum Generator');
     }
 
-    public function testDocCheatsheet(AcceptanceTester $I)
+    public function testDocCheatsheet(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/cheatsheet');
@@ -427,7 +427,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    public function testDevelopment(AcceptanceTester $I)
+    public function testDevelopment(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/development');
@@ -435,7 +435,7 @@ final class WebsiteCest
         $I->see('Development', 'h1');
     }
 
-    public function testSitemap(AcceptanceTester $I)
+    public function testSitemap(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/sitemap');
@@ -448,7 +448,7 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
-    public function testSearch(AcceptanceTester $I)
+    public function testSearch(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/search');
@@ -458,7 +458,7 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
-    public function testContact(AcceptanceTester $I)
+    public function testContact(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/contact');
@@ -478,7 +478,7 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
-    public function testPrivacyPolicy(AcceptanceTester $I)
+    public function testPrivacyPolicy(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/privacy-policy');
@@ -487,7 +487,7 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
-    public function testImprint(AcceptanceTester $I)
+    public function testImprint(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/imprint');
@@ -496,7 +496,7 @@ final class WebsiteCest
         $this->testLayoutDefault($I);
     }
 
-    public function testAtomXml(AcceptanceTester $I)
+    public function testAtomXml(AcceptanceTester $I): void
     {
         /** @var Web $I */
         foreach (['index.php/atom.xml', '/atom.xml'] as $url) { // dev and production URL form
@@ -508,7 +508,7 @@ final class WebsiteCest
         }
     }
 
-    public function testRobotsTxt(AcceptanceTester $I)
+    public function testRobotsTxt(AcceptanceTester $I): void
     {
         /** @var Web $I */
         foreach (['index.php/robots.txt', '/robots.txt'] as $url) { // dev and production URL form
@@ -519,7 +519,7 @@ final class WebsiteCest
         }
     }
 
-    public function testSitemapXml(AcceptanceTester $I)
+    public function testSitemapXml(AcceptanceTester $I): void
     {
         /** @var Web $I */
         foreach (['index.php/sitemap.xml', '/sitemap.xml'] as $url) { // dev and production URL form
@@ -531,7 +531,7 @@ final class WebsiteCest
         }
     }
 
-    public function testError(AcceptanceTester $I)
+    public function testError(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/not-existing-page');
@@ -540,13 +540,13 @@ final class WebsiteCest
         $I->seeNumberOfElements('.sidebar-search', 1);
     }
 
-    private function seeRenderedContent(AcceptanceTester $I)
+    private function seeRenderedContent(AcceptanceTester $I): void
     {
         $I->seeElement('.content h1');
         $I->seeElement('.content p, .content pre, .content table, .content ul');
     }
 
-    private function seeExtendingPage(AcceptanceTester $I, string $route, string $title, bool $toc = true)
+    private function seeExtendingPage(AcceptanceTester $I, string $route, string $title, bool $toc = true): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/extending/' . $route);
@@ -560,7 +560,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    private function seePluginExample(AcceptanceTester $I, string $name, string $title)
+    private function seePluginExample(AcceptanceTester $I, string $name, string $title): void
     {
         /** @var Web $I */
         $I->amOnPage('/doc/extending/examples/' . $name);
@@ -573,7 +573,7 @@ final class WebsiteCest
         $this->seeRenderedContent($I);
     }
 
-    private function testLayoutDefault(AcceptanceTester $I)
+    private function testLayoutDefault(AcceptanceTester $I): void
     {
         $I->seeNumberOfElements('.sidebar-search', 1);
         $I->see('GitHub Activity', 'h4.gc-header');

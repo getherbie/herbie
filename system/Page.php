@@ -636,7 +636,7 @@ final class Page implements ArrayAccess, \Stringable
      */
     #[\Override]
     #[ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->__get($offset);
     }
@@ -644,7 +644,7 @@ final class Page implements ArrayAccess, \Stringable
     /**
      * @return mixed
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         $getter = 'get' . str_replace('_', '', $name);
         if (method_exists($this, $getter)) {
@@ -659,7 +659,7 @@ final class Page implements ArrayAccess, \Stringable
     /**
      * @param mixed $value
      */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         $setter = 'set' . str_replace('_', '', $name);
         if (method_exists($this, $setter)) {

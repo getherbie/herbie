@@ -67,10 +67,7 @@ final class Assets
         ];
     }
 
-    /**
-     * @return bool|int
-     */
-    private function search(string $path)
+    private function search(string $path): int|string|false
     {
         foreach ($this->assets as $index => $asset) {
             if ($asset['path'] === $path) {
@@ -119,7 +116,7 @@ final class Assets
     private function sort(): void
     {
         if (!self::$sorted) {
-            uasort($this->assets, function ($a, $b) {
+            uasort($this->assets, function (array $a, array $b): int {
                 if ($a['pos'] === $b['pos']) {
                     if ($a['counter'] < $b['counter']) {
                         return -1;

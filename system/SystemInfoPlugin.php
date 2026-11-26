@@ -313,44 +313,39 @@ final class SystemInfoPlugin extends AbstractPlugin
      */
     private function getCallableName($callable): array
     {
-        switch (true) {
-            case is_string($callable) && strpos($callable, '::'):
-                return ['static', $callable];
-            case is_string($callable):
-                return ['function', $callable];
-            case is_array($callable) && is_object($callable[0]):
-                if (is_string($callable[1])) {
-                    $method = $callable[1];
-                } else {
-                    /** @phpstan-ignore-next-line */
-                    $method = (string)$callable[1];
-                }
-                return ['method', $callable[0]::class . '->' . $method];
-            case is_array($callable):
-                if (is_string($callable[1])) {
-                    $method = $callable[1];
-                } else {
-                    /** @phpstan-ignore-next-line */
-                    $method = (string)$callable[1];
-                }
-                return ['static', $callable[0] . '::' . $method];
-            case $callable instanceof Closure:
-                try {
-                    $reflectionClosure = new ReflectionFunction($callable);
-                    $closureName = $reflectionClosure->getName();
-                    $class = $reflectionClosure->getClosureScopeClass();
-                    $className = $class ? $class->getName() : null;
-                    return ['closure', $className ? $className . '--' . $closureName : $closureName];
-                } catch (ReflectionException) {
-                    return ['unknown', ''];
-                }
-            case is_object($callable):
-                if (is_callable($callable)) {
-                    return ['invokable', $callable::class];
-                }
-                return ['-', $callable::class];
-            default:
-                return ['unknown', ''];
+        return match (true) {
+            is_string($callable) && str_contains($callable, '::') => ['static', $callable],
+            is_string($callable) => ['function', $callable],
+            is_array($callable) && is_object($callable[0]) => ['method', $callable[0]::class . '->' . $this->callableMethodName($callable[1])],
+            is_array($callable) => ['static', $callable[0] . '::' . $this->callableMethodName($callable[1])],
+            $callable instanceof Closure => $this->closureName($callable),
+            is_object($callable) && is_callable($callable) => ['invokable', $callable::class],
+            is_object($callable) => ['-', $callable::class],
+            default => ['unknown', ''],
+        };
+    }
+
+    private function callableMethodName(mixed $method): string
+    {
+        if (is_string($method)) {
+            return $method;
+        }
+        return (string)$method;
+    }
+
+    /**
+     * @return array{string, string}
+     */
+    private function closureName(Closure $closure): array
+    {
+        try {
+            $reflectionClosure = new ReflectionFunction($closure);
+            $closureName = $reflectionClosure->getName();
+            $class = $reflectionClosure->getClosureScopeClass();
+            $className = $class ? $class->getName() : null;
+            return ['closure', $className ? $className . '--' . $closureName : $closureName];
+        } catch (ReflectionException) {
+            return ['unknown', ''];
         }
     }
 }

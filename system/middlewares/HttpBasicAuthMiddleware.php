@@ -40,7 +40,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
      *
      * @return false|string
      */
-    private function login(ServerRequestInterface $request)
+    private function login(ServerRequestInterface $request): false|string
     {
         // check header
         $authorization = $this->parseHeader($request->getHeaderLine('Authorization'));
@@ -73,7 +73,7 @@ final class HttpBasicAuthMiddleware implements MiddlewareInterface
      *
      * @return array|false
      */
-    private function parseHeader(string $header)
+    private function parseHeader(string $header): false|array
     {
         if (!str_starts_with($header, 'Basic')) {
             return false;

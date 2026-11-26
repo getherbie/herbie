@@ -8,7 +8,7 @@ use Codeception\Util\HttpCode;
 
 final class ImaginePluginCest
 {
-    public function testImaginePlugin(AcceptanceTester $I)
+    public function testImaginePlugin(AcceptanceTester $I): void
     {
         /** @var Web $I */
         $I->amOnPage('/plugins/imagine');

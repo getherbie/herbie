@@ -26,6 +26,9 @@ return RectorConfig::configure()
         // newInstanceWithoutConstructor(), so promoted properties have no default value and
         // fail with "must not be accessed before initialization".
         \Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
+
+        // psr/log 1.1 has no native types, typed signatures would break LoggerInterface.
+        __DIR__ . '/system/FileLogger.php',
     ])
     ->withPhpSets(php83: true)
-    ->withTypeCoverageLevel(10);
+    ->withPreparedSets(typeDeclarations: true);
