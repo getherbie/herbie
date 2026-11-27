@@ -51,8 +51,14 @@ The packages are checked when the plugin is enabled, packages of plugins that ar
 If a package is missing or does not match the version constraint, Herbie throws an exception that tells what to install.
 
 ~~~php
+<?php
+
+use herbie\Plugin;
+
 #[Plugin('myplugin', requires: ['league/commonmark' => '^2.10'])]
 class MyPlugin implements herbie\PluginInterface
+{
+}
 ~~~
 
 The plugin itself is a PHP class with the following methods. A plugin normally extends `herbie\AbstractPlugin`, which provides empty defaults so only the needed methods must be overridden; the [example plugins](doc/extending/examples) use this base class. The skeleton below implements `PluginInterface` directly to list every available method.

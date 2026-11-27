@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - The integration suite renders all Twig examples from the documentation; examples that cannot run in the test site are marked with `~~~twig no-test`.
 - The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.
+- The integration suite checks the syntax of PHP, YAML, JSON and Bash examples in the documentation; `no-test` now applies to any code fence.
 
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
