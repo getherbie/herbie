@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - The integration suite renders all Twig examples from the documentation; examples that cannot run in the test site are marked with `~~~twig no-test`.
+- The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.
 
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
+- Corrected required parameters and defaults in the Twig function reference data. The reference tables now label required parameters as `[required]` and show empty defaults as `''`. String defaults and code examples consistently use single quotes.
 
 ## [3.2.1] - 2026-11-25
 

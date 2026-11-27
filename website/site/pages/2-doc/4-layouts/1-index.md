@@ -48,7 +48,7 @@ site/themes/
 Assets and icons follow the same order. The `@theme` alias points at the active theme directory, so templates can reference its assets without hardcoding the theme name:
 
 ~~~twig
-{{ css_add("@theme/css/styles.css") }}
+{{ css_add('@theme/css/styles.css') }}
 ~~~
 
 If the file is missing from the active theme, the parent theme supplies it.
@@ -113,7 +113,7 @@ A sub (child) template extends the main template and fills its blocks:
 ~~~twig
 {# default.twig #}
 
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block title %}Index{% endblock %}
 
@@ -130,7 +130,7 @@ The sub template now looks like this:
 ~~~twig
 {# default.twig #}
 
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
@@ -147,7 +147,7 @@ To place a sidebar next to the normal content column, fill the `sidebar` block a
 ~~~twig
 {# twocolumn.twig #}
 
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block title %}{{ page.title }}{% endblock %}
 

@@ -11,21 +11,21 @@
     - The byte count in human readable format
 - name: slugify
   code: >-
-    {{ "A string with spaces, Umlauts or special characters (?!&#)."|slugify }}
+    {{ 'A string with spaces, Umlauts or special characters (?!&#).'|slugify }}
   desc: Converts a string into a URL-friendly slug, a simplified text suitable for use in URL segments.
   return:
     - string
     - The slug
 - name: spaceless
   code: >-
-    {{ "<div>   <strong>foo</strong>   </div>"|spaceless }}
+    {{ '<div>   <strong>foo</strong>   </div>'|spaceless }}
   desc: Removes whitespace between HTML tags. Herbie provides this filter because Twig deprecated the filter of the same name in 3.12.
   return:
     - string
     - The input without whitespace between HTML tags
 - name: twigify
   code: >-
-    {{ "Hello {{ page.title }}"|twigify }}
+    {{ 'Hello {{ page.title }}'|twigify }}
   desc: Renders a string as a Twig template in the current context and returns the result.
   return:
     - string

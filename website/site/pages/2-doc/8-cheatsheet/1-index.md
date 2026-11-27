@@ -151,7 +151,7 @@ Layouts are Twig files in `site/themes/<theme>/<layout>.twig`; select one with `
 
 {% verbatim %}
 ~~~twig
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block content %}
     {{ content.default|raw }}
