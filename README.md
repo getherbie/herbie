@@ -115,6 +115,8 @@ Tests only:
     composer qa:test:website
     composer qa:test:coverage
 
+The integration suite renders every `twig` code fence from the documentation (`tests/integration/Docs/TwigExamplesTest.php`). Mark examples that cannot run in the test site, e.g. plugin examples without shipped code, with `~~~twig no-test`.
+
 Auto-fix code style:
 
     composer qa:fix              # PHP and Twig

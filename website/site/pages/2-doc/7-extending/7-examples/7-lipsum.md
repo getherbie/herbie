@@ -125,7 +125,7 @@ final class LipsumPlugin extends AbstractPlugin
 ~~~
 
 {% verbatim %}
-~~~twig
+~~~twig no-test
 <h2>{{ lipsum_title() }}</h2>
 <p>{{ lipsum_text(2) }}</p>
 {{ lipsum_image(600, 400, 'herbie') }}

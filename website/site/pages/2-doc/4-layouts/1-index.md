@@ -111,7 +111,7 @@ The example defines three blocks (`title`, `content` and `sidebar`) without any 
 A sub (child) template extends the main template and fills its blocks:
 
 ~~~twig
-# default.twig
+{# default.twig #}
 
 {% extends "main.twig" %}
 
@@ -128,7 +128,7 @@ Internally, the segments go through one or more formatting processes such as ren
 The sub template now looks like this:
 
 ~~~twig
-# default.twig
+{# default.twig #}
 
 {% extends "main.twig" %}
 
@@ -145,7 +145,7 @@ The `raw` filter is required because Twig escapes HTML by default.
 To place a sidebar next to the normal content column, fill the `sidebar` block as well:
 
 ~~~twig
-# twocolumn.twig
+{# twocolumn.twig #}
 
 {% extends "main.twig" %}
 

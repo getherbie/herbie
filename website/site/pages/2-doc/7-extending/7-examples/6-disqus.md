@@ -95,7 +95,7 @@ final class DisqusPlugin extends AbstractPlugin
 ~~~
 
 {% verbatim %}
-~~~twig
+~~~twig no-test
 {{ disqus('my-forum-shortname') }}
 ~~~
 {% endverbatim %}

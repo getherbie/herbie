@@ -243,7 +243,7 @@ Menus are built from page lists or data files with the `menu_*` functions.
 
 {% verbatim %}
 ~~~twig
-{{ menu_list('main') }}
+{{ menu_list() }}
 ~~~
 {% endverbatim %}
 
@@ -253,7 +253,7 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ link_page('about') }}
+{{ link_page('about', 'About') }}
 {{ link_download('image.jpg') }}
 {{ url_abs('sitemap.xml') }}
 ~~~
@@ -265,7 +265,7 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ site.page_list.query().where('layout=doc').order('title') }}
+{{ site.page_list.query().where('layout=doc').order('title').count() }}
 ~~~
 {% endverbatim %}
 

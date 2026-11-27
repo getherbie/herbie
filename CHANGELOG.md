@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- The integration suite renders all Twig examples from the documentation; examples that cannot run in the test site are marked with `~~~twig no-test`.
+
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
 
