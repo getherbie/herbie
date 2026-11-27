@@ -183,7 +183,7 @@ Example:
 
 Example:
 
-    {{ imagine("portrait.jpg", "crop", {class: "crop", alt: "Portrait"}) }}
+    {{ imagine('portrait.jpg', 'crop', {class: 'crop', alt: 'Portrait'}) }}
 
 ## More Information
 

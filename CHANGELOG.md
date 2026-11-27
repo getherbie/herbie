@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- The integration suite renders all Twig examples from the documentation; examples that cannot run in the test site are marked with `~~~twig no-test`.
+- The integration suite renders all Twig examples from the documentation and checks that their string literals use single quotes; examples that cannot run in the test site are marked with `~~~twig no-test`.
 - The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.
 - The integration suite checks the syntax of PHP, YAML, JSON and Bash examples in the documentation; `no-test` now applies to any code fence.
 

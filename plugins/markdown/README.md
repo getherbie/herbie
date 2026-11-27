@@ -136,11 +136,11 @@ In addition, both a Twig filter and a Twig "Markdown" function are available.
 
 The Twig filter can be applied as follows:
 
-    {{ "# Title"|markdown }}
+    {{ '# Title'|markdown }}
 
 And the Twig function like this:
 
-    {{ markdown("# Title") }}
+    {{ markdown('# Title') }}
 
 ## More Information
 

@@ -13,6 +13,11 @@ use SplFileInfo;
 use Throwable;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
+use Twig\Source;
+use TwigCsFixer\Environment\StubbedEnvironment;
+use TwigCsFixer\Report\Report;
+use TwigCsFixer\Rules\Literal\SingleQuoteRule;
+use TwigCsFixer\Token\Tokenizer;
 use UnitTester;
 
 final class TwigExamplesTest extends Unit
@@ -31,6 +36,29 @@ final class TwigExamplesTest extends Unit
                 $renderer->renderString($code, $this->context());
             } catch (Throwable $e) {
                 $failures[] = sprintf('%s:%d: %s: %s', $file, $line, $e::class, $e->getMessage());
+            }
+        }
+
+        $this->assertSame([], $failures, implode("\n", $failures));
+    }
+
+    public function testTwigExamplesUseSingleQuotes(): void
+    {
+        $tokenizer = new Tokenizer(new StubbedEnvironment());
+        $rule = new SingleQuoteRule();
+        $failures = [];
+
+        foreach ($this->examples() as [$file, $line, $code]) {
+            $report = new Report([new SplFileInfo($file)]);
+            $rule->lintFile($tokenizer->tokenize(new Source($code, $file)), $report);
+
+            foreach ($report->getViolations() as $violation) {
+                $failures[] = sprintf(
+                    '%s:%d: %s',
+                    $file,
+                    $line + (int)$violation->getLine(),
+                    $violation->getMessage(),
+                );
             }
         }
 

@@ -115,7 +115,7 @@ Tests only:
     composer qa:test:website
     composer qa:test:coverage
 
-The integration suite renders every `twig` code fence from the documentation (`tests/integration/Docs/TwigExamplesTest.php`) and checks the syntax of `php`, `yaml`, `json` and `bash` fences (`tests/integration/Docs/DocSyntaxTest.php`). Mark examples that cannot run or be parsed in the test site with `no-test`, e.g. `~~~twig no-test` or `~~~php no-test`.
+The integration suite renders every `twig` code fence from the documentation and checks that its string literals use single quotes (`tests/integration/Docs/TwigExamplesTest.php`). It also checks the syntax of `php`, `yaml`, `json` and `bash` fences (`tests/integration/Docs/DocSyntaxTest.php`). Mark examples that cannot run or be parsed in the test site with `no-test`, e.g. `~~~twig no-test` or `~~~php no-test`.
 
 The integration suite also checks the Twig reference data in `website/site/data/twig_{functions,filters,tests}.yml` against the functions, filters and tests registered in the test site (`tests/integration/Docs/TwigReferenceTest.php`).
 
