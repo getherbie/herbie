@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
+
 ## [3.2.1] - 2026-11-25
 
 ### Fixed
