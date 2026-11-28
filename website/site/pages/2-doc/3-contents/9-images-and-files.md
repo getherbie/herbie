@@ -117,28 +117,34 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 ~~~twig
 {{ image('/media/logo.png', {alt: 'Logo'}) }}               {# <img alt="Logo" src="/media/logo.png"> #}
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
-{{ link_file('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
-{{ link_download('manual.pdf', 'Manual', show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
+{{ file_link('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
+{{ file_link('/media/manual.pdf', 'Manual', download: true, show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
+{{ file_link('/media/manual.pdf', 'Manual', absolute: true) }} {# <a href="https://example.com/media/manual.pdf">Manual</a> #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
 {{ file_url('/media/manual.pdf', download: true) }}         {# /media/manual.pdf?download #}
+{{ file_url('/media/manual.pdf', absolute: true) }}         {# https://example.com/media/manual.pdf #}
 {{ imagine('/media/portrait.jpg') }}                        {# <img> of a resized copy, see the Imagine plugin #}
 ~~~
 {% endverbatim %}
 
+`page_url()` returns a URL string; `page_link()`, `file_link()` and `mail_link()` return HTML links.
+Pass `/media/...` to `file_link()` for media files and add `download: true` to force a download.
+
 How a path is interpreted:
 
-- A path that starts with `/media/` (or `media/`) is served by Herbie from `site/media/`. Every
-  other path is relative to the web directory.
+- A path below the media URL (`urls.media`, by default `/media/...` or `media/...`) is served by
+  Herbie from `site/media/`. Every other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
-- `link_download()` always refers to a file in `site/media/`, the prefix `/media/` is optional.
-- `download: true` has an effect on media files only, a web server ignores `?download`.
+- A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
+  `site/media/`; `download: true` forces a download for media files and `absolute: true` makes the
+  URL absolute. A web server ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
 
-The Imagine plugin function `imagine()` and the filter `|imagine` accept the public URL
-`/media/...` as well. A path without a leading `/media/`, as in `imagine('portrait.jpg')`, is
-relative to `site/media/` as before.
+The Imagine plugin function `imagine()` and the filter `|imagine` resolve paths like `file_url()`:
+paths below the media route (`/media/...` or `media/...`) are read from `site/media/`, every other
+path (`/logo.png` or `logo.png`) is relative to the web root.
 
 See also the [Twig functions](doc/indepth/twig-functions) reference.
 
@@ -165,7 +171,7 @@ content, it works in Markdown and HTML as well, because page content is processe
 ~~~
 {% endverbatim %}
 
-Inside Markdown link syntax use `file_url()`, not `image()` or `link_file()`. They return HTML and
+Inside Markdown link syntax use `file_url()`, not `image()` or `file_link()`. They return HTML and
 would break the syntax, see [Twig and Markdown processing order](doc/contents/markdown#twig-and-markdown-processing-order).
 
 **Rule:** write `/media/...` if the site runs in the root of the domain, otherwise use
@@ -197,8 +203,8 @@ return [
 The URL must be a path below `WEB_URL`. A different domain, for example a CDN, is not supported.
 If a directory `web/media/` exists, the web server delivers files from it before Herbie is asked.
 
-## Former download route
+## Download links
 
-The route `/download/...` of earlier versions redirects permanently (301) to `/media/...?download`.
-It is deprecated and will be removed in the next major version. Replace links like
-`/download/manual.pdf` with `/media/manual.pdf?download`.
+Append `?download` to a media URL to force a download, for example `/media/manual.pdf?download`.
+Use `file_url('/media/manual.pdf', download: true)` for the URL or
+`file_link('/media/manual.pdf', 'Manual', download: true)` for the link.

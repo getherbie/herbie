@@ -19,9 +19,9 @@ $renderSegmentEvent = function (RenderSegmentEvent $event): void {
         return;
     }
 
-    preg_match_all('#<h([2])>(.+?)</h\1>#i', $segment, $matches);
+    preg_match_all('#<h2\b([^>]*)>(.+?)</h2>#i', $segment, $matches, PREG_SET_ORDER);
 
-    if (!isset($matches[0]) || (count($matches[0]) === 0)) {
+    if (count($matches) === 0) {
         return;
     }
 
@@ -29,14 +29,27 @@ $renderSegmentEvent = function (RenderSegmentEvent $event): void {
 
     $links = [];
     $replace = [];
-    foreach ($matches[0] as $index => $search) {
-        $id = trim(preg_replace('/[^a-zA-z0-9]/', '-', strtolower($matches[2][$index])), '-');
+    foreach ($matches as $match) {
+        $attrs = trim($match[1]);
+        $text = $match[2];
+
+        if (str_contains($attrs, 'data-toc-group')) {
+            $links[] = sprintf('<li class="toc-group">%s</li>', $text);
+            continue;
+        }
+
+        // Keep the legacy behaviour: only plain <h2> headings become TOC entries.
+        if ($attrs !== '') {
+            continue;
+        }
+
+        $id = trim(preg_replace('/[^a-zA-z0-9]/', '-', strtolower($text)), '-');
         $url = $urlManager->createUrl($page->getRoute());
         $replace[] = [
-            $matches[0][$index],
-            '<h' . $matches[1][$index] . ' id="' . $id . '">' . $matches[2][$index] . '</h' . $matches[1][$index] . '>',
+            $match[0],
+            '<h2 id="' . $id . '">' . $text . '</h2>',
         ];
-        $links[] = sprintf('<li><a href="%s#%s">%s</a></li>', $url, $id, $matches[2][$index]);
+        $links[] = sprintf('<li><a href="%s#%s">%s</a></li>', $url, $id, $text);
     }
 
     // replace headings

@@ -8,23 +8,28 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class LinkFileFunctionTest extends Unit
+final class JsRenderFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
     public function testPowerOn(): void
     {
+        $twig = '{{ js_add("@site/assets/script.js") }}'
+            . '{{ js_render() }}';
         $this->assertEquals(
-            '<span class="link link--file"><a href="/dummy.pdf" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ link_file("dummy.pdf") }}'),
+            '<script src="/assets/assets/script.js"></script>',
+            $this->twig()->renderString($twig),
         );
     }
 
-    public function testMediaPathIsServedByHerbie(): void
+    // @deprecated Since 3.3.0, remove in 4.0 together with js_out().
+    public function testDeprecatedJsOutAlias(): void
     {
+        $twig = '{{ js_add("@site/assets/script.js") }}'
+            . '{{ js_out() }}';
         $this->assertEquals(
-            '<span class="link link--file"><a href="/media/dummy.pdf" class="link__label">dummy.pdf</a></span>',
-            $this->twig()->renderString('{{ link_file("/media/dummy.pdf") }}'),
+            '<script src="/assets/assets/script.js"></script>',
+            $this->twig()->renderString($twig),
         );
     }
 

@@ -20,6 +20,7 @@ use Twig\Markup;
 
 use function herbie\str_route_from_url;
 use function herbie\str_trailing_slash;
+use function herbie\str_unleading_slash;
 
 #[Plugin('imagine', requires: ['imagine/imagine' => '^1.3'])]
 final class ImaginePlugin extends AbstractPlugin
@@ -56,8 +57,8 @@ final class ImaginePlugin extends AbstractPlugin
 
     public function imagineFunction(string $path, string $collection = 'default', array $attribs = []): string
     {
-        $path = $this->mediaRelativePath($path);
-        $absolutePath = $this->alias->get('@media/' . $path);
+        $source = $this->resolveSource($path);
+        $absolutePath = $source['absolute'];
 
         $attribs['class'] ??= 'imagine';
 
@@ -74,7 +75,7 @@ final class ImaginePlugin extends AbstractPlugin
 
         $attribs['class'] = trim($attribs['class'] . ' imagine--filter-' . $sanitizedFilter);
 
-        $cachePath = $this->applyFilterSet($path, $sanitizedFilter);
+        $cachePath = $this->applyFilterSet($source, $sanitizedFilter);
 
         $attribs['alt'] ??= '';
 
@@ -86,7 +87,7 @@ final class ImaginePlugin extends AbstractPlugin
             }
         }
 
-        $cacheUrl = $this->resolveCacheUrl($path, $sanitizedFilter);
+        $cacheUrl = $this->resolveCacheUrl($source['cachePath'], $sanitizedFilter);
 
         return sprintf(
             '<img src="%s"%s>',
@@ -96,19 +97,33 @@ final class ImaginePlugin extends AbstractPlugin
     }
 
     /**
-     * Accepts the public media URL (e.g. "/media/photo.jpg") in addition to a path relative to @media.
-     * Only a leading slash followed by the media route is treated as the public URL.
+     * Resolves a public path to the source file and its cache key.
+     *
+     * Like file_url(), a path below the media route is read from @media and
+     * every other path is read from the web root. Leading slashes are ignored.
+     *
+     * @return array{absolute: string, cachePath: string}
      */
-    private function mediaRelativePath(string $path): string
+    private function resolveSource(string $path): array
     {
+        $path = str_unleading_slash(str_replace('\\', '/', $path));
         $route = trim(str_route_from_url(
             $this->config->getAsString('urls.media'),
             $this->config->getAsString('urls.web'),
         ), '/');
-        if ($route !== '' && str_starts_with($path, '/' . $route . '/')) {
-            return substr($path, strlen($route) + 2);
+
+        if ($route !== '' && ($path === $route || str_starts_with($path, $route . '/'))) {
+            $relative = $path === $route ? '' : substr($path, strlen($route) + 1);
+            return [
+                'absolute' => $this->alias->get('@media/' . $relative),
+                'cachePath' => $relative,
+            ];
         }
-        return $path;
+
+        return [
+            'absolute' => $this->alias->get('@web/' . $path),
+            'cachePath' => 'web/' . $path,
+        ];
     }
 
     private function getTransparentOnePixelSrc(): string
@@ -137,12 +152,15 @@ final class ImaginePlugin extends AbstractPlugin
         return $filterSet;
     }
 
-    protected function applyFilterSet(string $relpath, string $filterSet): string
+    /**
+     * @param array{absolute: string, cachePath: string} $source
+     */
+    protected function applyFilterSet(array $source, string $filterSet): string
     {
-        $path = $this->alias->get('@media/' . $relpath);
+        $path = $source['absolute'];
 
         $filterConfig = $this->config->getAsArray("plugins.imagine.collections.{$filterSet}");
-        $cachePath = $this->resolveCachePath($relpath, $filterSet);
+        $cachePath = $this->resolveCachePath($source['cachePath'], $filterSet);
 
         $cache = (bool)($filterConfig['cache'] ?? true);
 
@@ -256,8 +274,8 @@ final class ImaginePlugin extends AbstractPlugin
      */
     public function imagineFilter(string $path, string $collection = 'default'): Markup
     {
-        $path = $this->mediaRelativePath($path);
-        $absolutePath = $this->alias->get('@media/' . $path);
+        $source = $this->resolveSource($path);
+        $absolutePath = $source['absolute'];
 
         if (!is_file($absolutePath)) {
             $dataSrc = $this->getTransparentOnePixelSrc();
@@ -266,10 +284,10 @@ final class ImaginePlugin extends AbstractPlugin
 
         $sanitizedFilterSet = $this->sanitizeFilterName($collection);
 
-        $this->applyFilterSet($path, $sanitizedFilterSet);
+        $this->applyFilterSet($source, $sanitizedFilterSet);
 
         return new Markup(
-            $this->basePath . $this->resolveCacheUrl($path, $sanitizedFilterSet),
+            $this->basePath . $this->resolveCacheUrl($source['cachePath'], $sanitizedFilterSet),
             'utf8',
         );
     }

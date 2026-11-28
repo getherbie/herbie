@@ -1,44 +1,54 @@
-{% for item in attribute(site.data, type)|sort((a, b) => a.name <=> b.name) %}
+{% set groups = {core: 'Core', plugin: 'Plugin', site: 'Site-local'} %}
+{% set kind = type|split('_')|last %}
+{% for group, label in groups %}
+{% set items = attribute(site.data, type)
+    |filter(item => attribute(item, 'group')|default('core') == group and attribute(item, 'visibility')|default('public') == 'public')
+    |sort((a, b) => attribute(a, 'name') <=> attribute(b, 'name')) %}
+{% if items|length > 0 %}
+<h2 id="{{ group }}-{{ kind }}" class="doc-group-title" data-toc-group>{{ label }} {{ kind }}</h2>
+{% for item in items %}
 <div class="doc-function">
-    <h2>{{ attribute(item, 'name') }}</h2>
-    <div class="doc-desc">
-        {{ attribute(item, 'desc')|default('')|markdown }}
-        {% set see = attribute(item, 'see') %}
-        {% if see %}
-            <p>See: <a href="{{ see[0] }}">{{ see[1] }}</a></p>
-        {% endif %}
-    </div>
-    {% set params = item.params|default([]) %}
-    {% set hasParams = params|length > 0 %}
-    <table class="pure-table pure-table-horizontal">
-        <tr class="code">
-            {% if hasParams %}
-            <td>Parameter</td>
-            <td>Type</td>
-            <td>Description</td>
-            <td>Value</td>
-            {% else %}
-            <td>[return]</td>
-            <td>Description</td>
-            {% endif %}
-        </tr>
-        {% for param in params %}
-        <tr class="param">
-            <td>{{ param.name }}</td>
-            <td>{{ param.type }}</td>
-            <td>{{ param.desc|default('')|markdown }}</td>
-            <td>{% if param.required %}[required]{% else %}{{ param.default }}{% endif %}</td>
-        </tr>
-        {% endfor %}
-        <tr class="return">
-            {% if hasParams %}<td>[return]</td>{% endif %}
-            <td>{{ item.return.0 }}</td>
-            <td colspan="{{ hasParams ? 2 : 1 }}">{{ item.return.1|default('')|markdown }}</td>
-        </tr>
-    </table>
-    {% if item.code is defined and item.code != '' %}
-        <div>Example:</div>
-        <pre><code class="twig-language">{{ item.code }}</code></pre>
-    {% endif %}
+<h2>{{ attribute(item, 'name') }}</h2>
+<div class="doc-desc">
+{{ attribute(item, 'desc')|default('')|markdown }}
+{% set see = attribute(item, 'see') %}
+{% if see %}
+<p>See: <a href="{{ see[0] }}">{{ see[1] }}</a></p>
+{% endif %}
 </div>
+{% set params = item.params|default([]) %}
+{% set hasParams = params|length > 0 %}
+<table class="pure-table pure-table-horizontal">
+<tr class="code">
+{% if hasParams %}
+<td>Parameter</td>
+<td>Type</td>
+<td>Description</td>
+<td>Value</td>
+{% else %}
+<td>[return]</td>
+<td>Description</td>
+{% endif %}
+</tr>
+{% for param in params %}
+<tr class="param">
+<td>{{ param.name }}</td>
+<td>{{ param.type }}</td>
+<td>{{ param.desc|default('')|markdown }}</td>
+<td>{% if param.required %}[required]{% else %}{{ param.default }}{% endif %}</td>
+</tr>
+{% endfor %}
+<tr class="return">
+{% if hasParams %}<td>[return]</td>{% endif %}
+<td>{{ item.return.0 }}</td>
+<td colspan="{{ hasParams ? 2 : 1 }}">{{ item.return.1|default('')|markdown }}</td>
+</tr>
+</table>
+{% if item.code is defined and item.code != '' %}
+<div>Example:</div>
+<pre><code class="twig-language">{{ item.code }}</code></pre>
+{% endif %}
+</div>
+{% endfor %}
+{% endif %}
 {% endfor %}

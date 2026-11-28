@@ -8,14 +8,14 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class OutputCssFunctionTest extends Unit
+final class CssRenderFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
     public function testPowerOn(): void
     {
         $twig = '{{ css_add("@site/assets/styles.css") }}'
-            . '{{ css_out() }}';
+            . '{{ css_render() }}';
         $this->assertEquals(
             '<link href="/assets/assets/styles.css" type="text/css" rel="stylesheet">',
             $this->twig()->renderString($twig),
@@ -30,7 +30,7 @@ final class OutputCssFunctionTest extends Unit
         );
 
         $twig = '{{ css_add("@theme/css/site.css") }}'
-            . '{{ css_out() }}';
+            . '{{ css_render() }}';
         $this->assertEquals(
             '<link href="/assets/themes/blog.rot/css/site.css" type="text/css" rel="stylesheet">',
             $app->getTwigRenderer()->renderString($twig),
@@ -45,7 +45,7 @@ final class OutputCssFunctionTest extends Unit
         );
 
         $twig = '{{ css_add("@theme/css/parent-only.css") }}'
-            . '{{ css_out() }}';
+            . '{{ css_render() }}';
         $this->assertSame(
             '<link href="/assets/themes/blog.rot/css/parent-only.css" type="text/css" rel="stylesheet">',
             $app->getTwigRenderer()->renderString($twig),
@@ -62,13 +62,24 @@ final class OutputCssFunctionTest extends Unit
         );
 
         $twig = '{{ css_add("@theme/css/parent-only.css") }}'
-            . '{{ css_out() }}';
+            . '{{ css_render() }}';
         $this->assertSame(
             '<link href="/assets/themes/default/css/parent-only.css" type="text/css" rel="stylesheet">',
             $app->getTwigRenderer()->renderString($twig),
         );
         $published = dirname(__DIR__, 5) . '/tests/_data/web/assets/themes/default/css/parent-only.css';
         $this->assertStringContainsString('parent theme', (string)file_get_contents($published));
+    }
+
+    // @deprecated Since 3.3.0, remove in 4.0 together with css_out().
+    public function testDeprecatedCssOutAlias(): void
+    {
+        $twig = '{{ css_add("@site/assets/styles.css") }}'
+            . '{{ css_out() }}';
+        $this->assertEquals(
+            '<link href="/assets/assets/styles.css" type="text/css" rel="stylesheet">',
+            $this->twig()->renderString($twig),
+        );
     }
 
     private function twig(): TwigRenderer

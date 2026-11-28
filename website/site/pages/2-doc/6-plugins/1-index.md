@@ -54,6 +54,8 @@ Plugin settings can also be customized in the configuration file as desired.
 
 ## Available plugins
 
+The Twig functions and filters provided by system plugins are listed in the [Twig functions](doc/indepth/twig-functions#plugin-functions) and [Twig filters](doc/indepth/twig-filters#plugin-filters) references.
+
 {{ snippet('@site/snippets/plugins.twig', {linkto:'doc/plugins'}) }}
 
 If you have a useful plugin for Herbie, [let us know](/development).

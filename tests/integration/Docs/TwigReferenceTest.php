@@ -166,19 +166,36 @@ final class TwigReferenceTest extends Unit
      */
     private function registered(string $kind): array
     {
-        $items = [];
-        foreach ($this->environment()->getExtensions() as $extension) {
-            if (str_starts_with($extension::class, 'Twig\\')) {
-                continue;
-            }
+        $environment = $this->environment();
+        $callables = match ($kind) {
+            'functions' => $environment->getFunctions(),
+            'filters' => $environment->getFilters(),
+            'tests' => $environment->getTests(),
+        };
 
-            $callables = match ($kind) {
+        // Plugin callables are added directly to the environment and belong to no extension.
+        $builtinNames = [];
+        $herbieNames = [];
+        foreach ($environment->getExtensions() as $extension) {
+            $extensionCallables = match ($kind) {
                 'functions' => $extension->getFunctions(),
                 'filters' => $extension->getFilters(),
                 'tests' => $extension->getTests(),
             };
-            foreach ($callables as $callable) {
-                $items[$callable->getName()] = $callable;
+            foreach ($extensionCallables as $callable) {
+                if (str_starts_with($extension::class, 'Twig\\')) {
+                    $builtinNames[$callable->getName()] = true;
+                } else {
+                    $herbieNames[$callable->getName()] = true;
+                }
+            }
+        }
+
+        $items = [];
+        foreach ($callables as $callable) {
+            $name = $callable->getName();
+            if (isset($herbieNames[$name]) || !isset($builtinNames[$name])) {
+                $items[$name] = $callable;
             }
         }
 
@@ -189,7 +206,7 @@ final class TwigReferenceTest extends Unit
     {
         return $this->environment ??= $this->tester->initTwigRenderer(
             dirname(__DIR__, 3),
-            dirname(__DIR__, 1) . '/Fixtures/site',
+            dirname(__DIR__, 1) . '/Fixtures/docs-site',
         )->getTwigEnvironment();
     }
 }

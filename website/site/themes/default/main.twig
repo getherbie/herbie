@@ -23,7 +23,7 @@
             {% set isCurrent = nodeRoute == currentRoute %}
             {% set isActive = isCurrent or (nodeRoute != '' and (currentRoute starts with nodeRoute ~ '/')) %}
             <li class="mobile-nav-item{{ isActive ? ' is-active' : '' }}{{ childCount > 0 ? ' has-children' : '' }}" style="--level:{{ level }}">
-                <a class="mobile-nav-link{{ isCurrent ? ' is-current' : '' }}" href="{{ url_rel(nodeRoute) }}">{{ item.getMenuTitle() ?: item.getTitle() }}</a>
+                <a class="mobile-nav-link{{ isCurrent ? ' is-current' : '' }}" href="{{ page_url(nodeRoute) }}">{{ item.getMenuTitle() ?: item.getTitle() }}</a>
                 {% if childCount > 0 %}
                     <ul class="mobile-nav-children">
                         {{ mobile_menu.tree(node, currentRoute, level + 1) }}
@@ -55,7 +55,7 @@
     <link rel="alternate icon" href="{{ (site.base_url ~ '/favicon.ico')|replace({'//': '/'}) }}" sizes="16x16">
     <title>{{ page_title(delimiter: ' / ', site_title: 'Herbie CMS', root_title: 'Herbie CMS - A simple flat-file content management system', reverse: true) }}</title>
     <base href="{{ site.base_url }}">
-    {{ css_out(timestamp: true) }}
+    {{ css_render(timestamp: true) }}
 </head>
 <body class="{{ css_classes() }}">
 <div class="header">
@@ -69,7 +69,7 @@
             </div>
             <div class="pure-g">
                 <div class="pure-u-3-5 pure-u-md-1-5">
-                    <div class="brand-title">{{ link_page('index', icon('herbie') ~ ' Herbie CMS') }}</div>
+                    <div class="brand-title">{{ page_link('index', icon('herbie') ~ ' Herbie CMS') }}</div>
                 </div>
                 <div class="pure-u-2-5 pure-u-md-4-5 text-right pure-hidden-phone">
                     <div class="topmenu" id="topmenu">
@@ -79,7 +79,7 @@
                                     {% for item in site.data.menu %}
                                         {% set active = (item.route == route) ? 'pure-menu-selected' : '' %}
                                         <li class="pure-menu-item {{ active }}">
-                                            {{ link_page(item.route, item.label, {class: 'pure-menu-link'}) }}
+                                            {{ page_link(item.route, item.label, {class: 'pure-menu-link'}) }}
                                         </li>
                                     {% endfor %}
                                     <li class="pure-menu-item theme-toggle-item">
@@ -138,7 +138,7 @@
                     <h1 class="hero-title">{{ page.hero.title }}</h1>
                     <p class="hero-subtitle">{{ page.hero.subtitle }}</p>
                     <div class="hero-actions">
-                        <a class="pure-button hero-button" href="{{ url_rel(page.hero.primary_route) }}">{{ page.hero.primary_label }}</a>
+                        <a class="pure-button hero-button" href="{{ page_url(page.hero.primary_route) }}">{{ page.hero.primary_label }}</a>
                         {% if page.hero.demos %}
                             <div class="hero-demo-group">
                                 <a class="pure-button hero-button hero-button-demo" href="{{ page.hero.demo_url }}" aria-haspopup="true" aria-expanded="false" aria-controls="hero-demo-menu">{{ page.hero.demo_label }} <span class="hero-demo-caret" aria-hidden="true"></span></a>
@@ -199,18 +199,18 @@ title: Hello
             <div class="pure-u-1 pure-u-sm-1-2 pure-u-md-1-4 footer-links">
                 <h3>Links</h3>
                 <ul>
-                    <li>{{ link_page('sitemap', 'Sitemap') }}</li>
-                    <li>{{ link_page('search', 'Search') }}</li>
-                    <li>{{ link_page('contact', 'Contact') }}</li>
-                    <li>{{ link_page('privacy-policy', 'Privacy Policy') }}</li>
-                    <li>{{ link_page('imprint', 'Imprint') }}</li>
+                    <li>{{ page_link('sitemap', 'Sitemap') }}</li>
+                    <li>{{ page_link('search', 'Search') }}</li>
+                    <li>{{ page_link('contact', 'Contact') }}</li>
+                    <li>{{ page_link('privacy-policy', 'Privacy Policy') }}</li>
+                    <li>{{ page_link('imprint', 'Imprint') }}</li>
                 </ul>
             </div>
             <div class="pure-u-1 pure-u-sm-1-2 pure-u-md-1-4">
                 <h3>Code</h3>
                 <ul>
-                    <li>{{ link_page('https://github.com/getherbie/herbie', 'Herbie at GitHub') }}</li>
-                    <li>{{ link_page('https://packagist.org/packages/getherbie/herbie', 'Herbie at Packagist') }}</li>
+                    <li>{{ page_link('https://github.com/getherbie/herbie', 'Herbie at GitHub') }}</li>
+                    <li>{{ page_link('https://packagist.org/packages/getherbie/herbie', 'Herbie at Packagist') }}</li>
                 </ul>
             </div>
         </div>
@@ -221,7 +221,7 @@ title: Hello
         </div>
     </div>
 </div>
-{{ js_out(timestamp: true) }}
+{{ js_render(timestamp: true) }}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre code[class*=language-]').forEach((el) => {

@@ -252,6 +252,14 @@ final class WebsiteCest
         $I->see('Twig Filters', 'h1');
         $I->see('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->seeElement('#core-filters');
+        $I->seeElement('#plugin-filters');
+        $I->see('Core filters', '.toc-links li.toc-group');
+        $I->see('Plugin filters', '.toc-links li.toc-group');
+        $I->dontSeeElement('.toc-links li.toc-group a');
+        $I->see('imagine', '.toc-links');
+        $I->see('rst', '.toc-links');
+        $I->dontSeeElement('.toc-links li ul li');
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/filters/index.html');
     }
 
@@ -263,6 +271,25 @@ final class WebsiteCest
         $I->see('Twig Functions', 'h1');
         $I->see('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->seeElement('#core-functions');
+        $I->seeElement('#plugin-functions');
+        $I->see('Core functions', '.toc-links li.toc-group');
+        $I->see('Plugin functions', '.toc-links li.toc-group');
+        $I->dontSeeElement('.toc-links li.toc-group a');
+        $I->see('page_url', '.toc-links');
+        $I->see('imagine', '.toc-links');
+        $I->see('rst', '.toc-links');
+        $I->dontSee('herbie_debug', '.doc-function h2');
+        $I->dontSee('herbie_info', '.doc-function h2');
+        $I->dontSee('url_abs', '.doc-function h2');
+        $I->dontSee('link_file', '.doc-function h2');
+        $I->dontSee('csrf_token', '.doc-function h2');
+        $I->dontSee('herbie_debug', '.toc-links');
+        $I->dontSee('herbie_info', '.toc-links');
+        $I->dontSee('url_abs', '.toc-links');
+        $I->dontSee('link_file', '.toc-links');
+        $I->dontSee('csrf_token', '.toc-links');
+        $I->dontSeeElement('.toc-links li ul li');
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/functions/index.html');
     }
 
@@ -295,6 +322,10 @@ final class WebsiteCest
         $I->see('Twig Tests', 'h1');
         $I->see('On this page', '.toc-title');
         $this->seeRenderedContent($I);
+        $I->see('Core tests', '.toc-links li.toc-group');
+        $I->dontSeeElement('.toc-links li.toc-group a');
+        $I->see('path_readable', '.toc-links');
+        $I->dontSeeElement('.toc-links li ul li');
         $I->seeLink('official Twig documentation', 'https://twig.symfony.com/doc/3.x/tests/index.html');
     }
 
@@ -310,6 +341,7 @@ final class WebsiteCest
         $I->see('Twig', '.plugin');
         $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/contact"]');
         $I->seeElement('a[href="https://github.com/getherbie/herbie/tree/3.x/plugins/search"]');
+        $I->seeElement('a[href*="twig-functions#plugin-functions"]');
     }
 
     public function testDocExtending(AcceptanceTester $I): void

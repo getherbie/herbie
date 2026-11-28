@@ -5,4 +5,4 @@ cached: false
 
 # Contact us
 
-{{ contact() }}
+{{ contact_form() }}

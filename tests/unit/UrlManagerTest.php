@@ -141,4 +141,43 @@ final class UrlManagerTest extends Unit
 
         $this->assertSame('http://example.com/', $um->createAbsoluteUrl(''));
     }
+
+    public function testCreateAbsoluteWebUrlUsesTheRequestHost(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), ['niceUrls' => true, 'baseUrl' => '/base']);
+
+        $this->assertSame('http://example.com/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
+
+    public function testCreateAbsoluteWebUrlNeverContainsTheScriptName(): void
+    {
+        $um = new UrlManager(
+            $this->makeRequest('/'),
+            ['niceUrls' => false, 'baseUrl' => '/base', 'scriptUrl' => '/base/index.php'],
+        );
+
+        $this->assertSame('http://example.com/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
+
+    public function testCreateAbsoluteUrlUsesTheConfiguredOrigin(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), [
+            'niceUrls' => true,
+            'baseUrl' => '',
+            'absoluteBaseUrl' => 'https://canonical.example/',
+        ]);
+
+        $this->assertSame('https://canonical.example/news/entry-one', $um->createAbsoluteUrl('/news/entry-one'));
+    }
+
+    public function testCreateAbsoluteWebUrlUsesTheConfiguredOrigin(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), [
+            'niceUrls' => true,
+            'baseUrl' => '/base',
+            'absoluteBaseUrl' => 'https://canonical.example',
+        ]);
+
+        $this->assertSame('https://canonical.example/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
 }

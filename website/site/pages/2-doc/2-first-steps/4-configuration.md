@@ -19,6 +19,22 @@ WEB_URL
 
 These constant strings are parsed at runtime.
 
+## Absolute URLs
+
+The Twig helpers `page_url()`, `page_link()`, `file_url()` and `file_link()` create absolute URLs with `absolute: true`. By default they use the scheme and host of the current request. To use a fixed origin, set `urls.origin` to `scheme://host` without a path:
+
+~~~php
+<?php
+
+return [
+    'urls' => [
+        'origin' => 'https://example.com',
+    ],
+];
+~~~
+
+Leave the value empty to keep the request-based behavior. The configured origin is also used by the special pages `sitemap.xml`, `robots.txt` and `atom.xml`, which render their URLs with `page_url(absolute: true)`.
+
 ## Override settings
 
 All default settings can be overridden in a separate configuration file.

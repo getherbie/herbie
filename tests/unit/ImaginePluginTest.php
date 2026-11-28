@@ -48,7 +48,7 @@ final class ImaginePluginTest extends Unit
     {
         $plugin = $this->createPlugin('cache/imagine');
 
-        $markup = $plugin->imagineFilter('sample.png', 'default');
+        $markup = $plugin->imagineFilter('/media/sample.png', 'default');
 
         $expectedUrl = '/cache/imagine/sample-default.png';
         $this->assertSame($expectedUrl, (string)$markup);
@@ -65,14 +65,71 @@ final class ImaginePluginTest extends Unit
         $this->assertSame('/cache/imagine/sample-default.png', (string)$markup);
     }
 
-    public function testPathWithoutLeadingSlashKeepsBeingRelativeToTheMediaDirectory(): void
+    public function testMediaRouteIsAcceptedWithoutLeadingSlash(): void
     {
         $plugin = $this->createPlugin('cache/imagine');
 
-        // refers to site/media/media/sample.png, which does not exist
         $markup = $plugin->imagineFilter('media/sample.png', 'default');
 
+        $this->assertSame('/cache/imagine/sample-default.png', (string)$markup);
+    }
+
+    public function testBareWebRootPathIsAccepted(): void
+    {
+        $this->createWebImage('logo.png');
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $markup = $plugin->imagineFilter('logo.png', 'default');
+
+        $this->assertSame('/cache/imagine/web/logo-default.png', (string)$markup);
+        $this->assertFileExists($this->webDir . '/cache/imagine/web/logo-default.png');
+    }
+
+    public function testWebRootPathIsAcceptedAsPath(): void
+    {
+        $this->createWebImage('logo.png');
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $markup = $plugin->imagineFilter('/logo.png', 'default');
+        $html = $plugin->imagineFunction('/logo.png', 'default');
+
+        $expectedUrl = '/cache/imagine/web/logo-default.png';
+        $this->assertSame($expectedUrl, (string)$markup);
+        $this->assertStringContainsString('src="' . $expectedUrl . '"', $html);
+        $this->assertFileExists($this->webDir . $expectedUrl);
+    }
+
+    public function testLeadingPathOutsideMediaRouteDoesNotFallBackToMedia(): void
+    {
+        // A path outside the media route refers to the web root, even if a media file exists.
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $markup = $plugin->imagineFilter('/sample.png', 'default');
+
         $this->assertStringStartsWith('data:image/png;base64,', (string)$markup);
+    }
+
+    public function testWebRootPathBelowASubdirectoryIsAccepted(): void
+    {
+        $this->createWebImage('images/logo.png');
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $markup = $plugin->imagineFilter('/images/logo.png', 'default');
+
+        $this->assertSame('/cache/imagine/web/images/logo-default.png', (string)$markup);
+        $this->assertFileExists($this->webDir . '/cache/imagine/web/images/logo-default.png');
+    }
+
+    public function testWebRootAndMediaImagesDoNotShareTheSameCacheFile(): void
+    {
+        $this->createWebImage('sample.png');
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $mediaMarkup = (string)$plugin->imagineFilter('media/sample.png', 'default');
+        $webMarkup = (string)$plugin->imagineFilter('/sample.png', 'default');
+
+        $this->assertSame('/cache/imagine/sample-default.png', $mediaMarkup);
+        $this->assertSame('/cache/imagine/web/sample-default.png', $webMarkup);
     }
 
     public function testCustomRelativeCachePathIsResolvedFromWebDirectory(): void
@@ -80,8 +137,8 @@ final class ImaginePluginTest extends Unit
         mkdir($this->webDir . '/media/cache', 0777, true);
         $plugin = $this->createPlugin('media/cache');
 
-        $markup = $plugin->imagineFilter('sample.png', 'default');
-        $html = $plugin->imagineFunction('sample.png', 'default');
+        $markup = $plugin->imagineFilter('/media/sample.png', 'default');
+        $html = $plugin->imagineFunction('/media/sample.png', 'default');
 
         $expectedUrl = '/media/cache/sample-default.png';
         $this->assertSame($expectedUrl, (string)$markup);
@@ -93,7 +150,7 @@ final class ImaginePluginTest extends Unit
     {
         $plugin = $this->createPlugin('cache/imagine');
 
-        $html = $plugin->imagineFunction('sample.png', 'default', ['id' => 'img']);
+        $html = $plugin->imagineFunction('/media/sample.png', 'default', ['id' => 'img']);
 
         $this->assertStringContainsString('src="/cache/imagine/sample-default.png"', $html);
         $this->assertFileExists($this->webDir . '/cache/imagine/sample-default.png');
@@ -123,6 +180,16 @@ final class ImaginePluginTest extends Unit
             'leading-traversal' => ['../cache', 'path traversal segments'],
             'traversal-escape' => ['cache/../../other', 'path traversal segments'],
         ];
+    }
+
+    private function createWebImage(string $path): void
+    {
+        $target = $this->webDir . '/' . $path;
+        $dir = dirname($target);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        (new Imagine())->create(new Box(40, 30))->save($target);
     }
 
     private function createPlugin(string $cachePath): ImaginePlugin

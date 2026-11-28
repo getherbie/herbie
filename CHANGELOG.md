@@ -4,13 +4,28 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Twig functions `page_url()`, `page_link()`, `file_link()` and `mail_link()` follow the `<object>_<result>` naming scheme. `page_url(route, absolute: true)` replaces `url_abs()`. `page_link()` and `file_link()` accept `absolute: true` for the configured origin; `file_link()` additionally accepts `download: true`, which appends `?download` for media files.
+- Twig functions `css_render()` and `js_render()` output the registered assets and pair with `css_add()` / `js_add()`.
+- Twig function `file_url()` accepts `absolute: true`. `UrlManager::createAbsoluteWebUrl()` creates the absolute URL of a file below the web root.
+- Config option `urls.origin` sets a fixed origin for absolute URLs in `page_url()`, `page_link()`, `file_url()`, `file_link()` and `sitemap.xml`. If empty, the current request is still used.
+- Contact plugin: `contact_form()` is the new name of `contact()`.
 - The integration suite renders all Twig examples from the documentation and checks that their string literals use single quotes; examples that cannot run in the test site are marked with `~~~twig no-test`.
 - The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.
 - The integration suite checks the syntax of PHP, YAML, JSON and Bash examples in the documentation; `no-test` now applies to any code fence.
 
+### Deprecated
+- The Twig functions `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()` are deprecated since 3.3.0 and will be removed in 4.0. They still behave as before. `link_download()` keeps adding `/media/` itself; replace it with `file_link('/media/x.pdf', 'Label', download: true)`. `image()`, `file_url()` and `imagine()` keep their names.
+- The Twig functions `css_out()` and `js_out()` are deprecated since 3.3.0 and will be removed in 4.0: use `css_render()` and `js_render()`. They still behave as before.
+- Contact plugin: `contact()` is deprecated since 3.3.0 and will be removed in 4.0: use `contact_form()`. The `csrf_token()` Twig function is deprecated as well and will be removed in 4.0; `contact_form()` passes the token to its template as the `csrf_token` variable.
+
+### Documentation
+- Updated the Twig function reference, the images-and-files, cheatsheet, Markdown and special-pages guides to the new function names. The Imagine plugin keeps `imagine()` and `|imagine`.
+- Updated the Contact README, the contact page and the plugin templates to the new function names.
+- Corrected required parameters and defaults in the Twig function reference data. The reference tables now label required parameters as `[required]` and show empty defaults as `''`. String defaults and code examples consistently use single quotes.
+
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
-- Corrected required parameters and defaults in the Twig function reference data. The reference tables now label required parameters as `[required]` and show empty defaults as `''`. String defaults and code examples consistently use single quotes.
+- Imagine plugin: `imagine()` and `|imagine` now resolve paths exactly like `file_url()`: paths below the media route (`/media/...` or `media/...`) are read from `@media`, every other path from the web root. Web-root images get their own cache files below `web/` in the cache directory. **Behavior change:** bare paths such as `portrait.jpg` used to refer to `@media` and now refer to the web root; use `/media/portrait.jpg` or `media/portrait.jpg` for media files.
 
 ## [3.2.1] - 2026-11-25
 

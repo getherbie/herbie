@@ -202,13 +202,13 @@ Snippets are Twig files in `templates/snippets/` and can be included with `snipp
 
 **Media / Assets**
 
-Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie serves `@media` under `/media/...` (`urls.media`): types a browser can display are opened inline, everything else is downloaded. `?download` forces a download. Paths that do not start with `/media/` are relative to the web root and served by the web server.
+Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie serves `@media` under `/media/...` (`urls.media`): types a browser can display are opened inline, everything else is downloaded. `?download` forces a download. Paths below the media route (`/media/...` or `media/...`, configurable via `urls.media`) are served from `@media`; every other path is relative to the web root and served by the web server.
 
 {% verbatim %}
 ~~~twig
 {{ image('/media/photo.jpg') }}                {# <img src="/media/photo.jpg"> #}
 {{ image('/logo.png') }}                       {# <img src="/logo.png"> from the web root #}
-{{ link_download('manual.pdf', 'Handbuch') }}  {# /media/manual.pdf?download #}
+{{ file_link('/media/manual.pdf', 'Handbuch', download: true) }} {# /media/manual.pdf?download #}
 {{ file_url('/media/photo.jpg') }}             {# /media/photo.jpg #}
 {{ file_url('/media/manual.pdf', download: true) }}    {# /media/manual.pdf?download #}
 ~~~
@@ -253,9 +253,10 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ link_page('about', 'About') }}
-{{ link_download('image.jpg') }}
-{{ url_abs('sitemap.xml') }}
+{{ page_link('about', 'About') }}
+{{ page_link('about', 'About', absolute: true) }}
+{{ file_link('/media/image.jpg', 'Image', download: true) }}
+{{ page_url('sitemap.xml', absolute: true) }}
 ~~~
 {% endverbatim %}
 

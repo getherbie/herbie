@@ -16,22 +16,38 @@
     - string
     - The rendered HTML attributes
 - name: url_abs
+  visibility: deprecated
   code: >-
     {{ url_abs('doc/contents/variables') }}
-  desc: Returns the absolute URL for a given route. Use this when you only need the URL string, not a complete HTML link element.
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_url(route, absolute: true)` instead. Returns the absolute URL for a given route.'
   params:
     - name: route
       type: string
-      desc: The route to a page. Must be given, an empty route is not resolved.
-      required: true
+      desc: The route to a page. An empty route resolves to the site root.
       default: "''"
   return:
     - string
     - The absolute URL.
+- name: page_url
+  code: >-
+    {{ page_url('doc/contents/variables', absolute: true) }}
+  desc: 'Returns the URL for a given route. Use this when you only need the URL string, not a complete HTML link element. `absolute: true` makes the URL absolute.'
+  params:
+    - name: route
+      type: string
+      desc: The route to a page. An empty route resolves to the site root.
+      default: "''"
+    - name: absolute
+      type: bool
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
+      default: 'false'
+  return:
+    - string
+    - The URL
 - name: css_add
   code: >-
     {{ css_add('@theme/css/styles.css', {class: 'styles'}, 'default', false, 1) }}
-  desc: Registers a CSS asset for output by `css_out`. Use `raw=true` to include the CSS inline.
+  desc: Registers a CSS asset for output by `css_render`. Use `raw=true` to include the CSS inline.
   params:
     - name: paths
       type: string|array
@@ -58,7 +74,7 @@
 - name: js_add
   code: >-
     {{ js_add('@theme/js/script.js', {class: 'scripts'}, 'default', false, 1) }}
-  desc: Registers a JavaScript asset for output by `js_out`. Use `raw=true` to include the script inline.
+  desc: Registers a JavaScript asset for output by `js_render`. Use `raw=true` to include the script inline.
   params:
     - name: paths
       type: string|array
@@ -92,9 +108,10 @@
     - string
     - The string with CSS classes.
 - name: link_file
+  visibility: deprecated
   code: >-
     {{ link_file('media/download.pdf', 'Download', {class:'download'}, true) }}
-  desc: Returns an HTML link to a file. The path is resolved like in `file_url()`; use `link_download()` to force a download of a media file.
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `file_link()` instead. The path is resolved like in `file_url()`.'
   params:
     - name: path
       type: string
@@ -119,10 +136,46 @@
   return:
     - string
     - The rendered HTML
+- name: file_link
+  code: >-
+    {{ file_link('/media/manual.pdf', 'Manual', {class: 'download'}, download: true) }}
+  desc: 'Returns an HTML link to a file. The URL is resolved like in `file_url()`; `download: true` forces a download of a media file and `absolute: true` makes the URL absolute.'
+  params:
+    - name: path
+      type: string
+      desc: The public path to the file, for example `/media/download.pdf` or `/files/info.pdf`.
+      required: true
+    - name: label
+      type: string
+      desc: The link label. If empty, the file basename is used.
+      default: "''"
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: '[]'
+    - name: show_info
+      type: bool
+      desc: If true, file extension and size are appended to the label.
+      default: 'false'
+    - name: download
+      type: bool
+      desc: 'Forces a download by appending `?download`. Has an effect on media files only.'
+      default: 'false'
+    - name: absolute
+      type: bool
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
+      default: 'false'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "'@snippet/link_file.twig'"
+  return:
+    - string
+    - The rendered HTML
 - name: image
   code: >-
     {{ image('/media/portrait.jpg', {width: 100, height: 200, alt: 'Portrait', class: 'photo'}) }}
-  desc: Returns an HTML image element for a file. A path below `/media/` is served by Herbie from `@media`, every other path is relative to the web root. See `file_url()`. No image processing is performed.
+  desc: Returns an HTML image element for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`, every other path is relative to the web root. See `file_url()`. No image processing is performed.
   params:
     - name: src
       type: string
@@ -142,7 +195,7 @@
 - name: file_url
   code: >-
     {{ file_url('/media/manual.pdf', download: true) }}
-  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and `download: true` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. External URLs and anchors are returned unchanged.'
+  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and `download: true` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. `absolute: true` makes the URL absolute. External URLs and anchors are returned unchanged.'
   params:
     - name: path
       type: string
@@ -151,6 +204,10 @@
     - name: download
       type: bool
       desc: 'Forces a download by appending `?download`. Has an effect on media files only.'
+      default: 'false'
+    - name: absolute
+      type: bool
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
       default: 'false'
   return:
     - string
@@ -312,8 +369,25 @@
     - string
     - The rendered HTML
 - name: css_out
+  visibility: deprecated
   code: >-
     {{ css_out('default', true) }}
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `css_render()` instead. Returns the HTML markup for the registered CSS assets of a group.'
+  params:
+    - name: group
+      type: string|null
+      desc: The asset group to output. If null, the default group is used.
+      default: 'null'
+    - name: timestamp
+      type: bool
+      desc: If true, a timestamp query parameter is appended to asset URLs.
+      default: 'false'
+  return:
+    - string
+    - The HTML markup for the CSS assets
+- name: css_render
+  code: >-
+    {{ css_render('default', true) }}
   desc: Returns the HTML markup for the registered CSS assets of a group.
   params:
     - name: group
@@ -328,8 +402,25 @@
     - string
     - The HTML markup for the CSS assets
 - name: js_out
+  visibility: deprecated
   code: >-
     {{ js_out('default', true) }}
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `js_render()` instead. Returns the HTML markup for the registered JavaScript assets of a group.'
+  params:
+    - name: group
+      type: string|null
+      desc: The asset group to output. If null, the default group is used.
+      default: 'null'
+    - name: timestamp
+      type: bool
+      desc: If true, a timestamp query parameter is appended to asset URLs.
+      default: 'false'
+  return:
+    - string
+    - The HTML markup for the JavaScript assets
+- name: js_render
+  code: >-
+    {{ js_render('default', true) }}
   desc: Returns the HTML markup for the registered JavaScript assets of a group.
   params:
     - name: group
@@ -344,9 +435,10 @@
     - string
     - The HTML markup for the JavaScript assets
 - name: link_download
+  visibility: deprecated
   code: >-
     {{ link_download('dummy.pdf', 'My dummy file', {class: 'link-file'}, true) }}
-  desc: 'Returns an HTML link to a file in `@media` that forces a download (`/media/...?download`). Shortcut for `link_file()` with a download URL, see `file_url()`.'
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `file_link("/media/...", ..., download: true)` instead. Returns an HTML link to a file in `@media` that forces a download (`/media/...?download`). Unlike `file_link()`, the `/media/` prefix is added automatically.'
   params:
     - name: path
       type: string
@@ -372,8 +464,33 @@
     - string
     - The rendered HTML
 - name: link_mail
+  visibility: deprecated
   code: >-
     {{ link_mail('me@example.com', 'John Doe', {class: 'link-page'}, '@snippet/link_mail.twig') }}
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `mail_link()` instead. Returns an HTML mailto link.'
+  params:
+    - name: email
+      type: string
+      desc: The email address.
+      required: true
+    - name: label
+      type: string|null
+      desc: The link label. If null, the email address is used.
+      default: 'null'
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: '[]'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "'@snippet/link_mail.twig'"
+  return:
+    - string
+    - The rendered HTML
+- name: mail_link
+  code: >-
+    {{ mail_link('me@example.com', 'John Doe', {class: 'link-page'}, '@snippet/link_mail.twig') }}
   desc: Returns an HTML mailto link.
   params:
     - name: email
@@ -396,9 +513,10 @@
     - string
     - The rendered HTML
 - name: link_page
+  visibility: deprecated
   code: >-
     {{ link_page('doc/contents/variables', 'Content variables', {class: 'link-page'}) }}
-  desc: Returns an HTML link for a given route or URL. Use `url_rel()` or `url_abs()` when you only need the URL string.
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_link()` instead. Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string.'
   params:
     - name: route
       type: string
@@ -412,6 +530,34 @@
       type: array
       desc: The HTML attributes passed as an associative array.
       default: '[]'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "'@snippet/link_page.twig'"
+  return:
+    - string
+    - The rendered HTML
+- name: page_link
+  code: >-
+    {{ page_link('doc/contents/variables', 'Content variables', {class: 'link-page'}) }}
+  desc: 'Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string. `absolute: true` makes the URL absolute. External URLs are kept unchanged.'
+  params:
+    - name: route
+      type: string
+      desc: The route or the URL to a page.
+      required: true
+    - name: label
+      type: string
+      desc: The link label.
+      required: true
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: '[]'
+    - name: absolute
+      type: bool
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
+      default: 'false'
     - name: template
       type: string
       desc: The aliased path to the template file.
@@ -494,7 +640,7 @@
 - name: twigify
   code: >-
     {{ twigify('Hello {{ page.title }}') }}
-  desc: Renders a string as a Twig template in the current context and returns the result.
+  desc: Renders a string as a Twig template using the current globals and returns the result.
   params:
     - name: content
       type: string
@@ -504,15 +650,132 @@
     - string
     - The rendered string
 - name: url_rel
+  visibility: deprecated
   code: >-
     {{ url_rel('doc/contents') }}
-  desc: Returns the relative URL for a given route. Use this when you only need the URL string, not a complete HTML link element.
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_url()` instead. Returns the relative URL for a given route.'
   params:
     - name: route
       type: string
-      desc: The route to a page. Must be given, an empty route is not resolved.
-      required: true
+      desc: The route to a page. An empty route resolves to the site root.
       default: "''"
   return:
     - string
     - The relative URL.
+- name: herbie_debug
+  group: core
+  visibility: internal
+  desc: Returns whether Herbie runs in debug mode. Internal helper, not part of the public templating API.
+  return:
+    - bool
+    - True in debug mode
+- name: herbie_info
+  group: core
+  visibility: internal
+  desc: Renders the Herbie system information. Internal debug helper. The Twig context is passed automatically.
+  params:
+    - name: template
+      type: string
+      desc: The aliased path to the information template.
+      default: "'@snippet/herbie_info.twig'"
+  return:
+    - string
+    - The rendered system information
+- name: imagine
+  group: plugin
+  code: >-
+    {{ imagine('/media/portrait.jpg', 'thumb', {class: 'photo'}) }}
+  desc: Returns an HTML image element with a processed image from the Imagine plugin. Paths below the media URL are served from `@media`, all other paths from the web root. The `|imagine` filter returns the URL of the processed image instead of the element.
+  params:
+    - name: path
+      type: string
+      desc: The public path to the source image.
+      required: true
+    - name: collection
+      type: string
+      desc: The configured Imagine collection with the filters to apply.
+      default: "'default'"
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: '[]'
+  return:
+    - string
+    - The rendered image element
+- name: markdown
+  group: plugin
+  code: >-
+    {{ markdown('**bold**') }}
+  desc: Parses a Markdown string with the Markdown plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Markdown source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: rst
+  group: plugin
+  code: >-
+    {{ rst('*emphasis*') }}
+  desc: Parses a reStructuredText string with the reStructuredText plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The reStructuredText source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: textile
+  group: plugin
+  code: >-
+    {{ textile('h1. Title') }}
+  desc: Parses a Textile string with the Textile plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Textile source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: search_form
+  group: plugin
+  code: >-
+    {{ search_form() }}
+  desc: Renders the search form template of the Search plugin.
+  return:
+    - string
+    - The rendered search form
+- name: search_results
+  group: plugin
+  code: >-
+    {{ search_results() }}
+  desc: Renders the search results template of the Search plugin for the current query.
+  return:
+    - string
+    - The rendered search results
+- name: contact_form
+  group: plugin
+  code: >-
+    {{ contact_form() }}
+  desc: Renders the contact form of the Contact plugin.
+  return:
+    - string
+    - The rendered contact form
+- name: contact
+  group: plugin
+  visibility: deprecated
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `contact_form()` instead.'
+  return:
+    - string
+    - The rendered contact form
+- name: csrf_token
+  group: plugin
+  visibility: deprecated
+  desc: 'Deprecated since 3.3.0, removed in 4.0: the contact form template receives the token as `csrf_token`. Returns the CSRF token of the current contact form.'
+  return:
+    - string
+    - The CSRF token

@@ -64,15 +64,26 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('html_attributes', $this->htmlAttributes(...), ['is_safe' => ['html']]),
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
+            // @deprecated Since 3.3.0, remove in 4.0: use css_render().
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('css_render', $this->cssRender(...), ['is_safe' => ['html']]),
             new TwigFunction('file_url', $this->fileUrl(...)),
             new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
             new TwigFunction('js_add', $this->jsAdd(...)),
+            // @deprecated Since 3.3.0, remove in 4.0: use js_render().
             new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('js_render', $this->jsRender(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use file_link().
             new TwigFunction('link_file', $this->linkFile(...), ['is_safe' => ['html']]),
+            new TwigFunction('file_link', $this->fileLink(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use mail_link().
             new TwigFunction('link_mail', $this->linkMail(...), ['is_safe' => ['html']]),
+            new TwigFunction('mail_link', $this->mailLink(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use file_link('/media/...', ..., download: true).
             new TwigFunction('link_download', $this->linkDownload(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use page_link().
             new TwigFunction('link_page', $this->linkPage(...), ['is_safe' => ['html']]),
+            new TwigFunction('page_link', $this->pageLink(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_ascii_tree', $this->menuAsciiTree(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_breadcrumb', $this->menuBreadcrumb(...), ['is_safe' => ['html']]),
             new TwigFunction('menu_list', $this->menuList(...), ['is_safe' => ['html']]),
@@ -84,8 +95,11 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('snippet', $this->snippet(...), ['is_safe' => ['all']]),
             new TwigFunction('translate', $this->translate(...)),
             new TwigFunction('twigify', $this->filterTwigify(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use page_url().
             new TwigFunction('url_rel', $this->urlRelative(...)),
+            // @deprecated Since 3.3.0, remove in 4.0: use page_url(absolute: true).
             new TwigFunction('url_abs', $this->urlAbsolute(...)),
+            new TwigFunction('page_url', $this->pageUrl(...)),
         ];
     }
 
@@ -169,6 +183,7 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @deprecated Since 3.3.0, remove in 4.0: use file_link('/media/...', ..., download: true).
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -257,11 +272,26 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @deprecated Since 3.3.0, remove in 4.0: use mailLink().
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function linkMail(
+        string $email,
+        ?string $label = null,
+        array $attribs = [],
+        string $template = '@snippet/link_mail.twig',
+    ): string {
+        return $this->mailLink($email, $label, $attribs, $template);
+    }
+
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function mailLink(
         string $email,
         ?string $label = null,
         array $attribs = [],
@@ -497,12 +527,28 @@ final class TwigExtension extends AbstractExtension
         return $htmlTree->render($currenRoute);
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use cssRender().
+     */
     public function cssOut(?string $group = null, bool $timestamp = false): string
+    {
+        return $this->cssRender($group, $timestamp);
+    }
+
+    public function cssRender(?string $group = null, bool $timestamp = false): string
     {
         return $this->assets->outputCss($group, $timestamp);
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use jsRender().
+     */
     public function jsOut(?string $group = null, bool $timestamp = false): string
+    {
+        return $this->jsRender($group, $timestamp);
+    }
+
+    public function jsRender(?string $group = null, bool $timestamp = false): string
     {
         return $this->assets->outputJs($group, $timestamp);
     }
@@ -544,8 +590,9 @@ final class TwigExtension extends AbstractExtension
      * External URLs, anchors and query-only values are returned unchanged.
      *
      * `download: true` appends `?download` and forces a download (media files only).
+     * `absolute: true` uses the configured origin (`urls.origin`), falling back to the current request.
      */
-    public function fileUrl(string $path, bool $download = false): string
+    public function fileUrl(string $path, bool $download = false, bool $absolute = false): string
     {
         if ($path === '' || preg_match('~^([a-z][a-z0-9+.-]*:|//|[#?])~i', $path) === 1) {
             return $path;
@@ -554,15 +601,22 @@ final class TwigExtension extends AbstractExtension
         [$path, $suffix] = $this->splitSuffix(str_replace('\\', '/', $path));
         $path = str_unleading_slash($path);
         $route = $this->mediaRoute();
+        $encodedPath = $this->encodePath($path);
 
         if ($route !== '' && ($path === $route || str_starts_with($path, $route . '/'))) {
             if ($download) {
                 $suffix = '?download' . ($suffix !== '' && $suffix[0] === '?' ? '&' . substr($suffix, 1) : $suffix);
             }
-            return $this->urlManager->createUrl($this->encodePath($path)) . $suffix;
+            $url = $absolute
+                ? $this->urlManager->createAbsoluteUrl($encodedPath)
+                : $this->urlManager->createUrl($encodedPath);
+            return $url . $suffix;
         }
 
-        return $this->urlManager->createWebUrl($this->encodePath($path)) . $suffix;
+        $url = $absolute
+            ? $this->urlManager->createAbsoluteWebUrl($encodedPath)
+            : $this->urlManager->createWebUrl($encodedPath);
+        return $url . $suffix;
     }
 
     /**
@@ -617,6 +671,7 @@ final class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @deprecated Since 3.3.0, remove in 4.0: use pageLink().
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -627,13 +682,30 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         string $template = '@snippet/link_page.twig',
     ): string {
+        return $this->pageLink($route, $label, $attribs, template: $template);
+    }
+
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function pageLink(
+        string $route,
+        string $label,
+        array $attribs = [],
+        bool $absolute = false,
+        string $template = '@snippet/link_page.twig',
+    ): string {
         $external = parse_url($route, PHP_URL_SCHEME) !== null;
         if ($external) {
             $class = 'link--external';
             $href = $route;
         } else {
             $class = 'link--page';
-            $href = $this->urlManager->createUrl($route);
+            $href = $absolute
+                ? $this->urlManager->createAbsoluteUrl($route)
+                : $this->urlManager->createUrl($route);
         }
 
         $attribs['class'] = trim(($attribs['class'] ?? '') . ' link__label');
@@ -696,17 +768,31 @@ final class TwigExtension extends AbstractExtension
         return $this->translator->translate($category, $message, $params);
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use pageUrl().
+     */
     public function urlRelative(string $route = ''): string
     {
-        return $this->urlManager->createUrl($route);
-    }
-
-    public function urlAbsolute(string $route = ''): string
-    {
-        return $this->urlManager->createAbsoluteUrl($route);
+        return $this->pageUrl($route);
     }
 
     /**
+     * @deprecated Since 3.3.0, remove in 4.0: use pageUrl(absolute: true).
+     */
+    public function urlAbsolute(string $route = ''): string
+    {
+        return $this->pageUrl($route, absolute: true);
+    }
+
+    public function pageUrl(string $route = '', bool $absolute = false): string
+    {
+        return $absolute
+            ? $this->urlManager->createAbsoluteUrl($route)
+            : $this->urlManager->createUrl($route);
+    }
+
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use fileLink().
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -718,13 +804,30 @@ final class TwigExtension extends AbstractExtension
         bool $show_info = false,
         string $template = '@snippet/link_file.twig',
     ): string {
+        return $this->fileLink($path, $label, $attribs, $show_info, template: $template);
+    }
+
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function fileLink(
+        string $path,
+        string $label = '',
+        array $attribs = [],
+        bool $show_info = false,
+        bool $download = false,
+        bool $absolute = false,
+        string $template = '@snippet/link_file.twig',
+    ): string {
         $attribs['class'] ??= 'link__label';
         $label = $label === '' ? basename($path) : $label;
         $fileInfo = $show_info ? $this->getFileInfo($this->filePath($path)) : '';
 
         return $this->environment->render($template, [
             'path' => $path,
-            'href' => $this->fileUrl($path),
+            'href' => $this->fileUrl($path, download: $download, absolute: $absolute),
             'label' => $label,
             'info' => $show_info,
             'file_info' => $fileInfo,

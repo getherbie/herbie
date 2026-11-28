@@ -14,6 +14,7 @@ final class MailLinkFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithoutParams(): void
     {
         $this->expectException(SyntaxError::class);
@@ -29,6 +30,7 @@ final class MailLinkFunctionTest extends Unit
         );
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithEmail(): void
     {
         $expected = $this->getHtml(
@@ -44,6 +46,7 @@ final class MailLinkFunctionTest extends Unit
         return "<span class=\"link link--mailto\">\n    {$link}\n</span>\n";
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithEmailAndLabel(): void
     {
         $expected = $this->getHtml(
@@ -54,6 +57,7 @@ final class MailLinkFunctionTest extends Unit
         $this->assertSame($expected, $actual);
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithEmailLabelAndAttribs(): void
     {
         $expected = $this->getHtml(
@@ -64,6 +68,7 @@ final class MailLinkFunctionTest extends Unit
         $this->assertSame($expected, $actual);
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithCustomTemplate(): void
     {
         $expected = 'me@example.com';
@@ -72,10 +77,20 @@ final class MailLinkFunctionTest extends Unit
         $this->assertSame($expected, $actual);
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_mail().
     public function testLinkWithNotExistingCustomTemplate(): void
     {
         $this->expectException(LoaderError::class);
         $twig = '{{ link_mail("me@example.com", template="@not/existing/template.twig") }}';
         $this->twig()->renderString($twig);
+    }
+
+    public function testMailLink(): void
+    {
+        $expected = $this->getHtml(
+            '<a class="link__label" href="mailto:me@example.com">Example</a>',
+        );
+        $twig = '{{ mail_link("me@example.com", "Example") }}';
+        $this->assertSame($expected, $this->twig()->renderString($twig));
     }
 }

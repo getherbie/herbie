@@ -67,6 +67,32 @@ final class MediaFunctionsTest extends Unit
         );
     }
 
+    public function testFileUrlReturnsAnAbsoluteMediaUrl(): void
+    {
+        $this->assertSame(
+            'http:/media/dummy.pdf',
+            $this->twig()->renderString('{{ file_url("/media/dummy.pdf", absolute: true) }}'),
+        );
+    }
+
+    public function testFileUrlReturnsAnAbsoluteWebRootUrl(): void
+    {
+        $this->assertSame(
+            'http:/logo.png',
+            $this->twig()->renderString('{{ file_url("/logo.png", absolute: true) }}'),
+        );
+    }
+
+    public function testFileUrlCombinesAbsoluteAndDownload(): void
+    {
+        $this->assertSame(
+            'http:/media/dummy.pdf?download',
+            $this->twig()->renderString(
+                '{{ file_url("/media/dummy.pdf", download: true, absolute: true) }}',
+            ),
+        );
+    }
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(

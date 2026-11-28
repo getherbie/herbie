@@ -3,12 +3,12 @@
     {% if status == 'failed' %}
 
         <p>{{ translate('contact', 'messageFailed') }}</p>
-        <p><a href="{{ url_rel(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
+        <p><a href="{{ page_url(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
 
     {% elseif status == 'successful' %}
 
         <p>{{ translate('contact', 'messageSuccessful') }}</p>
-        <p><a href="{{ url_rel(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
+        <p><a href="{{ page_url(route) }}" class="herbie-contact-button pure-button">{{ translate('contact', 'backToForm') }}</a></p>
 
     {% else %}
 
@@ -20,7 +20,7 @@
 
         {% endif %}
 
-        <form class="herbie-contact-form pure-form pure-form-stacked" action="{{ url_rel(route) }}" method="post">
+        <form class="herbie-contact-form pure-form pure-form-stacked" action="{{ page_url(route) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="form_time" value="{{ form_time }}">
             {% for field in honeypot_fields %}

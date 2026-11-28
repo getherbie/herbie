@@ -60,7 +60,10 @@ final class ContactPlugin extends AbstractPlugin
     public function twigFunctions(): array
     {
         return [
+            new TwigFunction('contact_form', $this->contactForm(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: use contact_form().
             new TwigFunction('contact', $this->contact(...), ['is_safe' => ['html']]),
+            // @deprecated Since 3.3.0, remove in 4.0: the form template receives the token as csrf_token.
             new TwigFunction('csrf_token', fn(): string => $this->csrfToken()),
         ];
     }
@@ -93,6 +96,9 @@ final class ContactPlugin extends AbstractPlugin
 
     /**
      * A stateless CSRF token bound to a signed per-browser cookie.
+     *
+     * Also exposed as the deprecated Twig function csrf_token(); contactForm()
+     * passes the token to its template as the csrf_token variable.
      */
     public function csrfToken(): string
     {
@@ -109,7 +115,15 @@ final class ContactPlugin extends AbstractPlugin
         return $this->csrfToken;
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use contactForm().
+     */
     public function contact(): string
+    {
+        return $this->contactForm();
+    }
+
+    public function contactForm(): string
     {
         $this->assertContactPageNotCached();
 

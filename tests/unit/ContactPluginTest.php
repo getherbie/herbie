@@ -29,9 +29,22 @@ use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use Twig\TwigFunction;
 
 final class ContactPluginTest extends Unit
 {
+    public function testTwigFunctionsExposeCanonicalAndDeprecatedNames(): void
+    {
+        $plugin = $this->createUninitializedPlugin();
+
+        $names = array_map(
+            static fn(TwigFunction $function): string => $function->getName(),
+            $plugin->twigFunctions(),
+        );
+
+        $this->assertSame(['contact_form', 'contact', 'csrf_token'], $names);
+    }
+
     public function testFormPostUsesSeeOtherRedirect(): void
     {
         $plugin = $this->createUninitializedPlugin();
@@ -600,7 +613,10 @@ final class ContactPluginTest extends Unit
         }
     }
 
-    public function testCachedContactPageThrows(): void
+    /**
+     * @dataProvider contactMethodProvider
+     */
+    public function testCachedContactPageThrows(string $method): void
     {
         $plugin = (new ReflectionClass(ContactPlugin::class))->newInstanceWithoutConstructor();
 
@@ -633,7 +649,19 @@ final class ContactPluginTest extends Unit
         $this->setPrivateProperty($plugin, 'config', new Config(['plugins' => ['contact' => ['csrf' => ['secret' => 'test-secret']]]]));
 
         $this->expectException(\RuntimeException::class);
-        $plugin->contact();
+        $plugin->{$method}();
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function contactMethodProvider(): array
+    {
+        return [
+            'canonical' => ['contactForm'],
+            // @deprecated Since 3.3.0, remove in 4.0 together with contact().
+            'deprecated alias' => ['contact'],
+        ];
     }
 
     private function createPluginWithCsrfCookie(string $nonce, ?int $timestamp = null): ContactPlugin

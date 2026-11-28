@@ -28,7 +28,7 @@
         <ul class="menu-list-items">
             {% for menuitem in pagination %}
                 <li class="menu-list-item">
-                    {{ link_page(menuitem.getRoute(), menuitem.getMenuTitle() ?: menuitem.getRoute()) }}
+                    {{ page_link(menuitem.getRoute(), menuitem.getMenuTitle() ?: menuitem.getRoute()) }}
                 </li>
             {% endfor %}
         </ul>
@@ -38,13 +38,13 @@
             {% set cssNextButton = pagination.currentPage < pagination.lastPage ? '' : 'is-disabled' %}
             {% set cssLastButton = pagination.currentPage < pagination.lastPage ? '' : 'is-disabled' %}
             {% if pagination.lastPage > 1 %}
-                <a class="menu-list-pager-link menu-list-pager-link--first {{ cssFirstButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.firstPage }}" title="{{ translate('app', 'First page') }}">&#10094;&#10094;</a>
-                <a class="menu-list-pager-link menu-list-pager-link--previous {{ cssPrevButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.previousPage }}" title="{{ translate('app', 'Previous page') }}">&#10094;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--first {{ cssFirstButton }}" href="{{ page_url(site.route) }}?page={{ pagination.firstPage }}" title="{{ translate('app', 'First page') }}">&#10094;&#10094;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--previous {{ cssPrevButton }}" href="{{ page_url(site.route) }}?page={{ pagination.previousPage }}" title="{{ translate('app', 'Previous page') }}">&#10094;</a>
             {% endif %}
             <span class="menu-list-pager-text">{{ translate('app', 'Page {current} of {total}', {current: pagination.currentPage, total: pagination.lastPage}) }}</span>
             {% if pagination.lastPage > 1 %}
-                <a class="menu-list-pager-link menu-list-pager-link--next {{ cssNextButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.nextPage }}" title="{{ translate('app', 'Next page') }}">&#10095;</a>
-                <a class="menu-list-pager-link menu-list-pager-link--last {{ cssLastButton }}" href="{{ url_rel(site.route) }}?page={{ pagination.lastPage }}" title="{{ translate('app', 'Last page') }}">&#10095;&#10095;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--next {{ cssNextButton }}" href="{{ page_url(site.route) }}?page={{ pagination.nextPage }}" title="{{ translate('app', 'Next page') }}">&#10095;</a>
+                <a class="menu-list-pager-link menu-list-pager-link--last {{ cssLastButton }}" href="{{ page_url(site.route) }}?page={{ pagination.lastPage }}" title="{{ translate('app', 'Last page') }}">&#10095;&#10095;</a>
             {% endif %}
         </nav>
     {% else %}

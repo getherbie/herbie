@@ -127,7 +127,7 @@ With the activation of the system plugin, one Twig filter and one Twig function 
     <tr class="param">
         <td>path</td>
         <td>string</td>
-        <td>The path to an image within the @media directory. The public URL <code>/media/...</code> is accepted as well.</td>
+        <td>The path to an image. Paths below the media route (<code>/media/...</code> or <code>media/...</code>) are read from @media; every other path is relative to the web root.</td>
         <td></td>
     </tr>
     <tr class="param">
@@ -145,7 +145,7 @@ With the activation of the system plugin, one Twig filter and one Twig function 
 
 Example:
 
-    <img class="resize" src="{{ 'portrait.jpg'|imagine('resize') }}" alt="Portrait">
+    <img class="resize" src="{{ '/media/portrait.jpg'|imagine('resize') }}" alt="Portrait">
 
 ### Imagine Twig Function
 
@@ -159,7 +159,7 @@ Example:
     <tr class="param">
         <td>path</td>
         <td>string</td>
-        <td>The path to an image within the @media directory. The public URL <code>/media/...</code> is accepted as well.</td>
+        <td>The path to an image. Paths below the media route (<code>/media/...</code> or <code>media/...</code>) are read from @media; every other path is relative to the web root.</td>
         <td></td>
     </tr>
     <tr class="param">
@@ -183,7 +183,7 @@ Example:
 
 Example:
 
-    {{ imagine('portrait.jpg', 'crop', {class: 'crop', alt: 'Portrait'}) }}
+    {{ imagine('/media/portrait.jpg', 'crop', {class: 'crop', alt: 'Portrait'}) }}
 
 ## More Information
 
