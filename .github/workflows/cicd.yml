@@ -59,7 +59,8 @@ jobs:
   publish:
     name: CD - Push to server
     needs: test
-    if: github.ref == 'refs/heads/3.x'
+    # Deploy only on 3.x release tags so the live docs match the published version.
+    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v3.')
     runs-on: ubuntu-latest
 
     steps:
