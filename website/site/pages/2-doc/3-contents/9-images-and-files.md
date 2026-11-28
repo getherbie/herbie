@@ -122,12 +122,12 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
 {{ file_url('/media/manual.pdf', download: true) }}         {# /media/manual.pdf?download #}
 {{ file_url('/media/manual.pdf', absolute: true) }}         {# https://example.com/media/manual.pdf #}
-{{ image_resize('/media/portrait.jpg') }}                   {# <img> of a resized copy, see the Imagine plugin #}
+{{ imagine('/media/portrait.jpg') }}                        {# <img> of a resized copy, see the Imagine plugin #}
 ~~~
 {% endverbatim %}
 
-The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()`, `link_mail()`
-and `imagine()` are deprecated since 3.3.0 and will be removed in 4.0. `image()` and `file_url()`
+The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()`
+are deprecated since 3.3.0 and will be removed in 4.0. `image()`, `file_url()` and `imagine()`
 keep their names. `link_download()` still adds `/media/` itself; replace it with
 `file_link('/media/manual.pdf', 'Manual', download: true)`.
 
@@ -142,9 +142,9 @@ How a path is interpreted:
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
 
-The Imagine plugin function `image_resize()` and the filter `|imagine` accept the public URL
-`/media/...` as well. A path without a leading `/media/`, as in `image_resize('portrait.jpg')`, is
-relative to `site/media/` as before. `imagine()` remains as a deprecated alias of `image_resize()`.
+The Imagine plugin function `imagine()` and the filter `|imagine` accept the public URL
+`/media/...` as well. A path without a leading `/media/`, as in `imagine('portrait.jpg')`, is
+relative to `site/media/` as before.
 
 See also the [Twig functions](doc/indepth/twig-functions) reference.
 

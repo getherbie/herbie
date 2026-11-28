@@ -81,7 +81,7 @@ final class ImaginePluginTest extends Unit
         $plugin = $this->createPlugin('media/cache');
 
         $markup = $plugin->imagineFilter('sample.png', 'default');
-        $html = $plugin->imageResizeFunction('sample.png', 'default');
+        $html = $plugin->imagineFunction('sample.png', 'default');
 
         $expectedUrl = '/media/cache/sample-default.png';
         $this->assertSame($expectedUrl, (string)$markup);
@@ -89,7 +89,6 @@ final class ImaginePluginTest extends Unit
         $this->assertFileExists($this->webDir . $expectedUrl);
     }
 
-    // @deprecated Since 3.3.0, remove in 4.0 together with imagine().
     public function testImagineFunctionUsesWebRelativeCacheUrl(): void
     {
         $plugin = $this->createPlugin('cache/imagine');
@@ -98,27 +97,6 @@ final class ImaginePluginTest extends Unit
 
         $this->assertStringContainsString('src="/cache/imagine/sample-default.png"', $html);
         $this->assertFileExists($this->webDir . '/cache/imagine/sample-default.png');
-    }
-
-    public function testImageResizeFunctionUsesWebRelativeCacheUrl(): void
-    {
-        $plugin = $this->createPlugin('cache/imagine');
-
-        $html = $plugin->imageResizeFunction('sample.png', 'default', ['id' => 'img']);
-
-        $this->assertStringContainsString('src="/cache/imagine/sample-default.png"', $html);
-        $this->assertFileExists($this->webDir . '/cache/imagine/sample-default.png');
-    }
-
-    // @deprecated Since 3.3.0, remove in 4.0 together with imagine().
-    public function testImagineFunctionDelegatesToImageResizeFunction(): void
-    {
-        $plugin = $this->createPlugin('cache/imagine');
-
-        $this->assertSame(
-            $plugin->imageResizeFunction('/media/sample.png', 'default', ['id' => 'img']),
-            $plugin->imagineFunction('/media/sample.png', 'default', ['id' => 'img']),
-        );
     }
 
     /**

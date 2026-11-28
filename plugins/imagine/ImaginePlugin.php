@@ -50,21 +50,11 @@ final class ImaginePlugin extends AbstractPlugin
     public function twigFunctions(): array
     {
         return [
-            // @deprecated Since 3.3.0, remove in 4.0: use image_resize().
             ['imagine', $this->imagineFunction(...), ['is_safe' => ['html']]],
-            ['image_resize', $this->imageResizeFunction(...), ['is_safe' => ['html']]],
         ];
     }
 
-    /**
-     * @deprecated Since 3.3.0, remove in 4.0: use imageResizeFunction().
-     */
     public function imagineFunction(string $path, string $collection = 'default', array $attribs = []): string
-    {
-        return $this->imageResizeFunction($path, $collection, $attribs);
-    }
-
-    public function imageResizeFunction(string $path, string $collection = 'default', array $attribs = []): string
     {
         $path = $this->mediaRelativePath($path);
         $absolutePath = $this->alias->get('@media/' . $path);
