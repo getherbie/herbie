@@ -202,7 +202,7 @@ Snippets are Twig files in `templates/snippets/` and can be included with `snipp
 
 **Media / Assets**
 
-Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie serves `@media` under `/media/...` (`urls.media`): types a browser can display are opened inline, everything else is downloaded. `?download` forces a download. Paths that do not start with `/media/` are relative to the web root and served by the web server.
+Media lives in `site/media/` (`@media`), theme assets in `site/assets/`. Herbie serves `@media` under `/media/...` (`urls.media`): types a browser can display are opened inline, everything else is downloaded. `?download` forces a download. Paths below the media route (`/media/...` or `media/...`, configurable via `urls.media`) are served from `@media`; every other path is relative to the web root and served by the web server.
 
 {% verbatim %}
 ~~~twig

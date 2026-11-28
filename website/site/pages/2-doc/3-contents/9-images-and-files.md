@@ -134,8 +134,8 @@ keep their names. `link_download()` still adds `/media/` itself; replace it with
 
 How a path is interpreted:
 
-- A path that starts with `/media/` (or `media/`) is served by Herbie from `site/media/`. Every
-  other path is relative to the web directory.
+- A path below the media URL (`urls.media`, by default `/media/...` or `media/...`) is served by
+  Herbie from `site/media/`. Every other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
   `site/media/`; `download: true` forces a download for media files and `absolute: true` makes the
