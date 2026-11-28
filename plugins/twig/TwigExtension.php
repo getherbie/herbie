@@ -781,7 +781,7 @@ final class TwigExtension extends AbstractExtension
         bool $show_info = false,
         string $template = '@snippet/link_file.twig',
     ): string {
-        return $this->fileLink($path, $label, $attribs, $show_info, $template);
+        return $this->fileLink($path, $label, $attribs, $show_info, template: $template);
     }
 
     /**
@@ -794,8 +794,9 @@ final class TwigExtension extends AbstractExtension
         string $label = '',
         array $attribs = [],
         bool $show_info = false,
-        string $template = '@snippet/link_file.twig',
         bool $download = false,
+        bool $absolute = false,
+        string $template = '@snippet/link_file.twig',
     ): string {
         $attribs['class'] ??= 'link__label';
         $label = $label === '' ? basename($path) : $label;
@@ -803,7 +804,7 @@ final class TwigExtension extends AbstractExtension
 
         return $this->environment->render($template, [
             'path' => $path,
-            'href' => $this->fileUrl($path, download: $download),
+            'href' => $this->fileUrl($path, download: $download, absolute: $absolute),
             'label' => $label,
             'info' => $show_info,
             'file_info' => $fileInfo,

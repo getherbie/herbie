@@ -62,6 +62,22 @@ final class LinkFileFunctionTest extends Unit
         );
     }
 
+    public function testFileLinkAbsoluteIncludesSchemeAndHost(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="http:/media/dummy.pdf" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("/media/dummy.pdf", absolute: true) }}'),
+        );
+    }
+
+    public function testFileLinkCombinesAbsoluteAndDownload(): void
+    {
+        $this->assertSame(
+            '<span class="link link--file"><a href="http:/media/dummy.pdf?download" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ file_link("/media/dummy.pdf", download: true, absolute: true) }}'),
+        );
+    }
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(

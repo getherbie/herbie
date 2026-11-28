@@ -119,6 +119,7 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 {{ image('/logo.png') }}                                    {# <img src="/logo.png" alt=""> #}
 {{ file_link('/media/manual.pdf', 'Open the manual') }}     {# <a href="/media/manual.pdf">Open the manual</a> #}
 {{ file_link('/media/manual.pdf', 'Manual', download: true, show_info: true) }} {# <a href="/media/manual.pdf?download">Manual</a> (PDF, 2.1 MB) #}
+{{ file_link('/media/manual.pdf', 'Manual', absolute: true) }} {# <a href="https://example.com/media/manual.pdf">Manual</a> #}
 {{ file_url('/media/manual.pdf') }}                         {# /media/manual.pdf #}
 {{ file_url('/media/manual.pdf', download: true) }}         {# /media/manual.pdf?download #}
 {{ file_url('/media/manual.pdf', absolute: true) }}         {# https://example.com/media/manual.pdf #}
@@ -137,7 +138,8 @@ How a path is interpreted:
   other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
-  `site/media/`; `download: true` forces a download for media files. A web server ignores `?download`.
+  `site/media/`; `download: true` forces a download for media files and `absolute: true` includes
+  scheme and host. A web server ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.

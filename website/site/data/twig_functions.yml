@@ -137,7 +137,7 @@
 - name: file_link
   code: >-
     {{ file_link('/media/manual.pdf', 'Manual', {class: 'download'}, download: true) }}
-  desc: 'Returns an HTML link to a file. The path is resolved like in `file_url()`; `download: true` forces a download of a media file.'
+  desc: 'Returns an HTML link to a file. The URL is resolved like in `file_url()`; `download: true` forces a download of a media file and `absolute: true` includes scheme and host.'
   params:
     - name: path
       type: string
@@ -155,14 +155,18 @@
       type: bool
       desc: If true, file extension and size are appended to the label.
       default: 'false'
-    - name: template
-      type: string
-      desc: The aliased path to the template file.
-      default: "'@snippet/link_file.twig'"
     - name: download
       type: bool
       desc: 'Forces a download by appending `?download`. Has an effect on media files only.'
       default: 'false'
+    - name: absolute
+      type: bool
+      desc: If true, the URL includes scheme and host of the current request.
+      default: 'false'
+    - name: template
+      type: string
+      desc: The aliased path to the template file.
+      default: "'@snippet/link_file.twig'"
   return:
     - string
     - The rendered HTML
