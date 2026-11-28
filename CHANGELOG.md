@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Twig functions `page_url()`, `page_link()`, `file_link()` and `mail_link()` follow the `<object>_<result>` naming scheme. `page_url(route, absolute: true)` replaces `url_abs()`. `page_link()` and `file_link()` accept `absolute: true` for scheme and host; `file_link()` additionally accepts `download: true`, which appends `?download` for media files.
 - Twig function `file_url()` accepts `absolute: true` and returns the URL with scheme and host of the current request. `UrlManager::createAbsoluteWebUrl()` creates the absolute URL of a file below the web root.
+- Config option `urls.origin` sets a fixed origin for absolute URLs in `page_url()`, `page_link()`, `file_url()`, `file_link()` and `sitemap.xml`. If empty, the current request is still used.
 - Contact plugin: `contact_form()` is the new name of `contact()`.
 - The integration suite renders all Twig examples from the documentation and checks that their string literals use single quotes; examples that cannot run in the test site are marked with `~~~twig no-test`.
 - The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.

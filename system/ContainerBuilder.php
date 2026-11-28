@@ -349,12 +349,14 @@ final readonly class ContainerBuilder
         ));
 
         $c->set(UrlManager::class, function (ContainerInterface $c): \herbie\UrlManager {
-            $config = $c->get(Config::class)->getAsArray('components.urlManager');
-            $config['baseUrl'] = $this->app->getBaseUrl();
-            $config['scriptUrl'] = $this->app->getScriptUrl();
+            $settings = $c->get(Config::class);
+            $options = $settings->getAsArray('components.urlManager');
+            $options['baseUrl'] = $this->app->getBaseUrl();
+            $options['scriptUrl'] = $this->app->getScriptUrl();
+            $options['absoluteBaseUrl'] = $settings->getAsString('urls.origin');
             return new UrlManager(
                 $c->get(ServerRequestInterface::class),
-                $config,
+                $options,
             );
         });
 

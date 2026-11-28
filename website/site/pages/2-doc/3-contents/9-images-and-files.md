@@ -139,7 +139,8 @@ How a path is interpreted:
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
   `site/media/`; `download: true` forces a download for media files and `absolute: true` includes
-  scheme and host. A web server ignores `?download`.
+  the configured origin (see [Configuration](../../2-first-steps/configuration)). A web server
+  ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.

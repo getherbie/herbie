@@ -9,6 +9,9 @@ return [
     'fileExtensions' => [
         'layouts' => 'twig',
     ],
+    'urls' => [
+        'origin' => $isProduction ? 'https://herbie.tebe.ch' : '',
+    ],
     'enabledPlugins' => 'twig,imagine,markdown,search,contact',
     'components' => [
         'dataRepository' => [

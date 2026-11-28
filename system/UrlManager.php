@@ -10,6 +10,7 @@ use UnexpectedValueException;
 final class UrlManager
 {
     private readonly string $baseUrl;
+    private readonly string $absoluteBaseUrl;
     private readonly bool $niceUrls;
     private readonly array $rules;
     private readonly string $scriptUrl;
@@ -19,6 +20,7 @@ final class UrlManager
     public function __construct(private readonly ServerRequestInterface $serverRequest, array $options = [])
     {
         $this->baseUrl = (string)($options['baseUrl'] ?? '');
+        $this->absoluteBaseUrl = (string)($options['absoluteBaseUrl'] ?? '');
         $this->niceUrls = (bool)($options['niceUrls'] ?? false);
         $this->rules = (array)($options['rules'] ?? []);
         $this->scriptUrl = (string)($options['scriptUrl'] ?? '');
@@ -27,15 +29,23 @@ final class UrlManager
 
     public function createAbsoluteUrl(string $route): string
     {
-        $path = $this->createUrl($route);
-        $absUrl = $this->serverRequest->getUri()->withPath($path);
-        return (string)$absUrl;
+        return $this->absoluteUrl($this->createUrl($route));
     }
 
     public function createAbsoluteWebUrl(string $path): string
     {
-        $url = $this->createWebUrl($path);
-        return (string)$this->serverRequest->getUri()->withPath($url);
+        return $this->absoluteUrl($this->createWebUrl($path));
+    }
+
+    /**
+     * Adds the configured origin to a path, or falls back to the current request.
+     */
+    private function absoluteUrl(string $path): string
+    {
+        if ($this->absoluteBaseUrl !== '') {
+            return rtrim($this->absoluteBaseUrl, '/') . '/' . ltrim($path, '/');
+        }
+        return (string)$this->serverRequest->getUri()->withPath($path);
     }
 
     /**

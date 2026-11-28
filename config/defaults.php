@@ -35,6 +35,8 @@ $settings['paths']['web'] = 'WEB_PATH';
 $settings['urls'] = [];
 $settings['urls']['media'] = 'WEB_URL/media';
 $settings['urls']['web'] = 'WEB_URL/';
+// Origin (scheme and host) used for absolute URLs. Empty means the current request is used.
+$settings['urls']['origin'] = '';
 
 /**
  * File extensions

@@ -38,7 +38,7 @@
       default: "''"
     - name: absolute
       type: bool
-      desc: If true, the URL includes scheme and host of the current request.
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
       default: 'false'
   return:
     - string
@@ -137,7 +137,7 @@
 - name: file_link
   code: >-
     {{ file_link('/media/manual.pdf', 'Manual', {class: 'download'}, download: true) }}
-  desc: 'Returns an HTML link to a file. The URL is resolved like in `file_url()`; `download: true` forces a download of a media file and `absolute: true` includes scheme and host.'
+  desc: 'Returns an HTML link to a file. The URL is resolved like in `file_url()`; `download: true` forces a download of a media file and `absolute: true` includes the configured origin.'
   params:
     - name: path
       type: string
@@ -161,7 +161,7 @@
       default: 'false'
     - name: absolute
       type: bool
-      desc: If true, the URL includes scheme and host of the current request.
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
       default: 'false'
     - name: template
       type: string
@@ -193,7 +193,7 @@
 - name: file_url
   code: >-
     {{ file_url('/media/manual.pdf', download: true) }}
-  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and `download: true` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. With `absolute: true` the URL includes scheme and host of the current request. External URLs and anchors are returned unchanged.'
+  desc: 'Returns the public URL for a file. A path below the media URL (`urls.media`, by default `/media/...`) is served by Herbie from `@media`: types a browser can display are opened inline, everything else is downloaded, and `download: true` appends `?download` to force a download. Every other path is relative to the web root and served by the web server. Base URL and script name are added automatically. With `absolute: true` the URL includes the configured origin (`urls.origin`), falling back to the current request. External URLs and anchors are returned unchanged.'
   params:
     - name: path
       type: string
@@ -205,7 +205,7 @@
       default: 'false'
     - name: absolute
       type: bool
-      desc: If true, the URL includes scheme and host of the current request.
+      desc: If true, the URL includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
       default: 'false'
   return:
     - string
@@ -501,7 +501,7 @@
 - name: page_link
   code: >-
     {{ page_link('doc/contents/variables', 'Content variables', {class: 'link-page'}) }}
-  desc: 'Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string. `absolute: true` includes scheme and host for internal routes; external URLs are kept unchanged.'
+  desc: 'Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string. `absolute: true` includes the configured origin for internal routes; external URLs are kept unchanged.'
   params:
     - name: route
       type: string
@@ -517,7 +517,7 @@
       default: '[]'
     - name: absolute
       type: bool
-      desc: If true, the URL of an internal route includes scheme and host of the current request.
+      desc: If true, the URL of an internal route includes the configured `urls.origin`, or the scheme and host of the current request when it is empty.
       default: 'false'
     - name: template
       type: string
