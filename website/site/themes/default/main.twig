@@ -55,7 +55,7 @@
     <link rel="alternate icon" href="{{ (site.base_url ~ '/favicon.ico')|replace({'//': '/'}) }}" sizes="16x16">
     <title>{{ page_title(delimiter: ' / ', site_title: 'Herbie CMS', root_title: 'Herbie CMS - A simple flat-file content management system', reverse: true) }}</title>
     <base href="{{ site.base_url }}">
-    {{ css_out(timestamp: true) }}
+    {{ css_render(timestamp: true) }}
 </head>
 <body class="{{ css_classes() }}">
 <div class="header">
@@ -221,7 +221,7 @@ title: Hello
         </div>
     </div>
 </div>
-{{ js_out(timestamp: true) }}
+{{ js_render(timestamp: true) }}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre code[class*=language-]').forEach((el) => {

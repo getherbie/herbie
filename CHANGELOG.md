@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Twig functions `page_url()`, `page_link()`, `file_link()` and `mail_link()` follow the `<object>_<result>` naming scheme. `page_url(route, absolute: true)` replaces `url_abs()`. `page_link()` and `file_link()` accept `absolute: true` for the configured origin; `file_link()` additionally accepts `download: true`, which appends `?download` for media files.
+- Twig functions `css_render()` and `js_render()` output the registered assets and pair with `css_add()` / `js_add()`.
 - Twig function `file_url()` accepts `absolute: true`. `UrlManager::createAbsoluteWebUrl()` creates the absolute URL of a file below the web root.
 - Config option `urls.origin` sets a fixed origin for absolute URLs in `page_url()`, `page_link()`, `file_url()`, `file_link()` and `sitemap.xml`. If empty, the current request is still used.
 - Contact plugin: `contact_form()` is the new name of `contact()`.
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Deprecated
 - The Twig functions `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()` are deprecated since 3.3.0 and will be removed in 4.0. They still behave as before. `link_download()` keeps adding `/media/` itself; replace it with `file_link('/media/x.pdf', 'Label', download: true)`. `image()`, `file_url()` and `imagine()` keep their names.
+- The Twig functions `css_out()` and `js_out()` are deprecated since 3.3.0 and will be removed in 4.0: use `css_render()` and `js_render()`. They still behave as before.
 - Contact plugin: `contact()` is deprecated since 3.3.0 and will be removed in 4.0: use `contact_form()`. The `csrf_token()` Twig function is deprecated as well and will be removed in 4.0; `contact_form()` passes the token to its template as the `csrf_token` variable.
 
 ### Documentation

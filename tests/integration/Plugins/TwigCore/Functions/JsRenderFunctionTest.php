@@ -8,11 +8,22 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class OutputJsFunctionTest extends Unit
+final class JsRenderFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
     public function testPowerOn(): void
+    {
+        $twig = '{{ js_add("@site/assets/script.js") }}'
+            . '{{ js_render() }}';
+        $this->assertEquals(
+            '<script src="/assets/assets/script.js"></script>',
+            $this->twig()->renderString($twig),
+        );
+    }
+
+    // @deprecated Since 3.3.0, remove in 4.0 together with js_out().
+    public function testDeprecatedJsOutAlias(): void
     {
         $twig = '{{ js_add("@site/assets/script.js") }}'
             . '{{ js_out() }}';

@@ -47,7 +47,7 @@
 - name: css_add
   code: >-
     {{ css_add('@theme/css/styles.css', {class: 'styles'}, 'default', false, 1) }}
-  desc: Registers a CSS asset for output by `css_out`. Use `raw=true` to include the CSS inline.
+  desc: Registers a CSS asset for output by `css_render`. Use `raw=true` to include the CSS inline.
   params:
     - name: paths
       type: string|array
@@ -74,7 +74,7 @@
 - name: js_add
   code: >-
     {{ js_add('@theme/js/script.js', {class: 'scripts'}, 'default', false, 1) }}
-  desc: Registers a JavaScript asset for output by `js_out`. Use `raw=true` to include the script inline.
+  desc: Registers a JavaScript asset for output by `js_render`. Use `raw=true` to include the script inline.
   params:
     - name: paths
       type: string|array
@@ -369,8 +369,25 @@
     - string
     - The rendered HTML
 - name: css_out
+  visibility: deprecated
   code: >-
     {{ css_out('default', true) }}
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `css_render()` instead. Returns the HTML markup for the registered CSS assets of a group.'
+  params:
+    - name: group
+      type: string|null
+      desc: The asset group to output. If null, the default group is used.
+      default: 'null'
+    - name: timestamp
+      type: bool
+      desc: If true, a timestamp query parameter is appended to asset URLs.
+      default: 'false'
+  return:
+    - string
+    - The HTML markup for the CSS assets
+- name: css_render
+  code: >-
+    {{ css_render('default', true) }}
   desc: Returns the HTML markup for the registered CSS assets of a group.
   params:
     - name: group
@@ -385,8 +402,25 @@
     - string
     - The HTML markup for the CSS assets
 - name: js_out
+  visibility: deprecated
   code: >-
     {{ js_out('default', true) }}
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `js_render()` instead. Returns the HTML markup for the registered JavaScript assets of a group.'
+  params:
+    - name: group
+      type: string|null
+      desc: The asset group to output. If null, the default group is used.
+      default: 'null'
+    - name: timestamp
+      type: bool
+      desc: If true, a timestamp query parameter is appended to asset URLs.
+      default: 'false'
+  return:
+    - string
+    - The HTML markup for the JavaScript assets
+- name: js_render
+  code: >-
+    {{ js_render('default', true) }}
   desc: Returns the HTML markup for the registered JavaScript assets of a group.
   params:
     - name: group

@@ -64,11 +64,15 @@ final class TwigExtension extends AbstractExtension
             new TwigFunction('html_attributes', $this->htmlAttributes(...), ['is_safe' => ['html']]),
             new TwigFunction('css_add', $this->cssAdd(...)),
             new TwigFunction('css_classes', $this->cssClasses(...), ['needs_context' => true]),
+            // @deprecated Since 3.3.0, remove in 4.0: use css_render().
             new TwigFunction('css_out', $this->cssOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('css_render', $this->cssRender(...), ['is_safe' => ['html']]),
             new TwigFunction('file_url', $this->fileUrl(...)),
             new TwigFunction('image', $this->image(...), ['is_safe' => ['html']]),
             new TwigFunction('js_add', $this->jsAdd(...)),
+            // @deprecated Since 3.3.0, remove in 4.0: use js_render().
             new TwigFunction('js_out', $this->jsOut(...), ['is_safe' => ['html']]),
+            new TwigFunction('js_render', $this->jsRender(...), ['is_safe' => ['html']]),
             // @deprecated Since 3.3.0, remove in 4.0: use file_link().
             new TwigFunction('link_file', $this->linkFile(...), ['is_safe' => ['html']]),
             new TwigFunction('file_link', $this->fileLink(...), ['is_safe' => ['html']]),
@@ -523,12 +527,28 @@ final class TwigExtension extends AbstractExtension
         return $htmlTree->render($currenRoute);
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use cssRender().
+     */
     public function cssOut(?string $group = null, bool $timestamp = false): string
+    {
+        return $this->cssRender($group, $timestamp);
+    }
+
+    public function cssRender(?string $group = null, bool $timestamp = false): string
     {
         return $this->assets->outputCss($group, $timestamp);
     }
 
+    /**
+     * @deprecated Since 3.3.0, remove in 4.0: use jsRender().
+     */
     public function jsOut(?string $group = null, bool $timestamp = false): string
+    {
+        return $this->jsRender($group, $timestamp);
+    }
+
+    public function jsRender(?string $group = null, bool $timestamp = false): string
     {
         return $this->assets->outputJs($group, $timestamp);
     }
