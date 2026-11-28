@@ -97,7 +97,7 @@ window.MathJax = {
 ~~~
 
 {% verbatim %}
-~~~twig
+~~~twig no-test
 The mass–energy equivalence is {{ 'E = mc^2'|math }}.
 ~~~
 {% endverbatim %}

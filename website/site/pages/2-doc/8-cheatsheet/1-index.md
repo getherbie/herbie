@@ -70,31 +70,31 @@ Output content segments in layout files:
 
 **Event Listeners**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"events"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'events'}) }}
 
 **Twig Filters**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_filters"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'twig_filters'}) }}
 
 **Twig Globals**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"vars_global"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'vars_global'}) }}
 
 **Twig Functions**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_functions"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'twig_functions'}) }}
 
 **Twig Tests**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"twig_tests"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'twig_tests'}) }}
 
 **Console Commands**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"commands"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'commands'}) }}
 
 **Plugins**
 
-{{ snippet("@site/snippets/simple_data.twig", {type:"plugins", enabled:"enabled"}) }}
+{{ snippet('@site/snippets/simple_data.twig', {type:'plugins', enabled:'enabled'}) }}
 
 **Routing**
 
@@ -151,7 +151,7 @@ Layouts are Twig files in `site/themes/<theme>/<layout>.twig`; select one with `
 
 {% verbatim %}
 ~~~twig
-{% extends "main.twig" %}
+{% extends 'main.twig' %}
 
 {% block content %}
     {{ content.default|raw }}
@@ -243,7 +243,7 @@ Menus are built from page lists or data files with the `menu_*` functions.
 
 {% verbatim %}
 ~~~twig
-{{ menu_list('main') }}
+{{ menu_list() }}
 ~~~
 {% endverbatim %}
 
@@ -265,7 +265,7 @@ Use the URL and link helpers instead of hard-coded paths.
 
 {% verbatim %}
 ~~~twig
-{{ site.page_list.query().where('layout=doc').order('title') }}
+{{ site.page_list.query().where('layout=doc').order('title').count() }}
 ~~~
 {% endverbatim %}
 

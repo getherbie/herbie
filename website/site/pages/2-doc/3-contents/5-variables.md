@@ -27,17 +27,17 @@ More details on these variables are provided below.
 
 ## Global variables
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_global"}) }}
+{{ snippet('@site/snippets/variables.twig', {type:'vars_global'}) }}
 
 ## Content variables
 
-{{ snippet("@site/snippets/variables.twig", {type:"vars_content"}) }}
+{{ snippet('@site/snippets/variables.twig', {type:'vars_content'}) }}
 
 ## Page variables
 
 Page variables are defined in the [page properties block](doc/contents/page-properties).
-{{ snippet("@site/snippets/variables.twig", {type:"vars_page"}) }}
+{{ snippet('@site/snippets/variables.twig', {type:'vars_page'}) }}
 
 ## Site variables
 
-{{ snippet("@site/snippets/variables.twig",{type:"vars_site"}) }}
+{{ snippet('@site/snippets/variables.twig',{type:'vars_site'}) }}

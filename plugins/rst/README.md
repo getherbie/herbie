@@ -48,11 +48,11 @@ In addition, depending on the above configuration, both a Twig filter and a Twig
 
 The Twig `rst` filter can be applied as follows:
 
-    {{ "My reStructured text formated content"|rst }}
+    {{ 'My reStructured text formated content'|rst }}
 
 And the Twig `rst` function like this:
 
-    {{ rst("My reStructured text formated content") }}
+    {{ rst('My reStructured text formated content') }}
 
 ## More Information
 

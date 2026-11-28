@@ -56,7 +56,7 @@ final class GistPlugin extends AbstractPlugin
 ~~~
 
 {% verbatim %}
-~~~twig
+~~~twig no-test
 {{ gist('aa5b9f8c', 'example.php') }}
 ~~~
 {% endverbatim %}

@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Twig function `file_url()` accepts `absolute: true` and returns the URL with scheme and host of the current request. `UrlManager::createAbsoluteWebUrl()` creates the absolute URL of a file below the web root.
 - Imagine plugin: `image_resize()` is the new name of `imagine()`. The `|imagine` filter keeps its name.
 - Contact plugin: `contact_form()` is the new name of `contact()`.
+- The integration suite renders all Twig examples from the documentation and checks that their string literals use single quotes; examples that cannot run in the test site are marked with `~~~twig no-test`.
+- The integration suite checks the Twig reference data against the functions, filters and tests registered in the test site.
+- The integration suite checks the syntax of PHP, YAML, JSON and Bash examples in the documentation; `no-test` now applies to any code fence.
 
 ### Deprecated
 - The Twig functions `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()`, `link_mail()` and `imagine()` are deprecated since 3.3.0 and will be removed in 4.0. They still behave as before. `link_download()` keeps adding `/media/` itself; replace it with `file_link('/media/x.pdf', 'Label', download: true)`. `image()` and `file_url()` keep their names.
@@ -16,6 +19,10 @@ All notable changes to this project will be documented in this file.
 ### Documentation
 - Updated the Twig function reference, the images-and-files, cheatsheet, Markdown and special-pages guides and the Imagine README to the new function names.
 - Updated the Contact README, the contact page and the plugin templates to the new function names.
+- Corrected required parameters and defaults in the Twig function reference data. The reference tables now label required parameters as `[required]` and show empty defaults as `''`. String defaults and code examples consistently use single quotes.
+
+### Fixed
+- `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
 
 ## [3.2.1] - 2026-11-25
 

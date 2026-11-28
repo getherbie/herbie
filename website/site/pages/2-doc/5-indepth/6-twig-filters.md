@@ -8,7 +8,7 @@ layout: doc
 Herbie is using Twig Filters for modifying variables in layout and content files.
 The following filters are available.
 
-{{ snippet("@site/snippets/twig_features.twig", {type:"twig_filters"}) }}
+{{ snippet('@site/snippets/twig_features.twig', {type:'twig_filters'}) }}
 
 ## Built-in Filters
 

@@ -8,7 +8,7 @@ layout: doc
 Herbie is using Twig Tests for evaluating boolean conditions in layout and content files.
 In addition to the built-in tests of Twig, the following tests are available.
 
-{{ snippet("@site/snippets/twig_features.twig", {type:"twig_tests"}) }}
+{{ snippet('@site/snippets/twig_features.twig', {type:'twig_tests'}) }}
 
 ## Built-in Tests
 

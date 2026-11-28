@@ -183,7 +183,7 @@ Example:
 
 Example:
 
-    {{ image_resize("portrait.jpg", "crop", {class: "crop", alt: "Portrait"}) }}
+    {{ image_resize('portrait.jpg', 'crop', {class: 'crop', alt: 'Portrait'}) }}
 
 `imagine()` remains available as a deprecated alias of `image_resize()` and will be removed in 4.0.
 The `|imagine` filter keeps its name.

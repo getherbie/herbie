@@ -10,7 +10,7 @@ These default configurations are defined in the [config/defaults.php](https://gi
 
 The following variables are available in the configuration file as PHP constants as constant strings:
 
-~~~php
+~~~text
 APP_PATH
 SITE_PATH
 WEB_PATH

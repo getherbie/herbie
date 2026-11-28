@@ -3,6 +3,7 @@
 namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
+use herbie\Page;
 use herbie\Pagination;
 use herbie\QueryBuilder;
 use InvalidArgumentException;
@@ -208,6 +209,21 @@ final class QueryBuilderTest extends Unit
 
         $titles = array_values(array_column($result, 'title'));
         $this->assertSame(['Gamma', 'Delta', 'Beta', 'Alpha'], $titles);
+    }
+
+    public function testOrderWorksWithArrayAccessItems(): void
+    {
+        $builder = (new QueryBuilder())->from([
+            new Page(['title' => 'Beta']),
+            new Page(['title' => 'Alpha']),
+        ]);
+
+        $titles = array_map(
+            static fn(Page $page): string => $page['title'],
+            $builder->order('title')->all(),
+        );
+
+        $this->assertSame(['Alpha', 'Beta'], $titles);
     }
 
     public function testLimit(): void

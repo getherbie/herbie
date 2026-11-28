@@ -31,7 +31,7 @@ content_type: text/xml
     <url>
         <loc>{{ page_url(item.route, absolute: true) }}</loc>
         {% if(item.date) %}
-            <lastmod>{{ item.date|date("c") }}</lastmod>
+            <lastmod>{{ item.date|date('c') }}</lastmod>
         {% endif %}
     </url>
     {% endfor %}
@@ -79,15 +79,15 @@ no_search: true
     <link href="{{ page_url('atom.xml', absolute: true) }}" rel="self" />
     <link href="{{ page_url('/', absolute: true) }}" />
     <id>{{ page_url('/', absolute: true) }}</id>
-    <updated>{{ "now"|date('r') }}</updated>
+    <updated>{{ 'now'|date('r') }}</updated>
     {% for item in site.page_list %}
         {% if item.title != '' %}
         <entry>
             <title>{{ item.title }} / My Site</title>
             <link href="{{ page_url(item.route, absolute: true) }}"/>
             <id>{{ page_url(item.route, absolute: true) }}</id>
-            {% if item.date %}<published>{{ item.date|date("c") }}</published>{% endif %}
-            {% if item.date %}<updated>{{ item.date|date("c") }}</updated>{% endif %}
+            {% if item.date %}<published>{{ item.date|date('c') }}</published>{% endif %}
+            {% if item.date %}<updated>{{ item.date|date('c') }}</updated>{% endif %}
             {% if item.abstract %}<summary>{{ item.abstract }}</summary>{% endif %}
         </entry>
         {% endif %}

@@ -15,7 +15,7 @@ Add extensions by placing PHP files in the corresponding directories inside `sit
         </tr>
     </thead>
     <tbody>
-    {% for data in query(site.data.site_dir_extended).where("name^=extend", "name!=extend", "name!=extend/plugins") %}
+    {% for data in query(site.data.site_dir_extended).where('name^=extend', 'name!=extend', 'name!=extend/plugins') %}
         <tr>
             <td>site/{{ data.name }}</td>
             <td>{{ data.desc }}</td>

@@ -121,7 +121,7 @@ Enable the plugin in `site/config/main.php`:
 Then call the functions from a page or layout:
 
 {% verbatim %}
-~~~twig
+~~~twig no-test
 {{ youtube('_0TfPpjDkWU', 640, 360, 'Herbie introduction') }}
 {{ vimeo('30459532', 640, 360, 'Herbie on Vimeo') }}
 ~~~

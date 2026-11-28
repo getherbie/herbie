@@ -8,7 +8,7 @@ layout: doc
 Herbie is using Twig Functions for generating content in layout and content files.
 In addition to the built-in functions of Twig itself, the following functions are available.
 
-{{ snippet("@site/snippets/twig_features.twig", {type:"twig_functions"}) }}
+{{ snippet('@site/snippets/twig_features.twig', {type:'twig_functions'}) }}
 
 ## Built-in Functions
 

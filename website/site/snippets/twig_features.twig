@@ -16,7 +16,7 @@
             <td>Parameter</td>
             <td>Type</td>
             <td>Description</td>
-            <td>Default</td>
+            <td>Value</td>
             {% else %}
             <td>[return]</td>
             <td>Description</td>
@@ -27,7 +27,7 @@
             <td>{{ param.name }}</td>
             <td>{{ param.type }}</td>
             <td>{{ param.desc|default('')|markdown }}</td>
-            <td>{% if param.required %}required{% else %}{{ param.default }}{% endif %}</td>
+            <td>{% if param.required %}[required]{% else %}{{ param.default }}{% endif %}</td>
         </tr>
         {% endfor %}
         <tr class="return">

@@ -232,7 +232,13 @@ final class QueryBuilder implements IteratorAggregate
             $direction = 'desc';
         }
 
-        return uasort($this->data, function (array $value1, array $value2) use ($field, $direction): int {
+        return uasort($this->data, function (mixed $value1, mixed $value2) use ($field, $direction): int {
+            $isSortable = static fn(mixed $value): bool => is_array($value) || $value instanceof ArrayAccess;
+            if (!$isSortable($value1) || !$isSortable($value2)) {
+                return 0;
+            }
+            /** @var array<mixed, mixed>|ArrayAccess<mixed, mixed> $value1 */
+            /** @var array<mixed, mixed>|ArrayAccess<mixed, mixed> $value2 */
             if (!isset($value1[$field]) || !isset($value2[$field])) {
                 return 0;
             }
