@@ -640,7 +640,7 @@
 - name: twigify
   code: >-
     {{ twigify('Hello {{ page.title }}') }}
-  desc: Renders a string as a Twig template in the current context and returns the result.
+  desc: Renders a string as a Twig template using the current globals and returns the result.
   params:
     - name: content
       type: string
