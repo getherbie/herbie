@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
+- Imagine plugin: `imagine()` and `|imagine` now resolve paths exactly like `file_url()`: paths below the media route (`/media/...` or `media/...`) are read from `@media`, every other path from the web root. Web-root images get their own cache files below `web/` in the cache directory. **Behavior change:** bare paths such as `portrait.jpg` used to refer to `@media` and now refer to the web root; use `/media/portrait.jpg` or `media/portrait.jpg` for media files.
 
 ## [3.2.1] - 2026-11-25
 

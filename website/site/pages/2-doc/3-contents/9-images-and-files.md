@@ -144,9 +144,9 @@ How a path is interpreted:
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
 
-The Imagine plugin function `imagine()` and the filter `|imagine` accept the public URL
-`/media/...` as well. A path without a leading `/media/`, as in `imagine('portrait.jpg')`, is
-relative to `site/media/` as before.
+The Imagine plugin function `imagine()` and the filter `|imagine` resolve paths like `file_url()`:
+paths below the media route (`/media/...` or `media/...`) are read from `site/media/`, every other
+path (`/logo.png` or `logo.png`) is relative to the web root.
 
 See also the [Twig functions](doc/indepth/twig-functions) reference.
 
