@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class LinkFileFunctionTest extends Unit
+final class FileLinkFunctionTest extends Unit
 {
     protected UnitTester $tester;
 
@@ -27,6 +27,24 @@ final class LinkFileFunctionTest extends Unit
         $this->assertEquals(
             '<span class="link link--file"><a href="/media/dummy.pdf" class="link__label">dummy.pdf</a></span>',
             $this->twig()->renderString('{{ link_file("/media/dummy.pdf") }}'),
+        );
+    }
+
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_download().
+    public function testLinkDownloadPowerOn(): void
+    {
+        $this->assertEquals(
+            '<span class="link link--media"><a href="/media/dummy.pdf?download" alt="" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ link_download("dummy.pdf") }}'),
+        );
+    }
+
+    // @deprecated Since 3.3.0, remove in 4.0 together with link_download().
+    public function testLinkDownloadMediaPrefixIsOptional(): void
+    {
+        $this->assertEquals(
+            '<span class="link link--media"><a href="/media/dummy.pdf?download" alt="" class="link__label">dummy.pdf</a></span>',
+            $this->twig()->renderString('{{ link_download("/media/dummy.pdf") }}'),
         );
     }
 

@@ -8,13 +8,20 @@ use Codeception\Test\Unit;
 use herbie\TwigRenderer;
 use UnitTester;
 
-final class AbsUrlFunctionTest extends Unit
+final class PageUrlFunctionTest extends Unit
 {
     protected TwigRenderer $twigRenderer;
     protected UnitTester $tester;
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with url_rel().
+    public function testUrlRelWithoutRoute(): void
+    {
+        $twig = '{{ url_rel() }}';
+        $this->assertSame('/', $this->twig()->renderString($twig));
+    }
+
     // @deprecated Since 3.3.0, remove in 4.0 together with url_abs().
-    public function testUrlWithoutRoute(): void
+    public function testUrlAbsWithoutRoute(): void
     {
         $tests = [
             ['http:/', '{{ url_abs() }}'],
@@ -23,6 +30,11 @@ final class AbsUrlFunctionTest extends Unit
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));
         }
+    }
+
+    public function testPageUrlWithoutRoute(): void
+    {
+        $this->assertSame('/', $this->twig()->renderString('{{ page_url() }}'));
     }
 
     public function testPageUrlAbsoluteWithoutRoute(): void
@@ -39,8 +51,16 @@ final class AbsUrlFunctionTest extends Unit
         );
     }
 
+    // @deprecated Since 3.3.0, remove in 4.0 together with url_rel().
+    public function testUrlRelWithValidRoutes(): void
+    {
+        $this->assertSame('/one', $this->twig()->renderString('{{ url_rel("one") }}'));
+        $this->assertSame('/one/two', $this->twig()->renderString('{{ url_rel("one/two") }}'));
+        $this->assertSame('/one/two/three', $this->twig()->renderString('{{ url_rel("one/two/three") }}'));
+    }
+
     // @deprecated Since 3.3.0, remove in 4.0 together with url_abs().
-    public function testUrlWithValidRoutes(): void
+    public function testUrlAbsWithValidRoutes(): void
     {
         $tests = [
             ['http:/one', '{{ url_abs("one") }}'],
@@ -50,6 +70,13 @@ final class AbsUrlFunctionTest extends Unit
         foreach ($tests as $test) {
             $this->assertSame($test[0], $this->twig()->renderString($test[1]));
         }
+    }
+
+    public function testPageUrlWithValidRoutes(): void
+    {
+        $this->assertSame('/one', $this->twig()->renderString('{{ page_url("one") }}'));
+        $this->assertSame('/one/two', $this->twig()->renderString('{{ page_url("one/two") }}'));
+        $this->assertSame('/one/two/three', $this->twig()->renderString('{{ page_url("one/two/three") }}'));
     }
 
     public function testPageUrlAbsoluteWithValidRoutes(): void
