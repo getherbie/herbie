@@ -106,7 +106,14 @@ final class ImaginePlugin extends AbstractPlugin
      */
     private function resolveSource(string $path): array
     {
-        $path = str_unleading_slash(str_replace('\\', '/', $path));
+        $path = (string)preg_replace('#/+#', '/', str_replace('\\', '/', $path));
+        $path = str_unleading_slash($path);
+        if ($path === '' || in_array('..', explode('/', $path), true)) {
+            throw new InvalidArgumentException(
+                'Imagine path must be a web-relative path without traversal segments.',
+            );
+        }
+
         $route = trim(str_route_from_url(
             $this->config->getAsString('urls.media'),
             $this->config->getAsString('urls.web'),
@@ -116,7 +123,7 @@ final class ImaginePlugin extends AbstractPlugin
             $relative = $path === $route ? '' : substr($path, strlen($route) + 1);
             return [
                 'absolute' => $this->alias->get('@media/' . $relative),
-                'cachePath' => $relative,
+                'cachePath' => 'media/' . $relative,
             ];
         }
 

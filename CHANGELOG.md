@@ -25,7 +25,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - `QueryBuilder::order()` now sorts items implementing `ArrayAccess`, such as `Page` objects from `site.page_list`.
-- Imagine plugin: `imagine()` and `|imagine` now resolve paths exactly like `file_url()`: paths below the media route (`/media/...` or `media/...`) are read from `@media`, every other path from the web root. Web-root images get their own cache files below `web/` in the cache directory. **Behavior change:** bare paths such as `portrait.jpg` used to refer to `@media` and now refer to the web root; use `/media/portrait.jpg` or `media/portrait.jpg` for media files.
+- Imagine plugin: `imagine()` and `|imagine` now resolve paths exactly like `file_url()`: paths below the media route (`/media/...` or `media/...`) are read from `@media`, every other path from the web root. Media images get cache files below `media/`, web-root images below `web/` in the cache directory, so files with the same path cannot collide. Paths with `..` are rejected; repeated slashes and backslashes are normalized. **Behavior change:** bare paths such as `portrait.jpg` used to refer to `@media` and now refer to the web root; use `/media/portrait.jpg` or `media/portrait.jpg` for media files.
+- `urls.origin` must be a scheme and host without path, query, fragment or userinfo; a port is allowed. Invalid values are rejected instead of producing malformed absolute URLs.
 
 ## [3.2.1] - 2026-11-25
 

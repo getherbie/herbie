@@ -4,6 +4,7 @@ namespace herbie\tests\unit;
 
 use Codeception\Test\Unit;
 use herbie\UrlManager;
+use InvalidArgumentException;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;
 
@@ -179,5 +180,41 @@ final class UrlManagerTest extends Unit
         ]);
 
         $this->assertSame('https://canonical.example/base/logo.png', $um->createAbsoluteWebUrl('logo.png'));
+    }
+
+    public function testConfiguredOriginMayContainAPort(): void
+    {
+        $um = new UrlManager($this->makeRequest('/'), [
+            'niceUrls' => true,
+            'absoluteBaseUrl' => 'HTTPS://Canonical.Example:8443/',
+        ]);
+
+        $this->assertSame('https://canonical.example:8443/news', $um->createAbsoluteUrl('news'));
+    }
+
+    /**
+     * @dataProvider invalidOriginProvider
+     */
+    public function testInvalidConfiguredOriginIsRejected(string $origin): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('urls.origin must be a scheme and host');
+
+        new UrlManager($this->makeRequest('/'), ['absoluteBaseUrl' => $origin]);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidOriginProvider(): array
+    {
+        return [
+            'no scheme' => ['example.com'],
+            'protocol relative' => ['//example.com'],
+            'with path' => ['https://example.com/path'],
+            'with query' => ['https://example.com/?x=1'],
+            'with fragment' => ['https://example.com/#section'],
+            'with userinfo' => ['https://user@example.com'],
+        ];
     }
 }

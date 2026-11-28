@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace herbie;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use UnexpectedValueException;
 
@@ -20,7 +21,7 @@ final class UrlManager
     public function __construct(private readonly ServerRequestInterface $serverRequest, array $options = [])
     {
         $this->baseUrl = (string)($options['baseUrl'] ?? '');
-        $this->absoluteBaseUrl = (string)($options['absoluteBaseUrl'] ?? '');
+        $this->absoluteBaseUrl = $this->normalizeOrigin((string)($options['absoluteBaseUrl'] ?? ''));
         $this->niceUrls = (bool)($options['niceUrls'] ?? false);
         $this->rules = (array)($options['rules'] ?? []);
         $this->scriptUrl = (string)($options['scriptUrl'] ?? '');
@@ -46,6 +47,31 @@ final class UrlManager
             return rtrim($this->absoluteBaseUrl, '/') . '/' . ltrim($path, '/');
         }
         return (string)$this->serverRequest->getUri()->withPath($path);
+    }
+
+    private function normalizeOrigin(string $origin): string
+    {
+        if ($origin === '') {
+            return '';
+        }
+
+        $parts = parse_url($origin);
+        if ($parts === false
+            || !isset($parts['scheme'], $parts['host'])
+            || $parts['host'] === ''
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || isset($parts['query'])
+            || isset($parts['fragment'])
+            || (isset($parts['path']) && trim($parts['path'], '/') !== '')
+        ) {
+            throw new InvalidArgumentException(
+                'urls.origin must be a scheme and host, e.g. https://example.com.',
+            );
+        }
+
+        $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+        return strtolower($parts['scheme']) . '://' . strtolower($parts['host']) . $port;
     }
 
     /**

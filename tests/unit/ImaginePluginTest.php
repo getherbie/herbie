@@ -50,10 +50,10 @@ final class ImaginePluginTest extends Unit
 
         $markup = $plugin->imagineFilter('/media/sample.png', 'default');
 
-        $expectedUrl = '/cache/imagine/sample-default.png';
+        $expectedUrl = '/cache/imagine/media/sample-default.png';
         $this->assertSame($expectedUrl, (string)$markup);
         $this->assertFileExists($this->webDir . $expectedUrl);
-        $this->assertFileDoesNotExist(dirname($this->webDir) . '/outside/cache/imagine/sample-default.png');
+        $this->assertFileDoesNotExist(dirname($this->webDir) . '/outside/cache/imagine/media/sample-default.png');
     }
 
     public function testPublicMediaUrlIsAcceptedAsPath(): void
@@ -62,7 +62,7 @@ final class ImaginePluginTest extends Unit
 
         $markup = $plugin->imagineFilter('/media/sample.png', 'default');
 
-        $this->assertSame('/cache/imagine/sample-default.png', (string)$markup);
+        $this->assertSame('/cache/imagine/media/sample-default.png', (string)$markup);
     }
 
     public function testMediaRouteIsAcceptedWithoutLeadingSlash(): void
@@ -71,7 +71,7 @@ final class ImaginePluginTest extends Unit
 
         $markup = $plugin->imagineFilter('media/sample.png', 'default');
 
-        $this->assertSame('/cache/imagine/sample-default.png', (string)$markup);
+        $this->assertSame('/cache/imagine/media/sample-default.png', (string)$markup);
     }
 
     public function testBareWebRootPathIsAccepted(): void
@@ -128,8 +128,54 @@ final class ImaginePluginTest extends Unit
         $mediaMarkup = (string)$plugin->imagineFilter('media/sample.png', 'default');
         $webMarkup = (string)$plugin->imagineFilter('/sample.png', 'default');
 
-        $this->assertSame('/cache/imagine/sample-default.png', $mediaMarkup);
+        $this->assertSame('/cache/imagine/media/sample-default.png', $mediaMarkup);
         $this->assertSame('/cache/imagine/web/sample-default.png', $webMarkup);
+    }
+
+    public function testMediaSubdirectoryDoesNotCollideWithWebRootImage(): void
+    {
+        $mediaImage = $this->mediaDir . '/web/sample.png';
+        mkdir(dirname($mediaImage), 0777, true);
+        (new Imagine())->create(new Box(40, 30))->save($mediaImage);
+        $this->createWebImage('sample.png');
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $mediaMarkup = (string)$plugin->imagineFilter('media/web/sample.png', 'default');
+        $webMarkup = (string)$plugin->imagineFilter('/sample.png', 'default');
+
+        $this->assertSame('/cache/imagine/media/web/sample-default.png', $mediaMarkup);
+        $this->assertSame('/cache/imagine/web/sample-default.png', $webMarkup);
+        $this->assertFileExists($this->webDir . $mediaMarkup);
+        $this->assertFileExists($this->webDir . $webMarkup);
+    }
+
+    public function testPathTraversalIsRejected(): void
+    {
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('without traversal segments');
+
+        $plugin->imagineFilter('../sample.png', 'default');
+    }
+
+    public function testMediaPathTraversalIsRejected(): void
+    {
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('without traversal segments');
+
+        $plugin->imagineFilter('/media/../sample.png', 'default');
+    }
+
+    public function testRepeatedSlashesAndBackslashesAreNormalized(): void
+    {
+        $plugin = $this->createPlugin('cache/imagine');
+
+        $markup = (string)$plugin->imagineFilter("//media\\\\sample.png", 'default');
+
+        $this->assertSame('/cache/imagine/media/sample-default.png', $markup);
     }
 
     public function testCustomRelativeCachePathIsResolvedFromWebDirectory(): void
@@ -140,7 +186,7 @@ final class ImaginePluginTest extends Unit
         $markup = $plugin->imagineFilter('/media/sample.png', 'default');
         $html = $plugin->imagineFunction('/media/sample.png', 'default');
 
-        $expectedUrl = '/media/cache/sample-default.png';
+        $expectedUrl = '/media/cache/media/sample-default.png';
         $this->assertSame($expectedUrl, (string)$markup);
         $this->assertStringContainsString('src="' . $expectedUrl . '"', $html);
         $this->assertFileExists($this->webDir . $expectedUrl);
@@ -152,8 +198,8 @@ final class ImaginePluginTest extends Unit
 
         $html = $plugin->imagineFunction('/media/sample.png', 'default', ['id' => 'img']);
 
-        $this->assertStringContainsString('src="/cache/imagine/sample-default.png"', $html);
-        $this->assertFileExists($this->webDir . '/cache/imagine/sample-default.png');
+        $this->assertStringContainsString('src="/cache/imagine/media/sample-default.png"', $html);
+        $this->assertFileExists($this->webDir . '/cache/imagine/media/sample-default.png');
     }
 
     /**
