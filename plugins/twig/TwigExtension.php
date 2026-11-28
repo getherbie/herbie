@@ -570,7 +570,7 @@ final class TwigExtension extends AbstractExtension
      * External URLs, anchors and query-only values are returned unchanged.
      *
      * `download: true` appends `?download` and forces a download (media files only).
-     * `absolute: true` uses the scheme and host of the current request.
+     * `absolute: true` uses the configured origin (`urls.origin`), falling back to the current request.
      */
     public function fileUrl(string $path, bool $download = false, bool $absolute = false): string
     {

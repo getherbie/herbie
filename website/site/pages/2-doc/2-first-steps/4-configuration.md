@@ -33,7 +33,7 @@ return [
 ];
 ~~~
 
-Leave the value empty to keep the request-based behavior. The configured origin is also used by `sitemap.xml`, which renders its locations with `page_url(absolute: true)`.
+Leave the value empty to keep the request-based behavior. The configured origin is also used by the special pages `sitemap.xml`, `robots.txt` and `atom.xml`, which render their URLs with `page_url(absolute: true)`.
 
 ## Override settings
 

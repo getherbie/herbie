@@ -127,6 +127,8 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 ~~~
 {% endverbatim %}
 
+The `https://example.com` examples assume `urls.origin` is set to that value; without it, `absolute: true` uses the scheme and host of the current request.
+
 The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()`
 are deprecated since 3.3.0 and will be removed in 4.0. `image()`, `file_url()` and `imagine()`
 keep their names. `link_download()` still adds `/media/` itself; replace it with
