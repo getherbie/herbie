@@ -9,7 +9,7 @@ twig: false
 Some pages need to keep their file extension in the URL, for example XML, TXT or RSS files.
 Set `keep_extension: true` in the page properties block for these.
 Set `layout: ""` so the content is not wrapped in an HTML layout, and `content_type` to the MIME type of the response.
-These examples help search engines discover and index your content (SEO) and provide feeds or crawler instructions. All absolute URLs use `urls.origin` when configured; otherwise the scheme and host of the current request are used.
+These examples help search engines discover and index your content (SEO) and provide feeds or crawler instructions.
 
 ## sitemap.xml
 

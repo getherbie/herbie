@@ -127,8 +127,6 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 ~~~
 {% endverbatim %}
 
-The `https://example.com` examples assume `urls.origin` is set to that value; without it, `absolute: true` uses the scheme and host of the current request.
-
 The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()`
 are deprecated since 3.3.0 and will be removed in 4.0. `image()`, `file_url()` and `imagine()`
 keep their names. `link_download()` still adds `/media/` itself; replace it with
@@ -140,9 +138,8 @@ How a path is interpreted:
   other path is relative to the web directory.
 - External URLs (`https://...`), anchors (`#top`) and query-only values are returned unchanged.
 - A link created with `file_link()` follows the same rule. Pass `/media/...` to refer to a file in
-  `site/media/`; `download: true` forces a download for media files and `absolute: true` includes
-  the configured origin (see [Configuration](../../2-first-steps/configuration)). A web server
-  ignores `?download`.
+  `site/media/`; `download: true` forces a download for media files and `absolute: true` makes the
+  URL absolute. A web server ignores `?download`.
 - Special characters in file names are encoded. Pass the path unencoded, for example
   `/media/über uns.pdf`, not `/media/%C3%BCber%20uns.pdf`, otherwise it is encoded twice. A `?` or
   `#` in the path starts the query string or fragment.
