@@ -22,8 +22,7 @@
   params:
     - name: route
       type: string
-      desc: The route to a page. Must be given, an empty route is not resolved.
-      required: true
+      desc: The route to a page. An empty route resolves to the site root.
       default: "''"
   return:
     - string
@@ -610,8 +609,7 @@
   params:
     - name: route
       type: string
-      desc: The route to a page. Must be given, an empty route is not resolved.
-      required: true
+      desc: The route to a page. An empty route resolves to the site root.
       default: "''"
   return:
     - string
