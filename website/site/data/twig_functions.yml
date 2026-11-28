@@ -501,7 +501,7 @@
 - name: page_link
   code: >-
     {{ page_link('doc/contents/variables', 'Content variables', {class: 'link-page'}) }}
-  desc: Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string.
+  desc: 'Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string. `absolute: true` includes scheme and host for internal routes; external URLs are kept unchanged.'
   params:
     - name: route
       type: string
@@ -515,6 +515,10 @@
       type: array
       desc: The HTML attributes passed as an associative array.
       default: '[]'
+    - name: absolute
+      type: bool
+      desc: If true, the URL of an internal route includes scheme and host of the current request.
+      default: 'false'
     - name: template
       type: string
       desc: The aliased path to the template file.

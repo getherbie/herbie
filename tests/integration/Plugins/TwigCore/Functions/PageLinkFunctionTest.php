@@ -29,6 +29,22 @@ final class PageLinkFunctionTest extends Unit
         );
     }
 
+    public function testPageLinkAbsoluteIncludesSchemeAndHost(): void
+    {
+        $this->assertSame(
+            '<span class="link link--page"><a href="http:/route" class="link__label">label</a></span>',
+            $this->twig()->renderString('{{ page_link("route", "label", absolute: true) }}'),
+        );
+    }
+
+    public function testPageLinkAbsoluteKeepsExternalUrlsUnchanged(): void
+    {
+        $this->assertSame(
+            '<span class="link link--external"><a href="https://example.com/x" class="link__label">label</a></span>',
+            $this->twig()->renderString('{{ page_link("https://example.com/x", "label", absolute: true) }}'),
+        );
+    }
+
     private function twig(): TwigRenderer
     {
         return $this->tester->initTwigRenderer(

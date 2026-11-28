@@ -662,7 +662,7 @@ final class TwigExtension extends AbstractExtension
         array $attribs = [],
         string $template = '@snippet/link_page.twig',
     ): string {
-        return $this->pageLink($route, $label, $attribs, $template);
+        return $this->pageLink($route, $label, $attribs, template: $template);
     }
 
     /**
@@ -674,6 +674,7 @@ final class TwigExtension extends AbstractExtension
         string $route,
         string $label,
         array $attribs = [],
+        bool $absolute = false,
         string $template = '@snippet/link_page.twig',
     ): string {
         $external = parse_url($route, PHP_URL_SCHEME) !== null;
@@ -682,7 +683,9 @@ final class TwigExtension extends AbstractExtension
             $href = $route;
         } else {
             $class = 'link--page';
-            $href = $this->urlManager->createUrl($route);
+            $href = $absolute
+                ? $this->urlManager->createAbsoluteUrl($route)
+                : $this->urlManager->createUrl($route);
         }
 
         $attribs['class'] = trim(($attribs['class'] ?? '') . ' link__label');

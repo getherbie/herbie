@@ -254,6 +254,7 @@ Use the URL and link helpers instead of hard-coded paths.
 {% verbatim %}
 ~~~twig
 {{ page_link('about', 'About') }}
+{{ page_link('about', 'About', absolute: true) }}
 {{ file_link('/media/image.jpg', 'Image', download: true) }}
 {{ page_url('sitemap.xml', absolute: true) }}
 ~~~
