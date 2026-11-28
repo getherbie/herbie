@@ -714,11 +714,14 @@ body.mobile-nav-locked {
 }
 .toc-title {
     color: var(--text-muted);
+    font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 600;
     line-height: 1.5;
-    margin-bottom: 0.6em;
-    letter-spacing: 0.06em;
+    margin-bottom: 0.8em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.08em;
 }
 .toc-links {
     list-style-type: none;
@@ -741,6 +744,10 @@ body.mobile-nav-locked {
     break-inside: avoid;
     margin: 0.15em 0;
     line-height: 1.4;
+}
+.toc-links li.toc-group {
+    color: var(--heading);
+    font-weight: 600;
 }
 .toc-links a {
     color: var(--text-muted);
@@ -1001,6 +1008,12 @@ html[data-theme="dark"] .pure-button:hover {
     margin-top: 0.6em;
 }
 
+.doc-group-title {
+    margin-bottom:0;
+}
+.doc-group-title + .doc-function > h2 {
+    margin-top:0.5em;
+}
 .doc-function table {
     width:100%;
 }

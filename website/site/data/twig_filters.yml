@@ -30,3 +30,59 @@
   return:
     - string
     - The rendered string
+- name: imagine
+  group: plugin
+  code: >-
+    {{ '/media/portrait.jpg'|imagine('thumb') }}
+  desc: Returns the URL of a processed image from the Imagine plugin. The parameters match `imagine()` without the HTML attributes.
+  params:
+    - name: path
+      type: string
+      desc: The public path to the source image.
+      required: true
+    - name: collection
+      type: string
+      desc: The configured Imagine collection with the filters to apply.
+      default: "'default'"
+  return:
+    - string
+    - The URL of the processed image
+- name: markdown
+  group: plugin
+  code: >-
+    {{ '**bold**'|markdown }}
+  desc: Parses a Markdown string with the Markdown plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Markdown source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: rst
+  group: plugin
+  code: >-
+    {{ '*emphasis*'|rst }}
+  desc: Parses a reStructuredText string with the reStructuredText plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The reStructuredText source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: textile
+  group: plugin
+  code: >-
+    {{ 'h1. Title'|textile }}
+  desc: Parses a Textile string with the Textile plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Textile source.
+      required: true
+  return:
+    - string
+    - The rendered HTML

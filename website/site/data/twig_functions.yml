@@ -16,6 +16,7 @@
     - string
     - The rendered HTML attributes
 - name: url_abs
+  visibility: deprecated
   code: >-
     {{ url_abs('doc/contents/variables') }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_url(route, absolute: true)` instead. Returns the absolute URL for a given route.'
@@ -107,6 +108,7 @@
     - string
     - The string with CSS classes.
 - name: link_file
+  visibility: deprecated
   code: >-
     {{ link_file('media/download.pdf', 'Download', {class:'download'}, true) }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `file_link()` instead. The path is resolved like in `file_url()`.'
@@ -399,6 +401,7 @@
     - string
     - The HTML markup for the JavaScript assets
 - name: link_download
+  visibility: deprecated
   code: >-
     {{ link_download('dummy.pdf', 'My dummy file', {class: 'link-file'}, true) }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `file_link("/media/...", ..., download: true)` instead. Returns an HTML link to a file in `@media` that forces a download (`/media/...?download`). Unlike `file_link()`, the `/media/` prefix is added automatically.'
@@ -427,6 +430,7 @@
     - string
     - The rendered HTML
 - name: link_mail
+  visibility: deprecated
   code: >-
     {{ link_mail('me@example.com', 'John Doe', {class: 'link-page'}, '@snippet/link_mail.twig') }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `mail_link()` instead. Returns an HTML mailto link.'
@@ -475,6 +479,7 @@
     - string
     - The rendered HTML
 - name: link_page
+  visibility: deprecated
   code: >-
     {{ link_page('doc/contents/variables', 'Content variables', {class: 'link-page'}) }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_link()` instead. Returns an HTML link for a given route or URL. Use `page_url()` when you only need the URL string.'
@@ -611,6 +616,7 @@
     - string
     - The rendered string
 - name: url_rel
+  visibility: deprecated
   code: >-
     {{ url_rel('doc/contents') }}
   desc: 'Deprecated since 3.3.0, removed in 4.0: use `page_url()` instead. Returns the relative URL for a given route.'
@@ -622,3 +628,120 @@
   return:
     - string
     - The relative URL.
+- name: herbie_debug
+  group: core
+  visibility: internal
+  desc: Returns whether Herbie runs in debug mode. Internal helper, not part of the public templating API.
+  return:
+    - bool
+    - True in debug mode
+- name: herbie_info
+  group: core
+  visibility: internal
+  desc: Renders the Herbie system information. Internal debug helper. The Twig context is passed automatically.
+  params:
+    - name: template
+      type: string
+      desc: The aliased path to the information template.
+      default: "'@snippet/herbie_info.twig'"
+  return:
+    - string
+    - The rendered system information
+- name: imagine
+  group: plugin
+  code: >-
+    {{ imagine('/media/portrait.jpg', 'thumb', {class: 'photo'}) }}
+  desc: Returns an HTML image element with a processed image from the Imagine plugin. Paths below the media URL are served from `@media`, all other paths from the web root. The `|imagine` filter returns the URL of the processed image instead of the element.
+  params:
+    - name: path
+      type: string
+      desc: The public path to the source image.
+      required: true
+    - name: collection
+      type: string
+      desc: The configured Imagine collection with the filters to apply.
+      default: "'default'"
+    - name: attribs
+      type: array
+      desc: The HTML attributes passed as an associative array.
+      default: '[]'
+  return:
+    - string
+    - The rendered image element
+- name: markdown
+  group: plugin
+  code: >-
+    {{ markdown('**bold**') }}
+  desc: Parses a Markdown string with the Markdown plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Markdown source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: rst
+  group: plugin
+  code: >-
+    {{ rst('*emphasis*') }}
+  desc: Parses a reStructuredText string with the reStructuredText plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The reStructuredText source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: textile
+  group: plugin
+  code: >-
+    {{ textile('h1. Title') }}
+  desc: Parses a Textile string with the Textile plugin and returns the rendered HTML.
+  params:
+    - name: value
+      type: string
+      desc: The Textile source.
+      required: true
+  return:
+    - string
+    - The rendered HTML
+- name: search_form
+  group: plugin
+  code: >-
+    {{ search_form() }}
+  desc: Renders the search form template of the Search plugin.
+  return:
+    - string
+    - The rendered search form
+- name: search_results
+  group: plugin
+  code: >-
+    {{ search_results() }}
+  desc: Renders the search results template of the Search plugin for the current query.
+  return:
+    - string
+    - The rendered search results
+- name: contact_form
+  group: plugin
+  code: >-
+    {{ contact_form() }}
+  desc: Renders the contact form of the Contact plugin.
+  return:
+    - string
+    - The rendered contact form
+- name: contact
+  group: plugin
+  visibility: deprecated
+  desc: 'Deprecated since 3.3.0, removed in 4.0: use `contact_form()` instead.'
+  return:
+    - string
+    - The rendered contact form
+- name: csrf_token
+  group: plugin
+  visibility: deprecated
+  desc: 'Deprecated since 3.3.0, removed in 4.0: the contact form template receives the token as `csrf_token`. Returns the CSRF token of the current contact form.'
+  return:
+    - string
+    - The CSRF token
