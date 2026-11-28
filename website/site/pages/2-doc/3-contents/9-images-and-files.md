@@ -127,10 +127,8 @@ With the markdown flavor `gfm`, raw `<iframe>` tags are escaped and shown as tex
 ~~~
 {% endverbatim %}
 
-The names `url_rel()`, `url_abs()`, `link_page()`, `link_file()`, `link_download()` and `link_mail()`
-are deprecated since 3.3.0 and will be removed in 4.0. `image()`, `file_url()` and `imagine()`
-keep their names. `link_download()` still adds `/media/` itself; replace it with
-`file_link('/media/manual.pdf', 'Manual', download: true)`.
+`page_url()` returns a URL string; `page_link()`, `file_link()` and `mail_link()` return HTML links.
+Pass `/media/...` to `file_link()` for media files and add `download: true` to force a download.
 
 How a path is interpreted:
 
@@ -205,8 +203,8 @@ return [
 The URL must be a path below `WEB_URL`. A different domain, for example a CDN, is not supported.
 If a directory `web/media/` exists, the web server delivers files from it before Herbie is asked.
 
-## Former download route
+## Download links
 
-The route `/download/...` of earlier versions redirects permanently (301) to `/media/...?download`.
-It is deprecated and will be removed in the next major version. Replace links like
-`/download/manual.pdf` with `/media/manual.pdf?download`.
+Append `?download` to a media URL to force a download, for example `/media/manual.pdf?download`.
+Use `file_url('/media/manual.pdf', download: true)` for the URL or
+`file_link('/media/manual.pdf', 'Manual', download: true)` for the link.
